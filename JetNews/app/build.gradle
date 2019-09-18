@@ -84,4 +84,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-beta01"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01"
     implementation "com.google.code.gson:gson:2.8.5"
+
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation "androidx.ui:ui-tooling:+"
+
 }
