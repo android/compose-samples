@@ -24,17 +24,15 @@ import androidx.compose.unaryPlus
 import androidx.ui.core.Draw
 import androidx.ui.core.toRect
 import androidx.ui.engine.geometry.Rect
-import androidx.ui.painting.Image
-import androidx.ui.painting.Paint
-
+import androidx.ui.graphics.Image
+import androidx.ui.graphics.Paint
 
 /**
- * Fits an image into the parent container. If the image is larger than the parent,
- * it is centered and clipped.
- * If the image is smaller than the container, it is centered.
+ * Fits an image into the parent container, clipping sides or top and bottom to match the aspect
+ * ratio with no distortion
  */
 @Composable
-fun ClippedImage(image: Image) {
+fun ZoomedClippedImage(image: Image) {
     val paint = +memo { Paint() }
     Draw { canvas, parentSize ->
         //
@@ -43,35 +41,36 @@ fun ClippedImage(image: Image) {
 
         val pHeight = parentSize.height.value
         val pWidth = parentSize.width.value
-        val drawWidth = kotlin.math.min(pWidth, imWidth)
-        val drawHeight = kotlin.math.min(pHeight, imHeight)
 
-        val srcRect = Rect(
-            top = imHeight / 2 - drawHeight / 2,
-            left = imWidth / 2 - drawWidth / 2,
-            right = imWidth / 2 + drawWidth / 2,
-            bottom = imHeight / 2 + drawHeight / 2
-        )
+        val pAspectRatio = pWidth / pHeight
+        val imAspectRatio = imWidth / imHeight
+
+        val srcRect = if (pAspectRatio > imAspectRatio) {
+            val drawHeight = imWidth / pAspectRatio
+            val drawWidth = imWidth
+            Rect(
+                top = imHeight / 2 - drawHeight / 2,
+                left = imWidth / 2 - drawWidth / 2,
+                right = imWidth / 2 + drawWidth / 2,
+                bottom = imHeight / 2 + drawHeight / 2
+            )
+        } else {
+            val drawHeight = imHeight
+            val drawWidth = imHeight * pAspectRatio
+            Rect(
+                top = imHeight / 2 - drawHeight / 2,
+                left = imWidth / 2 - drawWidth / 2,
+                right = imWidth / 2 + drawWidth / 2,
+                bottom = imHeight / 2 + drawHeight / 2
+            )
+        }
 
         val dstRect = Rect(
-            top = pHeight / 2 - drawHeight / 2,
-            left = pWidth / 2 - drawWidth / 2,
-            right = pWidth / 2 + drawWidth / 2,
-            bottom = pHeight / 2 + drawHeight / 2
+            top = 0f,
+            left = 0f,
+            right = pWidth,
+            bottom = pHeight
         )
         canvas.drawImageRect(image, srcRect, dstRect, paint)
-    }
-}
-
-
-/**
- * Fits an image in its parent, stretching or squeezing it as needed.
- */
-@Composable
-fun FittedImage(image: Image) {
-    val paint = +memo { Paint() }
-    Draw { canvas, parentSize ->
-        val fullImageRect = Rect(0f, 0f, image.width.toFloat(), image.height.toFloat())
-        canvas.drawImageRect(image, fullImageRect, parentSize.toRect(), paint)
     }
 }

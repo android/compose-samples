@@ -20,34 +20,35 @@ import androidx.compose.composer
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
+import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.FlexSize
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.material.themeTextStyle
 import androidx.ui.graphics.Color
 import androidx.ui.material.BaseButton
 import androidx.ui.material.surface.Card
 import androidx.ui.layout.Padding
-
+import androidx.ui.text.style.TextOverflow
 
 @Composable
-fun PostCardYourNetwork(post: Post, icons: Icons) {
+fun PostCardPopular(post: Post, icons: Icons) {
     Card (shape = RoundedCornerShape(4.dp)) {
         Container(width = 280.dp, height = 240.dp) {
             Column(
                 mainAxisAlignment = MainAxisAlignment.Start,
                 crossAxisAlignment = CrossAxisAlignment.Start,
-                mainAxisSize = FlexSize.Expand,
-                crossAxisSize = FlexSize.Expand
+                mainAxisSize = LayoutSize.Expand,
+                crossAxisSize = LayoutSize.Expand
             ) {
-                val image = icons.placeholder_4_3
+                val image = post.image ?: icons.placeholder_1_1
                 Container(width = 280.dp, height = 100.dp) {
-                    ClippedImage(image)
+                    ZoomedClippedImage(image)
                 }
                 Padding(16.dp) {
                     Column(crossAxisAlignment = CrossAxisAlignment.Start) {
@@ -55,14 +56,25 @@ fun PostCardYourNetwork(post: Post, icons: Icons) {
                             navigateTo(Screen.Article(post.id))
 
                         }, color = Color.Transparent) {
-                            Text(post.title, +themeTextStyle { h6 }, maxLines = 2)
+                            Opacity(0.87f) {
+                                Text(
+                                    text = post.title,
+                                    style = +themeTextStyle { h6 },
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
-                        Text(post.metadata.author.name, +themeTextStyle { body2 })
-                        Text("${post.metadata.date} - ${post.metadata.readTimeMinutes} min read")
+                        Opacity(0.87f) {
+                            Text(post.metadata.author.name, +themeTextStyle { body2 })
+                        }
+                        Opacity(0.6f) {
+                            Text("${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                                +themeTextStyle { body2 })
+                        }
                     }
                 }
             }
         }
     }
 }
-

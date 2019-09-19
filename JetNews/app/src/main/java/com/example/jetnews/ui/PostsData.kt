@@ -16,6 +16,10 @@
 
 package com.example.jetnews.ui
 
+import android.content.res.Resources
+import androidx.ui.graphics.imageFromResource
+import com.example.jetnews.R
+
 val pietro = PostAuthor("Pietro Maggi", "https://medium.com/@pmaggi")
 val manuel = PostAuthor("Manuel Vivo", "https://medium.com/@manuelvicnt")
 val florina = PostAuthor(
@@ -862,7 +866,8 @@ val post1 = Post(
         date = "August 02",
         readTimeMinutes = 1
     ),
-    paragraphs = paragraphsPost1
+    paragraphs = paragraphsPost1,
+    imageId = R.drawable.post_1
 )
 
 val post2 = Post(
@@ -875,7 +880,8 @@ val post2 = Post(
         date = "July 30",
         readTimeMinutes = 3
     ),
-    paragraphs = paragraphsPost2
+    paragraphs = paragraphsPost2,
+    imageId = R.drawable.post_2
 )
 
 val post3 = Post(
@@ -888,7 +894,8 @@ val post3 = Post(
         date = "July 09",
         readTimeMinutes = 1
     ),
-    paragraphs = paragraphsPost3
+    paragraphs = paragraphsPost3,
+    imageId = R.drawable.post_3
 )
 
 val post4 = Post(
@@ -901,7 +908,8 @@ val post4 = Post(
         date = "April 02",
         readTimeMinutes = 1
     ),
-    paragraphs = paragraphsPost4
+    paragraphs = paragraphsPost4,
+    imageId = R.drawable.post_4
 )
 
 val post5 = Post(
@@ -914,10 +922,11 @@ val post5 = Post(
         date = "July 24",
         readTimeMinutes = 4
     ),
-    paragraphs = paragraphsPost5
+    paragraphs = paragraphsPost5,
+    imageId = R.drawable.post_5
 )
 
-val posts = listOf(
+var posts = listOf(
     post1,
     post2,
     post3,
@@ -929,3 +938,7 @@ val posts = listOf(
     post4.copy(id = "post4"),
     post5.copy(id = "post5")
 )
+
+fun getPostsWithImagesLoaded(posts: List<Post>, resources: Resources): List<Post> {
+    return posts.map { it.copy(image = imageFromResource(resources, it.imageId)) }
+}

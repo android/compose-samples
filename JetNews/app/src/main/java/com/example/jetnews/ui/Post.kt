@@ -16,13 +16,17 @@
 
 package com.example.jetnews.ui
 
+import androidx.ui.graphics.Image
+
 data class Post(
     val id: String,
     val title: String,
     val subtitle: String? = null,
     val publication: Publication? = null,
     val metadata: Metadata,
-    val paragraphs: List<Paragraph> = emptyList()
+    val paragraphs: List<Paragraph> = emptyList(),
+    val imageId: Int,
+    val image: Image? = null
 )
 
 data class Metadata(

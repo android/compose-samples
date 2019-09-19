@@ -29,46 +29,47 @@ import androidx.compose.Model
 import androidx.ui.core.Text
 import androidx.ui.core.setContent
 import androidx.ui.core.dp
-import androidx.ui.core.sp
-import androidx.ui.painting.imageFromResource
+import androidx.ui.graphics.imageFromResource
 
 import androidx.ui.layout.Column
 import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.FlexSize
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
-import androidx.ui.text.TextStyle
-import androidx.ui.text.font.FontFamily
-import androidx.ui.text.font.FontWeight
 
 import androidx.ui.material.Button
 import androidx.ui.material.DrawerState
-import androidx.ui.material.MaterialTypography
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
 
 import com.example.jetnews.R
 
-
 class Icons(resources: Resources) {
-    val appLogo = imageFromResource(resources, R.drawable.jp_news_logo)
-    val home = imageFromResource(resources, R.drawable.baseline_home_black_24dp)
-    val menu = imageFromResource(resources, R.drawable.baseline_menu_white_24dp)
-
-    val more = imageFromResource(resources, R.drawable.baseline_more_vert_black_24dp)
-    val back = imageFromResource(resources, R.drawable.baseline_arrow_back_white_24dp)
-    val bookmarkOn = imageFromResource(resources, R.drawable.baseline_bookmark_black_24dp)
-    val bookmarkOff = imageFromResource(resources, R.drawable.baseline_bookmark_border_black_24dp)
-    val heartOn = imageFromResource(resources, R.drawable.baseline_favorite_black_24dp)
-    val heartOff = imageFromResource(resources, R.drawable.baseline_favorite_border_black_24dp)
-    val starOn = imageFromResource(resources, R.drawable.baseline_star_black_24dp)
-    val starOff = imageFromResource(resources, R.drawable.baseline_star_border_black_24dp)
-    val share = imageFromResource(resources, R.drawable.baseline_share_black_24dp)
-    val placeholder_1_1 = imageFromResource(resources, R.drawable.placeholder_1_1)
-    val placeholder_4_3 = imageFromResource(resources, R.drawable.placeholder_4_3)
+    val appLogo by lazy { imageFromResource(resources, R.drawable.jp_news_logo) }
+    val home by lazy { imageFromResource(resources, R.drawable.baseline_home_black_24dp) }
+    val menu by lazy { imageFromResource(resources, R.drawable.baseline_menu_white_24dp) }
+    val more by lazy { imageFromResource(resources, R.drawable.baseline_more_vert_black_24dp) }
+    val back by lazy { imageFromResource(resources, R.drawable.baseline_arrow_back_white_24dp) }
+    val bookmarkOn by lazy { imageFromResource(resources, R.drawable.baseline_bookmark_black_24dp) }
+    val bookmarkOff by lazy {
+        imageFromResource(
+            resources,
+            R.drawable.baseline_bookmark_border_black_24dp
+        )
+    }
+    val heartOn by lazy { imageFromResource(resources, R.drawable.baseline_favorite_black_24dp) }
+    val heartOff by lazy {
+        imageFromResource(
+            resources,
+            R.drawable.baseline_favorite_border_black_24dp
+        )
+    }
+    val share by lazy { imageFromResource(resources, R.drawable.baseline_share_black_24dp) }
+    val placeholder_1_1 by lazy { imageFromResource(resources, R.drawable.placeholder_1_1) }
+    val placeholder_4_3 by lazy { imageFromResource(resources, R.drawable.placeholder_4_3) }
 }
 
 sealed class Screen {
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val icons = Icons(resources)
-
+        posts = getPostsWithImagesLoaded(posts, resources)
         setContent {
             JetNewsApp(icons)
         }
@@ -144,7 +145,7 @@ fun JetNewsApp(icons: Icons) {
             }, style = TextButtonStyle()) {
                 Row(
                     mainAxisAlignment = MainAxisAlignment.Start,
-                    mainAxisSize = FlexSize.Expand
+                    mainAxisSize = LayoutSize.Expand
                 ) {
                     Text(text)
                 }
@@ -153,9 +154,9 @@ fun JetNewsApp(icons: Icons) {
 
         Column(
             crossAxisAlignment = CrossAxisAlignment.Start,
-            crossAxisSize = FlexSize.Expand,
+            crossAxisSize = LayoutSize.Expand,
             mainAxisAlignment = MainAxisAlignment.Start,
-            mainAxisSize = FlexSize.Expand
+            mainAxisSize = LayoutSize.Expand
         ) {
             HeightSpacer(40.dp)
             Padding(8.dp) {
@@ -168,7 +169,10 @@ fun JetNewsApp(icons: Icons) {
         }
     }
 
-    MaterialTheme {
+    MaterialTheme(
+        colors = lightThemeColors,
+        typography = typography
+    ) {
         ModalDrawerLayout(
             drawerState = drawerState,
             onStateChange = onDrawerStateChange,

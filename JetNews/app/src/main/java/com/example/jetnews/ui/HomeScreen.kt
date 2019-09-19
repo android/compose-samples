@@ -20,161 +20,30 @@ import androidx.compose.composer
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
+import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
-import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.SimpleImage
-import androidx.ui.foundation.selection.Toggleable
-import androidx.ui.foundation.selection.ToggleableState
-import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
-import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
-import androidx.ui.layout.FlexSize
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.WidthSpacer
-import androidx.ui.layout.Wrap
-import androidx.ui.material.BaseButton
-import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.surface.Card
-import androidx.ui.material.themeTextStyle
 import androidx.ui.material.AppBarIcon
+import androidx.ui.material.BaseButton
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.surface.Surface
-
-@Composable
-fun AuthorAndReadTime(post: Post) {
-    FlexRow {
-        flexible(1f) {
-            Text(post.metadata.author.name)
-        }
-        inflexible {
-            Text(" - ${post.metadata.readTimeMinutes} min read")
-        }
-    }
-}
-
-@Composable
-fun PostImage(post: Post, icons: Icons) {
-    Clickable(onClick = {
-        navigateTo(destination = Screen.Article(post.id))
-    }) {
-        Container(width = 40.dp, height = 40.dp) {
-            FittedImage(image = icons.placeholder_1_1)
-        }
-    }
-}
-
-@Composable
-fun PostTitle(post: Post) {
-    BaseButton(onClick = {
-        navigateTo(destination = Screen.Article(post.id))
-    }, color = Color.Transparent) {
-        Text(post.title, style = +themeTextStyle { subtitle1 })
-    }
-}
-
-@Composable
-fun PostCardTop(post: Post, icons: Icons) {
-    Padding(16.dp) {
-        FlexRow {
-            inflexible {
-                Padding(right = 16.dp) {
-                    PostImage(post, icons)
-                }
-            }
-            flexible(1f) {
-                Column(
-                    crossAxisAlignment = CrossAxisAlignment.Start,
-                    crossAxisSize = FlexSize.Wrap,
-                    mainAxisAlignment = MainAxisAlignment.Start,
-                    mainAxisSize = FlexSize.Expand
-                ) {
-                    PostTitle(post)
-                    AuthorAndReadTime(post)
-                }
-            }
-            inflexible {
-                Padding(top = 8.dp, bottom = 8.dp) {
-                    BookmarkButton(post, icons)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PostCardHistory(post: Post, icons: Icons) {
-    Padding(16.dp) {
-        FlexRow {
-            inflexible {
-                Padding(right = 16.dp) {
-                    PostImage(post = post, icons = icons)
-                }
-            }
-            flexible(1f) {
-                Column(
-                    crossAxisAlignment = CrossAxisAlignment.Start,
-                    crossAxisSize = FlexSize.Wrap,
-                    mainAxisAlignment = MainAxisAlignment.Start,
-                    mainAxisSize = FlexSize.Expand
-                ) {
-                    Text("Based on your history")
-                    PostTitle(post = post)
-                    AuthorAndReadTime(post)
-                }
-            }
-            inflexible {
-                Padding(top = 8.dp, bottom = 8.dp) {
-                    SimpleImage(icons.more)
-                }
-            }
-        }
-    }
-}
+import androidx.ui.material.themeColor
+import androidx.ui.material.themeTextStyle
 
 @Composable
 fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
-    val postsTop = posts.subList(0, 2)
-    val postsNetwork = posts.subList(2, 7)
+    val postTop = posts[1]
+    val postsSimple = posts.subList(0, 2)
+    val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
-
-    val homeScreenTop = @Composable {
-        postsTop.forEach { post ->
-            PostCardTop(post, icons)
-            Divider()
-        }
-    }
-
-    val homeScreenNetwork = @Composable {
-        Padding(16.dp) {
-            Text("New from your network")
-        }
-        Row(
-            mainAxisAlignment = MainAxisAlignment.Start,
-            crossAxisAlignment = CrossAxisAlignment.Start
-        ) {
-            postsNetwork.forEach { post ->
-                WidthSpacer(16.dp)
-                PostCardYourNetwork(post, icons)
-            }
-        }
-        HeightSpacer(16.dp)
-        Divider()
-    }
-
-    val homeScreenHistory = @Composable {
-        postsHistory.forEach { post ->
-            PostCardHistory(post, icons)
-            Divider()
-        }
-    }
 
     val navigationIcon = @Composable {
         AppBarIcon(icons.menu) {
@@ -191,28 +60,75 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
         }
         flexible(flex = 1f) {
             Column(crossAxisAlignment = CrossAxisAlignment.Start) {
-                homeScreenTop()
-                homeScreenNetwork()
-                homeScreenHistory()
+                HomeScreenTopSection(postTop)
+                HomeScreenSimpleSection(postsSimple, icons)
+                HomeScreenPopularSection(postsPopular, icons)
+                HomeScreenHistorySection(postsHistory, icons)
             }
         }
     }
 }
 
 @Composable
-fun BookmarkButton(post: Post, icons: Icons) {
-    val bookmarked = jetNewsStatus.favorites.contains(post.id)
-    val value = if (bookmarked) ToggleableState.Checked else ToggleableState.Unchecked
-    Surface {
-        Ripple(bounded = true) {
-            Toggleable(
-                value = value,
-                onToggle = { toggleBookmark(post.id) }) {
-                when (value) {
-                    ToggleableState.Checked -> SimpleImage(icons.bookmarkOn)
-                    else -> SimpleImage(icons.bookmarkOff)
-                }
-            }
+private fun HomeScreenTopSection(post: Post) {
+    Padding(top = 16.dp, left = 16.dp, right = 16.dp) {
+        Opacity(0.87f) {
+            Text("Top stories for you", +themeTextStyle { subtitle1 })
+        }
+    }
+    // Normally this BaseButton would fit  into the PostTutorial() function
+    // but we want to keep it out of the Tutorial content.
+    BaseButton(
+        onClick = {
+            navigateTo(Screen.Article(post.id))
+        }, color = +themeColor { surface }
+    ) {
+        PostCardTop(post)
+    }
+    HomeScreenDivider()
+}
+
+@Composable
+private fun HomeScreenSimpleSection(posts: List<Post>, icons: Icons) {
+    posts.forEach { post ->
+        PostCardSimple(post, icons)
+        HomeScreenDivider()
+    }
+}
+
+@Composable
+private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
+    Padding(16.dp) {
+        Opacity(0.87f) {
+            Text("Popular on Jetnews", +themeTextStyle { subtitle1 })
+        }
+    }
+    Row(
+        mainAxisAlignment = MainAxisAlignment.Start,
+        crossAxisAlignment = CrossAxisAlignment.Start
+    ) {
+        posts.forEach { post ->
+            WidthSpacer(16.dp)
+            PostCardPopular(post, icons)
+        }
+    }
+    HeightSpacer(16.dp)
+    HomeScreenDivider()
+}
+
+@Composable
+private fun HomeScreenHistorySection(posts: List<Post>, icons: Icons) {
+    posts.forEach { post ->
+        PostCardHistory(post, icons)
+        HomeScreenDivider()
+    }
+}
+
+@Composable
+private fun HomeScreenDivider() {
+    Opacity(0.08f) {
+        Padding(left = 14.dp, right = 14.dp) {
+            Divider()
         }
     }
 }
