@@ -60,6 +60,10 @@ android {
     }
 }
 
+configurations {
+    ktlint
+}
+
 dependencies {
     // Needed for Compose Kotlin compiler
     kotlinPlugin "androidx.compose:compose-compiler:0.1.0-SNAPSHOT"
@@ -88,4 +92,22 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation "androidx.ui:ui-tooling:+"
 
+    ktlint "com.pinterest:ktlint:0.34.2"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt", "--editorconfig", ".editorconfig"
+
+}
+
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt", "--editorconfig", ".editorconfig"
 }
