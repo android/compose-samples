@@ -16,35 +16,30 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import android.content.res.Resources
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
+import androidx.compose.Model
+import androidx.compose.composer
 import androidx.compose.state
 import androidx.compose.unaryPlus
-import androidx.compose.Model
-
 import androidx.ui.core.Text
-import androidx.ui.core.setContent
 import androidx.ui.core.dp
+import androidx.ui.core.setContent
 import androidx.ui.graphics.imageFromResource
-
 import androidx.ui.layout.Column
 import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.HeightSpacer
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
-
 import androidx.ui.material.Button
 import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
-
 import com.example.jetnews.R
 
 class Icons(resources: Resources) {

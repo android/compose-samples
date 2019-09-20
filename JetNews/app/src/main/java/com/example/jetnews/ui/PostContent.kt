@@ -16,20 +16,19 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import androidx.compose.Composable
+import androidx.compose.composer
 import androidx.compose.unaryPlus
-import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.core.Px
+import androidx.ui.core.Text
 import androidx.ui.core.WithDensity
-import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.graphics.vector.compat.vectorResource
+import androidx.ui.core.dp
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.DrawShape
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.Color
+import androidx.ui.graphics.vector.DrawVector
+import androidx.ui.graphics.vector.compat.vectorResource
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
@@ -203,4 +202,3 @@ val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration
 
 val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = Px(30f)))
 val metadataTextStyle = +themeTextStyle { caption.copy(color = Color.Gray) }
-

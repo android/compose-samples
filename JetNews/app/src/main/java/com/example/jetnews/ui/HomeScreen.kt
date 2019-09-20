@@ -16,9 +16,8 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import androidx.compose.Composable
+import androidx.compose.composer
 import androidx.compose.unaryPlus
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text

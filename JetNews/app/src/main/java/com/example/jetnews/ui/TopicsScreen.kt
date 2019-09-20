@@ -16,21 +16,21 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
 import androidx.compose.Composable
+import androidx.compose.composer
 import androidx.ui.core.Text
 import androidx.ui.layout.FlexColumn
 import androidx.ui.material.AppBarIcon
 import androidx.ui.material.TopAppBar
 
 @Composable
-fun TopicsScreen(icons:Icons, openDrawer: () -> Unit) {
+fun TopicsScreen(icons: Icons, openDrawer: () -> Unit) {
     val navigationIcon: @Composable() () -> Unit = {
         AppBarIcon(icons.menu) {
             openDrawer()
         }
     }
-    FlexColumn{
+    FlexColumn {
         inflexible {
             TopAppBar<Any>(
                 { Text("Interests") },

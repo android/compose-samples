@@ -16,9 +16,8 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import androidx.compose.Composable
+import androidx.compose.composer
 import androidx.compose.unaryPlus
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
@@ -143,7 +142,6 @@ fun PostCardHistory(post: Post, icons: Icons) {
     }
 }
 
-
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
     val bookmarked = jetNewsStatus.favorites.contains(post.id)
@@ -162,4 +160,3 @@ fun BookmarkButton(post: Post, icons: Icons) {
         }
     }
 }
-

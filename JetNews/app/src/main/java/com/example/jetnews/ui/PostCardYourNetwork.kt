@@ -16,29 +16,28 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import androidx.compose.Composable
+import androidx.compose.composer
 import androidx.compose.unaryPlus
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.MainAxisAlignment
-import androidx.ui.material.themeTextStyle
-import androidx.ui.graphics.Color
+import androidx.ui.layout.Padding
 import androidx.ui.material.BaseButton
 import androidx.ui.material.surface.Card
-import androidx.ui.layout.Padding
+import androidx.ui.material.themeTextStyle
 import androidx.ui.text.style.TextOverflow
 
 @Composable
 fun PostCardPopular(post: Post, icons: Icons) {
-    Card (shape = RoundedCornerShape(4.dp)) {
+    Card(shape = RoundedCornerShape(4.dp)) {
         Container(width = 280.dp, height = 240.dp) {
             Column(
                 mainAxisAlignment = MainAxisAlignment.Start,
@@ -54,7 +53,6 @@ fun PostCardPopular(post: Post, icons: Icons) {
                     Column(crossAxisAlignment = CrossAxisAlignment.Start) {
                         BaseButton(onClick = {
                             navigateTo(Screen.Article(post.id))
-
                         }, color = Color.Transparent) {
                             Opacity(0.87f) {
                                 Text(

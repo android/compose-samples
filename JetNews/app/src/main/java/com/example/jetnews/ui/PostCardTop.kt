@@ -16,10 +16,9 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import androidx.compose.Composable
 import androidx.compose.ambient
+import androidx.compose.composer
 import androidx.compose.unaryPlus
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Opacity
@@ -29,12 +28,12 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.LayoutSize
-import androidx.ui.material.themeTextStyle
 import androidx.ui.layout.HeightSpacer
-import androidx.ui.material.surface.Card
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.surface.Card
+import androidx.ui.material.themeTextStyle
 import com.android.tools.preview.Preview
 
 @Composable

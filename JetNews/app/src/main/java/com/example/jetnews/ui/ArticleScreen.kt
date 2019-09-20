@@ -16,9 +16,8 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
-
 import androidx.compose.Composable
+import androidx.compose.composer
 import androidx.ui.core.Text
 import androidx.ui.layout.FlexColumn
 import androidx.ui.material.AppBarIcon
