@@ -53,7 +53,7 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
     FlexColumn {
         inflexible {
             TopAppBar<Any>(
-                { Text("JetNews") },
+                { Text("Jetnews") },
                 navigationIcon = navigationIcon
             )
         }

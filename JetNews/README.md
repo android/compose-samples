@@ -1,4 +1,4 @@
-#JetNews sample
+#Jetnews sample
 
 ### License
 

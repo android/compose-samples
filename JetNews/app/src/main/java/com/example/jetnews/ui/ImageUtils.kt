@@ -48,19 +48,19 @@ fun ZoomedClippedImage(image: Image) {
             val drawHeight = imWidth / pAspectRatio
             val drawWidth = imWidth
             Rect(
-                top = imHeight / 2 - drawHeight / 2,
-                left = imWidth / 2 - drawWidth / 2,
-                right = imWidth / 2 + drawWidth / 2,
-                bottom = imHeight / 2 + drawHeight / 2
+                top = (imHeight - drawHeight) / 2,
+                left = (imWidth - drawWidth) / 2,
+                right = (imWidth + drawWidth) / 2,
+                bottom = (imHeight + drawHeight) / 2
             )
         } else {
             val drawHeight = imHeight
             val drawWidth = imHeight * pAspectRatio
             Rect(
-                top = imHeight / 2 - drawHeight / 2,
-                left = imWidth / 2 - drawWidth / 2,
-                right = imWidth / 2 + drawWidth / 2,
-                bottom = imHeight / 2 + drawHeight / 2
+                top = (imHeight - drawHeight) / 2,
+                left = (imWidth - drawWidth) / 2,
+                right = (imWidth + drawWidth) / 2,
+                bottom = (imHeight + drawHeight) / 2
             )
         }
 

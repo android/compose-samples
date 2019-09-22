@@ -16,19 +16,23 @@
 
 package com.example.jetnews.ui
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.composer
-import androidx.ui.core.setContent
+import androidx.compose.Model
 
-class MainActivity : AppCompatActivity() {
+/**
+ * Class defining the screens we have in the app: home, article details and interests
+ */
+sealed class Screen {
+    object Home : Screen()
+    data class Article(val postId: String) : Screen()
+    object Interests : Screen()
+}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val icons = Icons(resources)
-        posts = getPostsWithImagesLoaded(posts, resources)
-        setContent {
-            JetnewsApp(icons)
-        }
-    }
+@Model
+object JetnewsStatus {
+    var currentScreen: Screen = Screen.Home
+    var favorites = mutableSetOf<String>()
+}
+
+fun navigateTo(destination: Screen) {
+    JetnewsStatus.currentScreen = destination
 }

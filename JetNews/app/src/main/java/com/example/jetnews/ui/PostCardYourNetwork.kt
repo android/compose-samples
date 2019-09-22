@@ -64,10 +64,12 @@ fun PostCardPopular(post: Post, icons: Icons) {
                             }
                         }
                         Opacity(0.87f) {
-                            Text(post.metadata.author.name, style = +themeTextStyle { body2 })
+                            Text(
+                                text = post.metadata.author.name,
+                                style = +themeTextStyle { body2 })
                         }
                         Opacity(0.6f) {
-                            Text("${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                            Text(text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
                                 style = +themeTextStyle { body2 })
                         }
                     }

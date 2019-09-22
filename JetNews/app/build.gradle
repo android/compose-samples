@@ -18,7 +18,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 Configuration kotlinPluginConfiguration = configurations.create("kotlinPlugin")
 tasks.withType(KotlinCompile).configureEach { compile ->
@@ -78,16 +77,10 @@ dependencies {
     implementation ('androidx.ui:ui-material:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-android-view:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-platform:0.1.0-SNAPSHOT')
-    implementation ('androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0')
     implementation ('androidx.appcompat:appcompat:1.1.0-beta01')
     implementation ('androidx.activity:activity-ktx:1.0.0-beta01')
-    implementation ('androidx.lifecycle:lifecycle-extensions:2.0.0')
 
-    implementation "androidx.core:core-ktx:1.0.2"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.1.0-beta01"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-beta01"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01"
-    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "androidx.core:core-ktx:1.1.0"
 
     implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation "androidx.ui:ui-tooling:+"

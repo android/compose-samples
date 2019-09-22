@@ -43,10 +43,12 @@ fun AuthorAndReadTime(post: Post) {
     Opacity(0.6f) {
         FlexRow {
             flexible(1f) {
-                Text(post.metadata.author.name, style = +themeTextStyle { body2 })
+                Text(text = post.metadata.author.name, style = +themeTextStyle { body2 })
             }
             inflexible {
-                Text(" - ${post.metadata.readTimeMinutes} min read", style = +themeTextStyle { body2 })
+                Text(
+                    text = " - ${post.metadata.readTimeMinutes} min read",
+                    style = +themeTextStyle { body2 })
             }
         }
     }
@@ -126,7 +128,9 @@ fun PostCardHistory(post: Post, icons: Icons) {
                         mainAxisSize = LayoutSize.Expand
                     ) {
                         Opacity(0.38f) {
-                            Text("BASED ON YOUR HISTORY", style = +themeTextStyle { overline })
+                            Text(
+                                text = "BASED ON YOUR HISTORY",
+                                style = +themeTextStyle { overline })
                         }
                         PostTitle(post = post)
                         AuthorAndReadTime(post)
@@ -142,9 +146,19 @@ fun PostCardHistory(post: Post, icons: Icons) {
     }
 }
 
+fun toggleBookmark(postId: String) {
+    JetnewsStatus.run {
+        if (favorites.contains(postId)) {
+            favorites.remove(postId)
+        } else {
+            favorites.add(postId)
+        }
+    }
+}
+
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
-    val bookmarked = jetNewsStatus.favorites.contains(post.id)
+    val bookmarked = JetnewsStatus.favorites.contains(post.id)
     val value = if (bookmarked) ToggleableState.Checked else ToggleableState.Unchecked
     Surface {
         Ripple(bounded = true) {

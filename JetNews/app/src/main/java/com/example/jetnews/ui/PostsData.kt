@@ -20,6 +20,10 @@ import android.content.res.Resources
 import androidx.ui.graphics.imageFromResource
 import com.example.jetnews.R
 
+/**
+ * Define hardcoded posts to avoid handling any non-ui operations.
+ */
+
 val pietro = PostAuthor("Pietro Maggi", "https://medium.com/@pmaggi")
 val manuel = PostAuthor("Manuel Vivo", "https://medium.com/@manuelvicnt")
 val florina = PostAuthor(
