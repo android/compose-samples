@@ -55,14 +55,14 @@ fun PostCardTop(post: Post) {
                 }
                 HeightSpacer(16.dp)
                 Opacity(0.87f) {
-                    Text(post.title, +themeTextStyle { h6 })
+                    Text(post.title, style = +themeTextStyle { h6 })
                 }
                 Opacity(0.87f) {
-                    Text(post.metadata.author.name, +themeTextStyle { body2 })
+                    Text(post.metadata.author.name, style = +themeTextStyle { body2 })
                 }
                 Opacity(0.6f) {
                     Text("${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                        +themeTextStyle { body2 })
+                        style = +themeTextStyle { body2 })
                 }
             }
         }

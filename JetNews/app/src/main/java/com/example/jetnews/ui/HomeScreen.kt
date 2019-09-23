@@ -72,7 +72,7 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
 private fun HomeScreenTopSection(post: Post) {
     Padding(top = 16.dp, left = 16.dp, right = 16.dp) {
         Opacity(0.87f) {
-            Text("Top stories for you", +themeTextStyle { subtitle1 })
+            Text(text = "Top stories for you", style = +themeTextStyle { subtitle1 })
         }
     }
     // Normally this BaseButton would fit  into the PostTutorial() function
@@ -99,9 +99,10 @@ private fun HomeScreenSimpleSection(posts: List<Post>, icons: Icons) {
 private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
     Padding(16.dp) {
         Opacity(0.87f) {
-            Text("Popular on Jetnews", +themeTextStyle { subtitle1 })
+            Text(text = "Popular on Jetnews", style = +themeTextStyle { subtitle1 })
         }
     }
+
     Row(
         mainAxisAlignment = MainAxisAlignment.Start,
         crossAxisAlignment = CrossAxisAlignment.Start

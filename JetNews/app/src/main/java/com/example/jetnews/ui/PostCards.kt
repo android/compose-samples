@@ -43,10 +43,10 @@ fun AuthorAndReadTime(post: Post) {
     Opacity(0.6f) {
         FlexRow {
             flexible(1f) {
-                Text(post.metadata.author.name, +themeTextStyle { body2 })
+                Text(post.metadata.author.name, style = +themeTextStyle { body2 })
             }
             inflexible {
-                Text(" - ${post.metadata.readTimeMinutes} min read", +themeTextStyle { body2 })
+                Text(" - ${post.metadata.readTimeMinutes} min read", style = +themeTextStyle { body2 })
             }
         }
     }
@@ -126,7 +126,7 @@ fun PostCardHistory(post: Post, icons: Icons) {
                         mainAxisSize = LayoutSize.Expand
                     ) {
                         Opacity(0.38f) {
-                            Text("BASED ON YOUR HISTORY", +themeTextStyle { overline })
+                            Text("BASED ON YOUR HISTORY", style = +themeTextStyle { overline })
                         }
                         PostTitle(post = post)
                         AuthorAndReadTime(post)
