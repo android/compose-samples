@@ -34,7 +34,7 @@ buildscript {
 allprojects {
     val workdir = File("../..").absolutePath
     val externalM2RepoPath = "$workdir/androidx-master-dev/prebuilts/androidx/external"
-    val snapshotUrl = "https://ci.android.com/builds/submitted/5893476/androidx_snapshot/latest/ui/repository/"
+    val snapshotUrl = "https://ci.android.com/builds/submitted/5895884/androidx_snapshot/latest/ui/repository/"
     repositories {
         maven {
             url = uri(snapshotUrl)

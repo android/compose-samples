@@ -22,6 +22,8 @@ import androidx.compose.unaryPlus
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
+import androidx.ui.foundation.HorizontalScroller
+import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.FlexColumn
@@ -58,11 +60,13 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
             )
         }
         flexible(flex = 1f) {
-            Column(crossAxisAlignment = CrossAxisAlignment.Start) {
-                HomeScreenTopSection(postTop)
-                HomeScreenSimpleSection(postsSimple, icons)
-                HomeScreenPopularSection(postsPopular, icons)
-                HomeScreenHistorySection(postsHistory, icons)
+            VerticalScroller {
+                Column(crossAxisAlignment = CrossAxisAlignment.Start) {
+                    HomeScreenTopSection(postTop)
+                    HomeScreenSimpleSection(postsSimple, icons)
+                    HomeScreenPopularSection(postsPopular, icons)
+                    HomeScreenHistorySection(postsHistory, icons)
+                }
             }
         }
     }
@@ -102,14 +106,15 @@ private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
             Text(text = "Popular on Jetnews", style = +themeTextStyle { subtitle1 })
         }
     }
-
-    Row(
-        mainAxisAlignment = MainAxisAlignment.Start,
-        crossAxisAlignment = CrossAxisAlignment.Start
-    ) {
-        posts.forEach { post ->
-            WidthSpacer(16.dp)
-            PostCardPopular(post, icons)
+    HorizontalScroller {
+        Row(
+            mainAxisAlignment = MainAxisAlignment.Start,
+            crossAxisAlignment = CrossAxisAlignment.Start
+        ) {
+            posts.forEach { post ->
+                WidthSpacer(16.dp)
+                PostCardPopular(post, icons)
+            }
         }
     }
     HeightSpacer(16.dp)
