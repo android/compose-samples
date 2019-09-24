@@ -146,20 +146,9 @@ fun PostCardHistory(post: Post, icons: Icons) {
     }
 }
 
-fun toggleBookmark(postId: String) {
-    JetnewsStatus.run {
-        if (favorites.contains(postId)) {
-            favorites.remove(postId)
-        } else {
-            favorites.add(postId)
-        }
-    }
-}
-
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
-    val bookmarked = JetnewsStatus.favorites.contains(post.id)
-    val value = if (bookmarked) ToggleableState.Checked else ToggleableState.Unchecked
+    val value = getToggleableState(post.id)
     Surface {
         Ripple(bounded = true) {
             Toggleable(
@@ -173,4 +162,19 @@ fun BookmarkButton(post: Post, icons: Icons) {
             }
         }
     }
+}
+
+fun toggleBookmark(postId: String) {
+    JetnewsStatus.run {
+        if (favorites.contains(postId)) {
+            favorites.remove(postId)
+        } else {
+            favorites.add(postId)
+        }
+    }
+}
+
+fun getToggleableState(postId: String): ToggleableState {
+    val bookmarked = JetnewsStatus.favorites.contains(postId)
+    return if (bookmarked) ToggleableState.Checked else ToggleableState.Unchecked
 }
