@@ -18,7 +18,6 @@ package com.example.jetnews.ui
 
 import androidx.compose.Composable
 import androidx.compose.composer
-import androidx.compose.frames.open
 import androidx.compose.state
 import androidx.compose.unaryPlus
 import androidx.ui.core.Text

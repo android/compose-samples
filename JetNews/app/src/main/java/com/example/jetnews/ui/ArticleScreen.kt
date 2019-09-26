@@ -16,34 +16,106 @@
 
 package com.example.jetnews.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.Composable
+import androidx.compose.ambient
 import androidx.compose.composer
+import androidx.compose.state
+import androidx.compose.unaryPlus
+import androidx.ui.core.Alignment
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
+import androidx.ui.foundation.selection.ToggleableState
+import androidx.ui.graphics.Image
 import androidx.ui.layout.FlexColumn
+import androidx.ui.layout.Stack
+import androidx.ui.material.AlertDialog
 import androidx.ui.material.AppBarIcon
+import androidx.ui.material.BottomAppBar
+import androidx.ui.material.Button
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.themeColor
+import androidx.ui.material.themeTextStyle
+import com.example.jetnews.ui.ArticleActions.Bookmark
+import com.example.jetnews.ui.ArticleActions.Like
+import com.example.jetnews.ui.ArticleActions.Share
 
 @Composable
 fun ArticleScreen(icons: Icons, postId: String) {
+
+    val showDialog = +state { false }
     // getting the post from our list of posts by Id
     val post = posts.find { it.id == postId } ?: return
 
-    val navigationIcon: @Composable() () -> Unit = {
-        AppBarIcon(icons.back) {
-            navigateTo(Screen.Home)
+    if (showDialog.value) {
+        FunctionalityNotAvailablePopup {
+            showDialog.value = false
         }
     }
+
     FlexColumn {
         inflexible {
             TopAppBar<Any>(
-                title = {
-                    Text("Published in: ${post.publication?.name}")
-                },
-                navigationIcon = navigationIcon
+                title = { Text("Published in: ${post.publication?.name}") },
+                navigationIcon = {
+                    AppBarIcon(icons.back) {
+                        navigateTo(Screen.Home)
+                    }
+                }
             )
         }
-        flexible(1f) {
+        expanded(1f) {
             PostContent(post)
         }
+        inflexible {
+            BottomBar(post, icons) { showDialog.value = true }
+        }
     }
+}
+
+@Composable
+private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Unit) {
+    val bookmarkIcon = when (getToggleableState(post.id)) {
+        ToggleableState.Checked -> icons.bookmarkOn
+        else -> icons.bookmarkOff
+    }
+    val context = +ambient(ContextAmbient)
+    val actions = listOf(
+        Like(icons.heartOff) { onUnimplementedAction() },
+        Share(icons.share) { SharePost(post, context) },
+        Bookmark(bookmarkIcon) { toggleBookmark(post.id) })
+    BottomAppBar(
+        color = +themeColor { surface },
+        contextualActions = actions
+    ) { data -> AppBarIcon(data.image) { data.action() } }
+}
+
+@Composable
+private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
+    AlertDialog(
+        onCloseRequest = onDismiss,
+        text = {
+            Text(
+                text = "Functionality not available \uD83D\uDE48",
+                style = +themeTextStyle { body1 }
+            )
+        },
+        confirmButton = { Button("Close", onClick = onDismiss) }
+    )
+}
+
+sealed class ArticleActions(val image: Image, val action: () -> Unit) {
+    class Like(image: Image, action: () -> Unit) : ArticleActions(image, action)
+    class Share(image: Image, action: () -> Unit) : ArticleActions(image, action)
+    class Bookmark(image: Image, action: () -> Unit) : ArticleActions(image, action)
+}
+
+private fun SharePost(post: Post, context: Context) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TITLE, post.title)
+        putExtra(Intent.EXTRA_TEXT, post.url)
+    }
+    context.startActivity(Intent.createChooser(intent, "Share post"))
 }
