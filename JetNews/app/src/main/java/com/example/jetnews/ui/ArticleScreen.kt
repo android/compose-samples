@@ -23,13 +23,10 @@ import androidx.compose.ambient
 import androidx.compose.composer
 import androidx.compose.state
 import androidx.compose.unaryPlus
-import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
-import androidx.ui.foundation.selection.ToggleableState
 import androidx.ui.graphics.Image
 import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.Stack
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.AppBarIcon
 import androidx.ui.material.BottomAppBar
@@ -76,9 +73,10 @@ fun ArticleScreen(icons: Icons, postId: String) {
 
 @Composable
 private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Unit) {
-    val bookmarkIcon = when (getToggleableState(post.id)) {
-        ToggleableState.Checked -> icons.bookmarkOn
-        else -> icons.bookmarkOff
+    val bookmarkIcon = if (isFavorite(post.id)) {
+        icons.bookmarkOn
+    } else {
+        icons.bookmarkOff
     }
     val context = +ambient(ContextAmbient)
     val actions = listOf(

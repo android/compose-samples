@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.compose.ambient
 import androidx.compose.composer
 import androidx.compose.unaryPlus
+import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
@@ -30,7 +31,7 @@ import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.Padding
+import androidx.ui.layout.padding
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Card
 import androidx.ui.material.themeTextStyle
@@ -40,30 +41,29 @@ import com.android.tools.preview.Preview
 fun PostCardTop(post: Post) {
     // TUTORIAL CONTENT STARTS HERE
     Card {
-        Padding(16.dp) {
-            Column(
-                mainAxisSize = LayoutSize.Wrap,
-                crossAxisAlignment = CrossAxisAlignment.Start,
-                crossAxisSize = LayoutSize.Expand
-            ) {
-                post.image?.let {
-                    Card(shape = RoundedCornerShape(4.dp)) {
-                        Container(expanded = true, height = 180.dp) {
-                            ZoomedClippedImage(it)
-                        }
+        Column(
+            padding(16.dp),
+            mainAxisSize = LayoutSize.Wrap,
+            crossAxisAlignment = CrossAxisAlignment.Start,
+            crossAxisSize = LayoutSize.Expand
+        ) {
+            post.image?.let {
+                Container(expanded = true, height = 180.dp) {
+                    Clip(shape = RoundedCornerShape(4.dp)) {
+                        ZoomedClippedImage(it)
                     }
                 }
-                HeightSpacer(16.dp)
-                Opacity(0.87f) {
-                    Text(text = post.title, style = +themeTextStyle { h6 })
-                }
-                Opacity(0.87f) {
-                    Text(text = post.metadata.author.name, style = +themeTextStyle { body2 })
-                }
-                Opacity(0.6f) {
-                    Text(text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                        style = +themeTextStyle { body2 })
-                }
+            }
+            HeightSpacer(16.dp)
+            Opacity(0.87f) {
+                Text(text = post.title, style = +themeTextStyle { h6 })
+            }
+            Opacity(0.87f) {
+                Text(text = post.metadata.author.name, style = +themeTextStyle { body2 })
+            }
+            Opacity(0.6f) {
+                Text(text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                    style = +themeTextStyle { body2 })
             }
         }
     }

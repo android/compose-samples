@@ -24,7 +24,6 @@ import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
-import androidx.ui.foundation.selection.ToggleableState
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
@@ -148,16 +147,17 @@ fun PostCardHistory(post: Post, icons: Icons) {
 
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
-    val value = getToggleableState(post.id)
+    val value = isFavorite(post.id)
     Surface {
         Ripple(bounded = true) {
             Toggleable(
-                value = value,
-                onToggle = { toggleBookmark(post.id) }
+                checked = value,
+                onCheckedChange = { toggleBookmark(post.id) }
             ) {
-                when (value) {
-                    ToggleableState.Checked -> SimpleImage(icons.bookmarkOn)
-                    else -> SimpleImage(icons.bookmarkOff)
+                if (value) {
+                    SimpleImage(icons.bookmarkOn)
+                } else {
+                    SimpleImage(icons.bookmarkOff)
                 }
             }
         }
@@ -174,7 +174,6 @@ fun toggleBookmark(postId: String) {
     }
 }
 
-fun getToggleableState(postId: String): ToggleableState {
-    val bookmarked = JetnewsStatus.favorites.contains(postId)
-    return if (bookmarked) ToggleableState.Checked else ToggleableState.Unchecked
+fun isFavorite(postId: String): Boolean {
+    return JetnewsStatus.favorites.contains(postId)
 }

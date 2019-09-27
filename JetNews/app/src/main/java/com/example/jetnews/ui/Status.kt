@@ -17,6 +17,7 @@
 package com.example.jetnews.ui
 
 import androidx.compose.Model
+import androidx.compose.frames.ModelList
 
 /**
  * Class defining the screens we have in the app: home, article details and interests
@@ -30,7 +31,7 @@ sealed class Screen {
 @Model
 object JetnewsStatus {
     var currentScreen: Screen = Screen.Home
-    var favorites = mutableSetOf<String>()
+    var favorites = ModelList<String>()
 }
 
 fun navigateTo(destination: Screen) {
