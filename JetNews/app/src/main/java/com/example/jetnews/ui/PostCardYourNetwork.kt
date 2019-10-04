@@ -19,20 +19,21 @@ package com.example.jetnews.ui
 import androidx.compose.Composable
 import androidx.compose.composer
 import androidx.compose.unaryPlus
-import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
+import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
-import androidx.ui.material.BaseButton
+import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.material.themeTextStyle
+import androidx.ui.material.withOpacity
 import androidx.ui.text.style.TextOverflow
 
 @Composable
@@ -47,30 +48,28 @@ fun PostCardPopular(post: Post, icons: Icons) {
             ) {
                 val image = post.image ?: icons.placeholder_1_1
                 Container(width = 280.dp, height = 100.dp) {
-                    ZoomedClippedImage(image)
+                    DrawImage(image)
                 }
                 Padding(16.dp) {
                     Column(crossAxisAlignment = CrossAxisAlignment.Start) {
-                        BaseButton(onClick = {
-                            navigateTo(Screen.Article(post.id))
-                        }, color = Color.Transparent) {
-                            Opacity(0.87f) {
+                        Ripple(bounded = true) {
+                            Clickable(onClick = {
+                                navigateTo(Screen.Article(post.id))
+                            }) {
                                 Text(
                                     text = post.title,
-                                    style = +themeTextStyle { h6 },
+                                    style = (+themeTextStyle { h6 }).withOpacity(0.87f),
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
-                        }
-                        Opacity(0.87f) {
                             Text(
                                 text = post.metadata.author.name,
-                                style = +themeTextStyle { body2 })
-                        }
-                        Opacity(0.6f) {
+                                style = (+themeTextStyle { body2 }).withOpacity(0.87f)
+                            )
                             Text(text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                                style = +themeTextStyle { body2 })
+                                style = (+themeTextStyle { body2 }).withOpacity(0.6f)
+                            )
                         }
                     }
                 }

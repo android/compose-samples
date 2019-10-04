@@ -19,9 +19,10 @@ package com.example.jetnews.ui
 import androidx.compose.Composable
 import androidx.compose.composer
 import androidx.compose.unaryPlus
-import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
+import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
@@ -31,24 +32,22 @@ import androidx.ui.layout.FlexRow
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
-import androidx.ui.material.BaseButton
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeColor
 import androidx.ui.material.themeTextStyle
+import androidx.ui.material.withOpacity
 
 @Composable
 fun AuthorAndReadTime(post: Post) {
-    Opacity(0.6f) {
-        FlexRow {
-            flexible(1f) {
-                Text(text = post.metadata.author.name, style = +themeTextStyle { body2 })
-            }
-            inflexible {
-                Text(
-                    text = " - ${post.metadata.readTimeMinutes} min read",
-                    style = +themeTextStyle { body2 })
-            }
+    FlexRow {
+        val textStyle = (+themeTextStyle { body2 }).withOpacity(0.6f)
+        flexible(1f) {
+            Text(text = post.metadata.author.name, style = textStyle)
+        }
+        inflexible {
+            Text(
+                text = " - ${post.metadata.readTimeMinutes} min read",
+                style = textStyle
+            )
         }
     }
 }
@@ -58,45 +57,43 @@ fun PostImage(post: Post, icons: Icons) {
     val image = post.image ?: icons.placeholder_1_1
 
     Container(width = 40.dp, height = 40.dp) {
-        ZoomedClippedImage(image)
+        DrawImage(image)
     }
 }
 
 @Composable
 fun PostTitle(post: Post) {
-    Opacity(0.87f) {
-        Text(post.title, style = +themeTextStyle { subtitle1 })
-    }
+    Text(post.title, style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f))
 }
 
 @Composable
 fun PostCardSimple(post: Post, icons: Icons) {
-    BaseButton(
-        onClick = {
+    Ripple(bounded = true) {
+        Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
-        }, color = +themeColor { surface }
-    ) {
-        Padding(16.dp) {
-            FlexRow(crossAxisAlignment = CrossAxisAlignment.Start) {
-                inflexible {
-                    Padding(right = 16.dp) {
-                        PostImage(post, icons)
+        }) {
+            Padding(16.dp) {
+                FlexRow(crossAxisAlignment = CrossAxisAlignment.Start) {
+                    inflexible {
+                        Padding(right = 16.dp) {
+                            PostImage(post, icons)
+                        }
                     }
-                }
-                flexible(1f) {
-                    Column(
-                        crossAxisAlignment = CrossAxisAlignment.Start,
-                        crossAxisSize = LayoutSize.Wrap,
-                        mainAxisAlignment = MainAxisAlignment.Start,
-                        mainAxisSize = LayoutSize.Expand
-                    ) {
-                        PostTitle(post)
-                        AuthorAndReadTime(post)
+                    flexible(1f) {
+                        Column(
+                            crossAxisAlignment = CrossAxisAlignment.Start,
+                            crossAxisSize = LayoutSize.Wrap,
+                            mainAxisAlignment = MainAxisAlignment.Start,
+                            mainAxisSize = LayoutSize.Expand
+                        ) {
+                            PostTitle(post)
+                            AuthorAndReadTime(post)
+                        }
                     }
-                }
-                inflexible {
-                    Padding(top = 8.dp, bottom = 8.dp) {
-                        BookmarkButton(post, icons)
+                    inflexible {
+                        Padding(top = 8.dp, bottom = 8.dp) {
+                            BookmarkButton(post, icons)
+                        }
                     }
                 }
             }
@@ -106,38 +103,36 @@ fun PostCardSimple(post: Post, icons: Icons) {
 
 @Composable
 fun PostCardHistory(post: Post, icons: Icons) {
-    BaseButton(
-        onClick = {
+    Ripple(bounded = true) {
+        Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
-        },
-        color = +themeColor { surface }
-    ) {
-        Padding(16.dp) {
-            FlexRow(crossAxisAlignment = CrossAxisAlignment.Start) {
-                inflexible {
-                    Padding(right = 16.dp) {
-                        PostImage(post = post, icons = icons)
+        }) {
+            Padding(16.dp) {
+                FlexRow(crossAxisAlignment = CrossAxisAlignment.Start) {
+                    inflexible {
+                        Padding(right = 16.dp) {
+                            PostImage(post = post, icons = icons)
+                        }
                     }
-                }
-                flexible(1f) {
-                    Column(
-                        crossAxisAlignment = CrossAxisAlignment.Start,
-                        crossAxisSize = LayoutSize.Wrap,
-                        mainAxisAlignment = MainAxisAlignment.Start,
-                        mainAxisSize = LayoutSize.Expand
-                    ) {
-                        Opacity(0.38f) {
+                    flexible(1f) {
+                        Column(
+                            crossAxisAlignment = CrossAxisAlignment.Start,
+                            crossAxisSize = LayoutSize.Wrap,
+                            mainAxisAlignment = MainAxisAlignment.Start,
+                            mainAxisSize = LayoutSize.Expand
+                        ) {
                             Text(
                                 text = "BASED ON YOUR HISTORY",
-                                style = +themeTextStyle { overline })
+                                style = (+themeTextStyle { overline }).withOpacity(0.38f)
+                            )
+                            PostTitle(post = post)
+                            AuthorAndReadTime(post)
                         }
-                        PostTitle(post = post)
-                        AuthorAndReadTime(post)
                     }
-                }
-                inflexible {
-                    Padding(top = 8.dp, bottom = 8.dp) {
-                        SimpleImage(icons.more)
+                    inflexible {
+                        Padding(top = 8.dp, bottom = 8.dp) {
+                            SimpleImage(icons.more)
+                        }
                     }
                 }
             }
@@ -148,17 +143,15 @@ fun PostCardHistory(post: Post, icons: Icons) {
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
     val value = isFavorite(post.id)
-    Surface {
-        Ripple(bounded = true) {
-            Toggleable(
-                checked = value,
-                onCheckedChange = { toggleBookmark(post.id) }
-            ) {
-                if (value) {
-                    SimpleImage(icons.bookmarkOn)
-                } else {
-                    SimpleImage(icons.bookmarkOff)
-                }
+    Ripple(bounded = false) {
+        Toggleable(
+            checked = value,
+            onCheckedChange = { toggleBookmark(post.id) }
+        ) {
+            if (value) {
+                SimpleImage(icons.bookmarkOn)
+            } else {
+                SimpleImage(icons.bookmarkOff)
             }
         }
     }

@@ -22,27 +22,26 @@ import androidx.compose.composer
 import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
+import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.padding
+import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.surface.Card
 import androidx.ui.material.themeTextStyle
+import androidx.ui.material.withOpacity
 import com.android.tools.preview.Preview
 
 @Composable
 fun PostCardTop(post: Post) {
     // TUTORIAL CONTENT STARTS HERE
-    Card {
+    Padding(16.dp) {
         Column(
-            padding(16.dp),
             mainAxisSize = LayoutSize.Wrap,
             crossAxisAlignment = CrossAxisAlignment.Start,
             crossAxisSize = LayoutSize.Expand
@@ -50,21 +49,23 @@ fun PostCardTop(post: Post) {
             post.image?.let {
                 Container(expanded = true, height = 180.dp) {
                     Clip(shape = RoundedCornerShape(4.dp)) {
-                        ZoomedClippedImage(it)
+                        DrawImage(it)
                     }
                 }
             }
             HeightSpacer(16.dp)
-            Opacity(0.87f) {
-                Text(text = post.title, style = +themeTextStyle { h6 })
-            }
-            Opacity(0.87f) {
-                Text(text = post.metadata.author.name, style = +themeTextStyle { body2 })
-            }
-            Opacity(0.6f) {
-                Text(text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                    style = +themeTextStyle { body2 })
-            }
+            Text(
+                text = post.title,
+                style = (+themeTextStyle { h6 }).withOpacity(0.87f)
+            )
+            Text(
+                text = post.metadata.author.name,
+                style = (+themeTextStyle { body2 }).withOpacity(0.87f)
+            )
+            Text(
+                text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                style = (+themeTextStyle { body2 }).withOpacity(0.6f)
+            )
         }
     }
     // TUTORIAL CONTENT ENDS HERE

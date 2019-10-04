@@ -22,6 +22,7 @@ import androidx.compose.unaryPlus
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
+import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
@@ -33,11 +34,13 @@ import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.AppBarIcon
-import androidx.ui.material.BaseButton
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.ripple.Ripple
+import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
 import androidx.ui.material.themeTextStyle
+import androidx.ui.material.withOpacity
 
 @Composable
 fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
@@ -55,17 +58,17 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
     FlexColumn {
         inflexible {
             TopAppBar<Any>(
-                { Text("Jetnews") },
+                title = { Text(text = "Jetnews") },
                 navigationIcon = navigationIcon
             )
         }
         flexible(flex = 1f) {
             VerticalScroller {
                 Column(crossAxisAlignment = CrossAxisAlignment.Start) {
-                    HomeScreenTopSection(postTop)
-                    HomeScreenSimpleSection(postsSimple, icons)
-                    HomeScreenPopularSection(postsPopular, icons)
-                    HomeScreenHistorySection(postsHistory, icons)
+                    HomeScreenTopSection(post = postTop)
+                    HomeScreenSimpleSection(posts = postsSimple, icons = icons)
+                    HomeScreenPopularSection(posts = postsPopular, icons = icons)
+                    HomeScreenHistorySection(posts = postsHistory, icons = icons)
                 }
             }
         }
@@ -75,18 +78,17 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
 @Composable
 private fun HomeScreenTopSection(post: Post) {
     Padding(top = 16.dp, left = 16.dp, right = 16.dp) {
-        Opacity(0.87f) {
-            Text(text = "Top stories for you", style = +themeTextStyle { subtitle1 })
-        }
+        Text(
+            text = "Top stories for you",
+            style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f)
+        )
     }
-    // Normally this BaseButton would fit  into the PostTutorial() function
-    // but we want to keep it out of the Tutorial content.
-    BaseButton(
-        onClick = {
+    Ripple(bounded = true) {
+        Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
-        }, color = +themeColor { surface }
-    ) {
-        PostCardTop(post)
+        }) {
+            PostCardTop(post = post)
+        }
     }
     HomeScreenDivider()
 }
@@ -102,9 +104,10 @@ private fun HomeScreenSimpleSection(posts: List<Post>, icons: Icons) {
 @Composable
 private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
     Padding(16.dp) {
-        Opacity(0.87f) {
-            Text(text = "Popular on Jetnews", style = +themeTextStyle { subtitle1 })
-        }
+        Text(
+            text = "Popular on Jetnews",
+            style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f)
+        )
     }
     HorizontalScroller {
         Row(
@@ -131,8 +134,8 @@ private fun HomeScreenHistorySection(posts: List<Post>, icons: Icons) {
 
 @Composable
 private fun HomeScreenDivider() {
-    Opacity(0.08f) {
-        Padding(left = 14.dp, right = 14.dp) {
+    Padding(left = 14.dp, right = 14.dp) {
+        Opacity(0.08f) {
             Divider()
         }
     }
