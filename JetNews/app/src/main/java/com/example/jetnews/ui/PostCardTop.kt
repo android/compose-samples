@@ -33,6 +33,7 @@ import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 import com.android.tools.preview.Preview
@@ -79,10 +80,10 @@ fun TutorialPreview() {
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    // TODO: Cannot yet use typography in preview
-    //  see b/141167679
     MaterialTheme(colors = lightThemeColors) {
-        PostCardTop(post)
+        Surface {
+            PostCardTop(post)
+        }
     }
 }
 
@@ -92,10 +93,10 @@ fun TutorialPreviewDark() {
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    // TODO: Cannot yet use typography in preview
-    //  see b/141167679
     MaterialTheme(colors = darkThemeColors) {
-        PostCardTop(post)
+        Surface {
+            PostCardTop(post)
+        }
     }
 }
 
@@ -105,9 +106,9 @@ fun TutorialPreviewFontscale() {
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    // TODO: Cannot yet use typography in preview
-    //  see b/141167679
     MaterialTheme(colors = lightThemeColors) {
-        PostCardTop(post)
+        Surface {
+            PostCardTop(post)
+        }
     }
 }

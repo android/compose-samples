@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.composer
 import android.content.Context
 import android.content.Intent
 import androidx.compose.Composable

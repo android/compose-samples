@@ -74,7 +74,7 @@ private fun AppContent(icons: Icons, openDrawer: () -> Unit) {
     val screen = JetnewsStatus.currentScreen
     when (screen) {
         is Screen.Home -> HomeScreen(icons = icons, openDrawer = { openDrawer() })
-        is Screen.Interests -> TopicsScreen(icons = icons, openDrawer = { openDrawer() })
+        is Screen.Interests -> InterestsScreen(icons = icons, openDrawer = { openDrawer() })
         is Screen.Article -> ArticleScreen(icons = icons, postId = screen.postId)
     }
 }

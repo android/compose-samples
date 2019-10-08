@@ -32,6 +32,7 @@ sealed class Screen {
 object JetnewsStatus {
     var currentScreen: Screen = Screen.Home
     var favorites = ModelList<String>()
+    val selectedTopics = ModelList<String>()
 }
 
 fun navigateTo(destination: Screen) {
