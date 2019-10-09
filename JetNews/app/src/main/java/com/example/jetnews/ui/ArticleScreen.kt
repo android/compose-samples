@@ -20,23 +20,25 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.Composable
 import androidx.compose.ambient
-import androidx.compose.composer
 import androidx.compose.state
 import androidx.compose.unaryPlus
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
+import androidx.ui.core.dp
+import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.SimpleImage
 import androidx.ui.graphics.Image
+import androidx.ui.layout.Container
 import androidx.ui.layout.FlexColumn
+import androidx.ui.layout.FlexRow
+import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.AlertDialog
-import androidx.ui.material.AppBarIcon
-import androidx.ui.material.BottomAppBar
 import androidx.ui.material.Button
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.ripple.Ripple
+import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
 import androidx.ui.material.themeTextStyle
-import com.example.jetnews.ui.ArticleActions.Bookmark
-import com.example.jetnews.ui.ArticleActions.Like
-import com.example.jetnews.ui.ArticleActions.Share
 
 @Composable
 fun ArticleScreen(icons: Icons, postId: String) {
@@ -54,12 +56,23 @@ fun ArticleScreen(icons: Icons, postId: String) {
     FlexColumn {
         inflexible {
             TopAppBar(
-                title = { Text("Published in: ${post.publication?.name}") },
+                title = {
+                    Text(
+                        text = "Published in: ${post.publication?.name}",
+                        style = +themeTextStyle { subtitle2 }
+                    )
+                },
                 navigationIcon = {
-                    AppBarIcon(icons.back) {
-                        navigateTo(Screen.Home)
+                    Ripple(bounded = false) {
+                        Clickable(onClick = { navigateTo(Screen.Home) }) {
+                            SimpleImage(
+                                image = icons.back,
+                                tint = +themeColor { primary }
+                            )
+                        }
                     }
-                }
+                },
+                color = +themeColor { surface }
             )
         }
         expanded(1f) {
@@ -73,20 +86,46 @@ fun ArticleScreen(icons: Icons, postId: String) {
 
 @Composable
 private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Unit) {
-    val bookmarkIcon = if (isFavorite(post.id)) {
-        icons.bookmarkOn
-    } else {
-        icons.bookmarkOff
-    }
     val context = +ambient(ContextAmbient)
-    val actions = listOf(
-        Like(icons.heartOff) { onUnimplementedAction() },
-        Share(icons.share) { SharePost(post, context) },
-        Bookmark(bookmarkIcon) { toggleBookmark(post.id) })
-    BottomAppBar(
-        color = +themeColor { surface },
-        actionData = actions
-    ) { data -> AppBarIcon(data.image) { data.action() } }
+    Container(height = 56.dp, expanded = true) {
+        Surface(elevation = 2.dp) {
+            FlexRow {
+                inflexible {
+                    BottomBarAction(icons.heartOff) {
+                        onUnimplementedAction()
+                    }
+                    Container(width = 48.dp, height = 48.dp) {
+                        BookmarkButton(post, icons)
+                    }
+                    BottomBarAction(icons.share) {
+                        SharePost(post, context)
+                    }
+                }
+                expanded(flex = 1f) {
+                    WidthSpacer(1.dp)
+                }
+                inflexible {
+                    BottomBarAction(icons.textSettings) {
+                        onUnimplementedAction()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BottomBarAction(
+    image: Image,
+    onClick: () -> Unit
+) {
+    Container(width = 48.dp, height = 48.dp) {
+        Ripple(bounded = false) {
+            Clickable(onClick = onClick) {
+                SimpleImage(image)
+            }
+        }
+    }
 }
 
 @Composable
@@ -101,12 +140,6 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         },
         confirmButton = { Button("Close", onClick = onDismiss) }
     )
-}
-
-sealed class ArticleActions(val image: Image, val action: () -> Unit) {
-    class Like(image: Image, action: () -> Unit) : ArticleActions(image, action)
-    class Share(image: Image, action: () -> Unit) : ArticleActions(image, action)
-    class Bookmark(image: Image, action: () -> Unit) : ArticleActions(image, action)
 }
 
 private fun SharePost(post: Post, context: Context) {

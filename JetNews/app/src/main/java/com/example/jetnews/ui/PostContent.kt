@@ -19,13 +19,15 @@ package com.example.jetnews.ui
 import androidx.compose.Composable
 import androidx.compose.composer
 import androidx.compose.unaryPlus
+import androidx.ui.core.Clip
 import androidx.ui.core.Px
 import androidx.ui.core.Text
-import androidx.ui.core.WithDensity
 import androidx.ui.core.dp
+import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.DrawShape
 import androidx.ui.foundation.shape.corner.CircleShape
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.graphics.vector.compat.vectorResource
@@ -39,6 +41,7 @@ import androidx.ui.layout.Row
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
+import androidx.ui.material.withOpacity
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
 import androidx.ui.text.TextStyle
@@ -62,7 +65,6 @@ private val codeTextStyle = (+themeTextStyle { body1 })
 private val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline)
 
 private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = Px(30f)))
-private val metadataTextStyle = +themeTextStyle { caption.copy(color = Color.Gray) }
 
 @Composable
 fun PostContent(post: Post) {
@@ -70,13 +72,14 @@ fun PostContent(post: Post) {
         Padding(left = defaultSpacerSize, right = defaultSpacerSize) {
             Column(crossAxisAlignment = CrossAxisAlignment.Start) {
                 HeightSpacer(height = defaultSpacerSize)
+                PostHeaderImage(post)
                 Text(text = post.title, style = +themeTextStyle { h4 })
-                HeightSpacer(height = defaultSpacerSize)
+                HeightSpacer(height = 8.dp)
                 post.subtitle?.let { subtitle ->
                     Text(
                         text = subtitle,
-                        style = +themeTextStyle { subtitle1 },
-                        paragraphStyle = ParagraphStyle(lineHeight = 1.49f)
+                        style = +themeTextStyle { body2 },
+                        paragraphStyle = ParagraphStyle(lineHeight = 1.428f) // 20sp line height
                     )
                     HeightSpacer(height = defaultSpacerSize)
                 }
@@ -89,30 +92,44 @@ fun PostContent(post: Post) {
 }
 
 @Composable
-fun PostMetadata(metadata: Metadata) {
-    val postMetadata =
-        "${metadata.author.name} on ${metadata.date} - ${metadata.readTimeMinutes} min read"
-    Row {
-        DefaultAuthorImage()
-        WidthSpacer(width = 8.dp)
-        Text(text = postMetadata, style = metadataTextStyle)
+private fun PostHeaderImage(post: Post) {
+    post.image?.let {
+        Container(expanded = true, height = 180.dp) {
+            Clip(shape = RoundedCornerShape(4.dp)) {
+                DrawImage(it)
+            }
+        }
+        HeightSpacer(height = defaultSpacerSize)
     }
 }
 
 @Composable
-fun DefaultAuthorImage() {
-    val defaultImage = +vectorResource(R.drawable.ic_account_circle_black)
-    WithDensity {
-        val width = defaultImage.defaultWidth.toDp()
-        val height = defaultImage.defaultHeight.toDp()
-        Container(width = width, height = height) {
-            DrawVector(vectorImage = defaultImage)
+private fun PostMetadata(metadata: Metadata) {
+    Row {
+        DefaultAuthorImage()
+        WidthSpacer(width = 8.dp)
+        Column {
+            HeightSpacer(4.dp)
+            Text(
+                text = metadata.author.name,
+                style = (+themeTextStyle { caption }).withOpacity(0.87f))
+            Text(
+                text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
+                style = (+themeTextStyle { caption }).withOpacity(0.6f))
         }
     }
 }
 
 @Composable
-fun PostContents(paragraphs: List<Paragraph>) {
+private fun DefaultAuthorImage() {
+    val defaultImage = +vectorResource(R.drawable.ic_account_circle_black)
+    Container(width = 40.dp, height = 40.dp) {
+        DrawVector(vectorImage = defaultImage)
+    }
+}
+
+@Composable
+private fun PostContents(paragraphs: List<Paragraph>) {
     paragraphs.forEach {
         Padding(top = 4.dp, bottom = 4.dp) {
             Paragraph(paragraph = it)
@@ -121,7 +138,7 @@ fun PostContents(paragraphs: List<Paragraph>) {
 }
 
 @Composable
-fun Paragraph(paragraph: Paragraph) {
+private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle) = paragraph.type.getTextAndParagraphStyle()
 
     val annotatedString = paragraphToAnnotatedString(paragraph)
@@ -141,7 +158,7 @@ fun Paragraph(paragraph: Paragraph) {
 }
 
 @Composable
-fun CodeBlockParagraph(
+private fun CodeBlockParagraph(
     text: AnnotatedString,
     textStyle: TextStyle,
     paragraphStyle: ParagraphStyle
@@ -152,7 +169,10 @@ fun CodeBlockParagraph(
 }
 
 @Composable
-fun BulletParagraph(text: AnnotatedString, textStyle: TextStyle, paragraphStyle: ParagraphStyle) {
+private fun BulletParagraph(
+    text: AnnotatedString,
+    textStyle: TextStyle,
+    paragraphStyle: ParagraphStyle) {
     FlexRow {
         inflexible {
             Container(width = 8.dp, height = 8.dp) {

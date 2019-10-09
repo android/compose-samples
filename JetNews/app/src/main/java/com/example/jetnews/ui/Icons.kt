@@ -47,6 +47,9 @@ class Icons(resources: Resources) {
         imageFromResource(resources, R.drawable.baseline_favorite_border_black_24dp)
     }
     val share by lazy(NONE) { imageFromResource(resources, R.drawable.baseline_share_black_24dp) }
+    val textSettings by lazy(NONE) {
+        imageFromResource(resources, R.drawable.baseline_text_settings_black_24dp)
+    }
     val placeholder_1_1 by lazy(NONE) { imageFromResource(resources, R.drawable.placeholder_1_1) }
     val placeholder_4_3 by lazy(NONE) { imageFromResource(resources, R.drawable.placeholder_4_3) }
 }

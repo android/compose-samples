@@ -29,12 +29,19 @@ val semibold = Font("montserrat_semibold.ttf", FontWeight.W600)
 
 val appFontFamily = FontFamily(fonts = listOf(regular, medium, semibold))
 
-val bodyFontFamily = FontFamily(fonts = listOf(
-    Font("domine_regular.ttf"),
-    Font("domine_bold", FontWeight.Bold)
-))
+val bodyFontFamily = FontFamily(
+    fonts = listOf(
+        Font("domine_regular.ttf"),
+        Font("domine_bold", FontWeight.Bold)
+    )
+)
 
 val typography = MaterialTypography(
+    h4 = TextStyle(
+        fontFamily = appFontFamily,
+        fontWeight = FontWeight.W600,
+        fontSize = 28.sp
+    ),
     h6 = TextStyle(
         fontFamily = appFontFamily,
         fontWeight = FontWeight.W600,
@@ -59,6 +66,11 @@ val typography = MaterialTypography(
     body2 = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 14.sp
+    ),
+    caption = TextStyle(
+        fontFamily = appFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
     ),
     overline = TextStyle(
         fontFamily = appFontFamily,
