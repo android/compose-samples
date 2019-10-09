@@ -24,35 +24,35 @@ import androidx.ui.text.font.FontFamily
 import androidx.ui.text.font.FontWeight
 
 val regular = Font("montserrat_regular.ttf")
-val medium = Font("montserrat_medium.ttf", FontWeight.w500)
-val semibold = Font("montserrat_semibold.ttf", FontWeight.w600)
+val medium = Font("montserrat_medium.ttf", FontWeight.W500)
+val semibold = Font("montserrat_semibold.ttf", FontWeight.W600)
 
 val appFontFamily = FontFamily(fonts = listOf(regular, medium, semibold))
 
 val bodyFontFamily = FontFamily(fonts = listOf(
     Font("domine_regular.ttf"),
-    Font("domine_bold", FontWeight.bold)
+    Font("domine_bold", FontWeight.Bold)
 ))
 
 val typography = MaterialTypography(
     h6 = TextStyle(
         fontFamily = appFontFamily,
-        fontWeight = FontWeight.w600,
+        fontWeight = FontWeight.W600,
         fontSize = 20.sp
     ),
     subtitle1 = TextStyle(
         fontFamily = appFontFamily,
-        fontWeight = FontWeight.w600,
+        fontWeight = FontWeight.W600,
         fontSize = 16.sp
     ),
     subtitle2 = TextStyle(
         fontFamily = appFontFamily,
-        fontWeight = FontWeight.w500,
+        fontWeight = FontWeight.W500,
         fontSize = 14.sp
     ),
     body1 = TextStyle(
         fontFamily = bodyFontFamily,
-        fontWeight = FontWeight.normal,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp
 
     ),
@@ -62,7 +62,7 @@ val typography = MaterialTypography(
     ),
     overline = TextStyle(
         fontFamily = appFontFamily,
-        fontWeight = FontWeight.w500,
+        fontWeight = FontWeight.W500,
         fontSize = 12.sp
     )
 )

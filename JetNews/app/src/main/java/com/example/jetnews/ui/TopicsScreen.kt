@@ -32,7 +32,7 @@ fun TopicsScreen(icons: Icons, openDrawer: () -> Unit) {
     }
     FlexColumn {
         inflexible {
-            TopAppBar<Any>(
+            TopAppBar(
                 { Text("Interests") },
                 navigationIcon = navigationIcon
             )

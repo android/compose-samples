@@ -56,7 +56,7 @@ private val defaultSpacerSize = 16.dp
 private val codeFontFamily = FontFamily(font = Font(name = "fira_code_regular.ttf"))
 
 private val italicTextStyle = (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic)
-private val boldTextStyle = (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.bold)
+private val boldTextStyle = (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.Bold)
 private val codeTextStyle = (+themeTextStyle { body1 })
     .copy(background = Color.LightGray, fontFamily = codeFontFamily)
 private val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline)

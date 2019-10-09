@@ -53,7 +53,7 @@ fun ArticleScreen(icons: Icons, postId: String) {
 
     FlexColumn {
         inflexible {
-            TopAppBar<Any>(
+            TopAppBar(
                 title = { Text("Published in: ${post.publication?.name}") },
                 navigationIcon = {
                     AppBarIcon(icons.back) {
@@ -85,7 +85,7 @@ private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Uni
         Bookmark(bookmarkIcon) { toggleBookmark(post.id) })
     BottomAppBar(
         color = +themeColor { surface },
-        contextualActions = actions
+        actionData = actions
     ) { data -> AppBarIcon(data.image) { data.action() } }
 }
 

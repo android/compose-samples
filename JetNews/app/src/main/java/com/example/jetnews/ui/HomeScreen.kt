@@ -37,8 +37,6 @@ import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeColor
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 
@@ -57,7 +55,7 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
 
     FlexColumn {
         inflexible {
-            TopAppBar<Any>(
+            TopAppBar(
                 title = { Text(text = "Jetnews") },
                 navigationIcon = navigationIcon
             )
