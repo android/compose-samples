@@ -25,7 +25,6 @@ import kotlin.LazyThreadSafetyMode.NONE
  * Defining and loading here all the images that we use from resources.
  */
 class Icons(resources: Resources) {
-    val appLogo by lazy(NONE) { imageFromResource(resources, R.drawable.jp_news_logo) }
     val home by lazy(NONE) { imageFromResource(resources, R.drawable.baseline_home_black_24dp) }
     val menu by lazy(NONE) { imageFromResource(resources, R.drawable.baseline_menu_white_24dp) }
     val more by lazy(NONE) {

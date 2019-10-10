@@ -872,7 +872,8 @@ val post1 = Post(
         readTimeMinutes = 1
     ),
     paragraphs = paragraphsPost1,
-    imageId = R.drawable.post_1
+    imageId = R.drawable.post_1,
+    imageThumbId = R.drawable.post_1_thumb
 )
 
 val post2 = Post(
@@ -887,7 +888,8 @@ val post2 = Post(
         readTimeMinutes = 3
     ),
     paragraphs = paragraphsPost2,
-    imageId = R.drawable.post_2
+    imageId = R.drawable.post_2,
+    imageThumbId = R.drawable.post_2_thumb
 )
 
 val post3 = Post(
@@ -902,7 +904,8 @@ val post3 = Post(
         readTimeMinutes = 1
     ),
     paragraphs = paragraphsPost3,
-    imageId = R.drawable.post_3
+    imageId = R.drawable.post_3,
+    imageThumbId = R.drawable.post_3_thumb
 )
 
 val post4 = Post(
@@ -917,7 +920,8 @@ val post4 = Post(
         readTimeMinutes = 1
     ),
     paragraphs = paragraphsPost4,
-    imageId = R.drawable.post_4
+    imageId = R.drawable.post_4,
+    imageThumbId = R.drawable.post_4_thumb
 )
 
 val post5 = Post(
@@ -932,7 +936,8 @@ val post5 = Post(
         readTimeMinutes = 4
     ),
     paragraphs = paragraphsPost5,
-    imageId = R.drawable.post_5
+    imageId = R.drawable.post_5,
+    imageThumbId = R.drawable.post_5_thumb
 )
 
 var posts = listOf(
@@ -949,5 +954,10 @@ var posts = listOf(
 )
 
 fun getPostsWithImagesLoaded(posts: List<Post>, resources: Resources): List<Post> {
-    return posts.map { it.copy(image = imageFromResource(resources, it.imageId)) }
+    return posts.map {
+        it.copy(
+            image = imageFromResource(resources, it.imageId),
+            imageThumb = imageFromResource(resources, it.imageThumbId)
+        )
+    }
 }
