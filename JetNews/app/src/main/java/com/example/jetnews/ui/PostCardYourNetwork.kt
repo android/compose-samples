@@ -26,10 +26,8 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.MainAxisAlignment
-import androidx.ui.layout.Padding
+import androidx.ui.layout.padding
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.material.themeTextStyle
@@ -39,35 +37,33 @@ import androidx.ui.text.style.TextOverflow
 @Composable
 fun PostCardPopular(post: Post, icons: Icons) {
     Card(shape = RoundedCornerShape(4.dp)) {
-        Container(width = 280.dp, height = 240.dp) {
-            Column(
-                mainAxisAlignment = MainAxisAlignment.Start,
-                crossAxisAlignment = CrossAxisAlignment.Start,
-                mainAxisSize = LayoutSize.Expand,
-                crossAxisSize = LayoutSize.Expand
-            ) {
-                val image = post.image ?: icons.placeholder_1_1
-                Container(width = 280.dp, height = 100.dp) {
-                    DrawImage(image)
-                }
-                Padding(16.dp) {
-                    Column(crossAxisAlignment = CrossAxisAlignment.Start) {
-                        Ripple(bounded = true) {
-                            Clickable(onClick = {
-                                navigateTo(Screen.Article(post.id))
-                            }) {
-                                Text(
-                                    text = post.title,
-                                    style = (+themeTextStyle { h6 }).withOpacity(0.87f),
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
+        Ripple(bounded = true) {
+            Clickable(onClick = {
+                navigateTo(Screen.Article(post.id))
+            }) {
+                Container(width = 280.dp, height = 240.dp) {
+                    Column(
+                        mainAxisSize = LayoutSize.Expand,
+                        crossAxisSize = LayoutSize.Expand
+                    ) {
+                        val image = post.image ?: icons.placeholder_4_3
+                        Container(height = 100.dp, expanded = true) {
+                            DrawImage(image)
+                        }
+                        Column(modifier = padding(16.dp)) {
+                            Text(
+                                text = post.title,
+                                style = (+themeTextStyle { h6 }).withOpacity(0.87f),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
                             Text(
                                 text = post.metadata.author.name,
                                 style = (+themeTextStyle { body2 }).withOpacity(0.87f)
                             )
-                            Text(text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                            Text(
+                                text = "${post.metadata.date} - " +
+                                        "${post.metadata.readTimeMinutes} min read",
                                 style = (+themeTextStyle { body2 }).withOpacity(0.6f)
                             )
                         }
