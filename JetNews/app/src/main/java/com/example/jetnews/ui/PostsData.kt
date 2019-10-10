@@ -65,7 +65,7 @@ val paragraphsPost1 = listOf(
         "I can live with that, but I would much prefer to remove that empty module from my project!"
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "If you cannot remove it, just rename it!"
     ),
 
@@ -100,7 +100,7 @@ val paragraphsPost1 = listOf(
         ParagraphType.Text,
         "And the layout in Android Studio is now:"
     ),
-    Paragraph(ParagraphType.Title, "Conclusion"),
+    Paragraph(ParagraphType.Header, "Conclusion"),
     Paragraph(
         ParagraphType.Text,
         "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
@@ -117,7 +117,7 @@ val paragraphsPost1 = listOf(
             )
         )
     ),
-    Paragraph(ParagraphType.Title, "Resources"),
+    Paragraph(ParagraphType.Header, "Resources"),
     Paragraph(
         ParagraphType.Bullet,
         "Android Studio: Tips and Tricks (Google I/O’19)",
@@ -201,7 +201,7 @@ val paragraphsPost2 = listOf(
         )
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "kapt build improvements"
     ),
     Paragraph(
@@ -297,7 +297,7 @@ val paragraphsPost2 = listOf(
         listOf(Markup(MarkupType.Code, 18, 24))
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "Static @Provides functions optimization"
     ),
     Paragraph(
@@ -326,7 +326,7 @@ val paragraphsPost2 = listOf(
         "Alternatively, you can extract the object module out and include it in the abstract one:"
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "Injecting Generics"
     ),
     Paragraph(
@@ -384,7 +384,7 @@ val paragraphsPost2 = listOf(
         listOf(Markup(MarkupType.Bold, 72, 93))
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "Inline method bodies"
     ),
     Paragraph(
@@ -616,7 +616,7 @@ val paragraphsPost5 = listOf(
         )
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "Collections vs sequences"
     ),
     Paragraph(
@@ -763,7 +763,7 @@ val paragraphsPost5 = listOf(
         )
     ),
     Paragraph(
-        ParagraphType.Title,
+        ParagraphType.Header,
         "Collections and sequences"
     ),
     Paragraph(
@@ -774,7 +774,7 @@ val paragraphsPost5 = listOf(
         ParagraphType.Text,
         "Let’s see how and when each operation is applied for collections and when for sequences"
     ),
-    Paragraph(ParagraphType.Subtitle, "Collections"),
+    Paragraph(ParagraphType.Subhead, "Collections"),
     Paragraph(
         ParagraphType.Text,
         "map is called — a new ArrayList is created. We iterate through all items of the initial collection, transform it by copying the original object and changing the color, then add it to the new list.",
@@ -785,7 +785,7 @@ val paragraphsPost5 = listOf(
         "first is called — we iterate through each item until the first square is found",
         listOf(Markup(MarkupType.Code, 0, 5))
     ),
-    Paragraph(ParagraphType.Subtitle, "Sequences"),
+    Paragraph(ParagraphType.Subhead, "Sequences"),
     Paragraph(
         ParagraphType.Bullet,
         "asSequence — a sequence is created based on the Iterator of the original collection",
@@ -809,9 +809,9 @@ val paragraphsPost5 = listOf(
         ParagraphType.Text,
         "When working with sequences no intermediate collection is created and since items are evaluated one by one, map is only performed on some of the inputs."
     ),
-    Paragraph(ParagraphType.Title, "Performance"),
+    Paragraph(ParagraphType.Header, "Performance"),
     Paragraph(
-        ParagraphType.Subtitle,
+        ParagraphType.Subhead,
         "Order of transformations"
     ),
     Paragraph(
@@ -828,7 +828,7 @@ val paragraphsPost5 = listOf(
         "Because terminal operations can finish processing early, and intermediate operations are evaluated lazily, sequences can, in some cases, help you avoid doing unnecessary work compared to collections. Make sure you always check the order of the transformations and the dependencies between them!"
     ),
     Paragraph(
-        ParagraphType.Subtitle,
+        ParagraphType.Subhead,
         "Inlining and large data sets consequences"
     ),
     Paragraph(

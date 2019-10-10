@@ -24,7 +24,6 @@ import androidx.ui.animation.Crossfade
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.layout.Column
-import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.MainAxisAlignment
@@ -84,9 +83,7 @@ private fun AppContent(icons: Icons, openDrawer: () -> Unit) {
 @Composable
 private fun AppDrawer(closeDrawer: () -> Unit) {
     Column(
-        crossAxisAlignment = CrossAxisAlignment.Start,
         crossAxisSize = LayoutSize.Expand,
-        mainAxisAlignment = MainAxisAlignment.Start,
         mainAxisSize = LayoutSize.Expand
     ) {
         HeightSpacer(40.dp)

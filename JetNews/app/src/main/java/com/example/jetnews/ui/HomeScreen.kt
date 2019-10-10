@@ -50,7 +50,7 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
             TopAppBar(
                 title = { Text(text = "Jetnews") },
                 navigationIcon = {
-                    AppBarIcon(icons.menu) {
+                    AppBarIcon(icons.jetnews) {
                         openDrawer()
                     }
                 }

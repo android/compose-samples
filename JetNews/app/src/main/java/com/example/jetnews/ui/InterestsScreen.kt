@@ -64,7 +64,7 @@ fun InterestsScreen(icons: Icons, openDrawer: () -> Unit) {
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    AppBarIcon(icons.menu) {
+                    AppBarIcon(icons.jetnews) {
                         openDrawer()
                     }
                 }

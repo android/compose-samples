@@ -18,6 +18,6 @@
 
 <resources>
     <color name="colorPrimary">#DD0D3E</color>
-    <color name="colorPrimaryDark">#DD0D3E</color>
+    <color name="colorPrimaryDark">#C20029</color>
     <color name="colorAccent">#DD0D3E</color>
 </resources>

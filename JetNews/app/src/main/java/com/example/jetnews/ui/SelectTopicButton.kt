@@ -37,6 +37,7 @@ import androidx.ui.layout.Container
 import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialColors
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
 import com.android.tools.preview.Preview
@@ -47,12 +48,14 @@ fun SelectTopicButton(
     onSelected: ((Boolean) -> Unit)? = null,
     selected: Boolean = false
 ) {
-    Toggleable(checked = selected, onCheckedChange = onSelected) {
-        Container(width = 36.dp, height = 36.dp) {
-            if (selected) {
-                DrawSelectTopicButtonOn()
-            } else {
-                DrawSelectTopicButtonOff()
+    Ripple(bounded = false) {
+        Toggleable(checked = selected, onCheckedChange = onSelected) {
+            Container(width = 36.dp, height = 36.dp) {
+                if (selected) {
+                    DrawSelectTopicButtonOn()
+                } else {
+                    DrawSelectTopicButtonOff()
+                }
             }
         }
     }
@@ -136,4 +139,3 @@ private fun SelectTopicButtonPreviewTemplate(themeColors: MaterialColors, select
         }
     }
 }
-

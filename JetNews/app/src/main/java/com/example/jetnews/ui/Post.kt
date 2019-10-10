@@ -61,19 +61,20 @@ data class Markup(
     val href: String? = null
 )
 
-sealed class MarkupType {
-    object Link : MarkupType()
-    object Code : MarkupType()
-    object Italic : MarkupType()
-    object Bold : MarkupType()
+enum class MarkupType {
+    Link,
+    Code,
+    Italic,
+    Bold,
 }
 
-sealed class ParagraphType {
-    object Caption : ParagraphType()
-    object Title : ParagraphType()
-    object Subtitle : ParagraphType()
-    object Text : ParagraphType()
-    object CodeBlock : ParagraphType()
-    object Quote : ParagraphType()
-    object Bullet : ParagraphType()
+enum class ParagraphType() {
+    Title,
+    Caption,
+    Header,
+    Subhead,
+    Text,
+    CodeBlock,
+    Quote,
+    Bullet,
 }

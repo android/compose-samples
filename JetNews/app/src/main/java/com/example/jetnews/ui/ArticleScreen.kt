@@ -16,11 +16,11 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
 import android.content.Context
 import android.content.Intent
 import androidx.compose.Composable
 import androidx.compose.ambient
+import androidx.compose.composer
 import androidx.compose.state
 import androidx.compose.unaryPlus
 import androidx.ui.core.ContextAmbient
@@ -34,11 +34,12 @@ import androidx.ui.layout.FlexColumn
 import androidx.ui.layout.FlexRow
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.AlertDialog
+import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Button
+import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeColor
 import androidx.ui.material.themeTextStyle
 
 @Composable
@@ -64,16 +65,10 @@ fun ArticleScreen(icons: Icons, postId: String) {
                     )
                 },
                 navigationIcon = {
-                    Ripple(bounded = false) {
-                        Clickable(onClick = { navigateTo(Screen.Home) }) {
-                            SimpleImage(
-                                image = icons.back,
-                                tint = +themeColor { primary }
-                            )
-                        }
+                    AppBarIcon(icons.back) {
+                        navigateTo(Screen.Home)
                     }
-                },
-                color = +themeColor { surface }
+                }
             )
         }
         expanded(1f) {
@@ -136,10 +131,16 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = "Functionality not available \uD83D\uDE48",
-                style = +themeTextStyle { body1 }
+                style = +themeTextStyle { body2 }
             )
         },
-        confirmButton = { Button("Close", onClick = onDismiss) }
+        confirmButton = {
+            Button(
+                text = "CLOSE",
+                style = TextButtonStyle(),
+                onClick = onDismiss
+            )
+        }
     )
 }
 

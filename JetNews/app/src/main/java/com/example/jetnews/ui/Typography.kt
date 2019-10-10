@@ -40,7 +40,12 @@ val typography = MaterialTypography(
     h4 = TextStyle(
         fontFamily = appFontFamily,
         fontWeight = FontWeight.W600,
-        fontSize = 28.sp
+        fontSize = 30.sp
+    ),
+    h5 = TextStyle(
+        fontFamily = appFontFamily,
+        fontWeight = FontWeight.W600,
+        fontSize = 24.sp
     ),
     h6 = TextStyle(
         fontFamily = appFontFamily,
@@ -61,10 +66,14 @@ val typography = MaterialTypography(
         fontFamily = bodyFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
-
     ),
     body2 = TextStyle(
         fontFamily = appFontFamily,
+        fontSize = 14.sp
+    ),
+    button = TextStyle(
+        fontFamily = appFontFamily,
+        fontWeight = FontWeight.W500,
         fontSize = 14.sp
     ),
     caption = TextStyle(

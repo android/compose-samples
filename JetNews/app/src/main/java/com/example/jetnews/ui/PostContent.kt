@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.compose.composer
 import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
+import androidx.ui.core.Dp
 import androidx.ui.core.Px
 import androidx.ui.core.Text
 import androidx.ui.core.dp
@@ -45,7 +46,6 @@ import androidx.ui.material.withOpacity
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
 import androidx.ui.text.TextStyle
-import androidx.ui.text.font.Font
 import androidx.ui.text.font.FontFamily
 import androidx.ui.text.font.FontStyle
 import androidx.ui.text.font.FontWeight
@@ -58,8 +58,9 @@ private val defaultSpacerSize = 16.dp
 
 private val italicTextStyle = (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic)
 private val boldTextStyle = (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.Bold)
+private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 private val codeTextStyle = (+themeTextStyle { body1 })
-    .copy(background = Color.LightGray, fontFamily = FontFamily.Monospace)
+    .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
 private val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline)
 
 private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = Px(30f)))
@@ -76,14 +77,15 @@ fun PostContent(post: Post) {
                 post.subtitle?.let { subtitle ->
                     Text(
                         text = subtitle,
-                        style = +themeTextStyle { body2 },
+                        style = (+themeTextStyle { body2 }).withOpacity(0.6f),
                         paragraphStyle = ParagraphStyle(lineHeight = 1.428f) // 20sp line height
                     )
                     HeightSpacer(height = defaultSpacerSize)
                 }
                 PostMetadata(metadata = post.metadata)
-                HeightSpacer(height = defaultSpacerSize)
+                HeightSpacer(height = 24.dp)
                 PostContents(paragraphs = post.paragraphs)
+                HeightSpacer(height = 48.dp)
             }
         }
     }
@@ -110,10 +112,12 @@ private fun PostMetadata(metadata: Metadata) {
             HeightSpacer(4.dp)
             Text(
                 text = metadata.author.name,
-                style = (+themeTextStyle { caption }).withOpacity(0.87f))
+                style = (+themeTextStyle { caption }).withOpacity(0.87f)
+            )
             Text(
                 text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
-                style = (+themeTextStyle { caption }).withOpacity(0.6f))
+                style = (+themeTextStyle { caption }).withOpacity(0.6f)
+            )
         }
     }
 }
@@ -129,29 +133,42 @@ private fun DefaultAuthorImage() {
 @Composable
 private fun PostContents(paragraphs: List<Paragraph>) {
     paragraphs.forEach {
-        Padding(top = 4.dp, bottom = 4.dp) {
-            Paragraph(paragraph = it)
-        }
+        Paragraph(paragraph = it)
     }
 }
 
 @Composable
 private fun Paragraph(paragraph: Paragraph) {
-    val (textStyle, paragraphStyle) = paragraph.type.getTextAndParagraphStyle()
+    val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
     val annotatedString = paragraphToAnnotatedString(paragraph)
-    when (paragraph.type) {
-        is ParagraphType.Bullet -> BulletParagraph(
-            text = annotatedString,
-            textStyle = textStyle,
-            paragraphStyle = paragraphStyle
-        )
-        is ParagraphType.CodeBlock -> CodeBlockParagraph(
-            text = annotatedString,
-            textStyle = textStyle,
-            paragraphStyle = paragraphStyle
-        )
-        else -> Text(text = annotatedString, style = textStyle, paragraphStyle = paragraphStyle)
+    Padding(bottom = trailingPadding) {
+        when (paragraph.type) {
+            ParagraphType.Bullet -> BulletParagraph(
+                text = annotatedString,
+                textStyle = textStyle,
+                paragraphStyle = paragraphStyle
+            )
+            ParagraphType.CodeBlock -> CodeBlockParagraph(
+                text = annotatedString,
+                textStyle = textStyle,
+                paragraphStyle = paragraphStyle
+            )
+            ParagraphType.Header -> {
+                Padding(top = 16.dp) {
+                    Text(
+                        text = annotatedString,
+                        style = textStyle,
+                        paragraphStyle = paragraphStyle
+                    )
+                }
+            }
+            else -> Text(
+                text = annotatedString,
+                style = textStyle,
+                paragraphStyle = paragraphStyle
+            )
+        }
     }
 }
 
@@ -161,8 +178,17 @@ private fun CodeBlockParagraph(
     textStyle: TextStyle,
     paragraphStyle: ParagraphStyle
 ) {
-    Surface(color = Color.LightGray) {
-        Text(text = text, style = textStyle, paragraphStyle = paragraphStyle)
+    Surface(
+        color = codeBlockBackground,
+        shape = RoundedCornerShape(4.dp)
+    ) {
+        Padding(16.dp) {
+            Text(
+                text = text,
+                style = textStyle,
+                paragraphStyle = paragraphStyle
+            )
+        }
     }
 }
 
@@ -170,7 +196,8 @@ private fun CodeBlockParagraph(
 private fun BulletParagraph(
     text: AnnotatedString,
     textStyle: TextStyle,
-    paragraphStyle: ParagraphStyle) {
+    paragraphStyle: ParagraphStyle
+) {
     FlexRow {
         inflexible {
             Container(width = 8.dp, height = 8.dp) {
@@ -183,23 +210,37 @@ private fun BulletParagraph(
     }
 }
 
-private fun ParagraphType.getTextAndParagraphStyle(): Pair<TextStyle, ParagraphStyle> {
+private data class ParagraphStyling(
+    val textStyle: TextStyle,
+    val paragraphStyle: ParagraphStyle,
+    val trailingPadding: Dp
+)
+
+private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
     var textStyle: TextStyle = +themeTextStyle { body1 }
     var paragraphStyle = ParagraphStyle()
+    var trailingPadding = 24.dp
 
     when (this) {
-        is ParagraphType.Caption -> textStyle = +themeTextStyle { body1 }
+        ParagraphType.Caption -> textStyle = +themeTextStyle { body1 }
         ParagraphType.Title -> textStyle = +themeTextStyle { h4 }
-        ParagraphType.Subtitle -> textStyle = +themeTextStyle { subtitle1 }
+        ParagraphType.Subhead -> {
+            textStyle = +themeTextStyle { h6 }
+            trailingPadding = 16.dp
+        }
         ParagraphType.Text -> {
             textStyle = +themeTextStyle { body1 }
             paragraphStyle = paragraphStyle.copy(lineHeight = defaultBodyLineHeight)
+        }
+        ParagraphType.Header -> {
+            textStyle = +themeTextStyle { h5 }
+            trailingPadding = 16.dp
         }
         ParagraphType.CodeBlock -> textStyle = codeTextStyle
         ParagraphType.Quote -> textStyle = +themeTextStyle { body1 }
         ParagraphType.Bullet -> paragraphStyle = bulletParagraphStyle
     }
-    return textStyle to paragraphStyle
+    return ParagraphStyling(textStyle, paragraphStyle, trailingPadding)
 }
 
 private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
@@ -209,9 +250,9 @@ private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
 
 private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
     return when (this.type) {
-        is MarkupType.Italic -> AnnotatedString.Item(italicTextStyle, start, end)
-        is MarkupType.Link -> AnnotatedString.Item(linkTextStyle, start, end)
-        is MarkupType.Bold -> AnnotatedString.Item(boldTextStyle, start, end)
-        is MarkupType.Code -> AnnotatedString.Item(codeTextStyle, start, end)
+        MarkupType.Italic -> AnnotatedString.Item(italicTextStyle, start, end)
+        MarkupType.Link -> AnnotatedString.Item(linkTextStyle, start, end)
+        MarkupType.Bold -> AnnotatedString.Item(boldTextStyle, start, end)
+        MarkupType.Code -> AnnotatedString.Item(codeTextStyle, start, end)
     }
 }
