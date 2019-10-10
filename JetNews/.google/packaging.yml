@@ -1,0 +1,41 @@
+#
+# Copyright (C) 2019 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# GOOGLE SAMPLE PACKAGING DATA
+#
+# This file is used by Google as part of our samples packaging process.
+# End users may safely ignore this file. It has no relevance to other systems.
+---
+# Values: {DRAFT | PUBLISHED | INTERNAL | DEPRECATED | SUPERCEDED}
+status:       DRAFT
+
+# Optional, put additional explanation here for DEPRECATED or SUPERCEDED.
+# statusNote:
+
+# See http://go/sample-categories
+technologies: [Android]
+categories:   [UI]
+languages:    [Kotlin]
+solutions:    [Mobile]
+
+# May be omitted if unpublished
+github:       android/compose-samples
+
+# Values: BEGINNER | INTERMEDIATE | ADVANCED | EXPERT
+level:        BEGINNER
+
+# Default: apache2. May be omitted for most samples.
+# Alternatives: apache2-android (for AOSP)
+license: apache2
