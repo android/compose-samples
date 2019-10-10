@@ -56,12 +56,10 @@ import com.example.jetnews.R
 private const val defaultBodyLineHeight = 1.49f
 private val defaultSpacerSize = 16.dp
 
-private val codeFontFamily = FontFamily(font = Font(name = "fira_code_regular.ttf"))
-
 private val italicTextStyle = (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic)
 private val boldTextStyle = (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.Bold)
 private val codeTextStyle = (+themeTextStyle { body1 })
-    .copy(background = Color.LightGray, fontFamily = codeFontFamily)
+    .copy(background = Color.LightGray, fontFamily = FontFamily.Monospace)
 private val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline)
 
 private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = Px(30f)))
