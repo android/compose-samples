@@ -26,13 +26,11 @@ import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
-import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.absolutePadding
 import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
@@ -47,22 +45,20 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    val navigationIcon = @Composable {
-        AppBarIcon(icons.menu) {
-            openDrawer()
-        }
-    }
-
     FlexColumn {
         inflexible {
             TopAppBar(
                 title = { Text(text = "Jetnews") },
-                navigationIcon = navigationIcon
+                navigationIcon = {
+                    AppBarIcon(icons.menu) {
+                        openDrawer()
+                    }
+                }
             )
         }
         flexible(flex = 1f) {
             VerticalScroller {
-                Column(crossAxisAlignment = CrossAxisAlignment.Start) {
+                Column {
                     HomeScreenTopSection(post = postTop)
                     HomeScreenSimpleSection(posts = postsSimple, icons = icons)
                     HomeScreenPopularSection(posts = postsPopular, icons = icons)
@@ -108,17 +104,13 @@ private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
         )
     }
     HorizontalScroller {
-        Row(
-            mainAxisAlignment = MainAxisAlignment.Start,
-            crossAxisAlignment = CrossAxisAlignment.Start
-        ) {
+        Row(modifier = absolutePadding(bottom = 16.dp, right = 16.dp)) {
             posts.forEach { post ->
                 WidthSpacer(16.dp)
                 PostCardPopular(post, icons)
             }
         }
     }
-    HeightSpacer(16.dp)
     HomeScreenDivider()
 }
 
