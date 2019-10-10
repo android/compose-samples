@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.compose.composer
 import androidx.compose.state
 import androidx.compose.unaryPlus
+import androidx.ui.animation.Crossfade
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.layout.Column
@@ -71,11 +72,12 @@ private fun DrawerButton(drawerButtonText: String, action: () -> Unit) {
 
 @Composable
 private fun AppContent(icons: Icons, openDrawer: () -> Unit) {
-    val screen = JetnewsStatus.currentScreen
-    when (screen) {
-        is Screen.Home -> HomeScreen(icons = icons, openDrawer = { openDrawer() })
-        is Screen.Interests -> InterestsScreen(icons = icons, openDrawer = { openDrawer() })
-        is Screen.Article -> ArticleScreen(icons = icons, postId = screen.postId)
+    Crossfade(JetnewsStatus.currentScreen) { screen ->
+        when (screen) {
+            is Screen.Home -> HomeScreen(icons = icons, openDrawer = { openDrawer() })
+            is Screen.Interests -> InterestsScreen(icons = icons, openDrawer = { openDrawer() })
+            is Screen.Article -> ArticleScreen(icons = icons, postId = screen.postId)
+        }
     }
 }
 
