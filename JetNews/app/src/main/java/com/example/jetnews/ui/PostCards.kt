@@ -54,7 +54,7 @@ fun AuthorAndReadTime(post: Post) {
 
 @Composable
 fun PostImage(post: Post, icons: Icons) {
-    val image = post.image ?: icons.placeholder_1_1
+    val image = post.imageThumb ?: icons.placeholder_1_1
 
     Container(width = 40.dp, height = 40.dp) {
         DrawImage(image)
