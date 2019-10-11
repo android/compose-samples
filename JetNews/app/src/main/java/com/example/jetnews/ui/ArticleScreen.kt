@@ -83,16 +83,14 @@ fun ArticleScreen(icons: Icons, postId: String) {
 @Composable
 private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Unit) {
     val context = +ambient(ContextAmbient)
-    Container(height = 56.dp, expanded = true) {
-        Surface(elevation = 2.dp) {
+    Surface(elevation = 2.dp) {
+        Container(height = 56.dp, expanded = true) {
             FlexRow {
                 inflexible {
                     BottomBarAction(icons.heartOff) {
                         onUnimplementedAction()
                     }
-                    Container(width = 48.dp, height = 48.dp) {
-                        BookmarkButton(post, icons)
-                    }
+                    BookmarkButton(post, icons)
                     BottomBarAction(icons.share) {
                         SharePost(post, context)
                     }
@@ -115,9 +113,12 @@ private fun BottomBarAction(
     image: Image,
     onClick: () -> Unit
 ) {
-    Container(width = 48.dp, height = 48.dp) {
-        Ripple(bounded = false) {
-            Clickable(onClick = onClick) {
+    Ripple(
+        bounded = false,
+        radius = 24.dp
+    ) {
+        Clickable(onClick = onClick) {
+            Container(width = 48.dp, height = 48.dp) {
                 SimpleImage(image)
             }
         }

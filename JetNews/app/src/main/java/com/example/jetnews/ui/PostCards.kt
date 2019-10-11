@@ -80,20 +80,13 @@ fun PostCardSimple(post: Post, icons: Icons) {
                         }
                     }
                     flexible(1f) {
-                        Column(
-                            crossAxisAlignment = CrossAxisAlignment.Start,
-                            crossAxisSize = LayoutSize.Wrap,
-                            mainAxisAlignment = MainAxisAlignment.Start,
-                            mainAxisSize = LayoutSize.Expand
-                        ) {
+                        Column(mainAxisSize = LayoutSize.Expand) {
                             PostTitle(post)
                             AuthorAndReadTime(post)
                         }
                     }
                     inflexible {
-                        Padding(top = 8.dp, bottom = 8.dp) {
-                            BookmarkButton(post, icons)
-                        }
+                        BookmarkButton(post, icons)
                     }
                 }
             }
@@ -142,16 +135,17 @@ fun PostCardHistory(post: Post, icons: Icons) {
 
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
-    val value = isFavorite(post.id)
-    Ripple(bounded = false) {
+    val isFav = isFavorite(post.id)
+    Ripple(
+        bounded = false,
+        radius = 24.dp
+    ) {
         Toggleable(
-            checked = value,
+            checked = isFav,
             onCheckedChange = { toggleBookmark(post.id) }
         ) {
-            if (value) {
-                SimpleImage(icons.bookmarkOn)
-            } else {
-                SimpleImage(icons.bookmarkOff)
+            Container(width = 48.dp, height = 48.dp) {
+                SimpleImage(if (isFav) icons.bookmarkOn else icons.bookmarkOff)
             }
         }
     }
