@@ -84,9 +84,7 @@ fun PostCardSimple(post: Post, icons: Icons) {
                         }
                     }
                     inflexible {
-                        Padding(top = 8.dp, bottom = 8.dp) {
-                            BookmarkButton(post, icons)
-                        }
+                        BookmarkButton(post, icons)
                     }
                 }
             }
@@ -130,16 +128,17 @@ fun PostCardHistory(post: Post, icons: Icons) {
 
 @Composable
 fun BookmarkButton(post: Post, icons: Icons) {
-    val value = isFavorite(post.id)
-    Ripple(bounded = false) {
+    val isFav = isFavorite(post.id)
+    Ripple(
+        bounded = false,
+        radius = 24.dp
+    ) {
         Toggleable(
-            checked = value,
+            checked = isFav,
             onCheckedChange = { toggleBookmark(post.id) }
         ) {
-            if (value) {
-                SimpleImage(icons.bookmarkOn)
-            } else {
-                SimpleImage(icons.bookmarkOff)
+            Container(width = 48.dp, height = 48.dp) {
+                SimpleImage(if (isFav) icons.bookmarkOn else icons.bookmarkOff)
             }
         }
     }
