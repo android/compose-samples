@@ -28,7 +28,6 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
@@ -42,11 +41,7 @@ import com.android.tools.preview.Preview
 fun PostCardTop(post: Post) {
     // TUTORIAL CONTENT STARTS HERE
     Padding(16.dp) {
-        Column(
-            mainAxisSize = LayoutSize.Wrap,
-            crossAxisAlignment = CrossAxisAlignment.Start,
-            crossAxisSize = LayoutSize.Expand
-        ) {
+        Column(crossAxisSize = LayoutSize.Expand) {
             post.image?.let {
                 Container(expanded = true, height = 180.dp) {
                     Clip(shape = RoundedCornerShape(4.dp)) {

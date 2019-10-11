@@ -26,7 +26,6 @@ import androidx.ui.core.dp
 import androidx.ui.layout.Column
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.material.Button
@@ -60,10 +59,7 @@ fun JetnewsApp(icons: Icons) {
 @Composable
 private fun DrawerButton(drawerButtonText: String, action: () -> Unit) {
     Button(onClick = { action() }, style = TextButtonStyle()) {
-        Row(
-            mainAxisAlignment = MainAxisAlignment.Start,
-            mainAxisSize = LayoutSize.Expand
-        ) {
+        Row(mainAxisSize = LayoutSize.Expand) {
             Text(drawerButtonText)
         }
     }

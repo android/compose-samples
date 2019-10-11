@@ -27,10 +27,8 @@ import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.FlexRow
 import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.layout.Padding
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.themeTextStyle
@@ -73,19 +71,14 @@ fun PostCardSimple(post: Post, icons: Icons) {
             navigateTo(Screen.Article(post.id))
         }) {
             Padding(16.dp) {
-                FlexRow(crossAxisAlignment = CrossAxisAlignment.Start) {
+                FlexRow {
                     inflexible {
                         Padding(right = 16.dp) {
                             PostImage(post, icons)
                         }
                     }
                     flexible(1f) {
-                        Column(
-                            crossAxisAlignment = CrossAxisAlignment.Start,
-                            crossAxisSize = LayoutSize.Wrap,
-                            mainAxisAlignment = MainAxisAlignment.Start,
-                            mainAxisSize = LayoutSize.Expand
-                        ) {
+                        Column(mainAxisSize = LayoutSize.Expand) {
                             PostTitle(post)
                             AuthorAndReadTime(post)
                         }
@@ -108,19 +101,14 @@ fun PostCardHistory(post: Post, icons: Icons) {
             navigateTo(Screen.Article(post.id))
         }) {
             Padding(16.dp) {
-                FlexRow(crossAxisAlignment = CrossAxisAlignment.Start) {
+                FlexRow {
                     inflexible {
                         Padding(right = 16.dp) {
                             PostImage(post = post, icons = icons)
                         }
                     }
                     flexible(1f) {
-                        Column(
-                            crossAxisAlignment = CrossAxisAlignment.Start,
-                            crossAxisSize = LayoutSize.Wrap,
-                            mainAxisAlignment = MainAxisAlignment.Start,
-                            mainAxisSize = LayoutSize.Expand
-                        ) {
+                        Column(mainAxisSize = LayoutSize.Expand) {
                             Text(
                                 text = "BASED ON YOUR HISTORY",
                                 style = (+themeTextStyle { overline }).withOpacity(0.38f)

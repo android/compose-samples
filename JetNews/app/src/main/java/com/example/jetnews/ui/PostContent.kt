@@ -34,7 +34,6 @@ import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.graphics.vector.compat.vectorResource
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.CrossAxisAlignment
 import androidx.ui.layout.FlexRow
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Padding
@@ -69,7 +68,7 @@ private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstL
 fun PostContent(post: Post) {
     VerticalScroller {
         Padding(left = defaultSpacerSize, right = defaultSpacerSize) {
-            Column(crossAxisAlignment = CrossAxisAlignment.Start) {
+            Column {
                 HeightSpacer(height = defaultSpacerSize)
                 PostHeaderImage(post)
                 Text(text = post.title, style = +themeTextStyle { h4 })
