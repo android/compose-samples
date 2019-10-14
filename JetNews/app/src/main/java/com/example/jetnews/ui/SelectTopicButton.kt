@@ -17,11 +17,9 @@
 package com.example.jetnews.ui
 
 import androidx.compose.Composable
-import androidx.compose.ambient
 import androidx.compose.composer
 import androidx.compose.memo
 import androidx.compose.unaryPlus
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Draw
 import androidx.ui.core.Px
 import androidx.ui.core.dp
@@ -32,7 +30,6 @@ import androidx.ui.foundation.shape.border.DrawBorder
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.Image
 import androidx.ui.graphics.Paint
-import androidx.ui.graphics.imageFromResource
 import androidx.ui.layout.Container
 import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialColors
@@ -40,6 +37,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
+import androidx.ui.res.imageResource
 import com.android.tools.preview.Preview
 import com.example.jetnews.R
 
@@ -75,9 +73,8 @@ private fun DrawImageCentered(image: Image, paint: Paint) {
 
 @Composable
 private fun DrawSelectTopicButtonOn() {
-    val context = +ambient(ContextAmbient)
     val strokeWidth = 2.dp
-    val image = +memo { imageFromResource(context.resources, R.drawable.ic_check_24px) }
+    val image = +memo { +imageResource(R.drawable.ic_check_24px) }
     val paint = +memo {
         Paint().apply {
             color = +themeColor { primary }
@@ -98,9 +95,8 @@ private fun DrawSelectTopicButtonOff() {
     val paint = +memo { Paint() }
 
     val strokeWidth = 2.dp
-    val context = +ambient(ContextAmbient)
     val color = (+themeColor { onSurface }).copy(alpha = 0.12f)
-    val image = +memo { imageFromResource(context.resources, R.drawable.ic_add_24px) }
+    val image = +memo { +imageResource(R.drawable.ic_add_24px) }
     DrawBorder(CircleShape, Border(color, strokeWidth))
     DrawImageCentered(image, paint)
 }

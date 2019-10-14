@@ -17,19 +17,17 @@
 package com.example.jetnews.ui
 
 import androidx.compose.Composable
-import androidx.compose.ambient
 import androidx.compose.composer
+import androidx.compose.memo
 import androidx.compose.state
 import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.imageFromResource
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.CrossAxisAlignment
@@ -45,6 +43,7 @@ import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.themeTextStyle
+import androidx.ui.res.imageResource
 import com.example.jetnews.R
 
 private enum class Sections(val title: String) {
@@ -134,10 +133,10 @@ private fun TabWithSections(
         }
     }
 }
+
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
-    val context = +ambient(ContextAmbient)
-
+    val image = +memo { +imageResource(R.drawable.placeholder_1_1) }
     Padding(left = 16.dp, right = 16.dp) {
         FlexRow(
             crossAxisAlignment = CrossAxisAlignment.Center
@@ -145,12 +144,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
             inflexible {
                 Container(width = 56.dp, height = 56.dp) {
                     Clip(RoundedCornerShape(4.dp)) {
-                        DrawImage(
-                            imageFromResource(
-                                context.resources,
-                                R.drawable.placeholder_1_1
-                            )
-                        )
+                        DrawImage(image)
                     }
                 }
             }

@@ -33,6 +33,8 @@ import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
+import androidx.ui.material.surface.Surface
+import androidx.ui.material.themeColor
 
 @Composable
 fun JetnewsApp(icons: Icons) {
@@ -68,10 +70,12 @@ private fun DrawerButton(drawerButtonText: String, action: () -> Unit) {
 @Composable
 private fun AppContent(icons: Icons, openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
-        when (screen) {
-            is Screen.Home -> HomeScreen(icons = icons, openDrawer = { openDrawer() })
-            is Screen.Interests -> InterestsScreen(icons = icons, openDrawer = { openDrawer() })
-            is Screen.Article -> ArticleScreen(icons = icons, postId = screen.postId)
+        Surface(color = +themeColor { background }) {
+            when (screen) {
+                is Screen.Home -> HomeScreen(icons = icons, openDrawer = { openDrawer() })
+                is Screen.Interests -> InterestsScreen(icons = icons, openDrawer = { openDrawer() })
+                is Screen.Article -> ArticleScreen(icons = icons, postId = screen.postId)
+            }
         }
     }
 }
