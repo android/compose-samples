@@ -68,7 +68,7 @@ dependencies {
     kotlinPlugin "androidx.compose:compose-compiler:0.1.0-SNAPSHOT"
 
     // Actual dependencies of the application
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50-compose-20190806")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-withExperimentalGoogleExtensions-20191010")
 
     implementation ('androidx.compose:compose-runtime:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-core:0.1.0-SNAPSHOT')

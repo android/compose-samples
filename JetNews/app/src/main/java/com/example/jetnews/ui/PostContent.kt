@@ -24,6 +24,7 @@ import androidx.ui.core.Dp
 import androidx.ui.core.Px
 import androidx.ui.core.Text
 import androidx.ui.core.dp
+import androidx.ui.core.sp
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.DrawShape
@@ -31,7 +32,6 @@ import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.graphics.vector.compat.vectorResource
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.FlexRow
@@ -42,6 +42,7 @@ import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
+import androidx.ui.res.vectorResource
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
 import androidx.ui.text.TextStyle
@@ -52,7 +53,7 @@ import androidx.ui.text.style.TextDecoration
 import androidx.ui.text.style.TextIndent
 import com.example.jetnews.R
 
-private const val defaultBodyLineHeight = 1.49f
+private val defaultBodyLineHeight = 28.sp
 private val defaultSpacerSize = 16.dp
 
 private val italicTextStyle = (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic)
@@ -77,7 +78,7 @@ fun PostContent(post: Post) {
                     Text(
                         text = subtitle,
                         style = (+themeTextStyle { body2 }).withOpacity(0.6f),
-                        paragraphStyle = ParagraphStyle(lineHeight = 1.428f) // 20sp line height
+                        paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
                     )
                     HeightSpacer(height = defaultSpacerSize)
                 }
