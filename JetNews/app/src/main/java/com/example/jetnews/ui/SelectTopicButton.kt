@@ -37,8 +37,8 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
 import androidx.ui.res.imageResource
-import com.android.tools.preview.Preview
 import com.example.jetnews.R
+import androidx.ui.tooling.preview.Preview
 
 @Composable
 fun SelectTopicButton(

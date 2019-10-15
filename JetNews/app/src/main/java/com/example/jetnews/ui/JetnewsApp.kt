@@ -42,7 +42,7 @@ fun JetnewsApp(icons: Icons) {
 
     MaterialTheme(
         colors = lightThemeColors,
-        typography = typography
+        typography = themeTypography
     ) {
         ModalDrawerLayout(
             drawerState = drawerState,

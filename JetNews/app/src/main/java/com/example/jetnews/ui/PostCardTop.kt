@@ -30,11 +30,13 @@ import androidx.ui.layout.Container
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
+import androidx.ui.material.MaterialColors
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.MaterialTypography
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
-import com.android.tools.preview.Preview
+import androidx.ui.tooling.preview.Preview
 
 @Composable
 fun PostCardTop(post: Post) {
@@ -71,36 +73,30 @@ fun PostCardTop(post: Post) {
 @Preview("Default colors")
 @Composable
 fun TutorialPreview() {
-    val context = +ambient(ContextAmbient)
-    val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
-    val post = previewPosts[0]
-    MaterialTheme(colors = lightThemeColors) {
-        Surface {
-            PostCardTop(post)
-        }
-    }
+    TutorialPreviewTemplate()
 }
 
 @Preview("Dark colors")
 @Composable
 fun TutorialPreviewDark() {
-    val context = +ambient(ContextAmbient)
-    val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
-    val post = previewPosts[0]
-    MaterialTheme(colors = darkThemeColors) {
-        Surface {
-            PostCardTop(post)
-        }
-    }
+    TutorialPreviewTemplate(colors = darkThemeColors)
 }
 
 @Preview("Font scaling 1.5", fontScale = 1.5f)
 @Composable
 fun TutorialPreviewFontscale() {
+    TutorialPreviewTemplate()
+}
+
+@Composable
+fun TutorialPreviewTemplate(
+    colors: MaterialColors = lightThemeColors,
+    typography: MaterialTypography = themeTypography
+) {
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    MaterialTheme(colors = lightThemeColors) {
+    MaterialTheme(colors = colors, typography = typography) {
         Surface {
             PostCardTop(post)
         }

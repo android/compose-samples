@@ -135,7 +135,7 @@ private fun TabWithSections(
 
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
-    val image = +memo { +imageResource(R.drawable.placeholder_1_1) }
+    val image =  +imageResource(R.drawable.placeholder_1_1)
     Padding(left = 16.dp, right = 16.dp) {
         FlexRow(
             crossAxisAlignment = CrossAxisAlignment.Center

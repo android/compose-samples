@@ -36,7 +36,7 @@ val bodyFontFamily = FontFamily(
     )
 )
 
-val typography = MaterialTypography(
+val themeTypography = MaterialTypography(
     h4 = TextStyle(
         fontFamily = appFontFamily,
         fontWeight = FontWeight.W600,

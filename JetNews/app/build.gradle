@@ -82,7 +82,6 @@ dependencies {
 
     implementation "androidx.core:core-ktx:1.1.0"
 
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation "androidx.ui:ui-tooling:+"
 
     ktlint "com.pinterest:ktlint:0.34.2"
