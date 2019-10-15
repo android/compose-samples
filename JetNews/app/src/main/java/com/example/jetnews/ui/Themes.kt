@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.composer
 import androidx.ui.graphics.Color
 import androidx.ui.material.MaterialColors
 
