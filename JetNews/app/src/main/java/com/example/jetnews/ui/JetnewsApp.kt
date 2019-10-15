@@ -47,6 +47,7 @@ fun JetnewsApp(icons: Icons) {
         ModalDrawerLayout(
             drawerState = drawerState,
             onStateChange = onDrawerStateChange,
+            gesturesEnabled = drawerState == DrawerState.Opened,
             drawerContent = { AppDrawer(closeDrawer = { onDrawerStateChange(DrawerState.Closed) }) },
             bodyContent = {
                 AppContent(
