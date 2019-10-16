@@ -45,6 +45,8 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Icons
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.home.BookmarkButton
+import com.example.jetnews.ui.home.isFavorite
+import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.navigateTo
 
 @Composable
@@ -95,7 +97,10 @@ private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Uni
                     BottomBarAction(icons.heartOff) {
                         onUnimplementedAction()
                     }
-                    BookmarkButton(post, icons)
+                    BookmarkButton(
+                        isBookmarked = isFavorite(postId = post.id),
+                        onBookmark = { toggleBookmark(postId = post.id) },
+                        icons = icons)
                     BottomBarAction(icons.share) {
                         SharePost(post, context)
                     }
