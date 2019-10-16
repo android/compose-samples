@@ -91,7 +91,7 @@ task ktlint(type: JavaExec, group: "verification") {
     description = "Check Kotlin code style."
     main = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
-    args "src/**/*.kt", "--editorconfig", ".editorconfig"
+    args "src/**/*.kt"
 }
 
 check.dependsOn ktlint
@@ -100,5 +100,5 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
     main = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
-    args "-F", "src/**/*.kt", "--editorconfig", ".editorconfig"
+    args "-F", "src/**/*.kt"
 }

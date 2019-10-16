@@ -1,2 +1,0 @@
-[*.{kt,kts}]
-disabled_rules=no-unused-imports
