@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.compose.memo
@@ -37,8 +37,10 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
 import androidx.ui.res.imageResource
-import com.example.jetnews.R
 import androidx.ui.tooling.preview.Preview
+import com.example.jetnews.R
+import com.example.jetnews.ui.darkThemeColors
+import com.example.jetnews.ui.lightThemeColors
 
 @Composable
 fun SelectTopicButton(
@@ -103,25 +105,37 @@ private fun DrawSelectTopicButtonOff() {
 @Preview("Off")
 @Composable
 fun SelectTopicButtonPreviewOff() {
-    SelectTopicButtonPreviewTemplate(lightThemeColors, false)
+    SelectTopicButtonPreviewTemplate(
+        lightThemeColors,
+        false
+    )
 }
 
 @Preview("On")
 @Composable
 fun SelectTopicButtonPreviewOn() {
-    SelectTopicButtonPreviewTemplate(lightThemeColors, true)
+    SelectTopicButtonPreviewTemplate(
+        lightThemeColors,
+        true
+    )
 }
 
 @Preview("Off - Dark")
 @Composable
 fun SelectTopicButtonPreviewOffDark() {
-    SelectTopicButtonPreviewTemplate(darkThemeColors, false)
+    SelectTopicButtonPreviewTemplate(
+        darkThemeColors,
+        false
+    )
 }
 
 @Preview("On - Dark")
 @Composable
 fun SelectTopicButtonPreviewOnDark() {
-    SelectTopicButtonPreviewTemplate(darkThemeColors, true)
+    SelectTopicButtonPreviewTemplate(
+        darkThemeColors,
+        true
+    )
 }
 
 @Composable

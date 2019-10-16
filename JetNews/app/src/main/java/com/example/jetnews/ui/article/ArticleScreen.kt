@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
@@ -40,6 +40,12 @@ import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
+import com.example.jetnews.data.posts
+import com.example.jetnews.model.Post
+import com.example.jetnews.ui.Icons
+import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.home.BookmarkButton
+import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun ArticleScreen(icons: Icons, postId: String) {

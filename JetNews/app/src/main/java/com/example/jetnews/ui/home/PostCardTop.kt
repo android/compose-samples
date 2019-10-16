@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.ambient
@@ -37,6 +37,12 @@ import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
+import com.example.jetnews.data.getPostsWithImagesLoaded
+import com.example.jetnews.data.posts
+import com.example.jetnews.model.Post
+import com.example.jetnews.ui.darkThemeColors
+import com.example.jetnews.ui.lightThemeColors
+import com.example.jetnews.ui.themeTypography
 
 @Composable
 fun PostCardTop(post: Post) {
@@ -94,7 +100,12 @@ fun TutorialPreviewTemplate(
     typography: MaterialTypography = themeTypography
 ) {
     val context = +ambient(ContextAmbient)
-    val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
+    val previewPosts = getPostsWithImagesLoaded(
+        posts.subList(
+            1,
+            2
+        ), context.resources
+    )
     val post = previewPosts[0]
     MaterialTheme(colors = colors, typography = typography) {
         Surface {

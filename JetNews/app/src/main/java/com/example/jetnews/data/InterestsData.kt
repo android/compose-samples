@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.data
 
 val topics = mapOf(
     "Android" to listOf("Jetpack Compose", "Kotlin", "Jetpack"),

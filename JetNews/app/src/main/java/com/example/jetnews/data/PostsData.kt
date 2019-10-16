@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.data
 
 import android.content.res.Resources
 import androidx.ui.graphics.imageFromResource
 import com.example.jetnews.R
+import com.example.jetnews.model.Markup
+import com.example.jetnews.model.MarkupType
+import com.example.jetnews.model.Metadata
+import com.example.jetnews.model.Paragraph
+import com.example.jetnews.model.ParagraphType
+import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.Publication
 
 /**
  * Define hardcoded posts to avoid handling any non-ui operations.
@@ -30,7 +38,8 @@ val florina = PostAuthor(
     "Florina Muntenescu",
     "https://medium.com/@florina.muntenescu"
 )
-val jose = PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
+val jose =
+    PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
 
 val publication = Publication(
     "Android Developers",
@@ -72,7 +81,13 @@ val paragraphsPost1 = listOf(
     Paragraph(
         ParagraphType.Text,
         "At I/O I was lucky enough to attend the “Android Studio: Tips and Tricks” talk where Ivan Gravilovic, from Google, shared some amazing tips. One of these was a possible solution for my problem: setting a custom path for my modules.",
-        listOf(Markup(MarkupType.Italic, 41, 72))
+        listOf(
+            Markup(
+                MarkupType.Italic,
+                41,
+                72
+            )
+        )
     ),
 
     Paragraph(
@@ -100,7 +115,10 @@ val paragraphsPost1 = listOf(
         ParagraphType.Text,
         "And the layout in Android Studio is now:"
     ),
-    Paragraph(ParagraphType.Header, "Conclusion"),
+    Paragraph(
+        ParagraphType.Header,
+        "Conclusion"
+    ),
     Paragraph(
         ParagraphType.Text,
         "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
@@ -117,7 +135,10 @@ val paragraphsPost1 = listOf(
             )
         )
     ),
-    Paragraph(ParagraphType.Header, "Resources"),
+    Paragraph(
+        ParagraphType.Header,
+        "Resources"
+    ),
     Paragraph(
         ParagraphType.Bullet,
         "Android Studio: Tips and Tricks (Google I/O’19)",
@@ -284,7 +305,10 @@ val paragraphsPost2 = listOf(
         "@Inject @field:MinimumBalance lateinit var minimumBalance: BigDecimal",
         listOf(Markup(MarkupType.Bold, 8, 29))
     ),
-    Paragraph(ParagraphType.Text, "❌ As opposed to:"),
+    Paragraph(
+        ParagraphType.Text,
+        "❌ As opposed to:"
+    ),
     Paragraph(
         ParagraphType.CodeBlock,
         "@Inject @MinimumBalance lateinit var minimumBalance: BigDecimal \n" +
@@ -415,7 +439,13 @@ val paragraphsPost2 = listOf(
     Paragraph(
         ParagraphType.Text,
         "Dagger optimizations come with no cost, add them and follow best practices to improve your build time: enabling incremental annotation processing, disabling formatting and using static @Provides methods in your Dagger modules.",
-        listOf(Markup(MarkupType.Code, 185, 194))
+        listOf(
+            Markup(
+                MarkupType.Code,
+                185,
+                194
+            )
+        )
     )
 )
 
@@ -512,7 +542,13 @@ val paragraphsPost4 = listOf(
     Paragraph(
         ParagraphType.Text,
         "In a ViewModel, if you’re exposing data coming from resources (strings, drawables, colors…), you have to take into account that ViewModel objects ignore configuration changes such as locale changes. When the user changes their locale, activities are recreated but the ViewModel objects are not.",
-        listOf(Markup(MarkupType.Bold, 183, 197))
+        listOf(
+            Markup(
+                MarkupType.Bold,
+                183,
+                197
+            )
+        )
     ),
     Paragraph(
         ParagraphType.Text,
@@ -622,7 +658,13 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.Text,
         "The difference between eager and lazy evaluation lies in when each transformation on the collection is performed.",
-        listOf(Markup(MarkupType.Italic, 57, 61))
+        listOf(
+            Markup(
+                MarkupType.Italic,
+                57,
+                61
+            )
+        )
     ),
     Paragraph(
         ParagraphType.Text,
@@ -731,7 +773,13 @@ val paragraphsPost5 = listOf(
         ParagraphType.CodeBlock,
         "internal class TransformingIndexedSequence<T, R> \n" +
                 "constructor(private val sequence: Sequence<T>, private val transformer: (Int, T) -> R) : Sequence<R> {",
-        listOf(Markup(MarkupType.Bold, 109, 120))
+        listOf(
+            Markup(
+                MarkupType.Bold,
+                109,
+                120
+            )
+        )
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -774,7 +822,10 @@ val paragraphsPost5 = listOf(
         ParagraphType.Text,
         "Let’s see how and when each operation is applied for collections and when for sequences"
     ),
-    Paragraph(ParagraphType.Subhead, "Collections"),
+    Paragraph(
+        ParagraphType.Subhead,
+        "Collections"
+    ),
     Paragraph(
         ParagraphType.Text,
         "map is called — a new ArrayList is created. We iterate through all items of the initial collection, transform it by copying the original object and changing the color, then add it to the new list.",
@@ -785,7 +836,10 @@ val paragraphsPost5 = listOf(
         "first is called — we iterate through each item until the first square is found",
         listOf(Markup(MarkupType.Code, 0, 5))
     ),
-    Paragraph(ParagraphType.Subhead, "Sequences"),
+    Paragraph(
+        ParagraphType.Subhead,
+        "Sequences"
+    ),
     Paragraph(
         ParagraphType.Bullet,
         "asSequence — a sequence is created based on the Iterator of the original collection",
@@ -809,7 +863,10 @@ val paragraphsPost5 = listOf(
         ParagraphType.Text,
         "When working with sequences no intermediate collection is created and since items are evaluated one by one, map is only performed on some of the inputs."
     ),
-    Paragraph(ParagraphType.Header, "Performance"),
+    Paragraph(
+        ParagraphType.Header,
+        "Performance"
+    ),
     Paragraph(
         ParagraphType.Subhead,
         "Order of transformations"
@@ -834,7 +891,13 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.Text,
         "Collection operations use inline functions, so the bytecode of the operation, together with the bytecode of the lambda passed to it will be inlined. Sequences don’t use inline functions, therefore, new Function objects are created for each operation.",
-        listOf(Markup(MarkupType.Code, 202, 210))
+        listOf(
+            Markup(
+                MarkupType.Code,
+                202,
+                210
+            )
+        )
     ),
     Paragraph(
         ParagraphType.Text,

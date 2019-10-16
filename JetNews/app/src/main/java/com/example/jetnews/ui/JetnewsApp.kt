@@ -34,6 +34,9 @@ import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
+import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.home.HomeScreen
+import com.example.jetnews.ui.interests.InterestsScreen
 
 @Composable
 fun JetnewsApp(icons: Icons) {
@@ -72,9 +75,16 @@ private fun AppContent(icons: Icons, openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
         Surface(color = +themeColor { background }) {
             when (screen) {
-                is Screen.Home -> HomeScreen(icons = icons, openDrawer = { openDrawer() })
-                is Screen.Interests -> InterestsScreen(icons = icons, openDrawer = { openDrawer() })
-                is Screen.Article -> ArticleScreen(icons = icons, postId = screen.postId)
+                is Screen.Home -> HomeScreen(
+                    icons = icons,
+                    openDrawer = { openDrawer() })
+                is Screen.Interests -> InterestsScreen(
+                    icons = icons,
+                    openDrawer = { openDrawer() })
+                is Screen.Article -> ArticleScreen(
+                    icons = icons,
+                    postId = screen.postId
+                )
             }
         }
     }

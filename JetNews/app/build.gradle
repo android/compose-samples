@@ -68,7 +68,7 @@ dependencies {
     kotlinPlugin "androidx.compose:compose-compiler:0.1.0-SNAPSHOT"
 
     // Actual dependencies of the application
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-withExperimentalGoogleExtensions-20191010")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-withExperimentalGoogleExtensions-20191014")
 
     implementation ('androidx.compose:compose-runtime:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-core:0.1.0-SNAPSHOT')
@@ -77,8 +77,8 @@ dependencies {
     implementation ('androidx.ui:ui-material:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-android-view:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-platform:0.1.0-SNAPSHOT')
-    implementation ('androidx.appcompat:appcompat:1.1.0-beta01')
-    implementation ('androidx.activity:activity-ktx:1.0.0-beta01')
+    implementation ('androidx.appcompat:appcompat:1.1.0')
+    implementation ('androidx.activity:activity-ktx:1.0.0')
 
     implementation "androidx.core:core-ktx:1.1.0"
 
@@ -92,7 +92,6 @@ task ktlint(type: JavaExec, group: "verification") {
     main = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
     args "src/**/*.kt", "--editorconfig", ".editorconfig"
-
 }
 
 check.dependsOn ktlint

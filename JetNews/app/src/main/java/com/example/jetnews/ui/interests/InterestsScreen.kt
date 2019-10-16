@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
-import androidx.compose.memo
 import androidx.compose.state
 import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
@@ -44,6 +43,11 @@ import androidx.ui.material.TopAppBar
 import androidx.ui.material.themeTextStyle
 import androidx.ui.res.imageResource
 import com.example.jetnews.R
+import com.example.jetnews.data.people
+import com.example.jetnews.data.publications
+import com.example.jetnews.data.topics
+import com.example.jetnews.ui.Icons
+import com.example.jetnews.ui.JetnewsStatus
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -92,12 +96,18 @@ private fun TopicsTab() {
 
 @Composable
 private fun PeopleTab() {
-    TabWithTopics(Sections.People.title, people)
+    TabWithTopics(
+        Sections.People.title,
+        people
+    )
 }
 
 @Composable
 private fun PublicationsTab() {
-    TabWithTopics(Sections.Publications.title, publications)
+    TabWithTopics(
+        Sections.Publications.title,
+        publications
+    )
 }
 
 @Composable
@@ -106,7 +116,13 @@ private fun TabWithTopics(tabname: String, topics: List<String>) {
         Column {
             HeightSpacer(16.dp)
             topics.forEach { topic ->
-                TopicItem(getTopicKey(tabname, "- ", topic), topic)
+                TopicItem(
+                    getTopicKey(
+                        tabname,
+                        "- ",
+                        topic
+                    ), topic
+                )
                 TopicDivider()
             }
         }
@@ -125,7 +141,13 @@ private fun TabWithSections(
                     padding(16.dp),
                     style = +themeTextStyle { subtitle1 })
                 topics.forEach { topic ->
-                    TopicItem(getTopicKey(tabname, section, topic), topic)
+                    TopicItem(
+                        getTopicKey(
+                            tabname,
+                            section,
+                            topic
+                        ), topic
+                    )
                     TopicDivider()
                 }
             }
@@ -135,7 +157,7 @@ private fun TabWithSections(
 
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
-    val image =  +imageResource(R.drawable.placeholder_1_1)
+    val image = +imageResource(R.drawable.placeholder_1_1)
     Padding(left = 16.dp, right = 16.dp) {
         FlexRow(
             crossAxisAlignment = CrossAxisAlignment.Center

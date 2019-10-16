@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
@@ -36,6 +36,11 @@ import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
+import com.example.jetnews.data.posts
+import com.example.jetnews.model.Post
+import com.example.jetnews.ui.Icons
+import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
@@ -59,9 +64,18 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
             VerticalScroller {
                 Column {
                     HomeScreenTopSection(post = postTop)
-                    HomeScreenSimpleSection(posts = postsSimple, icons = icons)
-                    HomeScreenPopularSection(posts = postsPopular, icons = icons)
-                    HomeScreenHistorySection(posts = postsHistory, icons = icons)
+                    HomeScreenSimpleSection(
+                        posts = postsSimple,
+                        icons = icons
+                    )
+                    HomeScreenPopularSection(
+                        posts = postsPopular,
+                        icons = icons
+                    )
+                    HomeScreenHistorySection(
+                        posts = postsHistory,
+                        icons = icons
+                    )
                 }
             }
         }

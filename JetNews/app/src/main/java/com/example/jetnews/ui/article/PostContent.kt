@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.article
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
@@ -51,6 +51,12 @@ import androidx.ui.text.font.FontWeight
 import androidx.ui.text.style.TextDecoration
 import androidx.ui.text.style.TextIndent
 import com.example.jetnews.R
+import com.example.jetnews.model.Markup
+import com.example.jetnews.model.MarkupType
+import com.example.jetnews.model.Metadata
+import com.example.jetnews.model.Paragraph
+import com.example.jetnews.model.ParagraphType
+import com.example.jetnews.model.Post
 
 private val defaultBodyLineHeight = 28.sp
 private val defaultSpacerSize = 16.dp
@@ -235,11 +241,17 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
             textStyle = +themeTextStyle { h5 }
             trailingPadding = 16.dp
         }
-        ParagraphType.CodeBlock -> textStyle = codeTextStyle
+        ParagraphType.CodeBlock -> textStyle =
+            codeTextStyle
         ParagraphType.Quote -> textStyle = +themeTextStyle { body1 }
-        ParagraphType.Bullet -> paragraphStyle = bulletParagraphStyle
+        ParagraphType.Bullet -> paragraphStyle =
+            bulletParagraphStyle
     }
-    return ParagraphStyling(textStyle, paragraphStyle, trailingPadding)
+    return ParagraphStyling(
+        textStyle,
+        paragraphStyle,
+        trailingPadding
+    )
 }
 
 private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
