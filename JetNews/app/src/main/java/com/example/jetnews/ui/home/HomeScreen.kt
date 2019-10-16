@@ -44,7 +44,7 @@ import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
-    val postTop = posts[1]
+    val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
