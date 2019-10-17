@@ -20,7 +20,6 @@ import androidx.compose.Composable
 import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
 import androidx.ui.core.Dp
-import androidx.ui.core.Px
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.core.sp
@@ -68,7 +67,7 @@ private val codeTextStyle = (+themeTextStyle { body1 })
     .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
 private val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline)
 
-private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = Px(30f)))
+private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
 
 @Composable
 fun PostContent(post: Post) {
