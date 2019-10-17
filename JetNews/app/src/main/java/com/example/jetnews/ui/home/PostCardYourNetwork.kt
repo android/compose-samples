@@ -26,7 +26,7 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.padding
+import androidx.ui.layout.Spacing
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.material.themeTextStyle
@@ -53,7 +53,7 @@ fun PostCardPopular(post: Post, icons: Icons) {
                         Container(height = 100.dp, expanded = true) {
                             DrawImage(image)
                         }
-                        Column(modifier = padding(16.dp)) {
+                        Column(modifier = Spacing(16.dp)) {
                             Text(
                                 text = post.title,
                                 style = (+themeTextStyle { h6 }).withOpacity(0.87f),

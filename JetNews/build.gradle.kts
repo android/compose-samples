@@ -27,14 +27,14 @@ buildscript {
 
     dependencies {
         classpath("com.android.tools.build:gradle:3.5.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-withExperimentalGoogleExtensions-20191014")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-withExperimentalGoogleExtensions-20191016")
     }
 }
 
 allprojects {
     val workdir = File("../..").absolutePath
     val externalM2RepoPath = "$workdir/androidx-master-dev/prebuilts/androidx/external"
-    val snapshotUrl = "https://ci.android.com/builds/submitted/5942153/androidx_snapshot/latest/ui/repository/"
+    val snapshotUrl = "https://ci.android.com/builds/submitted/5946345/androidx_snapshot/latest/ui/repository/"
     repositories {
         maven {
             url = uri(snapshotUrl)

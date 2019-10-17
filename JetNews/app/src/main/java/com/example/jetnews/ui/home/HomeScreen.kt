@@ -28,8 +28,8 @@ import androidx.ui.layout.Column
 import androidx.ui.layout.FlexColumn
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
+import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
-import androidx.ui.layout.absolutePadding
 import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
@@ -117,7 +117,7 @@ private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
         )
     }
     HorizontalScroller {
-        Row(modifier = absolutePadding(bottom = 16.dp, right = 16.dp)) {
+        Row(modifier = Spacing(bottom = 16.dp, right = 16.dp)) {
             posts.forEach { post ->
                 WidthSpacer(16.dp)
                 PostCardPopular(post, icons)

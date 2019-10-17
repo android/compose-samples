@@ -33,8 +33,7 @@ import androidx.ui.layout.FlexColumn
 import androidx.ui.layout.FlexRow
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Padding
-import androidx.ui.layout.absolutePadding
-import androidx.ui.layout.padding
+import androidx.ui.layout.Spacing
 import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Divider
 import androidx.ui.material.Tab
@@ -137,8 +136,9 @@ private fun TabWithSections(
     VerticalScroller {
         Column {
             sections.forEach { (section, topics) ->
-                Text(section,
-                    padding(16.dp),
+                Text(
+                    text = section,
+                    modifier = Spacing(16.dp),
                     style = +themeTextStyle { subtitle1 })
                 topics.forEach { topic ->
                     TopicItem(
@@ -172,7 +172,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
             expanded(1f) {
                 Text(
                     text = itemTitle,
-                    modifier = padding(16.dp),
+                    modifier = Spacing(16.dp),
                     style = +themeTextStyle { subtitle1 })
             }
             inflexible {
@@ -191,7 +191,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
 @Composable
 private fun TopicDivider() {
     Opacity(0.08f) {
-        Divider(absolutePadding(top = 8.dp, bottom = 8.dp, left = 72.dp))
+        Divider(Spacing(top = 8.dp, bottom = 8.dp, left = 72.dp))
     }
 }
 
