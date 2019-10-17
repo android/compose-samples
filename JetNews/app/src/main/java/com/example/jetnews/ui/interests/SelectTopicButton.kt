@@ -17,18 +17,14 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
-import androidx.compose.memo
 import androidx.compose.unaryPlus
-import androidx.ui.core.Draw
-import androidx.ui.core.Px
 import androidx.ui.core.dp
-import androidx.ui.engine.geometry.Offset
 import androidx.ui.foundation.selection.Toggleable
+import androidx.ui.foundation.shape.DrawShape
 import androidx.ui.foundation.shape.border.Border
 import androidx.ui.foundation.shape.border.DrawBorder
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.Image
-import androidx.ui.graphics.Paint
+import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Container
 import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialColors
@@ -36,7 +32,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
-import androidx.ui.res.imageResource
+import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.ui.darkThemeColors
@@ -61,45 +57,22 @@ fun SelectTopicButton(
 }
 
 @Composable
-private fun DrawImageCentered(image: Image, paint: Paint) {
-    Draw { canvas, parentSize ->
-        val imageOffset =
-            Offset(
-                (parentSize.width - Px(image.width.toFloat())).value / 2,
-                (parentSize.height - Px(image.height.toFloat())).value / 2
-            )
-        canvas.drawImage(image, imageOffset, paint)
-    }
-}
-
-@Composable
 private fun DrawSelectTopicButtonOn() {
-    val strokeWidth = 2.dp
-    val image = +memo { +imageResource(R.drawable.ic_check_24px) }
-    val paint = +memo {
-        Paint().apply {
-            color = +themeColor { primary }
-            isAntiAlias = true
-        }
-    }
-    Draw { canvas, parentSize ->
-        val radius = parentSize.width.value / 2
-        // toPx() is available only within Draw
-        paint.strokeWidth = strokeWidth.toPx().value
-        canvas.drawCircle(Offset(radius, radius), radius, paint)
-    }
-    DrawImageCentered(image, paint)
+    DrawShape(
+        shape = CircleShape,
+        color = +themeColor { primary }
+    )
+    DrawVector(+vectorResource(R.drawable.ic_check))
 }
 
 @Composable
 private fun DrawSelectTopicButtonOff() {
-    val paint = +memo { Paint() }
-
-    val strokeWidth = 2.dp
-    val color = (+themeColor { onSurface }).copy(alpha = 0.12f)
-    val image = +memo { +imageResource(R.drawable.ic_add_24px) }
-    DrawBorder(CircleShape, Border(color, strokeWidth))
-    DrawImageCentered(image, paint)
+    val borderColor = (+themeColor { onSurface }).copy(alpha = 0.12f)
+    DrawBorder(
+        shape = CircleShape,
+        border = Border(borderColor, 2.dp)
+    )
+    DrawVector(+vectorResource(R.drawable.ic_add))
 }
 
 @Preview("Off")

@@ -18,6 +18,7 @@ package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.ambient
 import androidx.compose.state
@@ -26,31 +27,32 @@ import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.SimpleImage
-import androidx.ui.graphics.Image
+import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Container
 import androidx.ui.layout.FlexColumn
 import androidx.ui.layout.FlexRow
+import androidx.ui.layout.Padding
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.AlertDialog
-import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Button
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeTextStyle
+import androidx.ui.res.vectorResource
+import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Icons
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun ArticleScreen(icons: Icons, postId: String) {
+fun ArticleScreen(postId: String) {
 
     var showDialog by +state { false }
     // getting the post from our list of posts by Id
@@ -72,7 +74,7 @@ fun ArticleScreen(icons: Icons, postId: String) {
                     )
                 },
                 navigationIcon = {
-                    AppBarIcon(icons.back) {
+                    VectorImageButton(R.drawable.ic_back) {
                         navigateTo(Screen.Home)
                     }
                 }
@@ -82,26 +84,26 @@ fun ArticleScreen(icons: Icons, postId: String) {
             PostContent(post)
         }
         inflexible {
-            BottomBar(post, icons) { showDialog = true }
+            BottomBar(post) { showDialog = true }
         }
     }
 }
 
 @Composable
-private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Unit) {
+private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     val context = +ambient(ContextAmbient)
     Surface(elevation = 2.dp) {
         Container(height = 56.dp, expanded = true) {
             FlexRow {
                 inflexible {
-                    BottomBarAction(icons.heartOff) {
+                    BottomBarAction(R.drawable.ic_favorite) {
                         onUnimplementedAction()
                     }
                     BookmarkButton(
                         isBookmarked = isFavorite(postId = post.id),
-                        onBookmark = { toggleBookmark(postId = post.id) },
-                        icons = icons)
-                    BottomBarAction(icons.share) {
+                        onBookmark = { toggleBookmark(postId = post.id) }
+                    )
+                    BottomBarAction(R.drawable.ic_share) {
                         SharePost(post, context)
                     }
                 }
@@ -109,7 +111,7 @@ private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Uni
                     WidthSpacer(1.dp)
                 }
                 inflexible {
-                    BottomBarAction(icons.textSettings) {
+                    BottomBarAction(R.drawable.ic_text_settings) {
                         onUnimplementedAction()
                     }
                 }
@@ -120,7 +122,7 @@ private fun BottomBar(post: Post, icons: Icons, onUnimplementedAction: () -> Uni
 
 @Composable
 private fun BottomBarAction(
-    image: Image,
+    @DrawableRes id: Int,
     onClick: () -> Unit
 ) {
     Ripple(
@@ -128,8 +130,10 @@ private fun BottomBarAction(
         radius = 24.dp
     ) {
         Clickable(onClick = onClick) {
-            Container(width = 48.dp, height = 48.dp) {
-                SimpleImage(image)
+            Padding(12.dp) {
+                Container(width = 24.dp, height = 24.dp) {
+                    DrawVector(+vectorResource(id))
+                }
             }
         }
     }

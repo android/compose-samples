@@ -23,7 +23,6 @@ import androidx.compose.unaryPlus
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Text
 import androidx.ui.core.dp
-import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
@@ -42,14 +41,13 @@ import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.themeColor
 import androidx.ui.material.themeTextStyle
-import androidx.ui.res.imageResource
 import com.example.jetnews.R
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
 
 @Composable
-fun JetnewsApp(icons: Icons) {
+fun JetnewsApp() {
 
     val (drawerState, onDrawerStateChange) = +state { DrawerState.Closed }
 
@@ -67,30 +65,19 @@ fun JetnewsApp(icons: Icons) {
                     closeDrawer = { onDrawerStateChange(DrawerState.Closed) }
                 )
             },
-            bodyContent = {
-                AppContent(
-                    icons = icons,
-                    openDrawer = { onDrawerStateChange(DrawerState.Opened) })
-            }
+            bodyContent = { AppContent { onDrawerStateChange(DrawerState.Opened) } }
         )
     }
 }
 
 @Composable
-private fun AppContent(icons: Icons, openDrawer: () -> Unit) {
+private fun AppContent(openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
         Surface(color = +themeColor { background }) {
             when (screen) {
-                is Screen.Home -> HomeScreen(
-                    icons = icons,
-                    openDrawer = { openDrawer() })
-                is Screen.Interests -> InterestsScreen(
-                    icons = icons,
-                    openDrawer = { openDrawer() })
-                is Screen.Article -> ArticleScreen(
-                    icons = icons,
-                    postId = screen.postId
-                )
+                is Screen.Home -> HomeScreen { openDrawer() }
+                is Screen.Interests -> InterestsScreen { openDrawer() }
+                is Screen.Article -> ArticleScreen(postId = screen.postId)
             }
         }
     }
@@ -106,9 +93,15 @@ private fun AppDrawer(
         mainAxisSize = LayoutSize.Expand
     ) {
         HeightSpacer(24.dp)
-        val logo = +imageResource(R.drawable.ic_jetnews_logo_lockup)
         Padding(16.dp) {
-            SimpleImage(logo)
+            Row {
+                VectorImage(
+                    id = R.drawable.ic_jetnews_logo,
+                    tint = +themeColor { primary }
+                )
+                WidthSpacer(8.dp)
+                VectorImage(R.drawable.ic_jetnews_wordmark)
+            }
         }
         Divider(color = Color(0x14333333))
         DrawerButton(
@@ -160,8 +153,8 @@ private fun DrawerButton(
                     mainAxisSize = LayoutSize.Expand,
                     crossAxisAlignment = CrossAxisAlignment.Center
                 ) {
-                    SimpleImage(
-                        image = +imageResource(icon),
+                    VectorImage(
+                        id = icon,
                         tint = textIconColor
                     )
                     WidthSpacer(16.dp)

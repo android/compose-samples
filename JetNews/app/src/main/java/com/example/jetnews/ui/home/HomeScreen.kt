@@ -30,20 +30,20 @@ import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
-import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
+import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Icons
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
+fun HomeScreen(openDrawer: () -> Unit) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
     val postsPopular = posts.subList(2, 7)
@@ -54,7 +54,7 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
             TopAppBar(
                 title = { Text(text = "Jetnews") },
                 navigationIcon = {
-                    AppBarIcon(icons.jetnews) {
+                    VectorImageButton(R.drawable.ic_jetnews_logo) {
                         openDrawer()
                     }
                 }
@@ -64,18 +64,9 @@ fun HomeScreen(icons: Icons, openDrawer: () -> Unit) {
             VerticalScroller {
                 Column {
                     HomeScreenTopSection(post = postTop)
-                    HomeScreenSimpleSection(
-                        posts = postsSimple,
-                        icons = icons
-                    )
-                    HomeScreenPopularSection(
-                        posts = postsPopular,
-                        icons = icons
-                    )
-                    HomeScreenHistorySection(
-                        posts = postsHistory,
-                        icons = icons
-                    )
+                    HomeScreenSimpleSection(posts = postsSimple)
+                    HomeScreenPopularSection(posts = postsPopular)
+                    HomeScreenHistorySection(posts = postsHistory)
                 }
             }
         }
@@ -101,15 +92,15 @@ private fun HomeScreenTopSection(post: Post) {
 }
 
 @Composable
-private fun HomeScreenSimpleSection(posts: List<Post>, icons: Icons) {
+private fun HomeScreenSimpleSection(posts: List<Post>) {
     posts.forEach { post ->
-        PostCardSimple(post, icons)
+        PostCardSimple(post)
         HomeScreenDivider()
     }
 }
 
 @Composable
-private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
+private fun HomeScreenPopularSection(posts: List<Post>) {
     Padding(16.dp) {
         Text(
             text = "Popular on Jetnews",
@@ -120,7 +111,7 @@ private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
         Row(modifier = Spacing(bottom = 16.dp, right = 16.dp)) {
             posts.forEach { post ->
                 WidthSpacer(16.dp)
-                PostCardPopular(post, icons)
+                PostCardPopular(post)
             }
         }
     }
@@ -128,9 +119,9 @@ private fun HomeScreenPopularSection(posts: List<Post>, icons: Icons) {
 }
 
 @Composable
-private fun HomeScreenHistorySection(posts: List<Post>, icons: Icons) {
+private fun HomeScreenHistorySection(posts: List<Post>) {
     posts.forEach { post ->
-        PostCardHistory(post, icons)
+        PostCardHistory(post)
         HomeScreenDivider()
     }
 }

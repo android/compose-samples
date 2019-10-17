@@ -31,14 +31,15 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
+import androidx.ui.res.imageResource
 import androidx.ui.text.style.TextOverflow
+import com.example.jetnews.R
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Icons
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun PostCardPopular(post: Post, icons: Icons) {
+fun PostCardPopular(post: Post) {
     Card(shape = RoundedCornerShape(4.dp)) {
         Ripple(bounded = true) {
             Clickable(onClick = {
@@ -49,7 +50,7 @@ fun PostCardPopular(post: Post, icons: Icons) {
                         mainAxisSize = LayoutSize.Expand,
                         crossAxisSize = LayoutSize.Expand
                     ) {
-                        val image = post.image ?: icons.placeholder_4_3
+                        val image = post.image ?: +imageResource(R.drawable.placeholder_4_3)
                         Container(height = 100.dp, expanded = true) {
                             DrawImage(image)
                         }

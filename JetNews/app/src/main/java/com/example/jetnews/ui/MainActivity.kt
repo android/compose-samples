@@ -26,13 +26,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val icons = Icons(resources)
         posts = getPostsWithImagesLoaded(
             posts,
             resources
         )
         setContent {
-            JetnewsApp(icons)
+            JetnewsApp()
         }
     }
 }

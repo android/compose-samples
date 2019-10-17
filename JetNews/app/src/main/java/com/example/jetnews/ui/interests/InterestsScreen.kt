@@ -34,7 +34,6 @@ import androidx.ui.layout.FlexRow
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Spacing
-import androidx.ui.material.AppBarIcon
 import androidx.ui.material.Divider
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
@@ -45,8 +44,8 @@ import com.example.jetnews.R
 import com.example.jetnews.data.people
 import com.example.jetnews.data.publications
 import com.example.jetnews.data.topics
-import com.example.jetnews.ui.Icons
 import com.example.jetnews.ui.JetnewsStatus
+import com.example.jetnews.ui.VectorImageButton
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -55,7 +54,7 @@ private enum class Sections(val title: String) {
 }
 
 @Composable
-fun InterestsScreen(icons: Icons, openDrawer: () -> Unit) {
+fun InterestsScreen(openDrawer: () -> Unit) {
 
     val state = +state { Sections.Topics }
     val sectionTitles = Sections.values().map { it.title }
@@ -65,7 +64,7 @@ fun InterestsScreen(icons: Icons, openDrawer: () -> Unit) {
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    AppBarIcon(icons.jetnews) {
+                    VectorImageButton(R.drawable.ic_jetnews_logo) {
                         openDrawer()
                     }
                 }

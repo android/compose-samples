@@ -22,7 +22,6 @@ import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.DrawImage
-import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
@@ -32,10 +31,12 @@ import androidx.ui.layout.Padding
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
+import androidx.ui.res.imageResource
+import com.example.jetnews.R
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Icons
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.VectorImage
 import com.example.jetnews.ui.navigateTo
 
 @Composable
@@ -55,8 +56,8 @@ fun AuthorAndReadTime(post: Post) {
 }
 
 @Composable
-fun PostImage(post: Post, icons: Icons) {
-    val image = post.imageThumb ?: icons.placeholder_1_1
+fun PostImage(post: Post) {
+    val image = post.imageThumb ?: +imageResource(R.drawable.placeholder_1_1)
 
     Container(width = 40.dp, height = 40.dp) {
         DrawImage(image)
@@ -69,7 +70,7 @@ fun PostTitle(post: Post) {
 }
 
 @Composable
-fun PostCardSimple(post: Post, icons: Icons) {
+fun PostCardSimple(post: Post) {
     Ripple(bounded = true) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
@@ -78,7 +79,7 @@ fun PostCardSimple(post: Post, icons: Icons) {
                 FlexRow {
                     inflexible {
                         Padding(right = 16.dp) {
-                            PostImage(post, icons)
+                            PostImage(post)
                         }
                     }
                     flexible(1f) {
@@ -90,8 +91,8 @@ fun PostCardSimple(post: Post, icons: Icons) {
                     inflexible {
                         BookmarkButton(
                             isBookmarked = isFavorite(postId = post.id),
-                            onBookmark = { toggleBookmark(postId = post.id) },
-                            icons = icons)
+                            onBookmark = { toggleBookmark(postId = post.id) }
+                        )
                     }
                 }
             }
@@ -100,7 +101,7 @@ fun PostCardSimple(post: Post, icons: Icons) {
 }
 
 @Composable
-fun PostCardHistory(post: Post, icons: Icons) {
+fun PostCardHistory(post: Post) {
     Ripple(bounded = true) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
@@ -109,7 +110,7 @@ fun PostCardHistory(post: Post, icons: Icons) {
                 FlexRow {
                     inflexible {
                         Padding(right = 16.dp) {
-                            PostImage(post = post, icons = icons)
+                            PostImage(post = post)
                         }
                     }
                     flexible(1f) {
@@ -124,7 +125,7 @@ fun PostCardHistory(post: Post, icons: Icons) {
                     }
                     inflexible {
                         Padding(top = 8.dp, bottom = 8.dp) {
-                            SimpleImage(icons.more)
+                            VectorImage(R.drawable.ic_more)
                         }
                     }
                 }
@@ -136,8 +137,7 @@ fun PostCardHistory(post: Post, icons: Icons) {
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,
-    onBookmark: (Boolean) -> Unit,
-    icons: Icons
+    onBookmark: (Boolean) -> Unit
 ) {
     Ripple(
         bounded = false,
@@ -148,7 +148,11 @@ fun BookmarkButton(
             onCheckedChange = onBookmark
         ) {
             Container(width = 48.dp, height = 48.dp) {
-                SimpleImage(if (isBookmarked) icons.bookmarkOn else icons.bookmarkOff)
+                if (isBookmarked) {
+                    VectorImage(R.drawable.ic_bookmarked)
+                } else {
+                    VectorImage(R.drawable.ic_bookmark)
+                }
             }
         }
     }
