@@ -49,10 +49,10 @@ fun PostCardTop(post: Post) {
     // TUTORIAL CONTENT STARTS HERE
     Padding(16.dp) {
         Column(crossAxisSize = LayoutSize.Expand) {
-            post.image?.let {
+            post.image?.let { image ->
                 Container(expanded = true, height = 180.dp) {
                     Clip(shape = RoundedCornerShape(4.dp)) {
-                        DrawImage(it)
+                        DrawImage(image)
                     }
                 }
             }
@@ -100,12 +100,7 @@ fun TutorialPreviewTemplate(
     typography: MaterialTypography = themeTypography
 ) {
     val context = +ambient(ContextAmbient)
-    val previewPosts = getPostsWithImagesLoaded(
-        posts.subList(
-            1,
-            2
-        ), context.resources
-    )
+    val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
     MaterialTheme(colors = colors, typography = typography) {
         Surface {

@@ -56,18 +56,10 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.VectorImage
 
-private val defaultBodyLineHeight = 28.sp
 private val defaultSpacerSize = 16.dp
-
-private val italicTextStyle = (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic)
-private val boldTextStyle = (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.Bold)
 private val codeBlockBackground = Color(0xfff1f1f1.toInt())
-private val codeTextStyle = (+themeTextStyle { body1 })
-    .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
-private val linkTextStyle = (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline)
-
-private val bulletParagraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
 
 @Composable
 fun PostContent(post: Post) {
@@ -97,10 +89,10 @@ fun PostContent(post: Post) {
 
 @Composable
 private fun PostHeaderImage(post: Post) {
-    post.image?.let {
+    post.image?.let { image ->
         Container(expanded = true, height = 180.dp) {
             Clip(shape = RoundedCornerShape(4.dp)) {
-                DrawImage(it)
+                DrawImage(image)
             }
         }
         HeightSpacer(height = defaultSpacerSize)
@@ -110,7 +102,7 @@ private fun PostHeaderImage(post: Post) {
 @Composable
 private fun PostMetadata(metadata: Metadata) {
     Row {
-        DefaultAuthorImage()
+        VectorImage(R.drawable.ic_account_circle_black)
         WidthSpacer(width = 8.dp)
         Column {
             HeightSpacer(4.dp)
@@ -123,14 +115,6 @@ private fun PostMetadata(metadata: Metadata) {
                 style = (+themeTextStyle { caption }).withOpacity(0.6f)
             )
         }
-    }
-}
-
-@Composable
-private fun DefaultAuthorImage() {
-    val defaultImage = +vectorResource(R.drawable.ic_account_circle_black)
-    Container(width = 40.dp, height = 40.dp) {
-        DrawVector(vectorImage = defaultImage)
     }
 }
 
@@ -234,17 +218,19 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
         }
         ParagraphType.Text -> {
             textStyle = +themeTextStyle { body1 }
-            paragraphStyle = paragraphStyle.copy(lineHeight = defaultBodyLineHeight)
+            paragraphStyle = paragraphStyle.copy(lineHeight = 28.sp)
         }
         ParagraphType.Header -> {
             textStyle = +themeTextStyle { h5 }
             trailingPadding = 16.dp
         }
         ParagraphType.CodeBlock -> textStyle =
-            codeTextStyle
+            (+themeTextStyle { body1 })
+                .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
         ParagraphType.Quote -> textStyle = +themeTextStyle { body1 }
-        ParagraphType.Bullet -> paragraphStyle =
-            bulletParagraphStyle
+        ParagraphType.Bullet -> {
+            paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
+        }
     }
     return ParagraphStyling(
         textStyle,
@@ -260,9 +246,34 @@ private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
 
 private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
     return when (this.type) {
-        MarkupType.Italic -> AnnotatedString.Item(italicTextStyle, start, end)
-        MarkupType.Link -> AnnotatedString.Item(linkTextStyle, start, end)
-        MarkupType.Bold -> AnnotatedString.Item(boldTextStyle, start, end)
-        MarkupType.Code -> AnnotatedString.Item(codeTextStyle, start, end)
+        MarkupType.Italic -> {
+            AnnotatedString.Item(
+                (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic),
+                start,
+                end
+            )
+        }
+        MarkupType.Link -> {
+            AnnotatedString.Item(
+                (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline),
+                start,
+                end
+            )
+        }
+        MarkupType.Bold -> {
+            AnnotatedString.Item(
+                (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.Bold),
+                start,
+                end
+            )
+        }
+        MarkupType.Code -> {
+            AnnotatedString.Item(
+                (+themeTextStyle { body1 })
+                    .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace),
+                start,
+                end
+            )
+        }
     }
 }

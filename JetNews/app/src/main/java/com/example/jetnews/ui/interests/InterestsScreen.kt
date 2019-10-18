@@ -56,7 +56,7 @@ private enum class Sections(val title: String) {
 @Composable
 fun InterestsScreen(openDrawer: () -> Unit) {
 
-    val state = +state { Sections.Topics }
+    var section by +state { Sections.Topics }
     val sectionTitles = Sections.values().map { it.title }
 
     FlexColumn {
@@ -71,14 +71,14 @@ fun InterestsScreen(openDrawer: () -> Unit) {
             )
         }
         inflexible {
-            TabRow(items = sectionTitles, selectedIndex = state.value.ordinal) { index, text ->
-                Tab(text = text, selected = state.value.ordinal == index) {
-                    state.value = Sections.values()[index]
+            TabRow(items = sectionTitles, selectedIndex = section.ordinal) { index, text ->
+                Tab(text = text, selected = section.ordinal == index) {
+                    section = Sections.values()[index]
                 }
             }
         }
         expanded(1f) {
-            when (state.value) {
+            when (section) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()
                 Sections.Publications -> PublicationsTab()
@@ -194,14 +194,9 @@ private fun TopicDivider() {
     }
 }
 
-private fun getTopicKey(tab: String, group: String, topic: String): String {
-    return "$tab-$group-$topic"
-}
+private fun getTopicKey(tab: String, group: String, topic: String)= "$tab-$group-$topic"
 
-private fun isTopicSelected(key: String): Boolean {
-    val r = JetnewsStatus.selectedTopics.contains(key)
-    return r
-}
+private fun isTopicSelected(key: String) = JetnewsStatus.selectedTopics.contains(key)
 
 private fun selectTopic(key: String, select: Boolean) {
     if (select) {

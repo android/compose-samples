@@ -131,7 +131,6 @@ private fun DrawerButton(
     isSelected: Boolean,
     action: () -> Unit
 ) {
-
     val textIconColor = if (isSelected) {
         +themeColor { primary }
     } else {

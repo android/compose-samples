@@ -159,7 +159,7 @@ fun BookmarkButton(
 }
 
 fun toggleBookmark(postId: String) {
-    JetnewsStatus.run {
+    with(JetnewsStatus) {
         if (favorites.contains(postId)) {
             favorites.remove(postId)
         } else {
@@ -168,6 +168,4 @@ fun toggleBookmark(postId: String) {
     }
 }
 
-fun isFavorite(postId: String): Boolean {
-    return JetnewsStatus.favorites.contains(postId)
-}
+fun isFavorite(postId: String) = JetnewsStatus.favorites.contains(postId)
