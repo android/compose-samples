@@ -19,14 +19,14 @@
 # End users may safely ignore this file. It has no relevance to other systems.
 ---
 # Values: {DRAFT | PUBLISHED | INTERNAL | DEPRECATED | SUPERCEDED}
-status:       DRAFT
+status:       PUBLISHED
 
 # Optional, put additional explanation here for DEPRECATED or SUPERCEDED.
 # statusNote:
 
 # See http://go/sample-categories
 technologies: [Android]
-categories:   [UI]
+categories:   [Compose - Developer Preview]
 languages:    [Kotlin]
 solutions:    [Mobile]
 
