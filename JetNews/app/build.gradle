@@ -68,22 +68,18 @@ dependencies {
     kotlinPlugin "androidx.compose:compose-compiler:0.1.0-SNAPSHOT"
 
     // Actual dependencies of the application
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-withExperimentalGoogleExtensions-20191016")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-eap-25")
 
     implementation ('androidx.compose:compose-runtime:0.1.0-SNAPSHOT')
-    implementation ('androidx.ui:ui-core:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-framework:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-layout:0.1.0-SNAPSHOT')
     implementation ('androidx.ui:ui-material:0.1.0-SNAPSHOT')
-    implementation ('androidx.ui:ui-android-view:0.1.0-SNAPSHOT')
-    implementation ('androidx.ui:ui-platform:0.1.0-SNAPSHOT')
+    implementation "androidx.ui:ui-tooling:0.1.0-SNAPSHOT"
+
     implementation ('androidx.appcompat:appcompat:1.1.0')
     implementation ('androidx.activity:activity-ktx:1.0.0')
 
     implementation "androidx.core:core-ktx:1.1.0"
-
-    implementation "androidx.ui:ui-tooling:+"
-
     ktlint "com.pinterest:ktlint:0.34.2"
 }
 
