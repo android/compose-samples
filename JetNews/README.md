@@ -12,12 +12,12 @@ directly and opening it will most likely result in build errors.
 ## What's in this sample
 
 Jetnews is a sample news reading app, built with
-[Jetpack Compose](https://developer.android.com/jetpack/compose). The goal of the sample is to 
+[Jetpack Compose](https://developer.android.com/jetpack/compose). The goal of the sample is to
 showcase the current UI capabilities of Compose.
 
 ## Features
 
-This sample contains three screens: a list of articles, a detail page for articles, and a page to 
+This sample contains three screens: a list of articles, a detail page for articles, and a page to
 subscribe to topics of interest. The navigation from the the list of articles to the interests
 screen uses a navigation drawer.
 
