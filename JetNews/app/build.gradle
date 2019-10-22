@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-
-Configuration kotlinPluginConfiguration = configurations.create("kotlinPlugin")
-tasks.withType(KotlinCompile).configureEach { compile ->
-    compile.dependsOn(kotlinPluginConfiguration)
-    compile.doFirst {
-        kotlinOptions {
-            useIR = true
-            freeCompilerArgs = [
-                    "-Xplugin=${kotlinPluginConfiguration.files.first()}"
-            ]
-        }
-    }
-}
 
 android {
     compileSdkVersion 29
@@ -40,7 +25,6 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -57,28 +41,27 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        compose true
+    }
 }
 
 configurations {
     ktlint
 }
 
+ext.compose_version = "0.1.0-dev02"
+
 dependencies {
-    // Needed for Compose Kotlin compiler
-    kotlinPlugin "androidx.compose:compose-compiler:0.1.0-SNAPSHOT"
-
-    // Actual dependencies of the application
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-eap-25")
-
-    implementation ('androidx.compose:compose-runtime:0.1.0-SNAPSHOT')
-    implementation ('androidx.ui:ui-framework:0.1.0-SNAPSHOT')
-    implementation ('androidx.ui:ui-layout:0.1.0-SNAPSHOT')
-    implementation ('androidx.ui:ui-material:0.1.0-SNAPSHOT')
-    implementation "androidx.ui:ui-tooling:0.1.0-SNAPSHOT"
-
+    implementation ("androidx.compose:compose-runtime:$compose_version")
+    implementation ("androidx.ui:ui-framework:$compose_version")
+    implementation ("androidx.ui:ui-layout:$compose_version")
+    implementation ("androidx.ui:ui-material:$compose_version")
+    implementation "androidx.ui:ui-tooling:$compose_version"
     implementation ('androidx.appcompat:appcompat:1.1.0')
     implementation ('androidx.activity:activity-ktx:1.0.0')
-
     implementation "androidx.core:core-ktx:1.1.0"
     ktlint "com.pinterest:ktlint:0.34.2"
 }

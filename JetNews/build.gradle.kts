@@ -15,16 +15,13 @@
  */
 
 buildscript {
-    val workdir = File("../..").absolutePath
-    val externalM2RepoPath = "$workdir/androidx-master-dev/prebuilts/androidx/external"
     repositories {
-        maven {
-            url = uri(externalM2RepoPath)
-        }
         google()
         jcenter()
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
+        }
     }
-
     dependencies {
         classpath("com.android.tools.build:gradle:4.0.0-alpha01")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-eap-25")
@@ -32,17 +29,11 @@ buildscript {
 }
 
 allprojects {
-    val workdir = File("../..").absolutePath
-    val externalM2RepoPath = "$workdir/androidx-master-dev/prebuilts/androidx/external"
-    val snapshotUrl = "https://ci.android.com/builds/submitted/5946345/androidx_snapshot/latest/ui/repository/"
     repositories {
-        maven {
-            url = uri(snapshotUrl)
-        }
-        maven {
-            url = uri(externalM2RepoPath)
-        }
         google()
         jcenter()
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
+        }
     }
 }
