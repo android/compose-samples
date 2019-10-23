@@ -3,14 +3,16 @@ Jetnews is a sample news reading app, built with
 [Jetpack Compose](https://developer.android.com/jetpack/compose). The goal of the sample is to
 showcase the current UI capabilities of Compose.
 
-<img src="screenshots/jetnews_demo.gif" alt="Jetnews sample demo">
-
 To try out this sample app, you need to use the Canary version of Android Studio 4.0, and import the
 project from the Android Samples following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
 Compose is not available in earlier versions of Android Studio and downloading this github repo
 directly and opening it will most likely result in build errors.
+
+Screenshots
+-----------
+<img src="screenshots/jetnews_demo.gif" alt="Screenshot">
 
 ## Features
 
