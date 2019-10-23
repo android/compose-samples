@@ -15,6 +15,8 @@ Jetnews is a sample news reading app, built with
 [Jetpack Compose](https://developer.android.com/jetpack/compose). The goal of the sample is to
 showcase the current UI capabilities of Compose.
 
+<img src="screenshots/jetnews_demo.gif" alt="Jetnews sample demo">
+
 ## Features
 
 This sample contains three screens: a list of articles, a detail page for articles, and a page to
