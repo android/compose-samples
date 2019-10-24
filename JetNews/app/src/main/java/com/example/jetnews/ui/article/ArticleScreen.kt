@@ -104,7 +104,7 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
                         onBookmark = { toggleBookmark(postId = post.id) }
                     )
                     BottomBarAction(R.drawable.ic_share) {
-                        SharePost(post, context)
+                        sharePost(post, context)
                     }
                 }
                 expanded(flex = 1f) {
@@ -159,7 +159,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     )
 }
 
-private fun SharePost(post: Post, context: Context) {
+private fun sharePost(post: Post, context: Context) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TITLE, post.title)

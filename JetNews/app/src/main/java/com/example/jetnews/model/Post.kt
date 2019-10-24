@@ -68,7 +68,7 @@ enum class MarkupType {
     Bold,
 }
 
-enum class ParagraphType() {
+enum class ParagraphType {
     Title,
     Caption,
     Header,
