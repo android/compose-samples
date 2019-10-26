@@ -194,7 +194,7 @@ private fun TopicDivider() {
     }
 }
 
-private fun getTopicKey(tab: String, group: String, topic: String)= "$tab-$group-$topic"
+private fun getTopicKey(tab: String, group: String, topic: String) = "$tab-$group-$topic"
 
 private fun isTopicSelected(key: String) = JetnewsStatus.selectedTopics.contains(key)
 
