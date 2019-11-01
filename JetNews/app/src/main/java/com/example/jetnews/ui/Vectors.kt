@@ -31,7 +31,9 @@ import androidx.ui.res.vectorResource
 fun VectorImageButton(@DrawableRes id: Int, onClick: () -> Unit) {
     Ripple(bounded = false) {
         Clickable(onClick = onClick) {
-            VectorImage(id)
+            Container(expanded = true) {
+                VectorImage(id)
+            }
         }
     }
 }
