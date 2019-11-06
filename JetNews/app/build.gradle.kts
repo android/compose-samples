@@ -50,7 +50,7 @@ android {
 val ktlint by configurations.creating
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-eap-25")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.60-eap-76")
     implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("androidx.activity:activity-ktx:1.0.0")
     implementation("androidx.core:core-ktx:1.1.0")
@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.ui:ui-layout:$composeVersion")
     implementation("androidx.ui:ui-material:$composeVersion")
     implementation("androidx.ui:ui-tooling:$composeVersion")
-    ktlint("com.pinterest:ktlint:0.34.2")
+    ktlint("com.pinterest:ktlint:0.35.0")
 }
 
 tasks.register<JavaExec>("ktlint") {
