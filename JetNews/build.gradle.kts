@@ -23,11 +23,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.0-alpha01")
+        classpath("com.android.tools.build:gradle:4.0.0-alpha02")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-eap-76")
     }
 }
-
+    
 allprojects {
     repositories {
         google()
