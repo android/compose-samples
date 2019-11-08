@@ -15,25 +15,23 @@
  */
 
 buildscript {
+    ext.kotlin_version = '1.3.60-eap-76'
+    ext.compose_version = '0.1.0-dev02'
     repositories {
         google()
         jcenter()
-        maven {
-            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-        }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.0-alpha02")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-eap-76")
+        classpath 'com.android.tools.build:gradle:4.0.0-alpha02'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-    
+
 allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-        }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
 }
