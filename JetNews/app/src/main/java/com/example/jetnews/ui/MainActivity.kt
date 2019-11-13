@@ -34,4 +34,11 @@ class MainActivity : AppCompatActivity() {
             JetnewsApp()
         }
     }
+
+    override fun onBackPressed() {
+        appBackPress{
+            super.onBackPressed()
+        }
+    }
+
 }

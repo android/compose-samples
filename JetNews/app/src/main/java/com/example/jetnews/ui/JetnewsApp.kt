@@ -70,6 +70,13 @@ fun JetnewsApp() {
     }
 }
 
+fun appBackPress(close: () -> Unit) {
+    when(JetnewsStatus.currentScreen) {
+        is Screen.Article -> navigateTo(Screen.Home)
+        else -> close()
+    }
+}
+
 @Composable
 private fun AppContent(openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
