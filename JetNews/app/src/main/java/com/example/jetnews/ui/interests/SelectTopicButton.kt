@@ -72,7 +72,10 @@ private fun DrawSelectTopicButtonOff() {
         shape = CircleShape,
         border = Border(borderColor, 2.dp)
     )
-    DrawVector(+vectorResource(R.drawable.ic_add))
+    DrawVector(
+        vectorImage = +vectorResource(R.drawable.ic_add),
+        tintColor = +themeColor { primary }
+    )
 }
 
 @Preview("Off")
