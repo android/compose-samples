@@ -23,16 +23,13 @@ import androidx.compose.Composable
 import androidx.compose.ambient
 import androidx.compose.state
 import androidx.compose.unaryPlus
+import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.layout.Container
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
-import androidx.ui.layout.Padding
-import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.*
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
 import androidx.ui.material.TextButtonStyle
@@ -68,10 +65,12 @@ fun ArticleScreen(postId: String) {
         inflexible {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Published in: ${post.publication?.name}",
-                        style = +themeTextStyle { subtitle2 }
-                    )
+                    Align(Alignment.CenterLeft) {
+                        Text(
+                            text = "Published in: ${post.publication?.name}",
+                            style = +themeTextStyle { subtitle2 }
+                        )
+                    }
                 },
                 navigationIcon = {
                     VectorImageButton(R.drawable.ic_back) {

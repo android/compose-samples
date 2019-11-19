@@ -18,18 +18,14 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
+import androidx.ui.core.Alignment
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
-import androidx.ui.layout.Column
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.Padding
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacing
-import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.*
 import androidx.ui.material.Divider
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
@@ -52,7 +48,9 @@ fun HomeScreen(openDrawer: () -> Unit) {
     FlexColumn {
         inflexible {
             TopAppBar(
-                title = { Text(text = "Jetnews") },
+                title = {
+                    Align(Alignment.CenterLeft) { Text(text = "Jetnews") }
+                },
                 navigationIcon = {
                     VectorImageButton(R.drawable.ic_jetnews_logo) {
                         openDrawer()

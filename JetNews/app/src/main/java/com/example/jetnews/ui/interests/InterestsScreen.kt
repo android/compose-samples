@@ -19,21 +19,11 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.compose.state
 import androidx.compose.unaryPlus
-import androidx.ui.core.Clip
-import androidx.ui.core.Opacity
-import androidx.ui.core.Text
-import androidx.ui.core.dp
+import androidx.ui.core.*
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
-import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.Padding
-import androidx.ui.layout.Spacing
+import androidx.ui.layout.*
 import androidx.ui.material.Divider
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
@@ -62,7 +52,9 @@ fun InterestsScreen(openDrawer: () -> Unit) {
     FlexColumn {
         inflexible {
             TopAppBar(
-                title = { Text("Interests") },
+                title = {
+                    Align(Alignment.CenterLeft) { Text(text = "Interests") }
+                },
                 navigationIcon = {
                     VectorImageButton(R.drawable.ic_jetnews_logo) {
                         openDrawer()
