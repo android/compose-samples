@@ -47,7 +47,6 @@ fun PostCardPopular(post: Post) {
             }) {
                 Container(width = 280.dp, height = 240.dp) {
                     Column(
-                        mainAxisSize = LayoutSize.Expand,
                         crossAxisSize = LayoutSize.Expand
                     ) {
                         val image = post.image ?: +imageResource(R.drawable.placeholder_4_3)

@@ -89,8 +89,7 @@ private fun AppDrawer(
     closeDrawer: () -> Unit
 ) {
     Column(
-        crossAxisSize = LayoutSize.Expand,
-        mainAxisSize = LayoutSize.Expand
+        crossAxisSize = LayoutSize.Expand
     ) {
         HeightSpacer(24.dp)
         Padding(16.dp) {
@@ -149,7 +148,6 @@ private fun DrawerButton(
         ) {
             Button(onClick = action, style = TextButtonStyle()) {
                 Row(
-                    mainAxisSize = LayoutSize.Expand,
                     crossAxisAlignment = CrossAxisAlignment.Center
                 ) {
                     VectorImage(

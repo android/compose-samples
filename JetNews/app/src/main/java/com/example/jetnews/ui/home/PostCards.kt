@@ -83,7 +83,7 @@ fun PostCardSimple(post: Post) {
                         }
                     }
                     flexible(1f) {
-                        Column(mainAxisSize = LayoutSize.Expand) {
+                        Column() {
                             PostTitle(post)
                             AuthorAndReadTime(post)
                         }
@@ -114,7 +114,7 @@ fun PostCardHistory(post: Post) {
                         }
                     }
                     flexible(1f) {
-                        Column(mainAxisSize = LayoutSize.Expand) {
+                        Column() {
                             Text(
                                 text = "BASED ON YOUR HISTORY",
                                 style = (+themeTextStyle { overline }).withOpacity(0.38f)
