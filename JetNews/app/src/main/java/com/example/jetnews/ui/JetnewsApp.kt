@@ -25,8 +25,9 @@ import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
 import androidx.ui.layout.CrossAxisAlignment
+import androidx.ui.layout.FlexColumn
+import androidx.ui.layout.FlexRow
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
@@ -39,8 +40,6 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeColor
-import androidx.ui.material.themeTextStyle
 import com.example.jetnews.R
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
@@ -73,7 +72,7 @@ fun JetnewsApp() {
 @Composable
 private fun AppContent(openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
-        Surface(color = +themeColor { background }) {
+        Surface(color = (+MaterialTheme.colors()).background) {
             when (screen) {
                 is Screen.Home -> HomeScreen { openDrawer() }
                 is Screen.Interests -> InterestsScreen { openDrawer() }
@@ -88,7 +87,7 @@ private fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
-    Column(
+    FlexColumn(
         crossAxisSize = LayoutSize.Expand
     ) {
         HeightSpacer(24.dp)
@@ -96,7 +95,7 @@ private fun AppDrawer(
             Row {
                 VectorImage(
                     id = R.drawable.ic_jetnews_logo,
-                    tint = +themeColor { primary }
+                    tint = (+MaterialTheme.colors()).primary
                 )
                 WidthSpacer(8.dp)
                 VectorImage(R.drawable.ic_jetnews_wordmark)
@@ -131,14 +130,14 @@ private fun DrawerButton(
     action: () -> Unit
 ) {
     val textIconColor = if (isSelected) {
-        +themeColor { primary }
+        (+MaterialTheme.colors()).primary
     } else {
-        (+themeColor { onSurface }).copy(alpha = 0.6f)
+        (+MaterialTheme.colors()).onSurface.copy(alpha = 0.6f)
     }
     val backgroundColor = if (isSelected) {
-        (+themeColor { primary }).copy(alpha = 0.12f)
+        (+MaterialTheme.colors()).primary.copy(alpha = 0.12f)
     } else {
-        +themeColor { surface }
+        (+MaterialTheme.colors()).surface
     }
 
     Padding(left = 8.dp, top = 8.dp, right = 8.dp) {
@@ -147,7 +146,7 @@ private fun DrawerButton(
             shape = RoundedCornerShape(4.dp)
         ) {
             Button(onClick = action, style = TextButtonStyle()) {
-                Row(
+                FlexRow(
                     crossAxisAlignment = CrossAxisAlignment.Center
                 ) {
                     VectorImage(
@@ -157,7 +156,7 @@ private fun DrawerButton(
                     WidthSpacer(16.dp)
                     Text(
                         text = label,
-                        style = (+themeTextStyle { body2 }).copy(
+                        style = (+MaterialTheme.typography()).body2.copy(
                             color = textIconColor
                         )
                     )

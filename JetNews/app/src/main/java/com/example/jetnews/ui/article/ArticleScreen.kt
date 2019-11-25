@@ -35,11 +35,11 @@ import androidx.ui.layout.Padding
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeTextStyle
 import androidx.ui.res.vectorResource
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
@@ -70,7 +70,7 @@ fun ArticleScreen(postId: String) {
                 title = {
                     Text(
                         text = "Published in: ${post.publication?.name}",
-                        style = +themeTextStyle { subtitle2 }
+                        style = (+MaterialTheme.typography()).subtitle2
                     )
                 },
                 navigationIcon = {
@@ -146,7 +146,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = "Functionality not available \uD83D\uDE48",
-                style = +themeTextStyle { body2 }
+                style = (+MaterialTheme.typography()).body2
             )
         },
         confirmButton = {

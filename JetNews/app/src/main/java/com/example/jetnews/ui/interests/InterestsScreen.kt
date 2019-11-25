@@ -35,10 +35,10 @@ import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Spacing
 import androidx.ui.material.Divider
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.themeTextStyle
 import androidx.ui.res.imageResource
 import com.example.jetnews.R
 import com.example.jetnews.data.people
@@ -138,7 +138,7 @@ private fun TabWithSections(
                 Text(
                     text = section,
                     modifier = Spacing(16.dp),
-                    style = +themeTextStyle { subtitle1 })
+                    style = (+MaterialTheme.typography()).subtitle1)
                 topics.forEach { topic ->
                     TopicItem(
                         getTopicKey(
@@ -172,7 +172,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
                 Text(
                     text = itemTitle,
                     modifier = Spacing(16.dp),
-                    style = +themeTextStyle { subtitle1 })
+                    style = (+MaterialTheme.typography()).subtitle1)
             }
             inflexible {
                 val selected = isTopicSelected(topicKey)

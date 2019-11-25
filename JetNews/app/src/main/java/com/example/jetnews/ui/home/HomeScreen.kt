@@ -31,9 +31,9 @@ import androidx.ui.layout.Row
 import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.Divider
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
@@ -78,7 +78,7 @@ private fun HomeScreenTopSection(post: Post) {
     Padding(top = 16.dp, left = 16.dp, right = 16.dp) {
         Text(
             text = "Top stories for you",
-            style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f)
+            style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
         )
     }
     Ripple(bounded = true) {
@@ -104,7 +104,7 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
     Padding(16.dp) {
         Text(
             text = "Popular on Jetnews",
-            style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f)
+            style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
         )
     }
     HorizontalScroller {

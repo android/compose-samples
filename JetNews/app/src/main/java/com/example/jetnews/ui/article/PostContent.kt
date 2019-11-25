@@ -36,8 +36,8 @@ import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.WidthSpacer
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
@@ -66,12 +66,12 @@ fun PostContent(post: Post) {
             Column {
                 HeightSpacer(height = defaultSpacerSize)
                 PostHeaderImage(post)
-                Text(text = post.title, style = +themeTextStyle { h4 })
+                Text(text = post.title, style = (+MaterialTheme.typography()).h4)
                 HeightSpacer(height = 8.dp)
                 post.subtitle?.let { subtitle ->
                     Text(
                         text = subtitle,
-                        style = (+themeTextStyle { body2 }).withOpacity(0.6f),
+                        style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f),
                         paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
                     )
                     HeightSpacer(height = defaultSpacerSize)
@@ -106,11 +106,11 @@ private fun PostMetadata(metadata: Metadata) {
             HeightSpacer(4.dp)
             Text(
                 text = metadata.author.name,
-                style = (+themeTextStyle { caption }).withOpacity(0.87f)
+                style = ((+MaterialTheme.typography()).caption).withOpacity(0.87f)
             )
             Text(
                 text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
-                style = (+themeTextStyle { caption }).withOpacity(0.6f)
+                style = ((+MaterialTheme.typography()).caption).withOpacity(0.6f)
             )
         }
     }
@@ -203,29 +203,29 @@ private data class ParagraphStyling(
 )
 
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
-    var textStyle: TextStyle = +themeTextStyle { body1 }
+    var textStyle: TextStyle = (+MaterialTheme.typography()).body1
     var paragraphStyle = ParagraphStyle()
     var trailingPadding = 24.dp
 
     when (this) {
-        ParagraphType.Caption -> textStyle = +themeTextStyle { body1 }
-        ParagraphType.Title -> textStyle = +themeTextStyle { h4 }
+        ParagraphType.Caption -> textStyle = (+MaterialTheme.typography()).body1
+        ParagraphType.Title -> textStyle = (+MaterialTheme.typography()).h4
         ParagraphType.Subhead -> {
-            textStyle = +themeTextStyle { h6 }
+            textStyle = (+MaterialTheme.typography()).h6
             trailingPadding = 16.dp
         }
         ParagraphType.Text -> {
-            textStyle = +themeTextStyle { body1 }
+            textStyle = (+MaterialTheme.typography()).body1
             paragraphStyle = paragraphStyle.copy(lineHeight = 28.sp)
         }
         ParagraphType.Header -> {
-            textStyle = +themeTextStyle { h5 }
+            textStyle = (+MaterialTheme.typography()).h5
             trailingPadding = 16.dp
         }
         ParagraphType.CodeBlock -> textStyle =
-            (+themeTextStyle { body1 })
+            ((+MaterialTheme.typography()).body1)
                 .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
-        ParagraphType.Quote -> textStyle = +themeTextStyle { body1 }
+        ParagraphType.Quote -> textStyle = (+MaterialTheme.typography()).body1
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
         }
@@ -246,28 +246,28 @@ private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Item(
-                (+themeTextStyle { body1 }).copy(fontStyle = FontStyle.Italic),
+                ((+MaterialTheme.typography()).body1).copy(fontStyle = FontStyle.Italic),
                 start,
                 end
             )
         }
         MarkupType.Link -> {
             AnnotatedString.Item(
-                (+themeTextStyle { body1 }).copy(decoration = TextDecoration.Underline),
+                ((+MaterialTheme.typography()).body1).copy(decoration = TextDecoration.Underline),
                 start,
                 end
             )
         }
         MarkupType.Bold -> {
             AnnotatedString.Item(
-                (+themeTextStyle { body1 }).copy(fontWeight = FontWeight.Bold),
+                ((+MaterialTheme.typography()).body1).copy(fontWeight = FontWeight.Bold),
                 start,
                 end
             )
         }
         MarkupType.Code -> {
             AnnotatedString.Item(
-                (+themeTextStyle { body1 })
+                ((+MaterialTheme.typography()).body1)
                     .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace),
                 start,
                 end

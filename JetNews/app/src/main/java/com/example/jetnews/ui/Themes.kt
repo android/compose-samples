@@ -17,9 +17,9 @@
 package com.example.jetnews.ui
 
 import androidx.ui.graphics.Color
-import androidx.ui.material.MaterialColors
+import androidx.ui.material.ColorPalette
 
-val lightThemeColors = MaterialColors(
+val lightThemeColors = ColorPalette(
     primary = Color(0xFFDD0D3C),
     primaryVariant = Color(0xFFC20029),
     onPrimary = Color.White,
@@ -37,7 +37,7 @@ val lightThemeColors = MaterialColors(
  * Note: Dark Theme support is not yet available, it will come in 2020. This is just an example of
  * using dark colors.
  */
-val darkThemeColors = MaterialColors(
+val darkThemeColors = ColorPalette(
     primary = Color(0xFFEA6D7E),
     primaryVariant = Color(0xFFDD0D3E),
     onPrimary = Color.Black,

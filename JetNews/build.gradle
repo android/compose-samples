@@ -27,12 +27,12 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-//6029545
+
 allprojects {
     repositories {
         google()
         jcenter()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url 'https://ci.android.com/builds/submitted/5959281/androidx_snapshot/latest/ui/repository/' }
+        maven { url 'https://ci.android.com/builds/submitted/6029545/androidx_snapshot/latest/ui/repository/' }
     }
 }

@@ -25,11 +25,12 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
+import androidx.ui.layout.FlexColumn
 import androidx.ui.layout.FlexRow
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 import androidx.ui.res.imageResource
 import com.example.jetnews.R
@@ -42,7 +43,7 @@ import com.example.jetnews.ui.navigateTo
 @Composable
 fun AuthorAndReadTime(post: Post) {
     FlexRow {
-        val textStyle = (+themeTextStyle { body2 }).withOpacity(0.6f)
+        val textStyle = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
         flexible(1f) {
             Text(text = post.metadata.author.name, style = textStyle)
         }
@@ -66,7 +67,7 @@ fun PostImage(post: Post) {
 
 @Composable
 fun PostTitle(post: Post) {
-    Text(post.title, style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f))
+    Text(post.title, style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f))
 }
 
 @Composable
@@ -83,7 +84,7 @@ fun PostCardSimple(post: Post) {
                         }
                     }
                     flexible(1f) {
-                        Column() {
+                        FlexColumn() {
                             PostTitle(post)
                             AuthorAndReadTime(post)
                         }
@@ -114,10 +115,10 @@ fun PostCardHistory(post: Post) {
                         }
                     }
                     flexible(1f) {
-                        Column() {
+                        FlexColumn {
                             Text(
                                 text = "BASED ON YOUR HISTORY",
-                                style = (+themeTextStyle { overline }).withOpacity(0.38f)
+                                style = ((+MaterialTheme.typography()).overline).withOpacity(0.38f)
                             )
                             PostTitle(post = post)
                             AuthorAndReadTime(post)
@@ -143,10 +144,7 @@ fun BookmarkButton(
         bounded = false,
         radius = 24.dp
     ) {
-        Toggleable(
-            checked = isBookmarked,
-            onCheckedChange = onBookmark
-        ) {
+        Toggleable(isBookmarked, onBookmark) {
             Container(width = 48.dp, height = 48.dp) {
                 if (isBookmarked) {
                     VectorImage(R.drawable.ic_bookmarked)

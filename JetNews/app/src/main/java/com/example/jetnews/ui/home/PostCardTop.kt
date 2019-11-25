@@ -27,14 +27,14 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
+import androidx.ui.layout.FlexColumn
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Padding
-import androidx.ui.material.MaterialColors
+import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.MaterialTypography
+import androidx.ui.material.Typography
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.data.getPostsWithImagesLoaded
@@ -48,7 +48,7 @@ import com.example.jetnews.ui.themeTypography
 fun PostCardTop(post: Post) {
     // TUTORIAL CONTENT STARTS HERE
     Padding(16.dp) {
-        Column(crossAxisSize = LayoutSize.Expand) {
+        FlexColumn(crossAxisSize = LayoutSize.Expand) {
             post.image?.let { image ->
                 Container(expanded = true, height = 180.dp) {
                     Clip(shape = RoundedCornerShape(4.dp)) {
@@ -59,15 +59,15 @@ fun PostCardTop(post: Post) {
             HeightSpacer(16.dp)
             Text(
                 text = post.title,
-                style = (+themeTextStyle { h6 }).withOpacity(0.87f)
+                style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
             )
             Text(
                 text = post.metadata.author.name,
-                style = (+themeTextStyle { body2 }).withOpacity(0.87f)
+                style = ((+MaterialTheme.typography()).body2).withOpacity(0.87f)
             )
             Text(
                 text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                style = (+themeTextStyle { body2 }).withOpacity(0.6f)
+                style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
             )
         }
     }
@@ -96,8 +96,8 @@ fun TutorialPreviewFontscale() {
 
 @Composable
 fun TutorialPreviewTemplate(
-    colors: MaterialColors = lightThemeColors,
-    typography: MaterialTypography = themeTypography
+    colors: ColorPalette = lightThemeColors,
+    typography: Typography = themeTypography
 ) {
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
