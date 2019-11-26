@@ -100,7 +100,7 @@ private fun PostHeaderImage(post: Post) {
 @Composable
 private fun PostMetadata(metadata: Metadata) {
     Row {
-        VectorImage(R.drawable.ic_account_circle_black)
+        VectorImage(id = R.drawable.ic_account_circle_black)
         WidthSpacer(width = 8.dp)
         Column {
             HeightSpacer(4.dp)

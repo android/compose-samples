@@ -18,6 +18,7 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
+import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
@@ -25,15 +26,15 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.Padding
+import androidx.ui.layout.Row
+import androidx.ui.layout.Spacing
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.withOpacity
 import androidx.ui.res.imageResource
+import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
+import com.example.jetnews.data.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
@@ -42,25 +43,21 @@ import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun AuthorAndReadTime(post: Post) {
-    FlexRow {
+    Row {
         val textStyle = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
-        flexible(1f) {
-            Text(text = post.metadata.author.name, style = textStyle)
-        }
-        inflexible {
-            Text(
-                text = " - ${post.metadata.readTimeMinutes} min read",
-                style = textStyle
-            )
-        }
+        Text(modifier = Flexible(1f), text = post.metadata.author.name, style = textStyle)
+        Text(
+            text = " - ${post.metadata.readTimeMinutes} min read",
+            style = textStyle
+        )
     }
 }
 
 @Composable
-fun PostImage(post: Post) {
+fun PostImage(modifier: Modifier = Modifier.None, post: Post) {
     val image = post.imageThumb ?: +imageResource(R.drawable.placeholder_1_1)
 
-    Container(width = 40.dp, height = 40.dp) {
+    Container(modifier = modifier, width = 40.dp, height = 40.dp) {
         DrawImage(image)
     }
 }
@@ -76,26 +73,16 @@ fun PostCardSimple(post: Post) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
         }) {
-            Padding(16.dp) {
-                FlexRow {
-                    inflexible {
-                        Padding(right = 16.dp) {
-                            PostImage(post)
-                        }
-                    }
-                    flexible(1f) {
-                        FlexColumn() {
-                            PostTitle(post)
-                            AuthorAndReadTime(post)
-                        }
-                    }
-                    inflexible {
-                        BookmarkButton(
-                            isBookmarked = isFavorite(postId = post.id),
-                            onBookmark = { toggleBookmark(postId = post.id) }
-                        )
-                    }
+            Row(modifier = Spacing(16.dp)) {
+                PostImage(modifier = Spacing(right = 16.dp), post = post)
+                Column(modifier = Flexible(1f)) {
+                    PostTitle(post)
+                    AuthorAndReadTime(post)
                 }
+                BookmarkButton(
+                    isBookmarked = isFavorite(postId = post.id),
+                    onBookmark = { toggleBookmark(postId = post.id) }
+                )
             }
         }
     }
@@ -107,29 +94,20 @@ fun PostCardHistory(post: Post) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
         }) {
-            Padding(16.dp) {
-                FlexRow {
-                    inflexible {
-                        Padding(right = 16.dp) {
-                            PostImage(post = post)
-                        }
-                    }
-                    flexible(1f) {
-                        FlexColumn {
-                            Text(
-                                text = "BASED ON YOUR HISTORY",
-                                style = ((+MaterialTheme.typography()).overline).withOpacity(0.38f)
-                            )
-                            PostTitle(post = post)
-                            AuthorAndReadTime(post)
-                        }
-                    }
-                    inflexible {
-                        Padding(top = 8.dp, bottom = 8.dp) {
-                            VectorImage(R.drawable.ic_more)
-                        }
-                    }
+            Row(Spacing(all = 16.dp)) {
+                PostImage(modifier = Spacing(right = 16.dp), post = post)
+                Column(modifier = Flexible(1f)) {
+                    Text(
+                        text = "BASED ON YOUR HISTORY",
+                        style = ((+MaterialTheme.typography()).overline).withOpacity(0.38f)
+                    )
+                    PostTitle(post = post)
+                    AuthorAndReadTime(post)
                 }
+                VectorImage(
+                    modifier = Spacing(top = 8.dp, bottom = 8.dp),
+                    id = R.drawable.ic_more
+                )
             }
         }
     }
@@ -147,13 +125,19 @@ fun BookmarkButton(
         Toggleable(isBookmarked, onBookmark) {
             Container(width = 48.dp, height = 48.dp) {
                 if (isBookmarked) {
-                    VectorImage(R.drawable.ic_bookmarked)
+                    VectorImage(id = R.drawable.ic_bookmarked)
                 } else {
-                    VectorImage(R.drawable.ic_bookmark)
+                    VectorImage(id = R.drawable.ic_bookmark)
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun runPreview() {
+    PostCardSimple(post = post3)
 }
 
 fun toggleBookmark(postId: String) {

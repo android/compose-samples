@@ -98,7 +98,7 @@ private fun AppDrawer(
                     tint = (+MaterialTheme.colors()).primary
                 )
                 WidthSpacer(8.dp)
-                VectorImage(R.drawable.ic_jetnews_wordmark)
+                VectorImage(id = R.drawable.ic_jetnews_wordmark)
             }
         }
         Divider(color = Color(0x14333333))
