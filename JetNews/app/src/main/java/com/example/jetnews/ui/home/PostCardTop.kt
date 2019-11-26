@@ -27,10 +27,10 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.FlexColumn
+import androidx.ui.layout.ExpandedWidth
 import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.Padding
+import androidx.ui.layout.MinHeight
+import androidx.ui.layout.Spacing
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Typography
@@ -38,6 +38,7 @@ import androidx.ui.material.surface.Surface
 import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.data.getPostsWithImagesLoaded
+import com.example.jetnews.data.post2
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.darkThemeColors
@@ -46,33 +47,31 @@ import com.example.jetnews.ui.themeTypography
 
 @Composable
 fun PostCardTop(post: Post) {
-    // TUTORIAL CONTENT STARTS HERE
-    Padding(16.dp) {
-        FlexColumn(crossAxisSize = LayoutSize.Expand) {
-            post.image?.let { image ->
-                Container(expanded = true, height = 180.dp) {
-                    Clip(shape = RoundedCornerShape(4.dp)) {
-                        DrawImage(image)
-                    }
+// TUTORIAL CONTENT STARTS HERE
+    Column(modifier = ExpandedWidth wraps Spacing(16.dp)) {
+        post.image?.let { image ->
+            Container(modifier = MinHeight(180.dp) wraps ExpandedWidth) {
+                Clip(shape = RoundedCornerShape(4.dp)) {
+                    DrawImage(image)
                 }
             }
-            HeightSpacer(16.dp)
-            Text(
-                text = post.title,
-                style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
-            )
-            Text(
-                text = post.metadata.author.name,
-                style = ((+MaterialTheme.typography()).body2).withOpacity(0.87f)
-            )
-            Text(
-                text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
-            )
         }
+        HeightSpacer(16.dp)
+        Text(
+            text = post.title,
+            style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
+        )
+        Text(
+            text = post.metadata.author.name,
+            style = ((+MaterialTheme.typography()).body2).withOpacity(0.87f)
+        )
+        Text(
+            text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+            style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
+        )
     }
-    // TUTORIAL CONTENT ENDS HERE
 }
+// TUTORIAL CONTENT ENDS HERE
 
 // Preview section
 
@@ -107,4 +106,10 @@ fun TutorialPreviewTemplate(
             PostCardTop(post)
         }
     }
+}
+
+@Preview
+@Composable
+fun previewPostCardTop() {
+    PostCardTop(post = post2)
 }

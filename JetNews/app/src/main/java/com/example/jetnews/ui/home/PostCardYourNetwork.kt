@@ -25,8 +25,7 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.LayoutSize
+import androidx.ui.layout.Expanded
 import androidx.ui.layout.Spacing
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
@@ -47,9 +46,7 @@ fun PostCardPopular(post: Post) {
                 navigateTo(Screen.Article(post.id))
             }) {
                 Container(width = 280.dp, height = 240.dp) {
-                    FlexColumn(
-                        crossAxisSize = LayoutSize.Expand
-                    ) {
+                    Column(modifier = Expanded) {
                         val image = post.image ?: +imageResource(R.drawable.placeholder_4_3)
                         Container(height = 100.dp, expanded = true) {
                             DrawImage(image)

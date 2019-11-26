@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
 import androidx.ui.core.Dp
+import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.core.sp
@@ -31,7 +32,6 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.FlexRow
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
@@ -47,7 +47,9 @@ import androidx.ui.text.font.FontStyle
 import androidx.ui.text.font.FontWeight
 import androidx.ui.text.style.TextDecoration
 import androidx.ui.text.style.TextIndent
+import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
+import com.example.jetnews.data.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
 import com.example.jetnews.model.Metadata
@@ -60,8 +62,8 @@ private val defaultSpacerSize = 16.dp
 private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 
 @Composable
-fun PostContent(post: Post) {
-    VerticalScroller {
+fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
+    VerticalScroller(modifier = modifier) {
         Padding(left = defaultSpacerSize, right = defaultSpacerSize) {
             Column {
                 HeightSpacer(height = defaultSpacerSize)
@@ -184,15 +186,16 @@ private fun BulletParagraph(
     textStyle: TextStyle,
     paragraphStyle: ParagraphStyle
 ) {
-    FlexRow {
-        inflexible {
-            Container(width = 8.dp, height = 8.dp) {
-                DrawShape(shape = CircleShape, color = Color.DarkGray)
-            }
+    Row {
+        Container(width = 8.dp, height = 8.dp) {
+            DrawShape(shape = CircleShape, color = Color.DarkGray)
         }
-        flexible(flex = 1f) {
-            Text(text = text, style = textStyle, paragraphStyle = paragraphStyle)
-        }
+        Text(
+            modifier = Flexible(1f),
+            text = text,
+            style = textStyle,
+            paragraphStyle = paragraphStyle
+        )
     }
 }
 
@@ -274,4 +277,11 @@ private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
             )
         }
     }
+}
+
+
+@Preview
+@Composable
+fun preview() {
+    PostContent(post = post3)
 }

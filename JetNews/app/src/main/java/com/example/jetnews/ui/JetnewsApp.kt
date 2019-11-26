@@ -21,17 +21,18 @@ import androidx.compose.Composable
 import androidx.compose.state
 import androidx.compose.unaryPlus
 import androidx.ui.animation.Crossfade
+import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
+import androidx.ui.layout.Column
+import androidx.ui.layout.ExpandedHeight
+import androidx.ui.layout.ExpandedWidth
+import androidx.ui.layout.Gravity
 import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
+import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.Button
 import androidx.ui.material.Divider
@@ -40,6 +41,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.surface.Surface
+import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
@@ -87,22 +89,19 @@ private fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
-    FlexColumn(
-        crossAxisSize = LayoutSize.Expand
-    ) {
+    Column(modifier = ExpandedHeight wraps ExpandedWidth) {
         HeightSpacer(24.dp)
-        Padding(16.dp) {
-            Row {
-                VectorImage(
-                    id = R.drawable.ic_jetnews_logo,
-                    tint = (+MaterialTheme.colors()).primary
-                )
-                WidthSpacer(8.dp)
-                VectorImage(id = R.drawable.ic_jetnews_wordmark)
-            }
+        Row(modifier = Spacing(16.dp)) {
+            VectorImage(
+                id = R.drawable.ic_jetnews_logo,
+                tint = (+MaterialTheme.colors()).primary
+            )
+            WidthSpacer(8.dp)
+            VectorImage(id = R.drawable.ic_jetnews_wordmark)
         }
         Divider(color = Color(0x14333333))
         DrawerButton(
+            modifier = Inflexible ,
             icon = R.drawable.ic_home,
             label = "Home",
             isSelected = currentScreen == Screen.Home
@@ -124,6 +123,7 @@ private fun AppDrawer(
 
 @Composable
 private fun DrawerButton(
+    modifier: Modifier = Modifier.None,
     @DrawableRes icon: Int,
     label: String,
     isSelected: Boolean,
@@ -140,28 +140,37 @@ private fun DrawerButton(
         (+MaterialTheme.colors()).surface
     }
 
-    Padding(left = 8.dp, top = 8.dp, right = 8.dp) {
-        Surface(
-            color = backgroundColor,
-            shape = RoundedCornerShape(4.dp)
-        ) {
-            Button(onClick = action, style = TextButtonStyle()) {
-                FlexRow(
-                    crossAxisAlignment = CrossAxisAlignment.Center
-                ) {
-                    VectorImage(
-                        id = icon,
-                        tint = textIconColor
+
+    Surface(
+        modifier = modifier wraps Spacing(left = 8.dp, top = 8.dp, right = 8.dp),
+        color = (+MaterialTheme.colors()).background,
+        shape = RoundedCornerShape(4.dp)
+    ) {
+        Button(onClick = action, style = TextButtonStyle()) {
+            Row {
+                VectorImage(
+                    modifier = Gravity.Center,
+                    id = icon,
+                    tint = textIconColor
+                )
+                WidthSpacer(16.dp)
+                Text(
+                    text = label,
+                    style = (+MaterialTheme.typography()).body2.copy(
+                        color = textIconColor
                     )
-                    WidthSpacer(16.dp)
-                    Text(
-                        text = label,
-                        style = (+MaterialTheme.typography()).body2.copy(
-                            color = textIconColor
-                        )
-                    )
-                }
+                )
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun preview() {
+    //DrawerButton(icon = R.drawable.ic_home, label= "Preview", isSelected = true, action = {})
+    AppDrawer(
+        currentScreen = JetnewsStatus.currentScreen,
+        closeDrawer = {  }
+    )
 }

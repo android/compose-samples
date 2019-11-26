@@ -18,6 +18,7 @@ package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
+import androidx.ui.core.Modifier
 import androidx.ui.core.dp
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.DrawShape
@@ -39,12 +40,13 @@ import com.example.jetnews.ui.lightThemeColors
 
 @Composable
 fun SelectTopicButton(
+    modifier: Modifier = Modifier.None,
     onSelected: ((Boolean) -> Unit)? = null,
     selected: Boolean = false
 ) {
     Ripple(bounded = false) {
         Toggleable(selected, onSelected) {
-            Container(width = 36.dp, height = 36.dp) {
+            Container(modifier = modifier, width = 36.dp, height = 36.dp) {
                 if (selected) {
                     DrawSelectTopicButtonOn()
                 } else {
