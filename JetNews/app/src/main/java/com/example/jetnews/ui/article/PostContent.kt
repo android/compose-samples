@@ -142,7 +142,7 @@ private fun Paragraph(paragraph: Paragraph) {
             )
             ParagraphType.Header -> {
                 Text(
-                    modifier = Spacing(top = 16.dp),
+                    modifier = Spacing(16.dp),
                     text = annotatedString,
                     style = textStyle,
                     paragraphStyle = paragraphStyle

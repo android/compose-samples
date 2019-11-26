@@ -27,8 +27,7 @@ import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
-import androidx.ui.layout.ExpandedHeight
-import androidx.ui.layout.ExpandedWidth
+import androidx.ui.layout.Expanded
 import androidx.ui.layout.Gravity
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Row
@@ -89,7 +88,7 @@ private fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
-    Column(modifier = ExpandedHeight wraps ExpandedWidth) {
+    Column(modifier = Expanded) {
         HeightSpacer(24.dp)
         Row(modifier = Spacing(16.dp)) {
             VectorImage(
@@ -168,7 +167,6 @@ private fun DrawerButton(
 @Preview
 @Composable
 fun preview() {
-    //DrawerButton(icon = R.drawable.ic_home, label= "Preview", isSelected = true, action = {})
     AppDrawer(
         currentScreen = JetnewsStatus.currentScreen,
         closeDrawer = {  }

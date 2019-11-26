@@ -31,6 +31,7 @@ import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.Row
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
@@ -119,7 +120,7 @@ private fun BottomBarAction(
         radius = 24.dp
     ) {
         Clickable(onClick = onClick) {
-            Container(modifier = Spacing(12.dp), width = 24.dp, height = 24.dp) {
+            Container(modifier = Spacing(12.dp) wraps Size(24.dp, 24.dp)) {
                 DrawVector(+vectorResource(id))
             }
         }
