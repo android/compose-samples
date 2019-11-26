@@ -100,7 +100,6 @@ private fun AppDrawer(
         }
         Divider(color = Color(0x14333333))
         DrawerButton(
-            modifier = Inflexible ,
             icon = R.drawable.ic_home,
             label = "Home",
             isSelected = currentScreen == Screen.Home
@@ -128,15 +127,16 @@ private fun DrawerButton(
     isSelected: Boolean,
     action: () -> Unit
 ) {
+    val colors = +MaterialTheme.colors()
     val textIconColor = if (isSelected) {
-        (+MaterialTheme.colors()).primary
+        colors.primary
     } else {
-        (+MaterialTheme.colors()).onSurface.copy(alpha = 0.6f)
+        colors.onSurface.copy(alpha = 0.6f)
     }
     val backgroundColor = if (isSelected) {
-        (+MaterialTheme.colors()).primary.copy(alpha = 0.12f)
+        colors.primary.copy(alpha = 0.12f)
     } else {
-        (+MaterialTheme.colors()).surface
+        colors.surface
     }
 
 

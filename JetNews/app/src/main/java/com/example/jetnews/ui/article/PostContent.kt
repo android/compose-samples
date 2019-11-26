@@ -63,16 +63,17 @@ private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 
 @Composable
 fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
+    val typography = +MaterialTheme.typography()
     VerticalScroller(modifier = modifier) {
         Column(modifier = Spacing(left = defaultSpacerSize, right = defaultSpacerSize)) {
             HeightSpacer(height = defaultSpacerSize)
             PostHeaderImage(post)
-            Text(text = post.title, style = (+MaterialTheme.typography()).h4)
+            Text(text = post.title, style = typography.h4)
             HeightSpacer(height = 8.dp)
             post.subtitle?.let { subtitle ->
                 Text(
                     text = subtitle,
-                    style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f),
+                    style = typography.body2.withOpacity(0.6f),
                     paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
                 )
                 HeightSpacer(height = defaultSpacerSize)
@@ -99,6 +100,7 @@ private fun PostHeaderImage(post: Post) {
 
 @Composable
 private fun PostMetadata(metadata: Metadata) {
+    val typography = +MaterialTheme.typography()
     Row {
         VectorImage(id = R.drawable.ic_account_circle_black)
         WidthSpacer(width = 8.dp)
@@ -106,11 +108,11 @@ private fun PostMetadata(metadata: Metadata) {
             HeightSpacer(4.dp)
             Text(
                 text = metadata.author.name,
-                style = ((+MaterialTheme.typography()).caption).withOpacity(0.87f)
+                style = typography.caption.withOpacity(0.87f)
             )
             Text(
                 text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
-                style = ((+MaterialTheme.typography()).caption).withOpacity(0.6f)
+                style = typography.caption.withOpacity(0.6f)
             )
         }
     }
@@ -202,29 +204,30 @@ private data class ParagraphStyling(
 )
 
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
-    var textStyle: TextStyle = (+MaterialTheme.typography()).body1
+    val typography = +MaterialTheme.typography()
+    var textStyle: TextStyle = typography.body1
     var paragraphStyle = ParagraphStyle()
     var trailingPadding = 24.dp
 
     when (this) {
-        ParagraphType.Caption -> textStyle = (+MaterialTheme.typography()).body1
-        ParagraphType.Title -> textStyle = (+MaterialTheme.typography()).h4
+        ParagraphType.Caption -> textStyle = typography.body1
+        ParagraphType.Title -> textStyle = typography.h4
         ParagraphType.Subhead -> {
-            textStyle = (+MaterialTheme.typography()).h6
+            textStyle = typography.h6
             trailingPadding = 16.dp
         }
         ParagraphType.Text -> {
-            textStyle = (+MaterialTheme.typography()).body1
+            textStyle = typography.body1
             paragraphStyle = paragraphStyle.copy(lineHeight = 28.sp)
         }
         ParagraphType.Header -> {
-            textStyle = (+MaterialTheme.typography()).h5
+            textStyle = typography.h5
             trailingPadding = 16.dp
         }
         ParagraphType.CodeBlock -> textStyle =
-            ((+MaterialTheme.typography()).body1)
+            (typography.body1)
                 .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
-        ParagraphType.Quote -> textStyle = (+MaterialTheme.typography()).body1
+        ParagraphType.Quote -> textStyle = typography.body1
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
         }
@@ -242,31 +245,32 @@ private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
 }
 
 private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
+    val typography = +MaterialTheme.typography()
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Item(
-                ((+MaterialTheme.typography()).body1).copy(fontStyle = FontStyle.Italic),
+                typography.body1.copy(fontStyle = FontStyle.Italic),
                 start,
                 end
             )
         }
         MarkupType.Link -> {
             AnnotatedString.Item(
-                ((+MaterialTheme.typography()).body1).copy(decoration = TextDecoration.Underline),
+                typography.body1.copy(decoration = TextDecoration.Underline),
                 start,
                 end
             )
         }
         MarkupType.Bold -> {
             AnnotatedString.Item(
-                ((+MaterialTheme.typography()).body1).copy(fontWeight = FontWeight.Bold),
+                typography.body1.copy(fontWeight = FontWeight.Bold),
                 start,
                 end
             )
         }
         MarkupType.Code -> {
             AnnotatedString.Item(
-                ((+MaterialTheme.typography()).body1)
+                typography.body1
                     .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace),
                 start,
                 end

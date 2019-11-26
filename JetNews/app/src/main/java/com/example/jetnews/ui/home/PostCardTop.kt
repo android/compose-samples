@@ -48,6 +48,7 @@ import com.example.jetnews.ui.themeTypography
 @Composable
 fun PostCardTop(post: Post) {
 // TUTORIAL CONTENT STARTS HERE
+    val typography = +MaterialTheme.typography()
     Column(modifier = ExpandedWidth wraps Spacing(16.dp)) {
         post.image?.let { image ->
             Container(modifier = MinHeight(180.dp) wraps ExpandedWidth) {
@@ -59,15 +60,15 @@ fun PostCardTop(post: Post) {
         HeightSpacer(16.dp)
         Text(
             text = post.title,
-            style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
+            style = typography.h6.withOpacity(0.87f)
         )
         Text(
             text = post.metadata.author.name,
-            style = ((+MaterialTheme.typography()).body2).withOpacity(0.87f)
+            style = typography.body2.withOpacity(0.87f)
         )
         Text(
             text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-            style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
+            style = typography.body2.withOpacity(0.6f)
         )
     }
 }
