@@ -27,7 +27,7 @@ import androidx.ui.foundation.shape.border.DrawBorder
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Container
-import androidx.ui.layout.Padding
+import androidx.ui.layout.Spacing
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
@@ -119,9 +119,10 @@ fun SelectTopicButtonPreviewOnDark() {
 private fun SelectTopicButtonPreviewTemplate(themeColors: ColorPalette, selected: Boolean) {
     MaterialTheme(themeColors) {
         Surface {
-            Padding(32.dp) {
-                SelectTopicButton(selected = selected)
-            }
+            SelectTopicButton(
+                modifier = Spacing(32.dp),
+                selected = selected
+            )
         }
     }
 }

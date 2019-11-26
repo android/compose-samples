@@ -33,8 +33,8 @@ import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
+import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
@@ -64,25 +64,23 @@ private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 @Composable
 fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
     VerticalScroller(modifier = modifier) {
-        Padding(left = defaultSpacerSize, right = defaultSpacerSize) {
-            Column {
+        Column(modifier = Spacing(left = defaultSpacerSize, right = defaultSpacerSize)) {
+            HeightSpacer(height = defaultSpacerSize)
+            PostHeaderImage(post)
+            Text(text = post.title, style = (+MaterialTheme.typography()).h4)
+            HeightSpacer(height = 8.dp)
+            post.subtitle?.let { subtitle ->
+                Text(
+                    text = subtitle,
+                    style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f),
+                    paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
+                )
                 HeightSpacer(height = defaultSpacerSize)
-                PostHeaderImage(post)
-                Text(text = post.title, style = (+MaterialTheme.typography()).h4)
-                HeightSpacer(height = 8.dp)
-                post.subtitle?.let { subtitle ->
-                    Text(
-                        text = subtitle,
-                        style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f),
-                        paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
-                    )
-                    HeightSpacer(height = defaultSpacerSize)
-                }
-                PostMetadata(metadata = post.metadata)
-                HeightSpacer(height = 24.dp)
-                PostContents(paragraphs = post.paragraphs)
-                HeightSpacer(height = 48.dp)
             }
+            PostMetadata(metadata = post.metadata)
+            HeightSpacer(height = 24.dp)
+            PostContents(paragraphs = post.paragraphs)
+            HeightSpacer(height = 48.dp)
         }
     }
 }
@@ -130,7 +128,7 @@ private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
     val annotatedString = paragraphToAnnotatedString(paragraph)
-    Padding(bottom = trailingPadding) {
+    Container(modifier = Spacing(bottom = trailingPadding)) {
         when (paragraph.type) {
             ParagraphType.Bullet -> BulletParagraph(
                 text = annotatedString,
@@ -143,13 +141,12 @@ private fun Paragraph(paragraph: Paragraph) {
                 paragraphStyle = paragraphStyle
             )
             ParagraphType.Header -> {
-                Padding(top = 16.dp) {
-                    Text(
-                        text = annotatedString,
-                        style = textStyle,
-                        paragraphStyle = paragraphStyle
-                    )
-                }
+                Text(
+                    modifier = Spacing(top = 16.dp),
+                    text = annotatedString,
+                    style = textStyle,
+                    paragraphStyle = paragraphStyle
+                )
             }
             else -> Text(
                 text = annotatedString,
@@ -170,13 +167,12 @@ private fun CodeBlockParagraph(
         color = codeBlockBackground,
         shape = RoundedCornerShape(4.dp)
     ) {
-        Padding(16.dp) {
-            Text(
-                text = text,
-                style = textStyle,
-                paragraphStyle = paragraphStyle
-            )
-        }
+        Text(
+            modifier = Spacing(top = 16.dp),
+            text = text,
+            style = textStyle,
+            paragraphStyle = paragraphStyle
+        )
     }
 }
 

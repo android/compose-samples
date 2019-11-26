@@ -25,7 +25,6 @@ import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
-import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
@@ -123,10 +122,8 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 
 @Composable
 private fun HomeScreenDivider() {
-    Padding(left = 14.dp, right = 14.dp) {
-        Opacity(0.08f) {
-            Divider()
-        }
+    Opacity(0.08f) {
+        Divider(modifier = Spacing(left = 14.dp, right = 14.dp))
     }
 }
 

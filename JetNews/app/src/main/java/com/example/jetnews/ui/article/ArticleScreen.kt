@@ -30,8 +30,8 @@ import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
+import androidx.ui.layout.Spacing
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
 import androidx.ui.material.MaterialTheme
@@ -119,10 +119,8 @@ private fun BottomBarAction(
         radius = 24.dp
     ) {
         Clickable(onClick = onClick) {
-            Padding(12.dp) {
-                Container(width = 24.dp, height = 24.dp) {
-                    DrawVector(+vectorResource(id))
-                }
+            Container(modifier = Spacing(12.dp), width = 24.dp, height = 24.dp) {
+                DrawVector(+vectorResource(id))
             }
         }
     }
