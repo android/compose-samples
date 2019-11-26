@@ -45,7 +45,7 @@ import com.example.jetnews.ui.navigateTo
 fun AuthorAndReadTime(post: Post) {
     Row {
         val textStyle = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
-        Text(modifier = Flexible(1f), text = post.metadata.author.name, style = textStyle)
+        Text(text = post.metadata.author.name, style = textStyle)
         Text(
             text = " - ${post.metadata.readTimeMinutes} min read",
             style = textStyle
