@@ -153,7 +153,7 @@ private fun TabWithSections(
 private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = +imageResource(R.drawable.placeholder_1_1)
     Row(
-        Spacing(left = 16.dp, right = 16.dp)
+        modifier = Spacing(left = 16.dp, right = 16.dp)
     ) {
         Container(width = 56.dp, height = 56.dp, modifier = Gravity.Center) {
             Clip(RoundedCornerShape(4.dp)) {
