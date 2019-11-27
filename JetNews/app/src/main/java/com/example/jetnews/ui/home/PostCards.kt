@@ -94,7 +94,7 @@ fun PostCardHistory(post: Post) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
         }) {
-            Row(Spacing(all = 16.dp)) {
+            Row(modifier = Spacing(all = 16.dp)) {
                 PostImage(modifier = Spacing(right = 16.dp), post = post)
                 Column(modifier = Flexible(1f)) {
                     Text(
