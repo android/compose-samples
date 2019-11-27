@@ -30,6 +30,8 @@ import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
+import androidx.ui.layout.Expanded
+import androidx.ui.layout.Height
 import androidx.ui.layout.Row
 import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
@@ -89,7 +91,7 @@ fun ArticleScreen(postId: String) {
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     val context = +ambient(ContextAmbient)
     Surface(elevation = 2.dp) {
-        Container(height = 56.dp, expanded = true) {
+        Container(modifier = Height(56.dp) wraps Expanded) {
             Row {
                 BottomBarAction(R.drawable.ic_favorite) {
                     onUnimplementedAction()

@@ -32,7 +32,9 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
+import androidx.ui.layout.ExpandedWidth
 import androidx.ui.layout.HeightSpacer
+import androidx.ui.layout.MinHeight
 import androidx.ui.layout.Row
 import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
@@ -90,7 +92,7 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
 @Composable
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
-        Container(expanded = true, height = 180.dp) {
+        Container(modifier = MinHeight(180.dp) wraps ExpandedWidth) {
             Clip(shape = RoundedCornerShape(4.dp)) {
                 DrawImage(image)
             }

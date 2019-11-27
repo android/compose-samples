@@ -31,6 +31,7 @@ import androidx.ui.layout.Container
 import androidx.ui.layout.Gravity
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Row
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
@@ -155,7 +156,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
     Row(
         modifier = Spacing(left = 16.dp, right = 16.dp)
     ) {
-        Container(width = 56.dp, height = 56.dp, modifier = Gravity.Center) {
+        Container(modifier = Gravity.Center wraps Size(56.dp, 56.dp)) {
             Clip(RoundedCornerShape(4.dp)) {
                 DrawImage(image)
             }

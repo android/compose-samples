@@ -26,6 +26,8 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.Expanded
+import androidx.ui.layout.Height
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
@@ -45,10 +47,10 @@ fun PostCardPopular(post: Post) {
             Clickable(onClick = {
                 navigateTo(Screen.Article(post.id))
             }) {
-                Container(width = 280.dp, height = 240.dp) {
+                Container(modifier = Size(280.dp, 240.dp)) {
                     Column(modifier = Expanded) {
                         val image = post.image ?: +imageResource(R.drawable.placeholder_4_3)
-                        Container(height = 100.dp, expanded = true) {
+                        Container(modifier = Height(100.dp) wraps Expanded) {
                             DrawImage(image)
                         }
                         Column(modifier = Spacing(16.dp)) {

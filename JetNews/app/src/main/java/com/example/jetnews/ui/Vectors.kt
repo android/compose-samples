@@ -25,6 +25,7 @@ import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Container
+import androidx.ui.layout.Size
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.res.vectorResource
 
@@ -42,9 +43,7 @@ fun VectorImage(modifier: Modifier = Modifier.None, @DrawableRes id: Int, tint: 
     val vector = +vectorResource(id)
     WithDensity {
         Container(
-            modifier = modifier,
-            width = vector.defaultWidth.toDp(),
-            height = vector.defaultHeight.toDp()
+            modifier = modifier wraps Size(vector.defaultWidth.toDp(), vector.defaultHeight.toDp())
         ) {
             DrawVector(vector, tint)
         }

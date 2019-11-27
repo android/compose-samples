@@ -27,6 +27,7 @@ import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.Row
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
@@ -57,7 +58,7 @@ fun AuthorAndReadTime(post: Post) {
 fun PostImage(modifier: Modifier = Modifier.None, post: Post) {
     val image = post.imageThumb ?: +imageResource(R.drawable.placeholder_1_1)
 
-    Container(modifier = modifier, width = 40.dp, height = 40.dp) {
+    Container(modifier = modifier wraps Size(40.dp, 40.dp)) {
         DrawImage(image)
     }
 }
@@ -123,7 +124,7 @@ fun BookmarkButton(
         radius = 24.dp
     ) {
         Toggleable(isBookmarked, onBookmark) {
-            Container(width = 48.dp, height = 48.dp) {
+            Container(modifier = Size(48.dp, 48.dp)) {
                 if (isBookmarked) {
                     VectorImage(id = R.drawable.ic_bookmarked)
                 } else {
