@@ -72,7 +72,7 @@ fun InterestsScreen(openDrawer: () -> Unit) {
                 section = Sections.values()[index]
             }
         }
-        Container(Flexible(1f)) {
+        Container(modifier = Flexible(1f)) {
             when (section) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()

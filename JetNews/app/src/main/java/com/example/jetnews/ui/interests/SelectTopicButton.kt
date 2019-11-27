@@ -27,6 +27,7 @@ import androidx.ui.foundation.shape.border.DrawBorder
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Container
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
@@ -46,7 +47,7 @@ fun SelectTopicButton(
 ) {
     Ripple(bounded = false) {
         Toggleable(selected, onSelected) {
-            Container(modifier = modifier, width = 36.dp, height = 36.dp) {
+            Container(modifier = modifier wraps Size(36.dp, 36.dp)) {
                 if (selected) {
                     DrawSelectTopicButtonOn()
                 } else {

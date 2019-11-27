@@ -34,6 +34,7 @@ import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Row
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.MaterialTheme
@@ -144,7 +145,7 @@ private fun Paragraph(paragraph: Paragraph) {
             )
             ParagraphType.Header -> {
                 Text(
-                    modifier = Spacing(16.dp),
+                    modifier = Spacing(top = 16.dp),
                     text = annotatedString,
                     style = textStyle,
                     paragraphStyle = paragraphStyle
@@ -185,7 +186,7 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        Container(width = 8.dp, height = 8.dp) {
+        Container(modifier = Size(8.dp, 8.dp)) {
             DrawShape(shape = CircleShape, color = Color.DarkGray)
         }
         Text(
