@@ -142,7 +142,7 @@ private fun DrawerButton(
 
     Surface(
         modifier = modifier wraps Spacing(left = 8.dp, top = 8.dp, right = 8.dp),
-        color = (+MaterialTheme.colors()).background,
+        color = backgroundColor,
         shape = RoundedCornerShape(4.dp)
     ) {
         Button(onClick = action, style = TextButtonStyle()) {
