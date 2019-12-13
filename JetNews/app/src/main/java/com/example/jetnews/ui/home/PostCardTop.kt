@@ -18,7 +18,6 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.ambient
-import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
@@ -27,10 +26,11 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.ExpandedWidth
-import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.MinHeight
-import androidx.ui.layout.Spacing
+import androidx.ui.layout.LayoutExpandedWidth
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutMinHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.Spacer
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Typography
@@ -48,16 +48,16 @@ import com.example.jetnews.ui.themeTypography
 @Composable
 fun PostCardTop(post: Post) {
 // TUTORIAL CONTENT STARTS HERE
-    val typography = +MaterialTheme.typography()
-    Column(modifier = ExpandedWidth wraps Spacing(16.dp)) {
+    val typography = MaterialTheme.typography()
+    Column(modifier = LayoutExpandedWidth + LayoutPadding(16.dp)) {
         post.image?.let { image ->
-            Container(modifier = MinHeight(180.dp) wraps ExpandedWidth) {
+            Container(modifier = LayoutMinHeight(180.dp) + LayoutExpandedWidth) {
                 Clip(shape = RoundedCornerShape(4.dp)) {
                     DrawImage(image)
                 }
             }
         }
-        HeightSpacer(16.dp)
+        Spacer(LayoutHeight(16.dp))
         Text(
             text = post.title,
             style = typography.h6.withOpacity(0.87f)
@@ -99,7 +99,7 @@ fun TutorialPreviewTemplate(
     colors: ColorPalette = lightThemeColors,
     typography: Typography = themeTypography
 ) {
-    val context = +ambient(ContextAmbient)
+    val context = ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
     MaterialTheme(colors = colors, typography = typography) {

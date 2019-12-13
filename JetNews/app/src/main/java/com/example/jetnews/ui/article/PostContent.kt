@@ -32,13 +32,15 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.ExpandedWidth
-import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.MinHeight
+import androidx.ui.layout.LayoutExpandedWidth
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutMinHeight
+import androidx.ui.layout.LayoutSize
+import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
-import androidx.ui.layout.Size
+import androidx.ui.layout.Spacer
 import androidx.ui.layout.Spacing
-import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.withOpacity
@@ -66,25 +68,32 @@ private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 
 @Composable
 fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
-    val typography = +MaterialTheme.typography()
+    val typography = MaterialTheme.typography()
     VerticalScroller(modifier = modifier) {
-        Column(modifier = Spacing(left = defaultSpacerSize, right = defaultSpacerSize)) {
-            HeightSpacer(height = defaultSpacerSize)
+        Column(
+            modifier = LayoutPadding(
+                left = defaultSpacerSize,
+                top = 0.dp,
+                right = defaultSpacerSize,
+                bottom = 0.dp
+            )
+        ) {
+            Spacer(LayoutHeight(defaultSpacerSize))
             PostHeaderImage(post)
             Text(text = post.title, style = typography.h4)
-            HeightSpacer(height = 8.dp)
+            Spacer(LayoutHeight(8.dp))
             post.subtitle?.let { subtitle ->
                 Text(
                     text = subtitle,
                     style = typography.body2.withOpacity(0.6f),
                     paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
                 )
-                HeightSpacer(height = defaultSpacerSize)
+                Spacer(LayoutHeight(defaultSpacerSize))
             }
             PostMetadata(metadata = post.metadata)
-            HeightSpacer(height = 24.dp)
+            Spacer(LayoutHeight(24.dp))
             PostContents(paragraphs = post.paragraphs)
-            HeightSpacer(height = 48.dp)
+            Spacer(LayoutHeight(48.dp))
         }
     }
 }
@@ -92,23 +101,23 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
 @Composable
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
-        Container(modifier = MinHeight(180.dp) wraps ExpandedWidth) {
+        Container(modifier = LayoutMinHeight(180.dp) + LayoutExpandedWidth) {
             Clip(shape = RoundedCornerShape(4.dp)) {
                 DrawImage(image)
             }
         }
-        HeightSpacer(height = defaultSpacerSize)
+        Spacer(LayoutHeight(defaultSpacerSize))
     }
 }
 
 @Composable
 private fun PostMetadata(metadata: Metadata) {
-    val typography = +MaterialTheme.typography()
+    val typography = MaterialTheme.typography()
     Row {
         VectorImage(id = R.drawable.ic_account_circle_black)
-        WidthSpacer(width = 8.dp)
+        Spacer(LayoutWidth(8.dp))
         Column {
-            HeightSpacer(4.dp)
+            Spacer(LayoutHeight(4.dp))
             Text(
                 text = metadata.author.name,
                 style = typography.caption.withOpacity(0.87f)
@@ -133,7 +142,7 @@ private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
     val annotatedString = paragraphToAnnotatedString(paragraph)
-    Container(modifier = Spacing(bottom = trailingPadding)) {
+    Container(modifier = LayoutPadding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
         when (paragraph.type) {
             ParagraphType.Bullet -> BulletParagraph(
                 text = annotatedString,
@@ -147,16 +156,17 @@ private fun Paragraph(paragraph: Paragraph) {
             )
             ParagraphType.Header -> {
                 Text(
-                    modifier = Spacing(top = 16.dp),
+                    modifier = LayoutPadding(4.dp),
                     text = annotatedString,
                     style = textStyle,
-                    paragraphStyle = paragraphStyle
+                    softWrap = true
                 )
             }
             else -> Text(
                 text = annotatedString,
                 style = textStyle,
-                paragraphStyle = paragraphStyle
+//                paragraphStyle = paragraphStyle,
+                softwrap = true
             )
         }
     }
@@ -173,7 +183,7 @@ private fun CodeBlockParagraph(
         shape = RoundedCornerShape(4.dp)
     ) {
         Text(
-            modifier = Spacing(top = 16.dp),
+            modifier = LayoutPadding(0.dp, top = 16.dp, right = 0.dp, bottom = 0.dp),
             text = text,
             style = textStyle,
             paragraphStyle = paragraphStyle
@@ -188,11 +198,11 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        Container(modifier = Size(8.dp, 8.dp)) {
+        Container(modifier = LayoutSize(8.dp, 8.dp)) {
             DrawShape(shape = CircleShape, color = Color.DarkGray)
         }
         Text(
-            modifier = Flexible(1f),
+            modifier = LayoutFlexible(1f),
             text = text,
             style = textStyle,
             paragraphStyle = paragraphStyle
@@ -207,7 +217,7 @@ private data class ParagraphStyling(
 )
 
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
-    val typography = +MaterialTheme.typography()
+    val typography = MaterialTheme.typography()
     var textStyle: TextStyle = typography.body1
     var paragraphStyle = ParagraphStyle()
     var trailingPadding = 24.dp
@@ -243,12 +253,12 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
 }
 
 private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
-    val styles = paragraph.markups.map { it.toAnnotatedStringItem() }
-    return AnnotatedString(text = paragraph.text, textStyles = styles)
+    val styles: List<AnnotatedString.Item<TextStyle>> = paragraph.markups.map { it.toAnnotatedStringItem() }
+    return AnnotatedString(text = paragraph.text, paragraphStyles = styles)
 }
 
 private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
-    val typography = +MaterialTheme.typography()
+    val typography = MaterialTheme.typography()
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Item(
@@ -259,7 +269,7 @@ private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
         }
         MarkupType.Link -> {
             AnnotatedString.Item(
-                typography.body1.copy(decoration = TextDecoration.Underline),
+                typography.body1.copy(textDecoration = TextDecoration.Underline),
                 start,
                 end
             )

@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.core.dp
@@ -26,9 +25,9 @@ import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
-import androidx.ui.layout.Size
-import androidx.ui.layout.Spacing
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.withOpacity
@@ -45,7 +44,7 @@ import com.example.jetnews.ui.navigateTo
 @Composable
 fun AuthorAndReadTime(post: Post) {
     Row {
-        val textStyle = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
+        val textStyle = ((MaterialTheme.typography()).body2).withOpacity(0.6f)
         Text(text = post.metadata.author.name, style = textStyle)
         Text(
             text = " - ${post.metadata.readTimeMinutes} min read",
@@ -56,16 +55,16 @@ fun AuthorAndReadTime(post: Post) {
 
 @Composable
 fun PostImage(modifier: Modifier = Modifier.None, post: Post) {
-    val image = post.imageThumb ?: +imageResource(R.drawable.placeholder_1_1)
+    val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
 
-    Container(modifier = modifier wraps Size(40.dp, 40.dp)) {
+    Container(modifier = modifier + LayoutSize(40.dp, 40.dp)) {
         DrawImage(image)
     }
 }
 
 @Composable
 fun PostTitle(post: Post) {
-    Text(post.title, style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f))
+    Text(post.title, style = ((MaterialTheme.typography()).subtitle1).withOpacity(0.87f))
 }
 
 @Composable
@@ -74,9 +73,12 @@ fun PostCardSimple(post: Post) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
         }) {
-            Row(modifier = Spacing(16.dp)) {
-                PostImage(modifier = Spacing(right = 16.dp), post = post)
-                Column(modifier = Flexible(1f)) {
+            Row(modifier = LayoutPadding(16.dp)) {
+                PostImage(
+                    modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 0.dp),
+                    post = post
+                )
+                Column(modifier = LayoutFlexible(1f)) {
                     PostTitle(post)
                     AuthorAndReadTime(post)
                 }
@@ -95,18 +97,21 @@ fun PostCardHistory(post: Post) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
         }) {
-            Row(modifier = Spacing(all = 16.dp)) {
-                PostImage(modifier = Spacing(right = 16.dp), post = post)
-                Column(modifier = Flexible(1f)) {
+            Row(modifier = LayoutPadding(all = 16.dp)) {
+                PostImage(
+                    modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 0.dp),
+                    post = post
+                )
+                Column(modifier = LayoutFlexible(1f)) {
                     Text(
                         text = "BASED ON YOUR HISTORY",
-                        style = ((+MaterialTheme.typography()).overline).withOpacity(0.38f)
+                        style = ((MaterialTheme.typography()).overline).withOpacity(0.38f)
                     )
                     PostTitle(post = post)
                     AuthorAndReadTime(post)
                 }
                 VectorImage(
-                    modifier = Spacing(top = 8.dp, bottom = 8.dp),
+                    modifier = LayoutPadding(0.dp, top = 8.dp, right = 0.dp, bottom = 8.dp),
                     id = R.drawable.ic_more
                 )
             }
@@ -124,7 +129,7 @@ fun BookmarkButton(
         radius = 24.dp
     ) {
         Toggleable(isBookmarked, onBookmark) {
-            Container(modifier = Size(48.dp, 48.dp)) {
+            Container(modifier = LayoutSize(48.dp, 48.dp)) {
                 if (isBookmarked) {
                     VectorImage(id = R.drawable.ic_bookmarked)
                 } else {

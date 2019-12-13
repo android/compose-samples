@@ -18,7 +18,6 @@ package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.compose.state
-import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
@@ -28,11 +27,12 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.Gravity
-import androidx.ui.layout.HeightSpacer
+import androidx.ui.layout.LayoutGravity
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
-import androidx.ui.layout.Size
-import androidx.ui.layout.Spacing
+import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Tab
@@ -56,7 +56,7 @@ private enum class Sections(val title: String) {
 @Composable
 fun InterestsScreen(openDrawer: () -> Unit) {
 
-    var section by +state { Sections.Topics }
+    var section by state { Sections.Topics }
     val sectionTitles = Sections.values().map { it.title }
 
     Column {
@@ -73,7 +73,7 @@ fun InterestsScreen(openDrawer: () -> Unit) {
                 section = Sections.values()[index]
             }
         }
-        Container(modifier = Flexible(1f)) {
+        Container(modifier = LayoutFlexible(1f)) {
             when (section) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()
@@ -108,7 +108,7 @@ private fun PublicationsTab() {
 private fun TabWithTopics(tabname: String, topics: List<String>) {
     VerticalScroller {
         Column {
-            HeightSpacer(16.dp)
+            Spacer(LayoutHeight(16.dp))
             topics.forEach { topic ->
                 TopicItem(
                     getTopicKey(
@@ -133,8 +133,8 @@ private fun TabWithSections(
             sections.forEach { (section, topics) ->
                 Text(
                     text = section,
-                    modifier = Spacing(16.dp),
-                    style = (+MaterialTheme.typography()).subtitle1)
+                    modifier = LayoutPadding(16.dp),
+                    style = (MaterialTheme.typography()).subtitle1)
                 topics.forEach { topic ->
                     TopicItem(
                         getTopicKey(
@@ -152,22 +152,22 @@ private fun TabWithSections(
 
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
-    val image = +imageResource(R.drawable.placeholder_1_1)
+    val image = imageResource(R.drawable.placeholder_1_1)
     Row(
-        modifier = Spacing(left = 16.dp, right = 16.dp)
+        modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
     ) {
-        Container(modifier = Gravity.Center wraps Size(56.dp, 56.dp)) {
+        Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
             Clip(RoundedCornerShape(4.dp)) {
                 DrawImage(image)
             }
         }
         Text(
             text = itemTitle,
-            modifier = Flexible(1f) wraps Gravity.Center wraps Spacing(16.dp),
-            style = (+MaterialTheme.typography()).subtitle1)
+            modifier = LayoutFlexible(1f) + LayoutGravity.Center + LayoutPadding(16.dp),
+            style = (MaterialTheme.typography()).subtitle1)
         val selected = isTopicSelected(topicKey)
         SelectTopicButton(
-            modifier = Gravity.Center,
+            modifier = LayoutGravity.Center,
             onSelected = {
                 selectTopic(topicKey, !selected)
             },
@@ -179,7 +179,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
 @Composable
 private fun TopicDivider() {
     Opacity(0.08f) {
-        Divider(Spacing(top = 8.dp, bottom = 8.dp, left = 72.dp))
+        Divider(LayoutPadding(left = 72.dp, top = 8.dp, right = 0.dp, bottom = 8.dp))
     }
 }
 
