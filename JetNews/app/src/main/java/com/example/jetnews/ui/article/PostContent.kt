@@ -282,7 +282,6 @@ private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
     }
 }
 
-
 @Preview
 @Composable
 fun preview() {
