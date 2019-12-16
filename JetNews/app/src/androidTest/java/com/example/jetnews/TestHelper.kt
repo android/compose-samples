@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.util
+package com.example.jetnews
 
 import androidx.compose.Composable
 import androidx.ui.core.semantics.getOrNull

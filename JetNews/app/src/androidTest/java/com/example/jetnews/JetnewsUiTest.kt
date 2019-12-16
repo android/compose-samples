@@ -18,13 +18,9 @@ package com.example.jetnews
 
 import androidx.test.filters.MediumTest
 import androidx.ui.test.assertIsDisplayed
+import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick
 import androidx.ui.test.findByText
-import com.example.jetnews.util.JetnewsComposeTestRule
-import com.example.jetnews.util.findAllByText
-import com.example.jetnews.util.goBack
-import com.example.jetnews.util.launchJetNewsApp
-import com.example.jetnews.util.workForComposeToBeIdle
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +32,7 @@ import org.junit.runners.JUnit4
 class JetnewsUiTest {
 
     @get:Rule
-    val composeTestRule = JetnewsComposeTestRule()
+    val composeTestRule = createComposeRule()
 
     @Before
     fun setUp() {
