@@ -53,7 +53,9 @@ fun JetnewsStatus.resetState() {
 fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
     setContent {
         MaterialTheme {
-            Surface(children = children)
+            Surface {
+                children()
+            }
         }
     }
 }
@@ -62,7 +64,7 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
  * Workarounds, these functions should be removed when UI testing improves
  */
 
-fun workForComposeToBeIdle() {
+fun waitForComposeToBeIdle() {
     // Temporary workaround - use waitForIdle in dev04
     Thread.sleep(500)
 }
