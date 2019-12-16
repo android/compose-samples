@@ -17,14 +17,12 @@
 package com.example.jetnews
 
 import androidx.compose.Composable
-import androidx.compose.frames.ModelList
 import androidx.ui.core.semantics.getOrNull
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
 import androidx.ui.semantics.SemanticsProperties
 import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.SemanticsNodeInteraction
-import androidx.ui.test.doClick
 import androidx.ui.test.findAll
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.JetnewsStatus
