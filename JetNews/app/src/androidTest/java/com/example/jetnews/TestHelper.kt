@@ -17,6 +17,7 @@
 package com.example.jetnews
 
 import androidx.compose.Composable
+import androidx.compose.frames.ModelList
 import androidx.ui.core.semantics.getOrNull
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
@@ -26,13 +27,31 @@ import androidx.ui.test.SemanticsNodeInteraction
 import androidx.ui.test.doClick
 import androidx.ui.test.findAll
 import com.example.jetnews.ui.JetnewsApp
+import com.example.jetnews.ui.JetnewsStatus
+import com.example.jetnews.ui.Screen
 
+/**
+ * Launches the app from a test context
+ */
 fun ComposeTestRule.launchJetNewsApp() {
     setContent {
+        JetnewsStatus.resetState()
         JetnewsApp()
     }
 }
 
+/**
+ * Resets the state of the app. Needs to be executed in Compose code (within a frame)
+ */
+fun JetnewsStatus.resetState() {
+    currentScreen = Screen.Home
+    favorites.clear()
+    selectedTopics.clear()
+}
+
+/**
+ * Helper method that can be used to test Jetnews UI Composables in isolation
+ */
 fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
     setContent {
         MaterialTheme {
@@ -48,17 +67,6 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
 fun workForComposeToBeIdle() {
     // Temporary workaround - use waitForIdle in dev04
     Thread.sleep(500)
-}
-
-fun goBack() {
-    // Temporary workaround - need to go back to Home
-    findEnabled().first().doClick()
-}
-
-fun findEnabled(): List<SemanticsNodeInteraction> {
-    return findAll {
-        getOrNull(SemanticsProperties.Enabled) == true
-    }
 }
 
 fun findAllByText(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
