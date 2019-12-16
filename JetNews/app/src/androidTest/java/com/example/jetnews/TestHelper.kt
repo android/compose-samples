@@ -61,7 +61,7 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
 }
 
 /**
- * Workarounds, this should be removed when UI testing improves
+ * Workarounds, these functions should be removed when UI testing improves
  */
 
 fun workForComposeToBeIdle() {
