@@ -198,5 +198,5 @@ private fun selectTopic(key: String, select: Boolean) {
 @Preview
 @Composable
 fun preview() {
-    InterestsScreen {  }
+    InterestsScreen { }
 }
