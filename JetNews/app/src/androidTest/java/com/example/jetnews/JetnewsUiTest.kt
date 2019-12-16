@@ -49,8 +49,5 @@ class JetnewsUiTest {
         findAllByText("Manuel Vivo").first().doClick()
         workForComposeToBeIdle()
         findByText("July 30 • 3 min read").assertIsDisplayed()
-
-        // Temporary workaround - needs to go back since Activities don't start from scratch
-        goBack()
     }
 }
