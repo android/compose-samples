@@ -85,8 +85,7 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
             post.subtitle?.let { subtitle ->
                 Text(
                     text = subtitle,
-                    style = typography.body2.withOpacity(0.6f),
-                    paragraphStyle = ParagraphStyle(lineHeight = 20.sp)
+                    style = typography.body2.withOpacity(0.6f).merge(TextStyle(lineHeight = 20.sp))
                 )
                 Spacer(LayoutHeight(defaultSpacerSize))
             }
@@ -158,15 +157,13 @@ private fun Paragraph(paragraph: Paragraph) {
                 Text(
                     modifier = LayoutPadding(4.dp),
                     text = annotatedString,
-                    style = textStyle,
-                    softWrap = true
+                    style = textStyle.merge(paragraphStyle)
                 )
             }
             else -> Text(
+                modifier = LayoutPadding(4.dp),
                 text = annotatedString,
-                style = textStyle,
-//                paragraphStyle = paragraphStyle,
-                softwrap = true
+                style = textStyle
             )
         }
     }
@@ -185,8 +182,7 @@ private fun CodeBlockParagraph(
         Text(
             modifier = LayoutPadding(0.dp, top = 16.dp, right = 0.dp, bottom = 0.dp),
             text = text,
-            style = textStyle,
-            paragraphStyle = paragraphStyle
+            style = textStyle.merge(paragraphStyle)
         )
     }
 }
@@ -204,8 +200,7 @@ private fun BulletParagraph(
         Text(
             modifier = LayoutFlexible(1f),
             text = text,
-            style = textStyle,
-            paragraphStyle = paragraphStyle
+            style = textStyle.merge(paragraphStyle)
         )
     }
 }
