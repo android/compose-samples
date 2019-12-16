@@ -139,7 +139,6 @@ private fun DrawerButton(
         colors.surface
     }
 
-
     Surface(
         modifier = modifier wraps Spacing(left = 8.dp, top = 8.dp, right = 8.dp),
         color = backgroundColor,
@@ -169,6 +168,6 @@ private fun DrawerButton(
 fun preview() {
     AppDrawer(
         currentScreen = JetnewsStatus.currentScreen,
-        closeDrawer = {  }
+        closeDrawer = { }
     )
 }
