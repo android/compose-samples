@@ -16,26 +16,25 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.jetnews">
+    package="com.example.jetnews">
 
     <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:supportsRtl="true"
-            android:theme="@style/Theme.Jetnews">
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Jetnews">
         <activity android:name=".ui.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-<!--    Needed for UI tests-->
+        <!-- Needed for UI tests -->
         <activity
             android:name="android.app.Activity"
-            android:theme="@style/Theme.Jetnews"
-            />
+            android:theme="@style/Theme.Jetnews" />
     </application>
 </manifest>
