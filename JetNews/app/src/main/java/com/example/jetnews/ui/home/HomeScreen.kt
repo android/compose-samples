@@ -76,7 +76,7 @@ private fun HomeScreenTopSection(post: Post) {
         Text(
             modifier = LayoutPadding(left = 16.dp, top = 16.dp, right = 16.dp, bottom = 0.dp),
             text = "Top stories for you",
-            style = (MaterialTheme.typography()).subtitle1
+            style = MaterialTheme.typography().subtitle1
         )
     }
     Ripple(bounded = true) {
@@ -103,7 +103,7 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
         Text(
             modifier = LayoutPadding(16.dp),
             text = "Popular on Jetnews",
-            style = ((MaterialTheme.typography()).subtitle1)
+            style = MaterialTheme.typography().subtitle1
         )
     }
     HorizontalScroller {

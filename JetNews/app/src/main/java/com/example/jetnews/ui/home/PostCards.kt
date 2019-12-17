@@ -46,7 +46,7 @@ import com.example.jetnews.ui.navigateTo
 fun AuthorAndReadTime(post: Post) {
     Row {
 
-        val textStyle = ((MaterialTheme.typography()).body2)
+        val textStyle = MaterialTheme.typography().body2
         ProvideEmphasis(emphasis = EmphasisLevels().medium) {
             Text(text = post.metadata.author.name, style = textStyle)
             Text(
@@ -112,7 +112,7 @@ fun PostCardHistory(post: Post) {
                     ProvideEmphasis(emphasis = EmphasisLevels().medium) {
                         Text(
                             text = "BASED ON YOUR HISTORY",
-                            style = ((MaterialTheme.typography()).overline)
+                            style = MaterialTheme.typography().overline
                         )
                     }
                     PostTitle(post = post)

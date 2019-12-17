@@ -59,7 +59,7 @@ fun PostCardPopular(post: Post) {
                             ProvideEmphasis(emphasis = emphasisLevels.high) {
                                 Text(
                                     text = post.title,
-                                    style = (MaterialTheme.typography()).h6,
+                                    style = MaterialTheme.typography().h6,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
                                 )
@@ -67,14 +67,14 @@ fun PostCardPopular(post: Post) {
                             ProvideEmphasis(emphasis = emphasisLevels.high) {
                                 Text(
                                     text = post.metadata.author.name,
-                                    style = ((MaterialTheme.typography()).body2)
+                                    style =(MaterialTheme.typography().body2
                                 )
                             }
                             ProvideEmphasis(emphasis = emphasisLevels.high) {
                                 Text(
                                     text = "${post.metadata.date} - " +
                                             "${post.metadata.readTimeMinutes} min read",
-                                    style = ((MaterialTheme.typography()).body2)
+                                    style = MaterialTheme.typography().body2
                                 )
                             }
                         }

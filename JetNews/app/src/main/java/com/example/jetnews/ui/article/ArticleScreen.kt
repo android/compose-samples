@@ -72,7 +72,7 @@ fun ArticleScreen(postId: String) {
             title = {
                 Text(
                     text = "Published in: ${post.publication?.name}",
-                    style = (MaterialTheme.typography()).subtitle2
+                    style = MaterialTheme.typography().subtitle2
                 )
             },
             navigationIcon = {
@@ -135,7 +135,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = "Functionality not available \uD83D\uDE48",
-                style = (MaterialTheme.typography()).body2
+                style = MaterialTheme.typography().body2
             )
         },
         confirmButton = {
