@@ -73,7 +73,7 @@ fun JetnewsApp() {
 @Composable
 private fun AppContent(openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
-        Surface(color = (MaterialTheme.colors()).background) {
+        Surface(color = MaterialTheme.colors().background) {
             when (screen) {
                 is Screen.Home -> HomeScreen { openDrawer() }
                 is Screen.Interests -> InterestsScreen { openDrawer() }
