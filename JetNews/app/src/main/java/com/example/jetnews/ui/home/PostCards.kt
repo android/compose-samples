@@ -28,9 +28,10 @@ import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
+import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.withOpacity
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
@@ -44,12 +45,15 @@ import com.example.jetnews.ui.navigateTo
 @Composable
 fun AuthorAndReadTime(post: Post) {
     Row {
-        val textStyle = ((MaterialTheme.typography()).body2).withOpacity(0.6f)
-        Text(text = post.metadata.author.name, style = textStyle)
-        Text(
-            text = " - ${post.metadata.readTimeMinutes} min read",
-            style = textStyle
-        )
+
+        val textStyle = ((MaterialTheme.typography()).body2)
+        ProvideEmphasis(emphasis = EmphasisLevels().medium) {
+            Text(text = post.metadata.author.name, style = textStyle)
+            Text(
+                text = " - ${post.metadata.readTimeMinutes} min read",
+                style = textStyle
+            )
+        }
     }
 }
 
@@ -64,7 +68,9 @@ fun PostImage(modifier: Modifier = Modifier.None, post: Post) {
 
 @Composable
 fun PostTitle(post: Post) {
-    Text(post.title, style = ((MaterialTheme.typography()).subtitle1).withOpacity(0.87f))
+    ProvideEmphasis(emphasis = EmphasisLevels().high) {
+        Text(post.title, style = MaterialTheme.typography().subtitle1)
+    }
 }
 
 @Composable
@@ -103,10 +109,12 @@ fun PostCardHistory(post: Post) {
                     post = post
                 )
                 Column(modifier = LayoutFlexible(1f)) {
-                    Text(
-                        text = "BASED ON YOUR HISTORY",
-                        style = ((MaterialTheme.typography()).overline).withOpacity(0.38f)
-                    )
+                    ProvideEmphasis(emphasis = EmphasisLevels().medium) {
+                        Text(
+                            text = "BASED ON YOUR HISTORY",
+                            style = ((MaterialTheme.typography()).overline)
+                        )
+                    }
                     PostTitle(post = post)
                     AuthorAndReadTime(post)
                 }

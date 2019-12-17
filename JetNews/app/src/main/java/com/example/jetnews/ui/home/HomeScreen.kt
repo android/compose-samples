@@ -29,10 +29,11 @@ import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
+import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
@@ -71,11 +72,13 @@ fun HomeScreen(openDrawer: () -> Unit) {
 @Composable
 private fun HomeScreenTopSection(post: Post) {
 
-    Text(
-        modifier = LayoutPadding(left = 16.dp, top = 16.dp, right = 16.dp, bottom = 0.dp),
-        text = "Top stories for you",
-        style = ((MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
-    )
+    ProvideEmphasis(emphasis = EmphasisLevels().high) {
+        Text(
+            modifier = LayoutPadding(left = 16.dp, top = 16.dp, right = 16.dp, bottom = 0.dp),
+            text = "Top stories for you",
+            style = (MaterialTheme.typography()).subtitle1
+        )
+    }
     Ripple(bounded = true) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
@@ -96,11 +99,13 @@ private fun HomeScreenSimpleSection(posts: List<Post>) {
 
 @Composable
 private fun HomeScreenPopularSection(posts: List<Post>) {
-    Text(
-        modifier = LayoutPadding(16.dp),
-        text = "Popular on Jetnews",
-        style = ((MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
-    )
+    ProvideEmphasis(emphasis = EmphasisLevels().high) {
+        Text(
+            modifier = LayoutPadding(16.dp),
+            text = "Popular on Jetnews",
+            style = ((MaterialTheme.typography()).subtitle1)
+        )
+    }
     HorizontalScroller {
         Row(modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->

@@ -28,10 +28,11 @@ import androidx.ui.layout.LayoutExpanded
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
+import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
-import androidx.ui.material.withOpacity
 import androidx.ui.res.imageResource
 import androidx.ui.text.style.TextOverflow
 import com.example.jetnews.R
@@ -53,21 +54,29 @@ fun PostCardPopular(post: Post) {
                             DrawImage(image)
                         }
                         Column(modifier = LayoutPadding(16.dp)) {
-                            Text(
-                                text = post.title,
-                                style = ((MaterialTheme.typography()).h6).withOpacity(0.87f),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                text = post.metadata.author.name,
-                                style = ((MaterialTheme.typography()).body2).withOpacity(0.87f)
-                            )
-                            Text(
-                                text = "${post.metadata.date} - " +
-                                        "${post.metadata.readTimeMinutes} min read",
-                                style = ((MaterialTheme.typography()).body2).withOpacity(0.6f)
-                            )
+
+                            val emphasisLevels = EmphasisLevels()
+                            ProvideEmphasis(emphasis = emphasisLevels.high) {
+                                Text(
+                                    text = post.title,
+                                    style = (MaterialTheme.typography()).h6,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            ProvideEmphasis(emphasis = emphasisLevels.high) {
+                                Text(
+                                    text = post.metadata.author.name,
+                                    style = ((MaterialTheme.typography()).body2)
+                                )
+                            }
+                            ProvideEmphasis(emphasis = emphasisLevels.high) {
+                                Text(
+                                    text = "${post.metadata.date} - " +
+                                            "${post.metadata.readTimeMinutes} min read",
+                                    style = ((MaterialTheme.typography()).body2)
+                                )
+                            }
                         }
                     }
                 }

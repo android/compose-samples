@@ -39,9 +39,10 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
+import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.withOpacity
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
 import androidx.ui.text.SpanStyle
@@ -82,10 +83,12 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
             Text(text = post.title, style = typography.h4)
             Spacer(LayoutHeight(8.dp))
             post.subtitle?.let { subtitle ->
-                Text(
-                    text = subtitle,
-                    style = typography.body2.withOpacity(0.6f).merge(TextStyle(lineHeight = 20.sp))
-                )
+                ProvideEmphasis(emphasis = EmphasisLevels().medium) {
+                    Text(
+                        text = subtitle,
+                        style = typography.body2.merge(TextStyle(lineHeight = 20.sp))
+                    )
+                }
                 Spacer(LayoutHeight(defaultSpacerSize))
             }
             PostMetadata(metadata = post.metadata)
@@ -116,14 +119,18 @@ private fun PostMetadata(metadata: Metadata) {
         Spacer(LayoutWidth(8.dp))
         Column {
             Spacer(LayoutHeight(4.dp))
-            Text(
-                text = metadata.author.name,
-                style = typography.caption.withOpacity(0.87f)
-            )
-            Text(
-                text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
-                style = typography.caption.withOpacity(0.6f)
-            )
+            ProvideEmphasis(emphasis = EmphasisLevels().high) {
+                Text(
+                    text = metadata.author.name,
+                    style = typography.caption
+                )
+            }
+            ProvideEmphasis(emphasis = EmphasisLevels().medium) {
+                Text(
+                    text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
+                    style = typography.caption
+                )
+            }
         }
     }
 }
