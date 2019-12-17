@@ -75,6 +75,10 @@ on and off, light and dark version in the Android Studio Preview.
 
 The data in the sample is static, held in the `com.example.jetnews.data` package.
 
+### UI testing
+
+Run UI tests from Android Studio or with the `./gradlew connectedCheck` command.
+
 ## License
 
 ```
