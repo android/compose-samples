@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.article
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
 import androidx.ui.core.Clip
 import androidx.ui.core.Dp
 import androidx.ui.core.Modifier
@@ -34,18 +33,18 @@ import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutExpandedWidth
 import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutMinHeight
+import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
-import androidx.ui.layout.Spacing
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
 import androidx.ui.material.withOpacity
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
+import androidx.ui.text.SpanStyle
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontFamily
 import androidx.ui.text.font.FontStyle
@@ -248,30 +247,31 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
 }
 
 private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
-    val styles: List<AnnotatedString.Item<TextStyle>> = paragraph.markups.map { it.toAnnotatedStringItem() }
-    return AnnotatedString(text = paragraph.text, paragraphStyles = styles)
+    val styles: List<AnnotatedString.Item<SpanStyle>> = paragraph.markups
+        .map { it: Markup -> it.toAnnotatedStringItem() }
+    return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
 
-private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
+private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<SpanStyle> {
     val typography = MaterialTheme.typography()
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Item(
-                typography.body1.copy(fontStyle = FontStyle.Italic),
+                typography.body1.copy(fontStyle = FontStyle.Italic).toSpanStyle(),
                 start,
                 end
             )
         }
         MarkupType.Link -> {
             AnnotatedString.Item(
-                typography.body1.copy(textDecoration = TextDecoration.Underline),
+                typography.body1.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
                 start,
                 end
             )
         }
         MarkupType.Bold -> {
             AnnotatedString.Item(
-                typography.body1.copy(fontWeight = FontWeight.Bold),
+                typography.body1.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
                 start,
                 end
             )
@@ -279,7 +279,10 @@ private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
         MarkupType.Code -> {
             AnnotatedString.Item(
                 typography.body1
-                    .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace),
+                    .copy(
+                        background = codeBlockBackground,
+                        fontFamily = FontFamily.Monospace
+                    ).toSpanStyle(),
                 start,
                 end
             )
