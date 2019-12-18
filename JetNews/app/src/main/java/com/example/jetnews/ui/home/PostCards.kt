@@ -81,7 +81,7 @@ fun PostCardSimple(post: Post) {
         }) {
             Row(modifier = LayoutPadding(16.dp)) {
                 PostImage(
-                    modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 0.dp),
+                    modifier = LayoutPadding(left = 0.dp, top = 0.dp, right = 16.dp, bottom = 0.dp),
                     post = post
                 )
                 Column(modifier = LayoutFlexible(1f)) {
@@ -105,7 +105,7 @@ fun PostCardHistory(post: Post) {
         }) {
             Row(modifier = LayoutPadding(all = 16.dp)) {
                 PostImage(
-                    modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 0.dp),
+                    modifier = LayoutPadding(left = 0.dp, top = 0.dp, right = 16.dp, bottom = 0.dp),
                     post = post
                 )
                 Column(modifier = LayoutFlexible(1f)) {
@@ -119,7 +119,7 @@ fun PostCardHistory(post: Post) {
                     AuthorAndReadTime(post)
                 }
                 VectorImage(
-                    modifier = LayoutPadding(0.dp, top = 8.dp, right = 0.dp, bottom = 8.dp),
+                    modifier = LayoutPadding(left = 0.dp, top = 8.dp, right = 0.dp, bottom = 8.dp),
                     id = R.drawable.ic_more
                 )
             }
