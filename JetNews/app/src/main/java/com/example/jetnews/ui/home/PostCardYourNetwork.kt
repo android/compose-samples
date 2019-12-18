@@ -67,7 +67,7 @@ fun PostCardPopular(post: Post) {
                             ProvideEmphasis(emphasis = emphasisLevels.high) {
                                 Text(
                                     text = post.metadata.author.name,
-                                    style =(MaterialTheme.typography().body2
+                                    style = MaterialTheme.typography().body2
                                 )
                             }
                             ProvideEmphasis(emphasis = emphasisLevels.high) {
