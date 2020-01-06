@@ -33,6 +33,7 @@ import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.ExpandedWidth
 import androidx.ui.material.Button
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
@@ -145,7 +146,7 @@ private fun DrawerButton(
         shape = RoundedCornerShape(4.dp)
     ) {
         Button(onClick = action, style = TextButtonStyle()) {
-            Row {
+            Row(ExpandedWidth) {
                 VectorImage(
                     modifier = Gravity.Center,
                     id = icon,
