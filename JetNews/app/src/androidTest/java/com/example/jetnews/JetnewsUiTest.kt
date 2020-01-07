@@ -47,7 +47,6 @@ class JetnewsUiTest {
     @Test
     fun app_opensArticle() {
         findAllByText("Manuel Vivo").first().doClick()
-        waitForComposeToBeIdle()
         findByText("July 30 • 3 min read").assertIsDisplayed()
     }
 }

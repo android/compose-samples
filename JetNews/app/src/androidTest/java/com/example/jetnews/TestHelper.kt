@@ -61,13 +61,8 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
 }
 
 /**
- * Workarounds, these functions should be removed when UI testing improves
+ * Workaround, this function should be removed when UI testing improves
  */
-
-fun waitForComposeToBeIdle() {
-    // Temporary workaround - use waitForIdle in dev04
-    Thread.sleep(500)
-}
 
 fun findAllByText(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
     return findAll {
