@@ -61,9 +61,8 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
 }
 
 /**
- * Workaround, this function should be removed when UI testing improves
+ * Finds all components that match the given text
  */
-
 fun findAllByText(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
     return findAll {
         getOrNull(SemanticsProperties.AccessibilityLabel).equals(text, ignoreCase)
