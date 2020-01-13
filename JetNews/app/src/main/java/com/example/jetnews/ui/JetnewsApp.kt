@@ -50,7 +50,6 @@ import com.example.jetnews.ui.interests.InterestsScreen
 
 @Composable
 fun JetnewsApp() {
-
     val (drawerState, onDrawerStateChange) = +state { DrawerState.Closed }
 
     MaterialTheme(
@@ -170,11 +169,13 @@ private fun DrawerButton(
     }
 }
 
-@Preview
+@Preview("Drawer contents")
 @Composable
 fun preview() {
-    AppDrawer(
-        currentScreen = JetnewsStatus.currentScreen,
-        closeDrawer = { }
-    )
+    themedPreview {
+        AppDrawer(
+            currentScreen = JetnewsStatus.currentScreen,
+            closeDrawer = { }
+        )
+    }
 }

@@ -54,6 +54,7 @@ import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun ArticleScreen(postId: String) {
@@ -158,8 +159,10 @@ private fun sharePost(post: Post, context: Context) {
     context.startActivity(Intent.createChooser(intent, "Share post"))
 }
 
-@Preview
+@Preview("Article screen")
 @Composable
 fun previewArticle() {
-    ArticleScreen(post3.id)
+    themedPreview {
+        ArticleScreen(post3.id)
+    }
 }

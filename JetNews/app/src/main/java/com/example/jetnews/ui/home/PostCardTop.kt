@@ -33,8 +33,6 @@ import androidx.ui.layout.MinHeight
 import androidx.ui.layout.Spacing
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Typography
-import androidx.ui.material.surface.Surface
 import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.data.getPostsWithImagesLoaded
@@ -43,7 +41,7 @@ import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.lightThemeColors
-import com.example.jetnews.ui.themeTypography
+import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun PostCardTop(post: Post) {
@@ -96,21 +94,21 @@ fun TutorialPreviewFontscale() {
 
 @Composable
 fun TutorialPreviewTemplate(
-    colors: ColorPalette = lightThemeColors,
-    typography: Typography = themeTypography
+    colors: ColorPalette = lightThemeColors
 ) {
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    MaterialTheme(colors = colors, typography = typography) {
-        Surface {
-            PostCardTop(post)
-        }
+    
+    themedPreview(colors) {
+        PostCardTop(post)
     }
 }
 
-@Preview
+@Preview("Post card top")
 @Composable
 fun previewPostCardTop() {
-    PostCardTop(post = post2)
+    themedPreview {
+        PostCardTop(post = post2)
+    }
 }

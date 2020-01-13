@@ -39,6 +39,7 @@ import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.themedPreview
 import com.example.jetnews.ui.navigateTo
 
 @Composable
@@ -70,7 +71,6 @@ fun HomeScreen(openDrawer: () -> Unit) {
 
 @Composable
 private fun HomeScreenTopSection(post: Post) {
-
     Text(
         modifier = Spacing(top = 16.dp, left = 16.dp, right = 16.dp),
         text = "Top stories for you",
@@ -127,8 +127,10 @@ private fun HomeScreenDivider() {
     }
 }
 
-@Preview
+@Preview("Home screen")
 @Composable
 fun preview() {
-    HomeScreen {}
+    themedPreview {
+        HomeScreen {}
+    }
 }

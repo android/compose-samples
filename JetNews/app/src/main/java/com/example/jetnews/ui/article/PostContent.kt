@@ -60,6 +60,7 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.VectorImage
+import com.example.jetnews.ui.themedPreview
 
 private val defaultSpacerSize = 16.dp
 private val codeBlockBackground = Color(0xfff1f1f1.toInt())
@@ -282,8 +283,10 @@ private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<TextStyle> {
     }
 }
 
-@Preview
+@Preview("Post content")
 @Composable
 fun preview() {
-    PostContent(post = post3)
+    themedPreview {
+        PostContent(post = post3)
+    }
 }

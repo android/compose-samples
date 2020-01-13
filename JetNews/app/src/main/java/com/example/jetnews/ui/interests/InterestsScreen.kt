@@ -46,6 +46,7 @@ import com.example.jetnews.data.publications
 import com.example.jetnews.data.topics
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.themedPreview
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -195,8 +196,10 @@ private fun selectTopic(key: String, select: Boolean) {
     }
 }
 
-@Preview
+@Preview("Interests screen")
 @Composable
 fun preview() {
-    InterestsScreen { }
+    themedPreview {
+        InterestsScreen { }
+    }
 }

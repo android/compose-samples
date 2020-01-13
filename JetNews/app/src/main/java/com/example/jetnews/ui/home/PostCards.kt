@@ -41,6 +41,7 @@ import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImage
 import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun AuthorAndReadTime(post: Post) {
@@ -135,10 +136,12 @@ fun BookmarkButton(
     }
 }
 
-@Preview
+@Preview("Simple post card")
 @Composable
 fun runPreview() {
-    PostCardSimple(post = post3)
+    themedPreview {
+        PostCardSimple(post = post3)
+    }
 }
 
 fun toggleBookmark(postId: String) {
