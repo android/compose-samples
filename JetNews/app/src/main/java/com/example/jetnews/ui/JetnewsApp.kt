@@ -26,8 +26,10 @@ import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
+import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.Expanded
+import androidx.ui.layout.ExpandedWidth
 import androidx.ui.layout.Gravity
 import androidx.ui.layout.HeightSpacer
 import androidx.ui.layout.Row
@@ -140,12 +142,16 @@ private fun DrawerButton(
     }
 
     Surface(
-        modifier = modifier wraps Spacing(left = 8.dp, top = 8.dp, right = 8.dp),
+        modifier = modifier wraps Spacing(
+            left = 8.dp,
+            top = 8.dp,
+            right = 8.dp
+        ),
         color = backgroundColor,
         shape = RoundedCornerShape(4.dp)
     ) {
         Button(onClick = action, style = TextButtonStyle()) {
-            Row {
+            Row(arrangement = Arrangement.Begin) {
                 VectorImage(
                     modifier = Gravity.Center,
                     id = icon,
@@ -156,7 +162,8 @@ private fun DrawerButton(
                     text = label,
                     style = (+MaterialTheme.typography()).body2.copy(
                         color = textIconColor
-                    )
+                    ),
+                    modifier = ExpandedWidth
                 )
             }
         }
