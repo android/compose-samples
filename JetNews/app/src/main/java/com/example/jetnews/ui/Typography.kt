@@ -16,23 +16,24 @@
 
 package com.example.jetnews.ui
 
-import androidx.ui.core.sp
 import androidx.ui.material.Typography
 import androidx.ui.text.TextStyle
-import androidx.ui.text.font.Font
-import androidx.ui.text.font.FontFamily
 import androidx.ui.text.font.FontWeight
+import androidx.ui.text.font.font
+import androidx.ui.text.font.fontFamily
+import androidx.ui.unit.sp
+import com.example.jetnews.R
 
-val regular = Font("montserrat_regular.ttf")
-val medium = Font("montserrat_medium.ttf", FontWeight.W500)
-val semibold = Font("montserrat_semibold.ttf", FontWeight.W600)
+val regular = font(R.font.montserrat_regular)
+val medium = font(R.font.montserrat_medium, FontWeight.W500)
+val semibold = font(R.font.montserrat_semibold, FontWeight.W600)
 
-val appFontFamily = FontFamily(fonts = listOf(regular, medium, semibold))
+val appFontFamily = fontFamily(fonts = listOf(regular, medium, semibold))
 
-val bodyFontFamily = FontFamily(
+val bodyFontFamily = fontFamily(
     fonts = listOf(
-        Font("domine_regular.ttf"),
-        Font("domine_bold", FontWeight.Bold)
+        font(R.font.domine_regular),
+        font(R.font.domine_bold, FontWeight.Bold)
     )
 )
 

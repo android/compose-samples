@@ -17,57 +17,68 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
+import androidx.ui.core.Modifier
 import androidx.ui.core.Text
-import androidx.ui.core.dp
+import androidx.ui.core.toModifier
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.Expanded
-import androidx.ui.layout.Height
-import androidx.ui.layout.Size
-import androidx.ui.layout.Spacing
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
-import androidx.ui.material.withOpacity
 import androidx.ui.res.imageResource
 import androidx.ui.text.style.TextOverflow
+import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.data.post1
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.navigateTo
 
+private val cardSize = LayoutSize(280.dp, 240.dp)
+
 @Composable
-fun PostCardPopular(post: Post) {
-    Card(shape = RoundedCornerShape(4.dp)) {
+fun PostCardPopular(modifier: Modifier = Modifier.None, post: Post) {
+    Card(modifier = modifier, shape = RoundedCornerShape(4.dp)) {
         Ripple(bounded = true) {
             Clickable(onClick = {
                 navigateTo(Screen.Article(post.id))
             }) {
-                Container(modifier = Size(280.dp, 240.dp)) {
-                    Column(modifier = Expanded) {
-                        val image = post.image ?: +imageResource(R.drawable.placeholder_4_3)
-                        Container(modifier = Height(100.dp) wraps Expanded) {
-                            DrawImage(image)
-                        }
-                        Column(modifier = Spacing(16.dp)) {
+                Column(modifier = cardSize) {
+                    val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
+                    val imageModifier = ImagePainter(image).toModifier()
+                    Box(modifier = LayoutHeight(100.dp) + LayoutSize.Fill + imageModifier)
+                    Column(modifier = LayoutPadding(16.dp)) {
+                        val emphasisLevels = MaterialTheme.emphasisLevels()
+                        ProvideEmphasis(emphasis = emphasisLevels.high) {
                             Text(
                                 text = post.title,
-                                style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f),
+                                style = MaterialTheme.typography().h6,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis
                             )
+                        }
+                        ProvideEmphasis(emphasis = emphasisLevels.high) {
                             Text(
                                 text = post.metadata.author.name,
-                                style = ((+MaterialTheme.typography()).body2).withOpacity(0.87f)
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography().body2
                             )
+                        }
+                        ProvideEmphasis(emphasis = emphasisLevels.high) {
                             Text(
                                 text = "${post.metadata.date} - " +
                                         "${post.metadata.readTimeMinutes} min read",
-                                style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
+                                style = MaterialTheme.typography().body2
                             )
                         }
                     }
@@ -75,4 +86,32 @@ fun PostCardPopular(post: Post) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewPostCardPopular() {
+    PostCardPopular(post = post1)
+}
+
+@Preview
+@Composable
+fun PreviewPostCardPopularLongText() {
+
+    val loremIpsum = """
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
+        sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
+        Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
+        nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
+        facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
+        consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
+    """.trimIndent()
+    val post = post1
+    PostCardPopular(post = post.copy(
+        title = "Title" + loremIpsum,
+        metadata = post.metadata.copy(
+            author = PostAuthor("Author: " + loremIpsum),
+            readTimeMinutes = Int.MAX_VALUE
+        )
+    ))
 }
