@@ -99,7 +99,7 @@ fun TutorialPreviewTemplate(
     val context = +ambient(ContextAmbient)
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    
+
     themedPreview(colors) {
         PostCardTop(post)
     }

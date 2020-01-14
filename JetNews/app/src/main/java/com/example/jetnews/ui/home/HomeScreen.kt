@@ -39,8 +39,8 @@ import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
-import com.example.jetnews.ui.themedPreview
 import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun HomeScreen(openDrawer: () -> Unit) {
