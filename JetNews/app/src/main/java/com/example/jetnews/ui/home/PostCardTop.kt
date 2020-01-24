@@ -21,15 +21,13 @@ import androidx.compose.ambient
 import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutExpandedWidth
 import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutMinHeight
 import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Spacer
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.EmphasisLevels
@@ -38,6 +36,7 @@ import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Typography
 import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.data.getPostsWithImagesLoaded
 import com.example.jetnews.data.post2
 import com.example.jetnews.data.posts
@@ -50,9 +49,9 @@ import com.example.jetnews.ui.themeTypography
 fun PostCardTop(post: Post) {
 // TUTORIAL CONTENT STARTS HERE
     val typography = MaterialTheme.typography()
-    Column(modifier = LayoutExpandedWidth + LayoutPadding(16.dp)) {
+    Column(modifier = LayoutWidth.Fill + LayoutPadding(16.dp)) {
         post.image?.let { image ->
-            Container(modifier = LayoutMinHeight(180.dp) + LayoutExpandedWidth) {
+            Container(modifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill) {
                 Clip(shape = RoundedCornerShape(4.dp)) {
                     DrawImage(image)
                 }

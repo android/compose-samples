@@ -19,7 +19,6 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
@@ -35,6 +34,7 @@ import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post

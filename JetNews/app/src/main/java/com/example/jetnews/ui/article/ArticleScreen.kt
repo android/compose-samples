@@ -24,12 +24,10 @@ import androidx.compose.ambient
 import androidx.compose.state
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutExpanded
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
@@ -43,6 +41,7 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.post3
 import com.example.jetnews.data.posts
@@ -90,7 +89,7 @@ fun ArticleScreen(postId: String) {
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     val context = ambient(ContextAmbient)
     Surface(elevation = 2.dp) {
-        Container(modifier = LayoutHeight(56.dp) + LayoutExpanded) {
+        Container(modifier = LayoutHeight(56.dp) + LayoutSize.Fill) {
             Row {
                 BottomBarAction(R.drawable.ic_favorite) {
                     onUnimplementedAction()

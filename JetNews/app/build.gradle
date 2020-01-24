@@ -47,6 +47,9 @@ android {
     buildFeatures {
         compose true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion "0.1.0-SNAPSHOT"
+    }
 }
 
 configurations {
@@ -63,7 +66,7 @@ dependencies {
     implementation("androidx.ui:ui-animation:$compose_version")
     implementation "androidx.ui:ui-tooling:$compose_version"
     implementation('androidx.appcompat:appcompat:1.1.0')
-    implementation('androidx.activity:activity-ktx:1.0.0')
+    implementation('androidx.activity:activity-ktx:1.1.0')
     implementation "androidx.core:core-ktx:1.1.0"
 
     androidTestImplementation("junit:junit:4.12")
