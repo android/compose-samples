@@ -68,15 +68,18 @@ private fun DrawSelectTopicButtonOn() {
 @Composable
 private fun DrawSelectTopicButtonOff() {
     val borderColor = MaterialTheme.colors().onSurface.copy(alpha = 0.12f)
-    Border(
-        shape = CircleShape,
-        width = 2.dp,
-        color = borderColor
-    )
-    DrawVector(
-        vectorImage = vectorResource(R.drawable.ic_add),
-        tintColor = MaterialTheme.colors().primary
-    )
+    Container(
+        modifier = Border(
+            shape = CircleShape,
+            width = 2.dp,
+            color = borderColor
+        )
+    ) {
+        DrawVector(
+            vectorImage = vectorResource(R.drawable.ic_add),
+            tintColor = MaterialTheme.colors().primary
+        )
+    }
 }
 
 @Preview("Off")
