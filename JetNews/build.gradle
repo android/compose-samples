@@ -23,7 +23,7 @@ buildscript {
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0-alpha06'
+        classpath 'com.android.tools.build:gradle:4.0.0-alpha09'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -33,6 +33,6 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url 'https://ci.android.com/builds/submitted/6079043/androidx_snapshot/latest/ui/repository/' }
+        maven { url 'https://ci.android.com/builds/submitted/6158785/androidx_snapshot/latest/ui/repository/' }
     }
 }

@@ -19,7 +19,6 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.selection.Toggleable
@@ -34,6 +33,7 @@ import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.post3
 import com.example.jetnews.model.Post

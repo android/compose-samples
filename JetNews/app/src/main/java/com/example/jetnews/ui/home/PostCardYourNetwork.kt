@@ -18,13 +18,11 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutExpanded
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
@@ -35,6 +33,7 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.res.imageResource
 import androidx.ui.text.style.TextOverflow
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
@@ -48,9 +47,9 @@ fun PostCardPopular(post: Post) {
                 navigateTo(Screen.Article(post.id))
             }) {
                 Container(modifier = LayoutSize(280.dp, 240.dp)) {
-                    Column(modifier = LayoutExpanded) {
+                    Column(modifier = LayoutSize.Fill) {
                         val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
-                        Container(modifier = LayoutHeight(100.dp) + LayoutExpanded) {
+                        Container(modifier = LayoutHeight(100.dp) + LayoutSize.Fill) {
                             DrawImage(image)
                         }
                         Column(modifier = LayoutPadding(16.dp)) {

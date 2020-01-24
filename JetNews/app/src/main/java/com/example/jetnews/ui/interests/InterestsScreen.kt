@@ -21,7 +21,6 @@ import androidx.compose.state
 import androidx.ui.core.Clip
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
@@ -40,6 +39,7 @@ import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.people
 import com.example.jetnews.data.publications

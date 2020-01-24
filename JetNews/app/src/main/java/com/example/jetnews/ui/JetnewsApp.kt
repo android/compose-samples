@@ -22,14 +22,13 @@ import androidx.compose.state
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutExpanded
 import androidx.ui.layout.LayoutGravity
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
@@ -41,6 +40,7 @@ import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
@@ -88,7 +88,7 @@ private fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
-    Column(modifier = LayoutExpanded) {
+    Column(modifier = LayoutSize.Fill) {
         Spacer(LayoutHeight(24.dp))
         Row(modifier = LayoutPadding(16.dp)) {
             VectorImage(

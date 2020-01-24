@@ -18,11 +18,8 @@ package com.example.jetnews.ui.article
 
 import androidx.compose.Composable
 import androidx.ui.core.Clip
-import androidx.ui.core.Dp
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
-import androidx.ui.core.dp
-import androidx.ui.core.sp
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.DrawShape
@@ -31,9 +28,7 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutExpandedWidth
 import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutMinHeight
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
@@ -53,6 +48,9 @@ import androidx.ui.text.font.FontWeight
 import androidx.ui.text.style.TextDecoration
 import androidx.ui.text.style.TextIndent
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.Dp
+import androidx.ui.unit.dp
+import androidx.ui.unit.sp
 import com.example.jetnews.R
 import com.example.jetnews.data.post3
 import com.example.jetnews.model.Markup
@@ -102,7 +100,7 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
 @Composable
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
-        Container(modifier = LayoutMinHeight(180.dp) + LayoutExpandedWidth) {
+        Container(modifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill) {
             Clip(shape = RoundedCornerShape(4.dp)) {
                 DrawImage(image)
             }
