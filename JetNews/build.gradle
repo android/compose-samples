@@ -33,6 +33,6 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url 'https://ci.android.com/builds/submitted/6157430/androidx_snapshot/latest/ui/repository/' }
+        maven { url 'https://ci.android.com/builds/submitted/6158785/androidx_snapshot/latest/ui/repository/' }
     }
 }
