@@ -42,7 +42,7 @@ fun VectorImage(modifier: Modifier = Modifier.None, @DrawableRes id: Int, tint: 
     val vector = vectorResource(id)
     WithDensity {
         Container(
-            modifier = modifier + LayoutSize(vector.defaultWidth.value.toDp(), vector.defaultHeight.value.toDp())
+            modifier = modifier + LayoutSize(vector.defaultWidth, vector.defaultHeight)
         ) {
             DrawVector(vector, tint)
         }
