@@ -17,23 +17,21 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
-import androidx.ui.layout.Spacing
-import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
@@ -57,7 +55,9 @@ fun HomeScreen(openDrawer: () -> Unit) {
                 }
             }
         )
-        VerticalScroller(modifier = Flexible(1f)) {
+        VerticalScroller(
+//            modifier = Flexible(1f)
+        ) {
             Column {
                 HomeScreenTopSection(post = postTop)
                 HomeScreenSimpleSection(posts = postsSimple)
@@ -72,9 +72,10 @@ fun HomeScreen(openDrawer: () -> Unit) {
 private fun HomeScreenTopSection(post: Post) {
 
     Text(
-        modifier = Spacing(top = 16.dp, left = 16.dp, right = 16.dp),
-        text = "Top stories for you",
-        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+        modifier = LayoutPadding(left = 16.dp, top = 16.dp, right = 16.dp),
+        text = "Top stories for you"
+//        ,
+//        style = ((MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
     )
     Ripple(bounded = true) {
         Clickable(onClick = {
@@ -97,14 +98,15 @@ private fun HomeScreenSimpleSection(posts: List<Post>) {
 @Composable
 private fun HomeScreenPopularSection(posts: List<Post>) {
     Text(
-        modifier = Spacing(16.dp),
-        text = "Popular on Jetnews",
-        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+        modifier = LayoutPadding(16.dp),
+        text = "Popular on Jetnews"
+//        ,
+//        style = ((MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
     )
     HorizontalScroller {
-        Row(modifier = Spacing(bottom = 16.dp, right = 16.dp)) {
+        Row(modifier = LayoutPadding(right = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->
-                WidthSpacer(16.dp)
+                Spacer(modifier = LayoutWidth(16.dp))
                 PostCardPopular(post)
             }
         }
@@ -123,7 +125,7 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 @Composable
 private fun HomeScreenDivider() {
     Opacity(0.08f) {
-        Divider(modifier = Spacing(left = 14.dp, right = 14.dp))
+        Divider(modifier = LayoutPadding(left = 14.dp, right = 14.dp))
     }
 }
 

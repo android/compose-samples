@@ -17,24 +17,21 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.Expanded
-import androidx.ui.layout.Height
-import androidx.ui.layout.Size
-import androidx.ui.layout.Spacing
-import androidx.ui.material.MaterialTheme
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
+import androidx.ui.layout.LayoutWidth
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
-import androidx.ui.material.withOpacity
 import androidx.ui.res.imageResource
 import androidx.ui.text.style.TextOverflow
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
@@ -47,27 +44,29 @@ fun PostCardPopular(post: Post) {
             Clickable(onClick = {
                 navigateTo(Screen.Article(post.id))
             }) {
-                Container(modifier = Size(280.dp, 240.dp)) {
-                    Column(modifier = Expanded) {
-                        val image = post.image ?: +imageResource(R.drawable.placeholder_4_3)
-                        Container(modifier = Height(100.dp) wraps Expanded) {
+                Container(modifier = LayoutSize(280.dp, 240.dp)) {
+                    Column(modifier = LayoutWidth.Fill) {
+                        val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
+                        Container(modifier = LayoutHeight(100.dp) + LayoutWidth.Fill) {
                             DrawImage(image)
                         }
-                        Column(modifier = Spacing(16.dp)) {
+                        Column(modifier = LayoutPadding(16.dp)) {
                             Text(
                                 text = post.title,
-                                style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f),
+//                                style = ((MaterialTheme.typography()).h6).withOpacity(0.87f),
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = post.metadata.author.name,
-                                style = ((+MaterialTheme.typography()).body2).withOpacity(0.87f)
+                                text = post.metadata.author.name
+//                                ,
+//                                style = ((MaterialTheme.typography()).body2).withOpacity(0.87f)
                             )
                             Text(
                                 text = "${post.metadata.date} - " +
-                                        "${post.metadata.readTimeMinutes} min read",
-                                style = ((+MaterialTheme.typography()).body2).withOpacity(0.6f)
+                                        "${post.metadata.readTimeMinutes} min read"
+//                                ,
+//                                style = ((MaterialTheme.typography()).body2).withOpacity(0.6f)
                             )
                         }
                     }

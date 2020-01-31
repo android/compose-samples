@@ -16,12 +16,12 @@
 
 package com.example.jetnews.ui
 
-import androidx.ui.core.sp
 import androidx.ui.material.Typography
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.Font
 import androidx.ui.text.font.FontFamily
 import androidx.ui.text.font.FontWeight
+import androidx.ui.unit.sp
 
 val regular = Font("montserrat_regular.ttf")
 val medium = Font("montserrat_medium.ttf", FontWeight.W500)

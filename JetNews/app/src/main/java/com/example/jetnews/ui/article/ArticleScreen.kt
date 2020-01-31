@@ -22,19 +22,17 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.ambient
 import androidx.compose.state
-import androidx.compose.unaryPlus
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.Expanded
-import androidx.ui.layout.Height
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
+import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
-import androidx.ui.layout.Size
-import androidx.ui.layout.Spacing
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
 import androidx.ui.material.MaterialTheme
@@ -44,6 +42,7 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.post3
 import com.example.jetnews.data.posts
@@ -58,7 +57,7 @@ import com.example.jetnews.ui.navigateTo
 @Composable
 fun ArticleScreen(postId: String) {
 
-    var showDialog by +state { false }
+    var showDialog by state { false }
     // getting the post from our list of posts by Id
     val post = posts.find { it.id == postId } ?: return
 
@@ -73,7 +72,7 @@ fun ArticleScreen(postId: String) {
             title = {
                 Text(
                     text = "Published in: ${post.publication?.name}",
-                    style = (+MaterialTheme.typography()).subtitle2
+                    style = (MaterialTheme.typography()).subtitle2
                 )
             },
             navigationIcon = {
@@ -82,16 +81,17 @@ fun ArticleScreen(postId: String) {
                 }
             }
         )
-        PostContent(modifier = Flexible(1f), post = post)
+        // TODO what's the replacement of flexible?
+//        PostContent(modifier = Flexible(1f), post = post)
         BottomBar(post) { showDialog = true }
     }
 }
 
 @Composable
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
-    val context = +ambient(ContextAmbient)
+    val context = ambient(ContextAmbient)
     Surface(elevation = 2.dp) {
-        Container(modifier = Height(56.dp) wraps Expanded) {
+        Container(modifier = LayoutHeight(56.dp) + LayoutWidth.Fill) {
             Row {
                 BottomBarAction(R.drawable.ic_favorite) {
                     onUnimplementedAction()
@@ -103,7 +103,8 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
                 BottomBarAction(R.drawable.ic_share) {
                     sharePost(post, context)
                 }
-                Container(modifier = Flexible(1f)) { } // TODO: Any element works
+                // TODO what's the replacement of flexible?
+//                Container(modifier = Flexible(1f)) { } // TODO: Any element works
                 BottomBarAction(R.drawable.ic_text_settings) {
                     onUnimplementedAction()
                 }
@@ -122,8 +123,8 @@ private fun BottomBarAction(
         radius = 24.dp
     ) {
         Clickable(onClick = onClick) {
-            Container(modifier = Spacing(12.dp) wraps Size(24.dp, 24.dp)) {
-                DrawVector(+vectorResource(id))
+            Container(modifier = LayoutPadding(12.dp) + LayoutSize(24.dp, 24.dp)) {
+                DrawVector(vectorResource(id))
             }
         }
     }
@@ -136,7 +137,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = "Functionality not available \uD83D\uDE48",
-                style = (+MaterialTheme.typography()).body2
+                style = (MaterialTheme.typography()).body2
             )
         },
         confirmButton = {

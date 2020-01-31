@@ -19,22 +19,19 @@ package com.example.jetnews.ui
 import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.state
-import androidx.compose.unaryPlus
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
-import androidx.ui.layout.Expanded
-import androidx.ui.layout.ExpandedWidth
-import androidx.ui.layout.Gravity
-import androidx.ui.layout.HeightSpacer
+import androidx.ui.layout.LayoutGravity
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
-import androidx.ui.layout.Spacing
-import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.Spacer
 import androidx.ui.material.Button
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
@@ -43,6 +40,7 @@ import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
@@ -51,7 +49,7 @@ import com.example.jetnews.ui.interests.InterestsScreen
 @Composable
 fun JetnewsApp() {
 
-    val (drawerState, onDrawerStateChange) = +state { DrawerState.Closed }
+    val (drawerState, onDrawerStateChange) = state { DrawerState.Closed }
 
     MaterialTheme(
         colors = lightThemeColors,
@@ -75,7 +73,7 @@ fun JetnewsApp() {
 @Composable
 private fun AppContent(openDrawer: () -> Unit) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
-        Surface(color = (+MaterialTheme.colors()).background) {
+        Surface(color = (MaterialTheme.colors()).background) {
             when (screen) {
                 is Screen.Home -> HomeScreen { openDrawer() }
                 is Screen.Interests -> InterestsScreen { openDrawer() }
@@ -90,14 +88,14 @@ private fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
-    Column(modifier = Expanded) {
-        HeightSpacer(24.dp)
-        Row(modifier = Spacing(16.dp)) {
+    Column(modifier = LayoutWidth.Fill) {
+        Spacer(modifier = LayoutHeight(24.dp))
+        Row(modifier = LayoutPadding(16.dp)) {
             VectorImage(
                 id = R.drawable.ic_jetnews_logo,
-                tint = (+MaterialTheme.colors()).primary
+                tint = (MaterialTheme.colors()).primary
             )
-            WidthSpacer(8.dp)
+            Spacer(LayoutWidth(8.dp))
             VectorImage(id = R.drawable.ic_jetnews_wordmark)
         }
         Divider(color = Color(0x14333333))
@@ -129,7 +127,7 @@ private fun DrawerButton(
     isSelected: Boolean,
     action: () -> Unit
 ) {
-    val colors = +MaterialTheme.colors()
+    val colors = MaterialTheme.colors()
     val textIconColor = if (isSelected) {
         colors.primary
     } else {
@@ -142,7 +140,7 @@ private fun DrawerButton(
     }
 
     Surface(
-        modifier = modifier wraps Spacing(
+        modifier = modifier + LayoutPadding(
             left = 8.dp,
             top = 8.dp,
             right = 8.dp
@@ -153,17 +151,17 @@ private fun DrawerButton(
         Button(onClick = action, style = TextButtonStyle()) {
             Row(arrangement = Arrangement.Begin) {
                 VectorImage(
-                    modifier = Gravity.Center,
+                    modifier = LayoutGravity.Center,
                     id = icon,
                     tint = textIconColor
                 )
-                WidthSpacer(16.dp)
+                Spacer(LayoutWidth(16.dp))
                 Text(
                     text = label,
-                    style = (+MaterialTheme.typography()).body2.copy(
+                    style = (MaterialTheme.typography()).body2.copy(
                         color = textIconColor
                     ),
-                    modifier = ExpandedWidth
+                    modifier = LayoutWidth.Fill
                 )
             }
         }
