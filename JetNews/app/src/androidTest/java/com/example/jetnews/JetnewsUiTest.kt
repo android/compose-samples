@@ -46,7 +46,7 @@ class JetnewsUiTest {
 
     @Test
     fun app_opensArticle() {
-        findAllByText("Manuel Vivo").first().doClick()
-        findByText("July 30 • 3 min read").assertIsDisplayed()
+        findAllBySubstring("Manuel Vivo").first().doClick()
+        findAllBySubstring("July 30 • 3 min read").first().assertIsDisplayed()
     }
 }
