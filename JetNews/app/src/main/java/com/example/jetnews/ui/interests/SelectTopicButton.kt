@@ -18,8 +18,6 @@ package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Border
-import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.DrawShape
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
@@ -28,7 +26,6 @@ import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
@@ -43,15 +40,11 @@ fun SelectTopicButton(
     onSelected: ((Boolean) -> Unit)? = null,
     selected: Boolean = false
 ) {
-    Ripple(bounded = false) {
-        Toggleable(selected, onSelected) {
-            Container(modifier = modifier + LayoutSize(36.dp, 36.dp)) {
-                if (selected) {
-                    DrawSelectTopicButtonOn()
-                } else {
-                    DrawSelectTopicButtonOff()
-                }
-            }
+    Container(modifier = modifier + LayoutSize(36.dp, 36.dp)) {
+        if (selected) {
+            DrawSelectTopicButtonOn()
+        } else {
+            DrawSelectTopicButtonOff()
         }
     }
 }
@@ -68,18 +61,14 @@ private fun DrawSelectTopicButtonOn() {
 @Composable
 private fun DrawSelectTopicButtonOff() {
     val borderColor = MaterialTheme.colors().onSurface.copy(alpha = 0.12f)
-    Container(
-        modifier = Border(
-            shape = CircleShape,
-            width = 2.dp,
-            color = borderColor
-        )
-    ) {
-        DrawVector(
-            vectorImage = vectorResource(R.drawable.ic_add),
-            tintColor = MaterialTheme.colors().primary
-        )
-    }
+    DrawShape(
+        shape = CircleShape,
+        color = borderColor
+    )
+    DrawVector(
+        vectorImage = vectorResource(R.drawable.ic_add),
+        tintColor = MaterialTheme.colors().primary
+    )
 }
 
 @Preview("Off")

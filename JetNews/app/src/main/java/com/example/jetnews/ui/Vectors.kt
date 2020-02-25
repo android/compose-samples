@@ -18,8 +18,8 @@ package com.example.jetnews.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.Composable
+import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
-import androidx.ui.core.WithDensity
 import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.vector.DrawVector
@@ -40,7 +40,7 @@ fun VectorImageButton(@DrawableRes id: Int, onClick: () -> Unit) {
 @Composable
 fun VectorImage(modifier: Modifier = Modifier.None, @DrawableRes id: Int, tint: Color = Color.Transparent) {
     val vector = vectorResource(id)
-    WithDensity {
+    with(DensityAmbient.current) {
         Container(
             modifier = modifier + LayoutSize(vector.defaultWidth, vector.defaultHeight)
         ) {

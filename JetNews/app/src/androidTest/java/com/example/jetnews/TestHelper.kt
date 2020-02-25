@@ -17,13 +17,12 @@
 package com.example.jetnews
 
 import androidx.compose.Composable
-import androidx.ui.core.semantics.getOrNull
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
-import androidx.ui.semantics.SemanticsProperties
 import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.SemanticsNodeInteraction
 import androidx.ui.test.findAll
+import androidx.ui.test.hasSubstring
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
@@ -60,11 +59,8 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
     }
 }
 
-/**
- * Finds all components that match the given text
- */
-fun findAllByText(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
-    return findAll {
-        getOrNull(SemanticsProperties.AccessibilityLabel).equals(text, ignoreCase)
-    }
+fun findAllBySubstring(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
+    return findAll(
+        hasSubstring(text, ignoreCase)
+    )
 }
