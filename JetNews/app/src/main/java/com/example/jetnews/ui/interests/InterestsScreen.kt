@@ -23,6 +23,7 @@ import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
@@ -69,10 +70,14 @@ fun InterestsScreen(openDrawer: () -> Unit) {
             }
         )
         TabRow(items = sectionTitles, selectedIndex = section.ordinal) { index, text ->
-            Tab(text = text, selected = section.ordinal == index) {
-                section = Sections.values()[index]
+
+            Tab(
+                text = text,
+                selected = section.ordinal == index,
+                onSelected = {
+                    section = Sections.values()[index]
+                })
             }
-        }
         Container(modifier = LayoutFlexible(1f)) {
             when (section) {
                 Sections.Topics -> TopicsTab()
@@ -153,27 +158,37 @@ private fun TabWithSections(
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = imageResource(R.drawable.placeholder_1_1)
-    Row(
-        modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
-    ) {
-        Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
-            Clip(RoundedCornerShape(4.dp)) {
-                DrawImage(image)
+
+    // Bug in ripple not taking into account modifiers.
+    // Ripple(bounded = true) {
+        val selected = isTopicSelected(topicKey)
+        val onSelected = { it: Boolean ->
+            selectTopic(topicKey, it)
+        }
+        Toggleable(selected, onSelected) {
+            Row(
+                modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
+            ) {
+                Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
+                    Clip(RoundedCornerShape(4.dp)) {
+                        DrawImage(image)
+                    }
+                }
+                Text(
+                    text = itemTitle,
+                    modifier = LayoutFlexible(1f) + LayoutGravity.Center + LayoutPadding(16.dp),
+                    style = (MaterialTheme.typography()).subtitle1
+                )
+                SelectTopicButton(
+                    modifier = LayoutGravity.Center,
+                    onSelected = {
+                        selectTopic(topicKey, !selected)
+                    },
+                    selected = selected
+                )
             }
         }
-        Text(
-            text = itemTitle,
-            modifier = LayoutFlexible(1f) + LayoutGravity.Center + LayoutPadding(16.dp),
-            style = (MaterialTheme.typography()).subtitle1)
-        val selected = isTopicSelected(topicKey)
-        SelectTopicButton(
-            modifier = LayoutGravity.Center,
-            onSelected = {
-                selectTopic(topicKey, !selected)
-            },
-            selected = selected
-        )
-    }
+    // }
 }
 
 @Composable

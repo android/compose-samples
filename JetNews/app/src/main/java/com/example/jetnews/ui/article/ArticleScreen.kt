@@ -33,9 +33,8 @@ import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
 import androidx.ui.material.AlertDialog
-import androidx.ui.material.Button
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TextButtonStyle
+import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
@@ -138,11 +137,11 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
             )
         },
         confirmButton = {
-            Button(
-                text = "CLOSE",
-                style = TextButtonStyle(),
+            TextButton(
                 onClick = onDismiss
-            )
+            ) {
+                Text(text = "CLOSE")
+            }
         }
     )
 }

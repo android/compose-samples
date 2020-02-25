@@ -32,12 +32,11 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
-import androidx.ui.material.Button
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ModalDrawerLayout
-import androidx.ui.material.TextButtonStyle
+import androidx.ui.material.TextButton
 import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -149,7 +148,7 @@ private fun DrawerButton(
         color = backgroundColor,
         shape = RoundedCornerShape(4.dp)
     ) {
-        Button(onClick = action, style = TextButtonStyle()) {
+        TextButton(onClick = action) {
             Row {
                 VectorImage(
                     modifier = LayoutGravity.Center,
