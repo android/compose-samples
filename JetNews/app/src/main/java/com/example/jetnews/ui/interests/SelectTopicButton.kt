@@ -47,8 +47,6 @@ fun SelectTopicButton(
             DrawSelectTopicButtonOff()
         }
     }
-
-
 }
 
 @Composable

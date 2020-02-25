@@ -160,7 +160,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = imageResource(R.drawable.placeholder_1_1)
 
     // Bug in ripple not taking into account modifiers.
-    //Ripple(bounded = true) {
+    // Ripple(bounded = true) {
         val selected = isTopicSelected(topicKey)
         val onSelected = { it: Boolean ->
             selectTopic(topicKey, it)
@@ -188,7 +188,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
                 )
             }
         }
-    //}
+    // }
 }
 
 @Composable

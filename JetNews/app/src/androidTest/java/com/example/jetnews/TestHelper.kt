@@ -60,7 +60,7 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
 }
 
 fun findAllBySubstring(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
-    return findAll (
+    return findAll(
         hasSubstring(text, ignoreCase)
     )
 }
