@@ -41,12 +41,15 @@ class JetnewsUiTest {
 
     @Test
     fun app_launches() {
+        // temporary workaround, goes away in next Compose releases
+        waitForComposeToBeIdle()
         findByText("Jetnews").assertIsDisplayed()
     }
 
     @Test
     fun app_opensArticle() {
         findAllByText("Manuel Vivo").first().doClick()
+        // temporary workaround, goes away in next Compose releases
         waitForComposeToBeIdle()
         findByText("July 30 • 3 min read").assertIsDisplayed()
     }
