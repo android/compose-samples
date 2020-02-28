@@ -26,7 +26,6 @@ import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
 import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
@@ -34,6 +33,7 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Scaffold
 import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
@@ -65,28 +65,34 @@ fun ArticleScreen(postId: String) {
         }
     }
 
-    Column {
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Published in: ${post.publication?.name}",
-                    style = MaterialTheme.typography().subtitle2
-                )
-            },
-            navigationIcon = {
-                VectorImageButton(R.drawable.ic_back) {
-                    navigateTo(Screen.Home)
+    Scaffold(
+        topAppBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Published in: ${post.publication?.name}",
+                        style = MaterialTheme.typography().subtitle2
+                    )
+                },
+                navigationIcon = {
+                    VectorImageButton(R.drawable.ic_back) {
+                        navigateTo(Screen.Home)
+                    }
                 }
-            }
-        )
-        PostContent(modifier = LayoutFlexible(1f), post = post)
-        BottomBar(post) { showDialog = true }
-    }
+            )
+        },
+        bodyContent = {
+            PostContent(post = post)
+        },
+        bottomAppBar = {
+            BottomBar(post) { showDialog = true }
+        }
+    )
 }
 
 @Composable
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
-    val context = ambient(ContextAmbient)
+    val context = ContextAmbient.current
     Surface(elevation = 2.dp) {
         Container(modifier = LayoutHeight(56.dp) + LayoutSize.Fill) {
             Row {

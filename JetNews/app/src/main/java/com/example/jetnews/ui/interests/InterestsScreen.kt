@@ -17,10 +17,13 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
+import androidx.compose.remember
 import androidx.compose.state
 import androidx.ui.core.Clip
+import androidx.ui.core.Modifier
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.DrawImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.selection.Toggleable
@@ -34,10 +37,14 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
+import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Scaffold
+import androidx.ui.material.ScaffoldState
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.ripple.Ripple
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -45,7 +52,9 @@ import com.example.jetnews.R
 import com.example.jetnews.data.people
 import com.example.jetnews.data.publications
 import com.example.jetnews.data.topics
+import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
+import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
 
 private enum class Sections(val title: String) {
@@ -55,31 +64,49 @@ private enum class Sections(val title: String) {
 }
 
 @Composable
-fun InterestsScreen(openDrawer: () -> Unit) {
+fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
+    Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.Interests,
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+            )
+        },
+        topAppBar = {
+            TopAppBar(
+                title = { Text("Interests") },
+                navigationIcon = {
+                    VectorImageButton(R.drawable.ic_jetnews_logo) {
+                        scaffoldState.drawerState = DrawerState.Opened
+                    }
+                }
+            )
+        },
+        bodyContent = {
+            val (currentSection, updateSection) = state { Sections.Topics }
+            IntrestsScreenBody(currentSection, updateSection)
+        }
+    )
+}
 
-    var section by state { Sections.Topics }
+private fun IntrestsScreenBody(
+    currentSection: Sections,
+    updateSection: (Sections) -> Unit
+) {
     val sectionTitles = Sections.values().map { it.title }
 
     Column {
-        TopAppBar(
-            title = { Text("Interests") },
-            navigationIcon = {
-                VectorImageButton(R.drawable.ic_jetnews_logo) {
-                    openDrawer()
-                }
-            }
-        )
-        TabRow(items = sectionTitles, selectedIndex = section.ordinal) { index, text ->
-
+        TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, text ->
             Tab(
                 text = text,
-                selected = section.ordinal == index,
+                selected = currentSection.ordinal == index,
                 onSelected = {
-                    section = Sections.values()[index]
+                    updateSection(Sections.values()[index])
                 })
-            }
+        }
         Container(modifier = LayoutFlexible(1f)) {
-            when (section) {
+            when (currentSection) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()
                 Sections.Publications -> PublicationsTab()
@@ -90,7 +117,10 @@ fun InterestsScreen(openDrawer: () -> Unit) {
 
 @Composable
 private fun TopicsTab() {
-    TabWithSections("Topics", topics)
+    TabWithSections(
+        "Topics",
+        topics
+    )
 }
 
 @Composable
@@ -113,14 +143,15 @@ private fun PublicationsTab() {
 private fun TabWithTopics(tabname: String, topics: List<String>) {
     VerticalScroller {
         Column {
-            Spacer(LayoutHeight(16.dp))
+            Spacer(modifier = LayoutHeight(16.dp))
             topics.forEach { topic ->
                 TopicItem(
                     getTopicKey(
                         tabname,
                         "- ",
                         topic
-                    ), topic
+                    ),
+                        topic
                 )
                 TopicDivider()
             }
@@ -159,36 +190,35 @@ private fun TabWithSections(
 private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = imageResource(R.drawable.placeholder_1_1)
 
-    // Bug in ripple not taking into account modifiers.
-    // Ripple(bounded = true) {
+     Ripple(bounded = true) {
         val selected = isTopicSelected(topicKey)
         val onSelected = { it: Boolean ->
             selectTopic(topicKey, it)
         }
         Toggleable(selected, onSelected) {
-            Row(
-                modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
-            ) {
-                Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
-                    Clip(RoundedCornerShape(4.dp)) {
-                        DrawImage(image)
+            // TODO(b/150060763): Remove box after "Bug in ripple + modifiers."
+            Box {
+                Row(
+                        modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
+                ) {
+                    Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
+                        Clip(RoundedCornerShape(4.dp)) {
+                            DrawImage(image)
+                        }
                     }
+                    Text(
+                            text = itemTitle,
+                            modifier = LayoutFlexible(1f) + LayoutGravity.Center + LayoutPadding(16.dp),
+                            style = (MaterialTheme.typography()).subtitle1
+                    )
+                    SelectTopicButton(
+                            modifier = LayoutGravity.Center,
+                            selected = selected
+                    )
                 }
-                Text(
-                    text = itemTitle,
-                    modifier = LayoutFlexible(1f) + LayoutGravity.Center + LayoutPadding(16.dp),
-                    style = (MaterialTheme.typography()).subtitle1
-                )
-                SelectTopicButton(
-                    modifier = LayoutGravity.Center,
-                    onSelected = {
-                        selectTopic(topicKey, !selected)
-                    },
-                    selected = selected
-                )
             }
         }
-    // }
+     }
 }
 
 @Composable
@@ -212,6 +242,18 @@ private fun selectTopic(key: String, select: Boolean) {
 
 @Preview
 @Composable
-fun preview() {
-    InterestsScreen { }
+fun PreviewInterestsScreen() {
+    InterestsScreen()
+}
+
+@Preview
+@Composable
+private fun PreviewDrawerOpen() {
+    InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+}
+
+@Preview
+@Composable
+fun PreviewTopicsTab() {
+    TopicsTab()
 }

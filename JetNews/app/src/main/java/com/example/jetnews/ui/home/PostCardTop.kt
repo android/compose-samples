@@ -107,7 +107,7 @@ fun TutorialPreviewTemplate(
     colors: ColorPalette = lightThemeColors,
     typography: Typography = themeTypography
 ) {
-    val context = ambient(ContextAmbient)
+    val context = ContextAmbient.current
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
     MaterialTheme(colors = colors, typography = typography) {

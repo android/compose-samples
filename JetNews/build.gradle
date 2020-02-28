@@ -22,7 +22,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0-alpha09'
+        classpath 'com.android.tools.build:gradle:4.0.0-beta01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -31,6 +31,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'https://ci.android.com/builds/submitted/6202563/androidx_snapshot/latest/ui/repository/' }
+        maven { url 'https://ci.android.com/builds/submitted/6204302/androidx_snapshot/latest/ui/repository/' }
     }
 }
