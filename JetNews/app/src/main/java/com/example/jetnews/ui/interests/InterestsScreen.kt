@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
+import androidx.compose.remember
 import androidx.compose.state
 import androidx.ui.core.Clip
 import androidx.ui.core.Opacity
@@ -34,7 +35,10 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
+import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Scaffold
+import androidx.ui.material.ScaffoldState
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
@@ -45,7 +49,9 @@ import com.example.jetnews.R
 import com.example.jetnews.data.people
 import com.example.jetnews.data.publications
 import com.example.jetnews.data.topics
+import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
+import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
 
 private enum class Sections(val title: String) {
@@ -55,31 +61,49 @@ private enum class Sections(val title: String) {
 }
 
 @Composable
-fun InterestsScreen(openDrawer: () -> Unit) {
+fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
+    Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.Interests,
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+            )
+        },
+        topAppBar = {
+            TopAppBar(
+                title = { Text("Interests") },
+                navigationIcon = {
+                    VectorImageButton(R.drawable.ic_jetnews_logo) {
+                        scaffoldState.drawerState = DrawerState.Opened
+                    }
+                }
+            )
+        },
+        bodyContent = {
+            val (currentSection, updateSection) = state { Sections.Topics }
+            IntrestsScreenBody(currentSection, updateSection)
+        }
+    )
+}
 
-    var section by state { Sections.Topics }
+private fun IntrestsScreenBody(
+    currentSection: Sections,
+    updateSection: (Sections) -> Unit
+) {
     val sectionTitles = Sections.values().map { it.title }
 
     Column {
-        TopAppBar(
-            title = { Text("Interests") },
-            navigationIcon = {
-                VectorImageButton(R.drawable.ic_jetnews_logo) {
-                    openDrawer()
-                }
-            }
-        )
-        TabRow(items = sectionTitles, selectedIndex = section.ordinal) { index, text ->
-
+        TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, text ->
             Tab(
                 text = text,
-                selected = section.ordinal == index,
+                selected = currentSection.ordinal == index,
                 onSelected = {
-                    section = Sections.values()[index]
+                    updateSection(Sections.values()[index])
                 })
-            }
+        }
         Container(modifier = LayoutFlexible(1f)) {
-            when (section) {
+            when (currentSection) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()
                 Sections.Publications -> PublicationsTab()
@@ -90,7 +114,10 @@ fun InterestsScreen(openDrawer: () -> Unit) {
 
 @Composable
 private fun TopicsTab() {
-    TabWithSections("Topics", topics)
+    TabWithSections(
+        "Topics",
+        topics
+    )
 }
 
 @Composable
@@ -212,6 +239,12 @@ private fun selectTopic(key: String, select: Boolean) {
 
 @Preview
 @Composable
-fun preview() {
-    InterestsScreen { }
+fun PreviewInterestsScreen() {
+    InterestsScreen()
+}
+
+@Preview
+@Composable
+private fun PreviewDrawerOpen() {
+    InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
 }

@@ -18,7 +18,6 @@ package com.example.jetnews.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.Composable
-import androidx.compose.state
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
@@ -33,9 +32,7 @@ import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
-import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ModalDrawerLayout
 import androidx.ui.material.TextButton
 import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
@@ -48,34 +45,21 @@ import com.example.jetnews.ui.interests.InterestsScreen
 @Composable
 fun JetnewsApp() {
 
-    val (drawerState, onDrawerStateChange) = state { DrawerState.Closed }
-
     MaterialTheme(
         colors = lightThemeColors,
         typography = themeTypography
     ) {
-        ModalDrawerLayout(
-            drawerState = drawerState,
-            onStateChange = onDrawerStateChange,
-            gesturesEnabled = drawerState == DrawerState.Opened,
-            drawerContent = {
-                AppDrawer(
-                    currentScreen = JetnewsStatus.currentScreen,
-                    closeDrawer = { onDrawerStateChange(DrawerState.Closed) }
-                )
-            },
-            bodyContent = { AppContent { onDrawerStateChange(DrawerState.Opened) } }
-        )
+       AppContent()
     }
 }
 
 @Composable
-private fun AppContent(openDrawer: () -> Unit) {
+private fun AppContent() {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors().background) {
             when (screen) {
-                is Screen.Home -> HomeScreen { openDrawer() }
-                is Screen.Interests -> InterestsScreen { openDrawer() }
+                is Screen.Home -> HomeScreen()
+                is Screen.Interests -> InterestsScreen()
                 is Screen.Article -> ArticleScreen(postId = screen.postId)
             }
         }
@@ -83,7 +67,7 @@ private fun AppContent(openDrawer: () -> Unit) {
 }
 
 @Composable
-private fun AppDrawer(
+fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
@@ -169,7 +153,7 @@ private fun DrawerButton(
 
 @Preview
 @Composable
-fun preview() {
+fun PreviewJetnewsApp() {
     AppDrawer(
         currentScreen = JetnewsStatus.currentScreen,
         closeDrawer = { }

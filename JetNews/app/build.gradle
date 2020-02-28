@@ -48,8 +48,8 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "0.1.0-SNAPSHOT"
-    }
+        kotlinCompilerVersion "1.3.61-dev-withExperimentalGoogleExtensions-20200129"
+        kotlinCompilerExtensionVersion "0.1.0-dev05"    }
 }
 
 configurations {

@@ -17,6 +17,8 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.compose.remember
+import androidx.ui.core.Modifier
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.foundation.Clickable
@@ -24,13 +26,14 @@ import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
+import androidx.ui.material.DrawerState
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Scaffold
+import androidx.ui.material.ScaffoldState
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.tooling.preview.Preview
@@ -38,33 +41,56 @@ import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun HomeScreen(openDrawer: () -> Unit) {
+fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
+    Column {
+        Scaffold(
+            scaffoldState = scaffoldState,
+            drawerContent = {
+                AppDrawer(
+                    currentScreen = Screen.Home,
+                    closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+                )
+            },
+            topAppBar = {
+                TopAppBar(
+                    title = { Text(text = "Jetnews") },
+                    navigationIcon = {
+                        VectorImageButton(R.drawable.ic_jetnews_logo) {
+                            scaffoldState.drawerState = DrawerState.Opened
+                        }
+                    }
+                )
+            },
+            bodyContent = {
+                HomeScreenBody(posts)
+            }
+        )
+
+
+    }
+}
+
+private fun HomeScreenBody(
+    posts: List<Post>,
+    modifier: Modifier = Modifier.None
+) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    Column {
-        TopAppBar(
-            title = { Text(text = "Jetnews") },
-            navigationIcon = {
-                VectorImageButton(R.drawable.ic_jetnews_logo) {
-                    openDrawer()
-                }
-            }
-        )
-        VerticalScroller(modifier = LayoutFlexible(1f)) {
-            Column {
-                HomeScreenTopSection(post = postTop)
-                HomeScreenSimpleSection(posts = postsSimple)
-                HomeScreenPopularSection(posts = postsPopular)
-                HomeScreenHistorySection(posts = postsHistory)
-            }
+    VerticalScroller(modifier = modifier) {
+        Column {
+            HomeScreenTopSection(post = postTop)
+            HomeScreenSimpleSection(posts = postsSimple)
+            HomeScreenPopularSection(posts = postsPopular)
+            HomeScreenHistorySection(posts = postsHistory)
         }
     }
 }
@@ -109,8 +135,7 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
     HorizontalScroller {
         Row(modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->
-                Spacer(LayoutWidth(16.dp))
-                PostCardPopular(post)
+                PostCardPopular(post, modifier = LayoutPadding(left = 16.dp))
             }
         }
     }
@@ -134,6 +159,12 @@ private fun HomeScreenDivider() {
 
 @Preview
 @Composable
-fun preview() {
-    HomeScreen {}
+fun PreviewHomeScreen() {
+    HomeScreen()
+}
+
+@Preview
+@Composable
+private fun PreviewDrawerOpen() {
+    HomeScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
 }
