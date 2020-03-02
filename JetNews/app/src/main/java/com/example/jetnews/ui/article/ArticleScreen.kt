@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.compose.Composable
-import androidx.compose.ambient
 import androidx.compose.state
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text

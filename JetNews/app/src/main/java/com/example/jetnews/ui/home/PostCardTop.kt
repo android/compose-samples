@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.ambient
 import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text

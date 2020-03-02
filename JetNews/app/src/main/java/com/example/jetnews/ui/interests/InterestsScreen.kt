@@ -20,7 +20,6 @@ import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.compose.state
 import androidx.ui.core.Clip
-import androidx.ui.core.Modifier
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.foundation.Box

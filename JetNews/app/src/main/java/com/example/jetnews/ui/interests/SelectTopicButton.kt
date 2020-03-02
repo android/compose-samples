@@ -18,7 +18,6 @@ package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.shape.DrawShape
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
