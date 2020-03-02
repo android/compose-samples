@@ -57,39 +57,34 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier.None) {
                     Container(modifier = LayoutHeight(100.dp) + LayoutSize.Fill) {
                         DrawImage(image)
                     }
-                    BottomSection(post)
+                    Column(modifier = LayoutPadding(16.dp)) {
+                        val emphasisLevels = EmphasisLevels()
+                        ProvideEmphasis(emphasis = emphasisLevels.high) {
+                            Text(
+                                text = post.title,
+                                style = MaterialTheme.typography().h6,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        ProvideEmphasis(emphasis = emphasisLevels.high) {
+                            Text(
+                                text = post.metadata.author.name,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography().body2
+                            )
+                        }
+                        ProvideEmphasis(emphasis = emphasisLevels.high) {
+                            Text(
+                                text = "${post.metadata.date} - " +
+                                        "${post.metadata.readTimeMinutes} min read",
+                                style = MaterialTheme.typography().body2
+                            )
+                        }
+                    }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun BottomSection(post: Post) {
-    Column(modifier = LayoutPadding(16.dp)) {
-        val emphasisLevels = EmphasisLevels()
-        ProvideEmphasis(emphasis = emphasisLevels.high) {
-            Text(
-                text = post.title,
-                style = MaterialTheme.typography().h6,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        ProvideEmphasis(emphasis = emphasisLevels.high) {
-            Text(
-                text = post.metadata.author.name,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography().body2
-            )
-        }
-        ProvideEmphasis(emphasis = emphasisLevels.high) {
-            Text(
-                text = "${post.metadata.date} - " +
-                        "${post.metadata.readTimeMinutes} min read",
-                style = MaterialTheme.typography().body2
-            )
         }
     }
 }
@@ -103,7 +98,7 @@ fun PreviewPostCardPopular() {
 
 @Preview
 @Composable
-fun PreviewBottomSectionLongText() {
+fun PreviewPostCardPopularLongText() {
 
     val loremIpsum = """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
@@ -114,7 +109,7 @@ fun PreviewBottomSectionLongText() {
         consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
     """.trimIndent()
     val post = post1
-    BottomSection(post = post.copy(
+    PostCardPopular(post = post.copy(
         title = "Title" + loremIpsum,
         metadata = post.metadata.copy(
             author = PostAuthor("Author: " + loremIpsum),
