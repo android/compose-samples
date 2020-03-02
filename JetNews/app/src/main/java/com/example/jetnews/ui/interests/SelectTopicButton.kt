@@ -37,7 +37,6 @@ import com.example.jetnews.ui.lightThemeColors
 @Composable
 fun SelectTopicButton(
     modifier: Modifier = Modifier.None,
-    onSelected: ((Boolean) -> Unit)? = null,
     selected: Boolean = false
 ) {
     Container(modifier = modifier + LayoutSize(36.dp, 36.dp)) {
