@@ -71,8 +71,6 @@ fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
                 HomeScreenBody(posts)
             }
         )
-
-
     }
 }
 

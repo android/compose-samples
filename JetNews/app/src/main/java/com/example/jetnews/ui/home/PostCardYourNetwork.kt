@@ -58,7 +58,7 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier.None) {
                         DrawImage(image)
                     }
                     Column(modifier = LayoutPadding(16.dp)) {
-                        val emphasisLevels = EmphasisLevels()
+                        val emphasisLevels = MaterialTheme.emphasisLevels()
                         ProvideEmphasis(emphasis = emphasisLevels.high) {
                             Text(
                                 text = post.title,
@@ -88,7 +88,6 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier.None) {
         }
     }
 }
-
 
 @Preview
 @Composable

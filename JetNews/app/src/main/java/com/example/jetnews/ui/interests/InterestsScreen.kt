@@ -30,11 +30,9 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutGravity
-import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
 import androidx.ui.material.MaterialTheme
@@ -141,8 +139,7 @@ private fun PublicationsTab() {
 @Composable
 private fun TabWithTopics(tabname: String, topics: List<String>) {
     VerticalScroller {
-        Column {
-            Spacer(modifier = LayoutHeight(16.dp))
+        Column(modifier = LayoutPadding(top = 16.dp)) {
             topics.forEach { topic ->
                 TopicItem(
                     getTopicKey(
@@ -189,7 +186,7 @@ private fun TabWithSections(
 private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = imageResource(R.drawable.placeholder_1_1)
 
-     Ripple(bounded = true) {
+    Ripple(bounded = true) {
         val selected = isTopicSelected(topicKey)
         val onSelected = { it: Boolean ->
             selectTopic(topicKey, it)
@@ -217,7 +214,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
                 }
             }
         }
-     }
+    }
 }
 
 @Composable
@@ -255,4 +252,16 @@ private fun PreviewDrawerOpen() {
 @Composable
 fun PreviewTopicsTab() {
     TopicsTab()
+}
+
+@Preview
+@Composable
+fun PreviewPeopleTab() {
+    PeopleTab()
+}
+
+@Preview
+@Composable
+fun PreviewTabWithTopics() {
+    TabWithTopics(tabname = "preview", topics = listOf("Hello", "Compose"))
 }

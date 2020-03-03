@@ -49,7 +49,7 @@ fun JetnewsApp() {
         colors = lightThemeColors,
         typography = themeTypography
     ) {
-       AppContent()
+        AppContent()
     }
 }
 
