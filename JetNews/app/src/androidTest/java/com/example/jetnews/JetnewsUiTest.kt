@@ -17,6 +17,7 @@
 package com.example.jetnews
 
 import androidx.test.filters.MediumTest
+import androidx.test.filters.Suppress
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick
@@ -40,11 +41,13 @@ class JetnewsUiTest {
     }
 
     @Test
+    @Suppress // TODO(b/150728822): re-enabled after test runner is fixed
     fun app_launches() {
         findByText("Jetnews").assertIsDisplayed()
     }
 
     @Test
+    @Suppress // TODO(b/150728822): re-enabled after test runner is fixed
     fun app_opensArticle() {
         findAllBySubstring("Manuel Vivo").first().doClick()
         findAllBySubstring("July 30 • 3 min read").first().assertIsDisplayed()
