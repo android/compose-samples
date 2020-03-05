@@ -27,7 +27,14 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.*
+import androidx.ui.layout.Column
+import androidx.ui.layout.Container
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
+import androidx.ui.layout.LayoutSize
+import androidx.ui.layout.LayoutWidth
+import androidx.ui.layout.Row
+import androidx.ui.layout.Spacer
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -47,7 +54,12 @@ import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.example.jetnews.R
 import com.example.jetnews.data.post3
-import com.example.jetnews.model.*
+import com.example.jetnews.model.Markup
+import com.example.jetnews.model.MarkupType
+import com.example.jetnews.model.Metadata
+import com.example.jetnews.model.Paragraph
+import com.example.jetnews.model.ParagraphType
+import com.example.jetnews.model.Post
 import com.example.jetnews.ui.VectorImage
 
 private val defaultSpacerSize = 16.dp

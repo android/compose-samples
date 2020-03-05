@@ -19,7 +19,14 @@ package com.example.jetnews.data
 import android.content.res.Resources
 import androidx.ui.graphics.imageFromResource
 import com.example.jetnews.R
-import com.example.jetnews.model.*
+import com.example.jetnews.model.Markup
+import com.example.jetnews.model.MarkupType
+import com.example.jetnews.model.Metadata
+import com.example.jetnews.model.Paragraph
+import com.example.jetnews.model.ParagraphType
+import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.Publication
 
 /**
  * Define hardcoded posts to avoid handling any non-ui operations.
