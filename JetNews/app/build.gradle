@@ -48,7 +48,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "0.1.0-SNAPSHOT"
+        kotlinCompilerExtensionVersion "$compose_compiler_extension_version"
     }
 }
 

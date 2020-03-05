@@ -45,8 +45,8 @@ import com.example.jetnews.ui.navigateTo
 private val cardSize = LayoutSize(280.dp, 240.dp)
 
 @Composable
-fun PostCardPopular(post: Post, modifier: Modifier = Modifier.None) {
-    Card(shape = RoundedCornerShape(4.dp), modifier = modifier) {
+fun PostCardPopular(modifier: Modifier = Modifier.None, post: Post) {
+    Card(modifier = modifier, shape = RoundedCornerShape(4.dp)) {
         Ripple(bounded = true) {
             Clickable(onClick = {
                 navigateTo(Screen.Article(post.id))
