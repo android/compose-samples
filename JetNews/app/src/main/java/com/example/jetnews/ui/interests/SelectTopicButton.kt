@@ -18,7 +18,8 @@ package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.shape.DrawShape
+import androidx.ui.foundation.Box
+import androidx.ui.foundation.DrawBackground
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.Container
@@ -50,24 +51,30 @@ fun SelectTopicButton(
 
 @Composable
 private fun DrawSelectTopicButtonOn() {
-    DrawShape(
-        shape = CircleShape,
-        color = MaterialTheme.colors().primary
-    )
-    DrawVector(vectorResource(R.drawable.ic_check))
+    Box(
+        modifier = DrawBackground(
+            shape = CircleShape,
+            color = MaterialTheme.colors().primary
+        )
+    ) {
+        DrawVector(vectorResource(R.drawable.ic_check))
+    }
 }
 
 @Composable
 private fun DrawSelectTopicButtonOff() {
     val borderColor = MaterialTheme.colors().onSurface.copy(alpha = 0.12f)
-    DrawShape(
-        shape = CircleShape,
-        color = borderColor
-    )
-    DrawVector(
-        vectorImage = vectorResource(R.drawable.ic_add),
-        tintColor = MaterialTheme.colors().primary
-    )
+    Box(
+        modifier = DrawBackground(
+            shape = CircleShape,
+            color = borderColor
+        )
+    ) {
+        DrawVector(
+            vectorImage = vectorResource(R.drawable.ic_add),
+            tintColor = MaterialTheme.colors().primary
+        )
+    }
 }
 
 @Preview("Off")

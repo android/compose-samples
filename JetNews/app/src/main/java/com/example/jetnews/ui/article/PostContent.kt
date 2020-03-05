@@ -20,20 +20,14 @@ import androidx.compose.Composable
 import androidx.ui.core.Clip
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
-import androidx.ui.foundation.DrawImage
+import androidx.ui.foundation.Box
+import androidx.ui.foundation.DrawBackground
+import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.shape.DrawShape
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.LayoutWidth
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
+import androidx.ui.layout.*
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -53,12 +47,7 @@ import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.example.jetnews.R
 import com.example.jetnews.data.post3
-import com.example.jetnews.model.Markup
-import com.example.jetnews.model.MarkupType
-import com.example.jetnews.model.Metadata
-import com.example.jetnews.model.Paragraph
-import com.example.jetnews.model.ParagraphType
-import com.example.jetnews.model.Post
+import com.example.jetnews.model.*
 import com.example.jetnews.ui.VectorImage
 
 private val defaultSpacerSize = 16.dp
@@ -70,9 +59,9 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
     VerticalScroller {
         Column(
             modifier = modifier + LayoutPadding(
-                left = defaultSpacerSize,
+                start = defaultSpacerSize,
                 top = 0.dp,
-                right = defaultSpacerSize,
+                end = defaultSpacerSize,
                 bottom = 0.dp
             )
         ) {
@@ -102,7 +91,7 @@ private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
         Container(modifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill) {
             Clip(shape = RoundedCornerShape(4.dp)) {
-                DrawImage(image)
+                SimpleImage(image = image)
             }
         }
         Spacer(LayoutHeight(defaultSpacerSize))
@@ -184,7 +173,7 @@ private fun CodeBlockParagraph(
         shape = RoundedCornerShape(4.dp)
     ) {
         Text(
-            modifier = LayoutPadding(0.dp, top = 16.dp, right = 0.dp, bottom = 0.dp),
+            modifier = LayoutPadding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 0.dp),
             text = text,
             style = textStyle.merge(paragraphStyle)
         )
@@ -198,8 +187,9 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        Container(modifier = LayoutSize(8.dp, 8.dp)) {
-            DrawShape(shape = CircleShape, color = Color.DarkGray)
+        Box(modifier = LayoutSize(8.dp, 8.dp) +
+                DrawBackground(color = Color.DarkGray, shape = CircleShape)) {
+            // empty box
         }
         Text(
             modifier = LayoutFlexible(1f),

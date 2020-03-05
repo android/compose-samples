@@ -23,15 +23,7 @@ import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutGravity
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.LayoutWidth
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
+import androidx.ui.layout.*
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
@@ -124,7 +116,7 @@ private fun DrawerButton(
     }
 
     val surfaceModifier = modifier +
-            LayoutPadding(left = 8.dp, top = 8.dp, right = 8.dp, bottom = 0.dp) +
+            LayoutPadding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 0.dp) +
             LayoutWidth.Fill
     Surface(
         modifier = surfaceModifier,
@@ -132,7 +124,7 @@ private fun DrawerButton(
         shape = RoundedCornerShape(4.dp)
     ) {
         TextButton(onClick = action, modifier = LayoutWidth.Fill) {
-            Row(arrangement = Arrangement.Begin, modifier = LayoutWidth.Fill) {
+            Row(arrangement = Arrangement.Start, modifier = LayoutWidth.Fill) {
                 VectorImage(
                     modifier = LayoutGravity.Center,
                     id = icon,

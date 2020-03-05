@@ -27,14 +27,7 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.Row
-import androidx.ui.material.Divider
-import androidx.ui.material.DrawerState
-import androidx.ui.material.EmphasisLevels
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Scaffold
-import androidx.ui.material.ScaffoldState
-import androidx.ui.material.TopAppBar
+import androidx.ui.material.*
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -95,10 +88,9 @@ private fun HomeScreenBody(
 
 @Composable
 private fun HomeScreenTopSection(post: Post) {
-
     ProvideEmphasis(emphasis = EmphasisLevels().high) {
         Text(
-            modifier = LayoutPadding(left = 16.dp, top = 16.dp, right = 16.dp, bottom = 0.dp),
+            modifier = LayoutPadding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 0.dp),
             text = "Top stories for you",
             style = MaterialTheme.typography().subtitle1
         )
@@ -131,9 +123,9 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
         )
     }
     HorizontalScroller {
-        Row(modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 16.dp)) {
+        Row(modifier = LayoutPadding(top = 0.dp, start = 0.dp, end = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->
-                PostCardPopular(modifier = LayoutPadding(left = 16.dp), post = post)
+                PostCardPopular(modifier = LayoutPadding(start = 16.dp), post = post)
             }
         }
     }
@@ -151,7 +143,7 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 @Composable
 private fun HomeScreenDivider() {
     Opacity(0.08f) {
-        Divider(modifier = LayoutPadding(left = 14.dp, top = 0.dp, right = 14.dp, bottom = 0.dp))
+        Divider(modifier = LayoutPadding(start = 14.dp, top = 0.dp, end = 14.dp, bottom = 0.dp))
     }
 }
 

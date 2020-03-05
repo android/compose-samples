@@ -23,24 +23,12 @@ import androidx.ui.core.Clip
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawImage
+import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutGravity
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.Row
-import androidx.ui.material.Divider
-import androidx.ui.material.DrawerState
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.material.ScaffoldState
-import androidx.ui.material.Tab
-import androidx.ui.material.TabRow
-import androidx.ui.material.TopAppBar
+import androidx.ui.layout.*
+import androidx.ui.material.*
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
@@ -96,7 +84,7 @@ private fun InterestsScreenBody(
     Column {
         TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, text ->
             Tab(
-                text = text,
+                text = { Text(text) } ,
                 selected = currentSection.ordinal == index,
                 onSelected = {
                     updateSection(Sections.values()[index])
@@ -195,11 +183,11 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
             // TODO(b/150060763): Remove box after "Bug in ripple + modifiers."
             Box {
                 Row(
-                    modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
+                    modifier = LayoutPadding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp)
                 ) {
                     Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
                         Clip(RoundedCornerShape(4.dp)) {
-                            DrawImage(image)
+                            SimpleImage(image = image)
                         }
                     }
                     Text(
@@ -220,7 +208,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
 @Composable
 private fun TopicDivider() {
     Opacity(0.08f) {
-        Divider(LayoutPadding(left = 72.dp, top = 8.dp, right = 0.dp, bottom = 8.dp))
+        Divider(LayoutPadding(start = 72.dp, top = 8.dp, end = 0.dp, bottom = 8.dp))
     }
 }
 

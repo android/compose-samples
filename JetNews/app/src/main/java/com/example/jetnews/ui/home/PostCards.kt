@@ -20,13 +20,9 @@ import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.DrawImage
+import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
-import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.Row
+import androidx.ui.layout.*
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -62,7 +58,7 @@ fun PostImage(modifier: Modifier = Modifier.None, post: Post) {
     val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
 
     Container(modifier = modifier + LayoutSize(40.dp, 40.dp)) {
-        DrawImage(image)
+        SimpleImage(image =  image)
     }
 }
 
@@ -81,7 +77,7 @@ fun PostCardSimple(post: Post) {
         }) {
             Row(modifier = LayoutPadding(16.dp)) {
                 PostImage(
-                    modifier = LayoutPadding(left = 0.dp, top = 0.dp, right = 16.dp, bottom = 0.dp),
+                    modifier = LayoutPadding(start = 0.dp, top = 0.dp, end = 16.dp, bottom = 0.dp),
                     post = post
                 )
                 Column(modifier = LayoutFlexible(1f)) {
@@ -105,7 +101,7 @@ fun PostCardHistory(post: Post) {
         }) {
             Row(modifier = LayoutPadding(all = 16.dp)) {
                 PostImage(
-                    modifier = LayoutPadding(left = 0.dp, top = 0.dp, right = 16.dp, bottom = 0.dp),
+                    modifier = LayoutPadding(start = 0.dp, top = 0.dp, end = 16.dp, bottom = 0.dp),
                     post = post
                 )
                 Column(modifier = LayoutFlexible(1f)) {
@@ -119,7 +115,7 @@ fun PostCardHistory(post: Post) {
                     AuthorAndReadTime(post)
                 }
                 VectorImage(
-                    modifier = LayoutPadding(left = 0.dp, top = 8.dp, right = 0.dp, bottom = 8.dp),
+                    modifier = LayoutPadding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp),
                     id = R.drawable.ic_more
                 )
             }

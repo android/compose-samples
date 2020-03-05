@@ -20,19 +20,10 @@ import androidx.compose.Composable
 import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
-import androidx.ui.foundation.DrawImage
+import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutWidth
-import androidx.ui.layout.Spacer
-import androidx.ui.material.ColorPalette
-import androidx.ui.material.EmphasisLevels
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Typography
+import androidx.ui.layout.*
+import androidx.ui.material.*
 import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -52,7 +43,7 @@ fun PostCardTop(post: Post) {
         post.image?.let { image ->
             Container(modifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill) {
                 Clip(shape = RoundedCornerShape(4.dp)) {
-                    DrawImage(image)
+                    SimpleImage(image = image)
                 }
             }
         }
