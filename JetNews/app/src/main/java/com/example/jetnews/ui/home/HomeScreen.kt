@@ -67,24 +67,24 @@ fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
                     }
                 )
             },
-            bodyContent = {
-                HomeScreenBody(posts)
+            bodyContent = { modifier ->
+                HomeScreenBody(modifier = modifier, posts = posts)
             }
         )
     }
 }
 
 private fun HomeScreenBody(
-    posts: List<Post>,
-    modifier: Modifier = Modifier.None
+    modifier: Modifier = Modifier.None,
+    posts: List<Post>
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    VerticalScroller(modifier = modifier) {
-        Column {
+    VerticalScroller {
+        Column(modifier = modifier) {
             HomeScreenTopSection(post = postTop)
             HomeScreenSimpleSection(posts = postsSimple)
             HomeScreenPopularSection(posts = postsPopular)
@@ -133,7 +133,7 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
     HorizontalScroller {
         Row(modifier = LayoutPadding(0.dp, 0.dp, right = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->
-                PostCardPopular(post, modifier = LayoutPadding(left = 16.dp))
+                PostCardPopular(modifier = LayoutPadding(left = 16.dp), post = post)
             }
         }
     }

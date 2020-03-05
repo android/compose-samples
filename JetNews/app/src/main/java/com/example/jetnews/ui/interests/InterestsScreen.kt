@@ -82,12 +82,12 @@ fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() })
         },
         bodyContent = {
             val (currentSection, updateSection) = state { Sections.Topics }
-            IntrestsScreenBody(currentSection, updateSection)
+            InterestsScreenBody(currentSection, updateSection)
         }
     )
 }
 
-private fun IntrestsScreenBody(
+private fun InterestsScreenBody(
     currentSection: Sections,
     updateSection: (Sections) -> Unit
 ) {
@@ -147,7 +147,7 @@ private fun TabWithTopics(tabname: String, topics: List<String>) {
                         "- ",
                         topic
                     ),
-                        topic
+                    topic
                 )
                 TopicDivider()
             }
@@ -195,7 +195,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
             // TODO(b/150060763): Remove box after "Bug in ripple + modifiers."
             Box {
                 Row(
-                        modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
+                    modifier = LayoutPadding(left = 16.dp, top = 0.dp, right = 16.dp, bottom = 0.dp)
                 ) {
                     Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
                         Clip(RoundedCornerShape(4.dp)) {

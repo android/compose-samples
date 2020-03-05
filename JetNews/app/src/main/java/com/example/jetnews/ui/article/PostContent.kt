@@ -67,9 +67,9 @@ private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 @Composable
 fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
     val typography = MaterialTheme.typography()
-    VerticalScroller(modifier = modifier) {
+    VerticalScroller {
         Column(
-            modifier = LayoutPadding(
+            modifier = modifier + LayoutPadding(
                 left = defaultSpacerSize,
                 top = 0.dp,
                 right = defaultSpacerSize,

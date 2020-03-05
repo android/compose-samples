@@ -80,8 +80,8 @@ fun ArticleScreen(postId: String) {
                 }
             )
         },
-        bodyContent = {
-            PostContent(post = post)
+        bodyContent = { modifier ->
+            PostContent(modifier = modifier, post = post)
         },
         bottomAppBar = {
             BottomBar(post) { showDialog = true }
