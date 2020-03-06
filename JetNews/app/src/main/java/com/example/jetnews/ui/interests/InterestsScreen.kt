@@ -137,13 +137,13 @@ private fun PublicationsTab() {
 }
 
 @Composable
-private fun TabWithTopics(tabname: String, topics: List<String>) {
+private fun TabWithTopics(tabName: String, topics: List<String>) {
     VerticalScroller {
         Column(modifier = LayoutPadding(top = 16.dp)) {
             topics.forEach { topic ->
                 TopicItem(
                     getTopicKey(
-                        tabname,
+                        tabName,
                         "- ",
                         topic
                     ),
@@ -157,7 +157,7 @@ private fun TabWithTopics(tabname: String, topics: List<String>) {
 
 @Composable
 private fun TabWithSections(
-    tabname: String,
+    tabName: String,
     sections: Map<String, List<String>>
 ) {
     VerticalScroller {
@@ -170,7 +170,7 @@ private fun TabWithSections(
                 topics.forEach { topic ->
                     TopicItem(
                         getTopicKey(
-                            tabname,
+                            tabName,
                             section,
                             topic
                         ), topic
@@ -263,5 +263,5 @@ fun PreviewPeopleTab() {
 @Preview
 @Composable
 fun PreviewTabWithTopics() {
-    TabWithTopics(tabname = "preview", topics = listOf("Hello", "Compose"))
+    TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
 }

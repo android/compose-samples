@@ -21,6 +21,7 @@ import androidx.test.filters.Suppress
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick
+import androidx.ui.test.findAllByText
 import androidx.ui.test.findByText
 import org.junit.Before
 import org.junit.Rule
