@@ -55,7 +55,7 @@ private fun DrawSelectTopicButtonOn() {
         modifier = DrawBackground(
             shape = CircleShape,
             color = MaterialTheme.colors().primary
-        )
+        ) + LayoutSize.Fill
     ) {
         DrawVector(vectorResource(R.drawable.ic_check))
     }
@@ -68,7 +68,7 @@ private fun DrawSelectTopicButtonOff() {
         modifier = DrawBackground(
             shape = CircleShape,
             color = borderColor
-        )
+        ) + LayoutSize.Fill
     ) {
         DrawVector(
             vectorImage = vectorResource(R.drawable.ic_add),

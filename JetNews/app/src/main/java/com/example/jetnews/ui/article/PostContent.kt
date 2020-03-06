@@ -38,6 +38,7 @@ import androidx.ui.layout.Spacer
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Typography
 import androidx.ui.material.surface.Surface
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
@@ -145,7 +146,7 @@ private fun PostContents(paragraphs: List<Paragraph>) {
 private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
-    val annotatedString = paragraphToAnnotatedString(paragraph)
+    val annotatedString = paragraphToAnnotatedString(paragraph, MaterialTheme.typography())
     Container(modifier = LayoutPadding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
         when (paragraph.type) {
             ParagraphType.Bullet -> BulletParagraph(
@@ -217,6 +218,7 @@ private data class ParagraphStyling(
     val trailingPadding: Dp
 )
 
+@Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
     val typography = MaterialTheme.typography()
     var textStyle: TextStyle = typography.body1
@@ -253,14 +255,13 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
     )
 }
 
-private fun paragraphToAnnotatedString(paragraph: Paragraph): AnnotatedString {
+private fun paragraphToAnnotatedString(paragraph: Paragraph, typography: Typography): AnnotatedString {
     val styles: List<AnnotatedString.Item<SpanStyle>> = paragraph.markups
-        .map { it: Markup -> it.toAnnotatedStringItem() }
+        .map { it: Markup -> it.toAnnotatedStringItem(typography) }
     return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
 
-private fun Markup.toAnnotatedStringItem(): AnnotatedString.Item<SpanStyle> {
-    val typography = MaterialTheme.typography()
+fun Markup.toAnnotatedStringItem(typography: Typography): AnnotatedString.Item<SpanStyle> {
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Item(

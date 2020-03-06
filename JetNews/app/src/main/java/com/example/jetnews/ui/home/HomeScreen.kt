@@ -74,6 +74,7 @@ fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
     }
 }
 
+@Composable
 private fun HomeScreenBody(
     modifier: Modifier = Modifier.None,
     posts: List<Post>

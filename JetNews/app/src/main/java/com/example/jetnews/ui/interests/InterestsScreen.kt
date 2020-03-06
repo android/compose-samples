@@ -87,6 +87,7 @@ fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() })
     )
 }
 
+@Composable
 private fun InterestsScreenBody(
     currentSection: Sections,
     updateSection: (Sections) -> Unit
