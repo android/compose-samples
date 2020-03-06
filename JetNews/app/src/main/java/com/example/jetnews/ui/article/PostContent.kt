@@ -23,7 +23,6 @@ import androidx.ui.core.Text
 import androidx.ui.core.toModifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.DrawBackground
-import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape

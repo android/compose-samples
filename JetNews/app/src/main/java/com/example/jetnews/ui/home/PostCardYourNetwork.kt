@@ -22,11 +22,9 @@ import androidx.ui.core.Text
 import androidx.ui.core.toModifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
-import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize

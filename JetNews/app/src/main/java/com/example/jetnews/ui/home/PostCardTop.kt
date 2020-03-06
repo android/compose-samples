@@ -22,7 +22,6 @@ import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
 import androidx.ui.core.toModifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.ScaleFit
 import androidx.ui.graphics.painter.ImagePainter

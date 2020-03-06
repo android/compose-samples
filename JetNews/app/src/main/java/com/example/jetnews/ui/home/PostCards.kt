@@ -22,7 +22,6 @@ import androidx.ui.core.Text
 import androidx.ui.core.toModifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column

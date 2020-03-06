@@ -97,7 +97,7 @@ private fun InterestsScreenBody(
     Column {
         TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, title ->
             Tab(
-                text = { Text(title) } ,
+                text = { Text(title) },
                 selected = currentSection.ordinal == index,
                 onSelected = {
                     updateSection(Sections.values()[index])
