@@ -19,9 +19,12 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
+import androidx.ui.core.toModifier
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutHeight
@@ -53,9 +56,8 @@ fun PostCardPopular(modifier: Modifier = Modifier.None, post: Post) {
             }) {
                 Column(modifier = cardSize) {
                     val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
-                    Container(modifier = LayoutHeight(100.dp) + LayoutSize.Fill) {
-                        SimpleImage(image = image)
-                    }
+                    val imageModifier = ImagePainter(image).toModifier()
+                    Box(modifier = LayoutHeight(100.dp) + LayoutSize.Fill + imageModifier)
                     Column(modifier = LayoutPadding(16.dp)) {
                         val emphasisLevels = MaterialTheme.emphasisLevels()
                         ProvideEmphasis(emphasis = emphasisLevels.high) {

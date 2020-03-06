@@ -19,10 +19,8 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawBackground
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.material.ColorPalette
@@ -40,35 +38,31 @@ fun SelectTopicButton(
     modifier: Modifier = Modifier.None,
     selected: Boolean = false
 ) {
-    Container(modifier = modifier + LayoutSize(36.dp, 36.dp)) {
-        if (selected) {
-            DrawSelectTopicButtonOn()
-        } else {
-            DrawSelectTopicButtonOff()
-        }
+    if (selected) {
+        SelectTopicButtonOn(modifier + LayoutSize(36.dp, 36.dp))
+    } else {
+        SelectTopicButtonOff(modifier + LayoutSize(36.dp, 36.dp))
     }
 }
 
 @Composable
-private fun DrawSelectTopicButtonOn() {
+private fun SelectTopicButtonOn(modifier: Modifier = Modifier.None) {
     Box(
-        modifier = DrawBackground(
-            shape = CircleShape,
-            color = MaterialTheme.colors().primary
-        ) + LayoutSize.Fill
+        backgroundColor = MaterialTheme.colors().primary,
+        shape = CircleShape,
+        modifier = modifier
     ) {
         DrawVector(vectorResource(R.drawable.ic_check))
     }
 }
 
 @Composable
-private fun DrawSelectTopicButtonOff() {
+private fun SelectTopicButtonOff(modifier: Modifier = Modifier.None) {
     val borderColor = MaterialTheme.colors().onSurface.copy(alpha = 0.12f)
     Box(
-        modifier = DrawBackground(
-            shape = CircleShape,
-            color = borderColor
-        ) + LayoutSize.Fill
+        backgroundColor = borderColor,
+        shape = CircleShape,
+        modifier = modifier
     ) {
         DrawVector(
             vectorImage = vectorResource(R.drawable.ic_add),

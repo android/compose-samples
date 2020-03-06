@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.ui.core.Clip
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
+import androidx.ui.core.toModifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.DrawBackground
 import androidx.ui.foundation.SimpleImage
@@ -27,6 +28,8 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
+import androidx.ui.graphics.ScaleFit
+import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutHeight
@@ -102,9 +105,13 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
 @Composable
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
-        Container(modifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill) {
+        val sizingModifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill
+        // TODO: Remove this nested layout when Clip modifier and Image component are added.
+        Box(modifier = sizingModifier) {
             Clip(shape = RoundedCornerShape(4.dp)) {
-                SimpleImage(image = image)
+                val imageModifier = ImagePainter(image).toModifier(scaleFit = ScaleFit.FillHeight)
+                // TODO: Remove this duplicate sizing when the Clip modifier is added.
+                Box(modifier = sizingModifier + imageModifier)
             }
         }
         Spacer(LayoutHeight(defaultSpacerSize))

@@ -19,9 +19,12 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
+import androidx.ui.core.toModifier
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.selection.Toggleable
+import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutPadding
@@ -60,10 +63,9 @@ fun AuthorAndReadTime(post: Post) {
 @Composable
 fun PostImage(modifier: Modifier = Modifier.None, post: Post) {
     val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
+    val imageModifier = ImagePainter(image).toModifier()
 
-    Container(modifier = modifier + LayoutSize(40.dp, 40.dp)) {
-        SimpleImage(image =  image)
-    }
+    Box(modifier = modifier + LayoutSize(40.dp, 40.dp) + imageModifier)
 }
 
 @Composable

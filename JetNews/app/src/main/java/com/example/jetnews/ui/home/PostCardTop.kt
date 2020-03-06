@@ -20,8 +20,12 @@ import androidx.compose.Composable
 import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Text
+import androidx.ui.core.toModifier
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.ScaleFit
+import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
 import androidx.ui.layout.LayoutHeight
@@ -50,9 +54,13 @@ fun PostCardTop(post: Post) {
     val typography = MaterialTheme.typography()
     Column(modifier = LayoutWidth.Fill + LayoutPadding(16.dp)) {
         post.image?.let { image ->
-            Container(modifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill) {
+            val sizeModifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill
+            // TODO: Remove this nested layout when Clip modifier and Image component are added.
+            Container(modifier = sizeModifier) {
                 Clip(shape = RoundedCornerShape(4.dp)) {
-                    SimpleImage(image = image)
+                    val imageModifier = ImagePainter(image).toModifier(scaleFit = ScaleFit.FillHeight)
+                    // TODO: Remove this duplicate sizing when the Clip modifier is added.
+                    Box(modifier = sizeModifier + imageModifier)
                 }
             }
         }

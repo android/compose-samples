@@ -95,9 +95,9 @@ private fun InterestsScreenBody(
     val sectionTitles = Sections.values().map { it.title }
 
     Column {
-        TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, text ->
+        TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, title ->
             Tab(
-                text = { Text(text) } ,
+                text = { Text(title) } ,
                 selected = currentSection.ordinal == index,
                 onSelected = {
                     updateSection(Sections.values()[index])
