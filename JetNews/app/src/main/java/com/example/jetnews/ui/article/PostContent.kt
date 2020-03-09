@@ -24,6 +24,7 @@ import androidx.ui.core.toModifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.DrawBackground
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
@@ -206,8 +207,9 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        Box(modifier = LayoutSize(8.dp, 8.dp) +
-                DrawBackground(color = Color.DarkGray, shape = CircleShape)) {
+        Box(modifier = LayoutSize(8.dp, 8.dp),
+            backgroundColor = contentColor(),
+            shape = CircleShape) {
             // empty box
         }
         Text(
