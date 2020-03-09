@@ -19,6 +19,7 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.vector.DrawVector
 import androidx.ui.layout.LayoutPadding
@@ -66,7 +67,7 @@ private fun SelectTopicButtonOff(modifier: Modifier = Modifier.None) {
     ) {
         DrawVector(
             vectorImage = vectorResource(R.drawable.ic_add),
-            tintColor = MaterialTheme.colors().primary
+            tintColor = contentColor()
         )
     }
 }
