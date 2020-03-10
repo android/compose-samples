@@ -53,12 +53,16 @@ fun PostCardTop(post: Post) {
     val typography = MaterialTheme.typography()
     Column(modifier = LayoutWidth.Fill + LayoutPadding(16.dp)) {
         post.image?.let { image ->
+            // FIXME (dev07): This duplicate sizing is a workaround for the way Draw modifiers work in
+            // dev06. In a future release (dev07?) replace this with a single Image composable with a
+            // Clip modifier applied.
+
+            // This sizing is currently applied twice to make the image expand propertly inside the
+            // Clip.
             val sizeModifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill
-            // TODO: Remove this nested layout when Clip modifier and Image component are added.
             Container(modifier = sizeModifier) {
                 Clip(shape = RoundedCornerShape(4.dp)) {
                     val imageModifier = ImagePainter(image).toModifier(scaleFit = ScaleFit.FillHeight)
-                    // TODO: Remove this duplicate sizing when the Clip modifier is added.
                     Box(modifier = sizeModifier + imageModifier)
                 }
             }
