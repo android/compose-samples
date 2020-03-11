@@ -23,7 +23,6 @@ import androidx.ui.core.Clip
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Box
 import androidx.ui.foundation.SimpleImage
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.selection.Toggleable
