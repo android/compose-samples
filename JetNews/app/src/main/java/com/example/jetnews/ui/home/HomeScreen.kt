@@ -25,16 +25,15 @@ import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.Padding
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacing
 import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.Divider
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.themeTextStyle
 import androidx.ui.material.withOpacity
+import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
@@ -49,25 +48,21 @@ fun HomeScreen(openDrawer: () -> Unit) {
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    FlexColumn {
-        inflexible {
-            TopAppBar(
-                title = { Text(text = "Jetnews") },
-                navigationIcon = {
-                    VectorImageButton(R.drawable.ic_jetnews_logo) {
-                        openDrawer()
-                    }
+    Column {
+        TopAppBar(
+            title = { Text(text = "Jetnews") },
+            navigationIcon = {
+                VectorImageButton(R.drawable.ic_jetnews_logo) {
+                    openDrawer()
                 }
-            )
-        }
-        flexible(flex = 1f) {
-            VerticalScroller {
-                Column {
-                    HomeScreenTopSection(post = postTop)
-                    HomeScreenSimpleSection(posts = postsSimple)
-                    HomeScreenPopularSection(posts = postsPopular)
-                    HomeScreenHistorySection(posts = postsHistory)
-                }
+            }
+        )
+        VerticalScroller(modifier = Flexible(1f)) {
+            Column {
+                HomeScreenTopSection(post = postTop)
+                HomeScreenSimpleSection(posts = postsSimple)
+                HomeScreenPopularSection(posts = postsPopular)
+                HomeScreenHistorySection(posts = postsHistory)
             }
         }
     }
@@ -75,12 +70,12 @@ fun HomeScreen(openDrawer: () -> Unit) {
 
 @Composable
 private fun HomeScreenTopSection(post: Post) {
-    Padding(top = 16.dp, left = 16.dp, right = 16.dp) {
-        Text(
-            text = "Top stories for you",
-            style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f)
-        )
-    }
+
+    Text(
+        modifier = Spacing(top = 16.dp, left = 16.dp, right = 16.dp),
+        text = "Top stories for you",
+        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+    )
     Ripple(bounded = true) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
@@ -101,12 +96,11 @@ private fun HomeScreenSimpleSection(posts: List<Post>) {
 
 @Composable
 private fun HomeScreenPopularSection(posts: List<Post>) {
-    Padding(16.dp) {
-        Text(
-            text = "Popular on Jetnews",
-            style = (+themeTextStyle { subtitle1 }).withOpacity(0.87f)
-        )
-    }
+    Text(
+        modifier = Spacing(16.dp),
+        text = "Popular on Jetnews",
+        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+    )
     HorizontalScroller {
         Row(modifier = Spacing(bottom = 16.dp, right = 16.dp)) {
             posts.forEach { post ->
@@ -128,9 +122,13 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 
 @Composable
 private fun HomeScreenDivider() {
-    Padding(left = 14.dp, right = 14.dp) {
-        Opacity(0.08f) {
-            Divider()
-        }
+    Opacity(0.08f) {
+        Divider(modifier = Spacing(left = 14.dp, right = 14.dp))
     }
+}
+
+@Preview
+@Composable
+fun preview() {
+    HomeScreen {}
 }

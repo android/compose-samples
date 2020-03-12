@@ -28,20 +28,24 @@ import androidx.ui.core.Text
 import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.graphics.vector.DrawVector
+import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
-import androidx.ui.layout.Padding
-import androidx.ui.layout.WidthSpacer
+import androidx.ui.layout.Expanded
+import androidx.ui.layout.Height
+import androidx.ui.layout.Row
+import androidx.ui.layout.Size
+import androidx.ui.layout.Spacing
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButtonStyle
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Surface
-import androidx.ui.material.themeTextStyle
 import androidx.ui.res.vectorResource
+import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
+import com.example.jetnews.data.post3
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
@@ -64,28 +68,22 @@ fun ArticleScreen(postId: String) {
         }
     }
 
-    FlexColumn {
-        inflexible {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Published in: ${post.publication?.name}",
-                        style = +themeTextStyle { subtitle2 }
-                    )
-                },
-                navigationIcon = {
-                    VectorImageButton(R.drawable.ic_back) {
-                        navigateTo(Screen.Home)
-                    }
+    Column {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Published in: ${post.publication?.name}",
+                    style = (+MaterialTheme.typography()).subtitle2
+                )
+            },
+            navigationIcon = {
+                VectorImageButton(R.drawable.ic_back) {
+                    navigateTo(Screen.Home)
                 }
-            )
-        }
-        expanded(1f) {
-            PostContent(post)
-        }
-        inflexible {
-            BottomBar(post) { showDialog = true }
-        }
+            }
+        )
+        PostContent(modifier = Flexible(1f), post = post)
+        BottomBar(post) { showDialog = true }
     }
 }
 
@@ -93,27 +91,21 @@ fun ArticleScreen(postId: String) {
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     val context = +ambient(ContextAmbient)
     Surface(elevation = 2.dp) {
-        Container(height = 56.dp, expanded = true) {
-            FlexRow {
-                inflexible {
-                    BottomBarAction(R.drawable.ic_favorite) {
-                        onUnimplementedAction()
-                    }
-                    BookmarkButton(
-                        isBookmarked = isFavorite(postId = post.id),
-                        onBookmark = { toggleBookmark(postId = post.id) }
-                    )
-                    BottomBarAction(R.drawable.ic_share) {
-                        SharePost(post, context)
-                    }
+        Container(modifier = Height(56.dp) wraps Expanded) {
+            Row {
+                BottomBarAction(R.drawable.ic_favorite) {
+                    onUnimplementedAction()
                 }
-                expanded(flex = 1f) {
-                    WidthSpacer(1.dp)
+                BookmarkButton(
+                    isBookmarked = isFavorite(postId = post.id),
+                    onBookmark = { toggleBookmark(postId = post.id) }
+                )
+                BottomBarAction(R.drawable.ic_share) {
+                    sharePost(post, context)
                 }
-                inflexible {
-                    BottomBarAction(R.drawable.ic_text_settings) {
-                        onUnimplementedAction()
-                    }
+                Container(modifier = Flexible(1f)) { } // TODO: Any element works
+                BottomBarAction(R.drawable.ic_text_settings) {
+                    onUnimplementedAction()
                 }
             }
         }
@@ -130,10 +122,8 @@ private fun BottomBarAction(
         radius = 24.dp
     ) {
         Clickable(onClick = onClick) {
-            Padding(12.dp) {
-                Container(width = 24.dp, height = 24.dp) {
-                    DrawVector(+vectorResource(id))
-                }
+            Container(modifier = Spacing(12.dp) wraps Size(24.dp, 24.dp)) {
+                DrawVector(+vectorResource(id))
             }
         }
     }
@@ -146,7 +136,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = "Functionality not available \uD83D\uDE48",
-                style = +themeTextStyle { body2 }
+                style = (+MaterialTheme.typography()).body2
             )
         },
         confirmButton = {
@@ -159,11 +149,17 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     )
 }
 
-private fun SharePost(post: Post, context: Context) {
+private fun sharePost(post: Post, context: Context) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TITLE, post.title)
         putExtra(Intent.EXTRA_TEXT, post.url)
     }
     context.startActivity(Intent.createChooser(intent, "Share post"))
+}
+
+@Preview
+@Composable
+fun previewArticle() {
+    ArticleScreen(post3.id)
 }

@@ -17,7 +17,7 @@
 package com.example.jetnews.ui
 
 import androidx.ui.core.sp
-import androidx.ui.material.MaterialTypography
+import androidx.ui.material.Typography
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.Font
 import androidx.ui.text.font.FontFamily
@@ -36,7 +36,7 @@ val bodyFontFamily = FontFamily(
     )
 )
 
-val themeTypography = MaterialTypography(
+val themeTypography = Typography(
     h4 = TextStyle(
         fontFamily = appFontFamily,
         fontWeight = FontWeight.W600,

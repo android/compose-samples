@@ -28,18 +28,18 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Container
-import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.FlexColumn
-import androidx.ui.layout.FlexRow
+import androidx.ui.layout.Gravity
 import androidx.ui.layout.HeightSpacer
-import androidx.ui.layout.Padding
+import androidx.ui.layout.Row
+import androidx.ui.layout.Size
 import androidx.ui.layout.Spacing
 import androidx.ui.material.Divider
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.themeTextStyle
 import androidx.ui.res.imageResource
+import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.people
 import com.example.jetnews.data.publications
@@ -59,25 +59,21 @@ fun InterestsScreen(openDrawer: () -> Unit) {
     var section by +state { Sections.Topics }
     val sectionTitles = Sections.values().map { it.title }
 
-    FlexColumn {
-        inflexible {
-            TopAppBar(
-                title = { Text("Interests") },
-                navigationIcon = {
-                    VectorImageButton(R.drawable.ic_jetnews_logo) {
-                        openDrawer()
-                    }
-                }
-            )
-        }
-        inflexible {
-            TabRow(items = sectionTitles, selectedIndex = section.ordinal) { index, text ->
-                Tab(text = text, selected = section.ordinal == index) {
-                    section = Sections.values()[index]
+    Column {
+        TopAppBar(
+            title = { Text("Interests") },
+            navigationIcon = {
+                VectorImageButton(R.drawable.ic_jetnews_logo) {
+                    openDrawer()
                 }
             }
+        )
+        TabRow(items = sectionTitles, selectedIndex = section.ordinal) { index, text ->
+            Tab(text = text, selected = section.ordinal == index) {
+                section = Sections.values()[index]
+            }
         }
-        expanded(1f) {
+        Container(modifier = Flexible(1f)) {
             when (section) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()
@@ -109,14 +105,14 @@ private fun PublicationsTab() {
 }
 
 @Composable
-private fun TabWithTopics(tabname: String, topics: List<String>) {
+private fun TabWithTopics(tabName: String, topics: List<String>) {
     VerticalScroller {
         Column {
             HeightSpacer(16.dp)
             topics.forEach { topic ->
                 TopicItem(
                     getTopicKey(
-                        tabname,
+                        tabName,
                         "- ",
                         topic
                     ), topic
@@ -129,7 +125,7 @@ private fun TabWithTopics(tabname: String, topics: List<String>) {
 
 @Composable
 private fun TabWithSections(
-    tabname: String,
+    tabName: String,
     sections: Map<String, List<String>>
 ) {
     VerticalScroller {
@@ -138,11 +134,11 @@ private fun TabWithSections(
                 Text(
                     text = section,
                     modifier = Spacing(16.dp),
-                    style = +themeTextStyle { subtitle1 })
+                    style = (+MaterialTheme.typography()).subtitle1)
                 topics.forEach { topic ->
                     TopicItem(
                         getTopicKey(
-                            tabname,
+                            tabName,
                             section,
                             topic
                         ), topic
@@ -157,33 +153,26 @@ private fun TabWithSections(
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = +imageResource(R.drawable.placeholder_1_1)
-    Padding(left = 16.dp, right = 16.dp) {
-        FlexRow(
-            crossAxisAlignment = CrossAxisAlignment.Center
-        ) {
-            inflexible {
-                Container(width = 56.dp, height = 56.dp) {
-                    Clip(RoundedCornerShape(4.dp)) {
-                        DrawImage(image)
-                    }
-                }
-            }
-            expanded(1f) {
-                Text(
-                    text = itemTitle,
-                    modifier = Spacing(16.dp),
-                    style = +themeTextStyle { subtitle1 })
-            }
-            inflexible {
-                val selected = isTopicSelected(topicKey)
-                SelectTopicButton(
-                    onSelected = {
-                        selectTopic(topicKey, !selected)
-                    },
-                    selected = selected
-                )
+    Row(
+        modifier = Spacing(left = 16.dp, right = 16.dp)
+    ) {
+        Container(modifier = Gravity.Center wraps Size(56.dp, 56.dp)) {
+            Clip(RoundedCornerShape(4.dp)) {
+                DrawImage(image)
             }
         }
+        Text(
+            text = itemTitle,
+            modifier = Flexible(1f) wraps Gravity.Center wraps Spacing(16.dp),
+            style = (+MaterialTheme.typography()).subtitle1)
+        val selected = isTopicSelected(topicKey)
+        SelectTopicButton(
+            modifier = Gravity.Center,
+            onSelected = {
+                selectTopic(topicKey, !selected)
+            },
+            selected = selected
+        )
     }
 }
 
@@ -194,7 +183,7 @@ private fun TopicDivider() {
     }
 }
 
-private fun getTopicKey(tab: String, group: String, topic: String)= "$tab-$group-$topic"
+private fun getTopicKey(tab: String, group: String, topic: String) = "$tab-$group-$topic"
 
 private fun isTopicSelected(key: String) = JetnewsStatus.selectedTopics.contains(key)
 
@@ -204,4 +193,10 @@ private fun selectTopic(key: String, select: Boolean) {
     } else {
         JetnewsStatus.selectedTopics.remove(key)
     }
+}
+
+@Preview
+@Composable
+fun preview() {
+    InterestsScreen { }
 }
