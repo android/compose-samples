@@ -47,6 +47,9 @@ android {
     buildFeatures {
         compose true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion "$compose_compiler_extension_version"
+    }
 }
 
 configurations {
@@ -63,8 +66,8 @@ dependencies {
     implementation("androidx.ui:ui-animation:$compose_version")
     implementation "androidx.ui:ui-tooling:$compose_version"
     implementation('androidx.appcompat:appcompat:1.1.0')
-    implementation('androidx.activity:activity-ktx:1.0.0')
-    implementation "androidx.core:core-ktx:1.1.0"
+    implementation('androidx.activity:activity-ktx:1.1.0')
+    implementation "androidx.core:core-ktx:1.2.0"
 
     androidTestImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test:rules:1.2.0")
@@ -72,7 +75,7 @@ dependencies {
     androidTestImplementation("androidx.ui:ui-platform:$compose_version")
     androidTestImplementation("androidx.ui:ui-test:$compose_version")
 
-    ktlint "com.pinterest:ktlint:0.35.0"
+    ktlint "com.pinterest:ktlint:0.36.0"
 }
 
 task ktlint(type: JavaExec, group: "verification") {

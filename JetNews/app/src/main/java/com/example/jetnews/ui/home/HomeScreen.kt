@@ -17,65 +17,92 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
+import androidx.compose.remember
+import androidx.ui.core.Modifier
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
+import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.Row
-import androidx.ui.layout.Spacing
-import androidx.ui.layout.WidthSpacer
 import androidx.ui.material.Divider
+import androidx.ui.material.DrawerState
+import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Scaffold
+import androidx.ui.material.ScaffoldState
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun HomeScreen(openDrawer: () -> Unit) {
+fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
+    Column {
+        Scaffold(
+            scaffoldState = scaffoldState,
+            drawerContent = {
+                AppDrawer(
+                    currentScreen = Screen.Home,
+                    closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+                )
+            },
+            topAppBar = {
+                TopAppBar(
+                    title = { Text(text = "Jetnews") },
+                    navigationIcon = {
+                        VectorImageButton(R.drawable.ic_jetnews_logo) {
+                            scaffoldState.drawerState = DrawerState.Opened
+                        }
+                    }
+                )
+            },
+            bodyContent = { modifier ->
+                HomeScreenBody(modifier = modifier, posts = posts)
+            }
+        )
+    }
+}
+
+@Composable
+private fun HomeScreenBody(
+    modifier: Modifier = Modifier.None,
+    posts: List<Post>
+) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    Column {
-        TopAppBar(
-            title = { Text(text = "Jetnews") },
-            navigationIcon = {
-                VectorImageButton(R.drawable.ic_jetnews_logo) {
-                    openDrawer()
-                }
-            }
-        )
-        VerticalScroller(modifier = Flexible(1f)) {
-            Column {
-                HomeScreenTopSection(post = postTop)
-                HomeScreenSimpleSection(posts = postsSimple)
-                HomeScreenPopularSection(posts = postsPopular)
-                HomeScreenHistorySection(posts = postsHistory)
-            }
+    VerticalScroller {
+        Column(modifier = modifier) {
+            HomeScreenTopSection(post = postTop)
+            HomeScreenSimpleSection(posts = postsSimple)
+            HomeScreenPopularSection(posts = postsPopular)
+            HomeScreenHistorySection(posts = postsHistory)
         }
     }
 }
 
 @Composable
 private fun HomeScreenTopSection(post: Post) {
-
-    Text(
-        modifier = Spacing(top = 16.dp, left = 16.dp, right = 16.dp),
-        text = "Top stories for you",
-        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
-    )
+    ProvideEmphasis(emphasis = EmphasisLevels().high) {
+        Text(
+            modifier = LayoutPadding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 0.dp),
+            text = "Top stories for you",
+            style = MaterialTheme.typography().subtitle1
+        )
+    }
     Ripple(bounded = true) {
         Clickable(onClick = {
             navigateTo(Screen.Article(post.id))
@@ -96,16 +123,17 @@ private fun HomeScreenSimpleSection(posts: List<Post>) {
 
 @Composable
 private fun HomeScreenPopularSection(posts: List<Post>) {
-    Text(
-        modifier = Spacing(16.dp),
-        text = "Popular on Jetnews",
-        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
-    )
+    ProvideEmphasis(emphasis = EmphasisLevels().high) {
+        Text(
+            modifier = LayoutPadding(16.dp),
+            text = "Popular on Jetnews",
+            style = MaterialTheme.typography().subtitle1
+        )
+    }
     HorizontalScroller {
-        Row(modifier = Spacing(bottom = 16.dp, right = 16.dp)) {
+        Row(modifier = LayoutPadding(top = 0.dp, start = 0.dp, end = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->
-                WidthSpacer(16.dp)
-                PostCardPopular(post)
+                PostCardPopular(modifier = LayoutPadding(start = 16.dp), post = post)
             }
         }
     }
@@ -123,12 +151,18 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 @Composable
 private fun HomeScreenDivider() {
     Opacity(0.08f) {
-        Divider(modifier = Spacing(left = 14.dp, right = 14.dp))
+        Divider(modifier = LayoutPadding(start = 14.dp, top = 0.dp, end = 14.dp, bottom = 0.dp))
     }
 }
 
 @Preview
 @Composable
-fun preview() {
-    HomeScreen {}
+fun PreviewHomeScreen() {
+    HomeScreen()
+}
+
+@Preview
+@Composable
+private fun PreviewDrawerOpen() {
+    HomeScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
 }
