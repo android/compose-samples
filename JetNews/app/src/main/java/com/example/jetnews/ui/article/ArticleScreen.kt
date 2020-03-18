@@ -48,24 +48,33 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.post3
-import com.example.jetnews.data.posts
+import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.data.posts.impl.PreviewPostsRepository
+import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.UiState
 import com.example.jetnews.ui.darkThemeColors
+import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun ArticleScreen(postId: String) {
+fun ArticleScreen(postId: String, postsRepository: PostsRepository) {
+    val postsState = fetchPost(postId, postsRepository)
+    if (postsState is UiState.Success<Post>) {
+        ArticleScreen(postsState.data)
+    }
+}
+
+@Composable
+private fun ArticleScreen(post: Post) {
 
     var showDialog by state { false }
-    // getting the post from our list of posts by Id
-    val post = posts.find { it.id == postId } ?: return
-
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
@@ -156,7 +165,8 @@ private fun sharePost(post: Post, context: Context) {
 @Composable
 fun PreviewArticle() {
     ThemedPreview {
-        ArticleScreen(post3.id)
+        val post = loadFakePost(post3.id)
+        ArticleScreen(post)
     }
 }
 
@@ -164,6 +174,16 @@ fun PreviewArticle() {
 @Composable
 fun PreviewArticleDark() {
     ThemedPreview(darkThemeColors) {
-        ArticleScreen(post3.id)
+        val post = loadFakePost(post3.id)
+        ArticleScreen(post)
     }
+}
+
+@Composable
+private fun loadFakePost(postId: String): Post {
+    var post: Post? = null
+    PreviewPostsRepository(ContextAmbient.current).getPost(postId) { result ->
+        post = result.successOr(null)
+    }
+    return post!!
 }

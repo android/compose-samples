@@ -37,7 +37,7 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.post1
+import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen

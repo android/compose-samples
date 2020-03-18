@@ -18,6 +18,9 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.remember
+import androidx.ui.animation.Crossfade
+import androidx.ui.core.Alignment
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
@@ -26,7 +29,9 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
+import androidx.ui.layout.wrapContentSize
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
 import androidx.ui.material.EmphasisAmbient
@@ -41,16 +46,30 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts
+import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.data.posts.impl.PreviewPostsRepository
+import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.UiState
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.previewDataFrom
+import com.example.jetnews.ui.uiStateFrom
 
 @Composable
-fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
+fun HomeScreen(postsRepository: PostsRepository) {
+    val postsState = uiStateFrom(postsRepository::getPosts)
+    HomeScreenScaffold(postsState = postsState)
+}
+
+@Composable
+fun HomeScreenScaffold(
+    scaffoldState: ScaffoldState = remember { ScaffoldState() },
+    postsState: UiState<List<Post>>
+) {
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
@@ -70,7 +89,23 @@ fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
             )
         },
         bodyContent = { modifier ->
-            HomeScreenBody(posts, modifier)
+            Crossfade(current = postsState) { uiState ->
+                when (uiState) {
+                    is UiState.Success -> HomeScreenBody(
+                        modifier = modifier,
+                        posts = (postsState as UiState.Success<List<Post>>).data
+                    )
+                    is UiState.Loading -> {
+                        Text(
+                            modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+                            text = "Loading"
+                        )
+                    }
+                    else -> {
+                        // Empty
+                    }
+                }
+            }
         }
     )
 }
@@ -155,14 +190,16 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 private fun HomeScreenDivider() {
     Divider(
         modifier = Modifier.padding(start = 14.dp, end = 14.dp),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f))
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
+    )
 }
 
-@Preview("Home screen")
+@Preview("Home screen body")
 @Composable
-fun PreviewHomeScreen() {
+fun PreviewHomeScreenBody() {
     ThemedPreview {
-        HomeScreen()
+        val posts = loadFakePosts()
+        HomeScreenBody(posts)
     }
 }
 
@@ -170,15 +207,19 @@ fun PreviewHomeScreen() {
 @Composable
 private fun PreviewDrawerOpen() {
     ThemedPreview {
-        HomeScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+        HomeScreenScaffold(
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            postsState = UiState.Success(posts)
+        )
     }
 }
 
 @Preview("Home screen dark theme")
 @Composable
-fun PreviewHomeScreenDark() {
+fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkThemeColors) {
-        HomeScreen()
+        val posts = loadFakePosts()
+        HomeScreenBody(posts)
     }
 }
 
@@ -186,6 +227,14 @@ fun PreviewHomeScreenDark() {
 @Composable
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkThemeColors) {
-        HomeScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+        HomeScreenScaffold(
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            postsState = UiState.Success(posts)
+        )
     }
+}
+
+@Composable
+private fun loadFakePosts(): List<Post> {
+    return previewDataFrom(PreviewPostsRepository(ContextAmbient.current)::getPosts)
 }
