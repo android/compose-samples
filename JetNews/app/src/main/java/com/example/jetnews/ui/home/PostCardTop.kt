@@ -36,9 +36,9 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
-import com.example.jetnews.data.getPostsWithImagesLoaded
-import com.example.jetnews.data.post2
-import com.example.jetnews.data.posts
+import com.example.jetnews.data.posts.impl.getPostsWithImagesLoaded
+import com.example.jetnews.data.posts.impl.post2
+import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.darkThemeColors

@@ -17,6 +17,7 @@
 package com.example.jetnews
 
 import androidx.test.filters.MediumTest
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick
@@ -36,7 +37,7 @@ class JetnewsUiTest {
 
     @Before
     fun setUp() {
-        composeTestRule.launchJetNewsApp()
+        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().context)
     }
 
     @Test

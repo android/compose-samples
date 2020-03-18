@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.data
+package com.example.jetnews.data.posts.impl
 
 import android.content.res.Resources
 import androidx.ui.graphics.imageFromResource
@@ -1003,18 +1003,19 @@ val post5 = Post(
     imageThumbId = R.drawable.post_5_thumb
 )
 
-var posts = listOf(
-    post1,
-    post2,
-    post3,
-    post4,
-    post5,
-    post1.copy(id = "post1"),
-    post2.copy(id = "post2"),
-    post3.copy(id = "post3"),
-    post4.copy(id = "post4"),
-    post5.copy(id = "post5")
-)
+val posts: List<Post> =
+    listOf(
+        post1,
+        post2,
+        post3,
+        post4,
+        post5,
+        post1.copy(id = "post6"),
+        post2.copy(id = "post7"),
+        post3.copy(id = "post8"),
+        post4.copy(id = "post9"),
+        post5.copy(id = "post10")
+    )
 
 fun getPostsWithImagesLoaded(posts: List<Post>, resources: Resources): List<Post> {
     return posts.map {
