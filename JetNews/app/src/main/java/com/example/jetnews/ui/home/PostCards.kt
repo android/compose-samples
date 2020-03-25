@@ -159,7 +159,6 @@ fun runPreview() {
     }
 }
 
-
 @Preview("Simple post card Dark theme")
 @Composable
 fun runPreviewDark() {
