@@ -37,6 +37,7 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
+import androidx.ui.material.ColorPalette
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -128,7 +129,7 @@ private fun PostMetadata(metadata: Metadata) {
     Row {
         VectorImage(
             id = R.drawable.ic_account_circle_black,
-            tint = MaterialTheme.colors().onSurface
+            tint = contentColor()
         )
         Spacer(LayoutWidth(8.dp))
         Column {
@@ -163,7 +164,7 @@ private fun Paragraph(paragraph: Paragraph) {
     val annotatedString = paragraphToAnnotatedString(
         paragraph,
         MaterialTheme.typography(),
-        MaterialTheme.colors().isLight
+        MaterialTheme.colors().codeBlockBackground()
     )
     Container(modifier = LayoutPadding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
         when (paragraph.type) {
@@ -200,7 +201,7 @@ private fun CodeBlockParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Surface(
-        color = codeBlockBackground(MaterialTheme.colors().isLight),
+        color = MaterialTheme.colors().codeBlockBackground(),
         shape = RoundedCornerShape(4.dp)
     ) {
         Text(
@@ -264,7 +265,7 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
         ParagraphType.CodeBlock -> textStyle =
             (typography.body1)
                 .copy(
-                    background = codeBlockBackground(MaterialTheme.colors().isLight),
+                    background = MaterialTheme.colors().codeBlockBackground(),
                     fontFamily = FontFamily.Monospace
                 )
         ParagraphType.Quote -> textStyle = typography.body1
@@ -282,16 +283,16 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
 private fun paragraphToAnnotatedString(
     paragraph: Paragraph,
     typography: Typography,
-    isLight: Boolean
+    codeBlockBackground: Color
 ): AnnotatedString {
     val styles: List<AnnotatedString.Item<SpanStyle>> = paragraph.markups
-        .map { it.toAnnotatedStringItem(typography, isLight) }
+        .map { it.toAnnotatedStringItem(typography, codeBlockBackground) }
     return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
 
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
-    isLight: Boolean
+    codeBlockBackground: Color
 ): AnnotatedString.Item<SpanStyle> {
     return when (this.type) {
         MarkupType.Italic -> {
@@ -319,7 +320,7 @@ fun Markup.toAnnotatedStringItem(
             AnnotatedString.Item(
                 typography.body1
                     .copy(
-                        background = codeBlockBackground(isLight),
+                        background = codeBlockBackground,
                         fontFamily = FontFamily.Monospace
                     ).toSpanStyle(),
                 start,
@@ -329,11 +330,7 @@ fun Markup.toAnnotatedStringItem(
     }
 }
 
-private fun codeBlockBackground(isLight: Boolean) = if (isLight) {
-    Color(0xfff1f1f1.toInt())
-} else {
-    Color(0xff292929.toInt())
-}
+private fun ColorPalette.codeBlockBackground() = onSurface.copy(alpha = .15f)
 
 @Preview("Post content")
 @Composable

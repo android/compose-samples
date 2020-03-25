@@ -85,7 +85,7 @@ fun AppDrawer(
                 tint = MaterialTheme.colors().onSurface
             )
         }
-        Divider(color = dividerColor(MaterialTheme.colors().isLight))
+        Divider(color = MaterialTheme.colors().onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = R.drawable.ic_home,
             label = "Home",
@@ -104,12 +104,6 @@ fun AppDrawer(
             closeDrawer()
         }
     }
-}
-
-private fun dividerColor(isLight: Boolean) = if (isLight) {
-    Color(0x14333333)
-} else {
-    Color(0x20CCCCCC)
 }
 
 @Composable
