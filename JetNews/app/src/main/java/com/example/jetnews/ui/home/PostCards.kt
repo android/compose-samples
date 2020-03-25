@@ -41,10 +41,10 @@ import com.example.jetnews.data.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImage
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
-import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun AuthorAndReadTime(post: Post) {
@@ -154,7 +154,7 @@ fun BookmarkButton(
 @Preview("Simple post card")
 @Composable
 fun runPreview() {
-    themedPreview {
+    ThemedPreview {
         PostCardSimple(post = post3)
     }
 }
@@ -162,7 +162,7 @@ fun runPreview() {
 @Preview("Simple post card Dark theme")
 @Composable
 fun PreviewSimplePostDark() {
-    themedPreview(darkThemeColors) {
+    ThemedPreview(darkThemeColors) {
         PostCardSimple(post = post3)
     }
 }

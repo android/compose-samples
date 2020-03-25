@@ -63,9 +63,9 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImage
 import com.example.jetnews.ui.darkThemeColors
-import com.example.jetnews.ui.themedPreview
 
 private val defaultSpacerSize = 16.dp
 
@@ -338,7 +338,7 @@ private fun codeBlockBackground(isLight: Boolean) = if (isLight) {
 @Preview("Post content")
 @Composable
 fun PreviewPost() {
-    themedPreview {
+    ThemedPreview {
         PostContent(post = post3)
     }
 }
@@ -346,7 +346,7 @@ fun PreviewPost() {
 @Preview("Post content Dark theme")
 @Composable
 fun previewDark() {
-    themedPreview(darkThemeColors) {
+    ThemedPreview(darkThemeColors) {
         PostContent(post = post3)
     }
 }

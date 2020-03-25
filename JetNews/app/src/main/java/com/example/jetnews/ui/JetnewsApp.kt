@@ -163,7 +163,7 @@ private fun DrawerButton(
 @Preview("Drawer contents")
 @Composable
 fun PreviewJetnewsApp() {
-    themedPreview {
+    ThemedPreview {
         AppDrawer(
             currentScreen = JetnewsStatus.currentScreen,
             closeDrawer = { }
@@ -174,7 +174,7 @@ fun PreviewJetnewsApp() {
 @Preview("Drawer contents Dark theme")
 @Composable
 fun PreviewJetnewsAppDark() {
-    themedPreview(darkThemeColors) {
+    ThemedPreview(darkThemeColors) {
         AppDrawer(
             currentScreen = JetnewsStatus.currentScreen,
             closeDrawer = { }

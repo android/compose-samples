@@ -52,8 +52,8 @@ import com.example.jetnews.data.topics
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImageButton
-import com.example.jetnews.ui.themedPreview
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -241,7 +241,7 @@ private fun selectTopic(key: String, select: Boolean) {
 @Preview("Interests screen")
 @Composable
 fun PreviewInterestsScreen() {
-    themedPreview {
+    ThemedPreview {
         InterestsScreen()
     }
 }
@@ -249,7 +249,7 @@ fun PreviewInterestsScreen() {
 @Preview
 @Composable
 private fun PreviewDrawerOpen() {
-    themedPreview {
+    ThemedPreview {
         InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
     }
 }
@@ -257,7 +257,7 @@ private fun PreviewDrawerOpen() {
 @Preview
 @Composable
 fun PreviewTopicsTab() {
-    themedPreview {
+    ThemedPreview {
         TopicsTab()
     }
 }
@@ -265,7 +265,7 @@ fun PreviewTopicsTab() {
 @Preview
 @Composable
 fun PreviewPeopleTab() {
-    themedPreview {
+    ThemedPreview {
         PeopleTab()
     }
 }
@@ -273,7 +273,7 @@ fun PreviewPeopleTab() {
 @Preview
 @Composable
 fun PreviewTabWithTopics() {
-    themedPreview {
+    ThemedPreview {
         TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
     }
 }

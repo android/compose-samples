@@ -45,13 +45,13 @@ import com.example.jetnews.data.post3
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.navigateTo
-import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun ArticleScreen(postId: String) {
@@ -165,7 +165,7 @@ private fun sharePost(post: Post, context: Context) {
 @Preview("Article screen")
 @Composable
 fun previewArticle() {
-    themedPreview {
+    ThemedPreview {
         ArticleScreen(post3.id)
     }
 }
@@ -173,7 +173,7 @@ fun previewArticle() {
 @Preview("Article screen Dark theme")
 @Composable
 fun PreviewArticleDark() {
-    themedPreview(darkThemeColors) {
+    ThemedPreview(darkThemeColors) {
         ArticleScreen(post3.id)
     }
 }

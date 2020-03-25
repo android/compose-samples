@@ -41,9 +41,9 @@ import com.example.jetnews.data.getPostsWithImagesLoaded
 import com.example.jetnews.data.post2
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.lightThemeColors
-import com.example.jetnews.ui.themedPreview
 
 @Composable
 fun PostCardTop(post: Post) {
@@ -118,7 +118,7 @@ fun TutorialPreviewTemplate(
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
 
-    themedPreview(colors) {
+    ThemedPreview(colors) {
         PostCardTop(post)
     }
 }
@@ -126,7 +126,7 @@ fun TutorialPreviewTemplate(
 @Preview("Post card top")
 @Composable
 fun previewPostCardTop() {
-    themedPreview {
+    ThemedPreview {
         PostCardTop(post = post2)
     }
 }
@@ -134,7 +134,7 @@ fun previewPostCardTop() {
 @Preview("Post card top dark theme")
 @Composable
 fun previewPostCardTopDark() {
-    themedPreview(darkThemeColors) {
+    ThemedPreview(darkThemeColors) {
         PostCardTop(post = post2)
     }
 }

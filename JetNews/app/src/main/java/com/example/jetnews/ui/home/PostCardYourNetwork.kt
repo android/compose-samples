@@ -41,9 +41,9 @@ import com.example.jetnews.data.post1
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
-import com.example.jetnews.ui.themedPreview
 
 private val cardSize = LayoutSize(280.dp, 240.dp)
 
@@ -93,7 +93,7 @@ fun PostCardPopular(modifier: Modifier = Modifier.None, post: Post) {
 @Preview("Regular colors")
 @Composable
 fun PreviewPostCardPopular() {
-    themedPreview {
+    ThemedPreview {
         PostCardPopular(post = post1)
     }
 }
@@ -101,7 +101,7 @@ fun PreviewPostCardPopular() {
 @Preview("Dark colors")
 @Composable
 fun PreviewPostCardPopularDark() {
-    themedPreview(darkThemeColors) {
+    ThemedPreview(darkThemeColors) {
         PostCardPopular(post = post1)
     }
 }
@@ -117,7 +117,7 @@ fun PreviewPostCardPopularLongText() {
         facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
         consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
     """.trimIndent()
-    themedPreview {
+    ThemedPreview {
         PostCardPopular(
             post = post1.copy(
                 title = "Title$loremIpsum",
