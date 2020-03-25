@@ -170,7 +170,7 @@ fun previewArticle() {
     }
 }
 
-@Preview("Article screen Dark theme")
+@Preview("Article screen dark theme")
 @Composable
 fun PreviewArticleDark() {
     ThemedPreview(darkThemeColors) {

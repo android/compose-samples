@@ -54,6 +54,7 @@ import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.darkThemeColors
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -246,7 +247,15 @@ fun PreviewInterestsScreen() {
     }
 }
 
-@Preview
+@Preview("Interests screen dark theme")
+@Composable
+fun PreviewInterestsScreenDark() {
+    ThemedPreview(darkThemeColors) {
+        InterestsScreen()
+    }
+}
+
+@Preview("Interests screen drawer open")
 @Composable
 private fun PreviewDrawerOpen() {
     ThemedPreview {
@@ -254,7 +263,15 @@ private fun PreviewDrawerOpen() {
     }
 }
 
-@Preview
+@Preview("Interests screen drawer open dark theme")
+@Composable
+private fun PreviewDrawerOpenDark() {
+    ThemedPreview(darkThemeColors) {
+        InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+    }
+}
+
+@Preview("Interests screen topics tab")
 @Composable
 fun PreviewTopicsTab() {
     ThemedPreview {
@@ -262,7 +279,15 @@ fun PreviewTopicsTab() {
     }
 }
 
-@Preview
+@Preview("Interests screen topics tab dark theme")
+@Composable
+fun PreviewTopicsTabDark() {
+    ThemedPreview(darkThemeColors) {
+        TopicsTab()
+    }
+}
+
+@Preview("Interests screen people tab")
 @Composable
 fun PreviewPeopleTab() {
     ThemedPreview {
@@ -270,9 +295,25 @@ fun PreviewPeopleTab() {
     }
 }
 
-@Preview
+@Preview("Interests screen people tab dark theme")
+@Composable
+fun PreviewPeopleTabDark() {
+    ThemedPreview(darkThemeColors) {
+        PeopleTab()
+    }
+}
+
+@Preview("Interests screen tab with topics")
 @Composable
 fun PreviewTabWithTopics() {
+    ThemedPreview {
+        TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
+    }
+}
+
+@Preview("Interests screen tab with topics dark theme")
+@Composable
+fun PreviewTabWithTopicsDark() {
     ThemedPreview {
         TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
     }

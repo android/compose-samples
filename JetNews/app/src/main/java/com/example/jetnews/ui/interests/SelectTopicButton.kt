@@ -31,6 +31,7 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.lightThemeColors
 
@@ -90,7 +91,7 @@ fun SelectTopicButtonPreviewOn() {
     )
 }
 
-@Preview("Off - Dark")
+@Preview("Off - dark theme")
 @Composable
 fun SelectTopicButtonPreviewOffDark() {
     SelectTopicButtonPreviewTemplate(
@@ -99,7 +100,7 @@ fun SelectTopicButtonPreviewOffDark() {
     )
 }
 
-@Preview("On - Dark")
+@Preview("On - dark theme")
 @Composable
 fun SelectTopicButtonPreviewOnDark() {
     SelectTopicButtonPreviewTemplate(
@@ -110,12 +111,10 @@ fun SelectTopicButtonPreviewOnDark() {
 
 @Composable
 private fun SelectTopicButtonPreviewTemplate(themeColors: ColorPalette, selected: Boolean) {
-    MaterialTheme(themeColors) {
-        Surface {
-            SelectTopicButton(
-                modifier = LayoutPadding(32.dp),
-                selected = selected
-            )
-        }
+    ThemedPreview(themeColors) {
+        SelectTopicButton(
+            modifier = LayoutPadding(32.dp),
+            selected = selected
+        )
     }
 }

@@ -171,7 +171,7 @@ fun PreviewJetnewsApp() {
     }
 }
 
-@Preview("Drawer contents Dark theme")
+@Preview("Drawer contents dark theme")
 @Composable
 fun PreviewJetnewsAppDark() {
     ThemedPreview(darkThemeColors) {

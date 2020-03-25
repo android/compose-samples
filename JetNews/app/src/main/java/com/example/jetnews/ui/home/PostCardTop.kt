@@ -98,7 +98,7 @@ fun TutorialPreview() {
     TutorialPreviewTemplate()
 }
 
-@Preview("Dark colors")
+@Preview("Dark theme")
 @Composable
 fun TutorialPreviewDark() {
     TutorialPreviewTemplate(colors = darkThemeColors)

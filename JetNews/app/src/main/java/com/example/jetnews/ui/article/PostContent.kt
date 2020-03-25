@@ -343,7 +343,7 @@ fun PreviewPost() {
     }
 }
 
-@Preview("Post content Dark theme")
+@Preview("Post content dark theme")
 @Composable
 fun previewDark() {
     ThemedPreview(darkThemeColors) {
