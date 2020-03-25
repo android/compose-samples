@@ -172,7 +172,7 @@ fun previewArticle() {
 
 @Preview("Article screen Dark theme")
 @Composable
-fun previewArticleDark() {
+fun PreviewArticleDark() {
     themedPreview(darkThemeColors) {
         ArticleScreen(post3.id)
     }
