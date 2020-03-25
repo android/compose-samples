@@ -44,6 +44,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 import com.example.jetnews.ui.themedPreview
 
@@ -164,10 +165,26 @@ fun PreviewHomeScreen() {
     }
 }
 
-@Preview
+@Preview("Home screen, open drawer")
 @Composable
 private fun PreviewDrawerOpen() {
     themedPreview {
+        HomeScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+    }
+}
+
+@Preview("Home screen dark theme")
+@Composable
+fun PreviewHomeScreenDark() {
+    themedPreview(darkThemeColors) {
+        HomeScreen()
+    }
+}
+
+@Preview("Home screen, open drawer dark theme")
+@Composable
+private fun PreviewDrawerOpenDark() {
+    themedPreview(darkThemeColors) {
         HomeScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
     }
 }

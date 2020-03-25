@@ -34,10 +34,7 @@ import androidx.ui.layout.Spacer
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.withOpacity
 import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Typography
-import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.data.getPostsWithImagesLoaded
@@ -130,6 +127,14 @@ fun TutorialPreviewTemplate(
 @Composable
 fun previewPostCardTop() {
     themedPreview {
+        PostCardTop(post = post2)
+    }
+}
+
+@Preview("Post card top dark theme")
+@Composable
+fun previewPostCardTopDark() {
+    themedPreview(darkThemeColors) {
         PostCardTop(post = post2)
     }
 }

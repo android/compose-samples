@@ -46,6 +46,7 @@ import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
@@ -165,6 +166,14 @@ private fun sharePost(post: Post, context: Context) {
 @Composable
 fun previewArticle() {
     themedPreview {
+        ArticleScreen(post3.id)
+    }
+}
+
+@Preview("Article screen Dark theme")
+@Composable
+fun previewArticleDark() {
+    themedPreview(darkThemeColors) {
         ArticleScreen(post3.id)
     }
 }

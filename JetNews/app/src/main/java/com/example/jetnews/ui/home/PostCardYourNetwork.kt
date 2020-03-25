@@ -41,7 +41,9 @@ import com.example.jetnews.data.post1
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.themedPreview
 
 private val cardSize = LayoutSize(280.dp, 240.dp)
 
@@ -88,16 +90,25 @@ fun PostCardPopular(modifier: Modifier = Modifier.None, post: Post) {
     }
 }
 
-@Preview
+@Preview("Regular colors")
 @Composable
 fun PreviewPostCardPopular() {
-    PostCardPopular(post = post1)
+    themedPreview {
+        PostCardPopular(post = post1)
+    }
 }
 
-@Preview
+@Preview("Dark colors")
+@Composable
+fun PreviewPostCardPopularDark() {
+    themedPreview(darkThemeColors) {
+        PostCardPopular(post = post1)
+    }
+}
+
+@Preview("Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText() {
-
     val loremIpsum = """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
         sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
@@ -106,12 +117,15 @@ fun PreviewPostCardPopularLongText() {
         facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
         consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
     """.trimIndent()
-    val post = post1
-    PostCardPopular(post = post.copy(
-        title = "Title" + loremIpsum,
-        metadata = post.metadata.copy(
-            author = PostAuthor("Author: " + loremIpsum),
-            readTimeMinutes = Int.MAX_VALUE
+    themedPreview {
+        PostCardPopular(
+            post = post1.copy(
+                title = "Title$loremIpsum",
+                metadata = post1.metadata.copy(
+                    author = PostAuthor("Author: $loremIpsum"),
+                    readTimeMinutes = Int.MAX_VALUE
+                )
+            )
         )
-    ))
+    }
 }

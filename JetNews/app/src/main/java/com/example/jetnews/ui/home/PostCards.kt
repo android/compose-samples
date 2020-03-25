@@ -42,6 +42,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.VectorImage
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 import com.example.jetnews.ui.themedPreview
 
@@ -154,6 +155,15 @@ fun BookmarkButton(
 @Composable
 fun runPreview() {
     themedPreview {
+        PostCardSimple(post = post3)
+    }
+}
+
+
+@Preview("Simple post card Dark theme")
+@Composable
+fun runPreviewDark() {
+    themedPreview(darkThemeColors) {
         PostCardSimple(post = post3)
     }
 }

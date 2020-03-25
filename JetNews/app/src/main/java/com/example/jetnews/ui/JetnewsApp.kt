@@ -27,7 +27,6 @@ import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.LayoutGravity
 import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.ExpandedWidth
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
@@ -78,12 +77,15 @@ fun AppDrawer(
         Row(modifier = LayoutPadding(16.dp)) {
             VectorImage(
                 id = R.drawable.ic_jetnews_logo,
-                tint = (MaterialTheme.colors()).primary
+                tint = MaterialTheme.colors().primary
             )
             Spacer(LayoutWidth(8.dp))
-            VectorImage(id = R.drawable.ic_jetnews_wordmark)
+            VectorImage(
+                id = R.drawable.ic_jetnews_wordmark,
+                tint = MaterialTheme.colors().onSurface
+            )
         }
-        Divider(color = Color(0x14333333))
+        Divider(color = dividerColor(MaterialTheme.colors().isLight))
         DrawerButton(
             icon = R.drawable.ic_home,
             label = "Home",
@@ -102,6 +104,12 @@ fun AppDrawer(
             closeDrawer()
         }
     }
+}
+
+private fun dividerColor(isLight: Boolean) = if (isLight) {
+    Color(0x14333333)
+} else {
+    Color(0x20CCCCCC)
 }
 
 @Composable
@@ -145,7 +153,7 @@ private fun DrawerButton(
                     style = (MaterialTheme.typography()).body2.copy(
                         color = textIconColor
                     ),
-                    modifier = ExpandedWidth
+                    modifier = LayoutWidth.Fill
                 )
             }
         }
@@ -156,6 +164,17 @@ private fun DrawerButton(
 @Composable
 fun PreviewJetnewsApp() {
     themedPreview {
+        AppDrawer(
+            currentScreen = JetnewsStatus.currentScreen,
+            closeDrawer = { }
+        )
+    }
+}
+
+@Preview("Drawer contents Dark theme")
+@Composable
+fun PreviewJetnewsAppDark() {
+    themedPreview(darkThemeColors) {
         AppDrawer(
             currentScreen = JetnewsStatus.currentScreen,
             closeDrawer = { }
