@@ -337,7 +337,7 @@ private fun codeBlockBackground(isLight: Boolean) = if (isLight) {
 
 @Preview("Post content")
 @Composable
-fun preview() {
+fun PreviewPost() {
     themedPreview {
         PostContent(post = post3)
     }
