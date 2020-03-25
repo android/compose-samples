@@ -7,7 +7,7 @@ import androidx.ui.material.Typography
 import androidx.ui.material.surface.Surface
 
 @Composable
-internal fun themedPreview(
+internal fun ThemedPreview(
     colors: ColorPalette = lightThemeColors,
     typography: Typography = themeTypography,
     children: @Composable() () -> Unit
