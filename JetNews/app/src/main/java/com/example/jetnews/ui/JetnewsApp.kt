@@ -22,7 +22,6 @@ import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.Color
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.LayoutGravity
