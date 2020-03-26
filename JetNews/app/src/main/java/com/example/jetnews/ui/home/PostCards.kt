@@ -41,7 +41,9 @@ import com.example.jetnews.data.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImage
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 
 @Composable
@@ -149,10 +151,20 @@ fun BookmarkButton(
     }
 }
 
-@Preview
+@Preview("Simple post card")
 @Composable
-fun runPreview() {
-    PostCardSimple(post = post3)
+fun PreviewSimplePost() {
+    ThemedPreview {
+        PostCardSimple(post = post3)
+    }
+}
+
+@Preview("Simple post card dark theme")
+@Composable
+fun PreviewSimplePostDark() {
+    ThemedPreview(darkThemeColors) {
+        PostCardSimple(post = post3)
+    }
 }
 
 fun toggleBookmark(postId: String) {
