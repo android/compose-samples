@@ -164,7 +164,7 @@ private fun sharePost(post: Post, context: Context) {
 
 @Preview("Article screen")
 @Composable
-fun previewArticle() {
+fun PreviewArticle() {
     ThemedPreview {
         ArticleScreen(post3.id)
     }

@@ -164,7 +164,7 @@ private fun Paragraph(paragraph: Paragraph) {
     val annotatedString = paragraphToAnnotatedString(
         paragraph,
         MaterialTheme.typography(),
-        MaterialTheme.colors().codeBlockBackground()
+        MaterialTheme.colors().codeBlockBackground
     )
     Container(modifier = LayoutPadding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
         when (paragraph.type) {
@@ -201,7 +201,7 @@ private fun CodeBlockParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Surface(
-        color = MaterialTheme.colors().codeBlockBackground(),
+        color = MaterialTheme.colors().codeBlockBackground,
         shape = RoundedCornerShape(4.dp)
     ) {
         Text(
@@ -265,7 +265,7 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
         ParagraphType.CodeBlock -> textStyle =
             (typography.body1)
                 .copy(
-                    background = MaterialTheme.colors().codeBlockBackground(),
+                    background = MaterialTheme.colors().codeBlockBackground,
                     fontFamily = FontFamily.Monospace
                 )
         ParagraphType.Quote -> textStyle = typography.body1
@@ -330,7 +330,8 @@ fun Markup.toAnnotatedStringItem(
     }
 }
 
-private fun ColorPalette.codeBlockBackground() = onSurface.copy(alpha = .15f)
+private val ColorPalette.codeBlockBackground: Color
+    get() = onSurface.copy(alpha = .15f)
 
 @Preview("Post content")
 @Composable
@@ -342,7 +343,7 @@ fun PreviewPost() {
 
 @Preview("Post content dark theme")
 @Composable
-fun previewDark() {
+fun PreviewPostDark() {
     ThemedPreview(darkThemeColors) {
         PostContent(post = post3)
     }

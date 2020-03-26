@@ -125,7 +125,7 @@ fun TutorialPreviewTemplate(
 
 @Preview("Post card top")
 @Composable
-fun previewPostCardTop() {
+fun PreviewPostCardTop() {
     ThemedPreview {
         PostCardTop(post = post2)
     }
@@ -133,7 +133,7 @@ fun previewPostCardTop() {
 
 @Preview("Post card top dark theme")
 @Composable
-fun previewPostCardTopDark() {
+fun PreviewPostCardTopDark() {
     ThemedPreview(darkThemeColors) {
         PostCardTop(post = post2)
     }

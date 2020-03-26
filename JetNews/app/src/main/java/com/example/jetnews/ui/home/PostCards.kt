@@ -153,7 +153,7 @@ fun BookmarkButton(
 
 @Preview("Simple post card")
 @Composable
-fun runPreview() {
+fun PreviewSimplePost() {
     ThemedPreview {
         PostCardSimple(post = post3)
     }
