@@ -35,17 +35,15 @@ import androidx.ui.material.ColorPalette
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Typography
-import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.data.getPostsWithImagesLoaded
 import com.example.jetnews.data.post2
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.lightThemeColors
-import com.example.jetnews.ui.themeTypography
 
 @Composable
 fun PostCardTop(post: Post) {
@@ -100,7 +98,7 @@ fun TutorialPreview() {
     TutorialPreviewTemplate()
 }
 
-@Preview("Dark colors")
+@Preview("Dark theme")
 @Composable
 fun TutorialPreviewDark() {
     TutorialPreviewTemplate(colors = darkThemeColors)
@@ -114,21 +112,29 @@ fun TutorialPreviewFontscale() {
 
 @Composable
 fun TutorialPreviewTemplate(
-    colors: ColorPalette = lightThemeColors,
-    typography: Typography = themeTypography
+    colors: ColorPalette = lightThemeColors
 ) {
     val context = ContextAmbient.current
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
-    MaterialTheme(colors = colors, typography = typography) {
-        Surface {
-            PostCardTop(post)
-        }
+
+    ThemedPreview(colors) {
+        PostCardTop(post)
     }
 }
 
-@Preview
+@Preview("Post card top")
 @Composable
-fun previewPostCardTop() {
-    PostCardTop(post = post2)
+fun PreviewPostCardTop() {
+    ThemedPreview {
+        PostCardTop(post = post2)
+    }
+}
+
+@Preview("Post card top dark theme")
+@Composable
+fun PreviewPostCardTopDark() {
+    ThemedPreview(darkThemeColors) {
+        PostCardTop(post = post2)
+    }
 }

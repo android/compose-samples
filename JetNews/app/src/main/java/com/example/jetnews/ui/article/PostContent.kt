@@ -37,6 +37,7 @@ import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
+import androidx.ui.material.ColorPalette
 import androidx.ui.material.EmphasisLevels
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -63,10 +64,11 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImage
+import com.example.jetnews.ui.darkThemeColors
 
 private val defaultSpacerSize = 16.dp
-private val codeBlockBackground = Color(0xfff1f1f1.toInt())
 
 @Composable
 fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
@@ -125,7 +127,10 @@ private fun PostHeaderImage(post: Post) {
 private fun PostMetadata(metadata: Metadata) {
     val typography = MaterialTheme.typography()
     Row {
-        VectorImage(id = R.drawable.ic_account_circle_black)
+        VectorImage(
+            id = R.drawable.ic_account_circle_black,
+            tint = contentColor()
+        )
         Spacer(LayoutWidth(8.dp))
         Column {
             Spacer(LayoutHeight(4.dp))
@@ -156,7 +161,11 @@ private fun PostContents(paragraphs: List<Paragraph>) {
 private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
-    val annotatedString = paragraphToAnnotatedString(paragraph, MaterialTheme.typography())
+    val annotatedString = paragraphToAnnotatedString(
+        paragraph,
+        MaterialTheme.typography(),
+        MaterialTheme.colors().codeBlockBackground
+    )
     Container(modifier = LayoutPadding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
         when (paragraph.type) {
             ParagraphType.Bullet -> BulletParagraph(
@@ -192,7 +201,7 @@ private fun CodeBlockParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Surface(
-        color = codeBlockBackground,
+        color = MaterialTheme.colors().codeBlockBackground,
         shape = RoundedCornerShape(4.dp)
     ) {
         Text(
@@ -255,7 +264,10 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
         }
         ParagraphType.CodeBlock -> textStyle =
             (typography.body1)
-                .copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace)
+                .copy(
+                    background = MaterialTheme.colors().codeBlockBackground,
+                    fontFamily = FontFamily.Monospace
+                )
         ParagraphType.Quote -> textStyle = typography.body1
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
@@ -268,13 +280,20 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
     )
 }
 
-private fun paragraphToAnnotatedString(paragraph: Paragraph, typography: Typography): AnnotatedString {
+private fun paragraphToAnnotatedString(
+    paragraph: Paragraph,
+    typography: Typography,
+    codeBlockBackground: Color
+): AnnotatedString {
     val styles: List<AnnotatedString.Item<SpanStyle>> = paragraph.markups
-        .map { it: Markup -> it.toAnnotatedStringItem(typography) }
+        .map { it.toAnnotatedStringItem(typography, codeBlockBackground) }
     return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
 
-fun Markup.toAnnotatedStringItem(typography: Typography): AnnotatedString.Item<SpanStyle> {
+fun Markup.toAnnotatedStringItem(
+    typography: Typography,
+    codeBlockBackground: Color
+): AnnotatedString.Item<SpanStyle> {
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Item(
@@ -311,8 +330,21 @@ fun Markup.toAnnotatedStringItem(typography: Typography): AnnotatedString.Item<S
     }
 }
 
-@Preview
+private val ColorPalette.codeBlockBackground: Color
+    get() = onSurface.copy(alpha = .15f)
+
+@Preview("Post content")
 @Composable
-fun preview() {
-    PostContent(post = post3)
+fun PreviewPost() {
+    ThemedPreview {
+        PostContent(post = post3)
+    }
+}
+
+@Preview("Post content dark theme")
+@Composable
+fun PreviewPostDark() {
+    ThemedPreview(darkThemeColors) {
+        PostContent(post = post3)
+    }
 }

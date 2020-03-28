@@ -52,7 +52,9 @@ import com.example.jetnews.data.topics
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.darkThemeColors
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -237,32 +239,82 @@ private fun selectTopic(key: String, select: Boolean) {
     }
 }
 
-@Preview
+@Preview("Interests screen")
 @Composable
 fun PreviewInterestsScreen() {
-    InterestsScreen()
+    ThemedPreview {
+        InterestsScreen()
+    }
 }
 
-@Preview
+@Preview("Interests screen dark theme")
+@Composable
+fun PreviewInterestsScreenDark() {
+    ThemedPreview(darkThemeColors) {
+        InterestsScreen()
+    }
+}
+
+@Preview("Interests screen drawer open")
 @Composable
 private fun PreviewDrawerOpen() {
-    InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+    ThemedPreview {
+        InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+    }
 }
 
-@Preview
+@Preview("Interests screen drawer open dark theme")
+@Composable
+private fun PreviewDrawerOpenDark() {
+    ThemedPreview(darkThemeColors) {
+        InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+    }
+}
+
+@Preview("Interests screen topics tab")
 @Composable
 fun PreviewTopicsTab() {
-    TopicsTab()
+    ThemedPreview {
+        TopicsTab()
+    }
 }
 
-@Preview
+@Preview("Interests screen topics tab dark theme")
+@Composable
+fun PreviewTopicsTabDark() {
+    ThemedPreview(darkThemeColors) {
+        TopicsTab()
+    }
+}
+
+@Preview("Interests screen people tab")
 @Composable
 fun PreviewPeopleTab() {
-    PeopleTab()
+    ThemedPreview {
+        PeopleTab()
+    }
 }
 
-@Preview
+@Preview("Interests screen people tab dark theme")
+@Composable
+fun PreviewPeopleTabDark() {
+    ThemedPreview(darkThemeColors) {
+        PeopleTab()
+    }
+}
+
+@Preview("Interests screen tab with topics")
 @Composable
 fun PreviewTabWithTopics() {
-    TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
+    ThemedPreview {
+        TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
+    }
+}
+
+@Preview("Interests screen tab with topics dark theme")
+@Composable
+fun PreviewTabWithTopicsDark() {
+    ThemedPreview {
+        TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
+    }
 }

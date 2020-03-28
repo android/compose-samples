@@ -22,7 +22,6 @@ import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
 import androidx.ui.core.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.Color
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.LayoutGravity
@@ -77,12 +76,15 @@ fun AppDrawer(
         Row(modifier = LayoutPadding(16.dp)) {
             VectorImage(
                 id = R.drawable.ic_jetnews_logo,
-                tint = (MaterialTheme.colors()).primary
+                tint = MaterialTheme.colors().primary
             )
             Spacer(LayoutWidth(8.dp))
-            VectorImage(id = R.drawable.ic_jetnews_wordmark)
+            VectorImage(
+                id = R.drawable.ic_jetnews_wordmark,
+                tint = MaterialTheme.colors().onSurface
+            )
         }
-        Divider(color = Color(0x14333333))
+        Divider(color = MaterialTheme.colors().onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = R.drawable.ic_home,
             label = "Home",
@@ -143,18 +145,32 @@ private fun DrawerButton(
                     text = label,
                     style = (MaterialTheme.typography()).body2.copy(
                         color = textIconColor
-                    )
+                    ),
+                    modifier = LayoutWidth.Fill
                 )
             }
         }
     }
 }
 
-@Preview
+@Preview("Drawer contents")
 @Composable
 fun PreviewJetnewsApp() {
-    AppDrawer(
-        currentScreen = JetnewsStatus.currentScreen,
-        closeDrawer = { }
-    )
+    ThemedPreview {
+        AppDrawer(
+            currentScreen = JetnewsStatus.currentScreen,
+            closeDrawer = { }
+        )
+    }
+}
+
+@Preview("Drawer contents dark theme")
+@Composable
+fun PreviewJetnewsAppDark() {
+    ThemedPreview(darkThemeColors) {
+        AppDrawer(
+            currentScreen = JetnewsStatus.currentScreen,
+            closeDrawer = { }
+        )
+    }
 }

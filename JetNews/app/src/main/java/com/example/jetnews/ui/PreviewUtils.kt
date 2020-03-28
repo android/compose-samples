@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-buildscript {
-    ext.kotlin_version = '1.3.71'
+package com.example.jetnews.ui
 
-    def compose_release_version = "dev06"
-    ext.compose_version = "0.1.0-$compose_release_version"
-    ext.compose_compiler_extension_version = "0.1.0-$compose_release_version"
+import androidx.compose.Composable
+import androidx.ui.material.ColorPalette
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Typography
+import androidx.ui.material.surface.Surface
 
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0-alpha04'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
+@Composable
+internal fun ThemedPreview(
+    colors: ColorPalette = lightThemeColors,
+    typography: Typography = themeTypography,
+    children: @Composable() () -> Unit
+) {
+    MaterialTheme(colors = colors, typography = typography) {
+        Surface {
+            children()
+        }
     }
 }

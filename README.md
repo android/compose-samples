@@ -6,6 +6,10 @@ Compose in Android.
 
 For more information, please [read our documentation](https://developer.android.com/jetpack/compose)
 
+Requirements
+------------
+[Android Studio 4.1](https://developer.android.com/studio/preview/index.html) or newer.
+
 Samples
 -------
 [Jetnews](JetNews/): A sample blog post viewer that demonstrates the use of Compose.

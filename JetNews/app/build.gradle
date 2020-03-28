@@ -69,7 +69,7 @@ dependencies {
     implementation('androidx.activity:activity-ktx:1.1.0')
     implementation "androidx.core:core-ktx:1.2.0"
 
-    androidTestImplementation("junit:junit:4.12")
+    androidTestImplementation("junit:junit:4.13")
     androidTestImplementation("androidx.test:rules:1.2.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
     androidTestImplementation("androidx.ui:ui-platform:$compose_version")

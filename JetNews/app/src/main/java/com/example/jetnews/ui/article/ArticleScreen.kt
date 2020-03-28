@@ -45,7 +45,9 @@ import com.example.jetnews.data.post3
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.VectorImageButton
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
@@ -160,8 +162,18 @@ private fun sharePost(post: Post, context: Context) {
     context.startActivity(Intent.createChooser(intent, "Share post"))
 }
 
-@Preview
+@Preview("Article screen")
 @Composable
-fun previewArticle() {
-    ArticleScreen(post3.id)
+fun PreviewArticle() {
+    ThemedPreview {
+        ArticleScreen(post3.id)
+    }
+}
+
+@Preview("Article screen dark theme")
+@Composable
+fun PreviewArticleDark() {
+    ThemedPreview(darkThemeColors) {
+        ArticleScreen(post3.id)
+    }
 }
