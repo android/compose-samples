@@ -19,11 +19,13 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.Image
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
+import androidx.ui.graphics.BlendMode
+import androidx.ui.graphics.ColorFilter
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredSize
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.res.vectorResource
@@ -36,38 +38,38 @@ import com.example.jetnews.ui.lightThemeColors
 
 @Composable
 fun SelectTopicButton(
-    modifier: Modifier = Modifier.None,
+    modifier: Modifier = Modifier,
     selected: Boolean = false
 ) {
     if (selected) {
-        SelectTopicButtonOn(modifier + LayoutSize(36.dp, 36.dp))
+        SelectTopicButtonOn(modifier.preferredSize(36.dp, 36.dp))
     } else {
-        SelectTopicButtonOff(modifier + LayoutSize(36.dp, 36.dp))
+        SelectTopicButtonOff(modifier.preferredSize(36.dp, 36.dp))
     }
 }
 
 @Composable
-private fun SelectTopicButtonOn(modifier: Modifier = Modifier.None) {
+private fun SelectTopicButtonOn(modifier: Modifier = Modifier) {
     Box(
-        backgroundColor = MaterialTheme.colors().primary,
+        backgroundColor = MaterialTheme.colors.primary,
         shape = CircleShape,
         modifier = modifier
     ) {
-        DrawVector(vectorResource(R.drawable.ic_check))
+        Image(vectorResource(R.drawable.ic_check))
     }
 }
 
 @Composable
-private fun SelectTopicButtonOff(modifier: Modifier = Modifier.None) {
-    val borderColor = MaterialTheme.colors().onSurface.copy(alpha = 0.12f)
+private fun SelectTopicButtonOff(modifier: Modifier = Modifier) {
+    val borderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
     Box(
         backgroundColor = borderColor,
         shape = CircleShape,
         modifier = modifier
     ) {
-        DrawVector(
-            vectorImage = vectorResource(R.drawable.ic_add),
-            tintColor = contentColor()
+        Image(
+            asset = vectorResource(R.drawable.ic_add),
+            colorFilter = ColorFilter(contentColor(), BlendMode.srcATop)
         )
     }
 }
@@ -112,7 +114,7 @@ fun SelectTopicButtonPreviewOnDark() {
 private fun SelectTopicButtonPreviewTemplate(themeColors: ColorPalette, selected: Boolean) {
     ThemedPreview(themeColors) {
         SelectTopicButton(
-            modifier = LayoutPadding(32.dp),
+            modifier = Modifier.padding(32.dp),
             selected = selected
         )
     }
