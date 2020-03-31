@@ -22,11 +22,14 @@ import androidx.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import java.lang.IllegalStateException
 import java.util.concurrent.ExecutorService
+import kotlin.random.Random
 
 /**
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources after some delay in a background thread.
+ * 1/3 of the times will throw an error.
  *
  * The result is posted to the resultThreadHandler passed as a parameter.
  */
@@ -53,15 +56,21 @@ class FakePostsRepository(
 
     override fun getPost(postId: String, callback: (Result<Post?>) -> Unit) {
         executeInBackground(callback) {
-            resultThreadHandler.post { callback(Result.Success(
-                postsWithResources.find { it.id == postId }
-            )) }
+            resultThreadHandler.post {
+                callback(Result.Success(
+                    postsWithResources.find { it.id == postId }
+                ))
+            }
         }
     }
 
     override fun getPosts(callback: (Result<List<Post>>) -> Unit) {
         executeInBackground(callback) {
             simulateNetworkRequest()
+            Thread.sleep(1500L)
+            if (shouldRandomlyFail()) {
+                throw IllegalStateException()
+            }
             resultThreadHandler.post { callback(Result.Success(postsWithResources)) }
         }
     }
@@ -86,8 +95,13 @@ class FakePostsRepository(
     private var networkRequestDone = false
     private fun simulateNetworkRequest() {
         if (!networkRequestDone) {
-            Thread.sleep(5000)
+            Thread.sleep(2000L)
             networkRequestDone = true
         }
     }
+
+    /**
+     * 1/3 requests should fail loading
+     */
+    private fun shouldRandomlyFail(): Boolean = Random.nextFloat() < 0.33f
 }

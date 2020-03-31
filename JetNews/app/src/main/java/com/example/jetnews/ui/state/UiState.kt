@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.state
 
 import androidx.compose.Composable
 import androidx.compose.onActive

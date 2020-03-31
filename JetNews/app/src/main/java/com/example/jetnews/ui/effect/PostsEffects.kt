@@ -22,7 +22,7 @@ import androidx.compose.state
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.UiState
+import com.example.jetnews.ui.state.UiState
 
 /**
  * Effect that interacts with the repository to obtain a post with postId to display on the screen.
