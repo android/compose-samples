@@ -17,7 +17,6 @@
 package com.example.jetnews
 
 import androidx.test.filters.MediumTest
-import androidx.test.filters.Suppress
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick

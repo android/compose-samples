@@ -19,7 +19,6 @@ package com.example.jetnews.ui.article
 import androidx.compose.Composable
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.FirstBaseline
-import androidx.ui.core.LastBaseline
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
