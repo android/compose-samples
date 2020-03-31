@@ -53,13 +53,13 @@ import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.UiState
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.state.UiState
 
 @Composable
 fun ArticleScreen(postId: String, postsRepository: PostsRepository) {

@@ -16,22 +16,30 @@
 
 package com.example.jetnews.ui.home
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.Composable
+import androidx.compose.onActive
 import androidx.compose.remember
-import androidx.ui.animation.Crossfade
+import androidx.compose.stateFor
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
+import androidx.ui.layout.preferredSize
 import androidx.ui.layout.wrapContentSize
+import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
 import androidx.ui.material.EmphasisAmbient
@@ -40,6 +48,9 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Scaffold
 import androidx.ui.material.ScaffoldState
+import androidx.ui.material.Snackbar
+import androidx.ui.material.Surface
+import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.vectorResource
@@ -48,27 +59,24 @@ import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.PreviewPostsRepository
-import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.UiState
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
-import com.example.jetnews.ui.previewDataFrom
-import com.example.jetnews.ui.uiStateFrom
+import com.example.jetnews.ui.state.RefreshableUiState
+import com.example.jetnews.ui.state.currentData
+import com.example.jetnews.ui.state.loading
+import com.example.jetnews.ui.state.previewDataFrom
+import com.example.jetnews.ui.state.refreshableUiStateFrom
+import com.example.jetnews.ui.state.refreshing
 
 @Composable
-fun HomeScreen(postsRepository: PostsRepository) {
-    val postsState = uiStateFrom(postsRepository::getPosts)
-    HomeScreenScaffold(postsState = postsState)
-}
-
-@Composable
-fun HomeScreenScaffold(
-    scaffoldState: ScaffoldState = remember { ScaffoldState() },
-    postsState: UiState<List<Post>>
+fun HomeScreen(
+    postsRepository: PostsRepository,
+    scaffoldState: ScaffoldState = remember { ScaffoldState() }
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -89,25 +97,65 @@ fun HomeScreenScaffold(
             )
         },
         bodyContent = { modifier ->
-            Crossfade(current = postsState) { uiState ->
-                when (uiState) {
-                    is UiState.Success -> HomeScreenBody(
-                        modifier = modifier,
-                        posts = (postsState as UiState.Success<List<Post>>).data
-                    )
-                    is UiState.Loading -> {
-                        Text(
-                            modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
-                            text = "Loading"
-                        )
-                    }
-                    else -> {
-                        // Empty
-                    }
-                }
-            }
+            HomeScreenContent(postsRepository, modifier)
         }
     )
+}
+
+@Composable
+private fun HomeScreenContent(
+    postsRepository: PostsRepository,
+    modifier: Modifier = Modifier.None
+) {
+    val (postsState, refreshPosts) = refreshableUiStateFrom(postsRepository::getPosts)
+
+    if (postsState.loading && !postsState.refreshing) {
+        LoadingHomeScreen()
+    } else {
+        SwipeToRefreshLayout(
+            refreshingState = postsState.refreshing,
+            onRefresh = { refreshPosts() },
+            refreshIndicator = {
+                Surface(elevation = 10.dp, shape = CircleShape) {
+                    CircularProgressIndicator(Modifier.preferredSize(50.dp).padding(4.dp))
+                }
+            }
+        ) {
+            HomeScreenBodyWrapper(
+                modifier = modifier,
+                state = postsState,
+                onErrorAction = {
+                    refreshPosts()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeScreenBodyWrapper(
+    modifier: Modifier = Modifier.None,
+    state: RefreshableUiState<List<Post>>,
+    onErrorAction: () -> Unit
+) {
+    // State for showing the Snackbar error. This state will reset with the content of the lambda
+    // inside stateFor each time the RefreshableUiState input parameter changes.
+    // showSnackbarError is the value of the error state, use updateShowSnackbarError to update it.
+    val (showSnackbarError, updateShowSnackbarError) = stateFor(state) {
+        state is RefreshableUiState.Error
+    }
+
+    Stack(modifier = modifier.fillMaxSize()) {
+        state.currentData?.let { posts ->
+            HomeScreenBody(posts = posts)
+        }
+        ErrorSnackbar(
+            showError = showSnackbarError,
+            onErrorAction = onErrorAction,
+            onDismiss = { updateShowSnackbarError(false) },
+            modifier = Modifier.gravity(Alignment.BottomCenter)
+        )
+    }
 }
 
 @Composable
@@ -127,6 +175,47 @@ private fun HomeScreenBody(
             HomeScreenPopularSection(postsPopular)
             HomeScreenHistorySection(postsHistory)
         }
+    }
+}
+
+@Composable
+private fun LoadingHomeScreen() {
+    Box(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun ErrorSnackbar(
+    showError: Boolean,
+    modifier: Modifier = Modifier.None,
+    onErrorAction: () -> Unit = { },
+    onDismiss: () -> Unit = { }
+) {
+    if (showError) {
+
+        // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
+        onActive {
+            // With coroutines, this will be cancellable
+            Handler(Looper.getMainLooper()).postDelayed({
+                onDismiss()
+            }, 5000L)
+        }
+
+        Snackbar(
+            modifier = modifier.padding(16.dp),
+            text = { Text("Can't update latest news") },
+            action = {
+                TextButton(
+                    onClick = {
+                        onErrorAction()
+                        onDismiss()
+                    }
+                ) {
+                    Text("RETRY")
+                }
+            }
+        )
     }
 }
 
@@ -207,9 +296,9 @@ fun PreviewHomeScreenBody() {
 @Composable
 private fun PreviewDrawerOpen() {
     ThemedPreview {
-        HomeScreenScaffold(
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
-            postsState = UiState.Success(posts)
+        HomeScreen(
+            postsRepository = PreviewPostsRepository(ContextAmbient.current),
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
         )
     }
 }
@@ -227,9 +316,9 @@ fun PreviewHomeScreenBodyDark() {
 @Composable
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkThemeColors) {
-        HomeScreenScaffold(
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
-            postsState = UiState.Success(posts)
+        HomeScreen(
+            postsRepository = PreviewPostsRepository(ContextAmbient.current),
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
         )
     }
 }
