@@ -19,11 +19,8 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.contentColor
+import androidx.ui.foundation.Icon
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.BlendMode
-import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
 import androidx.ui.material.ColorPalette
@@ -55,7 +52,7 @@ private fun SelectTopicButtonOn(modifier: Modifier = Modifier) {
         shape = CircleShape,
         modifier = modifier
     ) {
-        Image(vectorResource(R.drawable.ic_check))
+        Icon(vectorResource(R.drawable.ic_check))
     }
 }
 
@@ -67,10 +64,7 @@ private fun SelectTopicButtonOff(modifier: Modifier = Modifier) {
         shape = CircleShape,
         modifier = modifier
     ) {
-        Image(
-            asset = vectorResource(R.drawable.ic_add),
-            colorFilter = ColorFilter(contentColor(), BlendMode.srcATop)
-        )
+        Icon(vectorResource(R.drawable.ic_add))
     }
 }
 

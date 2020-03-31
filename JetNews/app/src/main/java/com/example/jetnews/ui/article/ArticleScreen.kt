@@ -41,6 +41,8 @@ import androidx.ui.material.Scaffold
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.ArrowBack
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -73,12 +75,13 @@ fun ArticleScreen(postId: String) {
                 title = {
                     Text(
                         text = "Published in: ${post.publication?.name}",
+                        // FIXME(b/143626708): this contentColor() is a bug workaround
                         style = MaterialTheme.typography.subtitle2.copy(color = contentColor())
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navigateTo(Screen.Home) }) {
-                        Icon(vectorResource(R.drawable.ic_back))
+                        Icon(Icons.Filled.ArrowBack)
                     }
                 }
             )

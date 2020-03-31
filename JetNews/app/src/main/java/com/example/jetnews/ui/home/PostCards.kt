@@ -22,12 +22,13 @@ import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
 import androidx.ui.material.EmphasisAmbient
+import androidx.ui.material.IconToggleButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.ripple.ripple
@@ -121,18 +122,13 @@ fun BookmarkButton(
     onBookmark: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val imageSize = Modifier.preferredSize(48.dp, 48.dp)
-    Toggleable(
-        modifier = modifier.ripple(bounded = false, radius = 24.dp),
-        value = isBookmarked,
-        onValueChange = onBookmark
-    ) {
+    IconToggleButton(checked = isBookmarked, onCheckedChange = onBookmark) {
         if (isBookmarked) {
             // we want the color from the vector image so use Image here instead of Icon
-            Image(vectorResource(R.drawable.ic_bookmarked), imageSize)
+            Image(vectorResource(R.drawable.ic_bookmarked), Modifier.fillMaxSize())
         } else {
             // we want the color from the vector image so use Image here instead of Icon
-            Image(vectorResource(R.drawable.ic_bookmark), imageSize)
+            Image(vectorResource(R.drawable.ic_bookmark), Modifier.fillMaxSize())
         }
     }
 }

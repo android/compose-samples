@@ -20,6 +20,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
+import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
@@ -104,15 +105,9 @@ fun AppDrawer(
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        Image(
-            asset = vectorResource(R.drawable.ic_jetnews_logo),
-            colorFilter = ColorFilter(MaterialTheme.colors.primary, BlendMode.srcATop)
-        )
+        Icon(vectorResource(R.drawable.ic_jetnews_logo), tint = MaterialTheme.colors.primary)
         Spacer(Modifier.preferredWidth(8.dp))
-        Image(
-            asset = vectorResource(R.drawable.ic_jetnews_wordmark),
-            colorFilter = ColorFilter(MaterialTheme.colors.onSurface, BlendMode.srcATop)
-        )
+        Icon(vectorResource(R.drawable.ic_jetnews_wordmark), tint = MaterialTheme.colors.onSurface)
     }
 }
 
@@ -153,7 +148,7 @@ private fun DrawerButton(
             Row(arrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     asset = vectorResource(icon),
-                    colorFilter = ColorFilter(textIconColor, BlendMode.srcATop),
+                    colorFilter = ColorFilter(textIconColor, BlendMode.srcIn),
                     alpha = imageAlpha
                 )
                 Spacer(Modifier.preferredWidth(16.dp))

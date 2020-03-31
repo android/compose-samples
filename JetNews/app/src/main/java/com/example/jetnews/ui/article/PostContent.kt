@@ -22,15 +22,14 @@ import androidx.ui.core.FirstBaseline
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.BlendMode
 import androidx.ui.graphics.Color
-import androidx.ui.graphics.ColorFilter
 import androidx.ui.graphics.ScaleFit
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -76,7 +75,6 @@ private val defaultSpacerSize = 16.dp
 
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
-    val typography = MaterialTheme.typography
     VerticalScroller {
         Column(
             modifier = modifier.padding(
@@ -88,13 +86,13 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         ) {
             Spacer(Modifier.preferredHeight(defaultSpacerSize))
             PostHeaderImage(post)
-            Text(text = post.title, style = typography.h4)
+            Text(text = post.title, style = MaterialTheme.typography.h4)
             Spacer(Modifier.preferredHeight(8.dp))
             post.subtitle?.let { subtitle ->
                 ProvideEmphasis(EmphasisAmbient.current.medium) {
                     Text(
                         text = subtitle,
-                        style = typography.body2.merge(TextStyle(lineHeight = 20.sp))
+                        style = MaterialTheme.typography.body2.merge(TextStyle(lineHeight = 20.sp))
                     )
                 }
                 Spacer(Modifier.preferredHeight(defaultSpacerSize))
@@ -123,12 +121,7 @@ private fun PostHeaderImage(post: Post) {
 private fun PostMetadata(metadata: Metadata) {
     val typography = MaterialTheme.typography
     Row {
-        Image(
-            asset = vectorResource(R.drawable.ic_account_circle_black),
-            colorFilter = ColorFilter(
-                color = contentColor(),
-                blendMode = BlendMode.srcATop)
-        )
+        Icon(vectorResource(R.drawable.ic_account_circle_black))
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
             ProvideEmphasis(EmphasisAmbient.current.high) {
@@ -164,7 +157,7 @@ private fun Paragraph(paragraph: Paragraph) {
         MaterialTheme.typography,
         MaterialTheme.colors.codeBlockBackground
     )
-    Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
+    Box(modifier = Modifier.padding(bottom = trailingPadding)) {
         when (paragraph.type) {
             ParagraphType.Bullet -> BulletParagraph(
                 text = annotatedString,
@@ -221,14 +214,14 @@ private fun BulletParagraph(
         with(DensityAmbient.current) {
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
-                    modifier = Modifier
-                            .preferredSize(8.sp.toDp(), 8.sp.toDp())
-                            .alignWithSiblings {
-                                // this makes the baseline of the Box be 9.sp from the top
-                                9.sp.toIntPx()
-                            },
-                    backgroundColor = contentColor(),
-                    shape = CircleShape
+                modifier = Modifier
+                        .preferredSize(8.sp.toDp(), 8.sp.toDp())
+                        .alignWithSiblings {
+                            // Add an alignment "baseline" 1sp below the bottom of the circle
+                            9.sp.toIntPx()
+                        },
+                backgroundColor = contentColor(),
+                shape = CircleShape
             )
         }
         Text(
