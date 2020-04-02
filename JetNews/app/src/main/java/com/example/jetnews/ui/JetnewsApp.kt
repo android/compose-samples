@@ -20,11 +20,9 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.BlendMode
 import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
