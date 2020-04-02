@@ -199,7 +199,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
         modifier = Modifier.ripple()
     ) {
         Row(
-            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
         ) {
             Image(
                 image,
@@ -227,7 +227,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
 @Composable
 private fun TopicDivider() {
     Divider(
-        modifier = Modifier.padding(start = 72.dp, top = 8.dp, end = 0.dp, bottom = 8.dp),
+        modifier = Modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
         color = MaterialTheme.colors.surface.copy(alpha = 0.08f)
     )
 }

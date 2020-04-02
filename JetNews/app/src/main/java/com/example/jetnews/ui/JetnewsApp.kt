@@ -105,9 +105,15 @@ fun AppDrawer(
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        Icon(vectorResource(R.drawable.ic_jetnews_logo), tint = MaterialTheme.colors.primary)
+        Image(
+            asset = vectorResource(R.drawable.ic_jetnews_logo),
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+        )
         Spacer(Modifier.preferredWidth(8.dp))
-        Icon(vectorResource(R.drawable.ic_jetnews_wordmark), tint = MaterialTheme.colors.onSurface)
+        Image(
+            asset = vectorResource(R.drawable.ic_jetnews_wordmark),
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+        )
     }
 }
 
@@ -137,8 +143,8 @@ private fun DrawerButton(
     }
 
     val surfaceModifier = modifier
-                .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 0.dp)
-                .fillMaxWidth()
+        .padding(start = 8.dp, top = 8.dp, end = 8.dp)
+        .fillMaxWidth()
     Surface(
         modifier = surfaceModifier,
         color = backgroundColor,
@@ -148,7 +154,7 @@ private fun DrawerButton(
             Row(arrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     asset = vectorResource(icon),
-                    colorFilter = ColorFilter(textIconColor, BlendMode.srcIn),
+                    colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
                 Spacer(Modifier.preferredWidth(16.dp))

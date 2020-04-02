@@ -76,7 +76,7 @@ fun PostCardSimple(post: Post) {
         onClick = { navigateTo(Screen.Article(post.id)) }
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
-            PostImage(post, Modifier.padding(end = 16.dp, bottom = 0.dp))
+            PostImage(post, Modifier.padding(end = 16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 PostTitle(post)
                 AuthorAndReadTime(post)

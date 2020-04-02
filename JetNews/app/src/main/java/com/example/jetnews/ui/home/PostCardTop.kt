@@ -64,8 +64,6 @@ fun PostCardTop(post: Post) {
                 text = post.title,
                 style = typography.h6
             )
-        }
-        ProvideEmphasis(emphasisLevels.high) {
             Text(
                 text = post.metadata.author.name,
                 style = typography.body2

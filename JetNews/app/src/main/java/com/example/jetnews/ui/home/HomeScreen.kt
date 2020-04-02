@@ -99,7 +99,7 @@ private fun HomeScreenBody(
 private fun HomeScreenTopSection(post: Post) {
     ProvideEmphasis(EmphasisAmbient.current.high) {
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 0.dp),
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = "Top stories for you",
             style = MaterialTheme.typography.subtitle1
         )
@@ -131,7 +131,7 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
             )
         }
         HorizontalScroller {
-            Row(modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 16.dp, bottom = 16.dp)) {
+            Row(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
                 posts.forEach { post ->
                     PostCardPopular(post, Modifier.padding(start = 16.dp))
                 }
@@ -154,7 +154,7 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 @Composable
 private fun HomeScreenDivider() {
     Divider(
-        modifier = Modifier.padding(start = 14.dp, top = 0.dp, end = 14.dp, bottom = 0.dp),
+        modifier = Modifier.padding(start = 14.dp, end = 14.dp),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f))
 }
 

@@ -64,8 +64,6 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                    }
-                    ProvideEmphasis(emphasisLevels.high) {
                         Text(
                             text = post.metadata.author.name,
                             maxLines = 1,
