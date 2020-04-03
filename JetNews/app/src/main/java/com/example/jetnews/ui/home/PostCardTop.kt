@@ -17,22 +17,21 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.ui.core.Clip
 import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Text
-import androidx.ui.core.toModifier
-import androidx.ui.foundation.Box
+import androidx.ui.core.Modifier
+import androidx.ui.core.clip
+import androidx.ui.foundation.Image
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.ScaleFit
-import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredHeightIn
 import androidx.ui.material.ColorPalette
-import androidx.ui.material.EmphasisLevels
+import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.tooling.preview.Preview
@@ -48,39 +47,29 @@ import com.example.jetnews.ui.lightThemeColors
 @Composable
 fun PostCardTop(post: Post) {
 // TUTORIAL CONTENT STARTS HERE
-    val typography = MaterialTheme.typography()
-    Column(modifier = LayoutWidth.Fill + LayoutPadding(16.dp)) {
+    val typography = MaterialTheme.typography
+    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         post.image?.let { image ->
-            // FIXME (dev07): This duplicate sizing is a workaround for the way Draw modifiers work in
-            // dev06. In a future release (dev07?) replace this with a single Image composable with a
-            // Clip modifier applied.
-
-            // This sizing is currently applied twice to make the image expand propertly inside the
-            // Clip.
-            val sizeModifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill
-            Container(modifier = sizeModifier) {
-                Clip(shape = RoundedCornerShape(4.dp)) {
-                    val imageModifier = ImagePainter(image).toModifier(scaleFit = ScaleFit.FillHeight)
-                    Box(modifier = sizeModifier + imageModifier)
-                }
-            }
+            val imageModifier = Modifier
+                .preferredHeightIn(minHeight = 180.dp)
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(4.dp))
+            Image(image, modifier = imageModifier, scaleFit = ScaleFit.FillHeight)
         }
-        Spacer(LayoutHeight(16.dp))
+        Spacer(Modifier.preferredHeight(16.dp))
 
-        val emphasisLevels = EmphasisLevels()
-        ProvideEmphasis(emphasis = emphasisLevels.high) {
+        val emphasisLevels = EmphasisAmbient.current
+        ProvideEmphasis(emphasisLevels.high) {
             Text(
                 text = post.title,
                 style = typography.h6
             )
-        }
-        ProvideEmphasis(emphasis = emphasisLevels.high) {
             Text(
                 text = post.metadata.author.name,
                 style = typography.body2
             )
         }
-        ProvideEmphasis(emphasis = emphasisLevels.medium) {
+        ProvideEmphasis(emphasisLevels.medium) {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
                 style = typography.body2
