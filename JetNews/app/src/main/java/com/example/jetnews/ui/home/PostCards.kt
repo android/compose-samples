@@ -57,7 +57,7 @@ fun AuthorAndReadTime(post: Post) {
 }
 
 @Composable
-fun PostImage(post: Post, modifier: Modifier = Modifier) {
+fun PostImage(post: Post, modifier: Modifier = Modifier.None) {
     val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
     Image(image, modifier.preferredSize(40.dp, 40.dp))
 }
@@ -120,7 +120,7 @@ fun PostCardHistory(post: Post) {
 fun BookmarkButton(
     isBookmarked: Boolean,
     onBookmark: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.None
 ) {
     IconToggleButton(checked = isBookmarked, onCheckedChange = onBookmark) {
         if (isBookmarked) {

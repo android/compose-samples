@@ -74,7 +74,7 @@ import com.example.jetnews.ui.darkThemeColors
 private val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(post: Post, modifier: Modifier = Modifier) {
+fun PostContent(post: Post, modifier: Modifier = Modifier.None) {
     VerticalScroller {
         Column(modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)) {
             Spacer(Modifier.preferredHeight(defaultSpacerSize))

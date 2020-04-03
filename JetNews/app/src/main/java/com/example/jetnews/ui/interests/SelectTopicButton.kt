@@ -35,7 +35,7 @@ import com.example.jetnews.ui.lightThemeColors
 
 @Composable
 fun SelectTopicButton(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.None,
     selected: Boolean = false
 ) {
     if (selected) {
@@ -46,7 +46,7 @@ fun SelectTopicButton(
 }
 
 @Composable
-private fun SelectTopicButtonOn(modifier: Modifier = Modifier) {
+private fun SelectTopicButtonOn(modifier: Modifier = Modifier.None) {
     Box(
         backgroundColor = MaterialTheme.colors.primary,
         shape = CircleShape,
@@ -57,7 +57,7 @@ private fun SelectTopicButtonOn(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SelectTopicButtonOff(modifier: Modifier = Modifier) {
+private fun SelectTopicButtonOff(modifier: Modifier = Modifier.None) {
     val borderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
     Box(
         backgroundColor = borderColor,

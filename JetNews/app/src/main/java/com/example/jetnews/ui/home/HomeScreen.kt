@@ -78,7 +78,7 @@ fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
 @Composable
 private fun HomeScreenBody(
     posts: List<Post>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.None
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
