@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.compose.state
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.layout.Column
@@ -119,16 +120,13 @@ fun PostCardHistory(post: Post) {
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,
-    onBookmark: (Boolean) -> Unit,
-    modifier: Modifier = Modifier.None
+    onBookmark: (Boolean) -> Unit
 ) {
     IconToggleButton(checked = isBookmarked, onCheckedChange = onBookmark) {
         if (isBookmarked) {
-            // we want the color from the vector image so use Image here instead of Icon
-            Image(vectorResource(R.drawable.ic_bookmarked), Modifier.fillMaxSize())
+            Icon(vectorResource(R.drawable.ic_bookmarked), Modifier.fillMaxSize())
         } else {
-            // we want the color from the vector image so use Image here instead of Icon
-            Image(vectorResource(R.drawable.ic_bookmark), Modifier.fillMaxSize())
+            Icon(vectorResource(R.drawable.ic_bookmark), Modifier.fillMaxSize())
         }
     }
 }

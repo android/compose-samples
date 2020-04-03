@@ -120,8 +120,7 @@ private fun BottomBarAction(
     onClick: () -> Unit
 ) {
     IconButton(onClick = onClick, modifier = Modifier.padding(12.dp).preferredSize(24.dp, 24.dp)) {
-        // use Image instead of Icon to retain coloring from vector graphic
-        Image(vectorResource(id))
+        Icon(vectorResource(id))
     }
 }
 
