@@ -20,21 +20,24 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
-import androidx.ui.core.Text
+import androidx.ui.foundation.Image
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutGravity
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredWidth
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
-import androidx.ui.material.surface.Surface
+import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
@@ -56,7 +59,7 @@ fun JetnewsApp() {
 @Composable
 private fun AppContent() {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
-        Surface(color = MaterialTheme.colors().background) {
+        Surface(color = MaterialTheme.colors.background) {
             when (screen) {
                 is Screen.Home -> HomeScreen()
                 is Screen.Interests -> InterestsScreen()
@@ -71,49 +74,61 @@ fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
-    Column(modifier = LayoutSize.Fill) {
-        Spacer(LayoutHeight(24.dp))
-        Row(modifier = LayoutPadding(16.dp)) {
-            VectorImage(
-                id = R.drawable.ic_jetnews_logo,
-                tint = MaterialTheme.colors().primary
-            )
-            Spacer(LayoutWidth(8.dp))
-            VectorImage(
-                id = R.drawable.ic_jetnews_wordmark,
-                tint = MaterialTheme.colors().onSurface
-            )
-        }
-        Divider(color = MaterialTheme.colors().onSurface.copy(alpha = .2f))
+    Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(Modifier.preferredHeight(24.dp))
+        JetNewsLogo(Modifier.padding(16.dp))
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = R.drawable.ic_home,
             label = "Home",
-            isSelected = currentScreen == Screen.Home
-        ) {
-            navigateTo(Screen.Home)
-            closeDrawer()
-        }
+            isSelected = currentScreen == Screen.Home,
+            action = {
+                navigateTo(Screen.Home)
+                closeDrawer()
+            }
+        )
 
         DrawerButton(
             icon = R.drawable.ic_interests,
             label = "Interests",
-            isSelected = currentScreen == Screen.Interests
-        ) {
-            navigateTo(Screen.Interests)
-            closeDrawer()
-        }
+            isSelected = currentScreen == Screen.Interests,
+            action = {
+                navigateTo(Screen.Interests)
+                closeDrawer()
+            }
+        )
+    }
+}
+
+@Composable
+private fun JetNewsLogo(modifier: Modifier = Modifier.None) {
+    Row(modifier = modifier) {
+        Image(
+            asset = vectorResource(R.drawable.ic_jetnews_logo),
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+        )
+        Spacer(Modifier.preferredWidth(8.dp))
+        Image(
+            asset = vectorResource(R.drawable.ic_jetnews_wordmark),
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+        )
     }
 }
 
 @Composable
 private fun DrawerButton(
-    modifier: Modifier = Modifier.None,
     @DrawableRes icon: Int,
     label: String,
     isSelected: Boolean,
-    action: () -> Unit
+    action: () -> Unit,
+    modifier: Modifier = Modifier.None
 ) {
-    val colors = MaterialTheme.colors()
+    val colors = MaterialTheme.colors
+    val imageAlpha = if (isSelected) {
+        1f
+    } else {
+        0.6f
+    }
     val textIconColor = if (isSelected) {
         colors.primary
     } else {
@@ -125,28 +140,26 @@ private fun DrawerButton(
         colors.surface
     }
 
-    val surfaceModifier = modifier +
-            LayoutPadding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 0.dp) +
-            LayoutWidth.Fill
+    val surfaceModifier = modifier
+        .padding(start = 8.dp, top = 8.dp, end = 8.dp)
+        .fillMaxWidth()
     Surface(
         modifier = surfaceModifier,
         color = backgroundColor,
         shape = RoundedCornerShape(4.dp)
     ) {
-        TextButton(onClick = action, modifier = LayoutWidth.Fill) {
-            Row(arrangement = Arrangement.Start, modifier = LayoutWidth.Fill) {
-                VectorImage(
-                    modifier = LayoutGravity.Center,
-                    id = icon,
-                    tint = textIconColor
+        TextButton(onClick = action, modifier = Modifier.fillMaxWidth()) {
+            Row(arrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    asset = vectorResource(icon),
+                    colorFilter = ColorFilter.tint(textIconColor),
+                    alpha = imageAlpha
                 )
-                Spacer(LayoutWidth(16.dp))
+                Spacer(Modifier.preferredWidth(16.dp))
                 Text(
                     text = label,
-                    style = (MaterialTheme.typography()).body2.copy(
-                        color = textIconColor
-                    ),
-                    modifier = LayoutWidth.Fill
+                    style = MaterialTheme.typography.body2.copy(color = textIconColor),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

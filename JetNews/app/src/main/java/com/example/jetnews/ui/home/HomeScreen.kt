@@ -19,23 +19,25 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.ui.core.Modifier
-import androidx.ui.core.Opacity
-import androidx.ui.core.Text
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
+import androidx.ui.foundation.Icon
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.Row
+import androidx.ui.layout.padding
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
-import androidx.ui.material.EmphasisLevels
+import androidx.ui.material.EmphasisAmbient
+import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Scaffold
 import androidx.ui.material.ScaffoldState
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.Ripple
+import androidx.ui.material.ripple.ripple
+import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
@@ -44,42 +46,39 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun HomeScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
-    Column {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            drawerContent = {
-                AppDrawer(
-                    currentScreen = Screen.Home,
-                    closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
-                )
-            },
-            topAppBar = {
-                TopAppBar(
-                    title = { Text(text = "Jetnews") },
-                    navigationIcon = {
-                        VectorImageButton(R.drawable.ic_jetnews_logo) {
-                            scaffoldState.drawerState = DrawerState.Opened
-                        }
+    Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.Home,
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+            )
+        },
+        topAppBar = {
+            TopAppBar(
+                title = { Text(text = "Jetnews") },
+                navigationIcon = {
+                    IconButton(onClick = { scaffoldState.drawerState = DrawerState.Opened }) {
+                        Icon(vectorResource(R.drawable.ic_jetnews_logo))
                     }
-                )
-            },
-            bodyContent = { modifier ->
-                HomeScreenBody(modifier = modifier, posts = posts)
-            }
-        )
-    }
+                }
+            )
+        },
+        bodyContent = { modifier ->
+            HomeScreenBody(posts, modifier)
+        }
+    )
 }
 
 @Composable
 private fun HomeScreenBody(
-    modifier: Modifier = Modifier.None,
-    posts: List<Post>
+    posts: List<Post>,
+    modifier: Modifier = Modifier.None
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
@@ -87,74 +86,76 @@ private fun HomeScreenBody(
     val postsHistory = posts.subList(7, 10)
 
     VerticalScroller {
-        Column(modifier = modifier) {
-            HomeScreenTopSection(post = postTop)
-            HomeScreenSimpleSection(posts = postsSimple)
-            HomeScreenPopularSection(posts = postsPopular)
-            HomeScreenHistorySection(posts = postsHistory)
+        Column(modifier) {
+            HomeScreenTopSection(postTop)
+            HomeScreenSimpleSection(postsSimple)
+            HomeScreenPopularSection(postsPopular)
+            HomeScreenHistorySection(postsHistory)
         }
     }
 }
 
 @Composable
 private fun HomeScreenTopSection(post: Post) {
-ProvideEmphasis(emphasis = EmphasisLevels().high) {
+    ProvideEmphasis(EmphasisAmbient.current.high) {
         Text(
-            modifier = LayoutPadding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 0.dp),
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = "Top stories for you",
-            style = MaterialTheme.typography().subtitle1
+            style = MaterialTheme.typography.subtitle1
         )
     }
-    Ripple(bounded = true) {
-        Clickable(onClick = {
-            navigateTo(Screen.Article(post.id))
-        }) {
-            PostCardTop(post = post)
-        }
+    Clickable(modifier = Modifier.ripple(), onClick = { navigateTo(Screen.Article(post.id)) }) {
+        PostCardTop(post = post)
     }
     HomeScreenDivider()
 }
 
 @Composable
 private fun HomeScreenSimpleSection(posts: List<Post>) {
-    posts.forEach { post ->
-        PostCardSimple(post)
-        HomeScreenDivider()
+    Column {
+        posts.forEach { post ->
+            PostCardSimple(post)
+            HomeScreenDivider()
+        }
     }
 }
 
 @Composable
 private fun HomeScreenPopularSection(posts: List<Post>) {
-    ProvideEmphasis(emphasis = EmphasisLevels().high) {
-        Text(
-            modifier = LayoutPadding(16.dp),
-            text = "Popular on Jetnews",
-            style = MaterialTheme.typography().subtitle1
-        )
-    }
-    HorizontalScroller {
-        Row(modifier = LayoutPadding(top = 0.dp, start = 0.dp, end = 16.dp, bottom = 16.dp)) {
-            posts.forEach { post ->
-                PostCardPopular(modifier = LayoutPadding(start = 16.dp), post = post)
+    Column {
+        ProvideEmphasis(EmphasisAmbient.current.high) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = "Popular on Jetnews",
+                style = MaterialTheme.typography.subtitle1
+            )
+        }
+        HorizontalScroller {
+            Row(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
+                posts.forEach { post ->
+                    PostCardPopular(post, Modifier.padding(start = 16.dp))
+                }
             }
         }
-    }
-    HomeScreenDivider()
-}
-
-@Composable
-private fun HomeScreenHistorySection(posts: List<Post>) {
-    posts.forEach { post ->
-        PostCardHistory(post)
         HomeScreenDivider()
     }
 }
 
 @Composable
-private fun HomeScreenDivider() {
-    Opacity(0.08f) {
-        Divider(modifier = LayoutPadding(start = 14.dp, top = 0.dp, end = 14.dp, bottom = 0.dp))
+private fun HomeScreenHistorySection(posts: List<Post>) {
+    Column {
+        posts.forEach { post ->
+            PostCardHistory(post)
+            HomeScreenDivider()
+        }
     }
+}
+
+@Composable
+private fun HomeScreenDivider() {
+    Divider(
+        modifier = Modifier.padding(start = 14.dp, end = 14.dp),
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f))
 }
 
 @Preview("Home screen")
