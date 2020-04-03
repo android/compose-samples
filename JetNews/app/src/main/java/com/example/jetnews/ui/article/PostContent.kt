@@ -17,32 +17,36 @@
 package com.example.jetnews.ui.article
 
 import androidx.compose.Composable
-import androidx.ui.core.Clip
+import androidx.ui.core.DensityAmbient
+import androidx.ui.core.FirstBaseline
 import androidx.ui.core.Modifier
-import androidx.ui.core.Text
-import androidx.ui.core.toModifier
+import androidx.ui.core.clip
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.Icon
+import androidx.ui.foundation.Image
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.ScaleFit
-import androidx.ui.graphics.painter.ImagePainter
 import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
-import androidx.ui.layout.LayoutWidth
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredHeightIn
+import androidx.ui.layout.preferredSize
+import androidx.ui.layout.preferredWidth
 import androidx.ui.material.ColorPalette
-import androidx.ui.material.EmphasisLevels
+import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Surface
 import androidx.ui.material.Typography
-import androidx.ui.material.surface.Surface
+import androidx.ui.res.vectorResource
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.ParagraphStyle
 import androidx.ui.text.SpanStyle
@@ -65,40 +69,31 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.VectorImage
 import com.example.jetnews.ui.darkThemeColors
 
 private val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
-    val typography = MaterialTheme.typography()
+fun PostContent(post: Post, modifier: Modifier = Modifier.None) {
     VerticalScroller {
-        Column(
-            modifier = modifier + LayoutPadding(
-                start = defaultSpacerSize,
-                top = 0.dp,
-                end = defaultSpacerSize,
-                bottom = 0.dp
-            )
-        ) {
-            Spacer(LayoutHeight(defaultSpacerSize))
+        Column(modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)) {
+            Spacer(Modifier.preferredHeight(defaultSpacerSize))
             PostHeaderImage(post)
-            Text(text = post.title, style = typography.h4)
-            Spacer(LayoutHeight(8.dp))
+            Text(text = post.title, style = MaterialTheme.typography.h4)
+            Spacer(Modifier.preferredHeight(8.dp))
             post.subtitle?.let { subtitle ->
-                ProvideEmphasis(emphasis = EmphasisLevels().medium) {
+                ProvideEmphasis(EmphasisAmbient.current.medium) {
                     Text(
                         text = subtitle,
-                        style = typography.body2.merge(TextStyle(lineHeight = 20.sp))
+                        style = MaterialTheme.typography.body2.merge(TextStyle(lineHeight = 20.sp))
                     )
                 }
-                Spacer(LayoutHeight(defaultSpacerSize))
+                Spacer(Modifier.preferredHeight(defaultSpacerSize))
             }
-            PostMetadata(metadata = post.metadata)
-            Spacer(LayoutHeight(24.dp))
-            PostContents(paragraphs = post.paragraphs)
-            Spacer(LayoutHeight(48.dp))
+            PostMetadata(post.metadata)
+            Spacer(Modifier.preferredHeight(24.dp))
+            PostContents(post.paragraphs)
+            Spacer(Modifier.preferredHeight(48.dp))
         }
     }
 }
@@ -106,41 +101,30 @@ fun PostContent(modifier: Modifier = Modifier.None, post: Post) {
 @Composable
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
-        // FIXME (dev07): This duplicate sizing is a workaround for the way Draw modifiers work in
-        // dev06. In a future release (dev07?) replace this with a single Image composable with a
-        // Clip modifier applied.
-
-        // This sizing is currently applied twice to make the image expand propertly inside the
-        // Clip.
-        val sizingModifier = LayoutHeight.Min(180.dp) + LayoutWidth.Fill
-        Box(modifier = sizingModifier) {
-            Clip(shape = RoundedCornerShape(4.dp)) {
-                val imageModifier = ImagePainter(image).toModifier(scaleFit = ScaleFit.FillHeight)
-                Box(modifier = sizingModifier + imageModifier)
-            }
-        }
-        Spacer(LayoutHeight(defaultSpacerSize))
+        val imageModifier = Modifier
+            .preferredHeightIn(minHeight = 180.dp)
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(4.dp))
+        Image(image, imageModifier, scaleFit = ScaleFit.FillHeight)
+        Spacer(Modifier.preferredHeight(defaultSpacerSize))
     }
 }
 
 @Composable
 private fun PostMetadata(metadata: Metadata) {
-    val typography = MaterialTheme.typography()
+    val typography = MaterialTheme.typography
     Row {
-        VectorImage(
-            id = R.drawable.ic_account_circle_black,
-            tint = contentColor()
-        )
-        Spacer(LayoutWidth(8.dp))
+        Icon(vectorResource(R.drawable.ic_account_circle_black))
+        Spacer(Modifier.preferredWidth(8.dp))
         Column {
-            Spacer(LayoutHeight(4.dp))
-            ProvideEmphasis(emphasis = EmphasisLevels().high) {
+            ProvideEmphasis(EmphasisAmbient.current.high) {
                 Text(
                     text = metadata.author.name,
-                    style = typography.caption
+                    style = typography.caption,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
-            ProvideEmphasis(emphasis = EmphasisLevels().medium) {
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
                     style = typography.caption
@@ -163,10 +147,10 @@ private fun Paragraph(paragraph: Paragraph) {
 
     val annotatedString = paragraphToAnnotatedString(
         paragraph,
-        MaterialTheme.typography(),
-        MaterialTheme.colors().codeBlockBackground
+        MaterialTheme.typography,
+        MaterialTheme.colors.codeBlockBackground
     )
-    Container(modifier = LayoutPadding(0.dp, 0.dp, 0.dp, bottom = trailingPadding)) {
+    Box(modifier = Modifier.padding(bottom = trailingPadding)) {
         when (paragraph.type) {
             ParagraphType.Bullet -> BulletParagraph(
                 text = annotatedString,
@@ -180,13 +164,13 @@ private fun Paragraph(paragraph: Paragraph) {
             )
             ParagraphType.Header -> {
                 Text(
-                    modifier = LayoutPadding(4.dp),
+                    modifier = Modifier.padding(4.dp),
                     text = annotatedString,
                     style = textStyle.merge(paragraphStyle)
                 )
             }
             else -> Text(
-                modifier = LayoutPadding(4.dp),
+                modifier = Modifier.padding(4.dp),
                 text = annotatedString,
                 style = textStyle
             )
@@ -201,11 +185,12 @@ private fun CodeBlockParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Surface(
-        color = MaterialTheme.colors().codeBlockBackground,
-        shape = RoundedCornerShape(4.dp)
+        color = MaterialTheme.colors.codeBlockBackground,
+        shape = RoundedCornerShape(4.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            modifier = LayoutPadding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 0.dp),
+            modifier = Modifier.padding(16.dp),
             text = text,
             style = textStyle.merge(paragraphStyle)
         )
@@ -219,17 +204,25 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        Box(
-            modifier = LayoutSize(8.dp, 8.dp),
-            backgroundColor = contentColor(),
-            shape = CircleShape
-        ) {
-            // empty box
+        with(DensityAmbient.current) {
+            // this box is acting as a character, so it's sized with font scaling (sp)
+            Box(
+                modifier = Modifier
+                        .preferredSize(8.sp.toDp(), 8.sp.toDp())
+                        .alignWithSiblings {
+                            // Add an alignment "baseline" 1sp below the bottom of the circle
+                            9.sp.toIntPx()
+                        },
+                backgroundColor = contentColor(),
+                shape = CircleShape
+            )
         }
         Text(
-            modifier = LayoutFlexible(1f),
-            text = text,
-            style = textStyle.merge(paragraphStyle)
+                modifier = Modifier
+                        .weight(1f)
+                        .alignWithSiblings(FirstBaseline),
+                text = text,
+                style = textStyle.merge(paragraphStyle)
         )
     }
 }
@@ -242,7 +235,7 @@ private data class ParagraphStyling(
 
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
-    val typography = MaterialTheme.typography()
+    val typography = MaterialTheme.typography
     var textStyle: TextStyle = typography.body1
     var paragraphStyle = ParagraphStyle()
     var trailingPadding = 24.dp
@@ -262,12 +255,9 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
             textStyle = typography.h5
             trailingPadding = 16.dp
         }
-        ParagraphType.CodeBlock -> textStyle =
-            (typography.body1)
-                .copy(
-                    background = MaterialTheme.colors().codeBlockBackground,
-                    fontFamily = FontFamily.Monospace
-                )
+        ParagraphType.CodeBlock -> textStyle = typography.body1.copy(
+            fontFamily = FontFamily.Monospace
+        )
         ParagraphType.Quote -> textStyle = typography.body1
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))

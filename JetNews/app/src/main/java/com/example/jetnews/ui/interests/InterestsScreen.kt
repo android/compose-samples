@@ -19,30 +19,32 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.compose.state
-import androidx.ui.core.Clip
-import androidx.ui.core.Opacity
-import androidx.ui.core.Text
+import androidx.ui.core.Modifier
+import androidx.ui.core.clip
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.SimpleImage
+import androidx.ui.foundation.Icon
+import androidx.ui.foundation.Image
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutGravity
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
 import androidx.ui.layout.Row
+import androidx.ui.layout.RowAlign
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredSize
 import androidx.ui.material.Divider
 import androidx.ui.material.DrawerState
+import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import androidx.ui.material.ScaffoldState
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.Ripple
+import androidx.ui.material.ripple.ripple
 import androidx.ui.res.imageResource
+import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
@@ -53,7 +55,6 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.darkThemeColors
 
 private enum class Sections(val title: String) {
@@ -76,8 +77,8 @@ fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() })
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    VectorImageButton(R.drawable.ic_jetnews_logo) {
-                        scaffoldState.drawerState = DrawerState.Opened
+                    IconButton(onClick = { scaffoldState.drawerState = DrawerState.Opened }) {
+                        Icon(vectorResource(R.drawable.ic_jetnews_logo))
                     }
                 }
             )
@@ -105,7 +106,7 @@ private fun InterestsScreenBody(
                     updateSection(Sections.values()[index])
                 })
         }
-        Container(modifier = LayoutFlexible(1f)) {
+        Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
                 Sections.Topics -> TopicsTab()
                 Sections.People -> PeopleTab()
@@ -142,7 +143,7 @@ private fun PublicationsTab() {
 @Composable
 private fun TabWithTopics(tabName: String, topics: List<String>) {
     VerticalScroller {
-        Column(modifier = LayoutPadding(top = 16.dp)) {
+        Column(modifier = Modifier.padding(top = 16.dp)) {
             topics.forEach { topic ->
                 TopicItem(
                     getTopicKey(
@@ -168,8 +169,8 @@ private fun TabWithSections(
             sections.forEach { (section, topics) ->
                 Text(
                     text = section,
-                    modifier = LayoutPadding(16.dp),
-                    style = (MaterialTheme.typography()).subtitle1)
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.subtitle1)
                 topics.forEach { topic ->
                     TopicItem(
                         getTopicKey(
@@ -188,43 +189,47 @@ private fun TabWithSections(
 @Composable
 private fun TopicItem(topicKey: String, itemTitle: String) {
     val image = imageResource(R.drawable.placeholder_1_1)
-
-    Ripple(bounded = true) {
-        val selected = isTopicSelected(topicKey)
-        val onSelected = { it: Boolean ->
-            selectTopic(topicKey, it)
-        }
-        Toggleable(selected, onSelected) {
-            // TODO(b/150060763): Remove box after "Bug in ripple + modifiers."
-            Box {
-                Row(
-                    modifier = LayoutPadding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp)
-                ) {
-                    Container(modifier = LayoutGravity.Center + LayoutSize(56.dp, 56.dp)) {
-                        Clip(RoundedCornerShape(4.dp)) {
-                            SimpleImage(image = image)
-                        }
-                    }
-                    Text(
-                            text = itemTitle,
-                            modifier = LayoutFlexible(1f) + LayoutGravity.Center + LayoutPadding(16.dp),
-                            style = (MaterialTheme.typography()).subtitle1
-                    )
-                    SelectTopicButton(
-                            modifier = LayoutGravity.Center,
-                            selected = selected
-                    )
-                }
-            }
+    val selected = isTopicSelected(topicKey)
+    val onSelected = { it: Boolean ->
+        selectTopic(topicKey, it)
+    }
+    Toggleable(
+        value = selected,
+        onValueChange = onSelected,
+        modifier = Modifier.ripple()
+    ) {
+        Row(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+        ) {
+            Image(
+                image,
+                Modifier
+                    .gravity(RowAlign.Center)
+                    .preferredSize(56.dp, 56.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            )
+            Text(
+                text = itemTitle,
+                modifier = Modifier
+                    .weight(1f)
+                    .gravity(RowAlign.Center)
+                    .padding(16.dp),
+                style = MaterialTheme.typography.subtitle1
+            )
+            SelectTopicButton(
+                modifier = Modifier.gravity(RowAlign.Center),
+                selected = selected
+            )
         }
     }
 }
 
 @Composable
 private fun TopicDivider() {
-    Opacity(0.08f) {
-        Divider(LayoutPadding(start = 72.dp, top = 8.dp, end = 0.dp, bottom = 8.dp))
-    }
+    Divider(
+        modifier = Modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
+        color = MaterialTheme.colors.surface.copy(alpha = 0.08f)
+    )
 }
 
 private fun getTopicKey(tab: String, group: String, topic: String) = "$tab-$group-$topic"

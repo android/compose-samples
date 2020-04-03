@@ -22,21 +22,26 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.state
 import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Text
-import androidx.ui.foundation.Clickable
-import androidx.ui.graphics.vector.DrawVector
-import androidx.ui.layout.Container
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
+import androidx.ui.core.Modifier
+import androidx.ui.foundation.Box
+import androidx.ui.foundation.Icon
+import androidx.ui.foundation.Text
+import androidx.ui.foundation.contentColor
 import androidx.ui.layout.Row
+import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredSize
 import androidx.ui.material.AlertDialog
+import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
+import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.Ripple
-import androidx.ui.material.surface.Surface
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.ArrowBack
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -46,7 +51,6 @@ import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.VectorImageButton
 import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
@@ -61,9 +65,7 @@ fun ArticleScreen(postId: String) {
     val post = posts.find { it.id == postId } ?: return
 
     if (showDialog) {
-        FunctionalityNotAvailablePopup {
-            showDialog = false
-        }
+        FunctionalityNotAvailablePopup { showDialog = false }
     }
 
     Scaffold(
@@ -72,18 +74,19 @@ fun ArticleScreen(postId: String) {
                 title = {
                     Text(
                         text = "Published in: ${post.publication?.name}",
-                        style = MaterialTheme.typography().subtitle2
+                        // FIXME(b/143626708): this contentColor() is a bug workaround
+                        style = MaterialTheme.typography.subtitle2.copy(color = contentColor())
                     )
                 },
                 navigationIcon = {
-                    VectorImageButton(R.drawable.ic_back) {
-                        navigateTo(Screen.Home)
+                    IconButton(onClick = { navigateTo(Screen.Home) }) {
+                        Icon(Icons.Filled.ArrowBack)
                     }
                 }
             )
         },
         bodyContent = { modifier ->
-            PostContent(modifier = modifier, post = post)
+            PostContent(post, modifier)
         },
         bottomAppBar = {
             BottomBar(post) { showDialog = true }
@@ -95,22 +98,16 @@ fun ArticleScreen(postId: String) {
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     val context = ContextAmbient.current
     Surface(elevation = 2.dp) {
-        Container(modifier = LayoutHeight(56.dp) + LayoutSize.Fill) {
+        Box(modifier = Modifier.preferredHeight(56.dp).fillMaxSize()) {
             Row {
-                BottomBarAction(R.drawable.ic_favorite) {
-                    onUnimplementedAction()
-                }
+                BottomBarAction(R.drawable.ic_favorite) { onUnimplementedAction() }
                 BookmarkButton(
                     isBookmarked = isFavorite(postId = post.id),
                     onBookmark = { toggleBookmark(postId = post.id) }
                 )
-                BottomBarAction(R.drawable.ic_share) {
-                    sharePost(post, context)
-                }
-                Container(modifier = LayoutFlexible(1f)) { } // TODO: Any element works
-                BottomBarAction(R.drawable.ic_text_settings) {
-                    onUnimplementedAction()
-                }
+                BottomBarAction(R.drawable.ic_share) { sharePost(post, context) }
+                Spacer(modifier = Modifier.weight(1f))
+                BottomBarAction(R.drawable.ic_text_settings) { onUnimplementedAction() }
             }
         }
     }
@@ -121,15 +118,8 @@ private fun BottomBarAction(
     @DrawableRes id: Int,
     onClick: () -> Unit
 ) {
-    Ripple(
-        bounded = false,
-        radius = 24.dp
-    ) {
-        Clickable(onClick = onClick) {
-            Container(modifier = LayoutPadding(12.dp) + LayoutSize(24.dp, 24.dp)) {
-                DrawVector(vectorResource(id))
-            }
-        }
+    IconButton(onClick = onClick, modifier = Modifier.padding(12.dp).preferredSize(24.dp, 24.dp)) {
+        Icon(vectorResource(id))
     }
 }
 
@@ -140,13 +130,11 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = "Functionality not available \uD83D\uDE48",
-                style = MaterialTheme.typography().body2
+                style = MaterialTheme.typography.body2
             )
         },
         confirmButton = {
-            TextButton(
-                onClick = onDismiss
-            ) {
+            TextButton(onClick = onDismiss) {
                 Text(text = "CLOSE")
             }
         }
