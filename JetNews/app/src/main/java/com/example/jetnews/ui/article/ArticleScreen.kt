@@ -27,19 +27,8 @@ import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.contentColor
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
-import androidx.ui.material.AlertDialog
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.material.Surface
-import androidx.ui.material.TextButton
-import androidx.ui.material.TopAppBar
+import androidx.ui.layout.*
+import androidx.ui.material.*
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.ArrowBack
 import androidx.ui.res.vectorResource
@@ -49,13 +38,10 @@ import com.example.jetnews.R
 import com.example.jetnews.data.post3
 import com.example.jetnews.data.posts
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.backpress
 import com.example.jetnews.ui.darkThemeColors
-import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.ui.home.isFavorite
-import com.example.jetnews.ui.home.toggleBookmark
-import com.example.jetnews.ui.navigateTo
+import com.example.jetnews.ui.home.*
 
 @Composable
 fun ArticleScreen(postId: String) {
@@ -79,7 +65,7 @@ fun ArticleScreen(postId: String) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navigateTo(Screen.Home) }) {
+                    IconButton(onClick = { backpress() }) {
                         Icon(Icons.Filled.ArrowBack)
                     }
                 }
@@ -100,9 +86,12 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     Surface(elevation = 2.dp) {
         Box(modifier = Modifier.preferredHeight(56.dp).fillMaxSize()) {
             Row {
-                BottomBarAction(R.drawable.ic_favorite) { onUnimplementedAction() }
+                FavoriteButton(
+                    isFavorited = isFavorited(postId = post.id),
+                    onFavorite = { toggleFavorite(postId = post.id) }
+                )
                 BookmarkButton(
-                    isBookmarked = isFavorite(postId = post.id),
+                    isBookmarked = isBookmarked(postId = post.id),
                     onBookmark = { toggleBookmark(postId = post.id) }
                 )
                 BottomBarAction(R.drawable.ic_share) { sharePost(post, context) }
