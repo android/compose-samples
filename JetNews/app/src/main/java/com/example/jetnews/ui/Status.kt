@@ -18,6 +18,7 @@ package com.example.jetnews.ui
 
 import androidx.compose.Model
 import androidx.compose.frames.ModelList
+import androidx.compose.frames.modelListOf
 
 /**
  * Class defining the screens we have in the app: home, article details and interests
@@ -26,18 +27,34 @@ sealed class Screen {
     object Home : Screen()
     data class Article(val postId: String) : Screen()
     object Interests : Screen()
+    object Favorites : Screen()
 }
 
 @Model
 object JetnewsStatus {
     var currentScreen: Screen = Screen.Home
+    var backStack: ModelList<Screen> = ModelList()
     val favorites = ModelList<String>()
+    val bookmarks = ModelList<String>()
     val selectedTopics = ModelList<String>()
 }
 
 /**
  * Temporary solution pending navigation support.
  */
-fun navigateTo(destination: Screen) {
+fun navigateTo(destination: Screen, reset: Boolean = true) {
+    if(reset) JetnewsStatus.backStack.clear()
+
+    JetnewsStatus.backStack.add(destination)
     JetnewsStatus.currentScreen = destination
+}
+
+/**
+ * Temporary solution to handle backpress
+ */
+fun backpress(){
+    if(JetnewsStatus.backStack.isNotEmpty()) {
+        JetnewsStatus.backStack.removeAt(JetnewsStatus.backStack.size - 1)
+        JetnewsStatus.currentScreen = JetnewsStatus.backStack.lastOrNull() ?: Screen.Home
+    }
 }
