@@ -24,15 +24,7 @@ import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.ColorFilter
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
+import androidx.ui.layout.*
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
@@ -42,6 +34,7 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.favorites.FavoritesScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
 
@@ -64,6 +57,7 @@ private fun AppContent() {
                 is Screen.Home -> HomeScreen()
                 is Screen.Interests -> InterestsScreen()
                 is Screen.Article -> ArticleScreen(postId = screen.postId)
+                is Screen.Favorites -> FavoritesScreen()
             }
         }
     }
@@ -94,6 +88,16 @@ fun AppDrawer(
             isSelected = currentScreen == Screen.Interests,
             action = {
                 navigateTo(Screen.Interests)
+                closeDrawer()
+            }
+        )
+
+        DrawerButton(
+            icon = R.drawable.ic_favorite,
+            label = "Favorites",
+            isSelected = currentScreen == Screen.Favorites,
+            action = {
+                navigateTo(Screen.Favorites)
                 closeDrawer()
             }
         )
