@@ -83,7 +83,7 @@ fun PostCardSimple(post: Post) {
                 AuthorAndReadTime(post)
             }
             BookmarkButton(
-                isBookmarked = isFavorite(postId = post.id),
+                isBookmarked = isBookmarked(postId = post.id),
                 onBookmark = { toggleBookmark(postId = post.id) }
             )
         }
@@ -131,6 +131,27 @@ fun BookmarkButton(
     }
 }
 
+@Composable
+fun FavoriteButton(
+    isFavorited: Boolean,
+    onFavorite: (Boolean) -> Unit
+) {
+    IconToggleButton(checked = isFavorited, onCheckedChange = onFavorite) {
+        if (isFavorited) {
+            Icon(vectorResource(R.drawable.ic_favorited), Modifier.fillMaxSize())
+        } else {
+            Icon(vectorResource(R.drawable.ic_favorite), Modifier.fillMaxSize())
+        }
+    }
+}
+
+@Preview("Favorite Button")
+@Composable
+fun PreviewFavoriteButton() {
+    val (favorited, updateFavorited) = state { false }
+    FavoriteButton(isFavorited = favorited, onFavorite = updateFavorited)
+}
+
 @Preview("Bookmark Button")
 @Composable
 fun PreviewBookmarkButton() {
@@ -164,6 +185,16 @@ fun PreviewSimplePostDark() {
 
 fun toggleBookmark(postId: String) {
     with(JetnewsStatus) {
+        if (bookmarks.contains(postId)) {
+            bookmarks.remove(postId)
+        } else {
+            bookmarks.add(postId)
+        }
+    }
+}
+
+fun toggleFavorite(postId: String) {
+    with(JetnewsStatus) {
         if (favorites.contains(postId)) {
             favorites.remove(postId)
         } else {
@@ -172,4 +203,5 @@ fun toggleBookmark(postId: String) {
     }
 }
 
-fun isFavorite(postId: String) = JetnewsStatus.favorites.contains(postId)
+fun isFavorited(postId: String) = JetnewsStatus.favorites.contains(postId)
+fun isBookmarked(postId: String) = JetnewsStatus.bookmarks.contains(postId)
