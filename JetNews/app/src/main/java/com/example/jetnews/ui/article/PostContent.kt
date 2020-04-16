@@ -17,8 +17,8 @@
 package com.example.jetnews.ui.article
 
 import androidx.compose.Composable
+import androidx.ui.core.ContentScale
 import androidx.ui.core.DensityAmbient
-import androidx.ui.core.FirstBaseline
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
@@ -30,7 +30,6 @@ import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.graphics.ScaleFit
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
@@ -48,6 +47,7 @@ import androidx.ui.material.Surface
 import androidx.ui.material.Typography
 import androidx.ui.res.vectorResource
 import androidx.ui.text.AnnotatedString
+import androidx.ui.text.FirstBaseline
 import androidx.ui.text.ParagraphStyle
 import androidx.ui.text.SpanStyle
 import androidx.ui.text.TextStyle
@@ -105,7 +105,7 @@ private fun PostHeaderImage(post: Post) {
             .preferredHeightIn(minHeight = 180.dp)
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(4.dp))
-        Image(image, imageModifier, scaleFit = ScaleFit.FillHeight)
+        Image(image, imageModifier, contentScale = ContentScale.Crop)
         Spacer(Modifier.preferredHeight(defaultSpacerSize))
     }
 }

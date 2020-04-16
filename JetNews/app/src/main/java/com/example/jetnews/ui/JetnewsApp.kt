@@ -149,7 +149,7 @@ private fun DrawerButton(
         shape = RoundedCornerShape(4.dp)
     ) {
         TextButton(onClick = action, modifier = Modifier.fillMaxWidth()) {
-            Row(arrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     asset = vectorResource(icon),
                     colorFilter = ColorFilter.tint(textIconColor),
