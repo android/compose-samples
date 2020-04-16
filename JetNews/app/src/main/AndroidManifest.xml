@@ -34,7 +34,7 @@
 
         <!-- Needed for UI tests -->
         <activity
-            android:name="android.app.Activity"
+            android:name="androidx.activity.ComponentActivity"
             android:theme="@style/Theme.Jetnews" />
     </application>
 </manifest>
