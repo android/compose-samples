@@ -17,13 +17,13 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.ui.core.ContentScale
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.ScaleFit
 import androidx.ui.layout.Column
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
@@ -54,7 +54,7 @@ fun PostCardTop(post: Post) {
                 .preferredHeightIn(minHeight = 180.dp)
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(4.dp))
-            Image(image, modifier = imageModifier, scaleFit = ScaleFit.FillHeight)
+            Image(image, modifier = imageModifier, contentScale = ContentScale.Crop)
         }
         Spacer(Modifier.preferredHeight(16.dp))
 
