@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.data.posts
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
-import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.data.Result
+import com.example.jetnews.model.Post
 
-class MainActivity : AppCompatActivity() {
+/**
+ * Interface to the Posts data layer.
+ */
+interface PostsRepository {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    /**
+     * Get a specific JetNews post.
+     */
+    fun getPost(postId: String, callback: (Result<Post?>) -> Unit)
 
-        val appContainer = (application as JetnewsApplication).container
-        setContent {
-            JetnewsApp(appContainer = appContainer)
-        }
-    }
+    /**
+     * Get JetNews posts.
+     */
+    fun getPosts(callback: (Result<List<Post>>) -> Unit)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.data
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
-import com.example.jetnews.JetnewsApplication
+/**
+ * A generic class that holds a value or an exception
+ */
+sealed class Result<out R> {
 
-class MainActivity : AppCompatActivity() {
+    data class Success<out T>(val data: T) : Result<T>()
+    data class Error(val exception: Exception) : Result<Nothing>()
+}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+/**
+ * `true` if [Result] is of type [Success] & holds non-null [Success.data].
+ */
+val Result<*>.succeeded
+    get() = this is Result.Success && data != null
 
-        val appContainer = (application as JetnewsApplication).container
-        setContent {
-            JetnewsApp(appContainer = appContainer)
-        }
-    }
+fun <T> Result<T>.successOr(fallback: T): T {
+    return (this as? Result.Success<T>)?.data ?: fallback
 }
