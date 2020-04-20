@@ -62,12 +62,15 @@ import com.example.jetnews.ui.navigateTo
 @Composable
 fun ArticleScreen(postId: String) {
 
-    var showDialog by state { false }
+    //var showDialog by state { false }
+    val showDialog = state(init = { false})
+
     // getting the post from our list of posts by Id
     val post = posts.find { it.id == postId } ?: return
 
-    if (showDialog) {
-        FunctionalityNotAvailablePopup { showDialog = false }
+    //if (showDialog) {
+    if(showDialog.value)
+        FunctionalityNotAvailablePopup {/*showDialog*/ showDialog.value = false }
     }
 
     Scaffold(
@@ -91,7 +94,7 @@ fun ArticleScreen(postId: String) {
             PostContent(post, modifier)
         },
         bottomAppBar = {
-            BottomBar(post) { showDialog = true }
+            BottomBar(post) { /*showDialog*/showDialog.value = true }
         }
     )
 }
