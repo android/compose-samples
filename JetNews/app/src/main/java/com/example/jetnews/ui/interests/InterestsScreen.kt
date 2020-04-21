@@ -19,6 +19,7 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.compose.state
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
@@ -30,7 +31,6 @@ import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
-import androidx.ui.layout.RowAlign
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
 import androidx.ui.material.Divider
@@ -219,7 +219,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
             Image(
                 image,
                 Modifier
-                    .gravity(RowAlign.Center)
+                    .gravity(Alignment.CenterVertically)
                     .preferredSize(56.dp, 56.dp)
                     .clip(RoundedCornerShape(4.dp))
             )
@@ -227,12 +227,12 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
                 text = itemTitle,
                 modifier = Modifier
                     .weight(1f)
-                    .gravity(RowAlign.Center)
+                    .gravity(Alignment.CenterVertically)
                     .padding(16.dp),
                 style = MaterialTheme.typography.subtitle1
             )
             SelectTopicButton(
-                modifier = Modifier.gravity(RowAlign.Center),
+                modifier = Modifier.gravity(Alignment.CenterVertically),
                 selected = selected
             )
         }

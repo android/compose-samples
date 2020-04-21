@@ -113,7 +113,7 @@ fun AppDrawer(
 }
 
 @Composable
-private fun JetNewsLogo(modifier: Modifier = Modifier.None) {
+private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
             asset = vectorResource(R.drawable.ic_jetnews_logo),
@@ -133,7 +133,7 @@ private fun DrawerButton(
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
-    modifier: Modifier = Modifier.None
+    modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colors
     val imageAlpha = if (isSelected) {

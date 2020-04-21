@@ -46,7 +46,7 @@ import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun PostCardPopular(post: Post, modifier: Modifier = Modifier.None) {
+fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
     Card(modifier = modifier.preferredSize(280.dp, 240.dp), shape = RoundedCornerShape(4.dp)) {
         Clickable(
             modifier = Modifier.ripple(),

@@ -105,7 +105,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     postsRepository: PostsRepository,
-    modifier: Modifier = Modifier.None
+    modifier: Modifier = Modifier
 ) {
     val (postsState, refreshPosts) = refreshableUiStateFrom(postsRepository::getPosts)
 
@@ -134,7 +134,7 @@ private fun HomeScreenContent(
 
 @Composable
 private fun HomeScreenBodyWrapper(
-    modifier: Modifier = Modifier.None,
+    modifier: Modifier = Modifier,
     state: RefreshableUiState<List<Post>>,
     onErrorAction: () -> Unit
 ) {
@@ -161,7 +161,7 @@ private fun HomeScreenBodyWrapper(
 @Composable
 private fun HomeScreenBody(
     posts: List<Post>,
-    modifier: Modifier = Modifier.None
+    modifier: Modifier = Modifier
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
@@ -188,7 +188,7 @@ private fun LoadingHomeScreen() {
 @Composable
 fun ErrorSnackbar(
     showError: Boolean,
-    modifier: Modifier = Modifier.None,
+    modifier: Modifier = Modifier,
     onErrorAction: () -> Unit = { },
     onDismiss: () -> Unit = { }
 ) {
