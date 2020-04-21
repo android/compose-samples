@@ -54,10 +54,10 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.UiState
 import com.example.jetnews.ui.darkThemeColors
-import com.example.jetnews.ui.previewDataFrom
-import com.example.jetnews.ui.uiStateFrom
+import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.ui.state.previewDataFrom
+import com.example.jetnews.ui.state.uiStateFrom
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
