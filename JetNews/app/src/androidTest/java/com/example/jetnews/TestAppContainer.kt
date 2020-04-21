@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,20 @@
 
 package com.example.jetnews
 
-import android.app.Application
+import android.content.Context
 import com.example.jetnews.data.AppContainer
-import com.example.jetnews.data.AppContainerImpl
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.interests.impl.FakeInterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 
-class JetnewsApplication : Application() {
+class TestAppContainer(private val context: Context) : AppContainer {
 
-    // AppContainer instance used by the rest of classes to obtain dependencies
-    lateinit var container: AppContainer
+    override val postsRepository: PostsRepository by lazy {
+        BlockingFakePostsRepository(context)
+    }
 
-    override fun onCreate() {
-        super.onCreate()
-        container = AppContainerImpl(this)
+    override val interestsRepository: InterestsRepository by lazy {
+        FakeInterestsRepository()
     }
 }

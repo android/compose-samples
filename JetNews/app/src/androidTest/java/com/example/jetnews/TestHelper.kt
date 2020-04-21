@@ -24,7 +24,6 @@ import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.SemanticsNodeInteraction
 import androidx.ui.test.findAll
 import androidx.ui.test.hasSubstring
-import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
@@ -35,7 +34,7 @@ import com.example.jetnews.ui.Screen
 fun ComposeTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsStatus.resetState()
-        JetnewsApp(AppContainer(context))
+        JetnewsApp(TestAppContainer(context))
     }
 }
 

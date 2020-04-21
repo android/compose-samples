@@ -26,7 +26,7 @@ import com.example.jetnews.model.Post
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources synchronously.
  */
-class PreviewPostsRepository(private val context: Context) : PostsRepository {
+class BlockingFakePostsRepository(private val context: Context) : PostsRepository {
 
     private val postsWithResources: List<Post> by lazy {
         posts.map {

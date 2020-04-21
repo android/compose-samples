@@ -37,7 +37,8 @@ class JetnewsUiTest {
 
     @Before
     fun setUp() {
-        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().context)
+        // Using targetContext as the Context of the instrumentation code
+        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test

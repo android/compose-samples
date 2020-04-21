@@ -58,7 +58,7 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.data.posts.impl.PreviewPostsRepository
+import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
@@ -297,7 +297,7 @@ fun PreviewHomeScreenBody() {
 private fun PreviewDrawerOpen() {
     ThemedPreview {
         HomeScreen(
-            postsRepository = PreviewPostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
         )
     }
@@ -317,7 +317,7 @@ fun PreviewHomeScreenBodyDark() {
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkThemeColors) {
         HomeScreen(
-            postsRepository = PreviewPostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
         )
     }
@@ -325,5 +325,5 @@ private fun PreviewDrawerOpenDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    return previewDataFrom(PreviewPostsRepository(ContextAmbient.current)::getPosts)
+    return previewDataFrom(BlockingFakePostsRepository(ContextAmbient.current)::getPosts)
 }

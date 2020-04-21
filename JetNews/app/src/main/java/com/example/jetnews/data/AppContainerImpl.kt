@@ -28,10 +28,18 @@ import java.util.concurrent.Executors
 
 /**
  * Dependency Injection container at the application level.
+ */
+interface AppContainer {
+    val postsRepository: PostsRepository
+    val interestsRepository: InterestsRepository
+}
+
+/**
+ * Implementation for the Dependency Injection container at the application level.
  *
  * Variables are initialized lazily and the same instance is shared across the whole app.
  */
-class AppContainer(private val applicationContext: Context) {
+class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
     private val executorService: ExecutorService by lazy {
         Executors.newFixedThreadPool(4)
@@ -41,7 +49,7 @@ class AppContainer(private val applicationContext: Context) {
         Handler(Looper.getMainLooper())
     }
 
-    val postsRepository: PostsRepository by lazy {
+    override val postsRepository: PostsRepository by lazy {
         FakePostsRepository(
             executorService = executorService,
             resultThreadHandler = mainThreadHandler,
@@ -49,7 +57,7 @@ class AppContainer(private val applicationContext: Context) {
         )
     }
 
-    val interestsRepository: InterestsRepository by lazy {
+    override val interestsRepository: InterestsRepository by lazy {
         FakeInterestsRepository()
     }
 }
