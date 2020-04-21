@@ -140,7 +140,7 @@ internal fun <T> StateDraggable(
     onCommit(currentValue, forceAnimationCheck.value) {
         position.animateTo(currentValue, animationBuilder)
     }
-    val draggable = draggable(
+    val draggable = Modifier.draggable(
         dragDirection = dragDirection,
         onDragDeltaConsumptionRequested = { delta ->
             val old = position.value

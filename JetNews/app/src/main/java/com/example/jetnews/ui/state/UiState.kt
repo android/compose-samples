@@ -17,7 +17,9 @@
 package com.example.jetnews.ui.state
 
 import androidx.compose.Composable
+import androidx.compose.getValue
 import androidx.compose.onActive
+import androidx.compose.setValue
 import androidx.compose.state
 import com.example.jetnews.data.Result
 
@@ -40,7 +42,7 @@ sealed class UiState<out T> {
 fun <T> uiStateFrom(
     repositoryCall: RepositoryCall<T>
 ): UiState<T> {
-    var state: UiState<T> by state { UiState.Loading }
+    var state: UiState<T> by state<UiState<T>> { UiState.Loading }
 
     // Whenever this effect is used in a composable function, it'll load data from the repository
     // when the first composition is applied

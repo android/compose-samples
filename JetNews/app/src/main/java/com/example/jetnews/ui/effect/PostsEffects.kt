@@ -17,7 +17,9 @@
 package com.example.jetnews.ui.effect
 
 import androidx.compose.Composable
+import androidx.compose.getValue
 import androidx.compose.onActive
+import androidx.compose.setValue
 import androidx.compose.state
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
@@ -35,7 +37,7 @@ import com.example.jetnews.ui.state.UiState
 @Composable
 fun fetchPost(postId: String, postsRepository: PostsRepository): UiState<Post> {
 
-    var postState: UiState<Post> by state { UiState.Loading }
+    var postState: UiState<Post> by state<UiState<Post>> { UiState.Loading }
 
     // Whenever this effect is used in a composable function, it'll load data from the repository
     // when the first composition is applied
