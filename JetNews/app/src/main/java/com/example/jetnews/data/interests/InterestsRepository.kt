@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.data.interests
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
-import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.data.Result
 
-class MainActivity : AppCompatActivity() {
+/**
+ * Interface to the Interests data layer.
+ */
+interface InterestsRepository {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    /**
+     * Get relevant topics to the user.
+     */
+    fun getTopics(callback: (Result<Map<String, List<String>>>) -> Unit)
 
-        val appContainer = (application as JetnewsApplication).container
-        setContent {
-            JetnewsApp(appContainer = appContainer)
-        }
-    }
+    /**
+     * Get list of people.
+     */
+    fun getPeople(callback: (Result<List<String>>) -> Unit)
+
+    /**
+     * Get list of publications.
+     */
+    fun getPublications(callback: (Result<List<String>>) -> Unit)
 }

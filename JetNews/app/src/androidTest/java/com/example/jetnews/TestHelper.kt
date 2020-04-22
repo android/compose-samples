@@ -16,6 +16,7 @@
 
 package com.example.jetnews
 
+import android.content.Context
 import androidx.compose.Composable
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
@@ -30,10 +31,10 @@ import com.example.jetnews.ui.Screen
 /**
  * Launches the app from a test context
  */
-fun ComposeTestRule.launchJetNewsApp() {
+fun ComposeTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsStatus.resetState()
-        JetnewsApp()
+        JetnewsApp(TestAppContainer(context))
     }
 }
 

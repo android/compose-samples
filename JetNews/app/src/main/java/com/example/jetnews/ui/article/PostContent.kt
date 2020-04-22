@@ -61,7 +61,7 @@ import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.example.jetnews.R
-import com.example.jetnews.data.post3
+import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
 import com.example.jetnews.model.Metadata
@@ -74,7 +74,7 @@ import com.example.jetnews.ui.darkThemeColors
 private val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(post: Post, modifier: Modifier = Modifier.None) {
+fun PostContent(post: Post, modifier: Modifier = Modifier) {
     VerticalScroller {
         Column(modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)) {
             Spacer(Modifier.preferredHeight(defaultSpacerSize))
