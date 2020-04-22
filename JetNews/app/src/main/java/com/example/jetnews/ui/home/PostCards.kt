@@ -38,7 +38,7 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.post3
+import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
@@ -58,7 +58,7 @@ fun AuthorAndReadTime(post: Post) {
 }
 
 @Composable
-fun PostImage(post: Post, modifier: Modifier = Modifier.None) {
+fun PostImage(post: Post, modifier: Modifier = Modifier) {
     val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
     Image(image, modifier.preferredSize(40.dp, 40.dp))
 }

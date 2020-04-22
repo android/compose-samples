@@ -19,6 +19,7 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.compose.state
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
@@ -30,7 +31,6 @@ import androidx.ui.foundation.selection.Toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
-import androidx.ui.layout.RowAlign
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
 import androidx.ui.material.Divider
@@ -48,14 +48,16 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.people
-import com.example.jetnews.data.publications
-import com.example.jetnews.data.topics
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.darkThemeColors
+import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.ui.state.previewDataFrom
+import com.example.jetnews.ui.state.uiStateFrom
 
 private enum class Sections(val title: String) {
     Topics("Topics"),
@@ -64,7 +66,10 @@ private enum class Sections(val title: String) {
 }
 
 @Composable
-fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() }) {
+fun InterestsScreen(
+    scaffoldState: ScaffoldState = remember { ScaffoldState() },
+    interestsRepository: InterestsRepository
+) {
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
@@ -85,7 +90,7 @@ fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() })
         },
         bodyContent = {
             val (currentSection, updateSection) = state { Sections.Topics }
-            InterestsScreenBody(currentSection, updateSection)
+            InterestsScreenBody(currentSection, updateSection, interestsRepository)
         }
     )
 }
@@ -93,12 +98,15 @@ fun InterestsScreen(scaffoldState: ScaffoldState = remember { ScaffoldState() })
 @Composable
 private fun InterestsScreenBody(
     currentSection: Sections,
-    updateSection: (Sections) -> Unit
+    updateSection: (Sections) -> Unit,
+    interestsRepository: InterestsRepository
 ) {
     val sectionTitles = Sections.values().map { it.title }
 
     Column {
-        TabRow(items = sectionTitles, selectedIndex = currentSection.ordinal) { index, title ->
+        TabRow(
+            items = sectionTitles, selectedIndex = currentSection.ordinal
+        ) { index, title ->
             Tab(
                 text = { Text(title) },
                 selected = currentSection.ordinal == index,
@@ -108,36 +116,42 @@ private fun InterestsScreenBody(
         }
         Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
-                Sections.Topics -> TopicsTab()
-                Sections.People -> PeopleTab()
-                Sections.Publications -> PublicationsTab()
+                Sections.Topics -> {
+                    val topicsState = uiStateFrom(interestsRepository::getTopics)
+                    if (topicsState is UiState.Success) {
+                        TopicsTab(topicsState.data)
+                    }
+                }
+                Sections.People -> {
+                    val peopleState = uiStateFrom(interestsRepository::getPeople)
+                    if (peopleState is UiState.Success) {
+                        PeopleTab(peopleState.data)
+                    }
+                }
+                Sections.Publications -> {
+                    val publicationsState = uiStateFrom(interestsRepository::getPublications)
+                    if (publicationsState is UiState.Success) {
+                        PublicationsTab(publicationsState.data)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun TopicsTab() {
-    TabWithSections(
-        "Topics",
-        topics
-    )
+private fun TopicsTab(topics: Map<String, List<String>>) {
+    TabWithSections(tabName = Sections.Topics.title, sections = topics)
 }
 
 @Composable
-private fun PeopleTab() {
-    TabWithTopics(
-        Sections.People.title,
-        people
-    )
+private fun PeopleTab(people: List<String>) {
+    TabWithTopics(tabName = Sections.People.title, topics = people)
 }
 
 @Composable
-private fun PublicationsTab() {
-    TabWithTopics(
-        Sections.Publications.title,
-        publications
-    )
+private fun PublicationsTab(publications: List<String>) {
+    TabWithTopics(tabName = Sections.Publications.title, topics = publications)
 }
 
 @Composable
@@ -170,7 +184,8 @@ private fun TabWithSections(
                 Text(
                     text = section,
                     modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.subtitle1)
+                    style = MaterialTheme.typography.subtitle1
+                )
                 topics.forEach { topic ->
                     TopicItem(
                         getTopicKey(
@@ -204,7 +219,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
             Image(
                 image,
                 Modifier
-                    .gravity(RowAlign.Center)
+                    .gravity(Alignment.CenterVertically)
                     .preferredSize(56.dp, 56.dp)
                     .clip(RoundedCornerShape(4.dp))
             )
@@ -212,12 +227,12 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
                 text = itemTitle,
                 modifier = Modifier
                     .weight(1f)
-                    .gravity(RowAlign.Center)
+                    .gravity(Alignment.CenterVertically)
                     .padding(16.dp),
                 style = MaterialTheme.typography.subtitle1
             )
             SelectTopicButton(
-                modifier = Modifier.gravity(RowAlign.Center),
+                modifier = Modifier.gravity(Alignment.CenterVertically),
                 selected = selected
             )
         }
@@ -248,7 +263,7 @@ private fun selectTopic(key: String, select: Boolean) {
 @Composable
 fun PreviewInterestsScreen() {
     ThemedPreview {
-        InterestsScreen()
+        InterestsScreen(interestsRepository = FakeInterestsRepository())
     }
 }
 
@@ -256,7 +271,10 @@ fun PreviewInterestsScreen() {
 @Composable
 fun PreviewInterestsScreenDark() {
     ThemedPreview(darkThemeColors) {
-        InterestsScreen()
+        InterestsScreen(
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            interestsRepository = FakeInterestsRepository()
+        )
     }
 }
 
@@ -264,7 +282,10 @@ fun PreviewInterestsScreenDark() {
 @Composable
 private fun PreviewDrawerOpen() {
     ThemedPreview {
-        InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+        InterestsScreen(
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            interestsRepository = FakeInterestsRepository()
+        )
     }
 }
 
@@ -272,7 +293,10 @@ private fun PreviewDrawerOpen() {
 @Composable
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkThemeColors) {
-        InterestsScreen(scaffoldState = ScaffoldState(drawerState = DrawerState.Opened))
+        InterestsScreen(
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            interestsRepository = FakeInterestsRepository()
+        )
     }
 }
 
@@ -280,7 +304,7 @@ private fun PreviewDrawerOpenDark() {
 @Composable
 fun PreviewTopicsTab() {
     ThemedPreview {
-        TopicsTab()
+        TopicsTab(loadFakeTopics())
     }
 }
 
@@ -288,15 +312,20 @@ fun PreviewTopicsTab() {
 @Composable
 fun PreviewTopicsTabDark() {
     ThemedPreview(darkThemeColors) {
-        TopicsTab()
+        TopicsTab(loadFakeTopics())
     }
+}
+
+@Composable
+private fun loadFakeTopics(): Map<String, List<String>> {
+    return previewDataFrom(FakeInterestsRepository()::getTopics)
 }
 
 @Preview("Interests screen people tab")
 @Composable
 fun PreviewPeopleTab() {
     ThemedPreview {
-        PeopleTab()
+        PeopleTab(loadFakePeople())
     }
 }
 
@@ -304,8 +333,34 @@ fun PreviewPeopleTab() {
 @Composable
 fun PreviewPeopleTabDark() {
     ThemedPreview(darkThemeColors) {
-        PeopleTab()
+        PeopleTab(loadFakePeople())
     }
+}
+
+@Composable
+private fun loadFakePeople(): List<String> {
+    return previewDataFrom(FakeInterestsRepository()::getPeople)
+}
+
+@Preview("Interests screen publications tab")
+@Composable
+fun PreviewPublicationsTab() {
+    ThemedPreview {
+        PublicationsTab(loadFakePublications())
+    }
+}
+
+@Preview("Interests screen publications tab dark theme")
+@Composable
+fun PreviewPublicationsTabDark() {
+    ThemedPreview(darkThemeColors) {
+        PublicationsTab(loadFakePublications())
+    }
+}
+
+@Composable
+private fun loadFakePublications(): List<String> {
+    return previewDataFrom(FakeInterestsRepository()::getPublications)
 }
 
 @Preview("Interests screen tab with topics")

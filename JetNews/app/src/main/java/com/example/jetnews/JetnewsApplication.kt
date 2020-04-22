@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
-import com.example.jetnews.JetnewsApplication
+import android.app.Application
+import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.AppContainerImpl
 
-class MainActivity : AppCompatActivity() {
+class JetnewsApplication : Application() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    // AppContainer instance used by the rest of classes to obtain dependencies
+    lateinit var container: AppContainer
 
-        val appContainer = (application as JetnewsApplication).container
-        setContent {
-            JetnewsApp(appContainer = appContainer)
-        }
+    override fun onCreate() {
+        super.onCreate()
+        container = AppContainerImpl(this)
     }
 }

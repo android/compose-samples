@@ -17,11 +17,13 @@
 package com.example.jetnews
 
 import androidx.test.filters.MediumTest
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick
 import androidx.ui.test.findByText
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +38,8 @@ class JetnewsUiTest {
 
     @Before
     fun setUp() {
-        composeTestRule.launchJetNewsApp()
+        // Using targetContext as the Context of the instrumentation code
+        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test
@@ -44,6 +47,7 @@ class JetnewsUiTest {
         findByText("Jetnews").assertIsDisplayed()
     }
 
+    @Ignore("Ignoring because of https://issuetracker.google.com/154617105")
     @Test
     fun app_opensArticle() {
         findAllBySubstring("Manuel Vivo").first().doClick()

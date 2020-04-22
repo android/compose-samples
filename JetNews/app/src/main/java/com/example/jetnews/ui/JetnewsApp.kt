@@ -41,29 +41,41 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
 
 @Composable
-fun JetnewsApp() {
+fun JetnewsApp(appContainer: AppContainer) {
 
     MaterialTheme(
         colors = lightThemeColors,
         typography = themeTypography
     ) {
-        AppContent()
+        AppContent(
+            interestsRepository = appContainer.interestsRepository,
+            postsRepository = appContainer.postsRepository
+        )
     }
 }
 
 @Composable
-private fun AppContent() {
+private fun AppContent(
+    postsRepository: PostsRepository,
+    interestsRepository: InterestsRepository
+) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
             when (screen) {
-                is Screen.Home -> HomeScreen()
-                is Screen.Interests -> InterestsScreen()
-                is Screen.Article -> ArticleScreen(postId = screen.postId)
+                is Screen.Home -> HomeScreen(postsRepository = postsRepository)
+                is Screen.Interests -> InterestsScreen(interestsRepository = interestsRepository)
+                is Screen.Article -> ArticleScreen(
+                    postId = screen.postId,
+                    postsRepository = postsRepository
+                )
             }
         }
     }
@@ -101,7 +113,7 @@ fun AppDrawer(
 }
 
 @Composable
-private fun JetNewsLogo(modifier: Modifier = Modifier.None) {
+private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
             asset = vectorResource(R.drawable.ic_jetnews_logo),
@@ -121,7 +133,7 @@ private fun DrawerButton(
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
-    modifier: Modifier = Modifier.None
+    modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colors
     val imageAlpha = if (isSelected) {
