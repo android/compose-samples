@@ -21,7 +21,6 @@ import androidx.compose.getValue
 import androidx.compose.onActive
 import androidx.compose.setValue
 import androidx.compose.state
-import com.example.jetnews.data.Result
 
 /**
  * Model for UiStates that can refresh. The Success state contains whether there's data loading
@@ -30,7 +29,7 @@ import com.example.jetnews.data.Result
  */
 sealed class RefreshableUiState<out T> {
     data class Success<out T>(val data: T?, val loading: Boolean) : RefreshableUiState<T>()
-    data class Error<out T>(val exception: Exception, val previousData: T?) :
+    data class Error<out T>(val exception: Throwable, val previousData: T?) :
         RefreshableUiState<T>()
 }
 
@@ -61,14 +60,19 @@ fun <T> refreshableUiStateFrom(
     val refresh = {
         state = RefreshableUiState.Success(data = state.currentData, loading = true)
         repositoryCall { result ->
-            state = when (result) {
-                is Result.Success -> RefreshableUiState.Success(
-                    data = result.data, loading = false
-                )
-                is Result.Error -> RefreshableUiState.Error(
-                    exception = result.exception, previousData = state.currentData
-                )
-            }
+            state = result.fold(
+                onSuccess = { data ->
+                    RefreshableUiState.Success(
+                        data = data,
+                        loading = false
+                    )
+                },
+                onFailure = { exception ->
+                    RefreshableUiState.Error(
+                        exception = exception, previousData = state.currentData
+                    )
+                }
+            )
         }
     }
 

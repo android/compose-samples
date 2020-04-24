@@ -51,7 +51,6 @@ import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
-import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
@@ -183,7 +182,7 @@ fun PreviewArticleDark() {
 private fun loadFakePost(postId: String): Post {
     var post: Post? = null
     BlockingFakePostsRepository(ContextAmbient.current).getPost(postId) { result ->
-        post = result.successOr(null)
+        post = result.getOrNull()
     }
     return post!!
 }

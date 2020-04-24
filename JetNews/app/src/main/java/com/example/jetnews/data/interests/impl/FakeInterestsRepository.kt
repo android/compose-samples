@@ -16,7 +16,6 @@
 
 package com.example.jetnews.data.interests.impl
 
-import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestsRepository
 
 /**
@@ -62,14 +61,14 @@ class FakeInterestsRepository : InterestsRepository {
     }
 
     override fun getTopics(callback: (Result<Map<String, List<String>>>) -> Unit) {
-        callback(Result.Success(topics))
+        callback(Result.success(topics))
     }
 
     override fun getPeople(callback: (Result<List<String>>) -> Unit) {
-        callback(Result.Success(people))
+        callback(Result.success(people))
     }
 
     override fun getPublications(callback: (Result<List<String>>) -> Unit) {
-        callback(Result.Success(publications))
+        callback(Result.success(publications))
     }
 }

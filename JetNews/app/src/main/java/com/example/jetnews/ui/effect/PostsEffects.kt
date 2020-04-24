@@ -21,7 +21,6 @@ import androidx.compose.getValue
 import androidx.compose.onActive
 import androidx.compose.setValue
 import androidx.compose.state
-import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.state.UiState
@@ -43,16 +42,18 @@ fun fetchPost(postId: String, postsRepository: PostsRepository): UiState<Post> {
     // when the first composition is applied
     onActive {
         postsRepository.getPost(postId) { result ->
-            postState = when (result) {
-                is Result.Success -> {
-                    if (result.data != null) {
-                        UiState.Success(result.data)
+            postState = result.fold(
+                onSuccess = { data ->
+                    if (data != null) {
+                        UiState.Success(data)
                     } else {
                         UiState.Error(Exception("postId doesn't exist"))
                     }
+                },
+                onFailure = { exception ->
+                    UiState.Error(exception)
                 }
-                is Result.Error -> UiState.Error(result.exception)
-            }
+            )
         }
     }
 

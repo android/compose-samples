@@ -18,7 +18,6 @@ package com.example.jetnews.data.posts.impl
 
 import android.content.Context
 import androidx.ui.graphics.imageFromResource
-import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 
@@ -38,10 +37,10 @@ class BlockingFakePostsRepository(private val context: Context) : PostsRepositor
     }
 
     override fun getPost(postId: String, callback: (Result<Post?>) -> Unit) {
-        callback(Result.Success(postsWithResources.find { it.id == postId }))
+        callback(Result.success(postsWithResources.find { it.id == postId }))
     }
 
     override fun getPosts(callback: (Result<List<Post>>) -> Unit) {
-        callback(Result.Success(postsWithResources))
+        callback(Result.success(postsWithResources))
     }
 }
