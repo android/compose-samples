@@ -16,8 +16,6 @@
 
 package com.example.jetnews.data.interests
 
-import com.example.jetnews.data.Result
-
 /**
  * Interface to the Interests data layer.
  */

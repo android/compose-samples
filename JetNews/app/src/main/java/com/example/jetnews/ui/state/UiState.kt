@@ -21,14 +21,13 @@ import androidx.compose.getValue
 import androidx.compose.onActive
 import androidx.compose.setValue
 import androidx.compose.state
-import com.example.jetnews.data.Result
 
 typealias RepositoryCall<T> = ((Result<T>) -> Unit) -> Unit
 
 sealed class UiState<out T> {
     object Loading : UiState<Nothing>()
     data class Success<out T>(val data: T) : UiState<T>()
-    data class Error(val exception: Exception) : UiState<Nothing>()
+    data class Error(val exception: Throwable) : UiState<Nothing>()
 }
 
 /**
@@ -48,10 +47,10 @@ fun <T> uiStateFrom(
     // when the first composition is applied
     onActive {
         repositoryCall { result ->
-            state = when (result) {
-                is Result.Success -> UiState.Success(result.data)
-                is Result.Error -> UiState.Error(result.exception)
-            }
+            state = result.fold(
+                onSuccess = { data -> UiState.Success(data) },
+                onFailure = { exception -> UiState.Error(exception) }
+            )
         }
     }
 
@@ -67,7 +66,7 @@ fun <T> previewDataFrom(
 ): T {
     var state: T? = null
     repositoryCall { result ->
-        state = (result as Result.Success).data
+        state = result.getOrNull()!!
     }
     return state!!
 }

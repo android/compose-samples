@@ -19,7 +19,6 @@ package com.example.jetnews.data.posts.impl
 import android.content.res.Resources
 import android.os.Handler
 import androidx.ui.graphics.imageFromResource
-import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import java.lang.IllegalStateException
@@ -57,7 +56,7 @@ class FakePostsRepository(
     override fun getPost(postId: String, callback: (Result<Post?>) -> Unit) {
         executeInBackground(callback) {
             resultThreadHandler.post {
-                callback(Result.Success(
+                callback(Result.success(
                     postsWithResources.find { it.id == postId }
                 ))
             }
@@ -71,7 +70,7 @@ class FakePostsRepository(
             if (shouldRandomlyFail()) {
                 throw IllegalStateException()
             }
-            resultThreadHandler.post { callback(Result.Success(postsWithResources)) }
+            resultThreadHandler.post { callback(Result.success(postsWithResources)) }
         }
     }
 
@@ -84,7 +83,7 @@ class FakePostsRepository(
             try {
                 block()
             } catch (e: Exception) {
-                resultThreadHandler.post { callback(Result.Error(e)) }
+                resultThreadHandler.post { callback(Result.failure(e)) }
             }
         }
     }
