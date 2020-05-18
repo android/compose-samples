@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~   Copyright 2019 Google LLC
+  ~   Copyright 2020 Google LLC
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
   ~   you may not use this file except in compliance with the License.
@@ -14,12 +15,7 @@
   ~   limitations under the License.
   ~
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="36dp"
-    android:height="36dp"
-    android:viewportWidth="36"
-    android:viewportHeight="36">
-    <path
-        android:fillColor="#fff"
-        android:pathData="M22.8583,13.0711L24.1014,14.4044L16.0214,23.0711L15.9904,23.0381L15.986,23.0435L12.1014,18.8768L13.3445,17.5435L16.0154,20.4091L22.8583,13.0711Z" />
-</vector>
+
+<resources>
+    <color name="status_bar">#0e0e0e</color>
+</resources>

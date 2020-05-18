@@ -69,7 +69,6 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 
 private val defaultSpacerSize = 16.dp
 
@@ -208,21 +207,21 @@ private fun BulletParagraph(
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
-                        .preferredSize(8.sp.toDp(), 8.sp.toDp())
-                        .alignWithSiblings {
-                            // Add an alignment "baseline" 1sp below the bottom of the circle
-                            9.sp.toIntPx()
-                        },
+                    .preferredSize(8.sp.toDp(), 8.sp.toDp())
+                    .alignWithSiblings {
+                        // Add an alignment "baseline" 1sp below the bottom of the circle
+                        9.sp.toIntPx()
+                    },
                 backgroundColor = contentColor(),
                 shape = CircleShape
             )
         }
         Text(
-                modifier = Modifier
-                        .weight(1f)
-                        .alignWithSiblings(FirstBaseline),
-                text = text,
-                style = textStyle.merge(paragraphStyle)
+            modifier = Modifier
+                .weight(1f)
+                .alignWithSiblings(FirstBaseline),
+            text = text,
+            style = textStyle.merge(paragraphStyle)
         )
     }
 }
@@ -334,7 +333,7 @@ fun PreviewPost() {
 @Preview("Post content dark theme")
 @Composable
 fun PreviewPostDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PostContent(post = post3)
     }
 }

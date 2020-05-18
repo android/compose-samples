@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.theme
 
-import androidx.compose.Composable
-import androidx.ui.material.Surface
-import com.example.jetnews.ui.theme.JetnewsTheme
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.material.Shapes
+import androidx.ui.unit.dp
 
-@Composable
-internal fun ThemedPreview(
-    darkTheme: Boolean = false,
-    children: @Composable() () -> Unit
-) {
-    JetnewsTheme(darkTheme = darkTheme) {
-        Surface {
-            children()
-        }
-    }
-}
+val shapes = Shapes(
+    small = RoundedCornerShape(4.dp),
+    medium = RoundedCornerShape(8.dp),
+    large = RoundedCornerShape(16.dp)
+)

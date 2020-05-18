@@ -42,7 +42,6 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 
 @Composable
@@ -95,7 +94,7 @@ fun PreviewPostCardPopular() {
 @Preview("Dark colors")
 @Composable
 fun PreviewPostCardPopularDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PostCardPopular(post = post1)
     }
 }

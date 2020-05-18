@@ -43,7 +43,6 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 
 @Composable
@@ -157,7 +156,7 @@ fun PreviewHistoryPost() {
 @Preview("Simple post card dark theme")
 @Composable
 fun PreviewSimplePostDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PostCardSimple(post = post3)
     }
 }

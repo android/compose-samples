@@ -17,7 +17,7 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#DD0D3E</color>
-    <color name="colorPrimaryDark">#C20029</color>
-    <color name="colorAccent">#DD0D3E</color>
+    <color name="red700">#dd0d3e</color>
+    <color name="red900">#c20029</color>
+    <color name="status_bar">@color/red900</color>
 </resources>

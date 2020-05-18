@@ -64,7 +64,6 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 import com.example.jetnews.ui.state.RefreshableUiState
 import com.example.jetnews.ui.state.currentData
@@ -306,7 +305,7 @@ private fun PreviewDrawerOpen() {
 @Preview("Home screen dark theme")
 @Composable
 fun PreviewHomeScreenBodyDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         val posts = loadFakePosts()
         HomeScreenBody(posts)
     }
@@ -315,7 +314,7 @@ fun PreviewHomeScreenBodyDark() {
 @Preview("Home screen, open drawer dark theme")
 @Composable
 private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)

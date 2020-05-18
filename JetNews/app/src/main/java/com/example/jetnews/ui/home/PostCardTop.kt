@@ -30,7 +30,6 @@ import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredHeightIn
-import androidx.ui.material.ColorPalette
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -41,12 +40,10 @@ import com.example.jetnews.data.posts.impl.post2
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
-import com.example.jetnews.ui.lightThemeColors
 
 @Composable
 fun PostCardTop(post: Post) {
-// TUTORIAL CONTENT STARTS HERE
+    // TUTORIAL CONTENT STARTS HERE
     val typography = MaterialTheme.typography
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         post.image?.let { image ->
@@ -90,7 +87,7 @@ fun TutorialPreview() {
 @Preview("Dark theme")
 @Composable
 fun TutorialPreviewDark() {
-    TutorialPreviewTemplate(colors = darkThemeColors)
+    TutorialPreviewTemplate(darkTheme = true)
 }
 
 @Preview("Font scaling 1.5", fontScale = 1.5f)
@@ -101,13 +98,13 @@ fun TutorialPreviewFontscale() {
 
 @Composable
 fun TutorialPreviewTemplate(
-    colors: ColorPalette = lightThemeColors
+    darkTheme: Boolean = false
 ) {
     val context = ContextAmbient.current
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
 
-    ThemedPreview(colors) {
+    ThemedPreview(darkTheme) {
         PostCardTop(post)
     }
 }
@@ -123,7 +120,7 @@ fun PreviewPostCardTop() {
 @Preview("Post card top dark theme")
 @Composable
 fun PreviewPostCardTopDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PostCardTop(post = post2)
     }
 }
