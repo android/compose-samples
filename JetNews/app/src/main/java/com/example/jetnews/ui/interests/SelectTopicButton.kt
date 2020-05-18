@@ -17,54 +17,42 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
+import androidx.compose.Pivotal
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
+import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
-import androidx.ui.res.vectorResource
+import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Surface
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Add
+import androidx.ui.material.icons.filled.Done
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
-import com.example.jetnews.R
 import com.example.jetnews.ui.ThemedPreview
 
 @Composable
 fun SelectTopicButton(
     modifier: Modifier = Modifier,
-    selected: Boolean = false
+    @Pivotal selected: Boolean = false
 ) {
-    if (selected) {
-        SelectTopicButtonOn(modifier.preferredSize(36.dp, 36.dp))
+    val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
+    val backgroundColor = if (selected) {
+        MaterialTheme.colors.primary
     } else {
-        SelectTopicButtonOff(modifier.preferredSize(36.dp, 36.dp))
+        MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
     }
-}
-
-@Composable
-private fun SelectTopicButtonOn(modifier: Modifier = Modifier) {
-    Box(
-        backgroundColor = MaterialTheme.colors.primary,
+    Surface(
+        color = backgroundColor,
         shape = CircleShape,
-        modifier = modifier
+        modifier = modifier.preferredSize(36.dp, 36.dp)
     ) {
-        Icon(
-            asset = vectorResource(R.drawable.ic_check),
-            tint = MaterialTheme.colors.onPrimary
-        )
-    }
-}
-
-@Composable
-private fun SelectTopicButtonOff(modifier: Modifier = Modifier) {
-    val borderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
-    Box(
-        backgroundColor = borderColor,
-        shape = CircleShape,
-        modifier = modifier
-    ) {
-        Icon(vectorResource(R.drawable.ic_add))
+        ProvideEmphasis(EmphasisAmbient.current.high) {
+            Icon(icon)
+        }
     }
 }
 
