@@ -47,14 +47,11 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun JetnewsApp(appContainer: AppContainer) {
-
-    MaterialTheme(
-        colors = lightThemeColors,
-        typography = themeTypography
-    ) {
+    JetnewsTheme {
         AppContent(
             interestsRepository = appContainer.interestsRepository,
             postsRepository = appContainer.postsRepository
@@ -192,7 +189,7 @@ fun PreviewJetnewsApp() {
 @Preview("Drawer contents dark theme")
 @Composable
 fun PreviewJetnewsAppDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         AppDrawer(
             currentScreen = JetnewsStatus.currentScreen,
             closeDrawer = { }

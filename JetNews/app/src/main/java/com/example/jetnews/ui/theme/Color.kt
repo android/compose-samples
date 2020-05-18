@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.ui.theme
 
-import androidx.compose.Composable
-import androidx.ui.material.Surface
-import com.example.jetnews.ui.theme.JetnewsTheme
+import androidx.ui.graphics.Color
 
-@Composable
-internal fun ThemedPreview(
-    darkTheme: Boolean = false,
-    children: @Composable() () -> Unit
-) {
-    JetnewsTheme(darkTheme = darkTheme) {
-        Surface {
-            children()
-        }
-    }
-}
+val red200 = Color(0xfff297a2)
+val red300 = Color(0xffea6d7e)
+val red700 = Color(0xffdd0d3c)
+val red800 = Color(0xffd00036)
+val red900 = Color(0xffc20029)

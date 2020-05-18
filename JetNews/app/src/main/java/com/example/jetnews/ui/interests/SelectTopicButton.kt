@@ -23,15 +23,12 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
-import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
-import com.example.jetnews.ui.lightThemeColors
 
 @Composable
 fun SelectTopicButton(
@@ -52,7 +49,10 @@ private fun SelectTopicButtonOn(modifier: Modifier = Modifier) {
         shape = CircleShape,
         modifier = modifier
     ) {
-        Icon(vectorResource(R.drawable.ic_check))
+        Icon(
+            asset = vectorResource(R.drawable.ic_check),
+            tint = MaterialTheme.colors.onPrimary
+        )
     }
 }
 
@@ -72,8 +72,8 @@ private fun SelectTopicButtonOff(modifier: Modifier = Modifier) {
 @Composable
 fun SelectTopicButtonPreviewOff() {
     SelectTopicButtonPreviewTemplate(
-        lightThemeColors,
-        false
+        darkTheme = false,
+        selected = false
     )
 }
 
@@ -81,8 +81,8 @@ fun SelectTopicButtonPreviewOff() {
 @Composable
 fun SelectTopicButtonPreviewOn() {
     SelectTopicButtonPreviewTemplate(
-        lightThemeColors,
-        true
+        darkTheme = false,
+        selected = true
     )
 }
 
@@ -90,8 +90,8 @@ fun SelectTopicButtonPreviewOn() {
 @Composable
 fun SelectTopicButtonPreviewOffDark() {
     SelectTopicButtonPreviewTemplate(
-        darkThemeColors,
-        false
+        darkTheme = true,
+        selected = false
     )
 }
 
@@ -99,14 +99,17 @@ fun SelectTopicButtonPreviewOffDark() {
 @Composable
 fun SelectTopicButtonPreviewOnDark() {
     SelectTopicButtonPreviewTemplate(
-        darkThemeColors,
-        true
+        darkTheme = true,
+        selected = true
     )
 }
 
 @Composable
-private fun SelectTopicButtonPreviewTemplate(themeColors: ColorPalette, selected: Boolean) {
-    ThemedPreview(themeColors) {
+private fun SelectTopicButtonPreviewTemplate(
+    darkTheme: Boolean = false,
+    selected: Boolean
+) {
+    ThemedPreview(darkTheme) {
         SelectTopicButton(
             modifier = Modifier.padding(32.dp),
             selected = selected

@@ -22,7 +22,6 @@ import androidx.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
-import java.lang.IllegalStateException
 import java.util.concurrent.ExecutorService
 import kotlin.random.Random
 

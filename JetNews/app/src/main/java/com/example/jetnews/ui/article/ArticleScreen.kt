@@ -55,7 +55,6 @@ import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
@@ -173,7 +172,7 @@ fun PreviewArticle() {
 @Preview("Article screen dark theme")
 @Composable
 fun PreviewArticleDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         val post = loadFakePost(post3.id)
         ArticleScreen(post)
     }

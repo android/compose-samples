@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~   Copyright 2019 Google LLC
+  ~   Copyright 2020 Google LLC
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
   ~   you may not use this file except in compliance with the License.
@@ -17,7 +17,5 @@
   -->
 
 <resources>
-    <color name="red700">#dd0d3e</color>
-    <color name="red900">#c20029</color>
-    <color name="status_bar">@color/red900</color>
+    <color name="status_bar">#0e0e0e</color>
 </resources>

@@ -54,7 +54,6 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.previewDataFrom
 import com.example.jetnews.ui.state.uiStateFrom
@@ -270,7 +269,7 @@ fun PreviewInterestsScreen() {
 @Preview("Interests screen dark theme")
 @Composable
 fun PreviewInterestsScreenDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         InterestsScreen(
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
@@ -292,7 +291,7 @@ private fun PreviewDrawerOpen() {
 @Preview("Interests screen drawer open dark theme")
 @Composable
 private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         InterestsScreen(
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
@@ -311,7 +310,7 @@ fun PreviewTopicsTab() {
 @Preview("Interests screen topics tab dark theme")
 @Composable
 fun PreviewTopicsTabDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         TopicsTab(loadFakeTopics())
     }
 }
@@ -332,7 +331,7 @@ fun PreviewPeopleTab() {
 @Preview("Interests screen people tab dark theme")
 @Composable
 fun PreviewPeopleTabDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PeopleTab(loadFakePeople())
     }
 }
@@ -353,7 +352,7 @@ fun PreviewPublicationsTab() {
 @Preview("Interests screen publications tab dark theme")
 @Composable
 fun PreviewPublicationsTabDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PublicationsTab(loadFakePublications())
     }
 }
@@ -374,7 +373,7 @@ fun PreviewTabWithTopics() {
 @Preview("Interests screen tab with topics dark theme")
 @Composable
 fun PreviewTabWithTopicsDark() {
-    ThemedPreview {
+    ThemedPreview(darkTheme = true) {
         TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
     }
 }
