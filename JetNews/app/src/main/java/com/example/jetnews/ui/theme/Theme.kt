@@ -24,22 +24,22 @@ import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
 
 private val LightThemeColors = lightColorPalette(
-    primary = red700,
-    primaryVariant = red900,
+    primary = Red700,
+    primaryVariant = Red900,
     onPrimary = Color.White,
-    secondary = red700,
-    secondaryVariant = red900,
+    secondary = Red700,
+    secondaryVariant = Red900,
     onSecondary = Color.White,
-    error = red800
+    error = Red800
 )
 
 private val DarkThemeColors = darkColorPalette(
-    primary = red300,
-    primaryVariant = red700,
+    primary = Red300,
+    primaryVariant = Red700,
     onPrimary = Color.Black,
-    secondary = red300,
+    secondary = Red300,
     onSecondary = Color.White,
-    error = red200
+    error = Red200
 )
 
 @Composable
