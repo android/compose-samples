@@ -213,7 +213,7 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
         modifier = Modifier.ripple()
     ) {
         Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Image(
                 image,
