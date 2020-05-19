@@ -21,7 +21,7 @@ import androidx.compose.Composable
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.test.ComposeTestRule
-import androidx.ui.test.SemanticsNodeInteraction
+import androidx.ui.test.SemanticsNodeInteractionCollection
 import androidx.ui.test.findAll
 import androidx.ui.test.hasSubstring
 import com.example.jetnews.ui.JetnewsApp
@@ -60,7 +60,7 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
     }
 }
 
-fun findAllBySubstring(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
+fun findAllBySubstring(text: String, ignoreCase: Boolean = false): SemanticsNodeInteractionCollection {
     return findAll(
         hasSubstring(text, ignoreCase)
     )

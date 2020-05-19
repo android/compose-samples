@@ -50,7 +50,7 @@ class JetnewsUiTest {
     @Ignore("Ignoring because of https://issuetracker.google.com/154617105")
     @Test
     fun app_opensArticle() {
-        findAllBySubstring("Manuel Vivo").first().doClick()
-        findAllBySubstring("July 30 • 3 min read").first().assertIsDisplayed()
+        findAllBySubstring("Manuel Vivo")[0].doClick()
+        findAllBySubstring("July 30 • 3 min read")[0].assertIsDisplayed()
     }
 }
