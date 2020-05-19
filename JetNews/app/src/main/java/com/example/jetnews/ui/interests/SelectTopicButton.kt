@@ -18,13 +18,11 @@ package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
 import androidx.compose.Pivotal
-import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
-import androidx.ui.layout.wrapContentSize
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis

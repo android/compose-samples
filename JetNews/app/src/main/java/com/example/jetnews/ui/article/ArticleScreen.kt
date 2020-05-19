@@ -18,7 +18,6 @@ package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.compose.setValue
@@ -32,9 +31,7 @@ import androidx.ui.foundation.contentColor
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
@@ -86,8 +83,8 @@ private fun ArticleScreen(post: Post) {
                 title = {
                     Text(
                         text = "Published in: ${post.publication?.name}",
-                        // FIXME(b/143626708): this contentColor() is a bug workaround
-                        style = MaterialTheme.typography.subtitle2.copy(color = contentColor())
+                        style = MaterialTheme.typography.subtitle2,
+                        color = contentColor()
                     )
                 },
                 navigationIcon = {
