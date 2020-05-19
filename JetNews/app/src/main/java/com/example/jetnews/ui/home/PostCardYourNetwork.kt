@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,11 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
@@ -42,19 +42,26 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.preferredSize(280.dp, 240.dp), shape = RoundedCornerShape(4.dp)) {
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        modifier = modifier.preferredSize(280.dp, 240.dp)) {
         Clickable(
             modifier = Modifier.ripple(),
             onClick = { navigateTo(Screen.Article(post.id)) }
         ) {
             Column {
                 val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
-                Image(image, Modifier.preferredHeight(100.dp).fillMaxSize())
+                Image(
+                    asset = image,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .preferredHeight(100.dp)
+                        .fillMaxSize())
+
                 Column(modifier = Modifier.padding(16.dp)) {
                     val emphasisLevels = EmphasisAmbient.current
                     ProvideEmphasis(emphasisLevels.high) {
@@ -95,7 +102,7 @@ fun PreviewPostCardPopular() {
 @Preview("Dark colors")
 @Composable
 fun PreviewPostCardPopularDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PostCardPopular(post = post1)
     }
 }

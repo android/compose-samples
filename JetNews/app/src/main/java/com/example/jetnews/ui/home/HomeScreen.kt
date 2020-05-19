@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,6 +22,7 @@ import androidx.compose.Composable
 import androidx.compose.onActive
 import androidx.compose.remember
 import androidx.compose.stateFor
+import androidx.core.os.postDelayed
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
@@ -31,6 +32,7 @@ import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -64,7 +66,6 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.navigateTo
 import com.example.jetnews.ui.state.RefreshableUiState
 import com.example.jetnews.ui.state.currentData
@@ -72,6 +73,7 @@ import com.example.jetnews.ui.state.loading
 import com.example.jetnews.ui.state.previewDataFrom
 import com.example.jetnews.ui.state.refreshableUiStateFrom
 import com.example.jetnews.ui.state.refreshing
+import com.example.jetnews.ui.theme.snackbarAction
 
 @Composable
 fun HomeScreen(
@@ -193,13 +195,12 @@ fun ErrorSnackbar(
     onDismiss: () -> Unit = { }
 ) {
     if (showError) {
-
         // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
         onActive {
             // With coroutines, this will be cancellable
-            Handler(Looper.getMainLooper()).postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed(5000L) {
                 onDismiss()
-            }, 5000L)
+            }
         }
 
         Snackbar(
@@ -210,9 +211,13 @@ fun ErrorSnackbar(
                     onClick = {
                         onErrorAction()
                         onDismiss()
-                    }
+                    },
+                    contentColor = contentColor()
                 ) {
-                    Text("RETRY")
+                    Text(
+                        text = "RETRY",
+                        color = MaterialTheme.colors.snackbarAction
+                    )
                 }
             }
         )
@@ -278,7 +283,7 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 @Composable
 private fun HomeScreenDivider() {
     Divider(
-        modifier = Modifier.padding(start = 14.dp, end = 14.dp),
+        modifier = Modifier.padding(horizontal = 14.dp),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
     )
 }
@@ -306,7 +311,7 @@ private fun PreviewDrawerOpen() {
 @Preview("Home screen dark theme")
 @Composable
 fun PreviewHomeScreenBodyDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         val posts = loadFakePosts()
         HomeScreenBody(posts)
     }
@@ -315,7 +320,7 @@ fun PreviewHomeScreenBodyDark() {
 @Preview("Home screen, open drawer dark theme")
 @Composable
 private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
