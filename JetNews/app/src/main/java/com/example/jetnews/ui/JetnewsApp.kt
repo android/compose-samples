@@ -16,14 +16,14 @@
 
 package com.example.jetnews.ui
 
-import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.ui.animation.Crossfade
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.ColorFilter
+import androidx.ui.graphics.vector.VectorAsset
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -37,6 +37,9 @@ import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Home
+import androidx.ui.material.icons.filled.ListAlt
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -88,7 +91,7 @@ fun AppDrawer(
         JetNewsLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
-            icon = R.drawable.ic_home,
+            icon = Icons.Filled.Home,
             label = "Home",
             isSelected = currentScreen == Screen.Home,
             action = {
@@ -98,7 +101,7 @@ fun AppDrawer(
         )
 
         DrawerButton(
-            icon = R.drawable.ic_interests,
+            icon = Icons.Filled.ListAlt,
             label = "Interests",
             isSelected = currentScreen == Screen.Interests,
             action = {
@@ -126,7 +129,7 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
 
 @Composable
 private fun DrawerButton(
-    @DrawableRes icon: Int,
+    icon: VectorAsset,
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
@@ -155,19 +158,26 @@ private fun DrawerButton(
     Surface(
         modifier = surfaceModifier,
         color = backgroundColor,
-        shape = RoundedCornerShape(4.dp)
+        shape = MaterialTheme.shapes.small
     ) {
-        TextButton(onClick = action, modifier = Modifier.fillMaxWidth()) {
-            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+        TextButton(
+            onClick = action,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalGravity = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()) {
                 Image(
-                    asset = vectorResource(icon),
+                    asset = icon,
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
                 Spacer(Modifier.preferredWidth(16.dp))
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.body2.copy(color = textIconColor),
+                    style = MaterialTheme.typography.body2,
+                    color = textIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

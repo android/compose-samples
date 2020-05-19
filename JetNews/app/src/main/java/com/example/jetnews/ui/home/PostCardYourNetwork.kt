@@ -46,7 +46,9 @@ import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.preferredSize(280.dp, 240.dp), shape = RoundedCornerShape(4.dp)) {
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        modifier = modifier.preferredSize(280.dp, 240.dp)) {
         Clickable(
             modifier = Modifier.ripple(),
             onClick = { navigateTo(Screen.Article(post.id)) }

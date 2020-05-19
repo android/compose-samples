@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
-import androidx.compose.state
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Icon
@@ -32,9 +31,13 @@ import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconToggleButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Surface
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Bookmark
+import androidx.ui.material.icons.filled.BookmarkBorder
+import androidx.ui.material.icons.filled.MoreVert
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.imageResource
-import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.jetnews.R
@@ -46,12 +49,21 @@ import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun AuthorAndReadTime(post: Post) {
-    Row {
-        val textStyle = MaterialTheme.typography.body2
+fun AuthorAndReadTime(
+    post: Post,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier) {
         ProvideEmphasis(EmphasisAmbient.current.medium) {
-            Text(text = post.metadata.author.name, style = textStyle)
-            Text(text = " - ${post.metadata.readTimeMinutes} min read", style = textStyle)
+            val textStyle = MaterialTheme.typography.body2
+            Text(
+                text = post.metadata.author.name,
+                style = textStyle
+            )
+            Text(
+                text = " - ${post.metadata.readTimeMinutes} min read",
+                style = textStyle
+            )
         }
     }
 }
@@ -97,8 +109,8 @@ fun PostCardHistory(post: Post) {
     ) {
         Row(Modifier.padding(16.dp)) {
             PostImage(
-                post,
-                Modifier.padding(end = 16.dp)
+                post = post,
+                modifier = Modifier.padding(end = 16.dp)
             )
             Column(Modifier.weight(1f)) {
                 ProvideEmphasis(EmphasisAmbient.current.medium) {
@@ -108,10 +120,14 @@ fun PostCardHistory(post: Post) {
                     )
                 }
                 PostTitle(post = post)
-                AuthorAndReadTime(post)
+                AuthorAndReadTime(
+                    post = post,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
-            Modifier.padding(top = 8.dp, bottom = 8.dp)
-            Image(vectorResource(R.drawable.ic_more))
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                Icon(asset = Icons.Filled.MoreVert)
+            }
         }
     }
 }
@@ -119,45 +135,25 @@ fun PostCardHistory(post: Post) {
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,
-    onBookmark: (Boolean) -> Unit
+    onBookmark: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    IconToggleButton(checked = isBookmarked, onCheckedChange = onBookmark) {
+    IconToggleButton(
+        checked = isBookmarked,
+        onCheckedChange = onBookmark
+    ) {
+        modifier.fillMaxSize()
         if (isBookmarked) {
-            Icon(vectorResource(R.drawable.ic_bookmarked), Modifier.fillMaxSize())
+            Icon(
+                asset = Icons.Filled.Bookmark,
+                modifier = modifier
+            )
         } else {
-            Icon(vectorResource(R.drawable.ic_bookmark), Modifier.fillMaxSize())
+            Icon(
+                asset = Icons.Filled.BookmarkBorder,
+                modifier = modifier
+            )
         }
-    }
-}
-
-@Preview("Bookmark Button")
-@Composable
-fun PreviewBookmarkButton() {
-    val (bookmarked, updateBookmarked) = state { false }
-    BookmarkButton(isBookmarked = bookmarked, onBookmark = updateBookmarked)
-}
-
-@Preview("Simple post card")
-@Composable
-fun PreviewSimplePost() {
-    ThemedPreview {
-        PostCardSimple(post = post3)
-    }
-}
-
-@Preview("History post card")
-@Composable
-fun PreviewHistoryPost() {
-    ThemedPreview {
-        PostCardHistory(post = post3)
-    }
-}
-
-@Preview("Simple post card dark theme")
-@Composable
-fun PreviewSimplePostDark() {
-    ThemedPreview(darkTheme = true) {
-        PostCardSimple(post = post3)
     }
 }
 
@@ -172,3 +168,47 @@ fun toggleBookmark(postId: String) {
 }
 
 fun isFavorite(postId: String) = JetnewsStatus.favorites.contains(postId)
+
+@Preview("Bookmark Button")
+@Composable
+fun BookmarkButtonPreview() {
+    ThemedPreview {
+        Surface {
+            BookmarkButton(isBookmarked = false, onBookmark = { })
+        }
+    }
+}
+
+@Preview("Bookmark Button Bookmarked")
+@Composable
+fun BookmarkButtonBookmarkedPreview() {
+    ThemedPreview {
+        Surface {
+            BookmarkButton(isBookmarked = true, onBookmark = { })
+        }
+    }
+}
+
+@Preview("Simple post card")
+@Composable
+fun SimplePostPreview() {
+    ThemedPreview {
+        PostCardSimple(post = post3)
+    }
+}
+
+@Preview("Post History card")
+@Composable
+fun HistoryPostPreview() {
+    ThemedPreview {
+        PostCardHistory(post = post3)
+    }
+}
+
+@Preview("Simple post card dark theme")
+@Composable
+fun SimplePostDarkPreview() {
+    ThemedPreview(darkTheme = true) {
+        PostCardSimple(post = post3)
+    }
+}
