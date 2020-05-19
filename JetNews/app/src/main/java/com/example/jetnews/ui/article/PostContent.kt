@@ -103,7 +103,7 @@ private fun PostHeaderImage(post: Post) {
         val imageModifier = Modifier
             .preferredHeightIn(minHeight = 180.dp)
             .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(4.dp))
+            .clip(shape = MaterialTheme.shapes.medium)
         Image(image, imageModifier, contentScale = ContentScale.Crop)
         Spacer(Modifier.preferredHeight(defaultSpacerSize))
     }
