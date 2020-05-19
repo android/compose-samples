@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Image
@@ -54,7 +55,13 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
         ) {
             Column {
                 val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
-                Image(image, Modifier.preferredHeight(100.dp).fillMaxSize())
+                Image(
+                    asset = image,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .preferredHeight(100.dp)
+                        .fillMaxSize())
+
                 Column(modifier = Modifier.padding(16.dp)) {
                     val emphasisLevels = EmphasisAmbient.current
                     ProvideEmphasis(emphasisLevels.high) {

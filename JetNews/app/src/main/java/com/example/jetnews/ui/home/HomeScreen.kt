@@ -73,7 +73,7 @@ import com.example.jetnews.ui.state.loading
 import com.example.jetnews.ui.state.previewDataFrom
 import com.example.jetnews.ui.state.refreshableUiStateFrom
 import com.example.jetnews.ui.state.refreshing
-import com.example.jetnews.ui.theme.Red300
+import com.example.jetnews.ui.theme.snackbarAction
 
 @Composable
 fun HomeScreen(
@@ -216,7 +216,7 @@ fun ErrorSnackbar(
                 ) {
                     Text(
                         text = "RETRY",
-                        color = Red300
+                        color = MaterialTheme.colors.snackbarAction
                     )
                 }
             }

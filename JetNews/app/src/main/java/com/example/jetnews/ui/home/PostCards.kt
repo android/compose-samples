@@ -18,6 +18,7 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
+import androidx.ui.core.clip
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
@@ -71,7 +72,12 @@ fun AuthorAndReadTime(
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
     val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
-    Image(image, modifier.preferredSize(40.dp, 40.dp))
+    Image(
+        asset = image,
+        modifier = modifier
+            .preferredSize(40.dp, 40.dp)
+            .clip(MaterialTheme.shapes.small)
+    )
 }
 
 @Composable

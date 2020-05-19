@@ -27,7 +27,6 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.Column
@@ -190,7 +189,7 @@ private fun CodeBlockParagraph(
 ) {
     Surface(
         color = MaterialTheme.colors.codeBlockBackground,
-        shape = RoundedCornerShape(4.dp),
+        shape = MaterialTheme.shapes.small,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
