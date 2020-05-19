@@ -18,23 +18,20 @@ package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.compose.setValue
 import androidx.compose.state
+import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.contentColor
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
+import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
@@ -44,6 +41,8 @@ import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.ArrowBack
+import androidx.ui.material.icons.filled.FavoriteBorder
+import androidx.ui.material.icons.filled.Share
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -84,8 +83,8 @@ private fun ArticleScreen(post: Post) {
                 title = {
                     Text(
                         text = "Published in: ${post.publication?.name}",
-                        // FIXME(b/143626708): this contentColor() is a bug workaround
-                        style = MaterialTheme.typography.subtitle2.copy(color = contentColor())
+                        style = MaterialTheme.typography.subtitle2,
+                        color = contentColor()
                     )
                 },
                 navigationIcon = {
@@ -106,31 +105,30 @@ private fun ArticleScreen(post: Post) {
 
 @Composable
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
-    val context = ContextAmbient.current
     Surface(elevation = 2.dp) {
-        Box(modifier = Modifier.preferredHeight(56.dp).fillMaxSize()) {
-            Row {
-                BottomBarAction(R.drawable.ic_favorite) { onUnimplementedAction() }
+            Row(
+                verticalGravity = Alignment.CenterVertically,
+                modifier = Modifier
+                    .preferredHeight(56.dp)
+                    .fillMaxWidth()
+            ) {
+                IconButton(onClick = onUnimplementedAction) {
+                    Icon(Icons.Filled.FavoriteBorder)
+                }
                 BookmarkButton(
                     isBookmarked = isFavorite(postId = post.id),
                     onBookmark = { toggleBookmark(postId = post.id) }
                 )
-                BottomBarAction(R.drawable.ic_share) { sharePost(post, context) }
+                val context = ContextAmbient.current
+                IconButton(onClick = { sharePost(post, context) }) {
+                    Icon(Icons.Filled.Share)
+                }
                 Spacer(modifier = Modifier.weight(1f))
-                BottomBarAction(R.drawable.ic_text_settings) { onUnimplementedAction() }
+                IconButton(onClick = onUnimplementedAction) {
+                    Icon(vectorResource(R.drawable.ic_text_settings))
+                }
             }
         }
-    }
-}
-
-@Composable
-private fun BottomBarAction(
-    @DrawableRes id: Int,
-    onClick: () -> Unit
-) {
-    IconButton(onClick = onClick, modifier = Modifier.padding(12.dp).preferredSize(24.dp, 24.dp)) {
-        Icon(vectorResource(id))
-    }
 }
 
 @Composable

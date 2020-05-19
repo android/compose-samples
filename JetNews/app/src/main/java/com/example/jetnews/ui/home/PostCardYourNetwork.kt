@@ -17,11 +17,11 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
@@ -46,14 +46,22 @@ import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.preferredSize(280.dp, 240.dp), shape = RoundedCornerShape(4.dp)) {
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        modifier = modifier.preferredSize(280.dp, 240.dp)) {
         Clickable(
             modifier = Modifier.ripple(),
             onClick = { navigateTo(Screen.Article(post.id)) }
         ) {
             Column {
                 val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
-                Image(image, Modifier.preferredHeight(100.dp).fillMaxSize())
+                Image(
+                    asset = image,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .preferredHeight(100.dp)
+                        .fillMaxSize())
+
                 Column(modifier = Modifier.padding(16.dp)) {
                     val emphasisLevels = EmphasisAmbient.current
                     ProvideEmphasis(emphasisLevels.high) {

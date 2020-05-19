@@ -23,7 +23,6 @@ import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
@@ -50,7 +49,7 @@ fun PostCardTop(post: Post) {
             val imageModifier = Modifier
                 .preferredHeightIn(minHeight = 180.dp)
                 .fillMaxWidth()
-                .clip(shape = RoundedCornerShape(4.dp))
+                .clip(shape = MaterialTheme.shapes.medium)
             Image(image, modifier = imageModifier, contentScale = ContentScale.Crop)
         }
         Spacer(Modifier.preferredHeight(16.dp))

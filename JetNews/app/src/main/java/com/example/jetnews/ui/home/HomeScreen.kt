@@ -22,6 +22,7 @@ import androidx.compose.Composable
 import androidx.compose.onActive
 import androidx.compose.remember
 import androidx.compose.stateFor
+import androidx.core.os.postDelayed
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
@@ -31,6 +32,7 @@ import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -71,6 +73,7 @@ import com.example.jetnews.ui.state.loading
 import com.example.jetnews.ui.state.previewDataFrom
 import com.example.jetnews.ui.state.refreshableUiStateFrom
 import com.example.jetnews.ui.state.refreshing
+import com.example.jetnews.ui.theme.snackbarAction
 
 @Composable
 fun HomeScreen(
@@ -192,13 +195,12 @@ fun ErrorSnackbar(
     onDismiss: () -> Unit = { }
 ) {
     if (showError) {
-
         // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
         onActive {
             // With coroutines, this will be cancellable
-            Handler(Looper.getMainLooper()).postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed(5000L) {
                 onDismiss()
-            }, 5000L)
+            }
         }
 
         Snackbar(
@@ -209,9 +211,13 @@ fun ErrorSnackbar(
                     onClick = {
                         onErrorAction()
                         onDismiss()
-                    }
+                    },
+                    contentColor = contentColor()
                 ) {
-                    Text("RETRY")
+                    Text(
+                        text = "RETRY",
+                        color = MaterialTheme.colors.snackbarAction
+                    )
                 }
             }
         )
@@ -277,7 +283,7 @@ private fun HomeScreenHistorySection(posts: List<Post>) {
 @Composable
 private fun HomeScreenDivider() {
     Divider(
-        modifier = Modifier.padding(start = 14.dp, end = 14.dp),
+        modifier = Modifier.padding(horizontal = 14.dp),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
     )
 }

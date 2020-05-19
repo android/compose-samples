@@ -22,14 +22,13 @@ import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
+import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
@@ -45,7 +44,8 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Surface
 import androidx.ui.material.Typography
-import androidx.ui.res.vectorResource
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.AccountCircle
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.FirstBaseline
 import androidx.ui.text.ParagraphStyle
@@ -60,7 +60,6 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -103,7 +102,7 @@ private fun PostHeaderImage(post: Post) {
         val imageModifier = Modifier
             .preferredHeightIn(minHeight = 180.dp)
             .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(4.dp))
+            .clip(shape = MaterialTheme.shapes.medium)
         Image(image, imageModifier, contentScale = ContentScale.Crop)
         Spacer(Modifier.preferredHeight(defaultSpacerSize))
     }
@@ -113,7 +112,12 @@ private fun PostHeaderImage(post: Post) {
 private fun PostMetadata(metadata: Metadata) {
     val typography = MaterialTheme.typography
     Row {
-        Icon(vectorResource(R.drawable.ic_account_circle_black))
+        Image(
+            asset = Icons.Filled.AccountCircle,
+            modifier = Modifier.preferredSize(40.dp),
+            colorFilter = ColorFilter.tint(contentColor()),
+            contentScale = ContentScale.Fit
+        )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
             ProvideEmphasis(EmphasisAmbient.current.high) {
@@ -185,7 +189,7 @@ private fun CodeBlockParagraph(
 ) {
     Surface(
         color = MaterialTheme.colors.codeBlockBackground,
-        shape = RoundedCornerShape(4.dp),
+        shape = MaterialTheme.shapes.small,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
