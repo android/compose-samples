@@ -18,7 +18,9 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.Composable
 import androidx.compose.MutableState
-import androidx.compose.State
+import androidx.compose.getValue
+import androidx.compose.remember
+import androidx.compose.setValue
 import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -36,7 +38,6 @@ import androidx.ui.input.KeyboardType
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
-import androidx.ui.layout.RowAlign
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
@@ -58,6 +59,7 @@ import androidx.ui.material.icons.filled.Place
 import androidx.ui.material.icons.filled.Send
 import androidx.ui.material.icons.filled.ThumbUp
 import androidx.ui.material.ripple.ripple
+import androidx.ui.savedinstancestate.savedInstanceState
 import androidx.ui.text.style.TextAlign
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -81,34 +83,34 @@ fun UserInputPreview() {
 
 @Composable
 fun UserInput(
+    // TODO: Default non-empty modifier = bad
     modifier: Modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
-    onSelectorStateChanged: (Boolean) -> Unit = { },
-    onMessageSent: (String) -> Unit = { },
-    backState: State<Boolean> = state { false }
+    onMessageSent: (String) -> Unit = { }
 ) {
-    //TODO remember this in SavedInstanceState
-    val currentInputSelector = InputSelectorState(onSelectorStateChanged = onSelectorStateChanged)
-
-    // If there's a back event, process it.
-    if (backState.value) { currentInputSelector.selector = InputSelector.NONE }
+    var currentInputSelector by savedInstanceState { InputSelector.NONE }
+    val onBackPressed = remember { { currentInputSelector = InputSelector.NONE } }
+    backPressHandler(
+        enabled = currentInputSelector != InputSelector.NONE,
+        onBackPressed = onBackPressed
+    )
 
     val textState = state { TextFieldValue() }
 
     Column(modifier = modifier) {
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.15f))
         UserInputSelector(
-            currentSelector = currentInputSelector.selector,
-            onSelectorChange = { currentInputSelector.selector = it }
+            currentSelector = currentInputSelector,
+            onSelectorChange = { currentInputSelector = it }
         )
         SelectorExpanded(
-            onCloseRequested = { currentInputSelector.close() },
+            onCloseRequested = onBackPressed,
             onTextAdded = { textState.addText(it) },
-            currentSelector = currentInputSelector.selector
+            currentSelector = currentInputSelector
         )
         UserInputText(
             textFieldValue = textState.value,
             onTextChanged = { textState.value = it },
-            onCloseSelectorRequested = { currentInputSelector.close() },
+            onCloseSelectorRequested = onBackPressed,
             onMessageSent = onMessageSent
         )
     }
@@ -262,7 +264,10 @@ private fun UserInputText(
         }
 
         IconButton(
-            modifier = Modifier.preferredSize(48.dp).padding(8.dp).gravity(RowAlign.Center),
+            modifier = Modifier
+                .preferredSize(48.dp)
+                .padding(8.dp)
+                .gravity(Alignment.CenterVertically),
             onClick = {
                 onMessageSent(textFieldValue.text)
                 // Reset

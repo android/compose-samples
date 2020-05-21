@@ -16,10 +16,8 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.DrawableRes
 import androidx.compose.Composable
-import androidx.compose.State
 import androidx.compose.getValue
 import androidx.compose.onActive
 import androidx.compose.setValue
@@ -62,18 +60,15 @@ import com.example.compose.jetchat.R
 /**
  * Entry point for a conversation screen.
  *
- * @param modifier [Modifier] to apply to this layout node
  * @param uiState [ConversationUiState] that contains messages to display
- * @param backDispatcher A [OnBackPressedDispatcher] to intercept back actions
  * @param navigateToProfile User action when navigation to a profile is requested
+ * @param modifier [Modifier] to apply to this layout node
  */
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
-    onSelectorStateChanged: (Boolean) -> Unit,
     navigateToProfile: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    backState: State<Boolean> = state { false }
+    modifier: Modifier = Modifier
 ) {
     val authorMe = stringResource(R.string.author_me)
     Surface(modifier = modifier) {
@@ -85,13 +80,11 @@ fun ConversationContent(
                 modifier = Modifier.weight(1f)
             )
             UserInput(
-                onSelectorStateChanged = onSelectorStateChanged,
                 onMessageSent = { content ->
                     uiState.addMessage(
                         Message(authorMe, content)
                     )
-                },
-                backState = backState
+                }
             )
         }
     }
@@ -230,7 +223,6 @@ fun ConversationPreview() {
     JetChatTheme {
         ConversationContent(
             uiState = ConversationUiState(),
-            onSelectorStateChanged = { },
             navigateToProfile = { }
         )
     }

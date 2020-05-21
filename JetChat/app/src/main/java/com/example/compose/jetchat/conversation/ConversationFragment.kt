@@ -21,11 +21,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.activity.OnBackPressedCallback
+import androidx.compose.Providers
 import androidx.compose.Recomposer
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -49,33 +46,20 @@ class ConversationFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent(Recomposer.current()) {
-                val backPressedState = state { false }
-
-                val backPressedCallback = object : OnBackPressedCallback(false) {
-                    override fun handleOnBackPressed() {
-                        backPressedState.value = true
+                Providers(BackPressedDispatcherAmbient provides requireActivity()) {
+                    JetChatTheme {
+                        ConversationContent(
+                            uiState = ConversationUiState(),
+                            navigateToProfile = { user ->
+                                // Click callback
+                                val bundle = bundleOf("userId" to user)
+                                findNavController().navigate(
+                                    R.id.nav_profile,
+                                    bundle
+                                )
+                            }
+                        )
                     }
-                }.also { requireActivity().onBackPressedDispatcher.addCallback(it) }
-
-                JetChatTheme {
-                    ConversationContent(
-                        uiState = ConversationUiState(),
-                        onSelectorStateChanged = { expanded ->
-                            // Enable/disable callback
-                            backPressedCallback.isEnabled = expanded
-                            // Reset back state
-                            if (expanded) backPressedState.value = false
-                        },
-                        navigateToProfile = { user ->
-                            // Click callback
-                            val bundle = bundleOf("userId" to user)
-                            findNavController().navigate(
-                                R.id.nav_profile,
-                                bundle
-                            )
-                        },
-                        backState = backPressedState
-                    )
                 }
             }
         }
