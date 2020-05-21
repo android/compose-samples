@@ -19,10 +19,10 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.fillMaxSize
@@ -37,7 +37,6 @@ import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.Bookmark
 import androidx.ui.material.icons.filled.BookmarkBorder
 import androidx.ui.material.icons.filled.MoreVert
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -89,51 +88,47 @@ fun PostTitle(post: Post) {
 
 @Composable
 fun PostCardSimple(post: Post) {
-    Clickable(
-        modifier = Modifier.ripple(),
-        onClick = { navigateTo(Screen.Article(post.id)) }
+    Row(modifier = Modifier
+        .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        .padding(16.dp)
     ) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            PostImage(post, Modifier.padding(end = 16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                PostTitle(post)
-                AuthorAndReadTime(post)
-            }
-            BookmarkButton(
-                isBookmarked = isFavorite(postId = post.id),
-                onBookmark = { toggleBookmark(postId = post.id) }
-            )
+        PostImage(post, Modifier.padding(end = 16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            PostTitle(post)
+            AuthorAndReadTime(post)
         }
+        BookmarkButton(
+            isBookmarked = isFavorite(postId = post.id),
+            onBookmark = { toggleBookmark(postId = post.id) }
+        )
     }
 }
 
 @Composable
 fun PostCardHistory(post: Post) {
-    Clickable(
-        modifier = Modifier.ripple(),
-        onClick = { navigateTo(Screen.Article(post.id)) }
+    Row(Modifier
+        .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        .padding(16.dp)
     ) {
-        Row(Modifier.padding(16.dp)) {
-            PostImage(
-                post = post,
-                modifier = Modifier.padding(end = 16.dp)
-            )
-            Column(Modifier.weight(1f)) {
-                ProvideEmphasis(EmphasisAmbient.current.medium) {
-                    Text(
-                        text = "BASED ON YOUR HISTORY",
-                        style = MaterialTheme.typography.overline
-                    )
-                }
-                PostTitle(post = post)
-                AuthorAndReadTime(
-                    post = post,
-                    modifier = Modifier.padding(top = 4.dp)
+        PostImage(
+            post = post,
+            modifier = Modifier.padding(end = 16.dp)
+        )
+        Column(Modifier.weight(1f)) {
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                Text(
+                    text = "BASED ON YOUR HISTORY",
+                    style = MaterialTheme.typography.overline
                 )
             }
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
-                Icon(asset = Icons.Filled.MoreVert)
-            }
+            PostTitle(post = post)
+            AuthorAndReadTime(
+                post = post,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+        ProvideEmphasis(EmphasisAmbient.current.medium) {
+            Icon(asset = Icons.Filled.MoreVert)
         }
     }
 }

@@ -27,11 +27,11 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.clickable
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Column
@@ -54,7 +54,6 @@ import androidx.ui.material.Snackbar
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -233,9 +232,10 @@ private fun HomeScreenTopSection(post: Post) {
             style = MaterialTheme.typography.subtitle1
         )
     }
-    Clickable(modifier = Modifier.ripple(), onClick = { navigateTo(Screen.Article(post.id)) }) {
-        PostCardTop(post = post)
-    }
+    PostCardTop(
+        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) }),
+        post = post
+    )
     HomeScreenDivider()
 }
 
