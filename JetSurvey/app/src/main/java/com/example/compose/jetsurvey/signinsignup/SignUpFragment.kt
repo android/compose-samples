@@ -44,7 +44,7 @@ class SignUpFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel.navigateTo.observe(this) { navigateTo ->
-            navigate(navigateTo, Screen.SignIn)
+            navigate(navigateTo, Screen.SignUp)
         }
 
         return FrameLayout(requireContext()).apply {

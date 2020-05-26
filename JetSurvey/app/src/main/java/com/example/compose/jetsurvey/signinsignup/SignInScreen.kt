@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.Composable
-import androidx.compose.state
+import androidx.compose.remember
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
@@ -60,25 +60,21 @@ fun SignIn(onEvent: (SignInEvent) -> Unit) {
 @Composable
 fun SignInContent(onSignInSubmitted: (email: String, password: String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        val emailValidState = state {
-            EmailState("", false)
-        }
-        Email(onEmailChanged = { emailState ->
-            emailValidState.value = emailState
-        })
+        val emailValidState = remember { EmailState() }
+        Email(emailValidState)
         Spacer(modifier = Modifier.preferredHeight(8.dp))
 
-        val passwordText = state { "" }
+        val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
-            onPasswordChanged = { passwordText.value = it }
+            passwordState = passwordState
         )
         Spacer(modifier = Modifier.preferredHeight(32.dp))
 
         Button(
-            onClick = { onSignInSubmitted(emailValidState.value.email, passwordText.value) },
+            onClick = { onSignInSubmitted(emailValidState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = emailValidState.value.isValid
+            enabled = emailValidState.isValid
         ) {
             Text(
                 text = stringResource(id = R.string.sign_in),

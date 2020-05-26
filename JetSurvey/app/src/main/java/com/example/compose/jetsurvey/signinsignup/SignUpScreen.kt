@@ -17,9 +17,7 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
+import androidx.compose.remember
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
@@ -33,7 +31,6 @@ import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.isPasswordValid
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 sealed class SignUpEvent {
@@ -63,31 +60,29 @@ fun SignUp(onEvent: (SignUpEvent) -> Unit) {
 @Composable
 fun SignUpContent(onSignUpSubmitted: (email: String, password: String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        var emailValidState by state {
-            EmailState("", false)
-        }
-        Email { emailValidState = it }
+        val emailState = remember { EmailState() }
+        Email(emailState)
         Spacer(modifier = Modifier.preferredHeight(8.dp))
 
-        var passwordText by state { "" }
+        val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
-            onPasswordChanged = { passwordText = it }
+            passwordState = passwordState
         )
         Spacer(modifier = Modifier.preferredHeight(8.dp))
 
-        var passwordConfirmationText by state { "" }
+        val confirmPasswordState = remember { ConfirmPasswordState(passwordState = passwordState) }
         Password(
             label = stringResource(id = R.string.confirm_password),
-            onPasswordChanged = { passwordConfirmationText = it }
+            passwordState = confirmPasswordState
         )
         Spacer(modifier = Modifier.preferredHeight(32.dp))
 
         Button(
-            onClick = { onSignUpSubmitted(emailValidState.email, passwordText) },
+            onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = emailValidState.isValid &&
-                    isPasswordValid(passwordText, passwordConfirmationText)
+            enabled = emailState.isValid &&
+                    passwordState.isValid && confirmPasswordState.isValid
         ) {
             Text(
                 text = stringResource(id = R.string.sign_up),

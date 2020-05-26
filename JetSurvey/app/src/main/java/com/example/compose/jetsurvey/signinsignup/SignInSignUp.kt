@@ -17,13 +17,11 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.Composable
-import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.TextFieldValue
 import androidx.ui.foundation.currentTextStyle
 import androidx.ui.input.PasswordVisualTransformation
 import androidx.ui.layout.Column
@@ -39,8 +37,6 @@ import androidx.ui.res.stringResource
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.emailValidationError
-import com.example.compose.jetsurvey.isEmailValid
 
 @Composable
 fun SignInSignUpScreen(
@@ -65,49 +61,39 @@ fun SignInSignUpScreen(
     }
 }
 
-data class EmailState(val email: String, val isValid: Boolean)
-
 @Composable
-fun Email(onEmailChanged: (EmailState) -> Unit) {
-    val (hasLostFocus, updateHasLostFocus) = state { false }
-    val (emailText, updateEmailText) = state { TextFieldValue() }
+fun Email(emailState: FilledTextFieldState) {
     FilledTextField(
-        value = emailText,
-        onValueChange = {
-            updateEmailText(it)
-            onEmailChanged(
-                EmailState(email = it.text, isValid = isEmailValid(it.text))
-            )
-        },
+        value = emailState.text,
+        onValueChange = { emailState.text = it },
         onFocusChange = { focused ->
             if (!focused) {
-                updateHasLostFocus(true)
+                emailState.enableShowErrors()
             }
         },
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(text = stringResource(id = R.string.email)) }
+        label = { Text(text = stringResource(id = R.string.email)) },
+        isErrorValue = emailState.showErrors()
     )
 
-    if (hasLostFocus && !isEmailValid(emailText.text)) {
-        FilledTextFieldError(
-            textError = emailValidationError(emailText.text)
-        )
-    }
+    emailState.getError()?.let { error -> FilledTextFieldError(textError = error) }
 }
 
 @Composable
-fun Password(label: String, onPasswordChanged: (String) -> Unit) {
-    val (passwordTextState, updatePasswordState) = state { "" }
+fun Password(label: String, passwordState: FilledTextFieldState) {
     FilledTextField(
-        value = passwordTextState,
+        value = passwordState.text,
         onValueChange = {
-            updatePasswordState(it)
-            onPasswordChanged(it)
+            passwordState.text = it
+            passwordState.enableShowErrors()
         },
         modifier = Modifier.fillMaxWidth(),
         label = { Text(text = label) },
-        visualTransformation = PasswordVisualTransformation()
+        visualTransformation = PasswordVisualTransformation(),
+        isErrorValue = passwordState.showErrors()
     )
+
+    passwordState.getError()?.let { error -> FilledTextFieldError(textError = error) }
 }
 
 /**
