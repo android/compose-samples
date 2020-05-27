@@ -15,11 +15,5 @@
   ~
   -->
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.JetChat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/statusBarColor</item>
-        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-    </style>
-
-    <style name="Widget.JetChat.NavigationView" parent="Widget.MaterialComponents.NavigationView" />
+    <color name="statusBarColor">#000000</color>
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.TextFieldValue
 import androidx.ui.foundation.currentTextStyle
@@ -35,10 +36,9 @@ import androidx.ui.material.FilledTextField
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
 import androidx.ui.res.stringResource
-import androidx.ui.text.style.TextAlign
+import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.brandColor
 import com.example.compose.jetsurvey.emailValidationError
 import com.example.compose.jetsurvey.isEmailValid
 
@@ -127,9 +127,8 @@ fun FilledTextFieldError(textError: String) {
 
 @Composable
 fun Logo(modifier: Modifier = Modifier) {
-    Text(
-        text = stringResource(id = R.string.app_name),
-        style = MaterialTheme.typography.h2.copy(color = brandColor, textAlign = TextAlign.End),
+    Image(
+        asset = vectorResource(id = R.drawable.ic_logo_group),
         modifier = modifier
     )
 }

@@ -26,11 +26,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.ui.core.setContent
-import androidx.ui.material.MaterialTheme
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.Screen
-import com.example.compose.jetsurvey.lightThemeColors
 import com.example.compose.jetsurvey.navigate
+import com.example.compose.jetsurvey.theme.AppTheme
 
 /**
  * Fragment containing the sign in UI.
@@ -56,7 +55,7 @@ class SignInFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent(Recomposer.current()) {
-                MaterialTheme(colors = lightThemeColors) {
+                AppTheme {
                     SignIn(
                         onEvent = { event ->
                             when (event) {

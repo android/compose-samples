@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey
+package com.example.compose.jetsurvey.theme
 
-import androidx.ui.graphics.Color
-import androidx.ui.material.lightColorPalette
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.material.Shapes
+import androidx.ui.unit.dp
 
-val brandColor = Color(0xFFDD0D3C)
-
-//todo full theming
-
-val lightThemeColors = lightColorPalette(
-    primary = brandColor,
-    primaryVariant = Color(0xFFC20029),
-    onPrimary = Color.White,
-    secondary = Color.White,
-    onSecondary = Color.Black,
-    background = Color.White,
-    onBackground = Color.Black,
-    surface = Color.White,
-    onSurface = Color.Black,
-    error = Color(0xFFD00036),
-    onError = Color.White
+val shapes = Shapes(
+    small = RoundedCornerShape(12.dp)
 )
