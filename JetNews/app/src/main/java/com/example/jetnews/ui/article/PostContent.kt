@@ -73,26 +73,26 @@ private val defaultSpacerSize = 16.dp
 
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
-    VerticalScroller {
-        Column(modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)) {
-            Spacer(Modifier.preferredHeight(defaultSpacerSize))
-            PostHeaderImage(post)
-            Text(text = post.title, style = MaterialTheme.typography.h4)
-            Spacer(Modifier.preferredHeight(8.dp))
-            post.subtitle?.let { subtitle ->
-                ProvideEmphasis(EmphasisAmbient.current.medium) {
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.body2.merge(TextStyle(lineHeight = 20.sp))
-                    )
-                }
-                Spacer(Modifier.preferredHeight(defaultSpacerSize))
+    VerticalScroller(
+        modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)
+    ) {
+        Spacer(Modifier.preferredHeight(defaultSpacerSize))
+        PostHeaderImage(post)
+        Text(text = post.title, style = MaterialTheme.typography.h4)
+        Spacer(Modifier.preferredHeight(8.dp))
+        post.subtitle?.let { subtitle ->
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.body2.merge(TextStyle(lineHeight = 20.sp))
+                )
             }
-            PostMetadata(post.metadata)
-            Spacer(Modifier.preferredHeight(24.dp))
-            PostContents(post.paragraphs)
-            Spacer(Modifier.preferredHeight(48.dp))
+            Spacer(Modifier.preferredHeight(defaultSpacerSize))
         }
+        PostMetadata(post.metadata)
+        Spacer(Modifier.preferredHeight(24.dp))
+        PostContents(post.paragraphs)
+        Spacer(Modifier.preferredHeight(48.dp))
     }
 }
 

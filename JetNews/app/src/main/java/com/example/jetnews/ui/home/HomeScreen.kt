@@ -35,7 +35,6 @@ import androidx.ui.foundation.clickable
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Column
-import androidx.ui.layout.Row
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
@@ -169,13 +168,11 @@ private fun HomeScreenBody(
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    VerticalScroller {
-        Column(modifier) {
-            HomeScreenTopSection(postTop)
-            HomeScreenSimpleSection(postsSimple)
-            HomeScreenPopularSection(postsPopular)
-            HomeScreenHistorySection(postsHistory)
-        }
+    VerticalScroller(modifier = modifier) {
+        HomeScreenTopSection(postTop)
+        HomeScreenSimpleSection(postsSimple)
+        HomeScreenPopularSection(postsPopular)
+        HomeScreenHistorySection(postsHistory)
     }
 }
 
@@ -259,11 +256,9 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
                 style = MaterialTheme.typography.subtitle1
             )
         }
-        HorizontalScroller {
-            Row(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
-                posts.forEach { post ->
-                    PostCardPopular(post, Modifier.padding(start = 16.dp))
-                }
+        HorizontalScroller(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
+            posts.forEach { post ->
+                PostCardPopular(post, Modifier.padding(start = 16.dp))
             }
         }
         HomeScreenDivider()
