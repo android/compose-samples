@@ -233,8 +233,8 @@ private fun HomeScreenTopSection(post: Post) {
         )
     }
     PostCardTop(
-        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) }),
-        post = post
+        post = post,
+        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
     )
     HomeScreenDivider()
 }

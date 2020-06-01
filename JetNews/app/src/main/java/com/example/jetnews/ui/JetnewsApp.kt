@@ -69,11 +69,11 @@ private fun AppContent(
 ) {
     Crossfade(JetnewsStatus.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
-            when (val currentScreen = screen.value) {
+            when (screen) {
                 is Screen.Home -> HomeScreen(postsRepository = postsRepository)
                 is Screen.Interests -> InterestsScreen(interestsRepository = interestsRepository)
                 is Screen.Article -> ArticleScreen(
-                    postId = currentScreen.postId,
+                    postId = screen.postId,
                     postsRepository = postsRepository
                 )
             }
@@ -190,7 +190,7 @@ private fun DrawerButton(
 fun PreviewJetnewsApp() {
     ThemedPreview {
         AppDrawer(
-            currentScreen = JetnewsStatus.currentScreen.value,
+            currentScreen = JetnewsStatus.currentScreen,
             closeDrawer = { }
         )
     }
@@ -201,7 +201,7 @@ fun PreviewJetnewsApp() {
 fun PreviewJetnewsAppDark() {
     ThemedPreview(darkTheme = true) {
         AppDrawer(
-            currentScreen = JetnewsStatus.currentScreen.value,
+            currentScreen = JetnewsStatus.currentScreen,
             closeDrawer = { }
         )
     }
