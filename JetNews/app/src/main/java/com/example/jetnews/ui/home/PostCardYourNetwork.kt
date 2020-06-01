@@ -85,7 +85,6 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
                 }
             }
         }
-
     }
 }
 
