@@ -192,7 +192,6 @@ private fun TabWithSections(
                 )
                 TopicDivider()
             }
-
         }
     }
 }
