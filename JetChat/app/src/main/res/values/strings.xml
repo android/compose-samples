@@ -32,6 +32,8 @@
     <string name="profile">Profile</string>
     <string name="jumpBottom">Jump to bottom</string>
     <string name="author_me">me</string>
+    <string name="now">8:30 PM</string>
+    <string name="members">%d members</string>
 
     <string name="message">Message</string>
     <string name="edit_profile">Edit Profile</string>

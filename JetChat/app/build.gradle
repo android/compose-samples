@@ -63,9 +63,9 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     implementation("androidx.compose:compose-runtime:$compose_version")
-    implementation("androidx.ui:ui-framework:$compose_version")
     implementation("androidx.ui:ui-layout:$compose_version")
     implementation("androidx.ui:ui-material:$compose_version")
+    implementation("androidx.ui:ui-material-icons-extended:$compose_version")
     implementation("androidx.ui:ui-foundation:$compose_version")
     implementation("androidx.ui:ui-livedata:$compose_version")
     implementation("androidx.ui:ui-saved-instance-state:$compose_version")
@@ -73,7 +73,7 @@ dependencies {
     implementation "androidx.ui:ui-tooling:$compose_version"
     implementation('androidx.appcompat:appcompat:1.1.0')
     implementation('androidx.activity:activity-ktx:1.1.0')
-    implementation "androidx.core:core-ktx:1.2.0"
+    implementation "androidx.core:core-ktx:1.1.0"
     implementation "com.google.android.material:material:1.1.0"
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
@@ -86,7 +86,7 @@ dependencies {
     androidTestImplementation("androidx.test:rules:1.2.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.1")
     androidTestImplementation("androidx.test:runner:1.2.0")
-    androidTestImplementation("androidx.ui:ui-platform:$compose_version")
+    androidTestImplementation("androidx.ui:ui-core:$compose_version")
     androidTestImplementation("androidx.ui:ui-test:$compose_version")
 
 }

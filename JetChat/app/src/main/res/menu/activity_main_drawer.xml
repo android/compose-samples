@@ -22,7 +22,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_crane_drawer"
+            android:icon="@drawable/ic_jetchat"
             android:title="@string/conversations" />
         <item
             android:id="@+id/nav_profile"
