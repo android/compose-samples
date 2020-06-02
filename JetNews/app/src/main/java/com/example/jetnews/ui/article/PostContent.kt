@@ -74,7 +74,7 @@ private val defaultSpacerSize = 16.dp
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
     VerticalScroller(
-        modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)
+        modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
         Spacer(Modifier.preferredHeight(defaultSpacerSize))
         PostHeaderImage(post)
