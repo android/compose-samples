@@ -23,14 +23,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.Recomposer
-import androidx.compose.State
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.ui.core.setContent
 import androidx.ui.livedata.observeAsState
-import com.example.compose.jetchat.JetChatProfileTheme
-import com.example.compose.jetchat.JetChatTheme
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.theme.JetchatTheme
 
 class ProfileFragment : Fragment() {
 
@@ -59,12 +57,10 @@ class ProfileFragment : Fragment() {
             )
             setContent(Recomposer.current()) {
                 viewModel.userData.observeAsState().value.let { userData: ProfileScreenState? ->
-                    if (userData == null) {
-                        JetChatTheme {
+                    JetchatTheme {
+                        if (userData == null) {
                             ProfileError()
-                        }
-                    } else {
-                        JetChatProfileTheme(userData.isMe()) {
+                        } else {
                             ProfileScreen(userData = userData)
                         }
                     }

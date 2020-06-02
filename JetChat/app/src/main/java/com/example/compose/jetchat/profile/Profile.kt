@@ -17,8 +17,6 @@
 package com.example.compose.jetchat.profile
 
 import androidx.compose.Composable
-import androidx.compose.State
-import androidx.compose.mutableStateOf
 import androidx.ui.animation.animatedFloat
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
@@ -42,7 +40,6 @@ import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxHeight
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.offset
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.wrapContentHeight
@@ -60,9 +57,8 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.Px
 import androidx.ui.unit.dp
 import androidx.ui.unit.px
-import com.example.compose.jetchat.JetChatProfileTheme
 import com.example.compose.jetchat.R
-
+import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
 fun ProfileScreen(userData: ProfileScreenState) {
@@ -76,8 +72,7 @@ fun ProfileScreen(userData: ProfileScreenState) {
         VerticalScroller(modifier = Modifier.fillMaxSize(), scrollerPosition = scrollerPosition) {
             Surface {
                 Column(
-                    modifier = Modifier
-                        .drawLayer(translationY = position.value)
+                    modifier = Modifier.drawLayer(translationY = position.value)
                 ) {
                     ProfileHeader(
                         scrollerPosition,
@@ -233,7 +228,7 @@ fun ProfileError() {
 @Preview(widthDp = 480, name = "480 width - Me")
 @Composable
 fun ConvPreview480MeDefault() {
-    JetChatProfileTheme(userIsMe = true) {
+    JetchatTheme {
         ProfileScreen(aliConnors)
     }
 }
@@ -241,7 +236,7 @@ fun ConvPreview480MeDefault() {
 @Preview(widthDp = 480, name = "480 width - Other")
 @Composable
 fun ConvPreview480OtherDefault() {
-    JetChatProfileTheme(userIsMe = false) {
+    JetchatTheme {
         ProfileScreen(aliConnors)
     }
 }

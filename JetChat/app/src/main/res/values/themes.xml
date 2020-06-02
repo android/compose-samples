@@ -16,6 +16,19 @@
 
 <resources>
 
-    <style name="Widget.Jetchat.NavigationView" parent="Widget.MaterialComponents.NavigationView" />
+    <style name="Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar" >
+        <item name="colorPrimary">@color/blue500</item>
+        <item name="colorPrimaryDark">@color/blue800</item>
+        <item name="colorAccent">@color/yellow700</item>
+    </style>
+
+    <style name="Theme.Jetchat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Jetchat.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <style name="Theme.Jetchat.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
 </resources>
