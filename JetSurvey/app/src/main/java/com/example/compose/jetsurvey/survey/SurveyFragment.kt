@@ -30,7 +30,8 @@ import com.example.compose.jetsurvey.theme.AppTheme
 class SurveyFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return FrameLayout(requireContext()).apply {

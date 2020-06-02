@@ -39,7 +39,8 @@ class SignInFragment : Fragment() {
     private val viewModel: SignInViewModel by viewModels { SignInViewModelFactory() }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         viewModel.navigateTo.observe(this) { navigateTo ->

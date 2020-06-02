@@ -26,7 +26,6 @@ import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.preferredHeight
 import androidx.ui.material.Button
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
 import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview

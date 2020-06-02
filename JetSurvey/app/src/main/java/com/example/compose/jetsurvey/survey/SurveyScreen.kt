@@ -20,7 +20,6 @@ import androidx.compose.Composable
 import androidx.ui.foundation.Text
 
 @Composable
-fun SurveyContent(){
+fun SurveyContent() {
     Text(text = "Which Jetpack library are you?")
 }
-
