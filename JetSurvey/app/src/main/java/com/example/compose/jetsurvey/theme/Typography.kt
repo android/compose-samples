@@ -24,14 +24,14 @@ import androidx.ui.text.font.fontFamily
 import androidx.ui.unit.sp
 import com.example.compose.jetsurvey.R
 
-val montserratFontFamily = fontFamily(
+val MontserratFontFamily = fontFamily(
     font(R.font.montserrat_regular),
     font(R.font.montserrat_medium, FontWeight.Medium),
     font(R.font.montserrat_semibold, FontWeight.SemiBold)
 )
 
-val typography = Typography(
-    defaultFontFamily = montserratFontFamily,
+val Typography = Typography(
+    defaultFontFamily = MontserratFontFamily,
     h1 = TextStyle(
         fontWeight = FontWeight.W300,
         fontSize = 96.sp,

@@ -25,7 +25,7 @@ import androidx.compose.Recomposer
 import androidx.fragment.app.Fragment
 import androidx.ui.core.setContent
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.AppTheme
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 class SurveyFragment : Fragment() {
 
@@ -44,7 +44,7 @@ class SurveyFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent(Recomposer.current()) {
-                AppTheme {
+                JetsurveyTheme {
                     SurveyContent()
                 }
             }

@@ -29,7 +29,7 @@ import androidx.ui.core.setContent
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.Screen
 import com.example.compose.jetsurvey.navigate
-import com.example.compose.jetsurvey.theme.AppTheme
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 /**
  * Fragment containing the sign in UI.
@@ -56,7 +56,7 @@ class SignInFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent(Recomposer.current()) {
-                AppTheme {
+                JetsurveyTheme {
                     SignIn(
                         onEvent = { event ->
                             when (event) {

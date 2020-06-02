@@ -31,7 +31,7 @@ import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.AppTheme
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -91,7 +91,7 @@ fun SignInContent(onSignInSubmitted: (email: String, password: String) -> Unit) 
 @Preview
 @Composable
 fun SignInPreview() {
-    AppTheme {
+    JetsurveyTheme {
         SignIn({})
     }
 }

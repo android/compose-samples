@@ -23,7 +23,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
 
-val lightThemeColors = lightColorPalette(
+val LightThemeColors = lightColorPalette(
     primary = Color(0xFF8100EF),
     primaryVariant = Color(0xFF0000E1),
     onPrimary = Color.White,
@@ -37,7 +37,7 @@ val lightThemeColors = lightColorPalette(
     onError = Color.White
 )
 
-val darkThemeColors = darkColorPalette(
+val DarkThemeColors = darkColorPalette(
     primary = Color(0xFFCD52FC),
     primaryVariant = Color(0xFF9F00F4),
     onPrimary = Color.Black,
@@ -52,16 +52,16 @@ val darkThemeColors = darkColorPalette(
 )
 
 @Composable
-fun AppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun JetsurveyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
-        darkThemeColors
+        DarkThemeColors
     } else {
-        lightThemeColors
+        LightThemeColors
     }
     MaterialTheme(
         colors = colors,
-        typography = typography,
-        shapes = shapes,
+        typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }

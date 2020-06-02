@@ -20,6 +20,6 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.material.Shapes
 import androidx.ui.unit.dp
 
-val shapes = Shapes(
+val Shapes = Shapes(
     small = RoundedCornerShape(12.dp)
 )
