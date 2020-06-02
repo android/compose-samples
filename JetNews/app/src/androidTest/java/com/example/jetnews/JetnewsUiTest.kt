@@ -23,6 +23,7 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.doClick
 import androidx.ui.test.findByText
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,6 +47,7 @@ class JetnewsUiTest {
         findByText("Jetnews").assertIsDisplayed()
     }
 
+    @Ignore("Click is not being processed https://b.corp.google.com/issues/157979499")
     @Test
     fun app_opensArticle() {
         findAllBySubstring("Manuel Vivo")[0].doClick()
