@@ -84,7 +84,8 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
             ProvideEmphasis(EmphasisAmbient.current.medium) {
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.body2.merge(TextStyle(lineHeight = 20.sp))
+                    style = MaterialTheme.typography.body2,
+                    lineHeight = 20.sp
                 )
             }
             Spacer(Modifier.preferredHeight(defaultSpacerSize))

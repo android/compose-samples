@@ -23,7 +23,7 @@ import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
 import androidx.ui.layout.Column
-import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredSize
@@ -58,8 +58,8 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .preferredHeight(100.dp)
-                    .fillMaxSize())
-
+                    .fillMaxWidth()
+            )
             Column(modifier = Modifier.padding(16.dp)) {
                 val emphasisLevels = EmphasisAmbient.current
                 ProvideEmphasis(emphasisLevels.high) {
