@@ -16,8 +16,10 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.Model
 import androidx.compose.frames.ModelList
+import androidx.compose.getValue
+import androidx.compose.mutableStateOf
+import androidx.compose.setValue
 
 /**
  * Class defining the screens we have in the app: home, article details and interests
@@ -28,9 +30,8 @@ sealed class Screen {
     object Interests : Screen()
 }
 
-@Model
 object JetnewsStatus {
-    var currentScreen: Screen = Screen.Home
+    var currentScreen by mutableStateOf<Screen>(Screen.Home)
     val favorites = ModelList<String>()
     val selectedTopics = ModelList<String>()
 }
