@@ -47,7 +47,7 @@ class JetnewsUiTest {
         findByText("Jetnews").assertIsDisplayed()
     }
 
-    @Ignore("Click is not being processed https://b.corp.google.com/issues/157979499")
+    @Ignore("Click is not being processed https://issuetracker.google.com/issues/157979499")
     @Test
     fun app_opensArticle() {
         findAllBySubstring("Manuel Vivo")[0].doClick()
