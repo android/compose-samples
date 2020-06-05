@@ -19,8 +19,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/sign_in_fragment">
-
+    app:startDestination="@+id/welcome_fragment">
+    <fragment
+        android:id="@+id/welcome_fragment"
+        android:name="com.example.compose.jetsurvey.signinsignup.WelcomeFragment"
+        android:label="Welcome">
+    </fragment>
     <fragment
         android:id="@+id/sign_in_fragment"
         android:name="com.example.compose.jetsurvey.signinsignup.SignInFragment"

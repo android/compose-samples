@@ -19,6 +19,7 @@
     <style name="Theme.JetChat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 
     <style name="Widget.JetChat.NavigationView" parent="Widget.MaterialComponents.NavigationView" />

@@ -17,10 +17,9 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.Composable
-import androidx.ui.core.Alignment
+import androidx.compose.remember
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.currentTextStyle
 import androidx.ui.input.PasswordVisualTransformation
@@ -34,7 +33,6 @@ import androidx.ui.material.FilledTextField
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
 import androidx.ui.res.stringResource
-import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
 
@@ -43,26 +41,21 @@ fun SignInSignUpScreen(
     onSignedInAsGuest: () -> Unit,
     content: @Composable() () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Logo(
-            modifier = Modifier.weight(0.3f).gravity(Alignment.CenterHorizontally)
-        )
-        Column(modifier = Modifier.weight(0.7f).padding(24.dp)) {
-            Box(modifier = Modifier.weight(0.1f)) {
-                content()
-            }
-            TextButton(
-                onClick = { onSignedInAsGuest() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(id = R.string.sign_in_guest))
-            }
+    Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+        Box(modifier = Modifier.weight(0.1f)) {
+            content()
+        }
+        TextButton(
+            onClick = { onSignedInAsGuest() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(id = R.string.sign_in_guest))
         }
     }
 }
 
 @Composable
-fun Email(emailState: FilledTextFieldState) {
+fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
     FilledTextField(
         value = emailState.text,
         onValueChange = { emailState.text = it },
@@ -109,12 +102,4 @@ fun FilledTextFieldError(textError: String) {
             style = currentTextStyle().copy(color = MaterialTheme.colors.error)
         )
     }
-}
-
-@Composable
-fun Logo(modifier: Modifier = Modifier) {
-    Image(
-        asset = vectorResource(id = R.drawable.ic_logo_group),
-        modifier = modifier
-    )
 }

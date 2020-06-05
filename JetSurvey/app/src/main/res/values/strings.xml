@@ -15,11 +15,16 @@
   ~
   -->
 <resources>
-    <string name="app_name">JetSurvey</string>
+    <string name="app_name">Jetsurvey</string>
+    <string name="app_tagline">Better surveys with Jetpack Compose</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
     <string name="sign_in_guest">Sign in as guest</string>
+    <string name="sign_in_create_account">Sign in or create an account</string>
+    <string name="or">or</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="user_continue">Continue</string>
 </resources>
