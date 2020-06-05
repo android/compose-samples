@@ -16,7 +16,12 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorSecondary">#03DAC5</color>
+    <!-- Light -->
+    <color name="blue500">#0540F2</color>
+    <color name="blue800">#001CCF</color>
+    <color name="yellow700">#F3B711</color>
+    <!-- Dark -->
+    <color name="blue300">#6F7EF9</color>
+    <color name="blue400">#4860F7</color>
+    <color name="yellow400">#F6E547</color>
 </resources>

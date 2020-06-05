@@ -23,7 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JetChat.NoActionBar">
+        android:theme="@style/Theme.Jetchat.NoActionBar">
         <activity
             android:name=".NavActivity"
             android:windowSoftInputMode="adjustResize"

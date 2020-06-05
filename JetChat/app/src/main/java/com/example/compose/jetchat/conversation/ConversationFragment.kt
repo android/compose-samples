@@ -27,8 +27,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.ui.core.setContent
-import com.example.compose.jetchat.JetChatTheme
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
 
@@ -47,7 +47,7 @@ class ConversationFragment : Fragment() {
             )
             setContent(Recomposer.current()) {
                 Providers(BackPressedDispatcherAmbient provides requireActivity()) {
-                    JetChatTheme {
+                    JetchatTheme {
                         ConversationContent(
                             uiState = ConversationUiState(),
                             navigateToProfile = { user ->

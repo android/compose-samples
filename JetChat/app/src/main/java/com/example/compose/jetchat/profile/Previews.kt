@@ -17,68 +17,52 @@
 package com.example.compose.jetchat.profile
 
 import androidx.compose.Composable
-import androidx.compose.State
-import androidx.compose.mutableStateOf
-import androidx.compose.state
 import androidx.ui.tooling.preview.Preview
-import com.example.compose.jetchat.JetChatProfileTheme
-
+import com.example.compose.jetchat.theme.JetchatTheme
 
 @Preview(widthDp = 340, name = "340 width - Me")
 @Composable
 fun ProfilePreview340() {
-    JetChatProfileTheme(userIsMe = true) {
-        ProfileScreen(
-            aliConnors
-        )
+    JetchatTheme {
+        ProfileScreen(aliConnors)
     }
 }
 
 @Preview(widthDp = 480, name = "480 width - Me")
 @Composable
 fun ProfilePreview480Me() {
-    JetChatProfileTheme(userIsMe = true) {
-        ProfileScreen(
-            aliConnors
-        )
+    JetchatTheme {
+        ProfileScreen(aliConnors)
     }
 }
 
 @Preview(widthDp = 480, name = "480 width - Other")
 @Composable
 fun ProfilePreview480Other() {
-    JetChatProfileTheme(userIsMe = false) {
-        ProfileScreen(
-            someOneElse
-        )
+    JetchatTheme {
+        ProfileScreen(someOneElse)
     }
 }
 @Preview(widthDp = 340, name = "340 width - Me - Dark")
 @Composable
 fun ProfilePreview340MeDark() {
-    JetChatProfileTheme(isDarkTheme = true, userIsMe = true) {
-        ProfileScreen(
-            aliConnors
-        )
+    JetchatTheme(isDarkTheme = true) {
+        ProfileScreen(aliConnors)
     }
 }
 
 @Preview(widthDp = 480, name = "480 width - Me - Dark")
 @Composable
 fun ProfilePreview480MeDark() {
-    JetChatProfileTheme(isDarkTheme = true, userIsMe = true) {
-        ProfileScreen(
-            aliConnors
-        )
+    JetchatTheme(isDarkTheme = true) {
+        ProfileScreen(aliConnors)
     }
 }
 
 @Preview(widthDp = 480, name = "480 width - Other - Dark")
 @Composable
 fun ProfilePreview480OtherDark() {
-    JetChatProfileTheme(isDarkTheme = true, userIsMe = false) {
-        ProfileScreen(
-            someOneElse
-        )
+    JetchatTheme(isDarkTheme = true) {
+        ProfileScreen(someOneElse)
     }
 }

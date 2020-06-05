@@ -54,8 +54,8 @@ import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.PxPosition
 import androidx.ui.unit.dp
-import com.example.compose.jetchat.JetChatTheme
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.theme.JetchatTheme
 
 /**
  * Entry point for a conversation screen.
@@ -220,7 +220,7 @@ fun AuthorAndTextMessage(
 @Preview()
 @Composable
 fun ConversationPreview() {
-    JetChatTheme {
+    JetchatTheme {
         ConversationContent(
             uiState = ConversationUiState(),
             navigateToProfile = { }
