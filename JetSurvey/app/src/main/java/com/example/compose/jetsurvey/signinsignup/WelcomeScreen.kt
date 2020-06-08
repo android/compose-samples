@@ -29,7 +29,6 @@ import androidx.ui.layout.wrapContentHeight
 import androidx.ui.material.Button
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.OutlinedButton
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.res.stringResource
 import androidx.ui.res.vectorResource
@@ -96,6 +95,7 @@ private fun SignInCreateAccount(
         Email(emailState)
         Button(
             onClick = { onEvent(WelcomeEvent.SignInSignUp(emailState.text)) },
+            enabled = emailState.isValid,
             modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp)
         ) {
             Text(
@@ -103,18 +103,10 @@ private fun SignInCreateAccount(
                 style = MaterialTheme.typography.subtitle2
             )
         }
-        Text(
-            text = stringResource(id = R.string.or),
-            style = MaterialTheme.typography.subtitle2
+        OrSignInAsGuest(
+            onSignedInAsGuest = { onEvent(WelcomeEvent.SignInAsGuest) },
+            modifier = Modifier.fillMaxWidth()
         )
-        OutlinedButton(
-            onClick = { onEvent(WelcomeEvent.SignInAsGuest) },
-            modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 24.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.sign_in_guest)
-            )
-        }
     }
 }
 
