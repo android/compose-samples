@@ -70,5 +70,10 @@ fun JetchatTheme(
 ) {
     val myColors = colors ?: if (isDarkTheme) JetchatDarkPalette else JetchatLightPalette
 
-    MaterialTheme(colors = myColors, content = content, typography = JetchatTypography)
+    MaterialTheme(
+        colors = myColors,
+        content = content,
+        typography = JetchatTypography,
+        shapes = JetchatShapes
+    )
 }
