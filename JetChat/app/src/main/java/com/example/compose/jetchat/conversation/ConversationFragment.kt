@@ -27,6 +27,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.ui.core.setContent
+import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
 
@@ -57,6 +58,10 @@ class ConversationFragment : Fragment() {
                                     R.id.nav_profile,
                                     bundle
                                 )
+                            },
+                            onNavIconPressed = {
+                                // TODO: Replace with Scaffold
+                                (activity as? NavActivity)?.openDrawer()
                             }
                         )
                     }
