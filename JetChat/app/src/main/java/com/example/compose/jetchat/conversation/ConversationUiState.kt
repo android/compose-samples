@@ -17,56 +17,76 @@
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.Immutable
-import androidx.compose.Model
 import androidx.compose.frames.modelListOf
 import com.example.compose.jetchat.R
 
-@Model
-data class ConversationUiState(
-    private val _messages: MutableList<Message> = modelListOf(*initialMessages.toTypedArray()),
-    val messages: List<Message> = _messages
+class ConversationUiState(
+    val channelName: String,
+    val channelMembers: Int,
+    initialMessages: List<Message>
 ) {
+    private val _messages: MutableList<Message> = modelListOf(*initialMessages.toTypedArray())
+    val messages: List<Message> = _messages
+
     fun addMessage(msg: Message) {
         _messages.add(msg)
     }
 }
 
 @Immutable
-data class Message(val author: String, val content: String, val image: Int? = null)
+data class Message(val author: String, val content: String, val timestamp: String, val image: Int? = null)
 
 val initialMessages = listOf(
     Message(
         "Yuri Gagarin",
-        "This is Major Tom to Ground Control"
+        "This is Major Tom to Ground Control",
+        "8:00 PM"
     ),
     Message(
         "Alan Shepard",
-        "I'm stepping through the door"
+        "I'm stepping through the door",
+        "8:01 PM"
     ),
     Message(
         "Virgil Grissom",
-        "And I'm floating in a most peculiar way"
+        "And I'm floating in a most peculiar way",
+        "8:02 PM"
     ),
     Message(
         "Gherman Titov",
-        "And the stars look very different today"
-    ),
-    Message("John Glenn", "For here"),
-    Message(
-        "Scott Carpenter",
-        "Am I sitting in a tin can"
+        "And the stars look very different today",
+        "8:03 PM"
     ),
     Message(
-        "Andriyan Nikolayev",
-        "Far above the world"
+        "John Glenn",
+        "For here",
+        "8:04 PM"
     ),
     Message(
-        "Pavel Popovich",
-        "Planet Earth is blue",
-        R.drawable.ic_crane_drawer
+        "Taylor Brooks",
+        "@aliconnors Take a look at the `Flow.collectAsState()` APIs",
+        "8:05 PM"
     ),
     Message(
-        "Walter Schirra",
-        "And there's nothing I can do"
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "me",
+        "Thank you!",
+        "8:06 PM",
+        R.drawable.sticker
+    ),
+    Message(
+        "me",
+        "Check it out!",
+        "8:07 PM"
     )
+)
+
+val exampleUiState = ConversationUiState(
+    initialMessages = initialMessages,
+    channelName = "#composers",
+    channelMembers = 42
 )

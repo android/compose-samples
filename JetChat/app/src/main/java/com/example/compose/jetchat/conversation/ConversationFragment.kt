@@ -49,7 +49,7 @@ class ConversationFragment : Fragment() {
                 Providers(BackPressedDispatcherAmbient provides requireActivity()) {
                     JetchatTheme {
                         ConversationContent(
-                            uiState = ConversationUiState(),
+                            uiState = exampleUiState,
                             navigateToProfile = { user ->
                                 // Click callback
                                 val bundle = bundleOf("userId" to user)

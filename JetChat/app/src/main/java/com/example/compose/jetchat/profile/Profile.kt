@@ -63,7 +63,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun ProfileScreen(userData: ProfileScreenState) {
 
-    WithConstraints { constraints, _ ->
+    WithConstraints {
         val height = constraints.maxHeight.value.toFloat()
         val position = animatedFloat(initVal = 0f).apply { setBounds(0f, height) }
 
@@ -147,8 +147,8 @@ private fun ProfileHeader(
                     0.0f to Color.Transparent,
                     0.8f to Color.Transparent,
                     1.0f to Color(0xAA000000),
-                    startY = Px.Zero,
-                    endY = Px(profilePicHeight.value)
+                    startY = 0f,
+                    endY = profilePicHeight.value
                 )
             )
         )
