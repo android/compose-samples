@@ -60,6 +60,7 @@ fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
         value = emailState.text,
         onValueChange = { emailState.text = it },
         onFocusChange = { focused ->
+            emailState.onFocusChange(focused)
             if (!focused) {
                 emailState.enableShowErrors()
             }

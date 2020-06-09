@@ -17,14 +17,29 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.Composable
+import androidx.compose.getValue
 import androidx.compose.remember
+import androidx.compose.setValue
+import androidx.compose.state
+import androidx.ui.animation.animate
 import androidx.ui.core.Alignment
+import androidx.ui.core.Constraints
+import androidx.ui.core.DensityAmbient
+import androidx.ui.core.LayoutDirection
+import androidx.ui.core.LayoutModifier
+import androidx.ui.core.Measurable
+import androidx.ui.core.MeasureScope
 import androidx.ui.core.Modifier
+import androidx.ui.core.boundsInParent
+import androidx.ui.core.onPositioned
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.layout.Column
+import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.offsetPx
 import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.wrapContentHeight
 import androidx.ui.material.Button
 import androidx.ui.material.EmphasisAmbient
@@ -36,7 +51,11 @@ import androidx.ui.res.vectorResource
 import androidx.ui.text.font.FontWeight
 import androidx.ui.text.style.TextAlign
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.Dp
+import androidx.ui.unit.IntPx
 import androidx.ui.unit.dp
+import androidx.ui.unit.ipx
+import androidx.ui.unit.min
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
@@ -47,14 +66,51 @@ sealed class WelcomeEvent {
 
 @Composable
 fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+    var brandingBottom by state { 0f }
+    var showBranding by state { true }
+    var heightWithBranding by state { IntPx.Zero }
+
+    val currentOffsetHolder = state { 0f }
+    currentOffsetHolder.value = animate(
+        if (showBranding) 0f else -brandingBottom
+    )
+    val heightDp = with(DensityAmbient.current) { heightWithBranding.toDp() }
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .brandingPreferredHeight(showBranding, heightDp)
+            .offsetPx(y = currentOffsetHolder)
+            .onPositioned {
+                if (showBranding) {
+                    heightWithBranding = it.size.height
+                }
+            }
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
         Branding(
             modifier = Modifier.fillMaxWidth().weight(1f)
         )
+        Spacer(modifier = Modifier.weight(1f).onPositioned {
+            brandingBottom = it.boundsInParent.bottom
+        })
         SignInCreateAccount(
             onEvent = onEvent,
+            onFocusChange = { focused -> showBranding = !focused },
             modifier = Modifier.fillMaxWidth()
         )
+    }
+}
+
+private fun Modifier.brandingPreferredHeight(
+    showBranding: Boolean,
+    heightDp: Dp
+): Modifier {
+    return if (!showBranding) {
+        Modifier
+            .noHeightConstraints()
+            .preferredHeight(heightDp)
+    } else {
+        Modifier
     }
 }
 
@@ -81,6 +137,7 @@ private fun Branding(modifier: Modifier = Modifier) {
 @Composable
 private fun SignInCreateAccount(
     onEvent: (WelcomeEvent) -> Unit,
+    onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier, horizontalGravity = Alignment.CenterHorizontally) {
@@ -93,7 +150,9 @@ private fun SignInCreateAccount(
             )
         }
         val emailState = remember { EmailState() }
+        onFocusChange(emailState.isFocused)
         Email(emailState)
+
         Button(
             onClick = { onEvent(WelcomeEvent.SignInSignUp(emailState.text)) },
             modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp)
@@ -114,6 +173,30 @@ private fun SignInCreateAccount(
             Text(
                 text = stringResource(id = R.string.sign_in_guest)
             )
+        }
+    }
+}
+
+fun Modifier.noHeightConstraints() = this + NoHeightConstraints
+
+/**
+ * A modifier that removes any height constraints and positions the wrapped layout at
+ * the top of the available space. This should be provided in Compose b/158559319
+ */
+object NoHeightConstraints : LayoutModifier {
+    override fun MeasureScope.measure(
+        measurable: Measurable,
+        constraints: Constraints,
+        layoutDirection: LayoutDirection
+    ): MeasureScope.MeasureResult {
+        val placeable = measurable.measure(
+            constraints.copy(
+                minHeight = IntPx.Zero,
+                maxHeight = IntPx.Infinity
+            )
+        )
+        return layout(placeable.width, min(placeable.height, constraints.maxHeight)) {
+            placeable.place(IntPx.Zero, IntPx.Zero)
         }
     }
 }
