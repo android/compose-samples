@@ -17,21 +17,22 @@
 buildscript {
     ext.kotlin_version = '1.3.72'
     ext.compose_version = '0.1.0-SNAPSHOT'
+    ext.snapshot = '6581424'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0-alpha10'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 allprojects {
     repositories {
-        def snapshot = "6543212"
         maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
         google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         jcenter()
     }
     // Don't require parens on fun type annotations e.g. `@Composable~()~ () -> Unit`. Remove with KT1.4

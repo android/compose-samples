@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.jetsnack.ui
+package com.example.jetsnack.model
 
-import androidx.compose.Composable
-import com.example.jetsnack.ui.home.Home
-import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.ProvideInsets
+import androidx.compose.Stable
+import androidx.compose.mutableStateOf
 
-@Composable
-fun JetsnackApp() {
-    ProvideInsets {
-        JetsnackTheme {
-            Home(onSnackClick = { /* todo */ })
-        }
-    }
+@Stable
+class Filter(
+    val name: String,
+    enabled: Boolean = false
+) {
+    val enabled = mutableStateOf(enabled)
 }
+
+val filters = listOf(
+    Filter(name = "Organic"),
+    Filter(name = "Gluten-free"),
+    Filter(name = "Dairy-free"),
+    Filter(name = "Sweet"),
+    Filter(name = "Savory")
+)

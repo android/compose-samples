@@ -13,6 +13,5 @@
   the License.
   -->
 <resources>
-    <color name="immersive_sys_ui">#f2000000</color>
-    <color name="nav_bar">@color/immersive_sys_ui</color>
+    <color name="immersive_sys_ui">#f2ffffff</color>
 </resources>

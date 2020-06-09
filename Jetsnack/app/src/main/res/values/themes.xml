@@ -19,6 +19,7 @@
         <item name="colorAccent">#ff00ff</item>
         <item name="android:statusBarColor">@color/immersive_sys_ui</item>
         <item name="android:navigationBarColor">@color/nav_bar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">?attr/isLightTheme</item>
     </style>
 
 </resources>

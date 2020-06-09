@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetchat.theme
+package com.example.jetsnack.ui.theme
 
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.material.Shapes
 import androidx.ui.unit.dp
 
-val JetchatShapes = Shapes(
-    small = RoundedCornerShape(28.dp),
-    medium = RoundedCornerShape(8.dp),
+val Shapes = Shapes(
+    small = RoundedCornerShape(percent = 50),
+    medium = RoundedCornerShape(20.dp),
     large = RoundedCornerShape(0.dp)
 )

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.jetsnack.ui
+package com.example.jetsnack.model
 
-import androidx.compose.Composable
-import com.example.jetsnack.ui.home.Home
-import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.ProvideInsets
+import androidx.compose.Immutable
 
-@Composable
-fun JetsnackApp() {
-    ProvideInsets {
-        JetsnackTheme {
-            Home(onSnackClick = { /* todo */ })
-        }
-    }
-}
+@Immutable
+data class Snack(
+    val id: Long,
+    val name: String,
+    val imageUrl: String,
+    val tagline: String = "",
+    val tags: Set<String> = emptySet()
+)

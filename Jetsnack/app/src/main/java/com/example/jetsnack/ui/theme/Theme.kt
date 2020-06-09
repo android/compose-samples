@@ -17,25 +17,51 @@
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.Composable
+import androidx.compose.Providers
+import androidx.compose.Stable
+import androidx.compose.StructurallyEqual
+import androidx.compose.getValue
+import androidx.compose.mutableStateOf
+import androidx.compose.remember
+import androidx.compose.setValue
+import androidx.compose.staticAmbientOf
 import androidx.ui.foundation.isSystemInDarkTheme
+import androidx.ui.graphics.Color
+import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
 
-private val DarkColorPalette = darkColorPalette(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+private val LightColorPalette = JetsnackColorPalette(
+    gradient1 = listOf(Shadow2, Ocean3, Shadow4),
+    gradient2 = listOf(Shadow4, Ocean3, Shadow2),
+    gradient3 = listOf(Rose4, Lavender3, Rose2),
+    gradient4 = listOf(Rose2, Lavender3, Rose4),
+    materialPalette = lightColorPalette(
+        primary = Shadow5,
+        primaryVariant = Shadow5,
+        secondary = Ocean3,
+        error = Color(0xffd00036)
+    )
 )
 
-private val LightColorPalette = lightColorPalette(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
+private val DarkColorPalette = JetsnackColorPalette(
+    gradient1 = listOf(Shadow5, Ocean7, Shadow9),
+    gradient2 = listOf(Shadow9, Ocean7, Shadow5),
+    gradient3 = listOf(Rose11, Lavender7, Rose8),
+    gradient4 = listOf(Rose8, Lavender7, Rose11),
+    materialPalette = darkColorPalette(
+        primary = Shadow1,
+        primaryVariant = Shadow1,
+        secondary = Ocean7,
+        background = Color.Black,
+        surface = Color.Black,
+        error = Color(0xffea6d7e)
+    )
 )
 
 @Composable
-fun AppTheme(
+fun JetsnackTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -45,10 +71,60 @@ fun AppTheme(
         LightColorPalette
     }
 
-    MaterialTheme(
-        colors = colors,
-        typography = typography,
-        shapes = Shapes,
-        content = content
-    )
+    ProvideJetsnackColors(colors) {
+        MaterialTheme(
+            colors = colors,
+            typography = Typography,
+            shapes = Shapes,
+            content = content
+        )
+    }
+}
+
+object JetsnackTheme {
+    @Composable
+    val colors: JetsnackColorPalette
+        get() = JetsnackColorAmbient.current
+}
+
+/**
+ * "Extend" Material [ColorPalette] with our own theme colors.
+ */
+@Stable
+class JetsnackColorPalette(
+    gradient1: List<Color>,
+    gradient2: List<Color>,
+    gradient3: List<Color>,
+    gradient4: List<Color>,
+    materialPalette: ColorPalette
+) : ColorPalette by materialPalette {
+    var gradient1 by mutableStateOf(gradient1, StructurallyEqual)
+        private set
+    var gradient2 by mutableStateOf(gradient2, StructurallyEqual)
+        private set
+    var gradient3 by mutableStateOf(gradient3, StructurallyEqual)
+        private set
+    var gradient4 by mutableStateOf(gradient4, StructurallyEqual)
+        private set
+
+    fun update(other: JetsnackColorPalette) {
+        gradient1 = other.gradient1
+        gradient2 = other.gradient2
+        gradient3 = other.gradient3
+        gradient4 = other.gradient4
+    }
+}
+
+@Composable
+fun ProvideJetsnackColors(
+    colors: JetsnackColorPalette,
+    content: @Composable () -> Unit
+) {
+    val colorPalette = remember { colors }
+    colorPalette.update(colors)
+    Providers(JetsnackColorAmbient provides colorPalette, children = content)
+}
+
+private val JetsnackColorAmbient = staticAmbientOf<JetsnackColorPalette> {
+    error("No JetsnackColorPalette provided")
 }
