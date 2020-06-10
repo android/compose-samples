@@ -17,7 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.Composable
-import androidx.compose.Pivotal
+import androidx.compose.key
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -37,21 +37,23 @@ import com.example.jetnews.ui.ThemedPreview
 @Composable
 fun SelectTopicButton(
     modifier: Modifier = Modifier,
-    @Pivotal selected: Boolean = false
+    selected: Boolean = false
 ) {
-    val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
-    val backgroundColor = if (selected) {
-        MaterialTheme.colors.primary
-    } else {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
-    }
-    Surface(
-        color = backgroundColor,
-        shape = CircleShape,
-        modifier = modifier.preferredSize(36.dp, 36.dp)
-    ) {
-        ProvideEmphasis(EmphasisAmbient.current.high) {
-            Icon(icon)
+    key(selected) {
+        val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
+        val backgroundColor = if (selected) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+        }
+        Surface(
+            color = backgroundColor,
+            shape = CircleShape,
+            modifier = modifier.preferredSize(36.dp, 36.dp)
+        ) {
+            ProvideEmphasis(EmphasisAmbient.current.high) {
+                Icon(icon)
+            }
         }
     }
 }

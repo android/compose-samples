@@ -155,19 +155,17 @@ private fun PublicationsTab(publications: List<String>) {
 
 @Composable
 private fun TabWithTopics(tabName: String, topics: List<String>) {
-    VerticalScroller {
-        Column(modifier = Modifier.padding(top = 16.dp)) {
-            topics.forEach { topic ->
-                TopicItem(
-                    getTopicKey(
-                        tabName,
-                        "- ",
-                        topic
-                    ),
+    VerticalScroller(modifier = Modifier.padding(top = 16.dp)) {
+        topics.forEach { topic ->
+            TopicItem(
+                getTopicKey(
+                    tabName,
+                    "- ",
                     topic
-                )
-                TopicDivider()
-            }
+                ),
+                topic
+            )
+            TopicDivider()
         }
     }
 }
@@ -178,23 +176,21 @@ private fun TabWithSections(
     sections: Map<String, List<String>>
 ) {
     VerticalScroller {
-        Column {
-            sections.forEach { (section, topics) ->
-                Text(
-                    text = section,
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.subtitle1
+        sections.forEach { (section, topics) ->
+            Text(
+                text = section,
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.subtitle1
+            )
+            topics.forEach { topic ->
+                TopicItem(
+                    getTopicKey(
+                        tabName,
+                        section,
+                        topic
+                    ), topic
                 )
-                topics.forEach { topic ->
-                    TopicItem(
-                        getTopicKey(
-                            tabName,
-                            section,
-                            topic
-                        ), topic
-                    )
-                    TopicDivider()
-                }
+                TopicDivider()
             }
         }
     }

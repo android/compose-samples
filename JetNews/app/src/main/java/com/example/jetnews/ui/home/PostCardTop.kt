@@ -41,10 +41,10 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 
 @Composable
-fun PostCardTop(post: Post) {
+fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     // TUTORIAL CONTENT STARTS HERE
     val typography = MaterialTheme.typography
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
         post.image?.let { image ->
             val imageModifier = Modifier
                 .preferredHeightIn(minHeight = 180.dp)

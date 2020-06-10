@@ -27,15 +27,14 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.clickable
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Column
-import androidx.ui.layout.Row
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
@@ -54,7 +53,6 @@ import androidx.ui.material.Snackbar
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -170,13 +168,11 @@ private fun HomeScreenBody(
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    VerticalScroller {
-        Column(modifier) {
-            HomeScreenTopSection(postTop)
-            HomeScreenSimpleSection(postsSimple)
-            HomeScreenPopularSection(postsPopular)
-            HomeScreenHistorySection(postsHistory)
-        }
+    VerticalScroller(modifier = modifier) {
+        HomeScreenTopSection(postTop)
+        HomeScreenSimpleSection(postsSimple)
+        HomeScreenPopularSection(postsPopular)
+        HomeScreenHistorySection(postsHistory)
     }
 }
 
@@ -233,9 +229,10 @@ private fun HomeScreenTopSection(post: Post) {
             style = MaterialTheme.typography.subtitle1
         )
     }
-    Clickable(modifier = Modifier.ripple(), onClick = { navigateTo(Screen.Article(post.id)) }) {
-        PostCardTop(post = post)
-    }
+    PostCardTop(
+        post = post,
+        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+    )
     HomeScreenDivider()
 }
 
@@ -259,11 +256,9 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
                 style = MaterialTheme.typography.subtitle1
             )
         }
-        HorizontalScroller {
-            Row(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
-                posts.forEach { post ->
-                    PostCardPopular(post, Modifier.padding(start = 16.dp))
-                }
+        HorizontalScroller(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
+            posts.forEach { post ->
+                PostCardPopular(post, Modifier.padding(start = 16.dp))
             }
         }
         HomeScreenDivider()

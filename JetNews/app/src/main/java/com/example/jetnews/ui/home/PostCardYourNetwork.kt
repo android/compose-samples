@@ -19,11 +19,11 @@ package com.example.jetnews.ui.home
 import androidx.compose.Composable
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
 import androidx.ui.layout.Column
-import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredSize
@@ -31,7 +31,6 @@ import androidx.ui.material.Card
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.imageResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
@@ -48,43 +47,41 @@ import com.example.jetnews.ui.navigateTo
 fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier.preferredSize(280.dp, 240.dp)) {
-        Clickable(
-            modifier = Modifier.ripple(),
-            onClick = { navigateTo(Screen.Article(post.id)) }
-        ) {
-            Column {
-                val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
-                Image(
-                    asset = image,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .preferredHeight(100.dp)
-                        .fillMaxSize())
-
-                Column(modifier = Modifier.padding(16.dp)) {
-                    val emphasisLevels = EmphasisAmbient.current
-                    ProvideEmphasis(emphasisLevels.high) {
-                        Text(
-                            text = post.title,
-                            style = MaterialTheme.typography.h6,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = post.metadata.author.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.body2
-                        )
-                    }
-                    ProvideEmphasis(emphasisLevels.high) {
-                        Text(
-                            text = "${post.metadata.date} - " +
-                                    "${post.metadata.readTimeMinutes} min read",
-                            style = MaterialTheme.typography.body2
-                        )
-                    }
+        modifier = modifier
+            .preferredSize(280.dp, 240.dp)
+            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+    ) {
+        Column {
+            val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
+            Image(
+                asset = image,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .preferredHeight(100.dp)
+                    .fillMaxWidth()
+            )
+            Column(modifier = Modifier.padding(16.dp)) {
+                val emphasisLevels = EmphasisAmbient.current
+                ProvideEmphasis(emphasisLevels.high) {
+                    Text(
+                        text = post.title,
+                        style = MaterialTheme.typography.h6,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = post.metadata.author.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.body2
+                    )
+                }
+                ProvideEmphasis(emphasisLevels.high) {
+                    Text(
+                        text = "${post.metadata.date} - " +
+                                "${post.metadata.readTimeMinutes} min read",
+                        style = MaterialTheme.typography.body2
+                    )
                 }
             }
         }
