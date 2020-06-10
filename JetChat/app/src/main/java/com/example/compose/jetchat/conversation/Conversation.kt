@@ -43,6 +43,7 @@ import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
+import androidx.ui.layout.fillMaxHeight
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.height
@@ -78,12 +79,14 @@ import com.example.compose.jetchat.theme.elevatedSurface
  * @param uiState [ConversationUiState] that contains messages to display
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
+ * @param onNavIconPressed Sends an event up when the user clicks on the menu
  */
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
     navigateToProfile: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavIconPressed: () -> Unit = { }
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -107,7 +110,8 @@ fun ConversationContent(
             ChannelNameBar(
                 channelName = uiState.channelName,
                 channelMembers = uiState.channelMembers,
-                modifier = Modifier.gravity(Alignment.TopCenter)
+                modifier = Modifier.gravity(Alignment.TopCenter),
+                onNavIconPressed = onNavIconPressed
             )
         }
     }
@@ -117,7 +121,8 @@ fun ConversationContent(
 fun ChannelNameBar(
     channelName: String,
     channelMembers: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavIconPressed: () -> Unit = { }
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -130,7 +135,9 @@ fun ChannelNameBar(
                     asset = vectorResource(id = R.drawable.ic_jetchat),
                     modifier = Modifier
                         .gravity(Alignment.CenterVertically)
+                        .clickable(onClick = onNavIconPressed)
                         .padding(horizontal = 16.dp)
+                        .fillMaxHeight()
                 )
                 Column(
                     modifier = Modifier
