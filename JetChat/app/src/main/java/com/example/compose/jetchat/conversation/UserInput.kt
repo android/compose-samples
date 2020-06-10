@@ -136,7 +136,7 @@ private fun SelectorExpanded(
     onCloseRequested: () -> Unit,
     onTextAdded: (String) -> Unit
 ) {
-    when(currentSelector) {
+    when (currentSelector) {
         InputSelector.MAP -> MapSelector()
         InputSelector.THUMBS_UP -> StickerSelector()
         InputSelector.EMOJI -> EmojiSelector(onTextAdded)
@@ -298,12 +298,14 @@ fun EmojiSelector(
                             onClick = { onTextAdded(emoji) },
                             modifier = Modifier
                                 .preferredSize(42.dp, 42.dp)
-                                .ripple()) {
+                                .ripple()
+                        ) {
                             Text(
                                 text = emoji,
                                 style = currentTextStyle().copy(
                                     fontSize = 18.sp,
-                                    textAlign = TextAlign.Center)
+                                    textAlign = TextAlign.Center
+                                )
                             )
                         }
                     }

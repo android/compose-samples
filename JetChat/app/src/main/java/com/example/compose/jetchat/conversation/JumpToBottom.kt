@@ -56,7 +56,7 @@ private enum class Visibility {
 /**
  * Shows a button that lets the user scroll to the bottom.
  */
-//TODO: when a new message is added, the button shows up while the scroll is animating.
+// TODO: when a new message is added, the button shows up while the scroll is animating.
 @Composable
 fun JumpToBottom(
     enabled: Boolean,
@@ -84,7 +84,7 @@ fun JumpToBottom(
                 contentColor = MaterialTheme.colors.primary,
                 modifier = modifier
                     .padding(bottom = transition[bottomPadding]) // TODO: Replace with:
-                    //.offset(x = 0.dp, y = -transition[bottomPadding]) // b/155868092
+                    // .offset(x = 0.dp, y = -transition[bottomPadding]) // b/155868092
                     .preferredHeight(36.dp)
             ) {
                 Row(modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)) {

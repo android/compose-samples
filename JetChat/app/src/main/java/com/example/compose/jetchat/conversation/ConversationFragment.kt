@@ -33,7 +33,8 @@ import com.example.compose.jetchat.theme.JetchatTheme
 class ConversationFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return FrameLayout(requireContext()).apply {
