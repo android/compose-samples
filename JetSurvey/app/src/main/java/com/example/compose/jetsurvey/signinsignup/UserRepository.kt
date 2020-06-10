@@ -48,4 +48,9 @@ object UserRepository {
     fun signInAsGuest() {
         _user = User.GuestUser
     }
+
+    fun isKnownUserEmail(email: String): Boolean {
+        // if the email contains "sign up" we consider it unknown
+        return !email.contains("signup")
+    }
 }

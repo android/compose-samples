@@ -26,7 +26,9 @@ import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.preferredHeight
 import androidx.ui.material.Button
-import androidx.ui.material.TextButton
+import androidx.ui.material.EmphasisAmbient
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
 import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -41,18 +43,17 @@ sealed class SignUpEvent {
 
 @Composable
 fun SignUp(onEvent: (SignUpEvent) -> Unit) {
-    SignInSignUpScreen(onSignedInAsGuest = { onEvent(SignUpEvent.SignInAsGuest) }) {
+    SignInSignUpScreen(
+        topAppBarText = stringResource(id = R.string.create_account),
+        onSignedInAsGuest = { onEvent(SignUpEvent.SignInAsGuest) },
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Column {
-            SignUpContent(onSignUpSubmitted = { email, password ->
-                onEvent(SignUpEvent.SignUp(email, password))
-            })
-            Spacer(modifier = Modifier.preferredHeight(8.dp))
-            TextButton(
-                onClick = { onEvent(SignUpEvent.SignIn) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(id = R.string.sign_in))
-            }
+            SignUpContent(
+                onSignUpSubmitted = { email, password ->
+                    onEvent(SignUpEvent.SignUp(email, password))
+                }
+            )
         }
     }
 }
@@ -62,30 +63,38 @@ fun SignUpContent(onSignUpSubmitted: (email: String, password: String) -> Unit) 
     Column(modifier = Modifier.fillMaxWidth()) {
         val emailState = remember { EmailState() }
         Email(emailState)
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
+
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState
         )
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
+
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val confirmPasswordState = remember { ConfirmPasswordState(passwordState = passwordState) }
         Password(
             label = stringResource(id = R.string.confirm_password),
             passwordState = confirmPasswordState
         )
-        Spacer(modifier = Modifier.preferredHeight(32.dp))
-
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            Text(
+                text = stringResource(id = R.string.terms_and_conditions),
+                style = MaterialTheme.typography.caption
+            )
+        }
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),
             enabled = emailState.isValid &&
-                    passwordState.isValid && confirmPasswordState.isValid
+                passwordState.isValid && confirmPasswordState.isValid
         ) {
             Text(
-                text = stringResource(id = R.string.sign_up),
+                text = stringResource(id = R.string.create_account),
                 modifier = Modifier.gravity(Alignment.CenterHorizontally)
             )
         }

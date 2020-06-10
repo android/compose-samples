@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.ui:ui-core:$compose_version")
     implementation("androidx.ui:ui-layout:$compose_version")
     implementation("androidx.ui:ui-material:$compose_version")
+    implementation("androidx.ui:ui-material-icons-extended:$compose_version")
     implementation("androidx.ui:ui-foundation:$compose_version")
     implementation("androidx.ui:ui-animation:$compose_version")
     implementation "androidx.ui:ui-tooling:$compose_version"
@@ -82,7 +83,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    ktlint "com.pinterest:ktlint:0.36.0"
+    ktlint "com.pinterest:ktlint:0.37.0"
 }
 
 // Disable the 'paren-spacing' rule which conflicts with non-paren annotations on functional types
@@ -90,12 +91,12 @@ task ktlint(type: JavaExec, group: "verification") {
     description = "Check Kotlin code style."
     main = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
-    args "src/**/*.kt", "--disabled_rules", "paren-spacing"
+    args "src/**/*.kt"
 }
 check.dependsOn ktlint
 task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
     main = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
-    args "-F", "src/**/*.kt", "--disabled_rules", "paren-spacing"
+    args "-F", "src/**/*.kt"
 }

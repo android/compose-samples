@@ -19,13 +19,14 @@ package com.example.compose.jetsurvey.theme
 import androidx.compose.Composable
 import androidx.ui.foundation.isSystemInDarkTheme
 import androidx.ui.graphics.Color
+import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
 
 val LightThemeColors = lightColorPalette(
-    primary = Color(0xFF8100EF),
-    primaryVariant = Color(0xFF0000E1),
+    primary = Purple700,
+    primaryVariant = Purple800,
     onPrimary = Color.White,
     secondary = Color.White,
     onSecondary = Color.Black,
@@ -33,13 +34,13 @@ val LightThemeColors = lightColorPalette(
     onBackground = Color.Black,
     surface = Color.White,
     onSurface = Color.Black,
-    error = Color(0xFFD00036),
+    error = Red800,
     onError = Color.White
 )
 
 val DarkThemeColors = darkColorPalette(
-    primary = Color(0xFFCD52FC),
-    primaryVariant = Color(0xFF9F00F4),
+    primary = Purple300,
+    primaryVariant = Purple600,
     onPrimary = Color.Black,
     secondary = Color.Black,
     onSecondary = Color.White,
@@ -47,9 +48,13 @@ val DarkThemeColors = darkColorPalette(
     onBackground = Color.White,
     surface = Color.Black,
     onSurface = Color.White,
-    error = Color(0xFFEA6D7E),
+    error = Red300,
     onError = Color.Black
 )
+
+@Composable
+val ColorPalette.snackbarAction: Color
+    get() = if (isLight) Purple300 else Purple700
 
 @Composable
 fun JetsurveyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {

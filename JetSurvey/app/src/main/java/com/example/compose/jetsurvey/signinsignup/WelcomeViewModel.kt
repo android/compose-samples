@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.compose.jetsurvey.Screen
 import com.example.compose.jetsurvey.Screen.SignIn
+import com.example.compose.jetsurvey.Screen.SignUp
 import com.example.compose.jetsurvey.Screen.Survey
 
 class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel() {
@@ -29,8 +30,12 @@ class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel()
     private val _navigateTo = MutableLiveData<Screen>()
     val navigateTo: LiveData<Screen> = _navigateTo
 
-    fun signIn(email: String) {
-        _navigateTo.value = SignIn
+    fun handleContinue(email: String) {
+        if (userRepository.isKnownUserEmail(email)) {
+            _navigateTo.value = SignIn
+        } else {
+            _navigateTo.value = SignUp
+        }
     }
 
     fun signInAsGuest() {

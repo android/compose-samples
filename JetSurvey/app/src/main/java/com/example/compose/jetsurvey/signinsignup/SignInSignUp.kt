@@ -18,38 +18,67 @@ package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.Composable
 import androidx.compose.remember
+import androidx.compose.state
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.currentTextStyle
 import androidx.ui.input.PasswordVisualTransformation
+import androidx.ui.input.VisualTransformation
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
+import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.FilledTextField
+import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TextButton
+import androidx.ui.material.OutlinedButton
+import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.TopAppBar
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Visibility
+import androidx.ui.material.icons.filled.VisibilityOff
 import androidx.ui.res.stringResource
+import androidx.ui.text.style.TextAlign
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
 
 @Composable
 fun SignInSignUpScreen(
+    topAppBarText: String,
     onSignedInAsGuest: () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable() () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
-        Box(modifier = Modifier.weight(0.1f)) {
-            content()
+    Column(modifier = modifier) {
+        TopAppBar(backgroundColor = MaterialTheme.colors.surface) {
+            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+                Text(
+                    text = topAppBarText,
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically)
+                )
+            }
         }
-        TextButton(
-            onClick = { onSignedInAsGuest() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(id = R.string.sign_in_guest))
+        VerticalScroller {
+            Spacer(modifier = Modifier.preferredHeight(44.dp))
+            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                content()
+            }
+            Spacer(modifier = Modifier.preferredHeight(16.dp))
+            OrSignInAsGuest(
+                onSignedInAsGuest = onSignedInAsGuest,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
@@ -74,6 +103,7 @@ fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
 
 @Composable
 fun Password(label: String, passwordState: FilledTextFieldState) {
+    val showPassword = state { false }
     FilledTextField(
         value = passwordState.text,
         onValueChange = {
@@ -82,7 +112,22 @@ fun Password(label: String, passwordState: FilledTextFieldState) {
         },
         modifier = Modifier.fillMaxWidth(),
         label = { Text(text = label) },
-        visualTransformation = PasswordVisualTransformation(),
+        trailingIcon = {
+            if (showPassword.value) {
+                IconButton(onClick = { showPassword.value = false }) {
+                    Icon(asset = Icons.Filled.Visibility)
+                }
+            } else {
+                IconButton(onClick = { showPassword.value = true }) {
+                    Icon(asset = Icons.Filled.VisibilityOff)
+                }
+            }
+        },
+        visualTransformation = if (showPassword.value) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
         isErrorValue = passwordState.showErrors()
     )
 
@@ -102,4 +147,34 @@ fun FilledTextFieldError(textError: String) {
             style = currentTextStyle().copy(color = MaterialTheme.colors.error)
         )
     }
+}
+
+@Composable
+fun OrSignInAsGuest(
+    onSignedInAsGuest: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 20.dp),
+        horizontalGravity = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.or),
+            style = MaterialTheme.typography.subtitle2
+        )
+        OutlinedButton(
+            onClick = { onSignedInAsGuest() },
+            modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 24.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.sign_in_guest)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun SignInSignUpScreenPreview() {
+    SignInSignUpScreen(topAppBarText = "Preview", onSignedInAsGuest = {}, content = {})
 }

@@ -60,7 +60,7 @@ class WelcomeFragment : Fragment() {
                     WelcomeScreen(
                         onEvent = { event ->
                             when (event) {
-                                is WelcomeEvent.SignInSignUp -> viewModel.signIn(event.email)
+                                is WelcomeEvent.SignInSignUp -> viewModel.handleContinue(event.email)
                                 WelcomeEvent.SignInAsGuest -> viewModel.signInAsGuest()
                             }
                         }

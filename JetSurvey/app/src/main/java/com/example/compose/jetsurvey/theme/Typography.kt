@@ -80,7 +80,7 @@ val Typography = Typography(
     body2 = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 14.sp,
-        letterSpacing = (-1.5).sp
+        letterSpacing = 0.25.sp
     ),
     button = TextStyle(
         fontWeight = FontWeight.W600,
@@ -88,7 +88,7 @@ val Typography = Typography(
         letterSpacing = 0.25.sp
     ),
     caption = TextStyle(
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.W500,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp
     ),
