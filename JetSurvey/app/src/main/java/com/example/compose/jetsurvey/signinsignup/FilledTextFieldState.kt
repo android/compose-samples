@@ -25,10 +25,15 @@ open class FilledTextFieldState(
     private val errorFor: (String) -> String = { "" }
 ) {
     var text: String by mutableStateOf("")
+    var isFocused: Boolean by mutableStateOf(false)
     private var displayErrors: Boolean by mutableStateOf(false)
 
     open val isValid: Boolean
         get() = validator(text)
+
+    fun onFocusChange(focused: Boolean) {
+        isFocused = focused
+    }
 
     fun enableShowErrors() {
         displayErrors = true
