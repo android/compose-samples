@@ -47,8 +47,7 @@ import com.example.jetnews.ui.navigateTo
 fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-            .preferredSize(280.dp, 240.dp)
+        modifier = modifier.preferredSize(280.dp, 240.dp)
             .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
     ) {
         Column {
