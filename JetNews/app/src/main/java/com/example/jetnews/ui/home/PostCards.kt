@@ -88,8 +88,7 @@ fun PostTitle(post: Post) {
 
 @Composable
 fun PostCardSimple(post: Post) {
-    Row(modifier = Modifier
-        .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+    Row(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
         .padding(16.dp)
     ) {
         PostImage(post, Modifier.padding(end = 16.dp))
@@ -106,8 +105,7 @@ fun PostCardSimple(post: Post) {
 
 @Composable
 fun PostCardHistory(post: Post) {
-    Row(Modifier
-        .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+    Row(Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
         .padding(16.dp)
     ) {
         PostImage(
