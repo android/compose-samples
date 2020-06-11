@@ -18,7 +18,7 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="nav_header_vertical_spacing">8dp</dimen>
-    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="nav_header_spacing">16dp</dimen>
+    <dimen name="nav_header_logo_size">24dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 </resources>
