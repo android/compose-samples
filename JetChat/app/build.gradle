@@ -59,6 +59,10 @@ android {
 
 }
 
+configurations {
+    ktlint
+}
+
 dependencies {
 
     // TODO: Tidy up
@@ -91,4 +95,19 @@ dependencies {
     androidTestImplementation("androidx.ui:ui-core:$compose_version")
     androidTestImplementation("androidx.ui:ui-test:$compose_version")
 
+    ktlint "com.pinterest:ktlint:0.37.0"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
 }

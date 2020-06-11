@@ -81,7 +81,6 @@ fun ProfileScreen(userData: ProfileScreenState) {
                     )
                     ProfileButtonsRow()
                     UserInfoFields(userData)
-
                 }
             }
         }

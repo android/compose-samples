@@ -199,8 +199,8 @@ fun Messages(
     }
 
     // Scroll to last message
-    if (!userScrolled  // Don't scroll if the user triggered the scrolling
-        && scrollerPosition.atBottom() // Don't scroll if already at the bottom
+    if (!userScrolled && // Don't scroll if the user triggered the scrolling
+        scrollerPosition.atBottom() // Don't scroll if already at the bottom
     ) {
         // Scroll smoothly after the first scroll
         scrollerPosition.smoothScrollTo(scrollerPosition.maxPosition)
@@ -239,7 +239,7 @@ fun Messages(
         // Apply the threshold:
         val jumpToBottomButtonEnabled = (
             scrollerPosition.value < scrollerPosition.maxPosition - jumpThreshold
-        )
+            )
 
         JumpToBottom(
             // Only show if the scroller is not at the bottom
@@ -250,7 +250,6 @@ fun Messages(
             },
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
-
     }
 }
 
@@ -299,7 +298,9 @@ fun AuthorAndTextMessage(
     Column(modifier = modifier) {
         Row {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(text = msg.author, style = MaterialTheme.typography.subtitle1,
+                Text(
+                    text = msg.author,
+                    style = MaterialTheme.typography.subtitle1,
                     modifier = Modifier.alignWithSiblings(LastBaseline)
                 )
             }

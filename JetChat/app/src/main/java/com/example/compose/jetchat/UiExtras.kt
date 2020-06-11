@@ -22,7 +22,6 @@ import androidx.ui.material.AlertDialog
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
 
-
 @Composable
 fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     AlertDialog(
