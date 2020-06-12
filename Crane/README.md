@@ -1,0 +1,1 @@
+Steps to run this sample in go/compose-samples-howto

@@ -1,0 +1,56 @@
+/*
+ * Copyright 2019 Google, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package androidx.compose.samples.crane.ui
+
+import androidx.compose.Composable
+import androidx.ui.foundation.shape.corner.CornerSize
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.foundation.shape.corner.ZeroCornerSize
+import androidx.ui.graphics.Color
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.lightColorPalette
+import androidx.ui.unit.dp
+
+val crane_caption = Color.DarkGray
+val crane_divider_color = Color.LightGray
+private val crane_red = Color(0xFFE30425)
+private val crane_white = Color.White
+private val crane_purple_700 = Color(0xFF720D5D)
+private val crane_purple_800 = Color(0xFF5D1049)
+private val crane_purple_900 = Color(0xFF4E0D3A)
+
+val craneColors = lightColorPalette(
+    primary = crane_purple_800,
+    secondary = crane_red,
+    surface = crane_purple_900,
+    onSurface = crane_white,
+    primaryVariant = crane_purple_700
+)
+
+val BottomSheetShape = RoundedCornerShape(
+    topLeft = CornerSize(20.dp),
+    topRight = CornerSize(20.dp),
+    bottomLeft = ZeroCornerSize,
+    bottomRight = ZeroCornerSize
+)
+
+@Composable
+fun CraneTheme(children: @Composable () -> Unit) {
+    MaterialTheme(colors = craneColors, typography = craneTypography) {
+        children()
+    }
+}
