@@ -41,9 +41,10 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.RowScope.gravity
+import androidx.ui.layout.RowScope.weight
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxHeight
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.height
@@ -53,8 +54,6 @@ import androidx.ui.layout.preferredHeightIn
 import androidx.ui.layout.preferredSize
 import androidx.ui.layout.preferredWidth
 import androidx.ui.layout.size
-import androidx.ui.layout.wrapContentWidth
-import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -64,12 +63,13 @@ import androidx.ui.material.icons.outlined.Info
 import androidx.ui.material.icons.outlined.Search
 import androidx.ui.res.imageResource
 import androidx.ui.res.stringResource
-import androidx.ui.res.vectorResource
 import androidx.ui.text.LastBaseline
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.PxPosition
 import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
 
@@ -124,65 +124,53 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { }
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colors.surface.copy(alpha = 0.95f)
-    ) {
-        Column {
-            Row(modifier = Modifier.preferredHeight(56.dp)) {
-                // Navigation icon
-                Image(
-                    asset = vectorResource(id = R.drawable.ic_jetchat),
-                    modifier = Modifier
-                        .gravity(Alignment.CenterVertically)
-                        .clickable(onClick = onNavIconPressed)
-                        .padding(horizontal = 16.dp)
-                        .fillMaxHeight()
+    JetchatAppBar(
+        modifier = modifier,
+        onNavIconPressed = onNavIconPressed,
+        title = {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp)
+                    .gravity(Alignment.CenterVertically),
+                horizontalGravity = Alignment.CenterHorizontally
+            ) {
+                // Channel name
+                Text(
+                    text = channelName,
+                    style = MaterialTheme.typography.subtitle1
                 )
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .gravity(Alignment.CenterVertically)
-                        .wrapContentWidth(Alignment.CenterHorizontally),
-                    horizontalGravity = Alignment.CenterHorizontally
-                ) {
-                    // Channel name
-                    ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                        Text(
-                            text = channelName,
-                            style = MaterialTheme.typography.subtitle1
-                        )
-                    }
-                    // Number of members
-                    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                        Text(
-                            text = stringResource(R.string.members, channelMembers),
-                            style = MaterialTheme.typography.caption
-                        )
-                    }
-                }
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                    // Search icon
-                    Icon(
-                        asset = Icons.Outlined.Search,
-                        modifier = Modifier
-                            .clickable(onClick = {}) // TODO: Show not implemented dialog.
-                            .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .preferredHeight(24.dp)
-                    )
-                    // Info icon
-                    Icon(
-                        asset = Icons.Outlined.Info,
-                        modifier = Modifier
-                            .clickable(onClick = {}) // TODO: Show not implemented dialog.
-                            .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .preferredHeight(24.dp)
+                // Number of members
+                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) { // Broken - b/159017896
+                    Text(
+                        text = stringResource(R.string.members, channelMembers),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onSurface
                     )
                 }
             }
-            Divider()
+        },
+        actions = {
+            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                // Search icon
+                Icon(
+                    asset = Icons.Outlined.Search,
+                    modifier = Modifier
+                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .padding(horizontal = 12.dp, vertical = 16.dp)
+                        .preferredHeight(24.dp)
+                )
+                // Info icon
+                Icon(
+                    asset = Icons.Outlined.Info,
+                    modifier = Modifier
+                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .padding(horizontal = 12.dp, vertical = 16.dp)
+                        .preferredHeight(24.dp)
+                )
+            }
         }
-    }
+    )
 }
 
 @Composable
@@ -220,6 +208,7 @@ fun Messages(
         ) {
             val authorMe = stringResource(id = R.string.author_me)
             Column {
+                Spacer(modifier = Modifier.preferredHeight(64.dp))
                 messages.forEach { content ->
                     Message(
                         onAuthorClick = { navigateToProfile(content.author) },
@@ -255,10 +244,11 @@ fun Messages(
 
 @Composable
 fun Message(onAuthorClick: () -> Unit, msg: Message, isUserMe: Boolean) {
+    // TODO: get image from msg.author
     val image = if (isUserMe) {
-        imageResource(id = R.drawable.ali)
-    } else {
         imageResource(id = R.drawable.someone_else)
+    } else {
+        imageResource(id = R.drawable.ali)
     }
     val borderColor = if (isUserMe) {
         MaterialTheme.colors.primary

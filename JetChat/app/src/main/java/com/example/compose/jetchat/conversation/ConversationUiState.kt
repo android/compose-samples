@@ -18,7 +18,6 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.Immutable
 import androidx.compose.frames.modelListOf
-import com.example.compose.jetchat.R
 
 class ConversationUiState(
     val channelName: String,
@@ -35,58 +34,3 @@ class ConversationUiState(
 
 @Immutable
 data class Message(val author: String, val content: String, val timestamp: String, val image: Int? = null)
-
-val initialMessages = listOf(
-    Message(
-        "Yuri Gagarin",
-        "This is Major Tom to Ground Control",
-        "8:00 PM"
-    ),
-    Message(
-        "Alan Shepard",
-        "I'm stepping through the door",
-        "8:01 PM"
-    ),
-    Message(
-        "Virgil Grissom",
-        "And I'm floating in a most peculiar way",
-        "8:02 PM"
-    ),
-    Message(
-        "Gherman Titov",
-        "And the stars look very different today",
-        "8:03 PM"
-    ),
-    Message(
-        "John Glenn",
-        "For here",
-        "8:04 PM"
-    ),
-    Message(
-        "Taylor Brooks",
-        "@aliconnors Take a look at the `Flow.collectAsState()` APIs",
-        "8:05 PM"
-    ),
-    Message(
-        "Taylor Brooks",
-        "You can use all the same stuff",
-        "8:05 PM"
-    ),
-    Message(
-        "me",
-        "Thank you!",
-        "8:06 PM",
-        R.drawable.sticker
-    ),
-    Message(
-        "me",
-        "Check it out!",
-        "8:07 PM"
-    )
-)
-
-val exampleUiState = ConversationUiState(
-    initialMessages = initialMessages,
-    channelName = "#composers",
-    channelMembers = 42
-)

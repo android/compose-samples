@@ -43,6 +43,7 @@
     <string name="display_name">Display name</string>
     <string name="status">Status</string>
     <string name="timezone">Timezone</string>
+    <string name="twitter">Twitter</string>
     <string name="common_channels">Channels in common</string>
     <string name="lorem">Lorem or Ipsum</string>
 </resources>
