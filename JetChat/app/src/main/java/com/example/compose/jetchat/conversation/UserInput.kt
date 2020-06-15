@@ -20,12 +20,12 @@ import androidx.compose.Composable
 import androidx.compose.MutableState
 import androidx.compose.getValue
 import androidx.compose.onCommit
-import androidx.compose.remember
 import androidx.compose.setValue
 import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.focus.FocusModifier
+import androidx.ui.core.semantics.semantics
 import androidx.ui.foundation.Border
 import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
@@ -67,6 +67,10 @@ import androidx.ui.material.icons.outlined.Mood
 import androidx.ui.material.icons.outlined.Place
 import androidx.ui.res.stringResource
 import androidx.ui.savedinstancestate.savedInstanceState
+import androidx.ui.semantics.Semantics
+import androidx.ui.semantics.SemanticsPropertyKey
+import androidx.ui.semantics.SemanticsPropertyReceiver
+import androidx.ui.semantics.accessibilityLabel
 import androidx.ui.text.SoftwareKeyboardController
 import androidx.ui.text.style.TextAlign
 import androidx.ui.tooling.preview.Preview
@@ -224,23 +228,28 @@ private fun UserInputSelector(
     ) {
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.EMOJI) },
-            icon = Icons.Outlined.Mood
+            icon = Icons.Outlined.Mood,
+            description = stringResource(id = R.string.emoji_selector_bt_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.DM) },
-            icon = Icons.Outlined.AlternateEmail
+            icon = Icons.Outlined.AlternateEmail,
+            description = stringResource(id = R.string.dm_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.PICTURE) },
-            icon = Icons.Outlined.InsertPhoto
+            icon = Icons.Outlined.InsertPhoto,
+            description = stringResource(id = R.string.attach_photo_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.MAP) },
-            icon = Icons.Outlined.Place
+            icon = Icons.Outlined.Place,
+            description = stringResource(id = R.string.map_selector_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.PHONE) },
-            icon = Icons.Outlined.Duo
+            icon = Icons.Outlined.Duo,
+            description = stringResource(id = R.string.videochat_desc)
         )
 
         val border = if (!sendMessageEnabled) {
@@ -279,9 +288,13 @@ private fun UserInputSelector(
 @Composable
 private fun InputSelectorButton(
     onClick: () -> Unit,
-    icon: VectorAsset
+    icon: VectorAsset,
+    description: String
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.semantics { accessibilityLabel = description }
+    ) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
             Icon(
                 icon,
@@ -295,6 +308,9 @@ private fun InputSelectorButton(
 private fun NotAvailablePopup(onDismissed: () -> Unit) {
     FunctionalityNotAvailablePopup(onDismissed)
 }
+
+val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
+var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
 @Composable
 private fun UserInputText(
@@ -315,8 +331,15 @@ private fun UserInputText(
         }
     }
 
+    val a11ylabel = stringResource(id = R.string.textfield_desc)
     Row(
-        modifier = Modifier.fillMaxWidth().preferredHeight(48.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .preferredHeight(48.dp)
+            .semantics(container = true, mergeAllDescendants = false) {
+                accessibilityLabel = a11ylabel
+                keyboardShownProperty = keyboardShown
+            },
         horizontalArrangement = Arrangement.End
     ) {
         Stack(
@@ -335,15 +358,17 @@ private fun UserInputText(
                 onTextInputStarted = { controller -> keyboardController = controller }
             )
 
-            // FilledTextField has a placeholder but it shows a bottom indicator: b/155943102
-            if (textFieldValue.text.isEmpty() && !focusState) {
-                Text(
-                    modifier = Modifier
-                        .gravity(Alignment.CenterStart)
-                        .padding(start = 16.dp),
-                    text = "Message #composers",
-                    style = MaterialTheme.typography.body1.copy(color = Color.Gray)
-                )
+            Semantics(container = true) { // Make sure semantics are not merged upstream
+                // FilledTextField has a placeholder but it shows a bottom indicator: b/155943102
+                if (textFieldValue.text.isEmpty() && !focusState) {
+                    Text(
+                        modifier = Modifier
+                            .gravity(Alignment.CenterStart)
+                            .padding(start = 16.dp),
+                        text = stringResource(id = R.string.textfield_hint),
+                        style = MaterialTheme.typography.body1.copy(color = Color.Gray)
+                    )
+                }
             }
         }
     }
@@ -356,7 +381,8 @@ fun EmojiSelector(
 ) {
     var selected by state { EmojiStickerSelector.EMOJI }
 
-    Column(modifier = modifier) {
+    val a11yLabel = stringResource(id = R.string.emoji_selector_desc)
+    Column(modifier = modifier.semantics(container = true) { accessibilityLabel = a11yLabel }) {
         Surface {
             Row(modifier = Modifier.fillMaxWidth()) {
                 ExtendedSelectorInnerButton(

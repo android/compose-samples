@@ -29,6 +29,7 @@ import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.core.gesture.DragObserver
 import androidx.ui.core.gesture.rawDragGestureFilter
+import androidx.ui.core.semantics.semantics
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.ScrollerPosition
@@ -63,6 +64,7 @@ import androidx.ui.material.icons.outlined.Info
 import androidx.ui.material.icons.outlined.Search
 import androidx.ui.res.imageResource
 import androidx.ui.res.stringResource
+import androidx.ui.semantics.accessibilityLabel
 import androidx.ui.text.LastBaseline
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.PxPosition
@@ -201,10 +203,14 @@ fun Messages(
                 userScrolled = true
             }
         }
+        val a11yLabel = stringResource(R.string.conversation_desc)
         VerticalScroller(
             scrollerPosition = scrollerPosition,
             // Using [rawDragGestureFilter] so [DragObserver.onStart] is called immediately,
-            modifier = Modifier.rawDragGestureFilter(dragObserver = dragObserver).fillMaxWidth()
+            modifier = Modifier
+                .semantics { accessibilityLabel = a11yLabel }
+                .rawDragGestureFilter(dragObserver = dragObserver)
+                .fillMaxWidth()
         ) {
             val authorMe = stringResource(id = R.string.author_me)
             Column {
@@ -256,7 +262,7 @@ fun Message(onAuthorClick: () -> Unit, msg: Message, isUserMe: Boolean) {
         MaterialTheme.colors.secondary
     }
 
-    Row(modifier = Modifier.preferredHeightIn(minHeight = 64.dp)) {
+    Row(modifier = Modifier.semantics(container = true).preferredHeightIn(minHeight = 64.dp)) {
         Image(
             modifier = Modifier
                 .clickable(onClick = onAuthorClick)

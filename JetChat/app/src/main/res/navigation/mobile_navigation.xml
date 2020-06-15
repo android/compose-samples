@@ -24,14 +24,12 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.compose.jetchat.conversation.ConversationFragment"
-        android:label="Home"
-        tools:layout="@layout/profile_fragment" />
+        android:label="Conversation" />
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.example.compose.jetchat.profile.ProfileFragment"
-        android:label="Home"
-        tools:layout="@layout/profile_fragment" >
+        android:label="Profile">
         <argument
             android:name="userId"
             app:argType="string" />

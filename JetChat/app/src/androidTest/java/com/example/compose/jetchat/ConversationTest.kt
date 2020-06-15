@@ -16,21 +16,70 @@
 
 package com.example.compose.jetchat
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertEquals
+import androidx.ui.test.android.AndroidComposeTestRule
+import androidx.ui.test.assertIsDisplayed
+import androidx.ui.test.center
+import androidx.ui.test.doClick
+import androidx.ui.test.doGesture
+import androidx.ui.test.findByText
+import androidx.ui.test.sendSwipe
+import androidx.ui.unit.PxPosition
+import androidx.ui.unit.milliseconds
+import androidx.ui.unit.px
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
- * TODO
+ * Checks that the features in the Conversation screen work as expected.
  */
-@RunWith(AndroidJUnit4::class)
 class ConversationTest {
-    @Test
-    fun useAppContext() {
-        // TODO: Create UI tests.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.compose.jetchat", appContext.packageName)
+
+    @get:Rule
+    val composeTestRule = AndroidComposeTestRule<NavActivity>()
+
+    @Before
+    fun setUp() {
+        // Launch the conversation screen
+        composeTestRule.startConversationScreen()
     }
+
+    @Test
+    fun app_launches() {
+        // Check that the conversation screen is visible on launch
+        findByText(composeTestRule.getString(R.string.textfield_hint)).assertIsDisplayed()
+    }
+
+    @Test
+    fun userScrollsUp_jumpToBottomAppears() {
+        // Check list is snapped to bottom and swipe up
+        findJumpToBottom().assertDoesNotExist()
+        findByText(composeTestRule.getString(R.string.conversation_desc)).doGesture {
+            this.sendSwipe(
+                start = this.center,
+                end = PxPosition(this.center.x, this.center.y + 500.px),
+                duration = 100.milliseconds
+            )
+        }
+        // Check that the jump to bottom button is shown
+        findJumpToBottom().assertIsDisplayed()
+    }
+
+    @Test
+    fun jumpToBottom_snapsToBottomAndDisappears() {
+        // When the scroll is not snapped to the bottom
+        findByText(composeTestRule.getString(R.string.conversation_desc)).doGesture {
+            this.sendSwipe(
+                start = this.center,
+                end = PxPosition(this.center.x, this.center.y + 500.px),
+                duration = 100.milliseconds
+            )
+        }
+        // Snap scroll to the bottom
+        findJumpToBottom().doClick()
+
+        // Check that the button is hidden
+        findJumpToBottom().assertDoesNotExist()
+    }
+    private fun findJumpToBottom() = findByText(composeTestRule.getString(R.string.jumpBottom))
 }
