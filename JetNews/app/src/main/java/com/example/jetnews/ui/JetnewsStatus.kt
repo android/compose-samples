@@ -17,28 +17,8 @@
 package com.example.jetnews.ui
 
 import androidx.compose.frames.ModelList
-import androidx.compose.getValue
-import androidx.compose.mutableStateOf
-import androidx.compose.setValue
-
-/**
- * Class defining the screens we have in the app: home, article details and interests
- */
-sealed class Screen {
-    object Home : Screen()
-    data class Article(val postId: String) : Screen()
-    object Interests : Screen()
-}
 
 object JetnewsStatus {
-    var currentScreen by mutableStateOf<Screen>(Screen.Home)
     val favorites = ModelList<String>()
     val selectedTopics = ModelList<String>()
-}
-
-/**
- * Temporary solution pending navigation support.
- */
-fun navigateTo(destination: Screen) {
-    JetnewsStatus.currentScreen = destination
 }

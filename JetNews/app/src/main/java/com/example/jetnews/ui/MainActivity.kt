@@ -17,18 +17,27 @@
 package com.example.jetnews.ui
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.ui.core.setContent
 import com.example.jetnews.JetnewsApplication
 
 class MainActivity : AppCompatActivity() {
 
+    val navigationViewModel by viewModels<NavigationViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val appContainer = (application as JetnewsApplication).container
         setContent {
-            JetnewsApp(appContainer = appContainer)
+            JetnewsApp(appContainer, navigationViewModel)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (!navigationViewModel.onBack()) {
+            super.onBackPressed()
         }
     }
 }
