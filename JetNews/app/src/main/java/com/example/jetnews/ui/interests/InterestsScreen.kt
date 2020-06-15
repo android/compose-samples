@@ -66,6 +66,7 @@ private enum class Sections(val title: String) {
 
 @Composable
 fun InterestsScreen(
+    navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = remember { ScaffoldState() },
     interestsRepository: InterestsRepository
 ) {
@@ -74,7 +75,8 @@ fun InterestsScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
-                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
+                navigateTo = navigateTo
             )
         },
         topAppBar = {
@@ -258,7 +260,10 @@ private fun selectTopic(key: String, select: Boolean) {
 @Composable
 fun PreviewInterestsScreen() {
     ThemedPreview {
-        InterestsScreen(interestsRepository = FakeInterestsRepository())
+        InterestsScreen(
+            navigateTo = {},
+            interestsRepository = FakeInterestsRepository()
+        )
     }
 }
 
@@ -267,6 +272,7 @@ fun PreviewInterestsScreen() {
 fun PreviewInterestsScreenDark() {
     ThemedPreview(darkTheme = true) {
         InterestsScreen(
+            navigateTo = {},
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
         )
@@ -278,6 +284,7 @@ fun PreviewInterestsScreenDark() {
 private fun PreviewDrawerOpen() {
     ThemedPreview {
         InterestsScreen(
+            navigateTo = {},
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
         )
@@ -289,6 +296,7 @@ private fun PreviewDrawerOpen() {
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkTheme = true) {
         InterestsScreen(
+            navigateTo = {},
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
         )
