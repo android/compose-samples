@@ -41,10 +41,13 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
+fun PostCardPopular(
+    post: Post,
+    navigateTo: (Screen) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.preferredSize(280.dp, 240.dp)
@@ -91,7 +94,7 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
 @Composable
 fun PreviewPostCardPopular() {
     ThemedPreview {
-        PostCardPopular(post = post1)
+        PostCardPopular(post1, {})
     }
 }
 
@@ -99,7 +102,7 @@ fun PreviewPostCardPopular() {
 @Composable
 fun PreviewPostCardPopularDark() {
     ThemedPreview(darkTheme = true) {
-        PostCardPopular(post = post1)
+        PostCardPopular(post1, {})
     }
 }
 
@@ -117,13 +120,14 @@ fun PreviewPostCardPopularLongText() {
         """.trimIndent()
     ThemedPreview {
         PostCardPopular(
-            post = post1.copy(
+            post1.copy(
                 title = "Title$loremIpsum",
                 metadata = post1.metadata.copy(
                     author = PostAuthor("Author: $loremIpsum"),
                     readTimeMinutes = Int.MAX_VALUE
                 )
-            )
+            ),
+            {}
         )
     }
 }

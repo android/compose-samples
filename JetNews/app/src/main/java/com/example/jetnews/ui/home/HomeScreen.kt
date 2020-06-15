@@ -61,7 +61,6 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.navigateTo
 import com.example.jetnews.ui.state.RefreshableUiState
 import com.example.jetnews.ui.state.currentData
 import com.example.jetnews.ui.state.loading
@@ -73,6 +72,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
+    navigateTo: (Screen) -> Unit,
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = remember { ScaffoldState() }
 ) {
@@ -81,7 +81,8 @@ fun HomeScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Home,
-                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
+                navigateTo = navigateTo
             )
         },
         topBar = {
@@ -96,7 +97,7 @@ fun HomeScreen(
         },
         bodyContent = { innerPadding ->
             val modifier = Modifier.padding(innerPadding)
-            HomeScreenContent(postsRepository, modifier)
+            HomeScreenContent(postsRepository, navigateTo, modifier)
         }
     )
 }
@@ -104,6 +105,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     postsRepository: PostsRepository,
+    navigateTo: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val (postsState, refreshPosts) = refreshableUiStateFrom(postsRepository::getPosts)
@@ -125,7 +127,8 @@ private fun HomeScreenContent(
                 state = postsState,
                 onErrorAction = {
                     refreshPosts()
-                }
+                },
+                navigateTo = navigateTo
             )
         }
     }
@@ -135,7 +138,8 @@ private fun HomeScreenContent(
 private fun HomeScreenBodyWrapper(
     modifier: Modifier = Modifier,
     state: RefreshableUiState<List<Post>>,
-    onErrorAction: () -> Unit
+    onErrorAction: () -> Unit,
+    navigateTo: (Screen) -> Unit
 ) {
     // State for showing the Snackbar error. This state will reset with the content of the lambda
     // inside stateFor each time the RefreshableUiState input parameter changes.
@@ -146,7 +150,7 @@ private fun HomeScreenBodyWrapper(
 
     Stack(modifier = modifier.fillMaxSize()) {
         state.currentData?.let { posts ->
-            HomeScreenBody(posts = posts)
+            HomeScreenBody(posts = posts, navigateTo = navigateTo)
         }
         ErrorSnackbar(
             showError = showSnackbarError,
@@ -160,7 +164,8 @@ private fun HomeScreenBodyWrapper(
 @Composable
 private fun HomeScreenBody(
     posts: List<Post>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateTo: (Screen) -> Unit
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
@@ -168,10 +173,10 @@ private fun HomeScreenBody(
     val postsHistory = posts.subList(7, 10)
 
     VerticalScroller(modifier = modifier) {
-        HomeScreenTopSection(postTop)
-        HomeScreenSimpleSection(postsSimple)
-        HomeScreenPopularSection(postsPopular)
-        HomeScreenHistorySection(postsHistory)
+        HomeScreenTopSection(postTop, navigateTo)
+        HomeScreenSimpleSection(postsSimple, navigateTo)
+        HomeScreenPopularSection(postsPopular, navigateTo)
+        HomeScreenHistorySection(postsHistory, navigateTo)
     }
 }
 
@@ -218,7 +223,7 @@ fun ErrorSnackbar(
 }
 
 @Composable
-private fun HomeScreenTopSection(post: Post) {
+private fun HomeScreenTopSection(post: Post, navigateTo: (Screen) -> Unit) {
     ProvideEmphasis(EmphasisAmbient.current.high) {
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
@@ -234,17 +239,23 @@ private fun HomeScreenTopSection(post: Post) {
 }
 
 @Composable
-private fun HomeScreenSimpleSection(posts: List<Post>) {
+private fun HomeScreenSimpleSection(
+    posts: List<Post>,
+    navigateTo: (Screen) -> Unit
+) {
     Column {
         posts.forEach { post ->
-            PostCardSimple(post)
+            PostCardSimple(post, navigateTo)
             HomeScreenDivider()
         }
     }
 }
 
 @Composable
-private fun HomeScreenPopularSection(posts: List<Post>) {
+private fun HomeScreenPopularSection(
+    posts: List<Post>,
+    navigateTo: (Screen) -> Unit
+) {
     Column {
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Text(
@@ -255,7 +266,7 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
         }
         HorizontalScroller(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
             posts.forEach { post ->
-                PostCardPopular(post, Modifier.padding(start = 16.dp))
+                PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp))
             }
         }
         HomeScreenDivider()
@@ -263,10 +274,13 @@ private fun HomeScreenPopularSection(posts: List<Post>) {
 }
 
 @Composable
-private fun HomeScreenHistorySection(posts: List<Post>) {
+private fun HomeScreenHistorySection(
+    posts: List<Post>,
+    navigateTo: (Screen) -> Unit
+) {
     Column {
         posts.forEach { post ->
-            PostCardHistory(post)
+            PostCardHistory(post, navigateTo)
             HomeScreenDivider()
         }
     }
@@ -285,7 +299,7 @@ private fun HomeScreenDivider() {
 fun PreviewHomeScreenBody() {
     ThemedPreview {
         val posts = loadFakePosts()
-        HomeScreenBody(posts)
+        HomeScreenBody(posts, navigateTo = { })
     }
 }
 
@@ -295,7 +309,8 @@ private fun PreviewDrawerOpen() {
     ThemedPreview {
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            navigateTo = { }
         )
     }
 }
@@ -305,7 +320,7 @@ private fun PreviewDrawerOpen() {
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
         val posts = loadFakePosts()
-        HomeScreenBody(posts)
+        HomeScreenBody(posts, navigateTo = {})
     }
 }
 
@@ -315,7 +330,8 @@ private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkTheme = true) {
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened)
+            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            navigateTo = { }
         )
     }
 }

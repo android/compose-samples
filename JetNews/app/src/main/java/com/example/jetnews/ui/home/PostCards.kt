@@ -46,7 +46,6 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.navigateTo
 
 @Composable
 fun AuthorAndReadTime(
@@ -87,7 +86,7 @@ fun PostTitle(post: Post) {
 }
 
 @Composable
-fun PostCardSimple(post: Post) {
+fun PostCardSimple(post: Post, navigateTo: (Screen) -> Unit) {
     Row(
         modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
@@ -105,7 +104,7 @@ fun PostCardSimple(post: Post) {
 }
 
 @Composable
-fun PostCardHistory(post: Post) {
+fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
     Row(
         Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
@@ -194,7 +193,7 @@ fun BookmarkButtonBookmarkedPreview() {
 @Composable
 fun SimplePostPreview() {
     ThemedPreview {
-        PostCardSimple(post = post3)
+        PostCardSimple(post3, {})
     }
 }
 
@@ -202,7 +201,7 @@ fun SimplePostPreview() {
 @Composable
 fun HistoryPostPreview() {
     ThemedPreview {
-        PostCardHistory(post = post3)
+        PostCardHistory(post3, {})
     }
 }
 
@@ -210,6 +209,6 @@ fun HistoryPostPreview() {
 @Composable
 fun SimplePostDarkPreview() {
     ThemedPreview(darkTheme = true) {
-        PostCardSimple(post = post3)
+        PostCardSimple(post3, {})
     }
 }
