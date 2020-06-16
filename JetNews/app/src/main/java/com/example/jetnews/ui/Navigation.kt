@@ -71,8 +71,6 @@ private fun Screen.toBundle(): Bundle {
 /**
  * Read a bundle stored by [Screen.toBundle] and return desired screen.
  *
- * If the bundle is empty, or a screen fails to parse, return the default value instead.
- *
  * @return the parsed [Screen]
  * @throws IllegalArgumentException if the bundle could not be parsed
  */
