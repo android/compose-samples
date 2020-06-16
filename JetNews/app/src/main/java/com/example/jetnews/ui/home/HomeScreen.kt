@@ -16,13 +16,10 @@
 
 package com.example.jetnews.ui.home
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.Composable
-import androidx.compose.onActive
+import androidx.compose.launchInComposition
 import androidx.compose.remember
 import androidx.compose.stateFor
-import androidx.core.os.postDelayed
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
@@ -72,6 +69,7 @@ import com.example.jetnews.ui.state.previewDataFrom
 import com.example.jetnews.ui.state.refreshableUiStateFrom
 import com.example.jetnews.ui.state.refreshing
 import com.example.jetnews.ui.theme.snackbarAction
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -192,11 +190,9 @@ fun ErrorSnackbar(
 ) {
     if (showError) {
         // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
-        onActive {
-            // With coroutines, this will be cancellable
-            Handler(Looper.getMainLooper()).postDelayed(5000L) {
-                onDismiss()
-            }
+        launchInComposition {
+            delay(timeMillis = 5000L)
+            onDismiss()
         }
 
         Snackbar(
