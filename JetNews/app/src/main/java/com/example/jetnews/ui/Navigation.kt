@@ -41,7 +41,7 @@ private val SIS_POST = "post"
 /**
  * Convert a screen to a bundle that can be stored in [SavedStateHandle]
  */
-fun Screen.toBundle(): Bundle {
+private fun Screen.toBundle(): Bundle {
     val retval = Bundle()
 
     val current = this
@@ -59,7 +59,7 @@ fun Screen.toBundle(): Bundle {
  *
  * @throws IllegalStateException if [SIS_NAME] is non-null and not handled
  */
-fun Bundle?.toScreen(): Screen? {
+private fun Bundle?.toScreen(): Screen? {
     this ?: return null
     return when (getString(SIS_NAME)) {
         HOME.name, null -> Home
