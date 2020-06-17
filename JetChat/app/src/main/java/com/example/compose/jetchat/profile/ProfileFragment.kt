@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.ui.core.setContent
 import androidx.ui.livedata.observeAsState
+import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
 
@@ -62,7 +63,13 @@ class ProfileFragment : Fragment() {
                         if (userData == null) {
                             ProfileError()
                         } else {
-                            ProfileScreen(userData = userData)
+                            ProfileScreen(
+                                userData = userData,
+                                onNavIconPressed = {
+                                    // TODO: Replace with Scaffold
+                                    (activity as? NavActivity)?.openDrawer()
+                                }
+                            )
                         }
                     }
                 }

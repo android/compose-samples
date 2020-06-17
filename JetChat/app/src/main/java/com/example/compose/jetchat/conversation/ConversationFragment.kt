@@ -29,6 +29,7 @@ import androidx.navigation.findNavController
 import androidx.ui.core.setContent
 import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {

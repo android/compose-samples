@@ -20,7 +20,8 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Immutable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.compose.jetchat.R
+import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.data.someOneProfile
 
 class ProfileViewModel : ViewModel() {
 
@@ -28,9 +29,9 @@ class ProfileViewModel : ViewModel() {
 
     fun setUserId(newUserId: String?) {
         if (newUserId != userId) {
-            userId = newUserId ?: aliConnors.userId
+            userId = newUserId ?: meProfile.userId
         }
-        userData.value = if (userId == aliConnors.userId) aliConnors else someOneElse
+        userData.value = if (userId == meProfile.userId) meProfile else someOneProfile
     }
 
     val userData = MutableLiveData<ProfileScreenState>()
@@ -44,33 +45,9 @@ data class ProfileScreenState(
     val status: String,
     val displayName: String,
     val position: String,
+    val twitter: String = "",
     val timeZone: String?, // Null if me
     val commonChannels: String? // Null if me
 ) {
-    fun isMe() = userId == aliConnors.userId
+    fun isMe() = userId == meProfile.userId
 }
-
-/**
- * Me.
- */
-val aliConnors = ProfileScreenState(
-    "me",
-    R.drawable.ali,
-    "Ali Connors",
-    "Active",
-    "alic",
-    "Lorem CEO",
-    null,
-    null
-)
-
-val someOneElse = ProfileScreenState(
-    "12345",
-    R.drawable.someone_else,
-    "Someone Else",
-    "Away",
-    "selse",
-    "Ipsum SWE",
-    "GMT-7",
-    "2"
-)
