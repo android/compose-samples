@@ -22,6 +22,7 @@ import androidx.compose.Stable
 import androidx.compose.StructurallyEqual
 import androidx.compose.getValue
 import androidx.compose.mutableStateOf
+import androidx.compose.onCommit
 import androidx.compose.remember
 import androidx.compose.setValue
 import androidx.compose.staticAmbientOf
@@ -31,6 +32,7 @@ import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
+import com.example.jetsnack.ui.utils.SystemUiControllerAmbient
 
 private val LightColorPalette = JetsnackColorPalette(
     gradient1 = listOf(Shadow2, Ocean3, Shadow4),
@@ -69,6 +71,13 @@ fun JetsnackTheme(
         DarkColorPalette
     } else {
         LightColorPalette
+    }
+
+    val sysUiController = SystemUiControllerAmbient.current
+    onCommit(sysUiController, colors.background) {
+        sysUiController.setSystemBarsColor(
+            color = colors.background.copy(alpha = 0.96f)
+        )
     }
 
     ProvideJetsnackColors(colors) {
