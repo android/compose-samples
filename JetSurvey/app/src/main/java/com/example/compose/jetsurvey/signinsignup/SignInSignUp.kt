@@ -36,11 +36,12 @@ import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
 import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.FilledTextField
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.OutlinedButton
+import androidx.ui.material.OutlinedTextField
 import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Surface
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.Visibility
@@ -59,7 +60,10 @@ fun SignInSignUpScreen(
     content: @Composable() () -> Unit
 ) {
     Column(modifier = modifier) {
-        TopAppBar(backgroundColor = MaterialTheme.colors.surface) {
+        TopAppBar(
+            backgroundColor = MaterialTheme.colors.surface,
+            elevation = 0.dp
+        ) {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
                 Text(
                     text = topAppBarText,
@@ -77,7 +81,7 @@ fun SignInSignUpScreen(
             Spacer(modifier = Modifier.preferredHeight(16.dp))
             OrSignInAsGuest(
                 onSignedInAsGuest = onSignedInAsGuest,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
             )
         }
     }
@@ -85,7 +89,7 @@ fun SignInSignUpScreen(
 
 @Composable
 fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
-    FilledTextField(
+    OutlinedTextField(
         value = emailState.text,
         onValueChange = { emailState.text = it },
         onFocusChange = { focused ->
@@ -95,7 +99,15 @@ fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
             }
         },
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(text = stringResource(id = R.string.email)) },
+        textStyle = MaterialTheme.typography.body2,
+        label = {
+            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                Text(
+                    text = stringResource(id = R.string.email),
+                    style = MaterialTheme.typography.body2
+                )
+            }
+        },
         isErrorValue = emailState.showErrors()
     )
 
@@ -105,14 +117,22 @@ fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
 @Composable
 fun Password(label: String, passwordState: FilledTextFieldState) {
     val showPassword = state { false }
-    FilledTextField(
+    OutlinedTextField(
         value = passwordState.text,
         onValueChange = {
             passwordState.text = it
             passwordState.enableShowErrors()
         },
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(text = label) },
+        textStyle = MaterialTheme.typography.body2,
+        label = {
+            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.body2
+                )
+            }
+        },
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
@@ -156,20 +176,22 @@ fun OrSignInAsGuest(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 20.dp),
+        modifier = modifier,
         horizontalGravity = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(id = R.string.or),
-            style = MaterialTheme.typography.subtitle2
-        )
+        Surface {
+            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                Text(
+                    text = stringResource(id = R.string.or),
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+        }
         OutlinedButton(
             onClick = { onSignedInAsGuest() },
             modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 24.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.sign_in_guest)
-            )
+            Text(text = stringResource(id = R.string.sign_in_guest))
         }
     }
 }
