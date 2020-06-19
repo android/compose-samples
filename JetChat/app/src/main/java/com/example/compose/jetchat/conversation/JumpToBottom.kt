@@ -24,18 +24,17 @@ import androidx.ui.animation.Transition
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.padding
+import androidx.ui.layout.offset
 import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
-import androidx.ui.material.FloatingActionButton
+import androidx.ui.material.ExtendedFloatingActionButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.ArrowDownward
 import androidx.ui.res.stringResource
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.theme.Blue200
 
 private val bottomPadding = DpPropKey()
 
@@ -78,26 +77,37 @@ fun JumpToBottom(
                 isShown.value = true
             }
         ) { transition ->
-            FloatingActionButton(
-                onClick = onClicked,
-                backgroundColor = MaterialTheme.colors.surface,
-                contentColor = MaterialTheme.colors.primary,
-                modifier = modifier
-                    .padding(bottom = transition[bottomPadding]) // TODO: Replace with:
-                    // .offset(x = 0.dp, y = -transition[bottomPadding]) // b/155868092
-                    .preferredHeight(36.dp)
-            ) {
-                Row(modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)) {
+
+            val contentColor = if (MaterialTheme.colors.isLight) {
+                MaterialTheme.colors.primary
+            } else {
+                Blue200
+            }
+            ExtendedFloatingActionButton(
+                icon = {
                     Icon(
                         asset = Icons.Filled.ArrowDownward,
                         modifier = Modifier.preferredHeight(18.dp)
                     )
-                    Spacer(modifier = Modifier.preferredWidth(8.dp))
+                },
+                text = {
                     Text(text = stringResource(id = R.string.jumpBottom))
-                }
-            }
+                },
+                onClick = onClicked,
+                backgroundColor = MaterialTheme.colors.surface,
+                contentColor = contentColor,
+                modifier = modifier
+                    .offset(x = 0.dp, y = -transition[bottomPadding])
+                    .preferredHeight(36.dp)
+            )
         }
     } else {
         isShown.value = false
     }
+}
+
+@Preview
+@Composable
+fun JumpToBottomPreview() {
+    JumpToBottom(enabled = true, onClicked = {})
 }

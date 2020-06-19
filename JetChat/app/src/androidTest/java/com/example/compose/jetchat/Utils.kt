@@ -17,41 +17,15 @@
 package com.example.compose.jetchat
 
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.annotation.StringRes
-import androidx.compose.Providers
 import androidx.ui.test.SemanticsMatcher
-import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.dumpToString
 import androidx.ui.test.findAll
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
-import com.example.compose.jetchat.conversation.ConversationContent
-import com.example.compose.jetchat.data.exampleUiState
-import com.example.compose.jetchat.theme.JetchatTheme
-
-fun AndroidComposeTestRule<out ComponentActivity>.getString(@StringRes resId: Int): String {
-    return this.activityTestRule.activity.resources.getString(resId)
-}
 
 /**
  * Used to debug the semantic tree.
+ *
+ * TODO: Replace with aosp/1355659
  */
 fun dumpSemanticNodes() {
     Log.e("JetchatLog", findAll(SemanticsMatcher.any).dumpToString())
-}
-
-fun AndroidComposeTestRule<out ComponentActivity>.startConversationScreen() {
-    setContent {
-        Providers(
-            BackPressedDispatcherAmbient provides this.activityTestRule.activity
-        ) {
-            JetchatTheme {
-                ConversationContent(
-                    uiState = exampleUiState,
-                    navigateToProfile = { },
-                    onNavIconPressed = { }
-                )
-            }
-        }
-    }
 }

@@ -16,16 +16,22 @@
 
 package com.example.compose.jetchat
 
+import androidx.activity.ComponentActivity
+import androidx.compose.Providers
+import androidx.ui.geometry.Offset
 import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.center
 import androidx.ui.test.doClick
 import androidx.ui.test.doGesture
+import androidx.ui.test.findByLabel
 import androidx.ui.test.findByText
 import androidx.ui.test.sendSwipe
-import androidx.ui.unit.PxPosition
 import androidx.ui.unit.milliseconds
-import androidx.ui.unit.px
+import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.ConversationContent
+import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.theme.JetchatTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,27 +44,44 @@ class ConversationTest {
     @get:Rule
     val composeTestRule = AndroidComposeTestRule<NavActivity>()
 
+    // Note that keeping these references is only safe if the activity is not recreated.
+    // See: https://issuetracker.google.com/160862278
+    private lateinit var activity: ComponentActivity
+
     @Before
     fun setUp() {
-        // Launch the conversation screen
-        composeTestRule.startConversationScreen()
+        composeTestRule.activityRule.scenario.onActivity { newActivity ->
+            activity = newActivity
+            // Launch the conversation screen
+            composeTestRule.setContent {
+                Providers(BackPressedDispatcherAmbient provides newActivity) {
+                    JetchatTheme {
+                        ConversationContent(
+                            uiState = exampleUiState,
+                            navigateToProfile = { },
+                            onNavIconPressed = { }
+                        )
+                    }
+                }
+            }
+        }
     }
 
     @Test
     fun app_launches() {
         // Check that the conversation screen is visible on launch
-        findByText(composeTestRule.getString(R.string.textfield_hint)).assertIsDisplayed()
+        findByText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
     }
 
     @Test
     fun userScrollsUp_jumpToBottomAppears() {
         // Check list is snapped to bottom and swipe up
         findJumpToBottom().assertDoesNotExist()
-        findByText(composeTestRule.getString(R.string.conversation_desc)).doGesture {
+        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
             this.sendSwipe(
                 start = this.center,
-                end = PxPosition(this.center.x, this.center.y + 500.px),
-                duration = 100.milliseconds
+                end = Offset(this.center.x, this.center.y + 500),
+                duration = 200.milliseconds
             )
         }
         // Check that the jump to bottom button is shown
@@ -68,11 +91,11 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAndDisappears() {
         // When the scroll is not snapped to the bottom
-        findByText(composeTestRule.getString(R.string.conversation_desc)).doGesture {
+        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
             this.sendSwipe(
                 start = this.center,
-                end = PxPosition(this.center.x, this.center.y + 500.px),
-                duration = 100.milliseconds
+                end = Offset(this.center.x, this.center.y + 500),
+                duration = 200.milliseconds
             )
         }
         // Snap scroll to the bottom
@@ -81,5 +104,6 @@ class ConversationTest {
         // Check that the button is hidden
         findJumpToBottom().assertDoesNotExist()
     }
-    private fun findJumpToBottom() = findByText(composeTestRule.getString(R.string.jumpBottom))
+
+    private fun findJumpToBottom() = findByText(activity.getString(R.string.jumpBottom))
 }

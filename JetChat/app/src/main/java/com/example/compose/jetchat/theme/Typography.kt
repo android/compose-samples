@@ -82,7 +82,8 @@ val JetchatTypography = Typography(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        letterSpacing = 0.15.sp
+        letterSpacing = 0.15.sp,
+        lineHeight = 24.sp
     ),
     body2 = TextStyle(
         fontWeight = FontWeight.Medium,

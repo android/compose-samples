@@ -16,11 +16,21 @@
 
 package com.example.compose.jetchat.theme
 
+import androidx.compose.Composable
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.compositeOver
 import androidx.ui.material.ColorPalette
 import androidx.ui.unit.Dp
 import kotlin.math.ln
+
+/**
+ * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
+ * given [alpha]. Useful for situations where semi-transparent colors are undesirable.
+ */
+@Composable
+fun ColorPalette.compositedOnSurface(alpha: Float): Color {
+    return onSurface.copy(alpha = alpha).compositeOver(surface)
+}
 
 /**
  * Elevation overlay logic copied from [Surface] — STOPSHIP remove b/155181601

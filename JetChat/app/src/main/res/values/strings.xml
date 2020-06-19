@@ -37,6 +37,8 @@
     <string name="now">8:30 PM</string>
     <string name="members">%d members</string>
     <string name="textfield_hint">Message #composers</string>
+    <string name="emojis_label">Emojis</string>
+    <string name="stickers_label">Stickers</string>
 
     <string name="message">Message</string>
     <string name="edit_profile">Edit Profile</string>

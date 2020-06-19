@@ -31,13 +31,14 @@ import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.TextField
-import androidx.ui.foundation.TextFieldValue
 import androidx.ui.foundation.clickable
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.currentTextStyle
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.vector.VectorAsset
 import androidx.ui.input.ImeAction
 import androidx.ui.input.KeyboardType
+import androidx.ui.input.TextFieldValue
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.InnerPadding
@@ -67,7 +68,6 @@ import androidx.ui.material.icons.outlined.Mood
 import androidx.ui.material.icons.outlined.Place
 import androidx.ui.res.stringResource
 import androidx.ui.savedinstancestate.savedInstanceState
-import androidx.ui.semantics.Semantics
 import androidx.ui.semantics.SemanticsPropertyKey
 import androidx.ui.semantics.SemanticsPropertyReceiver
 import androidx.ui.semantics.accessibilityLabel
@@ -78,6 +78,7 @@ import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.theme.compositedOnSurface
 
 enum class InputSelector {
     NONE,
@@ -96,15 +97,11 @@ enum class EmojiStickerSelector {
 @Preview
 @Composable
 fun UserInputPreview() {
-    UserInput()
+    UserInput(onMessageSent = {})
 }
 
 @Composable
-fun UserInput(
-    // TODO: Default non-empty modifier = bad
-    modifier: Modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
-    onMessageSent: (String) -> Unit = { }
-) {
+fun UserInput(onMessageSent: (String) -> Unit) {
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
     backPressHandler(
@@ -117,7 +114,7 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by state { false }
 
-    Column(modifier = modifier) {
+    Column {
         Divider()
         UserInputText(
             textFieldValue = textState.value,
@@ -141,7 +138,8 @@ fun UserInput(
                 // Reset text field and close keyboard
                 textState.value = TextFieldValue()
                 dismissKeyboard()
-            }
+            },
+            currentInputSelector = currentInputSelector
         )
         SelectorExpanded(
             onCloseRequested = dismissKeyboard,
@@ -179,14 +177,22 @@ private fun SelectorExpanded(
     onCommit {
         focusModifier.requestFocus()
     }
+    val selectorExpandedColor =
+        if (MaterialTheme.colors.isLight) {
+            MaterialTheme.colors.compositedOnSurface(0.02f)
+        } else {
+            MaterialTheme.colors.surface
+        }
 
-    when (currentSelector) {
-        InputSelector.MAP -> MapSelector(focusModifier)
-        InputSelector.DM -> StickerSelector(focusModifier)
-        InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusModifier)
-        InputSelector.PHONE -> StartCall(focusModifier)
-        InputSelector.PICTURE -> NotAvailablePopup(onCloseRequested)
-        else -> { throw NotImplementedError() }
+    Surface(color = selectorExpandedColor, elevation = 3.dp) {
+        when (currentSelector) {
+            InputSelector.MAP -> MapSelector(focusModifier)
+            InputSelector.DM -> StickerSelector(focusModifier)
+            InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusModifier)
+            InputSelector.PHONE -> StartCall(focusModifier)
+            InputSelector.PICTURE -> NotAvailablePopup(onCloseRequested)
+            else -> { throw NotImplementedError() }
+        }
     }
 }
 
@@ -217,6 +223,7 @@ private fun UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
     sendMessageEnabled: Boolean,
     onMessageSent: () -> Unit,
+    currentInputSelector: InputSelector,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -229,26 +236,31 @@ private fun UserInputSelector(
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.EMOJI) },
             icon = Icons.Outlined.Mood,
+            selected = currentInputSelector == InputSelector.EMOJI,
             description = stringResource(id = R.string.emoji_selector_bt_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.DM) },
             icon = Icons.Outlined.AlternateEmail,
+            selected = currentInputSelector == InputSelector.DM,
             description = stringResource(id = R.string.dm_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.PICTURE) },
             icon = Icons.Outlined.InsertPhoto,
+            selected = currentInputSelector == InputSelector.PICTURE,
             description = stringResource(id = R.string.attach_photo_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.MAP) },
             icon = Icons.Outlined.Place,
+            selected = currentInputSelector == InputSelector.MAP,
             description = stringResource(id = R.string.map_selector_desc)
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.PHONE) },
             icon = Icons.Outlined.Duo,
+            selected = currentInputSelector == InputSelector.PHONE,
             description = stringResource(id = R.string.videochat_desc)
         )
 
@@ -289,15 +301,18 @@ private fun UserInputSelector(
 private fun InputSelectorButton(
     onClick: () -> Unit,
     icon: VectorAsset,
-    description: String
+    description: String,
+    selected: Boolean
 ) {
     IconButton(
         onClick = onClick,
         modifier = Modifier.semantics { accessibilityLabel = description }
     ) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            val tint = if (selected) MaterialTheme.colors.primary else contentColor()
             Icon(
                 icon,
+                tint = tint,
                 modifier = Modifier.padding(12.dp).preferredSize(20.dp)
             )
         }
@@ -336,7 +351,7 @@ private fun UserInputText(
         modifier = Modifier
             .fillMaxWidth()
             .preferredHeight(48.dp)
-            .semantics(container = true, mergeAllDescendants = false) {
+            .semantics {
                 accessibilityLabel = a11ylabel
                 keyboardShownProperty = keyboardShown
             },
@@ -358,17 +373,17 @@ private fun UserInputText(
                 onTextInputStarted = { controller -> keyboardController = controller }
             )
 
-            Semantics(container = true) { // Make sure semantics are not merged upstream
-                // FilledTextField has a placeholder but it shows a bottom indicator: b/155943102
-                if (textFieldValue.text.isEmpty() && !focusState) {
-                    Text(
-                        modifier = Modifier
-                            .gravity(Alignment.CenterStart)
-                            .padding(start = 16.dp),
-                        text = stringResource(id = R.string.textfield_hint),
-                        style = MaterialTheme.typography.body1.copy(color = Color.Gray)
-                    )
-                }
+            // FilledTextField has a placeholder but it shows a bottom indicator: b/155943102
+            val disableContentColor =
+                EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
+            if (textFieldValue.text.isEmpty() && !focusState) {
+                Text(
+                    modifier = Modifier
+                        .gravity(Alignment.CenterStart)
+                        .padding(start = 16.dp),
+                    text = stringResource(id = R.string.textfield_hint),
+                    style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                )
             }
         }
     }
@@ -382,20 +397,18 @@ fun EmojiSelector(
     var selected by state { EmojiStickerSelector.EMOJI }
 
     val a11yLabel = stringResource(id = R.string.emoji_selector_desc)
-    Column(modifier = modifier.semantics(container = true) { accessibilityLabel = a11yLabel }) {
-        Surface {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ExtendedSelectorInnerButton(
-                    text = "Emojis",
-                    onClick = { selected = EmojiStickerSelector.EMOJI },
-                    selected = true
-                )
-                ExtendedSelectorInnerButton(
-                    text = "Stickers",
-                    onClick = { selected = EmojiStickerSelector.STICKER },
-                    selected = false
-                )
-            }
+    Column(modifier = modifier.semantics { accessibilityLabel = a11yLabel }) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ExtendedSelectorInnerButton(
+                text = stringResource(id = R.string.emojis_label),
+                onClick = { selected = EmojiStickerSelector.EMOJI },
+                selected = true
+            )
+            ExtendedSelectorInnerButton(
+                text = stringResource(id = R.string.stickers_label),
+                onClick = { selected = EmojiStickerSelector.STICKER },
+                selected = false
+            )
         }
         HorizontalScroller {
             EmojiTable(onTextAdded)
