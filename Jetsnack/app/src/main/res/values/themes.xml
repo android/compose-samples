@@ -12,7 +12,7 @@
   or implied. See the License for the specific language governing permissions and limitations under
   the License.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Theme.Jetsnack" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">#ff00ff</item>
