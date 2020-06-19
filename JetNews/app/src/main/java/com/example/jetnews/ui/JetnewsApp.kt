@@ -167,7 +167,8 @@ private fun DrawerButton(
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalGravity = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()) {
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Image(
                     asset = icon,
                     colorFilter = ColorFilter.tint(textIconColor),

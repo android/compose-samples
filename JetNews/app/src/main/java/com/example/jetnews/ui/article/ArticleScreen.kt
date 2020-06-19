@@ -31,6 +31,7 @@ import androidx.ui.foundation.contentColor
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.IconButton
@@ -78,7 +79,7 @@ private fun ArticleScreen(post: Post) {
     }
 
     Scaffold(
-        topAppBar = {
+        topBar = {
             TopAppBar(
                 title = {
                     Text(
@@ -94,10 +95,11 @@ private fun ArticleScreen(post: Post) {
                 }
             )
         },
-        bodyContent = { modifier ->
+        bodyContent = { innerPadding ->
+            val modifier = Modifier.padding(innerPadding)
             PostContent(post, modifier)
         },
-        bottomAppBar = {
+        bottomBar = {
             BottomBar(post) { showDialog = true }
         }
     )
@@ -106,29 +108,29 @@ private fun ArticleScreen(post: Post) {
 @Composable
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     Surface(elevation = 2.dp) {
-            Row(
-                verticalGravity = Alignment.CenterVertically,
-                modifier = Modifier
-                    .preferredHeight(56.dp)
-                    .fillMaxWidth()
-            ) {
-                IconButton(onClick = onUnimplementedAction) {
-                    Icon(Icons.Filled.FavoriteBorder)
-                }
-                BookmarkButton(
-                    isBookmarked = isFavorite(postId = post.id),
-                    onBookmark = { toggleBookmark(postId = post.id) }
-                )
-                val context = ContextAmbient.current
-                IconButton(onClick = { sharePost(post, context) }) {
-                    Icon(Icons.Filled.Share)
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = onUnimplementedAction) {
-                    Icon(vectorResource(R.drawable.ic_text_settings))
-                }
+        Row(
+            verticalGravity = Alignment.CenterVertically,
+            modifier = Modifier
+                .preferredHeight(56.dp)
+                .fillMaxWidth()
+        ) {
+            IconButton(onClick = onUnimplementedAction) {
+                Icon(Icons.Filled.FavoriteBorder)
+            }
+            BookmarkButton(
+                isBookmarked = isFavorite(postId = post.id),
+                onBookmark = { toggleBookmark(postId = post.id) }
+            )
+            val context = ContextAmbient.current
+            IconButton(onClick = { sharePost(post, context) }) {
+                Icon(Icons.Filled.Share)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onUnimplementedAction) {
+                Icon(vectorResource(R.drawable.ic_text_settings))
             }
         }
+    }
 }
 
 @Composable

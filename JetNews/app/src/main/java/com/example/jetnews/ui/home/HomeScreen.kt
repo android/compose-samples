@@ -84,7 +84,7 @@ fun HomeScreen(
                 closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
             )
         },
-        topAppBar = {
+        topBar = {
             TopAppBar(
                 title = { Text(text = "Jetnews") },
                 navigationIcon = {
@@ -94,7 +94,8 @@ fun HomeScreen(
                 }
             )
         },
-        bodyContent = { modifier ->
+        bodyContent = { innerPadding ->
+            val modifier = Modifier.padding(innerPadding)
             HomeScreenContent(postsRepository, modifier)
         }
     )
