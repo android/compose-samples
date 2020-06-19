@@ -123,7 +123,8 @@ internal fun <T> StateDraggable(
     val currentValue = anchorsToState.firstOrNull { it.second == state }!!.first
     val flingConfig =
         AnchorsFlingConfig(
-            anchors, animationBuilder,
+            anchors = anchors,
+            animationBuilder = animationBuilder,
             onAnimationEnd = { reason, finalValue, _ ->
                 if (reason != AnimationEndReason.Interrupted) {
                     val newState = anchorsToState.firstOrNull { it.first == finalValue }?.second

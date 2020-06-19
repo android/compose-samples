@@ -98,20 +98,24 @@ val paragraphsPost1 = listOf(
     ),
     Paragraph(
         ParagraphType.CodeBlock,
-        "include ':app'\n" +
-            "include ':module1'\n" +
-            "include ':module1'\n" +
-            "include ':module1'\n" +
-            "include ':module1'"
+        """
+        include ':app'
+        include ':module1'
+        include ':module1'
+        include ':module1'
+        include ':module1'
+        """.trimIndent()
     ),
     Paragraph(
         ParagraphType.CodeBlock,
-        "// Set a custom path for the four features modules.\n" +
-            "// This avoid to have an empty \"features\" module in  Android Studio.\n" +
-            "project(\":module1\").projectDir=new File(rootDir, \"features/module1\")\n" +
-            "project(\":module2\").projectDir=new File(rootDir, \"features/module2\")\n" +
-            "project(\":module3\").projectDir=new File(rootDir, \"features/module3\")\n" +
-            "project(\":module4\").projectDir=new File(rootDir, \"features/module4\")"
+        """
+        // Set a custom path for the four features modules.
+        // This avoid to have an empty "features" module in  Android Studio.
+        project(":module1").projectDir=new File(rootDir, "features/module1")
+        project(":module2").projectDir=new File(rootDir, "features/module2")
+        project(":module3").projectDir=new File(rootDir, "features/module3")
+        project(":module4").projectDir=new File(rootDir, "features/module4")
+        """.trimIndent()
     ),
     Paragraph(
         ParagraphType.Text,
@@ -313,8 +317,10 @@ val paragraphsPost2 = listOf(
     ),
     Paragraph(
         ParagraphType.CodeBlock,
-        "@Inject @MinimumBalance lateinit var minimumBalance: BigDecimal \n" +
-            "// @MinimumBalance is ignored!",
+        """
+        @Inject @MinimumBalance lateinit var minimumBalance: BigDecimal 
+        // @MinimumBalance is ignored!
+        """.trimIndent(),
         listOf(Markup(MarkupType.Bold, 65, 95))
     ),
     Paragraph(
@@ -402,11 +408,13 @@ val paragraphsPost2 = listOf(
     ),
     Paragraph(
         ParagraphType.CodeBlock,
-        "class MyVMFactory @Inject constructor(\n" +
-            "  private val vmMap: Map<String, @JvmSuppressWildcards Provider<ViewModel>>\n" +
-            ") { \n" +
-            "    ... \n" +
-            "}",
+        """
+        class MyVMFactory @Inject constructor(
+          private val vmMap: Map<String, @JvmSuppressWildcards Provider<ViewModel>>
+        ) { 
+            ... 
+        }
+        """.trimIndent(),
         listOf(Markup(MarkupType.Bold, 72, 93))
     ),
     Paragraph(
