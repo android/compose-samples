@@ -54,8 +54,8 @@ fun JetnewsTheme(
 ) {
     MaterialTheme(
         colors = if (darkTheme) DarkThemeColors else LightThemeColors,
-        typography = themeTypography,
-        shapes = shapes,
+        typography = ThemeTypography,
+        shapes = Shapes,
         content = content
     )
 }

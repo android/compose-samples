@@ -78,7 +78,7 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
                 ProvideEmphasis(emphasisLevels.high) {
                     Text(
                         text = "${post.metadata.date} - " +
-                                "${post.metadata.readTimeMinutes} min read",
+                            "${post.metadata.readTimeMinutes} min read",
                         style = MaterialTheme.typography.body2
                     )
                 }
@@ -106,14 +106,15 @@ fun PreviewPostCardPopularDark() {
 @Preview("Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText() {
-    val loremIpsum = """
+    val loremIpsum =
+        """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
         sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
         Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
         nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
         facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
         consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
-    """.trimIndent()
+        """.trimIndent()
     ThemedPreview {
         PostCardPopular(
             post = post1.copy(

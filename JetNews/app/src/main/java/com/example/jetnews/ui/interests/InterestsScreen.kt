@@ -27,7 +27,7 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.selection.Toggleable
+import androidx.ui.foundation.selection.toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -42,7 +42,6 @@ import androidx.ui.material.ScaffoldState
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.imageResource
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
@@ -77,7 +76,7 @@ fun InterestsScreen(
                 closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
             )
         },
-        topAppBar = {
+        topBar = {
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
@@ -111,7 +110,8 @@ private fun InterestsScreenBody(
                 selected = currentSection.ordinal == index,
                 onSelected = {
                     updateSection(Sections.values()[index])
-                })
+                }
+            )
         }
         Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
@@ -188,7 +188,8 @@ private fun TabWithSections(
                         tabName,
                         section,
                         topic
-                    ), topic
+                    ),
+                    topic
                 )
                 TopicDivider()
             }
@@ -203,34 +204,33 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
     val onSelected = { it: Boolean ->
         selectTopic(topicKey, it)
     }
-    Toggleable(
-        value = selected,
-        onValueChange = onSelected,
-        modifier = Modifier.ripple()
+    Row(
+        modifier = Modifier
+            .toggleable(
+                value = selected,
+                onValueChange = onSelected
+            )
+            .padding(horizontal = 16.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Image(
-                image,
-                Modifier
-                    .gravity(Alignment.CenterVertically)
-                    .preferredSize(56.dp, 56.dp)
-                    .clip(RoundedCornerShape(4.dp))
-            )
-            Text(
-                text = itemTitle,
-                modifier = Modifier
-                    .weight(1f)
-                    .gravity(Alignment.CenterVertically)
-                    .padding(16.dp),
-                style = MaterialTheme.typography.subtitle1
-            )
-            SelectTopicButton(
-                modifier = Modifier.gravity(Alignment.CenterVertically),
-                selected = selected
-            )
-        }
+        Image(
+            image,
+            Modifier
+                .gravity(Alignment.CenterVertically)
+                .preferredSize(56.dp, 56.dp)
+                .clip(RoundedCornerShape(4.dp))
+        )
+        Text(
+            text = itemTitle,
+            modifier = Modifier
+                .weight(1f)
+                .gravity(Alignment.CenterVertically)
+                .padding(16.dp),
+            style = MaterialTheme.typography.subtitle1
+        )
+        SelectTopicButton(
+            modifier = Modifier.gravity(Alignment.CenterVertically),
+            selected = selected
+        )
     }
 }
 

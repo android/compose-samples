@@ -37,7 +37,6 @@ import androidx.ui.foundation.gestures.draggable
 import androidx.ui.layout.Stack
 import androidx.ui.layout.offset
 import androidx.ui.unit.dp
-import androidx.ui.unit.px
 
 private val SWIPE_DISTANCE_SIZE = 100.dp
 private const val SWIPE_DOWN_OFFSET = 1.2f
@@ -49,7 +48,7 @@ fun SwipeToRefreshLayout(
     refreshIndicator: @Composable() () -> Unit,
     content: @Composable() () -> Unit
 ) {
-    val size = with(DensityAmbient.current) { SWIPE_DISTANCE_SIZE.toPx().value }
+    val size = with(DensityAmbient.current) { SWIPE_DISTANCE_SIZE.toPx() }
     // min is below negative to hide
     val min = -size
     val max = size * SWIPE_DOWN_OFFSET
@@ -63,7 +62,7 @@ fun SwipeToRefreshLayout(
         maxValue = max
     ) { dragPosition ->
         val dpOffset = with(DensityAmbient.current) {
-            (dragPosition.value * 0.5).px.toDp()
+            (dragPosition.value * 0.5f).toDp()
         }
         Stack {
             content()
@@ -123,15 +122,19 @@ internal fun <T> StateDraggable(
     val anchors = remember(anchorsToState) { anchorsToState.map { it.first } }
     val currentValue = anchorsToState.firstOrNull { it.second == state }!!.first
     val flingConfig =
-        AnchorsFlingConfig(anchors, animationBuilder, onAnimationEnd = { reason, finalValue, _ ->
-            if (reason != AnimationEndReason.Interrupted) {
-                val newState = anchorsToState.firstOrNull { it.first == finalValue }?.second
-                if (newState != null && newState != state) {
-                    onStateChange(newState)
-                    forceAnimationCheck.value = !forceAnimationCheck.value
+        AnchorsFlingConfig(
+            anchors = anchors,
+            animationBuilder = animationBuilder,
+            onAnimationEnd = { reason, finalValue, _ ->
+                if (reason != AnimationEndReason.Interrupted) {
+                    val newState = anchorsToState.firstOrNull { it.first == finalValue }?.second
+                    if (newState != null && newState != state) {
+                        onStateChange(newState)
+                        forceAnimationCheck.value = !forceAnimationCheck.value
+                    }
                 }
             }
-        })
+        )
     val position = animatedFloat(currentValue)
     position.setBounds(minValue, maxValue)
 
