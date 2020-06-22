@@ -18,6 +18,7 @@ package androidx.compose.samples.crane.util
 
 import androidx.compose.Composable
 import androidx.ui.core.Constraints
+import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Canvas
 import androidx.ui.geometry.Offset
@@ -25,8 +26,6 @@ import androidx.ui.geometry.Size
 import androidx.ui.graphics.Color
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.preferredSizeIn
-import androidx.ui.unit.Dp
-import androidx.ui.unit.toPx
 import kotlin.math.min
 
 @Composable
@@ -54,11 +53,12 @@ fun SemiRect(constraints: Constraints, color: Color, lookingLeft: Boolean = true
     }
 }
 
-private fun Constraints.toCanvasModifier(): Modifier {
-    return Modifier.preferredSizeIn(
-        minWidth = Dp(minWidth.toPx().value),
-        minHeight = Dp(minHeight.toPx().value),
-        maxWidth = Dp(maxWidth.toPx().value),
-        maxHeight = Dp(maxHeight.toPx().value)
+@Composable
+private fun Constraints.toCanvasModifier(): Modifier = with(DensityAmbient.current) {
+    Modifier.preferredSizeIn(
+        minWidth = minWidth.toDp(),
+        minHeight = minHeight.toDp(),
+        maxWidth = maxWidth.toDp(),
+        maxHeight = maxHeight.toDp()
     ).fillMaxSize()
 }

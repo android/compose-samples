@@ -22,6 +22,7 @@ import androidx.compose.getValue
 import androidx.compose.mutableStateOf
 import androidx.compose.remember
 import androidx.compose.setValue
+import androidx.compose.state
 import androidx.ui.core.Constraints
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
@@ -36,8 +37,7 @@ import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.offset
 import androidx.ui.layout.preferredSizeIn
 import androidx.ui.material.MaterialTheme
-import androidx.ui.unit.IntPx
-import androidx.ui.unit.IntPxSize
+import androidx.ui.unit.IntSize
 import androidx.ui.unit.dp
 
 enum class FullScreenState {
@@ -57,11 +57,11 @@ fun BackdropFrontLayerDraggable(
     staticChildren: @Composable (Modifier) -> Unit,
     backdropChildren: @Composable (Modifier) -> Unit
 ) {
-    var backgroundChildrenSize by mutableStateOf(IntPxSize(IntPx.Zero, IntPx.Zero))
+    var backgroundChildrenSize by state { IntSize(0, 0) }
 
     Box(modifier) {
         WithConstraints {
-            val fullHeight = constraints.maxHeight.value.toFloat()
+            val fullHeight = constraints.maxHeight.toFloat()
             val anchors = remember(backgroundChildrenSize.height) {
                 getAnchors(backgroundChildrenSize, fullHeight)
             }
@@ -78,7 +78,7 @@ fun BackdropFrontLayerDraggable(
             ) { model ->
                 Stack {
                     staticChildren(Modifier.onPositioned { coordinates ->
-                        if (backgroundChildrenSize.height == IntPx.Zero) {
+                        if (backgroundChildrenSize.height == 0) {
                             backdropState.value = FullScreenState.COLLAPSED
                         }
                         if (backgroundChildrenSize != coordinates.size) {
@@ -87,7 +87,7 @@ fun BackdropFrontLayerDraggable(
                     })
 
                     val shadowColor = MaterialTheme.colors.surface.copy(alpha = 0.8f)
-                    val revealValue = backgroundChildrenSize.height.value.toFloat() / 2
+                    val revealValue = backgroundChildrenSize.height / 2
                     if (model.value < revealValue) {
                         Canvas(Modifier.fillMaxSize()) {
                             drawRect(size = size, color = shadowColor)
@@ -111,10 +111,10 @@ fun BackdropFrontLayerDraggable(
 private const val ANCHOR_BOTTOM_OFFSET = 130f
 
 private fun getAnchors(
-    searchChildrenSize: IntPxSize,
+    searchChildrenSize: IntSize,
     fullHeight: Float
 ): List<Pair<Float, FullScreenState>> {
-    val mediumValue = searchChildrenSize.height.value.toFloat() + 50.dp.value
+    val mediumValue = searchChildrenSize.height + 50.dp.value
     val maxValue = fullHeight - ANCHOR_BOTTOM_OFFSET
     return listOf(
         0f to FullScreenState.EXPANDED,

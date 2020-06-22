@@ -21,14 +21,16 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.0-alpha01")
+        classpath("com.android.tools.build:gradle:4.2.0-alpha02")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
     }
 }
 
 allprojects {
+
+    // Compose dev14
     val snapshotUrl =
-        "https://androidx-dev-prod.appspot.com/snapshots/builds/6534738/artifacts/ui/repository/"
+        "https://androidx-dev-prod.appspot.com/snapshots/builds/6602655/artifacts/ui/repository/"
     repositories {
         maven {
             url = uri(snapshotUrl)

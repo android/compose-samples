@@ -35,7 +35,6 @@ import androidx.ui.layout.preferredWidth
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 
@@ -46,7 +45,7 @@ fun CraneTabBar(
     children: @Composable (Modifier) -> Unit
 ) {
     Row(modifier) {
-        Row(Modifier.padding(top = 8.dp).ripple(bounded = false)) {
+        Row(Modifier.padding(top = 8.dp)) {
             Image(
                 modifier = Modifier.padding(top = 8.dp).clickable(onClick = onMenuClicked),
                 asset = vectorResource(id = R.drawable.ic_menu)
@@ -83,8 +82,8 @@ fun CraneTabs(
         } else {
             Modifier.drawBorder(
                 border = Border(2.dp, Color.White),
-                shape = RoundedCornerShape(20.dp)
-            ).padding(top = 8.dp, start = 20.dp, bottom = 8.dp, end = 20.dp)
+                shape = RoundedCornerShape(16.dp)
+            ).padding(top = 8.dp, start = 16.dp, bottom = 8.dp, end = 16.dp)
         }
 
         Tab(

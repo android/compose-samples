@@ -19,18 +19,18 @@ package androidx.compose.samples.crane.base
 import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.compose.getValue
-import androidx.compose.mutableStateOf
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.setValue
+import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.TextField
-import androidx.ui.foundation.TextFieldValue
 import androidx.ui.foundation.contentColor
 import androidx.ui.graphics.Color
+import androidx.ui.input.TextFieldValue
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.padding
@@ -81,7 +81,7 @@ fun CraneEditableUserInput(
     @DrawableRes vectorImageId: Int? = null,
     onInputChanged: (String) -> Unit
 ) {
-    var textFieldState by mutableStateOf(TextFieldValue(text = hint))
+    var textFieldState by state { TextFieldValue(text = hint) }
     val isHint = { textFieldState.text == hint }
 
     CraneBaseUserInput(
