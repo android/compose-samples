@@ -50,22 +50,24 @@ sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
     object SignUp : SignInEvent()
     object SignInAsGuest : SignInEvent()
+    object NavigateBack : SignInEvent()
 }
 
 @Composable
-fun SignIn(onEvent: (SignInEvent) -> Unit) {
+fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
     val showSnackbar = state { false }
     Stack(modifier = Modifier.fillMaxSize()) {
         Column {
             SignInSignUpScreen(
                 topAppBarText = stringResource(id = R.string.sign_in),
-                onSignedInAsGuest = { onEvent(SignInEvent.SignInAsGuest) },
+                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
+                onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     SignInContent(
                         onSignInSubmitted = { email, password ->
-                            onEvent(SignInEvent.SignIn(email, password))
+                            onNavigationEvent(SignInEvent.SignIn(email, password))
                         }
                     )
                     Spacer(modifier = Modifier.preferredHeight(16.dp))

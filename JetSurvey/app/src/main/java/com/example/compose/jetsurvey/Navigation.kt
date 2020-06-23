@@ -28,7 +28,7 @@ fun Fragment.navigate(to: Screen, from: Screen) {
     }
     when (to) {
         Screen.Welcome -> {
-            findNavController().navigate(R.id.sign_up_fragment)
+            findNavController().navigate(R.id.welcome_fragment)
         }
         Screen.SignUp -> {
             findNavController().navigate(R.id.sign_up_fragment)

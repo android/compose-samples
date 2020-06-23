@@ -39,19 +39,21 @@ sealed class SignUpEvent {
     object SignIn : SignUpEvent()
     data class SignUp(val email: String, val password: String) : SignUpEvent()
     object SignInAsGuest : SignUpEvent()
+    object NavigateBack : SignUpEvent()
 }
 
 @Composable
-fun SignUp(onEvent: (SignUpEvent) -> Unit) {
+fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
     SignInSignUpScreen(
         topAppBarText = stringResource(id = R.string.create_account),
-        onSignedInAsGuest = { onEvent(SignUpEvent.SignInAsGuest) },
+        onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
+        onBackPressed = { onNavigationEvent(SignUpEvent.NavigateBack) },
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {
             SignUpContent(
                 onSignUpSubmitted = { email, password ->
-                    onEvent(SignUpEvent.SignUp(email, password))
+                    onNavigationEvent(SignUpEvent.SignUp(email, password))
                 }
             )
         }

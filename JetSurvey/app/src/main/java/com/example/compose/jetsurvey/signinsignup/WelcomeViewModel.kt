@@ -24,23 +24,24 @@ import com.example.compose.jetsurvey.Screen
 import com.example.compose.jetsurvey.Screen.SignIn
 import com.example.compose.jetsurvey.Screen.SignUp
 import com.example.compose.jetsurvey.Screen.Survey
+import com.example.compose.jetsurvey.util.Event
 
 class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    private val _navigateTo = MutableLiveData<Screen>()
-    val navigateTo: LiveData<Screen> = _navigateTo
+    private val _navigateTo = MutableLiveData<Event<Screen>>()
+    val navigateTo: LiveData<Event<Screen>> = _navigateTo
 
     fun handleContinue(email: String) {
         if (userRepository.isKnownUserEmail(email)) {
-            _navigateTo.value = SignIn
+            _navigateTo.value = Event(SignIn)
         } else {
-            _navigateTo.value = SignUp
+            _navigateTo.value = Event(SignUp)
         }
     }
 
     fun signInAsGuest() {
         userRepository.signInAsGuest()
-        _navigateTo.value = Survey
+        _navigateTo.value = Event(Survey)
     }
 }
 

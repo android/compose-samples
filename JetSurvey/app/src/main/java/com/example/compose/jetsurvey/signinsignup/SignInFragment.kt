@@ -43,8 +43,10 @@ class SignInFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.navigateTo.observe(this) { navigateTo ->
-            navigate(navigateTo, Screen.SignIn)
+        viewModel.navigateTo.observe(this) { navigateToEvent ->
+            navigateToEvent.getContentIfNotHandled()?.let { navigateTo ->
+                navigate(navigateTo, Screen.SignIn)
+            }
         }
 
         return FrameLayout(requireContext()).apply {
@@ -58,7 +60,7 @@ class SignInFragment : Fragment() {
             setContent(Recomposer.current()) {
                 JetsurveyTheme {
                     SignIn(
-                        onEvent = { event ->
+                        onNavigationEvent = { event ->
                             when (event) {
                                 is SignInEvent.SignIn -> {
                                     viewModel.signIn(event.email, event.password)
@@ -68,6 +70,9 @@ class SignInFragment : Fragment() {
                                 }
                                 SignInEvent.SignInAsGuest -> {
                                     viewModel.signInAsGuest()
+                                }
+                                SignInEvent.NavigateBack -> {
+                                    requireActivity().onBackPressedDispatcher.onBackPressed()
                                 }
                             }
                         }
