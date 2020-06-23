@@ -29,6 +29,7 @@ import androidx.ui.foundation.contentColor
 import androidx.ui.layout.Column
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
@@ -54,7 +55,7 @@ sealed class SignInEvent {
 @Composable
 fun SignIn(onEvent: (SignInEvent) -> Unit) {
     val showSnackbar = state { false }
-    Stack {
+    Stack(modifier = Modifier.fillMaxSize()) {
         Column {
             SignInSignUpScreen(
                 topAppBarText = stringResource(id = R.string.sign_in),
@@ -161,10 +162,18 @@ fun ErrorSnackbar(
     }
 }
 
-@Preview
+@Preview(name = "Sign in light theme")
 @Composable
 fun SignInPreview() {
     JetsurveyTheme {
+        SignIn {}
+    }
+}
+
+@Preview(name = "Sign in dark theme")
+@Composable
+fun SignInPreviewDark() {
+    JetsurveyTheme(darkTheme = true) {
         SignIn {}
     }
 }
