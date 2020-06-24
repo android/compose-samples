@@ -72,7 +72,7 @@ class SignInFragment : Fragment() {
                                     viewModel.signInAsGuest()
                                 }
                                 SignInEvent.NavigateBack -> {
-                                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                                    activity?.onBackPressedDispatcher?.onBackPressed()
                                 }
                             }
                         }

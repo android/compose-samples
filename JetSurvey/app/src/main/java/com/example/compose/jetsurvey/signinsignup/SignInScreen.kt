@@ -112,8 +112,7 @@ fun SignInContent(onSignInSubmitted: (email: String, password: String) -> Unit) 
             enabled = emailState.isValid
         ) {
             Text(
-                text = stringResource(id = R.string.sign_in),
-                modifier = Modifier.gravity(Alignment.CenterHorizontally)
+                text = stringResource(id = R.string.sign_in)
             )
         }
     }

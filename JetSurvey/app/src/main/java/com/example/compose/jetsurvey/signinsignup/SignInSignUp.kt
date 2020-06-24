@@ -30,12 +30,13 @@ import androidx.ui.input.PasswordVisualTransformation
 import androidx.ui.input.VisualTransformation
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
-import androidx.ui.layout.RowScope.gravity
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
+import androidx.ui.layout.wrapContentSize
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
@@ -63,25 +64,7 @@ fun SignInSignUpScreen(
     content: @Composable() () -> Unit
 ) {
     Column(modifier = modifier) {
-        TopAppBar(
-            title = {
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                    Text(
-                        text = topAppBarText,
-                        style = MaterialTheme.typography.h6,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically)
-                    )
-                }
-            },
-            navigationIcon = {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(Icons.Filled.ChevronLeft)
-                }
-            },
-            backgroundColor = MaterialTheme.colors.surface,
-            elevation = 0.dp
-        )
+        SignInSignUpTopAppBar(topAppBarText, onBackPressed)
         VerticalScroller {
             Spacer(modifier = Modifier.preferredHeight(44.dp))
             Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
@@ -94,6 +77,32 @@ fun SignInSignUpScreen(
             )
         }
     }
+}
+
+@Composable
+private fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
+    TopAppBar(
+        title = {
+            Text(
+                text = topAppBarText,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackPressed) {
+                Icon(Icons.Filled.ChevronLeft)
+            }
+        },
+        // We need to balance the navigation icon, so we add a spacer.
+        actions = {
+            Spacer(modifier = Modifier.preferredWidth(68.dp))
+        },
+        backgroundColor = MaterialTheme.colors.surface,
+        elevation = 0.dp
+    )
 }
 
 @Composable

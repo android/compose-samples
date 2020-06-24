@@ -23,11 +23,14 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.Recomposer
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.ui.core.setContent
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 class SurveyFragment : Fragment() {
+
+    private val viewModel: SurveyViewModel by viewModels { SurveyViewModelFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +48,12 @@ class SurveyFragment : Fragment() {
             )
             setContent(Recomposer.current()) {
                 JetsurveyTheme {
-                    SurveyContent()
+                    SurveyScreen(
+                        survey = viewModel.survey,
+                        onBackPressed = {
+                            activity?.onBackPressedDispatcher?.onBackPressed()
+                        }
+                    )
                 }
             }
         }
