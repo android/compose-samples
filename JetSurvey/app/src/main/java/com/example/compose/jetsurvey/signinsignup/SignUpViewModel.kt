@@ -21,12 +21,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.compose.jetsurvey.Screen
+import com.example.compose.jetsurvey.Screen.SignIn
 import com.example.compose.jetsurvey.Screen.Survey
+import com.example.compose.jetsurvey.util.Event
 
 class SignUpViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    private val _navigateTo = MutableLiveData<Screen>()
-    val navigateTo: LiveData<Screen>
+    private val _navigateTo = MutableLiveData<Event<Screen>>()
+    val navigateTo: LiveData<Event<Screen>>
         get() = _navigateTo
 
     /**
@@ -34,16 +36,16 @@ class SignUpViewModel(private val userRepository: UserRepository) : ViewModel() 
      */
     fun signUp(email: String, password: String) {
         userRepository.signUp(email, password)
-        _navigateTo.value = Survey
+        _navigateTo.value = Event(Survey)
     }
 
     fun signInAsGuest() {
         userRepository.signInAsGuest()
-        _navigateTo.value = Survey
+        _navigateTo.value = Event(Survey)
     }
 
     fun signIn() {
-        _navigateTo.value = Screen.SignIn
+        _navigateTo.value = Event(SignIn)
     }
 }
 

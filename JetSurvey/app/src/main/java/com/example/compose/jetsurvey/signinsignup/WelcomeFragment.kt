@@ -43,8 +43,10 @@ class WelcomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.navigateTo.observe(this) { navigateTo ->
-            navigate(navigateTo, Screen.Welcome)
+        viewModel.navigateTo.observe(this) { navigateToEvent ->
+            navigateToEvent.getContentIfNotHandled()?.let { navigateTo ->
+                navigate(navigateTo, Screen.Welcome)
+            }
         }
 
         return FrameLayout(requireContext()).apply {

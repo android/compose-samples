@@ -30,6 +30,7 @@ import androidx.ui.input.PasswordVisualTransformation
 import androidx.ui.input.VisualTransformation
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.RowScope.gravity
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
@@ -44,6 +45,7 @@ import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Surface
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.ChevronLeft
 import androidx.ui.material.icons.filled.Visibility
 import androidx.ui.material.icons.filled.VisibilityOff
 import androidx.ui.res.stringResource
@@ -56,23 +58,30 @@ import com.example.compose.jetsurvey.R
 fun SignInSignUpScreen(
     topAppBarText: String,
     onSignedInAsGuest: () -> Unit,
+    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable() () -> Unit
 ) {
     Column(modifier = modifier) {
         TopAppBar(
+            title = {
+                ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+                    Text(
+                        text = topAppBarText,
+                        style = MaterialTheme.typography.h6,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically)
+                    )
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { onBackPressed() }) {
+                    Icon(Icons.Filled.ChevronLeft)
+                }
+            },
             backgroundColor = MaterialTheme.colors.surface,
             elevation = 0.dp
-        ) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = topAppBarText,
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically)
-                )
-            }
-        }
+        )
         VerticalScroller {
             Spacer(modifier = Modifier.preferredHeight(44.dp))
             Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
@@ -199,5 +208,10 @@ fun OrSignInAsGuest(
 @Preview
 @Composable
 fun SignInSignUpScreenPreview() {
-    SignInSignUpScreen(topAppBarText = "Preview", onSignedInAsGuest = {}, content = {})
+    SignInSignUpScreen(
+        topAppBarText = "Preview",
+        onSignedInAsGuest = {},
+        onBackPressed = {},
+        content = {}
+    )
 }
