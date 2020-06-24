@@ -77,7 +77,7 @@ dependencies {
 
     implementation "androidx.ui:ui-livedata:$compose_version"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha04"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha05"
 
     androidTestImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:rules:1.2.0'

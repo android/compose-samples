@@ -16,7 +16,7 @@
 
 buildscript {
     ext.kotlin_version = '1.3.72'
-    ext.compose_version = '0.1.0-SNAPSHOT'
+    ext.compose_version = '0.1.0-dev14'
 
     repositories {
         google()
@@ -30,8 +30,6 @@ buildscript {
 
 allprojects {
     repositories {
-        def snapshot = '6602655'
-        maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
         google()
         jcenter()
     }
