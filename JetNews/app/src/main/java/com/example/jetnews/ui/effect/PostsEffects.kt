@@ -18,7 +18,7 @@ package com.example.jetnews.ui.effect
 
 import androidx.compose.Composable
 import androidx.compose.getValue
-import androidx.compose.onActive
+import androidx.compose.onCommit
 import androidx.compose.setValue
 import androidx.compose.state
 import com.example.jetnews.data.Result
@@ -41,7 +41,7 @@ fun fetchPost(postId: String, postsRepository: PostsRepository): UiState<Post> {
 
     // Whenever this effect is used in a composable function, it'll load data from the repository
     // when the first composition is applied
-    onActive {
+    onCommit(postId, postsRepository) {
         postsRepository.getPost(postId) { result ->
             postState = when (result) {
                 is Result.Success -> {

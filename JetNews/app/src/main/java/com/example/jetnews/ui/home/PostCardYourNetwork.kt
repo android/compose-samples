@@ -41,14 +41,16 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.navigateTo
 
 @Composable
-fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
+fun PostCardPopular(
+    post: Post,
+    navigateTo: (Screen) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-            .preferredSize(280.dp, 240.dp)
+        modifier = modifier.preferredSize(280.dp, 240.dp)
             .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
     ) {
         Column {
@@ -79,7 +81,7 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
                 ProvideEmphasis(emphasisLevels.high) {
                     Text(
                         text = "${post.metadata.date} - " +
-                                "${post.metadata.readTimeMinutes} min read",
+                            "${post.metadata.readTimeMinutes} min read",
                         style = MaterialTheme.typography.body2
                     )
                 }
@@ -92,7 +94,7 @@ fun PostCardPopular(post: Post, modifier: Modifier = Modifier) {
 @Composable
 fun PreviewPostCardPopular() {
     ThemedPreview {
-        PostCardPopular(post = post1)
+        PostCardPopular(post1, {})
     }
 }
 
@@ -100,30 +102,32 @@ fun PreviewPostCardPopular() {
 @Composable
 fun PreviewPostCardPopularDark() {
     ThemedPreview(darkTheme = true) {
-        PostCardPopular(post = post1)
+        PostCardPopular(post1, {})
     }
 }
 
 @Preview("Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText() {
-    val loremIpsum = """
+    val loremIpsum =
+        """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
         sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
         Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
         nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
         facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
         consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
-    """.trimIndent()
+        """.trimIndent()
     ThemedPreview {
         PostCardPopular(
-            post = post1.copy(
+            post1.copy(
                 title = "Title$loremIpsum",
                 metadata = post1.metadata.copy(
                     author = PostAuthor("Author: $loremIpsum"),
                     readTimeMinutes = Int.MAX_VALUE
                 )
-            )
+            ),
+            {}
         )
     }
 }

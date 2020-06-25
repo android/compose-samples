@@ -31,6 +31,7 @@ import androidx.ui.foundation.contentColor
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.IconButton
@@ -52,25 +53,23 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
 import com.example.jetnews.ui.home.toggleBookmark
-import com.example.jetnews.ui.navigateTo
 import com.example.jetnews.ui.state.UiState
 
 @Composable
-fun ArticleScreen(postId: String, postsRepository: PostsRepository) {
+fun ArticleScreen(postId: String, postsRepository: PostsRepository, onBack: () -> Unit) {
     val postsState = fetchPost(postId, postsRepository)
     if (postsState is UiState.Success<Post>) {
-        ArticleScreen(postsState.data)
+        ArticleScreen(postsState.data, onBack)
     }
 }
 
 @Composable
-private fun ArticleScreen(post: Post) {
+private fun ArticleScreen(post: Post, onBack: () -> Unit) {
 
     var showDialog by state { false }
     if (showDialog) {
@@ -78,7 +77,7 @@ private fun ArticleScreen(post: Post) {
     }
 
     Scaffold(
-        topAppBar = {
+        topBar = {
             TopAppBar(
                 title = {
                     Text(
@@ -88,16 +87,17 @@ private fun ArticleScreen(post: Post) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navigateTo(Screen.Home) }) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack)
                     }
                 }
             )
         },
-        bodyContent = { modifier ->
+        bodyContent = { innerPadding ->
+            val modifier = Modifier.padding(innerPadding)
             PostContent(post, modifier)
         },
-        bottomAppBar = {
+        bottomBar = {
             BottomBar(post) { showDialog = true }
         }
     )
@@ -106,29 +106,29 @@ private fun ArticleScreen(post: Post) {
 @Composable
 private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     Surface(elevation = 2.dp) {
-            Row(
-                verticalGravity = Alignment.CenterVertically,
-                modifier = Modifier
-                    .preferredHeight(56.dp)
-                    .fillMaxWidth()
-            ) {
-                IconButton(onClick = onUnimplementedAction) {
-                    Icon(Icons.Filled.FavoriteBorder)
-                }
-                BookmarkButton(
-                    isBookmarked = isFavorite(postId = post.id),
-                    onBookmark = { toggleBookmark(postId = post.id) }
-                )
-                val context = ContextAmbient.current
-                IconButton(onClick = { sharePost(post, context) }) {
-                    Icon(Icons.Filled.Share)
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = onUnimplementedAction) {
-                    Icon(vectorResource(R.drawable.ic_text_settings))
-                }
+        Row(
+            verticalGravity = Alignment.CenterVertically,
+            modifier = Modifier
+                .preferredHeight(56.dp)
+                .fillMaxWidth()
+        ) {
+            IconButton(onClick = onUnimplementedAction) {
+                Icon(Icons.Filled.FavoriteBorder)
+            }
+            BookmarkButton(
+                isBookmarked = isFavorite(postId = post.id),
+                onBookmark = { toggleBookmark(postId = post.id) }
+            )
+            val context = ContextAmbient.current
+            IconButton(onClick = { sharePost(post, context) }) {
+                Icon(Icons.Filled.Share)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onUnimplementedAction) {
+                Icon(vectorResource(R.drawable.ic_text_settings))
             }
         }
+    }
 }
 
 @Composable
@@ -163,7 +163,7 @@ private fun sharePost(post: Post, context: Context) {
 fun PreviewArticle() {
     ThemedPreview {
         val post = loadFakePost(post3.id)
-        ArticleScreen(post)
+        ArticleScreen(post, {})
     }
 }
 
@@ -172,7 +172,7 @@ fun PreviewArticle() {
 fun PreviewArticleDark() {
     ThemedPreview(darkTheme = true) {
         val post = loadFakePost(post3.id)
-        ArticleScreen(post)
+        ArticleScreen(post, {})
     }
 }
 

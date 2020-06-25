@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,9 +53,13 @@ import com.example.jetnews.ui.interests.InterestsScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun JetnewsApp(appContainer: AppContainer) {
+fun JetnewsApp(
+    appContainer: AppContainer,
+    navigationViewModel: NavigationViewModel
+) {
     JetnewsTheme {
         AppContent(
+            navigationViewModel = navigationViewModel,
             interestsRepository = appContainer.interestsRepository,
             postsRepository = appContainer.postsRepository
         )
@@ -64,17 +68,25 @@ fun JetnewsApp(appContainer: AppContainer) {
 
 @Composable
 private fun AppContent(
+    navigationViewModel: NavigationViewModel,
     postsRepository: PostsRepository,
     interestsRepository: InterestsRepository
 ) {
-    Crossfade(JetnewsStatus.currentScreen) { screen ->
+    Crossfade(navigationViewModel.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
             when (screen) {
-                is Screen.Home -> HomeScreen(postsRepository = postsRepository)
-                is Screen.Interests -> InterestsScreen(interestsRepository = interestsRepository)
+                is Screen.Home -> HomeScreen(
+                    navigateTo = navigationViewModel::navigateTo,
+                    postsRepository = postsRepository
+                )
+                is Screen.Interests -> InterestsScreen(
+                    navigateTo = navigationViewModel::navigateTo,
+                    interestsRepository = interestsRepository
+                )
                 is Screen.Article -> ArticleScreen(
                     postId = screen.postId,
-                    postsRepository = postsRepository
+                    postsRepository = postsRepository,
+                    onBack = { navigationViewModel.onBack() }
                 )
             }
         }
@@ -83,6 +95,7 @@ private fun AppContent(
 
 @Composable
 fun AppDrawer(
+    navigateTo: (Screen) -> Unit,
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
@@ -167,7 +180,8 @@ private fun DrawerButton(
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalGravity = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()) {
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Image(
                     asset = icon,
                     colorFilter = ColorFilter.tint(textIconColor),
@@ -190,7 +204,8 @@ private fun DrawerButton(
 fun PreviewJetnewsApp() {
     ThemedPreview {
         AppDrawer(
-            currentScreen = JetnewsStatus.currentScreen,
+            navigateTo = { },
+            currentScreen = Screen.Home,
             closeDrawer = { }
         )
     }
@@ -201,7 +216,8 @@ fun PreviewJetnewsApp() {
 fun PreviewJetnewsAppDark() {
     ThemedPreview(darkTheme = true) {
         AppDrawer(
-            currentScreen = JetnewsStatus.currentScreen,
+            navigateTo = { },
+            currentScreen = Screen.Home,
             closeDrawer = { }
         )
     }

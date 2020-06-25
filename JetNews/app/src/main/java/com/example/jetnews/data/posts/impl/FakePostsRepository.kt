@@ -56,9 +56,11 @@ class FakePostsRepository(
     override fun getPost(postId: String, callback: (Result<Post?>) -> Unit) {
         executeInBackground(callback) {
             resultThreadHandler.post {
-                callback(Result.Success(
-                    postsWithResources.find { it.id == postId }
-                ))
+                callback(
+                    Result.Success(
+                        postsWithResources.find { it.id == postId }
+                    )
+                )
             }
         }
     }
