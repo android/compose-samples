@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster
 
-import androidx.compose.Composable
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
+import android.app.Application
 
-@Composable
-fun JetcasterTheme(
-    content: @Composable () -> Unit
-) {
-    val colors = darkColorPalette()
-
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+/**
+ * Application which sets up our dependency [Graph] with a context.
+ */
+class JetcasterApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Graph.provide(this)
+    }
 }

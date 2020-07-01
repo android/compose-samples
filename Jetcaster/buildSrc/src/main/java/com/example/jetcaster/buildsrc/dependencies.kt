@@ -27,8 +27,10 @@ object Libs {
 
     const val material = "com.google.android.material:material:1.1.0"
 
+    const val store = "com.dropbox.mobile.store:store4:4.0.0-alpha06"
+
     object Accompanist {
-        private const val version = "0.1.6.ui-${AndroidX.UI.version}-SNAPSHOT"
+        private const val version = "0.1.6.ui-${AndroidX.UI.snapshot}-SNAPSHOT"
         const val mdcTheme = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
@@ -45,6 +47,18 @@ object Libs {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+    }
+
+    object Retrofit {
+        private const val version = "2.9.0"
+        const val retrofit = "com.squareup.retrofit2:retrofit:$version"
+        const val moshiadapter = "com.squareup.retrofit2:converter-moshi:$version"
+    }
+
+    object Moshi {
+        private const val version = "1.9.3"
+        const val moshi = "com.squareup.moshi:moshi:$version"
+        const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
     }
 
     object AndroidX {

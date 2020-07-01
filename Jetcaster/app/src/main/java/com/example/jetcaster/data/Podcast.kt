@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui
+package com.example.jetcaster.data
 
-import androidx.compose.Composable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@Composable
-fun JetcasterApp() {
-}
+@JsonClass(generateAdapter = true)
+data class Podcast(
+    val id: Long,
+    val artistName: String,
+    val name: String,
+    val releaseDate: String, /* TODO: make this a DateTime */
+    @Json(name = "artworkUrl100") val artworkUrl: String? = null,
+    val copyright: String? = null
+)

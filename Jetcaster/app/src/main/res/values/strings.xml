@@ -16,4 +16,7 @@
   -->
 <resources>
     <string name="app_name">Jetcaster</string>
+    <string name="your_podcasts">Your podcasts</string>
+
+    <string name="update_caption">Updated: %s</string>
 </resources>
