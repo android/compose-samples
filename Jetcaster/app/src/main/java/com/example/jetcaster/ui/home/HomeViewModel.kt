@@ -18,18 +18,29 @@ package com.example.jetcaster.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.StoreResponse
-import com.dropbox.android.external.store4.fresh
+import com.example.jetcaster.Graph
+import com.example.jetcaster.data.Category
+import com.example.jetcaster.data.CategoryStore
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastStore
+import com.example.jetcaster.data.PodcastsFetcher
+import com.example.jetcaster.data.SampleFeeds
+import com.example.jetcaster.data.sortedByLastEpisodeDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val podcastsFetcher: PodcastsFetcher = Graph.podcastFetcher,
+    private val podcastStore: PodcastStore = Graph.podcastStore,
+    private val categoryStore: CategoryStore = Graph.categoryStore
+) : ViewModel() {
+    // Holds our currently selected category
+    private val _selectedCategory = MutableStateFlow<Category?>(null)
+    // Holds our view state which the UI collects via [state]
     private val _state = MutableStateFlow(HomeViewState())
 
     val state: StateFlow<HomeViewState>
@@ -37,36 +48,51 @@ class HomeViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            PodcastStore.stream(StoreRequest.cached(Unit, refresh = true))
-                .map { response ->
-                    when (response) {
-                        is StoreResponse.Data -> {
-                            HomeViewState(podcasts = response.value)
-                        }
-                        is StoreResponse.Loading -> {
-                            HomeViewState(refreshing = true)
-                        }
-                        is StoreResponse.Error -> {
-                            HomeViewState(errorMessage = response.errorMessageOrNull())
-                        }
-                    }
-                }.collect { _state.value = it }
+            // Combines the latest value from each of the flows, allowing us to generate a
+            // view state instance which only contains the latest values.
+            combine(
+                podcastStore.podcasts.sortedByLastEpisodeDate().map { it.take(10) },
+                categoryStore.sortedByCount(),
+                _selectedCategory
+            ) { podcasts, genres, selectedCategory ->
+                HomeViewState(
+                    featuredPodcasts = podcasts,
+                    refreshing = false,
+                    errorMessage = null,
+                    categories = genres.toList(),
+                    selectedCategory = selectedCategory
+                )
+            }.collect { _state.value = it }
         }
+
+        refresh()
     }
 
     fun refresh() {
         fetchPodcasts()
     }
 
+    fun onCategorySelected(category: Category) {
+        _selectedCategory.value = category
+    }
+
     private fun fetchPodcasts() {
         viewModelScope.launch {
-            PodcastStore.fresh(Unit)
+            // First clear the store
+            podcastStore.clear()
+
+            // Now fetch the podcasts, and add each to each store
+            podcastsFetcher(SampleFeeds).collect {
+                podcastStore.addPodcast(it)
+            }
         }
     }
 }
 
 data class HomeViewState(
-    val podcasts: List<Podcast> = emptyList(),
+    val featuredPodcasts: List<Podcast> = emptyList(),
+    val categories: List<Category> = emptyList(),
+    val selectedCategory: Category? = null,
     val refreshing: Boolean = false,
     val errorMessage: String? = null
 )

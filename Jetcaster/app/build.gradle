@@ -19,12 +19,6 @@ import com.example.jetcaster.buildsrc.Libs
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-kapt'
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 android {
@@ -39,6 +33,12 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
+    packagingOptions {
+        // The Rome library JARs embed some internal utils libraries in nested JARs.
+        // We don't need them so we exclude them in the final package.
+        exclude "/*.jar"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -47,6 +47,9 @@ android {
     }
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -71,18 +74,19 @@ dependencies {
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
 
-    implementation Libs.AndroidX.UI.core
-    implementation Libs.AndroidX.UI.layout
-    implementation Libs.AndroidX.UI.material
-    implementation Libs.AndroidX.UI.iconsExtended
-    implementation Libs.AndroidX.UI.tooling
+    implementation Libs.AndroidX.Compose.core
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.materialIconsExtended
+    implementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.Accompanist.coil
 
-    implementation Libs.store
+    implementation Libs.OkHttp.okhttp
+    implementation Libs.OkHttp.logging
 
-    implementation Libs.Retrofit.retrofit
-    implementation Libs.Retrofit.moshiadapter
-    implementation Libs.Moshi.moshi
-    kapt Libs.Moshi.codegen
+    implementation Libs.Rome.rome
+    implementation Libs.Rome.modules
+
+    coreLibraryDesugaring Libs.jdkDesugar
 }

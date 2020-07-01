@@ -16,59 +16,63 @@
 
 package com.example.jetcaster.data
 
-import android.util.Log
-import com.dropbox.android.external.store4.FetcherResult
-import com.dropbox.android.external.store4.SourceOfTruth
-import com.dropbox.android.external.store4.Store
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.nonFlowFetcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 /**
- * This should really be a Room database.
+ * A data repository for [Podcast] instances.
+ *
+ * Currently this is backed only with data in memory. Ideally this would be backed by a
+ * Room database, to allow persistence and easier querying.
  */
-private object PodcastsInMemorySourceOfTruth {
+class PodcastStore {
     val podcasts: Flow<List<Podcast>>
         get() = _podcasts
 
     private val _podcasts = MutableStateFlow(emptyList<Podcast>())
 
-    fun insert(podcasts: List<Podcast>) {
-        _podcasts.value = podcasts
+    /**
+     * Returns a flow containing a list of all podcasts in the given [category].
+     */
+    fun podcastsInCategory(category: Category): Flow<List<Podcast>> = _podcasts.map { podcasts ->
+        podcasts.filter { podcast ->
+            podcast.categories.any { it == category }
+        }
     }
 
-    fun clear() {
+    /**
+     * Add a new [Podcast] to this store.
+     *
+     * This automatically switches to the main thread to maintain thread consistency.
+     */
+    suspend fun addPodcast(podcast: Podcast) = withContext(Dispatchers.Main) {
+        _podcasts.value = _podcasts.value + podcast
+    }
+
+    /**
+     * Clear any [Podcast]s currently stored in this store.
+     *
+     * This automatically switches to the main thread to maintain thread consistency.
+     */
+    suspend fun clear() = withContext(Dispatchers.Main) {
         _podcasts.value = emptyList()
     }
 }
 
 /**
- * A [Store] which acts as a data repository for our list of [Podcast]s.
- *
- * This store is built to use our [PodcastsFetcher] to fetch new responses from
- * the network, along with a very simple [SourceOfTruth] in [PodcastsInMemorySourceOfTruth] which
- * stores the entries in memory. Ideally this would use a Room database, or similar.
- *
- * For more information on [Store], see [here](https://github.com/dropbox/Store).
+ * Returns a flow containing the entire list of podcasts, sorted by the last episode
+ * publish date for each podcast.
  */
-val PodcastStore by lazy {
-    StoreBuilder.from(
-        fetcher = nonFlowFetcher<Unit, List<Podcast>> {
-            try {
-                FetcherResult.Data(PodcastsFetcher())
-            } catch (t: Throwable) {
-                Log.d("PodcastStore", "Error during fetch", t)
-                FetcherResult.Error.Exception(t)
-            }
-        },
-        sourceOfTruth = SourceOfTruth.from(
-            reader = { PodcastsInMemorySourceOfTruth.podcasts },
-            writer = { _: Unit, items ->
-                PodcastsInMemorySourceOfTruth.insert(items)
-            },
-            delete = { PodcastsInMemorySourceOfTruth.clear() },
-            deleteAll = { PodcastsInMemorySourceOfTruth.clear() }
-        )
-    ).build()
+fun Flow<List<Podcast>>.sortedByLastEpisodeDate(descending: Boolean = true) = map { podcasts ->
+    withContext(Dispatchers.Default) {
+        // Run on the default dispatcher, since sorting is non-trivial
+        if (descending) {
+            podcasts.sortedByDescending { it.lastEpisodeDate }
+        } else {
+            podcasts.sortedBy { it.lastEpisodeDate }
+        }
+    }
 }

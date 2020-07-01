@@ -80,7 +80,7 @@ val Typography = Typography(
     subtitle2 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Medium,
         lineHeight = 24.sp,
         letterSpacing = 0.1.sp
     ),
@@ -94,21 +94,21 @@ val Typography = Typography(
     body2 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),
     button = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Medium,
         lineHeight = 16.sp,
         letterSpacing = 1.25.sp
     ),
     caption = TextStyle(
         fontFamily = Montserrat,
         fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Normal,
         lineHeight = 16.sp,
         letterSpacing = 0.4.sp
     ),

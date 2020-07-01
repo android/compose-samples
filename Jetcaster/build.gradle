@@ -40,9 +40,9 @@ subprojects {
         mavenCentral()
         jcenter()
 
-        if (Libs.AndroidX.UI.version.endsWith("SNAPSHOT")) {
+        if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
             maven {
-                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.UI.snapshot}/artifacts/ui/repository/"
+                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
             }
         }
 

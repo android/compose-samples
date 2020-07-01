@@ -18,16 +18,13 @@ package com.example.jetcaster.ui.theme
 
 import androidx.compose.Composable
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
 
 @Composable
 fun JetcasterTheme(
     content: @Composable () -> Unit
 ) {
-    val colors = darkColorPalette()
-
     MaterialTheme(
-        colors = colors,
+        colors = Colors,
         typography = Typography,
         shapes = Shapes,
         content = content
