@@ -264,9 +264,9 @@ private fun HomeScreenPopularSection(
                 style = MaterialTheme.typography.subtitle1
             )
         }
-        HorizontalScroller(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
+        HorizontalScroller(modifier = Modifier.padding(end = 16.dp)) {
             posts.forEach { post ->
-                PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp))
+                PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }
         }
         HomeScreenDivider()
