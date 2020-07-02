@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster
 
-import androidx.compose.Composable
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
+import android.content.Context
+import com.squareup.moshi.Moshi
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import java.io.File
 
-@Composable
-fun JetcasterTheme(
-    content: @Composable () -> Unit
-) {
-    val colors = darkColorPalette()
+object Graph {
+    lateinit var okHttpClient: OkHttpClient
+        private set
 
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    val moshi by lazy { Moshi.Builder().build() }
+
+    fun provide(context: Context) {
+        okHttpClient = OkHttpClient.Builder()
+            .cache(Cache(File(context.cacheDir, "http_cache"), 20 * 1024 * 1024))
+            .build()
+    }
 }

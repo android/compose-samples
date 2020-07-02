@@ -19,13 +19,16 @@ package com.example.jetcaster.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.ui.core.setContent
+import com.example.jetcaster.ui.theme.JetcasterTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            JetcasterApp()
+            JetcasterTheme {
+                JetcasterApp()
+            }
         }
     }
 }

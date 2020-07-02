@@ -19,6 +19,12 @@ import com.example.jetcaster.buildsrc.Libs
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 android {
@@ -57,14 +63,26 @@ android {
 
 dependencies {
     implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.android
 
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
     implementation Libs.material
+
+    implementation Libs.AndroidX.Lifecycle.viewmodel
 
     implementation Libs.AndroidX.UI.core
     implementation Libs.AndroidX.UI.layout
     implementation Libs.AndroidX.UI.material
     implementation Libs.AndroidX.UI.iconsExtended
     implementation Libs.AndroidX.UI.tooling
+
+    implementation Libs.Accompanist.coil
+
+    implementation Libs.store
+
+    implementation Libs.Retrofit.retrofit
+    implementation Libs.Retrofit.moshiadapter
+    implementation Libs.Moshi.moshi
+    kapt Libs.Moshi.codegen
 }

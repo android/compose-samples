@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster.ui
 
 import androidx.compose.Composable
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
+import com.example.jetcaster.ui.home.Home
 
 @Composable
-fun JetcasterTheme(
-    content: @Composable () -> Unit
-) {
-    val colors = darkColorPalette()
-
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+fun JetcasterApp() {
+    // TODO: add some navigation
+    Home()
 }
