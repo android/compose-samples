@@ -18,11 +18,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId 'com.example.jetnews'
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName '1.0'
         vectorDrawables.useSupportLibrary = true
@@ -77,7 +77,7 @@ dependencies {
 
     implementation "androidx.ui:ui-livedata:$compose_version"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha04"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha05"
 
     androidTestImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:rules:1.2.0'
