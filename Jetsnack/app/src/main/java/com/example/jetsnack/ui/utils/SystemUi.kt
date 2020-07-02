@@ -53,6 +53,7 @@ class SystemUiController(private val window: Window) {
         window.statusBarColor = statusBarColor.toArgb()
 
         if (Build.VERSION.SDK_INT >= 23) {
+            @Suppress("DEPRECATION")
             if (darkIcons) {
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
                     View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -88,6 +89,7 @@ class SystemUiController(private val window: Window) {
         window.navigationBarColor = navBarColor.toArgb()
 
         if (Build.VERSION.SDK_INT >= 26) {
+            @Suppress("DEPRECATION")
             if (darkIcons) {
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
                     View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
@@ -115,8 +117,8 @@ class SystemUiController(private val window: Window) {
 }
 
 /**
- * An [Ambient] holding the current [SystemUiController] or throws an error if none is
- * [provided][androidx.compose.Providers].
+ * An [androidx.compose.Ambient] holding the current [SystemUiController] or throws an error if none
+ * is [provided][androidx.compose.Providers].
  */
 val SystemUiControllerAmbient = staticAmbientOf<SystemUiController> {
     error("No SystemUiController provided")
