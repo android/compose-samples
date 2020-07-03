@@ -188,7 +188,7 @@ private fun DrawerButton(
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
-                Spacer(Modifier.preferredWidth(16.dp))
+                Spacer(LayoutWidth(16.dp))
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,

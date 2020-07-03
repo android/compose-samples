@@ -54,6 +54,7 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.home.isFavorite
