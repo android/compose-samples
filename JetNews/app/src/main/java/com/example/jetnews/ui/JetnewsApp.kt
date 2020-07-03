@@ -22,6 +22,7 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
+import androidx.ui.graphics.Color
 import androidx.ui.graphics.ColorFilter
 import androidx.ui.graphics.vector.VectorAsset
 import androidx.ui.layout.Arrangement
@@ -162,7 +163,7 @@ private fun DrawerButton(
     val backgroundColor = if (isSelected) {
         colors.primary.copy(alpha = 0.12f)
     } else {
-        colors.surface
+        Color.Transparent
     }
 
     val surfaceModifier = modifier
