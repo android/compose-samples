@@ -16,24 +16,30 @@
 
 package com.example.jetnews
 
+import android.content.Context
 import androidx.compose.Composable
+import androidx.compose.remember
+import androidx.lifecycle.SavedStateHandle
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.test.ComposeTestRule
-import androidx.ui.test.SemanticsNodeInteraction
+import androidx.ui.test.SemanticsNodeInteractionCollection
 import androidx.ui.test.findAll
 import androidx.ui.test.hasSubstring
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.JetnewsStatus
-import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.NavigationViewModel
 
 /**
  * Launches the app from a test context
  */
-fun ComposeTestRule.launchJetNewsApp() {
+fun ComposeTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsStatus.resetState()
-        JetnewsApp()
+        JetnewsApp(
+            TestAppContainer(context),
+            remember { NavigationViewModel(SavedStateHandle()) }
+        )
     }
 }
 
@@ -41,7 +47,6 @@ fun ComposeTestRule.launchJetNewsApp() {
  * Resets the state of the app. Needs to be executed in Compose code (within a frame)
  */
 fun JetnewsStatus.resetState() {
-    currentScreen = Screen.Home
     favorites.clear()
     selectedTopics.clear()
 }
@@ -59,7 +64,7 @@ fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
     }
 }
 
-fun findAllBySubstring(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
+fun findAllBySubstring(text: String, ignoreCase: Boolean = false): SemanticsNodeInteractionCollection {
     return findAll(
         hasSubstring(text, ignoreCase)
     )
