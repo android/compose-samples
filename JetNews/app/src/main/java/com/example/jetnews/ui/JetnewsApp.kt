@@ -25,20 +25,13 @@ import androidx.ui.foundation.Text
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.ColorFilter
 import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
+import androidx.ui.layout.*
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
 import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Favorite
 import androidx.ui.material.icons.filled.Home
 import androidx.ui.material.icons.filled.ListAlt
 import androidx.ui.res.vectorResource
@@ -82,15 +75,17 @@ private fun AppContent(
                     postsRepository = postsRepository
                 )
                 is Screen.Interests -> InterestsScreen(
-                    navigateTo = navigationViewModel::navigateTo,
-                    interestsRepository = interestsRepository
+                        navigateTo = navigationViewModel::navigateTo,
+                        interestsRepository = interestsRepository
                 )
                 is Screen.Article -> ArticleScreen(
-                    postId = screen.postId,
-                    postsRepository = postsRepository,
-                    onBack = { navigationViewModel.onBack() }
+                        postId = screen.postId,
+                        postsRepository = postsRepository,
+                        onBack = { navigationViewModel.onBack() }
                 )
-                is Screen.Favorites -> FavoritesScreen()
+                is Screen.Favorites -> FavoritesScreen(
+                        navigateTo = navigationViewModel::navigateTo
+                )
             }
         }
     }
@@ -127,13 +122,13 @@ fun AppDrawer(
         )
 
         DrawerButton(
-            icon = R.drawable.ic_favorite,
-            label = "Favorites",
-            isSelected = currentScreen == Screen.Favorites,
-            action = {
-                navigateTo(Screen.Favorites)
-                closeDrawer()
-            }
+                icon = Icons.Filled.Favorite,
+                label = "Favorites",
+                isSelected = currentScreen == Screen.Favorites,
+                action = {
+                    navigateTo(Screen.Favorites)
+                    closeDrawer()
+                }
         )
     }
 }
@@ -196,16 +191,16 @@ private fun DrawerButton(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
-                    asset = icon,
-                    colorFilter = ColorFilter.tint(textIconColor),
-                    alpha = imageAlpha
+                        asset = icon,
+                        colorFilter = ColorFilter.tint(textIconColor),
+                        alpha = imageAlpha
                 )
-                Spacer(LayoutWidth(16.dp))
+                Spacer(Modifier.preferredWidth(16.dp))
                 Text(
-                    text = label,
-                    style = MaterialTheme.typography.body2,
-                    color = textIconColor,
-                    modifier = Modifier.fillMaxWidth()
+                        text = label,
+                        style = MaterialTheme.typography.body2,
+                        color = textIconColor,
+                        modifier = Modifier.fillMaxWidth()
                 )
             }
         }
