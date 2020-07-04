@@ -17,26 +17,17 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.compose.state
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredSize
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.IconToggleButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
+import androidx.ui.layout.*
+import androidx.ui.material.*
 import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.Bookmark
-import androidx.ui.material.icons.filled.BookmarkBorder
-import androidx.ui.material.icons.filled.MoreVert
+import androidx.ui.material.icons.filled.*
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -157,26 +148,27 @@ fun BookmarkButton(
     }
 }
 
-fun toggleBookmark(postId: String) {
-    with(JetnewsStatus) {
-        if (favorites.contains(postId)) {
-            favorites.remove(postId)
-        } else {
-            favorites.add(postId)
-        }
-    }
-}
-
 @Composable
 fun FavoriteButton(
-    isFavorited: Boolean,
-    onFavorite: (Boolean) -> Unit
+        isFavorited: Boolean,
+        onFavorite: (Boolean) -> Unit,
+        modifier: Modifier = Modifier
 ) {
-    IconToggleButton(checked = isFavorited, onCheckedChange = onFavorite) {
+    IconToggleButton(
+            checked = isFavorited,
+            onCheckedChange = onFavorite
+    ) {
+        modifier.fillMaxSize()
         if (isFavorited) {
-            Icon(vectorResource(R.drawable.ic_favorited), Modifier.fillMaxSize())
+            Icon(
+                    asset = Icons.Filled.Favorite,
+                    modifier = modifier
+            )
         } else {
-            Icon(vectorResource(R.drawable.ic_favorite), Modifier.fillMaxSize())
+            Icon(
+                    asset = Icons.Filled.FavoriteBorder,
+                    modifier = modifier
+            )
         }
     }
 }
