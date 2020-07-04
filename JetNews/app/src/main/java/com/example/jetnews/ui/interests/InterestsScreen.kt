@@ -22,26 +22,14 @@ import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.*
 import androidx.ui.foundation.selection.toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
-import androidx.ui.material.Divider
-import androidx.ui.material.DrawerState
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.material.ScaffoldState
-import androidx.ui.material.Tab
-import androidx.ui.material.TabRow
-import androidx.ui.material.TopAppBar
+import androidx.ui.material.*
 import androidx.ui.res.imageResource
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
@@ -105,17 +93,17 @@ private fun InterestsScreenBody(
 
     Column {
         TabRow(
-            items = sectionTitles, selectedIndex = currentSection.ordinal
+                items = sectionTitles, selectedIndex = currentSection.ordinal
         ) { index, title ->
             Tab(
-                text = { Text(title) },
-                selected = currentSection.ordinal == index,
-                onSelected = {
-                    updateSection(Sections.values()[index])
-                }
+                    text = { Text(title) },
+                    selected = currentSection.ordinal == index,
+                    onSelected = {
+                        updateSection(Sections.values()[index])
+                    }
             )
         }
-        Container(modifier = LayoutFlexible(1f)) {
+        Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
                 Sections.Topics -> {
                     val topicsState = uiStateFrom(interestsRepository::getTopics)
