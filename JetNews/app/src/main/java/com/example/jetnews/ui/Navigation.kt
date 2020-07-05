@@ -25,9 +25,11 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.jetnews.ui.Screen.Article
+import com.example.jetnews.ui.Screen.Favorites
 import com.example.jetnews.ui.Screen.Home
 import com.example.jetnews.ui.Screen.Interests
 import com.example.jetnews.ui.ScreenName.ARTICLE
+import com.example.jetnews.ui.ScreenName.FAVORITES
 import com.example.jetnews.ui.ScreenName.HOME
 import com.example.jetnews.ui.ScreenName.INTERESTS
 import com.example.jetnews.utils.getMutableStateOf
@@ -35,7 +37,7 @@ import com.example.jetnews.utils.getMutableStateOf
 /**
  * Screen names (used for serialization)
  */
-enum class ScreenName { HOME, INTERESTS, ARTICLE }
+enum class ScreenName { HOME, INTERESTS, ARTICLE, FAVORITES }
 
 /**
  * Class defining the screens we have in the app: home, article details and interests
@@ -43,6 +45,7 @@ enum class ScreenName { HOME, INTERESTS, ARTICLE }
 sealed class Screen(val id: ScreenName) {
     object Home : Screen(HOME)
     object Interests : Screen(INTERESTS)
+    object Favorites : Screen(FAVORITES)
     data class Article(val postId: String) : Screen(ARTICLE)
 }
 
@@ -79,6 +82,7 @@ private fun Bundle.toScreen(): Screen {
     return when (screenName) {
         HOME -> Home
         INTERESTS -> Interests
+        FAVORITES -> Favorites
         ARTICLE -> {
             val postId = getStringOrThrow(SIS_POST)
             Article(postId)
