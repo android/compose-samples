@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.Composable
+import androidx.compose.state
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Icon
@@ -36,6 +37,8 @@ import androidx.ui.material.Surface
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.Bookmark
 import androidx.ui.material.icons.filled.BookmarkBorder
+import androidx.ui.material.icons.filled.Favorite
+import androidx.ui.material.icons.filled.FavoriteBorder
 import androidx.ui.material.icons.filled.MoreVert
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
@@ -97,7 +100,7 @@ fun PostCardSimple(post: Post, navigateTo: (Screen) -> Unit) {
             AuthorAndReadTime(post)
         }
         BookmarkButton(
-            isBookmarked = isFavorite(postId = post.id),
+            isBookmarked = isBookmarked(postId = post.id),
             onBookmark = { toggleBookmark(postId = post.id) }
         )
     }
@@ -137,37 +140,53 @@ fun BookmarkButton(
     isBookmarked: Boolean,
     onBookmark: (Boolean) -> Unit,
     modifier: Modifier = Modifier
+) = IconToggleButton(
+    checked = isBookmarked,
+    onCheckedChange = onBookmark
 ) {
-    IconToggleButton(
-        checked = isBookmarked,
-        onCheckedChange = onBookmark
-    ) {
-        modifier.fillMaxSize()
-        if (isBookmarked) {
-            Icon(
-                asset = Icons.Filled.Bookmark,
-                modifier = modifier
-            )
-        } else {
-            Icon(
-                asset = Icons.Filled.BookmarkBorder,
-                modifier = modifier
-            )
-        }
+    modifier.fillMaxSize()
+    if (isBookmarked) {
+        Icon(
+            asset = Icons.Filled.Bookmark,
+            modifier = modifier
+        )
+    } else {
+        Icon(
+            asset = Icons.Filled.BookmarkBorder,
+            modifier = modifier
+        )
     }
 }
 
-fun toggleBookmark(postId: String) {
-    with(JetnewsStatus) {
-        if (favorites.contains(postId)) {
-            favorites.remove(postId)
-        } else {
-            favorites.add(postId)
-        }
+@Composable
+fun FavoriteButton(
+    isFavorited: Boolean,
+    onFavorite: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) = IconToggleButton(
+    checked = isFavorited,
+    onCheckedChange = onFavorite
+) {
+    modifier.fillMaxSize()
+    if (isFavorited) {
+        Icon(
+            asset = Icons.Filled.Favorite,
+            modifier = modifier
+        )
+    } else {
+        Icon(
+            asset = Icons.Filled.FavoriteBorder,
+            modifier = modifier
+        )
     }
 }
 
-fun isFavorite(postId: String) = JetnewsStatus.favorites.contains(postId)
+@Preview("Favorite Button")
+@Composable
+fun PreviewFavoriteButton() {
+    val (favorited, updateFavorited) = state { false }
+    FavoriteButton(isFavorited = favorited, onFavorite = updateFavorited)
+}
 
 @Preview("Bookmark Button")
 @Composable
@@ -212,3 +231,26 @@ fun SimplePostDarkPreview() {
         PostCardSimple(post3, {})
     }
 }
+
+fun toggleBookmark(postId: String) {
+    with(JetnewsStatus) {
+        if (bookmarks.contains(postId)) {
+            bookmarks.remove(postId)
+        } else {
+            bookmarks.add(postId)
+        }
+    }
+}
+
+fun toggleFavorite(postId: String) {
+    with(JetnewsStatus) {
+        if (favorites.contains(postId)) {
+            favorites.remove(postId)
+        } else {
+            favorites.add(postId)
+        }
+    }
+}
+
+fun isFavorited(postId: String) = JetnewsStatus.favorites.contains(postId)
+fun isBookmarked(postId: String) = JetnewsStatus.bookmarks.contains(postId)
