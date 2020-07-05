@@ -39,6 +39,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
 import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Favorite
 import androidx.ui.material.icons.filled.Home
 import androidx.ui.material.icons.filled.ListAlt
 import androidx.ui.res.vectorResource
@@ -49,6 +50,7 @@ import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.favorites.FavoritesScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
@@ -89,6 +91,9 @@ private fun AppContent(
                     postsRepository = postsRepository,
                     onBack = { navigationViewModel.onBack() }
                 )
+                is Screen.Favorites -> FavoritesScreen(
+                    navigateTo = navigationViewModel::navigateTo
+                )
             }
         }
     }
@@ -120,6 +125,16 @@ fun AppDrawer(
             isSelected = currentScreen == Screen.Interests,
             action = {
                 navigateTo(Screen.Interests)
+                closeDrawer()
+            }
+        )
+
+        DrawerButton(
+            icon = Icons.Filled.Favorite,
+            label = "Favorites",
+            isSelected = currentScreen == Screen.Favorites,
+            action = {
+                navigateTo(Screen.Favorites)
                 closeDrawer()
             }
         )
@@ -188,7 +203,7 @@ private fun DrawerButton(
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
-                Spacer(LayoutWidth(16.dp))
+                Spacer(Modifier.preferredWidth(16.dp))
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,
