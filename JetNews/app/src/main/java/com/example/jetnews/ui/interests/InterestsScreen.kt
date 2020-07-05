@@ -115,7 +115,7 @@ private fun InterestsScreenBody(
                 }
             )
         }
-        Container(modifier = LayoutFlexible(1f)) {
+        Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
                 Sections.Topics -> {
                     val topicsState = uiStateFrom(interestsRepository::getTopics)
