@@ -28,8 +28,18 @@ import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.contentColor
-import androidx.ui.layout.*
-import androidx.ui.material.*
+import androidx.ui.layout.Row
+import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.material.AlertDialog
+import androidx.ui.material.IconButton
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Scaffold
+import androidx.ui.material.Surface
+import androidx.ui.material.TextButton
+import androidx.ui.material.TopAppBar
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.ArrowBack
 import androidx.ui.material.icons.filled.Share
@@ -44,7 +54,12 @@ import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.effect.fetchPost
-import com.example.jetnews.ui.home.*
+import com.example.jetnews.ui.home.BookmarkButton
+import com.example.jetnews.ui.home.FavoriteButton
+import com.example.jetnews.ui.home.isBookmarked
+import com.example.jetnews.ui.home.isFavorited
+import com.example.jetnews.ui.home.toggleBookmark
+import com.example.jetnews.ui.home.toggleFavorite
 import com.example.jetnews.ui.state.UiState
 
 @Composable

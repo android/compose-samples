@@ -11,7 +11,12 @@ import androidx.ui.foundation.clickable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.padding
-import androidx.ui.material.*
+import androidx.ui.material.DrawerState
+import androidx.ui.material.IconButton
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Scaffold
+import androidx.ui.material.ScaffoldState
+import androidx.ui.material.TopAppBar
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -23,7 +28,12 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.home.*
+import com.example.jetnews.ui.home.AuthorAndReadTime
+import com.example.jetnews.ui.home.FavoriteButton
+import com.example.jetnews.ui.home.PostImage
+import com.example.jetnews.ui.home.PostTitle
+import com.example.jetnews.ui.home.isFavorited
+import com.example.jetnews.ui.home.toggleFavorite
 
 @Composable
 fun FavoritesScreen(
@@ -49,12 +59,12 @@ fun FavoritesScreen(
                         }
                 )
             },
-        bodyContent = {
-            FavoritesScreenBody(
-                    favorites = loadFakePosts().filter { JetnewsStatus.favorites.contains(it.id) },
-                    navigateTo = navigateTo
-            )
-        }
+            bodyContent = {
+                FavoritesScreenBody(
+                        favorites = loadFakePosts().filter { JetnewsStatus.favorites.contains(it.id) },
+                        navigateTo = navigateTo
+                )
+            }
     )
 }
 
@@ -62,8 +72,8 @@ fun FavoritesScreen(
 private fun FavoritesScreenBody(
         favorites: List<Post>,
         navigateTo: (Screen) -> Unit
-){
-    if(favorites.isNotEmpty()) {
+) {
+    if (favorites.isNotEmpty()) {
         VerticalScroller {
             Column {
                 favorites.forEach {
@@ -76,12 +86,13 @@ private fun FavoritesScreenBody(
                 }
             }
         }
-    }
-    else {
-        Text("There are no favorites",
-            modifier = Modifier
-                .padding(16.dp),
-            style = MaterialTheme.typography.subtitle1)
+    } else {
+        Text(
+                "There are no favorites",
+                modifier = Modifier
+                        .padding(16.dp),
+                style = MaterialTheme.typography.subtitle1
+        )
     }
 }
 

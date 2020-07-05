@@ -24,10 +24,22 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
-import androidx.ui.layout.*
-import androidx.ui.material.*
+import androidx.ui.layout.Column
+import androidx.ui.layout.Row
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredSize
+import androidx.ui.material.EmphasisAmbient
+import androidx.ui.material.IconToggleButton
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.Surface
 import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.*
+import androidx.ui.material.icons.filled.Bookmark
+import androidx.ui.material.icons.filled.BookmarkBorder
+import androidx.ui.material.icons.filled.Favorite
+import androidx.ui.material.icons.filled.FavoriteBorder
+import androidx.ui.material.icons.filled.MoreVert
 import androidx.ui.res.imageResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -125,26 +137,24 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
 
 @Composable
 fun BookmarkButton(
-    isBookmarked: Boolean,
-    onBookmark: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    IconToggleButton(
+        isBookmarked: Boolean,
+        onBookmark: (Boolean) -> Unit,
+        modifier: Modifier = Modifier
+) = IconToggleButton(
         checked = isBookmarked,
         onCheckedChange = onBookmark
-    ) {
-        modifier.fillMaxSize()
-        if (isBookmarked) {
-            Icon(
+) {
+    modifier.fillMaxSize()
+    if (isBookmarked) {
+        Icon(
                 asset = Icons.Filled.Bookmark,
                 modifier = modifier
-            )
-        } else {
-            Icon(
+        )
+    } else {
+        Icon(
                 asset = Icons.Filled.BookmarkBorder,
                 modifier = modifier
-            )
-        }
+        )
     }
 }
 
