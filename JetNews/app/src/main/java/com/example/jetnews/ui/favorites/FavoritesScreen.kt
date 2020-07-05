@@ -37,41 +37,41 @@ import com.example.jetnews.ui.home.toggleFavorite
 
 @Composable
 fun FavoritesScreen(
-        navigateTo: (Screen) -> Unit,
-        scaffoldState: ScaffoldState = remember { ScaffoldState() }
+    navigateTo: (Screen) -> Unit,
+    scaffoldState: ScaffoldState = remember { ScaffoldState() }
 ) {
     Scaffold(
-            scaffoldState = scaffoldState,
-            drawerContent = {
-                AppDrawer(
-                        currentScreen = Screen.Favorites,
-                        closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
-                        navigateTo = navigateTo
-                )
-            },
-            topBar = {
-                TopAppBar(
-                        title = { Text("Favorites") },
-                        navigationIcon = {
-                            IconButton(onClick = { scaffoldState.drawerState = DrawerState.Opened }) {
-                                Icon(vectorResource(R.drawable.ic_jetnews_logo))
-                            }
-                        }
-                )
-            },
-            bodyContent = {
-                FavoritesScreenBody(
-                        favorites = loadFakePosts().filter { JetnewsStatus.favorites.contains(it.id) },
-                        navigateTo = navigateTo
-                )
-            }
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.Favorites,
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
+                navigateTo = navigateTo
+            )
+        },
+        topBar = {
+            TopAppBar(
+                title = { Text("Favorites") },
+                navigationIcon = {
+                    IconButton(onClick = { scaffoldState.drawerState = DrawerState.Opened }) {
+                        Icon(vectorResource(R.drawable.ic_jetnews_logo))
+                    }
+                }
+            )
+        },
+        bodyContent = {
+            FavoritesScreenBody(
+                favorites = loadFakePosts().filter { JetnewsStatus.favorites.contains(it.id) },
+                navigateTo = navigateTo
+            )
+        }
     )
 }
 
 @Composable
 private fun FavoritesScreenBody(
-        favorites: List<Post>,
-        navigateTo: (Screen) -> Unit
+    favorites: List<Post>,
+    navigateTo: (Screen) -> Unit
 ) {
     if (favorites.isNotEmpty()) {
         VerticalScroller {
@@ -79,8 +79,8 @@ private fun FavoritesScreenBody(
                 favorites.forEach {
                     Row {
                         FavoriteCard(
-                                post = it,
-                                navigateTo = navigateTo
+                            post = it,
+                            navigateTo = navigateTo
                         )
                     }
                 }
@@ -88,21 +88,21 @@ private fun FavoritesScreenBody(
         }
     } else {
         Text(
-                "There are no favorites",
-                modifier = Modifier
-                        .padding(16.dp),
-                style = MaterialTheme.typography.subtitle1
+            "There are no favorites",
+            modifier = Modifier
+                .padding(16.dp),
+            style = MaterialTheme.typography.subtitle1
         )
     }
 }
 
 @Composable
 fun FavoriteCard(
-        post: Post,
-        navigateTo: (Screen) -> Unit
+    post: Post,
+    navigateTo: (Screen) -> Unit
 ) {
     Column(
-            modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             PostImage(post, Modifier.padding(end = 16.dp))
@@ -111,8 +111,8 @@ fun FavoriteCard(
                 AuthorAndReadTime(post)
             }
             FavoriteButton(
-                    isFavorited = isFavorited(post.id),
-                    onFavorite = { toggleFavorite(postId = post.id) }
+                isFavorited = isFavorited(post.id),
+                onFavorite = { toggleFavorite(postId = post.id) }
             )
         }
     }

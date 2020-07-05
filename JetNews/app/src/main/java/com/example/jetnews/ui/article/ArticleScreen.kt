@@ -119,8 +119,8 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
                 onFavorite = { toggleFavorite(postId = post.id) }
             )
             BookmarkButton(
-                    isBookmarked = isBookmarked(postId = post.id),
-                    onBookmark = { toggleBookmark(postId = post.id) }
+                isBookmarked = isBookmarked(postId = post.id),
+                onBookmark = { toggleBookmark(postId = post.id) }
             )
             val context = ContextAmbient.current
             IconButton(onClick = { sharePost(post, context) }) {

@@ -83,16 +83,16 @@ private fun AppContent(
                     postsRepository = postsRepository
                 )
                 is Screen.Interests -> InterestsScreen(
-                        navigateTo = navigationViewModel::navigateTo,
-                        interestsRepository = interestsRepository
+                    navigateTo = navigationViewModel::navigateTo,
+                    interestsRepository = interestsRepository
                 )
                 is Screen.Article -> ArticleScreen(
-                        postId = screen.postId,
-                        postsRepository = postsRepository,
-                        onBack = { navigationViewModel.onBack() }
+                    postId = screen.postId,
+                    postsRepository = postsRepository,
+                    onBack = { navigationViewModel.onBack() }
                 )
                 is Screen.Favorites -> FavoritesScreen(
-                        navigateTo = navigationViewModel::navigateTo
+                    navigateTo = navigationViewModel::navigateTo
                 )
             }
         }
@@ -130,13 +130,13 @@ fun AppDrawer(
         )
 
         DrawerButton(
-                icon = Icons.Filled.Favorite,
-                label = "Favorites",
-                isSelected = currentScreen == Screen.Favorites,
-                action = {
-                    navigateTo(Screen.Favorites)
-                    closeDrawer()
-                }
+            icon = Icons.Filled.Favorite,
+            label = "Favorites",
+            isSelected = currentScreen == Screen.Favorites,
+            action = {
+                navigateTo(Screen.Favorites)
+                closeDrawer()
+            }
         )
     }
 }
@@ -199,16 +199,16 @@ private fun DrawerButton(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
-                        asset = icon,
-                        colorFilter = ColorFilter.tint(textIconColor),
-                        alpha = imageAlpha
+                    asset = icon,
+                    colorFilter = ColorFilter.tint(textIconColor),
+                    alpha = imageAlpha
                 )
                 Spacer(Modifier.preferredWidth(16.dp))
                 Text(
-                        text = label,
-                        style = MaterialTheme.typography.body2,
-                        color = textIconColor,
-                        modifier = Modifier.fillMaxWidth()
+                    text = label,
+                    style = MaterialTheme.typography.body2,
+                    color = textIconColor,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

@@ -137,47 +137,47 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
 
 @Composable
 fun BookmarkButton(
-        isBookmarked: Boolean,
-        onBookmark: (Boolean) -> Unit,
-        modifier: Modifier = Modifier
+    isBookmarked: Boolean,
+    onBookmark: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) = IconToggleButton(
-        checked = isBookmarked,
-        onCheckedChange = onBookmark
+    checked = isBookmarked,
+    onCheckedChange = onBookmark
 ) {
     modifier.fillMaxSize()
     if (isBookmarked) {
         Icon(
-                asset = Icons.Filled.Bookmark,
-                modifier = modifier
+            asset = Icons.Filled.Bookmark,
+            modifier = modifier
         )
     } else {
         Icon(
-                asset = Icons.Filled.BookmarkBorder,
-                modifier = modifier
+            asset = Icons.Filled.BookmarkBorder,
+            modifier = modifier
         )
     }
 }
 
 @Composable
 fun FavoriteButton(
-        isFavorited: Boolean,
-        onFavorite: (Boolean) -> Unit,
-        modifier: Modifier = Modifier
+    isFavorited: Boolean,
+    onFavorite: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     IconToggleButton(
-            checked = isFavorited,
-            onCheckedChange = onFavorite
+        checked = isFavorited,
+        onCheckedChange = onFavorite
     ) {
         modifier.fillMaxSize()
         if (isFavorited) {
             Icon(
-                    asset = Icons.Filled.Favorite,
-                    modifier = modifier
+                asset = Icons.Filled.Favorite,
+                modifier = modifier
             )
         } else {
             Icon(
-                    asset = Icons.Filled.FavoriteBorder,
-                    modifier = modifier
+                asset = Icons.Filled.FavoriteBorder,
+                modifier = modifier
             )
         }
     }
