@@ -20,5 +20,6 @@ import androidx.compose.frames.ModelList
 
 object JetnewsStatus {
     val favorites = ModelList<String>()
+    val bookmarks = ModelList<String>()
     val selectedTopics = ModelList<String>()
 }
