@@ -42,7 +42,6 @@ import androidx.ui.material.TextButton
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.ArrowBack
-import androidx.ui.material.icons.filled.FavoriteBorder
 import androidx.ui.material.icons.filled.Share
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
@@ -54,11 +53,13 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.ui.home.isFavorite
+import com.example.jetnews.ui.home.FavoriteButton
+import com.example.jetnews.ui.home.isBookmarked
+import com.example.jetnews.ui.home.isFavorited
 import com.example.jetnews.ui.home.toggleBookmark
+import com.example.jetnews.ui.home.toggleFavorite
 import com.example.jetnews.ui.state.UiState
 
 @Composable
@@ -113,11 +114,12 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
                 .preferredHeight(56.dp)
                 .fillMaxWidth()
         ) {
-            IconButton(onClick = onUnimplementedAction) {
-                Icon(Icons.Filled.FavoriteBorder)
-            }
+            FavoriteButton(
+                isFavorited = isFavorited(postId = post.id),
+                onFavorite = { toggleFavorite(postId = post.id) }
+            )
             BookmarkButton(
-                isBookmarked = isFavorite(postId = post.id),
+                isBookmarked = isBookmarked(postId = post.id),
                 onBookmark = { toggleBookmark(postId = post.id) }
             )
             val context = ContextAmbient.current
