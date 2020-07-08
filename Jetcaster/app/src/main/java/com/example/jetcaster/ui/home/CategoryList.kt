@@ -58,6 +58,7 @@ import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.ui.theme.JetcasterTheme
+import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.viewModelProviderFactoryOf
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import java.time.format.DateTimeFormatter
@@ -114,6 +115,7 @@ fun EpisodeListItem(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
                 centerHorizontallyTo(parent)
+
                 width = Dimension.fillToConstraints
             }
         )
@@ -157,10 +159,16 @@ fun EpisodeListItem(
                 lineHeight = 20.sp,
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier.constrainAs(episodeTitle) {
-                    start.linkTo(parent.start, 16.dp)
+                    linkTo(
+                        start = parent.start,
+                        end = image.start,
+                        startMargin = Keyline1,
+                        endMargin = 16.dp,
+                        bias = 0f
+                    )
                     top.linkTo(parent.top, 16.dp)
-                    end.linkTo(image.start, 16.dp)
-                    width = Dimension.fillToConstraints
+
+                    width = Dimension.preferredWrapContent
                 }
             )
         }
@@ -173,10 +181,16 @@ fun EpisodeListItem(
                 maxLines = 2,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier.constrainAs(podcastTitle) {
-                    start.linkTo(episodeTitle.start)
+                    linkTo(
+                        start = parent.start,
+                        end = image.start,
+                        startMargin = Keyline1,
+                        endMargin = 16.dp,
+                        bias = 0f
+                    )
                     top.linkTo(episodeTitle.bottom, 4.dp)
-                    end.linkTo(episodeTitle.end)
-                    width = Dimension.fillToConstraints
+
+                    width = Dimension.preferredWrapContent
                 }
             )
 
@@ -187,9 +201,10 @@ fun EpisodeListItem(
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier.constrainAs(summary) {
-                        start.linkTo(podcastTitle.start)
+                        start.linkTo(parent.start, Keyline1)
                         end.linkTo(image.end)
                         top.linkTo(titleImageBarrier, 16.dp)
+
                         width = Dimension.fillToConstraints
                     }
                 )
@@ -204,7 +219,7 @@ fun EpisodeListItem(
                 modifier = Modifier.preferredSize(48.dp)
                     .clickable { /* TODO */ }
                     .constrainAs(playIcon) {
-                        start.linkTo(podcastTitle.start)
+                        start.linkTo(parent.start, Keyline1)
                         top.linkTo(summary.bottom, margin = 16.dp)
                         bottom.linkTo(parent.bottom, 16.dp)
                     }
@@ -233,6 +248,7 @@ fun EpisodeListItem(
                     start.linkTo(playIcon.end, margin = 16.dp)
                     end.linkTo(addPlaylist.start, margin = 16.dp)
                     centerVerticallyTo(playIcon)
+
                     width = Dimension.fillToConstraints
                 }
             )
