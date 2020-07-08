@@ -17,20 +17,40 @@
 package com.example.jetcaster
 
 import android.content.Context
-import com.squareup.moshi.Moshi
+import com.example.jetcaster.data.CategoryStore
+import com.example.jetcaster.data.PodcastStore
+import com.example.jetcaster.data.PodcastsFetcher
+import com.rometools.rome.io.SyndFeedInput
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.logging.LoggingEventListener
 import java.io.File
 
+/**
+ * A very simple global singleton dependency graph.
+ *
+ * For a real app, you would use something like Hilt/Dagger instead.
+ */
 object Graph {
     lateinit var okHttpClient: OkHttpClient
         private set
 
-    val moshi by lazy { Moshi.Builder().build() }
+    val syndFeedInput by lazy { SyndFeedInput() }
+
+    val podcastFetcher by lazy {
+        PodcastsFetcher(okHttpClient, syndFeedInput)
+    }
+
+    val podcastStore by lazy { PodcastStore() }
+
+    val categoryStore by lazy { CategoryStore(podcastStore) }
 
     fun provide(context: Context) {
         okHttpClient = OkHttpClient.Builder()
             .cache(Cache(File(context.cacheDir, "http_cache"), 20 * 1024 * 1024))
+            .apply {
+                if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory())
+            }
             .build()
     }
 }

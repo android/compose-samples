@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster.data
 
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.material.Shapes
-import androidx.ui.unit.dp
+import java.time.Duration
+import java.time.OffsetDateTime
 
-val Shapes = Shapes(
-    small = RoundedCornerShape(percent = 20),
-    medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(0.dp)
+data class Episode(
+    val uri: String,
+    val title: String,
+    val subtitle: String? = null,
+    val summary: String? = null,
+    val author: String? = null,
+    val published: OffsetDateTime,
+    val duration: Duration? = null
 )

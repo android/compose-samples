@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster.data
 
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.material.Shapes
-import androidx.ui.unit.dp
-
-val Shapes = Shapes(
-    small = RoundedCornerShape(percent = 20),
-    medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(0.dp)
-)
+data class Category(val name: String)

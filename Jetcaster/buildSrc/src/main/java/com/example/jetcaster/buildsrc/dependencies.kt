@@ -21,16 +21,15 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha02"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha03"
+    const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
 
     const val material = "com.google.android.material:material:1.1.0"
 
-    const val store = "com.dropbox.mobile.store:store4:4.0.0-alpha06"
-
     object Accompanist {
-        private const val version = "0.1.6.ui-${AndroidX.UI.snapshot}-SNAPSHOT"
+        private const val version = "0.1.7.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
         const val mdcTheme = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
@@ -49,16 +48,10 @@ object Libs {
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
-    object Retrofit {
-        private const val version = "2.9.0"
-        const val retrofit = "com.squareup.retrofit2:retrofit:$version"
-        const val moshiadapter = "com.squareup.retrofit2:converter-moshi:$version"
-    }
-
-    object Moshi {
-        private const val version = "1.9.3"
-        const val moshi = "com.squareup.moshi:moshi:$version"
-        const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
+    object OkHttp {
+        private const val version = "4.7.2"
+        const val okhttp = "com.squareup.okhttp3:okhttp:$version"
+        const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
     }
 
     object AndroidX {
@@ -66,25 +59,20 @@ object Libs {
         const val palette = "androidx.palette:palette:1.0.0"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
-        object UI {
-            const val snapshot = "6602655"
+        object Compose {
+            const val snapshot = "6658828"
             const val version = "0.1.0-SNAPSHOT"
 
-            const val core = "androidx.ui:ui-core:$version"
-            const val layout = "androidx.ui:ui-layout:$version"
-            const val material = "androidx.ui:ui-material:$version"
-            const val foundation = "androidx.ui:ui-foundation:$version"
-            const val animation = "androidx.ui:ui-animation:$version"
-            const val tooling = "androidx.ui:ui-tooling:$version"
-            const val livedata = "androidx.ui:ui-livedata:$version"
-            const val iconsExtended = "androidx.ui:ui-material-icons-extended:$version"
-        }
-
-        object Compose {
-            const val version = UI.version
             const val kotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
 
             const val runtime = "androidx.compose:compose-runtime:$version"
+            const val core = "androidx.ui:ui-core:${version}"
+            const val foundation = "androidx.compose.foundation:foundation:${version}"
+            const val layout = "androidx.ui:ui-layout:${version}"
+            const val material = "androidx.compose.material:material:${version}"
+            const val materialIconsExtended = "androidx.compose.material:material-icons-extended:${version}"
+            const val tooling = "androidx.compose.tooling:tooling:${version}"
+            const val test = "androidx.compose.test:test-core:${version}"
         }
 
         object Test {
@@ -106,5 +94,11 @@ object Libs {
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
+    }
+
+    object Rome {
+        private const val version = "1.14.1"
+        val rome = "com.rometools:rome:$version"
+        val modules = "com.rometools:rome-modules:$version"
     }
 }

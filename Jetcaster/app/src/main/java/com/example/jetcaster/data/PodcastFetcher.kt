@@ -16,58 +16,113 @@
 
 package com.example.jetcaster.data
 
-import com.example.jetcaster.Graph
-import com.squareup.moshi.JsonClass
+import coil.network.HttpException
+import com.rometools.modules.itunes.EntryInformation
+import com.rometools.modules.itunes.FeedInformation
+import com.rometools.rome.feed.synd.SyndEntry
+import com.rometools.rome.feed.synd.SyndFeed
+import com.rometools.rome.io.SyndFeedInput
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import okhttp3.CacheControl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneOffset
+import java.util.concurrent.TimeUnit
 
 /**
- * A class which fetches the current top-podcasts from a RSS feed. Uses Retrofit & Moshi underneath.
+ * A class which fetches some selected podcast RSS feeds.
  */
-internal object PodcastsFetcher {
-    private val retrofit by lazy {
-        Retrofit.Builder()
-            .client(Graph.okHttpClient)
-            .baseUrl("https://rss.itunes.apple.com/api/v1/")
-            .addConverterFactory(MoshiConverterFactory.create(Graph.moshi))
-            .build()
-    }
+class PodcastsFetcher(
+    private val okHttpClient: OkHttpClient,
+    private val syndFeedInput: SyndFeedInput
+) {
 
-    private val api by lazy {
-        retrofit.create(Api::class.java)
+    /**
+     * It seems that most podcast hosts do not implement HTTP caching appropriately.
+     * Instead of fetching data on every app open, we instead allow the use of 'stale'
+     * network responses (up to 8 hours).
+     */
+    private val cacheControl by lazy {
+        CacheControl.Builder().maxStale(8, TimeUnit.HOURS).build()
     }
 
     /**
-     * Starts a request on a background thread.
+     * Returns a [Flow] which fetches each podcast feed and emits it in turn.
      *
-     * @param country The country of which to fetch the top-podcasts from. Defaults to `us`.
-     * @param count The maximum number of items to fetch.
+     * The feeds are fetched concurrently, meaning that the resulting emission order may not
+     * match the order of [feedUrls].
      */
-    suspend operator fun invoke(
-        country: String = defaultCountry,
-        count: Int = defaultCount
-    ): List<Podcast> = withContext(Dispatchers.IO) {
-        api.topPodcasts(country, count).feed.results
-    }
+    operator fun invoke(feedUrls: List<String>): Flow<Podcast> = feedUrls.asFlow()
+        // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
+        .flatMapMerge { feedUrl ->
+            flow { emit(fetchPodcast(feedUrl)) }
+        }
 
-    internal interface Api {
-        @GET("{country}/podcasts/top-podcasts/all/{count}/non-explicit.json")
-        suspend fun topPodcasts(
-            @Path("country") country: String,
-            @Path("count") count: Int
-        ): ApiResponse
-    }
+    private suspend fun fetchPodcast(url: String): Podcast {
+        val request = Request.Builder()
+            .url(url)
+            .cacheControl(cacheControl)
+            .build()
 
-    private const val defaultCountry = "us"
-    private const val defaultCount = 50
+        val response = okHttpClient.newCall(request).await()
+
+        // If the network request wasn't successful, throw an exception
+        if (!response.isSuccessful) throw HttpException(response)
+
+        // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
+        // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
+        // from a stream.
+        return withContext(Dispatchers.IO) {
+            response.body!!.use { body ->
+                syndFeedInput.build(body.charStream()).toPodcast(url)
+            }
+        }
+    }
 }
 
-@JsonClass(generateAdapter = true)
-internal class ApiResponse(val feed: ApiFeedResponse)
+/**
+ * Map a Rome [SyndFeed] instance to our own [Podcast] data class.
+ */
+private fun SyndFeed.toPodcast(feedUrl: String): Podcast {
+    val feedInfo = getModule(PodcastModuleDtd) as? FeedInformation
+    return Podcast(
+        uri = uri ?: feedUrl,
+        title = title,
+        description = feedInfo?.summary ?: description,
+        author = author,
+        copyright = copyright,
+        imageUrl = feedInfo?.imageUri?.toString(),
+        categories = feedInfo?.categories?.map { Category(it.name) }?.toSet() ?: emptySet(),
+        episodes = entries.map { it.toEpisode() }
+    )
+}
 
-@JsonClass(generateAdapter = true)
-internal class ApiFeedResponse(val results: List<Podcast>)
+/**
+ * Map a Rome [SyndEntry] instance to our own [Episode] data class.
+ */
+private fun SyndEntry.toEpisode(): Episode {
+    val entryInformation = getModule(PodcastModuleDtd) as? EntryInformation
+    return Episode(
+        uri = uri,
+        title = title,
+        author = author,
+        summary = entryInformation?.summary ?: description?.value,
+        subtitle = entryInformation?.subtitle,
+        published = Instant.ofEpochMilli(publishedDate.time).atOffset(ZoneOffset.UTC),
+        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) }
+    )
+}
+
+/**
+ * Most feeds use the following DTD to include extra information related to
+ * their podcast. Info such as images, summaries, duration, categories is sometimes only available
+ * via this attributes in this DTD.
+ */
+private const val PodcastModuleDtd = "http://www.itunes.com/dtds/podcast-1.0.dtd"

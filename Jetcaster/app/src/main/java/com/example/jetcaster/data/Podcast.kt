@@ -16,15 +16,17 @@
 
 package com.example.jetcaster.data
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import java.time.OffsetDateTime
 
-@JsonClass(generateAdapter = true)
 data class Podcast(
-    val id: Long,
-    val artistName: String,
-    val name: String,
-    val releaseDate: String, /* TODO: make this a DateTime */
-    @Json(name = "artworkUrl100") val artworkUrl: String? = null,
-    val copyright: String? = null
-)
+    val uri: String,
+    val title: String,
+    val description: String? = null,
+    val author: String? = null,
+    val imageUrl: String? = null,
+    val categories: Set<Category> = emptySet(),
+    val copyright: String? = null,
+    val episodes: List<Episode> = emptyList()
+) {
+    val lastEpisodeDate: OffsetDateTime? by lazy { episodes.map { it.published }.max() }
+}

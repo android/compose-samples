@@ -16,12 +16,6 @@
 
 package com.example.jetcaster.ui.theme
 
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.material.Shapes
 import androidx.ui.unit.dp
 
-val Shapes = Shapes(
-    small = RoundedCornerShape(percent = 20),
-    medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(0.dp)
-)
+val Keyline1 = 24.dp

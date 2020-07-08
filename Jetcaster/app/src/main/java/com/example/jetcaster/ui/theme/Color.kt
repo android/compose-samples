@@ -20,6 +20,7 @@ import androidx.compose.Composable
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.compositeOver
 import androidx.ui.material.ColorPalette
+import androidx.ui.material.darkColorPalette
 
 /**
  * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
@@ -29,3 +30,12 @@ import androidx.ui.material.ColorPalette
 fun ColorPalette.compositedOnSurface(alpha: Float): Color {
     return onSurface.copy(alpha = alpha).compositeOver(surface)
 }
+
+val Orange300 = Color(0xFFFFBC51)
+val Orange500 = Color(0xFFFF9F0A)
+
+val Colors = darkColorPalette(
+    primary = Orange300,
+    primaryVariant = Orange500,
+    secondary = Orange300
+)
