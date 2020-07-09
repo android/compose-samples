@@ -16,7 +16,9 @@
 
 package com.example.jetsnack.ui.components
 
+import androidx.ui.animation.animate
 import androidx.ui.core.Modifier
+import androidx.ui.core.composed
 import androidx.ui.foundation.drawBackground
 import androidx.ui.foundation.drawBorder
 import androidx.ui.graphics.Color
@@ -53,3 +55,17 @@ fun Modifier.gradientBorder(
         endY = 59f
     )
 )
+
+fun Modifier.fadeInGradientBorder(
+    showBorder: Boolean,
+    colors: List<Color>,
+    shape: Shape
+) = composed {
+    val animatedColors = List(colors.size) { i ->
+        animate(if (showBorder) colors[i] else colors[i].copy(alpha = 0f))
+    }
+    gradientBorder(
+        colors = animatedColors,
+        shape = shape
+    )
+}

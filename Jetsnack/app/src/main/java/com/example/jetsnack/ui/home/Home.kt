@@ -46,13 +46,9 @@ import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredHeightIn
 import androidx.ui.layout.preferredSize
 import androidx.ui.layout.preferredWidth
-import androidx.ui.material.Card
 import androidx.ui.material.Divider
-import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.outlined.ArrowForward
@@ -70,14 +66,16 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.model.filters
 import com.example.jetsnack.model.snacks
+import com.example.jetsnack.ui.components.JetsnackCard
+import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.fadeInGradientBorder
 import com.example.jetsnack.ui.components.gradientBackground
 import com.example.jetsnack.ui.components.gradientBorder
+import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.compositedOnSurface
 import com.example.jetsnack.ui.utils.systemBarPadding
 import dev.chrisbanes.accompanist.coil.CoilImage
 
-private const val AddressBarAlpha = 0.95f
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
 
@@ -85,7 +83,7 @@ private val HighlightCardPadding = 16.dp
 fun Home(onSnackClick: (Long) -> Unit) {
     val data = remember { SnackRepo.getSnacks() }
     val filters = remember { filters }
-    Surface(modifier = Modifier.fillMaxSize()) {
+    JetsnackSurface(modifier = Modifier.fillMaxSize()) {
         Stack(modifier = Modifier.systemBarPadding(horizontal = true)) {
             SnackCollectionList(data, filters, onSnackClick)
             DestinationBar()
@@ -109,7 +107,10 @@ private fun SnackCollectionList(
         FilterBar(filters)
         data.forEachIndexed { index, snackCollection ->
             if (index > 0) {
-                Divider(thickness = 2.dp)
+                Divider(
+                    color = JetsnackTheme.colors.uiBorder,
+                    thickness = 2.dp
+                )
             }
             key(snackCollection.id) {
                 SnackCollection(snackCollection, index, onSnackClick)
@@ -137,23 +138,21 @@ private fun SnackCollection(
                 .preferredHeightIn(minHeight = 56.dp)
                 .padding(start = 24.dp)
         ) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = snackCollection.name,
-                    style = MaterialTheme.typography.h6,
-                    color = JetsnackTheme.colors.primary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-            }
+            Text(
+                text = snackCollection.name,
+                style = MaterialTheme.typography.h6,
+                color = JetsnackTheme.colors.brand,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
             IconButton(
                 onClick = { /* todo */ },
                 modifier = Modifier.gravity(Alignment.CenterVertically)
             ) {
                 Icon(
                     asset = Icons.Outlined.ArrowForward,
-                    tint = JetsnackTheme.colors.primary
+                    tint = JetsnackTheme.colors.brand
                 )
             }
         }
@@ -173,12 +172,11 @@ private fun HighlightedSnacks(
     modifier: Modifier = Modifier
 ) {
     val scroll = ScrollerPosition()
-    val gradient = when (index % 4) {
-        0 -> JetsnackTheme.colors.gradient1
-        1 -> JetsnackTheme.colors.gradient2
-        2 -> JetsnackTheme.colors.gradient3
-        else -> JetsnackTheme.colors.gradient4
+    val gradient = when (index % 2) {
+        0 -> JetsnackTheme.colors.interactivePrimary
+        else -> JetsnackTheme.colors.interactiveSecondary
     }
+    // The Cards show a gradient which spans 3 cards and scrolls with parallax.
     val gradientWidth = with(DensityAmbient.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
@@ -222,7 +220,7 @@ private fun HighlightSnackItem(
     val left = index * with(DensityAmbient.current) {
         (HighlightCardWidth + HighlightCardPadding).toPx()
     }
-    Card(
+    JetsnackCard(
         elevation = 4.dp,
         modifier = modifier
             .preferredSize(
@@ -250,21 +248,19 @@ private fun HighlightSnackItem(
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(8.dp))
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = snack.name,
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
+            Text(
+                text = snack.name,
+                style = MaterialTheme.typography.h6,
+                color = JetsnackTheme.colors.textSecondary,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
             Spacer(modifier = Modifier.preferredHeight(4.dp))
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                Text(
-                    text = snack.tagline,
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
+            Text(
+                text = snack.tagline,
+                style = MaterialTheme.typography.body1,
+                color = JetsnackTheme.colors.textHelp,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
     }
 }
@@ -275,7 +271,7 @@ fun SnackItem(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
+    JetsnackSurface(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.padding(bottom = 8.dp)
     ) {
@@ -289,13 +285,12 @@ fun SnackItem(
                 imageUrl = snack.imageUrl,
                 elevation = 4.dp
             )
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = snack.name,
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
+            Text(
+                text = snack.name,
+                style = MaterialTheme.typography.subtitle1,
+                color = JetsnackTheme.colors.textSecondary,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
@@ -306,7 +301,7 @@ private fun SnackImage(
     modifier: Modifier = Modifier,
     elevation: Dp = 0.dp
 ) {
-    Surface(
+    JetsnackSurface(
         color = Color.LightGray,
         elevation = elevation,
         shape = CircleShape,
@@ -323,33 +318,32 @@ private fun SnackImage(
 private fun DestinationBar(modifier: Modifier = Modifier) {
     Column(modifier = modifier.systemBarPadding(top = true)) {
         TopAppBar(
-            backgroundColor = JetsnackTheme.colors.surface.copy(alpha = AddressBarAlpha),
-            contentColor = JetsnackTheme.colors.onSurface,
+            backgroundColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
+            contentColor = JetsnackTheme.colors.textSecondary,
             elevation = 0.dp
         ) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = "Delivery to 1600 Amphitheater Way",
-                    style = MaterialTheme.typography.subtitle1,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .gravity(Alignment.CenterVertically)
-                )
-            }
+            Text(
+                text = "Delivery to 1600 Amphitheater Way",
+                style = MaterialTheme.typography.subtitle1,
+                color = JetsnackTheme.colors.textSecondary,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .weight(1f)
+                    .gravity(Alignment.CenterVertically)
+            )
             IconButton(
                 onClick = { /* todo */ },
                 modifier = Modifier.gravity(Alignment.CenterVertically)
             ) {
                 Icon(
                     asset = Icons.Outlined.ExpandMore,
-                    tint = JetsnackTheme.colors.primary
+                    tint = JetsnackTheme.colors.brand
                 )
             }
         }
-        Divider(color = JetsnackTheme.colors.compositedOnSurface(alpha = 0.12f))
+        Divider(color = JetsnackTheme.colors.uiBorder)
     }
 }
 
@@ -363,9 +357,9 @@ private fun FilterBar(filters: List<Filter>) {
         ) {
             Icon(
                 asset = Icons.Rounded.FilterList,
-                tint = JetsnackTheme.colors.primary,
+                tint = JetsnackTheme.colors.brand,
                 modifier = Modifier.gradientBorder(
-                    colors = JetsnackTheme.colors.gradient2,
+                    colors = JetsnackTheme.colors.interactiveSecondary,
                     shape = CircleShape
                 )
             )
@@ -389,20 +383,19 @@ private fun FilterChip(
 ) {
     val (selected, setSelected) = filter.enabled
     val backgroundColor =
-        animate(if (selected) JetsnackTheme.colors.secondary else JetsnackTheme.colors.surface)
-    val border = if (!selected) {
-        Modifier.gradientBorder(
-            colors = JetsnackTheme.colors.gradient2,
-            shape = shape
-        )
-    } else {
-        Modifier
-    }
-    Surface(
-        modifier = modifier
-            .preferredHeight(28.dp)
-            .plus(border),
+        animate(if (selected) JetsnackTheme.colors.brand else JetsnackTheme.colors.uiBackground)
+    val border = Modifier.fadeInGradientBorder(
+        showBorder = !selected,
+        colors = JetsnackTheme.colors.interactiveSecondary,
+        shape = shape
+    )
+    val textColor = animate(
+        if (selected) JetsnackTheme.colors.textInteractive else JetsnackTheme.colors.textSecondary
+    )
+    JetsnackSurface(
+        modifier = modifier.preferredHeight(28.dp) + border,
         color = backgroundColor,
+        contentColor = textColor,
         shape = shape,
         elevation = 2.dp
     ) {
@@ -450,7 +443,7 @@ fun SnackCardPreview() {
             snack = snack,
             onSnackClick = { },
             index = 0,
-            gradient = JetsnackTheme.colors.gradient1,
+            gradient = JetsnackTheme.colors.gradient6_1,
             gradientWidth = 500f,
             scroll = 0f
         )
@@ -466,7 +459,7 @@ fun SnackCardDarkPreview() {
             snack = snack,
             onSnackClick = { },
             index = 0,
-            gradient = JetsnackTheme.colors.gradient1,
+            gradient = JetsnackTheme.colors.gradient6_1,
             gradientWidth = 500f,
             scroll = 0f
         )
