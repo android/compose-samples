@@ -31,11 +31,9 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.clickable
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
-import androidx.ui.layout.IntrinsicSize
 import androidx.ui.layout.Row
 import androidx.ui.layout.Stack
 import androidx.ui.layout.aspectRatio
-import androidx.ui.layout.fillMaxHeight
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.heightIn
@@ -43,7 +41,6 @@ import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.widthIn
 import androidx.ui.layout.wrapContentHeight
-import androidx.ui.material.Button
 import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.FloatingActionButton
@@ -51,7 +48,6 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Surface
 import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.MoreVert
 import androidx.ui.material.icons.outlined.Chat
 import androidx.ui.material.icons.outlined.Create
 import androidx.ui.material.icons.outlined.MoreVert
@@ -59,7 +55,6 @@ import androidx.ui.res.imageResource
 import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
-import androidx.ui.unit.px
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.meProfile
@@ -69,7 +64,9 @@ import com.example.compose.jetchat.theme.JetchatTheme
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
 
     val scrollerPosition = ScrollerPosition()
-    val fabExpandScrollThreshold = with(DensityAmbient.current) { 5.dp.toPx() }.value
+
+    // How much user needs to scroll down for the fab to expand
+    val fabExpandScrollThreshold = with(DensityAmbient.current) { 5.dp.toPx() }
 
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
@@ -161,8 +158,8 @@ private fun ProfileHeader(
     scrollerPosition: ScrollerPosition,
     data: ProfileScreenState
 ) {
-    val offset = (scrollerPosition.value.px / 2)
-    val offsetDp = with(DensityAmbient.current) { offset.value.toDp() }
+    val offset = (scrollerPosition.value / 2)
+    val offsetDp = with(DensityAmbient.current) { offset.toDp() }
 
     data.photo?.let {
         val asset = imageResource(id = it)
@@ -183,54 +180,6 @@ private fun ProfileHeader(
                     .padding(top = offsetDp),
                 asset = asset,
                 contentScale = ContentScale.Crop
-            )
-        }
-    }
-}
-
-@Composable
-private fun ProfileButtonsRow() {
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .preferredHeight(IntrinsicSize.Min)
-            .fillMaxWidth()
-    ) {
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(8.dp)
-                .weight(1f)
-        ) {
-            Text(
-                modifier = Modifier
-                    .gravity(Alignment.CenterVertically)
-                    .wrapContentHeight(Alignment.CenterVertically),
-                text = stringResource(R.string.message)
-            )
-        }
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f)
-        ) {
-            Text(
-                modifier = Modifier
-                    .wrapContentHeight(Alignment.CenterVertically),
-                text = stringResource(R.string.edit_profile)
-            )
-        }
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .fillMaxHeight()
-                .preferredHeight(48.dp)
-                .padding(8.dp)
-        ) {
-            Icon(
-                asset = Icons.Filled.MoreVert
             )
         }
     }

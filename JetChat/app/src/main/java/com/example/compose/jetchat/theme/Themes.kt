@@ -29,10 +29,11 @@ private val Yellow600 = Color(0xFFF5CF1B)
 private val Yellow700 = Color(0xFFF3B711)
 private val Yellow800 = Color(0xFFF29F05)
 
-private val Blue500 = Color(0xFF0540F2)
-private val Blue800 = Color(0xFF001CCF)
+val Blue200 = Color(0xFF9DA3FA)
 private val Blue300 = Color(0xFF6F7EF9)
 private val Blue400 = Color(0xFF4860F7)
+private val Blue500 = Color(0xFF0540F2)
+private val Blue800 = Color(0xFF001CCF)
 
 private val Red300 = Color(0xFFEA6D7E)
 private val Red800 = Color(0xFFD00036)
@@ -40,7 +41,7 @@ private val Red800 = Color(0xFFD00036)
 private val JetchatDarkPalette = darkColorPalette(
     primary = Blue300,
     primaryVariant = Blue400,
-    onPrimary = Color.White,
+    onPrimary = Color.Black,
     secondary = Yellow400,
     onSecondary = Color.Black,
     onSurface = Color.White,

@@ -29,7 +29,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha01'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -38,7 +38,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        def snapshot = "6543212"
+        def snapshot = "6602655"
         maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
     }
 }

@@ -17,12 +17,18 @@
 package com.example.compose.jetchat
 
 import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.compose.Providers
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
 import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.findByText
+import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.ConversationContent
+import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.theme.JetchatTheme
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -36,16 +42,33 @@ class NavigationTest {
     @get:Rule
     val composeTestRule = AndroidComposeTestRule<NavActivity>()
 
-    lateinit var navController: NavController
+    // Note that keeping these references is only safe if the activity is not recreated.
+    // See: https://issuetracker.google.com/160862278
+    private lateinit var navController: NavController
+    private lateinit var activity: ComponentActivity
 
     @Before
     fun setUp() {
-        // Grab a reference to the navigation controller
-        val navHostFragment: View =
-            composeTestRule.activityTestRule.activity.requireViewById(R.id.nav_host_fragment)
-        navController = Navigation.findNavController(navHostFragment)
+        composeTestRule.activityRule.scenario.onActivity { newActivity: NavActivity ->
+            // Store a reference to the activity. Don't do this if the activity is recreated!
+            activity = newActivity
+            val navHostFragment: View = newActivity.findViewById(R.id.nav_host_fragment)
+            // Store a reference to the navigation controller.
+            navController = Navigation.findNavController(navHostFragment)
+        }
+
         // Start the app
-        composeTestRule.startConversationScreen()
+        composeTestRule.setContent {
+            Providers(BackPressedDispatcherAmbient provides activity) {
+                JetchatTheme {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { },
+                        onNavIconPressed = { }
+                    )
+                }
+            }
+        }
     }
 
     @Test
@@ -61,7 +84,7 @@ class NavigationTest {
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check
-        findByText(composeTestRule.getString(R.string.textfield_hint)).assertIsDisplayed()
+        findByText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
 
         // Press back
         Espresso.pressBack()
