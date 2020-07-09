@@ -22,7 +22,7 @@ import com.rometools.modules.itunes.FeedInformation
 import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
@@ -38,10 +38,15 @@ import java.util.concurrent.TimeUnit
 
 /**
  * A class which fetches some selected podcast RSS feeds.
+ *
+ * @param okHttpClient [OkHttpClient] to use for network requests
+ * @param syndFeedInput [SyndFeedInput] to use for parsing RSS feeds.
+ * @param ioDispatcher [CoroutineDispatcher] to use for running fetch requests.
  */
 class PodcastsFetcher(
     private val okHttpClient: OkHttpClient,
-    private val syndFeedInput: SyndFeedInput
+    private val syndFeedInput: SyndFeedInput,
+    private val ioDispatcher: CoroutineDispatcher
 ) {
 
     /**
@@ -59,13 +64,13 @@ class PodcastsFetcher(
      * The feeds are fetched concurrently, meaning that the resulting emission order may not
      * match the order of [feedUrls].
      */
-    operator fun invoke(feedUrls: List<String>): Flow<Podcast> = feedUrls.asFlow()
+    operator fun invoke(feedUrls: List<String>): Flow<PodcastWithEpisodes> = feedUrls.asFlow()
         // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
         .flatMapMerge { feedUrl ->
             flow { emit(fetchPodcast(feedUrl)) }
         }
 
-    private suspend fun fetchPodcast(url: String): Podcast {
+    private suspend fun fetchPodcast(url: String): PodcastWithEpisodes {
         val request = Request.Builder()
             .url(url)
             .cacheControl(cacheControl)
@@ -79,9 +84,9 @@ class PodcastsFetcher(
         // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
         // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
         // from a stream.
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             response.body!!.use { body ->
-                syndFeedInput.build(body.charStream()).toPodcast(url)
+                syndFeedInput.build(body.charStream()).toPodcastWithEpisodes(url)
             }
         }
     }
@@ -90,27 +95,33 @@ class PodcastsFetcher(
 /**
  * Map a Rome [SyndFeed] instance to our own [Podcast] data class.
  */
-private fun SyndFeed.toPodcast(feedUrl: String): Podcast {
+private fun SyndFeed.toPodcastWithEpisodes(feedUrl: String): PodcastWithEpisodes {
+    val podcastUri = uri ?: feedUrl
+    val episodes = entries.map { it.toEpisode(podcastUri) }
+
     val feedInfo = getModule(PodcastModuleDtd) as? FeedInformation
-    return Podcast(
-        uri = uri ?: feedUrl,
+    val podcast = Podcast(
+        uri = podcastUri,
         title = title,
         description = feedInfo?.summary ?: description,
         author = author,
         copyright = copyright,
         imageUrl = feedInfo?.imageUri?.toString(),
         categories = feedInfo?.categories?.map { Category(it.name) }?.toSet() ?: emptySet(),
-        episodes = entries.map { it.toEpisode() }
+        lastEpisodeDate = episodes.maxBy { it.published }?.published
     )
+
+    return PodcastWithEpisodes(podcast, episodes)
 }
 
 /**
  * Map a Rome [SyndEntry] instance to our own [Episode] data class.
  */
-private fun SyndEntry.toEpisode(): Episode {
+private fun SyndEntry.toEpisode(podcastUri: String): Episode {
     val entryInformation = getModule(PodcastModuleDtd) as? EntryInformation
     return Episode(
         uri = uri,
+        podcastUri = podcastUri,
         title = title,
         author = author,
         summary = entryInformation?.summary ?: description?.value,

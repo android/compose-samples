@@ -18,20 +18,19 @@ package com.example.jetcaster.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
+import androidx.compose.getValue
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.drawBackground
 import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.ConstraintLayout
-import androidx.ui.layout.Dimension
+import androidx.ui.layout.Column
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxHeight
@@ -43,7 +42,6 @@ import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
 import androidx.ui.layout.size
 import androidx.ui.material.Card
-import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
@@ -68,13 +66,14 @@ import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.Period
 
 @Composable
 fun Home() {
     val viewModel: HomeViewModel = viewModel()
 
-    val viewState = viewModel.state.collectAsState()
+    val viewState by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -86,10 +85,10 @@ fun Home() {
         },
         bodyContent = {
             HomeContent(
-                viewState.value.featuredPodcasts,
-                viewState.value.refreshing,
-                categories = viewState.value.categories,
-                selectedCategory = viewState.value.selectedCategory,
+                viewState.featuredPodcasts,
+                viewState.refreshing,
+                categories = viewState.categories,
+                selectedCategory = viewState.selectedCategory,
                 onCategorySelected = viewModel::onCategorySelected,
                 modifier = Modifier.fillMaxSize()
             )
@@ -137,9 +136,7 @@ fun HomeContent(
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    VerticalScroller(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         if (featuredPodcasts.isNotEmpty()) {
             Text(
                 text = stringResource(R.string.your_podcasts),
@@ -179,17 +176,13 @@ fun HomeContent(
                     TabRow.IndicatorContainer(tabPositions, selectedIndex) {
                         TabIndicator(color = MaterialTheme.colors.primary)
                     }
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             ) { index, genre ->
                 Tab(
                     selected = index == selectedIndex,
                     onSelected = { onCategorySelected(genre) },
-                    text = {
-                        Text(
-                            text = genre.name,
-                            style = MaterialTheme.typography.body2
-                        )
-                    },
+                    text = { Text(text = genre.name, style = MaterialTheme.typography.body2) },
                     activeColor = MaterialTheme.colors.primary,
                     inactiveColor = EmphasisAmbient.current.medium.applyEmphasis(contentColor())
                 )
@@ -200,8 +193,7 @@ fun HomeContent(
              */
             CategoryEpisodesList(
                 category = selectedCategory ?: categories[0],
-                modifier = Modifier.fillMaxWidth()
-                    .preferredHeight(300.dp) /* TODO, remove this fixed height */
+                modifier = Modifier.fillMaxWidth().weight(1f)
             )
         }
     }
@@ -229,34 +221,29 @@ fun YourPodcasts(
         modifier = modifier
     ) { podcast ->
         PodcastCarouselItem(
-            podcast,
-            Modifier.padding(4.dp).preferredWidth(160.dp).fillMaxHeight()
+            podcastTitle = podcast.title,
+            podcastImageUrl = podcast.imageUrl,
+            lastEpisodeDate = podcast.lastEpisodeDate,
+            modifier = Modifier.padding(4.dp).preferredWidth(160.dp).fillMaxHeight()
         )
     }
 }
 
 @Composable
 fun PodcastCarouselItem(
-    podcast: Podcast,
+    podcastTitle: String,
+    podcastImageUrl: String? = null,
+    lastEpisodeDate: OffsetDateTime? = null,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
-        ConstraintLayout(Modifier.fillMaxSize()) {
-            val (artwork, name, updated) = createRefs()
-
-            podcast.imageUrl?.let { url ->
+        Stack(Modifier.fillMaxSize()) {
+            if (podcastImageUrl != null) {
                 CoilImage(
-                    data = url,
+                    data = podcastImageUrl,
                     contentScale = ContentScale.Crop,
-                    loading = {
-                        // TODO we can do something better here
-                        Stack(Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(
-                                Modifier.size(36.dp).gravity(Alignment.Center)
-                            )
-                        }
-                    },
-                    modifier = Modifier
+                    loading = { /* TODO do something better here */ },
+                    modifier = Modifier.fillMaxSize()
                         // We draw a scrim over the image, allowing the text some protection
                         // and contrast. We use a < 1f decay, meaning that the scrim gradient
                         // maintains stronger transparent over a longer distance.
@@ -264,51 +251,30 @@ fun PodcastCarouselItem(
                             color = Color.Black.copy(alpha = 0.9f),
                             decay = 0.8f
                         )
-                        .constrainAs(artwork) {
-                            centerTo(parent)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.fillToConstraints
-                        }
                 )
             }
 
-            ProvideEmphasis(EmphasisAmbient.current.high) {
-                Text(
-                    text = podcast.title,
-                    style = MaterialTheme.typography.subtitle2,
-                    maxLines = 2,
-                    lineHeight = 18.sp,
-                    modifier = Modifier.constrainAs(name) {
-                        start.linkTo(updated.start)
-                        end.linkTo(updated.end)
-                        bottom.linkTo(updated.top)
-                        width = Dimension.fillToConstraints
-                    }
-                )
-            }
-
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
-                val mod = Modifier.constrainAs(updated) {
-                    start.linkTo(parent.start, margin = 8.dp)
-                    end.linkTo(parent.end, margin = 8.dp)
-                    bottom.linkTo(parent.bottom, margin = 12.dp)
-                    width = Dimension.fillToConstraints
+            Column(
+                Modifier.gravity(Alignment.BottomStart)
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
+                ProvideEmphasis(EmphasisAmbient.current.high) {
+                    Text(
+                        text = podcastTitle,
+                        style = MaterialTheme.typography.subtitle2,
+                        maxLines = 2,
+                        lineHeight = 18.sp
+                    )
                 }
 
-                val lastEpisodeDate = podcast.lastEpisodeDate
                 if (lastEpisodeDate != null) {
-                    // If we have a last episode date, so display as text. We add some additional
-                    // top padding to push the title up slightly
-                    Text(
-                        text = lastUpdated(lastEpisodeDate.toLocalDate()),
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(top = 2.dp).plus(mod)
-                    )
-                } else {
-                    // If we don't have a last episode date, we need to make sure that the
-                    // constraint reference still makes senses for our siblings. We add a spacer
-                    // in the same position (bottom) with the same margin
-                    Spacer(mod)
+                    ProvideEmphasis(EmphasisAmbient.current.medium) {
+                        Text(
+                            text = lastUpdated(lastEpisodeDate),
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                    }
                 }
             }
         }
@@ -316,8 +282,8 @@ fun PodcastCarouselItem(
 }
 
 @Composable
-private fun lastUpdated(updated: LocalDate): String {
-    val period = Period.between(updated, LocalDate.now())
+private fun lastUpdated(updated: OffsetDateTime): String {
+    val period = Period.between(updated.toLocalDate(), LocalDate.now())
     return when {
         period.months >= 1 -> stringResource(R.string.updated_longer)
         period.days >= 7 -> {
@@ -350,7 +316,8 @@ fun PreviewHomeContent() {
 fun PreviewPodcastCard() {
     JetcasterTheme {
         PodcastCarouselItem(
-            podcast = PreviewPodcasts[0],
+            podcastTitle = PreviewPodcasts[0].title,
+            lastEpisodeDate = PreviewPodcasts[0].lastEpisodeDate,
             modifier = Modifier.size(128.dp)
         )
     }

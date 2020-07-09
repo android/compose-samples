@@ -22,11 +22,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 
 /**
- * A data repository for [Podcast] instances.
+ * A data repository for [Episode] instances.
  *
  * Currently this is backed only with data in memory. Ideally this would be backed by a
  * Room database, to allow persistence and easier querying.
@@ -34,54 +33,54 @@ import kotlinx.coroutines.withContext
  * @param mainDispatcher The main app [CoroutineDispatcher]
  * @param computationDispatcher [CoroutineDispatcher] to run computationally heavy tasks on
  */
-class PodcastStore(
+class EpisodeStore(
     private val mainDispatcher: CoroutineDispatcher,
     private val computationDispatcher: CoroutineDispatcher
 ) {
-    val items: Flow<Collection<Podcast>>
-        get() = _items.map { it.values }
+    val items: Flow<Set<Episode>>
+        get() = _items
 
-    private val _items = MutableStateFlow(emptyMap<String, Podcast>())
+    private val _items = MutableStateFlow(emptySet<Episode>())
 
     /**
-     * Return a flow containing the [Podcast] with the given [uri].
+     * Returns a flow containing the list of episodes associated with the podcast with the
+     * given [podcastUri].
      */
-    fun podcastWithUri(uri: String): Flow<Podcast> {
-        return _items.mapNotNull { it[uri] }.distinctUntilChanged()
+    fun episodesForPodcastUri(podcastUri: String): Flow<List<Episode>> {
+        return _items
+            .map { items ->
+                items.filter { it.podcastUri == podcastUri }
+            }
+            .distinctUntilChanged()
+            .flowOn(computationDispatcher)
     }
 
     /**
-     * Returns a flow containing the entire collection of podcasts, sorted by the last episode
-     * publish date for each podcast.
-     */
-    fun sortedByLastEpisodeDate(
-        descending: Boolean = true
-    ): Flow<List<Podcast>> = _items.map { podcasts ->
-        // Run on the default dispatcher, since sorting is non-trivial
-        if (descending) {
-            podcasts.values.sortedByDescending { it.lastEpisodeDate }
-        } else {
-            podcasts.values.sortedBy { it.lastEpisodeDate }
-        }
-    }.flowOn(computationDispatcher)
-
-    /**
-     * Add a new [Podcast] to this store.
+     * Add a new [Episode] to this store.
      *
      * This automatically switches to the main thread to maintain thread consistency.
      */
-    suspend fun addPodcast(podcast: Podcast) = withContext(mainDispatcher) {
-        _items.value = _items.value.toMutableMap().apply { put(podcast.uri, podcast) }
+    suspend fun addEpisodes(episodes: Collection<Episode>) = withContext(mainDispatcher) {
+        _items.value = _items.value + episodes
     }
 
     /**
-     * Clear any [Podcast]s currently stored in this store.
+     * Clear any [Episode]s currently stored in this store.
      *
      * This automatically switches to the main thread to maintain thread consistency.
      */
     suspend fun clear() = withContext(mainDispatcher) {
-        _items.value = emptyMap()
+        _items.value = emptySet()
     }
 
     fun isEmpty() = _items.value.isEmpty()
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun Flow<Collection<Episode>>.sortByPublishedDate(descending: Boolean): Flow<List<Episode>> {
+    return map { results ->
+        // Finally we sort the list of episodes according to the parameter
+        if (descending) results.sortedByDescending { it.published }
+        else results.sortedBy { it.published }
+    }
 }

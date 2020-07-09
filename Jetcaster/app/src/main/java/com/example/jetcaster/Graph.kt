@@ -18,9 +18,12 @@ package com.example.jetcaster
 
 import android.content.Context
 import com.example.jetcaster.data.CategoryStore
+import com.example.jetcaster.data.EpisodeStore
 import com.example.jetcaster.data.PodcastStore
 import com.example.jetcaster.data.PodcastsFetcher
 import com.rometools.rome.io.SyndFeedInput
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.LoggingEventListener
@@ -38,12 +41,44 @@ object Graph {
     val syndFeedInput by lazy { SyndFeedInput() }
 
     val podcastFetcher by lazy {
-        PodcastsFetcher(okHttpClient, syndFeedInput)
+        PodcastsFetcher(
+            okHttpClient = okHttpClient,
+            syndFeedInput = syndFeedInput,
+            ioDispatcher = ioDispatcher
+        )
     }
 
-    val podcastStore by lazy { PodcastStore() }
+    val podcastStore by lazy {
+        PodcastStore(
+            mainDispatcher = mainDispatcher,
+            computationDispatcher = computationDispatcher
+        )
+    }
 
-    val categoryStore by lazy { CategoryStore(podcastStore) }
+    val episodeStore by lazy {
+        EpisodeStore(
+            mainDispatcher = mainDispatcher,
+            computationDispatcher = computationDispatcher
+        )
+    }
+
+    val categoryStore by lazy {
+        CategoryStore(
+            podcastStore = podcastStore,
+            episodeStore = episodeStore,
+            mainDispatcher = mainDispatcher,
+            computationDispatcher = computationDispatcher
+        )
+    }
+
+    val mainDispatcher: CoroutineDispatcher
+        get() = Dispatchers.Main
+
+    val computationDispatcher: CoroutineDispatcher
+        get() = Dispatchers.Default
+
+    val ioDispatcher: CoroutineDispatcher
+        get() = Dispatchers.IO
 
     fun provide(context: Context) {
         okHttpClient = OkHttpClient.Builder()

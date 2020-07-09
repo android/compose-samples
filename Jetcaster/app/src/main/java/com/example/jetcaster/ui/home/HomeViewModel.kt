@@ -21,11 +21,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.CategoryStore
+import com.example.jetcaster.data.EpisodeStore
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastStore
 import com.example.jetcaster.data.PodcastsFetcher
 import com.example.jetcaster.data.SampleFeeds
-import com.example.jetcaster.data.sortedByLastEpisodeDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val podcastsFetcher: PodcastsFetcher = Graph.podcastFetcher,
     private val podcastStore: PodcastStore = Graph.podcastStore,
+    private val episodeStore: EpisodeStore = Graph.episodeStore,
     private val categoryStore: CategoryStore = Graph.categoryStore
 ) : ViewModel() {
     // Holds our currently selected category
@@ -51,15 +52,15 @@ class HomeViewModel(
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
             combine(
-                podcastStore.podcasts.sortedByLastEpisodeDate().map { it.take(10) },
-                categoryStore.sortedByCount(),
+                podcastStore.sortedByLastEpisodeDate().map { it.take(10) },
+                categoryStore.sortedByCount().map { it.take(10) },
                 _selectedCategory
             ) { podcasts, genres, selectedCategory ->
                 HomeViewState(
                     featuredPodcasts = podcasts,
                     refreshing = false,
                     errorMessage = null,
-                    categories = genres.toList(),
+                    categories = genres,
                     selectedCategory = selectedCategory
                 )
             }.collect { _state.value = it }
@@ -69,7 +70,9 @@ class HomeViewModel(
     }
 
     fun refresh() {
-        fetchPodcasts()
+        if (podcastStore.isEmpty()) {
+            fetchPodcasts()
+        }
     }
 
     fun onCategorySelected(category: Category) {
@@ -80,10 +83,12 @@ class HomeViewModel(
         viewModelScope.launch {
             // First clear the store
             podcastStore.clear()
+            episodeStore.clear()
 
             // Now fetch the podcasts, and add each to each store
             podcastsFetcher(SampleFeeds).collect {
-                podcastStore.addPodcast(it)
+                podcastStore.addPodcast(it.podcast)
+                episodeStore.addEpisodes(it.episodes)
             }
         }
     }

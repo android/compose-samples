@@ -18,7 +18,6 @@ package com.example.jetcaster.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
-import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
@@ -32,12 +31,8 @@ import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.ConstraintLayout
 import androidx.ui.layout.Dimension
 import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.preferredSize
-import androidx.ui.layout.size
-import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
@@ -60,7 +55,7 @@ import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.viewModelProviderFactoryOf
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -121,18 +116,11 @@ fun EpisodeListItem(
         )
 
         if (podcast.imageUrl != null) {
-            // If we have an image Url, we can show it using [CoilImageWithCrossfade]
-            CoilImageWithCrossfade(
+            // If we have an image Url, we can show it using [CoilImage]
+            CoilImage(
                 data = podcast.imageUrl,
                 contentScale = ContentScale.Crop,
-                loading = {
-                    // TODO we can do something better here
-                    Stack(Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(
-                            Modifier.size(36.dp).gravity(Alignment.Center)
-                        )
-                    }
-                },
+                loading = { /* TODO do something better here */ },
                 modifier = Modifier.preferredSize(48.dp)
                     .clip(MaterialTheme.shapes.small)
                     .constrainAs(image) {

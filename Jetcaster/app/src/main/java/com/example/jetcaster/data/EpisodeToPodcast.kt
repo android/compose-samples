@@ -16,6 +16,9 @@
 
 package com.example.jetcaster.data
 
+import androidx.compose.Immutable
+
+@Immutable
 data class EpisodeToPodcast(
     val episode: Episode,
     val podcast: Podcast

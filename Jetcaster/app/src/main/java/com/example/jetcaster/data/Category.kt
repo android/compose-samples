@@ -16,4 +16,7 @@
 
 package com.example.jetcaster.data
 
+import androidx.compose.Immutable
+
+@Immutable
 data class Category(val name: String)

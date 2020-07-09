@@ -16,42 +16,46 @@
 
 package com.example.jetcaster.data
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * A data repository for [Category] instances.
  *
  * Currently this is backed only with data in memory. Ideally this would be backed by a
  * Room database, to allow persistence and easier querying.
+ *
+ * @param mainDispatcher The main app [CoroutineDispatcher]
+ * @param computationDispatcher [CoroutineDispatcher] to run computationally heavy tasks on
  */
 class CategoryStore(
-    private val podcastStore: PodcastStore
+    private val podcastStore: PodcastStore,
+    private val episodeStore: EpisodeStore,
+    private val mainDispatcher: CoroutineDispatcher,
+    private val computationDispatcher: CoroutineDispatcher
 ) {
     val categories: Flow<Set<Category>>
         get() = _categories.map { it.keys }
 
-    private val _categories = MutableStateFlow(emptyMap<Category, List<Podcast>>())
+    private val _categories = MutableStateFlow(emptyMap<Category, List<String>>())
 
-    private val scope = CoroutineScope(Dispatchers.Main)
+    private val scope = CoroutineScope(mainDispatcher)
 
     init {
         scope.launch {
-            podcastStore.podcasts
-                .map {
-                    withContext(Dispatchers.Default) {
-                        // Switch to the default dispatcher, as groupByCategory() is not a
-                        // trivial operation
-                        it.groupByCategory()
-                    }
-                }
+            podcastStore.items
+                .map { it.groupByCategory() }
+                // Flow on the default dispatcher since group is non-trivial
+                .flowOn(computationDispatcher)
                 .collect { _categories.value = it }
         }
     }
@@ -64,41 +68,50 @@ class CategoryStore(
      */
     fun sortedByCount(
         descending: Boolean = true
-    ): Flow<List<Category>> = _categories.map { map ->
-        map.keys.let { genres ->
-            when {
-                descending -> genres.sortedByDescending { map[it]?.size ?: 0 }
-                else -> genres.sortedBy { map[it]?.size ?: 0 }
+    ): Flow<List<Category>> {
+        return _categories
+            .map { map ->
+                if (descending) map.keys.sortedByDescending { map[it]?.size ?: 0 }
+                else map.keys.sortedBy { map[it]?.size ?: 0 }
             }
-        }
-    }.flowOn(Dispatchers.Default) /* flow on Default since sorting is non-trivial */
+            // Flow on the default dispatcher since sorting is non-trivial
+            .flowOn(computationDispatcher)
+    }
 
     /**
      * Returns a flow of lists containing each episode for podcasts in the given [category].
      */
     fun episodesInCategory(
         category: Category,
-        descending: Boolean = true
-    ): Flow<List<EpisodeToPodcast>> = _categories.map { map ->
-        val result = ArrayList<EpisodeToPodcast>()
-        map[category]?.fold(result) { list, podcast ->
-            val episodes = podcast.episodes.map { EpisodeToPodcast(it, podcast) }
-            list.addAll(episodes)
-            list
-        }
-        if (descending) result.sortByDescending { it.episode.published }
-        else result.sortedBy { it.episode.published }
-        result
-    }.flowOn(Dispatchers.Default) /* flow on Default since sorting is non-trivial */
+        sortDescending: Boolean = true
+    ): Flow<List<Episode>> {
+        return _categories
+            .map {
+                // First we map to the list of podcast URIs in the category
+                it[category] ?: emptyList()
+            }
+            .distinctUntilChanged()
+            .flatMapLatest { podcastUris ->
+                // We now create the list of Flow<List<Episode>> for each podcast
+                val episodeFlows = podcastUris.map { uri ->
+                    episodeStore.episodesForPodcastUri(uri)
+                }
+                // And then combine them all together, to a flattened list. This contains a
+                // List<Episode> for all podcasts in podcastUris
+                combine(episodeFlows) { it.toList().flatten() }
+            }
+            .sortByPublishedDate(sortDescending)
+            .flowOn(computationDispatcher)
+    }
 
     /**
-     * Flips the relationship, returning a map of [Category] to lists of associated [Podcast]s.
+     * Flips the relationship, returning a map of [Category] to lists of associated [Podcast] URIs.
      */
-    private fun List<Podcast>.groupByCategory(): Map<Category, List<Podcast>> {
-        return fold(HashMap<Category, MutableList<Podcast>>()) { map, podcast ->
+    private fun Collection<Podcast>.groupByCategory(): Map<Category, List<String>> {
+        return fold(HashMap<Category, MutableList<String>>()) { map, podcast ->
             podcast.categories.forEach { category ->
                 val list = map.getOrPut(category) { ArrayList() }
-                list += podcast
+                list += podcast.uri
             }
             map
         }

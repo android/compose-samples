@@ -17,16 +17,9 @@
 package com.example.jetcaster.data
 
 import androidx.compose.Immutable
-import java.time.OffsetDateTime
 
 @Immutable
-data class Podcast(
-    val uri: String,
-    val title: String,
-    val description: String? = null,
-    val author: String? = null,
-    val imageUrl: String? = null,
-    val categories: Set<Category> = emptySet(),
-    val copyright: String? = null,
-    val lastEpisodeDate: OffsetDateTime? = null
+data class PodcastWithEpisodes(
+    val podcast: Podcast,
+    val episodes: List<Episode>
 )

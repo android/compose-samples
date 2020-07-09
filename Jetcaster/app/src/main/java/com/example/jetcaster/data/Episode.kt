@@ -16,11 +16,14 @@
 
 package com.example.jetcaster.data
 
+import androidx.compose.Immutable
 import java.time.Duration
 import java.time.OffsetDateTime
 
+@Immutable
 data class Episode(
     val uri: String,
+    val podcastUri: String,
     val title: String,
     val subtitle: String? = null,
     val summary: String? = null,
