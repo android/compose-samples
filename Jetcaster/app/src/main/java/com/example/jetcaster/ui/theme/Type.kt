@@ -74,43 +74,43 @@ val Typography = Typography(
         fontFamily = Montserrat,
         fontSize = 16.sp,
         fontWeight = FontWeight.SemiBold,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
     ),
     subtitle2 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
         fontWeight = FontWeight.Medium,
-        lineHeight = 24.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.1.sp
     ),
     body1 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 16.sp,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 28.sp,
+        fontWeight = FontWeight.Medium,
+        lineHeight = 20.sp,
         letterSpacing = 0.15.sp
     ),
     body2 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.SemiBold,
         lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),
     button = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         lineHeight = 16.sp,
         letterSpacing = 1.25.sp
     ),
     caption = TextStyle(
         fontFamily = Montserrat,
         fontSize = 12.sp,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.SemiBold,
         lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
+        letterSpacing = 0.sp
     ),
     overline = TextStyle(
         fontFamily = Montserrat,

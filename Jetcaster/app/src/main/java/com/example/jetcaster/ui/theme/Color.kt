@@ -31,11 +31,15 @@ fun ColorPalette.compositedOnSurface(alpha: Float): Color {
     return onSurface.copy(alpha = alpha).compositeOver(surface)
 }
 
-val Orange300 = Color(0xFFFFBC51)
-val Orange500 = Color(0xFFFF9F0A)
+val Yellow800 = Color(0xFFF29F05)
+val Red300 = Color(0xFFEA6D7E)
 
 val Colors = darkColorPalette(
-    primary = Orange300,
-    primaryVariant = Orange500,
-    secondary = Orange300
+    primary = Yellow800,
+    onPrimary = Color.Black,
+    primaryVariant = Yellow800,
+    secondary = Yellow800,
+    onSecondary = Color.Black,
+    error = Red300,
+    onError = Color.Black
 )

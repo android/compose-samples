@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class CategoryEpisodeListViewModel(
+class PodcastCategoryEpisodeListViewModel(
     private val category: Category,
     private val categoryStore: CategoryStore = Graph.categoryStore,
     private val podcastStore: PodcastStore = Graph.podcastStore,
