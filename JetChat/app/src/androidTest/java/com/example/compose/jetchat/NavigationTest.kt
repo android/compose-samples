@@ -24,7 +24,7 @@ import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
 import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.findByText
+import androidx.ui.test.onNodeWithText
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
@@ -84,7 +84,7 @@ class NavigationTest {
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check
-        findByText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
+        onNodeWithText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
 
         // Press back
         Espresso.pressBack()

@@ -43,7 +43,6 @@ import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.InnerPadding
 import androidx.ui.layout.Row
-import androidx.ui.layout.RowScope.weight
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxWidth
@@ -402,12 +401,14 @@ fun EmojiSelector(
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.emojis_label),
                 onClick = { selected = EmojiStickerSelector.EMOJI },
-                selected = true
+                selected = true,
+                modifier = Modifier.weight(1f)
             )
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.stickers_label),
                 onClick = { selected = EmojiStickerSelector.STICKER },
-                selected = false
+                selected = false,
+                modifier = Modifier.weight(1f)
             )
         }
         HorizontalScroller {
@@ -420,7 +421,12 @@ fun EmojiSelector(
 }
 
 @Composable
-fun ExtendedSelectorInnerButton(text: String, onClick: () -> Unit, selected: Boolean) {
+fun ExtendedSelectorInnerButton(
+    text: String,
+    onClick: () -> Unit,
+    selected: Boolean,
+    modifier: Modifier = Modifier
+) {
     val backgroundColor = if (selected) {
         MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
     } else {
@@ -433,8 +439,7 @@ fun ExtendedSelectorInnerButton(text: String, onClick: () -> Unit, selected: Boo
     }
     TextButton(
         onClick = onClick,
-        modifier = Modifier
-            .weight(1f)
+        modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .preferredHeight(30.dp),
         shape = MaterialTheme.shapes.medium,

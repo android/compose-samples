@@ -25,15 +25,15 @@ import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertIsEnabled
 import androidx.ui.test.assertIsNotEnabled
-import androidx.ui.test.doClick
 import androidx.ui.test.doSendText
-import androidx.ui.test.find
-import androidx.ui.test.findByLabel
-import androidx.ui.test.findBySubstring
-import androidx.ui.test.findByText
-import androidx.ui.test.hasAnyAncestorThat
+import androidx.ui.test.hasAnyAncestor
 import androidx.ui.test.hasInputMethodsSupport
 import androidx.ui.test.hasLabel
+import androidx.ui.test.onNode
+import androidx.ui.test.onNodeWithLabel
+import androidx.ui.test.onNodeWithSubstring
+import androidx.ui.test.onNodeWithText
+import androidx.ui.test.performClick
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
@@ -77,7 +77,7 @@ class UserInputTest {
     @Test
     fun emojiSelector_isClosedWithBack() {
         // Click on text field
-        findBySubstring(activity.getString(R.string.textfield_hint)).doClick()
+        onNodeWithSubstring(activity.getString(R.string.textfield_hint)).performClick()
         // Open emoji selector
         openEmojiSelector()
         // Check emoji selector is displayed
@@ -109,14 +109,14 @@ class UserInputTest {
     fun keyboardShown_emojiSelectorOpened_keyboardHides() {
         // Click on text field to open the soft keyboard
         clickOnTextField()
-        find(SemanticsMatcher.expectValue(KeyboardShownKey, true)).assertExists()
+        onNode(SemanticsMatcher.expectValue(KeyboardShownKey, true)).assertExists()
 
         // When the emoji selector is extended
         openEmojiSelector()
 
         // Check that the keyboard is hidden
         dumpSemanticNodes() // TODO: Remove when flakiness is gone
-        find(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
+        onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
     }
 
     @Test
@@ -133,24 +133,24 @@ class UserInputTest {
     }
 
     private fun clickOnTextField() {
-        findByLabel(activity.getString(R.string.textfield_desc)).doClick()
+        onNodeWithLabel(activity.getString(R.string.textfield_desc)).performClick()
     }
 
     private fun openEmojiSelector() =
-        findByLabel(activity.getString(R.string.emoji_selector_bt_desc)).doClick()
+        onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
 
     private fun assertEmojiSelectorIsDisplayed() =
-        findByLabel(activity.getString(R.string.emoji_selector_desc)).assertIsDisplayed()
+        onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertIsDisplayed()
 
     private fun assertEmojiSelectorDoesNotExist() =
-        findByLabel(activity.getString(R.string.emoji_selector_desc)).assertDoesNotExist()
+        onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertDoesNotExist()
 
-    private fun findSendButton() = findByText(activity.getString(R.string.send))
+    private fun findSendButton() = onNodeWithText(activity.getString(R.string.send))
 
     private fun findTextInputField(): SemanticsNodeInteraction {
-        return find(
+        return onNode(
             hasInputMethodsSupport() and
-                hasAnyAncestorThat(hasLabel(activity.getString(R.string.textfield_desc)))
+                hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
         )
     }
 }

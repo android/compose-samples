@@ -68,15 +68,17 @@ dependencies {
     // TODO: Tidy up
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-    implementation("androidx.compose:compose-runtime:$compose_version")
-    implementation("androidx.ui:ui-layout:$compose_version")
-    implementation("androidx.ui:ui-material:$compose_version")
-    implementation("androidx.ui:ui-material-icons-extended:$compose_version")
-    implementation("androidx.ui:ui-foundation:$compose_version")
-    implementation("androidx.ui:ui-livedata:$compose_version")
-    implementation("androidx.ui:ui-saved-instance-state:$compose_version")
-    implementation("androidx.ui:ui-animation:$compose_version")
+
+    implementation("androidx.compose.animation:animation:$compose_version")
+    implementation("androidx.compose.runtime:runtime:$compose_version")
+    implementation("androidx.compose.foundation:foundation:$compose_version")
+    implementation("androidx.compose.foundation:foundation-layout:$compose_version")
+    implementation("androidx.compose.material:material:$compose_version")
+    implementation("androidx.compose.material:material-icons-extended:$compose_version")
+    implementation("androidx.compose.runtime:runtime-livedata:$compose_version")
+    implementation("androidx.compose.runtime:runtime-saved-instance-state:$compose_version")
     implementation "androidx.ui:ui-tooling:$compose_version"
+
     implementation('androidx.appcompat:appcompat:1.1.0')
     implementation('androidx.activity:activity-ktx:1.1.0')
     implementation "androidx.core:core-ktx:1.1.0"
@@ -94,7 +96,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.1")
     androidTestImplementation("androidx.test:runner:1.2.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
-    androidTestImplementation("androidx.ui:ui-core:$compose_version")
+
     androidTestImplementation("androidx.ui:ui-test:$compose_version")
 
     ktlint "com.pinterest:ktlint:0.37.0"

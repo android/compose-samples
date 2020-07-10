@@ -16,10 +16,8 @@
 
 package com.example.compose.jetchat
 
-import android.util.Log
-import androidx.ui.test.SemanticsMatcher
-import androidx.ui.test.dumpToString
-import androidx.ui.test.findAll
+import androidx.ui.test.onRoot
+import androidx.ui.test.printToLog
 
 /**
  * Used to debug the semantic tree.
@@ -27,5 +25,5 @@ import androidx.ui.test.findAll
  * TODO: Replace with aosp/1355659
  */
 fun dumpSemanticNodes() {
-    Log.e("JetchatLog", findAll(SemanticsMatcher.any).dumpToString())
+    onRoot().printToLog(tag = "JetchatLog")
 }

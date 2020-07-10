@@ -20,7 +20,7 @@ import androidx.animation.transitionDefinition
 import androidx.compose.Composable
 import androidx.compose.state
 import androidx.ui.animation.DpPropKey
-import androidx.ui.animation.Transition
+import androidx.ui.animation.transition
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
@@ -54,49 +54,35 @@ private enum class Visibility {
 /**
  * Shows a button that lets the user scroll to the bottom.
  */
-// TODO: when a new message is added, the button shows up while the scroll is animating.
 @Composable
 fun JumpToBottom(
     enabled: Boolean,
     onClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    // This is used to prevent glitches. Only animate when the state changes.
-    val isShown = state { false }
-
+    // Show Jump to Bottom button
+    val transition = transition(
+        definition = definition,
+        toState = if (enabled) Visibility.VISIBLE else Visibility.GONE
+    )
     if (enabled) {
-        // Show Jump to Bottom button
-        Transition(
-            definition = definition,
-            // Disable transition if there's no state change
-            initState = if (isShown.value) Visibility.VISIBLE else Visibility.GONE,
-            toState = Visibility.VISIBLE,
-            onStateChangeFinished = {
-                isShown.value = true
-            }
-        ) { transition ->
-
-            ExtendedFloatingActionButton(
-                icon = {
-                    Icon(
-                        asset = Icons.Filled.ArrowDownward,
-                        modifier = Modifier.preferredHeight(18.dp)
-                    )
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.jumpBottom))
-                },
-                onClick = onClicked,
-                backgroundColor = MaterialTheme.colors.surface,
-                contentColor = MaterialTheme.colors.primary,
-                modifier = modifier
-                    .offset(x = 0.dp, y = -transition[bottomPadding])
-                    .preferredHeight(36.dp)
-            )
-        }
-    } else {
-        isShown.value = false
+        ExtendedFloatingActionButton(
+            icon = {
+                Icon(
+                    asset = Icons.Filled.ArrowDownward,
+                    modifier = Modifier.preferredHeight(18.dp)
+                )
+            },
+            text = {
+                Text(text = stringResource(id = R.string.jumpBottom))
+            },
+            onClick = onClicked,
+            backgroundColor = MaterialTheme.colors.surface,
+            contentColor = MaterialTheme.colors.primary,
+            modifier = modifier
+                .offset(x = 0.dp, y = -transition[bottomPadding])
+                .preferredHeight(36.dp)
+        )
     }
 }
 

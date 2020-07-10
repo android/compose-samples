@@ -38,7 +38,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        def snapshot = "6602655"
+        def snapshot = "6679317"
         maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
     }
 }

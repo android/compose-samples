@@ -23,11 +23,11 @@ import androidx.ui.geometry.Offset
 import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.center
-import androidx.ui.test.doClick
-import androidx.ui.test.doGesture
-import androidx.ui.test.findByLabel
-import androidx.ui.test.findByText
-import androidx.ui.test.sendSwipe
+import androidx.ui.test.onNodeWithLabel
+import androidx.ui.test.onNodeWithText
+import androidx.ui.test.performClick
+import androidx.ui.test.performGesture
+import androidx.ui.test.swipe
 import androidx.ui.unit.milliseconds
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
@@ -74,15 +74,15 @@ class ConversationTest {
     @Test
     fun app_launches() {
         // Check that the conversation screen is visible on launch
-        findByText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
+        onNodeWithText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
     }
 
     @Test
     fun userScrollsUp_jumpToBottomAppears() {
         // Check list is snapped to bottom and swipe up
         findJumpToBottom().assertDoesNotExist()
-        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
-            this.sendSwipe(
+        onNodeWithLabel(activity.getString(R.string.conversation_desc)).performGesture {
+            this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
                 duration = 200.milliseconds
@@ -95,15 +95,15 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAndDisappears() {
         // When the scroll is not snapped to the bottom
-        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
-            this.sendSwipe(
+        onNodeWithLabel(activity.getString(R.string.conversation_desc)).performGesture {
+            this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
                 duration = 200.milliseconds
             )
         }
         // Snap scroll to the bottom
-        findJumpToBottom().doClick()
+        findJumpToBottom().performClick()
 
         // Check that the button is hidden
         findJumpToBottom().assertDoesNotExist()
@@ -112,15 +112,15 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAfterUserInteracted() {
         // First swipe
-        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
-            this.sendSwipe(
+        onNodeWithLabel(activity.getString(R.string.conversation_desc)).performGesture {
+            this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
                 duration = 200.milliseconds
             )
         }
         // Second, snap to bottom
-        findJumpToBottom().doClick()
+        findJumpToBottom().performClick()
 
         // Open Emoji selector
         openEmojiSelector()
@@ -132,8 +132,8 @@ class ConversationTest {
     @Test
     fun changeTheme_scrollIsPersisted() {
         // Swipe to show the jump to bottom button
-        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
-            this.sendSwipe(
+        onNodeWithLabel(activity.getString(R.string.conversation_desc)).performGesture {
+            this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
                 duration = 200.milliseconds
@@ -150,8 +150,8 @@ class ConversationTest {
         findJumpToBottom().assertIsDisplayed()
     }
 
-    private fun findJumpToBottom() = findByText(activity.getString(R.string.jumpBottom))
+    private fun findJumpToBottom() = onNodeWithText(activity.getString(R.string.jumpBottom))
 
     private fun openEmojiSelector() =
-        findByLabel(activity.getString(R.string.emoji_selector_bt_desc)).doClick()
+        onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
 }

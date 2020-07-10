@@ -21,7 +21,7 @@ import androidx.ui.material.Shapes
 import androidx.ui.unit.dp
 
 val JetchatShapes = Shapes(
-    small = RoundedCornerShape(28.dp),
+    small = RoundedCornerShape(50),
     medium = RoundedCornerShape(8.dp),
     large = RoundedCornerShape(0.dp)
 )
