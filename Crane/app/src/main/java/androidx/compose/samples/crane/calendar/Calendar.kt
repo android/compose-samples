@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.Composable
-import androidx.compose.samples.crane.calendar.data.january2020
 import androidx.compose.samples.crane.calendar.data.year2020
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
@@ -29,8 +28,8 @@ import androidx.compose.samples.crane.util.SemiRect
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.WithConstraints
+import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.clickable
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
@@ -59,13 +58,11 @@ fun Calendar(
     modifier: Modifier = Modifier,
     onDayClicked: (CalendarDay, CalendarMonth) -> Unit
 ) {
-    VerticalScroller(modifier = modifier) {
-        Column {
+    ScrollableColumn(modifier = modifier) {
+        Spacer(Modifier.preferredHeight(32.dp))
+        for (month in year2020) {
+            Month(month = month, onDayClicked = onDayClicked)
             Spacer(Modifier.preferredHeight(32.dp))
-            for (month in year2020) {
-                Month(month = month, onDayClicked = onDayClicked)
-                Spacer(Modifier.preferredHeight(32.dp))
-            }
         }
     }
 }
@@ -152,9 +149,9 @@ private fun DaysOfWeek(modifier: Modifier = Modifier) {
 private fun Day(day: CalendarDay, onDayClicked: (CalendarDay) -> Unit) {
     val enabled = day.status != SelectedStatus.NON_CLICKABLE
     DayContainer(
-        modifier = Modifier.clickable(onClick = {
+        modifier = Modifier.clickable(enabled) {
             if (day.status != SelectedStatus.NON_CLICKABLE) onDayClicked(day)
-        }, enabled = enabled),
+        },
         backgroundColor = day.status.color(MaterialTheme.colors)
     ) {
         DayStatusContainer(status = day.status) {

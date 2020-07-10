@@ -17,6 +17,7 @@
 package androidx.compose.samples.crane.home
 
 import androidx.animation.transitionDefinition
+import androidx.animation.tween
 import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.compose.mutableStateOf
@@ -27,7 +28,7 @@ import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.base.ServiceLocator
 import androidx.compose.setValue
 import androidx.ui.animation.ColorPropKey
-import androidx.ui.animation.Transition
+import androidx.ui.animation.transition
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
@@ -73,26 +74,22 @@ fun PeopleUserInput(
                 )
             }
 
-        Transition(
-            definition = transitionDefinition,
-            toState = peopleState.animationState
-        ) { state ->
-            val people = peopleState.people
-            CraneUserInput(
-                modifier = Modifier.clickable(onClick = {
-                    peopleState.addPerson()
-                    onPeopleChanged(peopleState.people)
-                }),
-                text = if (people == 1) "$people Adult$titleSuffix" else "$people Adults$titleSuffix",
-                vectorImageId = R.drawable.ic_person,
-                tint = state[tintKey]
+        val transition = transition(transitionDefinition, peopleState.animationState)
+        val people = peopleState.people
+        CraneUserInput(
+            modifier = Modifier.clickable {
+                peopleState.addPerson()
+                onPeopleChanged(peopleState.people)
+            },
+            text = if (people == 1) "$people Adult$titleSuffix" else "$people Adults$titleSuffix",
+            vectorImageId = R.drawable.ic_person,
+            tint = transition[tintKey]
+        )
+        if (peopleState.animationState == PeopleUserInputAnimationState.Invalid) {
+            Text(
+                text = "Error: We don't support more than $MAX_PEOPLE people",
+                style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary)
             )
-            if (peopleState.animationState == PeopleUserInputAnimationState.Invalid) {
-                Text(
-                    text = "Error: We don't support more than $MAX_PEOPLE people",
-                    style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary)
-                )
-            }
         }
     }
 }
@@ -138,13 +135,13 @@ private fun generateTransitionDefinition(
         this[tintKey] = invalidColor
     }
     transition(fromState = PeopleUserInputAnimationState.Valid to PeopleUserInputAnimationState.Invalid) {
-        tintKey using tween<Color> {
-            duration = 300
-        }
+        tintKey using tween<Color>(
+            durationMillis = 300
+        )
     }
     transition(fromState = PeopleUserInputAnimationState.Invalid to PeopleUserInputAnimationState.Valid) {
-        tintKey using tween<Color> {
-            duration = 300
-        }
+        tintKey using tween<Color>(
+            durationMillis = 300
+        )
     }
 }

@@ -18,41 +18,36 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap/")
+        }
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.0-alpha02")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
+        classpath("com.android.tools.build:gradle:4.2.0-alpha05")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M3")
     }
 }
 
 allprojects {
 
-    // Compose dev14
+    // Compose dev15
     val snapshotUrl =
-        "https://androidx-dev-prod.appspot.com/snapshots/builds/6602655/artifacts/ui/repository/"
+        "https://androidx-dev-prod.appspot.com/snapshots/builds/6695716/artifacts/ui/repository/"
     repositories {
         maven {
             url = uri(snapshotUrl)
         }
         google()
         jcenter()
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap/")
+        }
     }
-    // Don't require parens on fun type annotations e.g. `@Composable~()~ () -> Unit`. Remove with KT1.4
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
-
-            freeCompilerArgs = freeCompilerArgs +
-                    listOf("-XXLanguage:+NonParenthesizedAnnotationsOnFunctionalTypes")
-
-            // Compose is now based on the Kotlin 1.4 compiler, but we need to use the 1.3.x Kotlin
-            // library due to library compatibility, etc. Therefore we explicit set our apiVersion
-            // to 1.3 to fix any warnings. Binary dependencies (such as Compose) can continue to
-            // use 1.4 if built with that library.
-            // TODO: remove this once we move to Kotlin 1.4
-            apiVersion = "1.3"
         }
     }
 }

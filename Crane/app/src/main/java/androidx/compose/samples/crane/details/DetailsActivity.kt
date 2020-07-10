@@ -105,16 +105,21 @@ fun DetailsScreen(args: DetailsActivityArg) {
             // For the map to work, you need to get an API key from
             // https://developers.google.com/maps/documentation/android-sdk/get-api-key
             // and put it in the google.maps.key variable of your local properties
-            AndroidView(resId = R.layout.layout_details_map, postInflationCallback = { view ->
-                val fragment = (view.context as AppCompatActivity).supportFragmentManager
-                    .findFragmentById(R.id.map)
+            AndroidView(
+                resId = R.layout.layout_details_map,
+                postInflationCallback = { view ->
+                    val fragment = (view.context as AppCompatActivity).supportFragmentManager
+                        .findFragmentById(R.id.map)
 
-                (fragment as SupportMapFragment).getMapAsync { map ->
-                    val position = LatLng(args.latitude.toDouble(), args.longitude.toDouble())
-                    map.addMarker(MarkerOptions().position(position).title("Marker in ${args.name}"))
-                    map.moveCamera(CameraUpdateFactory.newLatLng(position))
+                    (fragment as SupportMapFragment).getMapAsync { map ->
+                        val position = LatLng(args.latitude.toDouble(), args.longitude.toDouble())
+                        map.addMarker(
+                            MarkerOptions().position(position).title("Marker in ${args.name}")
+                        )
+                        map.moveCamera(CameraUpdateFactory.newLatLng(position))
+                    }
                 }
-            })
+            )
         }
     }
 }

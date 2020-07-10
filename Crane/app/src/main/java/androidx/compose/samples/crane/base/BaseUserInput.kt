@@ -144,7 +144,8 @@ fun previewInput() {
             tintIcon = { true },
             vectorImageId = R.drawable.ic_plane,
             caption = "Caption",
-            showCaption = { true }) {
+            showCaption = { true }
+        ) {
             Text(text = "text", style = MaterialTheme.typography.body1)
         }
     }

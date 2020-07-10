@@ -20,7 +20,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.animation.FloatPropKey
 import androidx.animation.Spring.StiffnessLow
+import androidx.animation.spring
 import androidx.animation.transitionDefinition
+import androidx.animation.tween
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
 import androidx.compose.remember
@@ -29,11 +31,15 @@ import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.util.observe
+import androidx.compose.state
 import androidx.ui.animation.DpPropKey
+import androidx.ui.animation.transition
 import androidx.ui.core.Modifier
+import androidx.ui.core.drawOpacity
 import androidx.ui.core.setContent
 import androidx.ui.layout.Column
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.Stack
 import androidx.ui.layout.padding
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
@@ -55,29 +61,22 @@ class MainActivity : AppCompatActivity() {
                     { launchCalendarActivity(this) }
                 }
 
-                // FIXME: Removing Splash animation because of b/154198289
-                // Quick explanation: MainContentWrapper is being emitted twice to the screen
-
-//                val splashShown = state { SplashState.SHOWN }
-//                Transition(
-//                    definition = splashTransitionDefinition,
-//                    toState = splashShown.value
-//                ) { state ->
-//                    Stack {
-//                        LandingScreen(
-//                            modifier = Modifier.drawOpacity(state[splashAlphaKey]),
-//                            splashShownState = splashShown
-//                        )
-                        MainContentWrapper(
-//                            modifier = Modifier.drawOpacity(state[contentAlphaKey]),
-//                            topPadding = state[contentTopPaddingKey],
-                            onExploreItemClicked = onExploreItemClicked,
-                            onDateSelectionClicked = onDateSelectionClicked,
-                            destinations = destinations ?: emptyList(),
-                            viewModel = viewModel
-                        )
-//                    }
-//                }
+                val splashShown = state { SplashState.SHOWN }
+                val transition = transition(splashTransitionDefinition, splashShown.value)
+                Stack {
+                    LandingScreen(
+                        modifier = Modifier.drawOpacity(transition[splashAlphaKey]),
+                        splashShownState = splashShown
+                    )
+                    MainContentWrapper(
+                        modifier = Modifier.drawOpacity(transition[contentAlphaKey]),
+                        topPadding = transition[contentTopPaddingKey],
+                        onExploreItemClicked = onExploreItemClicked,
+                        onDateSelectionClicked = onDateSelectionClicked,
+                        destinations = destinations ?: emptyList(),
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }
@@ -121,14 +120,14 @@ private val splashTransitionDefinition = transitionDefinition {
         this[contentTopPaddingKey] = 0.dp
     }
     transition {
-        splashAlphaKey using tween<Float> {
-            duration = 100
-        }
-        contentAlphaKey using tween<Float> {
-            duration = 300
-        }
-        contentTopPaddingKey using physics<Dp> {
+        splashAlphaKey using tween<Float>(
+            durationMillis = 100
+        )
+        contentAlphaKey using tween<Float>(
+            durationMillis = 300
+        )
+        contentTopPaddingKey using spring<Dp>(
             stiffness = StiffnessLow
-        }
+        )
     }
 }

@@ -16,21 +16,22 @@
 
 package androidx.compose.samples.crane.ui
 
-import androidx.animation.PhysicsBuilder
+import androidx.animation.SpringSpec
 import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.compose.mutableStateOf
 import androidx.compose.remember
 import androidx.compose.setValue
 import androidx.compose.state
+import androidx.compose.structuralEqualityPolicy
 import androidx.ui.core.Constraints
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.WithConstraints
+import androidx.ui.core.gesture.scrollorientationlocking.Orientation
 import androidx.ui.core.onPositioned
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Canvas
-import androidx.ui.foundation.gestures.DragDirection
 import androidx.ui.layout.DpConstraints
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
@@ -57,52 +58,52 @@ fun BackdropFrontLayerDraggable(
     staticChildren: @Composable (Modifier) -> Unit,
     backdropChildren: @Composable (Modifier) -> Unit
 ) {
-    var backgroundChildrenSize by state { IntSize(0, 0) }
+    var backgroundChildrenSize by state(structuralEqualityPolicy()) { IntSize(0, 0) }
 
-    Box(modifier) {
+    Box(modifier.fillMaxSize()) {
         WithConstraints {
             val fullHeight = constraints.maxHeight.toFloat()
-            val anchors = remember(backgroundChildrenSize.height) {
-                getAnchors(backgroundChildrenSize, fullHeight)
-            }
+            val anchors = getAnchors(backgroundChildrenSize, fullHeight)
 
-            CraneStateDraggable(
-                state = backdropState.value,
-                onStateChange = { newExploreState -> backdropState.value = newExploreState },
-                anchorsToState = anchors,
-                animationBuilder = AnimationBuilder,
-                dragDirection = DragDirection.Vertical,
-                minValue = VerticalExplorePadding,
-                maxValue = fullHeight,
-                enabled = true
-            ) { model ->
-                Stack {
-                    staticChildren(Modifier.onPositioned { coordinates ->
+            var backdropPosition by state { fullHeight }
+            Stack(
+                Modifier.stateDraggable(
+                    state = backdropState.value,
+                    onStateChange = { newExploreState -> backdropState.value = newExploreState },
+                    anchorsToState = anchors,
+                    animationSpec = AnimationSpec,
+                    orientation = Orientation.Vertical,
+                    minValue = VerticalExplorePadding,
+                    maxValue = fullHeight,
+                    enabled = true,
+                    onNewValue = { backdropPosition = it }
+                )
+            ) {
+                staticChildren(
+                    Modifier.onPositioned { coordinates ->
                         if (backgroundChildrenSize.height == 0) {
                             backdropState.value = FullScreenState.COLLAPSED
                         }
-                        if (backgroundChildrenSize != coordinates.size) {
-                            backgroundChildrenSize = coordinates.size
-                        }
-                    })
-
-                    val shadowColor = MaterialTheme.colors.surface.copy(alpha = 0.8f)
-                    val revealValue = backgroundChildrenSize.height / 2
-                    if (model.value < revealValue) {
-                        Canvas(Modifier.fillMaxSize()) {
-                            drawRect(size = size, color = shadowColor)
-                        }
+                        backgroundChildrenSize = coordinates.size
                     }
+                )
 
-                    val yOffset = with(DensityAmbient.current) {
-                        model.value.toDp()
+                val shadowColor = MaterialTheme.colors.surface.copy(alpha = 0.8f)
+                val revealValue = backgroundChildrenSize.height / 2
+                if (backdropPosition < revealValue) {
+                    Canvas(Modifier.fillMaxSize()) {
+                        drawRect(size = size, color = shadowColor)
                     }
-
-                    backdropChildren(
-                        Modifier.offset(0.dp, yOffset)
-                            .preferredSizeIn(currentConstraints(constraints))
-                    )
                 }
+
+                val yOffset = with(DensityAmbient.current) {
+                    backdropPosition.toDp()
+                }
+
+                backdropChildren(
+                    Modifier.offset(0.dp, yOffset)
+                        .preferredSizeIn(currentConstraints(constraints))
+                )
             }
         }
     }
@@ -130,6 +131,6 @@ private fun currentConstraints(pxConstraints: Constraints): DpConstraints {
     }
 }
 
-private val AnimationBuilder = PhysicsBuilder<Float>().apply { stiffness = ExploreStiffness }
-private const val ExploreStiffness = 1000f
 private const val VerticalExplorePadding = 0f
+private const val ExploreStiffness = 1000f
+private val AnimationSpec = SpringSpec<Float>(stiffness = ExploreStiffness)
