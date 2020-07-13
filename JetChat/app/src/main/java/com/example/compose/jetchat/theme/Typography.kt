@@ -70,7 +70,7 @@ val JetchatTypography = Typography(
     subtitle1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        letterSpacing = 0.15.sp
+        letterSpacing = 0.sp
     ),
     subtitle2 = TextStyle(
         fontFamily = KarlaFontFamily,
@@ -82,7 +82,7 @@ val JetchatTypography = Typography(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        letterSpacing = 0.15.sp,
+        letterSpacing = 0.sp,
         lineHeight = 24.sp
     ),
     body2 = TextStyle(
@@ -99,7 +99,7 @@ val JetchatTypography = Typography(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
-        letterSpacing = 0.4.sp
+        letterSpacing = 0.15.sp
     ),
     overline = TextStyle(
         fontWeight = FontWeight.SemiBold,

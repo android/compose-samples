@@ -18,9 +18,8 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.Composable
 import androidx.compose.getValue
-import androidx.compose.onActive
+import androidx.compose.onCommit
 import androidx.compose.setValue
-import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.DensityAmbient
@@ -54,6 +53,7 @@ import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredSize
 import androidx.ui.layout.preferredWidth
 import androidx.ui.layout.relativePaddingFrom
+import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
@@ -63,6 +63,7 @@ import androidx.ui.material.icons.outlined.Info
 import androidx.ui.material.icons.outlined.Search
 import androidx.ui.res.imageResource
 import androidx.ui.res.stringResource
+import androidx.ui.savedinstancestate.savedInstanceState
 import androidx.ui.semantics.accessibilityLabel
 import androidx.ui.text.LastBaseline
 import androidx.ui.tooling.preview.Preview
@@ -179,19 +180,20 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scrollerPosition = ScrollerPosition()
-    var userScrolled by state { false }
-    // only runs once
-    onActive {
-        scrollerPosition.scrollTo(scrollerPosition.maxPosition)
-    }
+    // Scroll is reversed so a value of 0 is the bottom
+    val scrollerPosition = ScrollerPosition(isReversed = true)
 
-    // Scroll to last message
-    if (!userScrolled && // Don't scroll if the user triggered the scrolling
-        scrollerPosition.atBottom() // Don't scroll if already at the bottom
-    ) {
-        // Scroll smoothly after the first scroll
-        scrollerPosition.smoothScrollTo(scrollerPosition.maxPosition)
+    // Used to tell between manual and programmatic scrolling
+    var userScrolled by savedInstanceState { false }
+
+    onCommit(userScrolled, scrollerPosition) {
+        // Scroll to last message
+        if (!userScrolled && // Don't scroll if the user triggered the scrolling
+            !scrollerPosition.atBottom() // Don't scroll if already at the bottom
+        ) {
+            // Scroll smoothly after the first scroll
+            scrollerPosition.smoothScrollTo(BottomScrollerPosition)
+        }
     }
 
     Stack(modifier = modifier) {
@@ -219,6 +221,13 @@ fun Messages(
                     val isFirstMessageByAuthor = prevAuthor != content.author
                     val isLastMessageByAuthor = nextAuthor != content.author
 
+                    // Hardcode day dividers for simplicity
+                    if (index == 0) {
+                        DayHeader("20 Aug")
+                    } else if (index == 4) {
+                        DayHeader("Today")
+                    }
+
                     Message(
                         onAuthorClick = { navigateToProfile(content.author) },
                         msg = content,
@@ -236,9 +245,7 @@ fun Messages(
         }
 
         // Apply the threshold:
-        val jumpToBottomButtonEnabled = (
-            scrollerPosition.value < scrollerPosition.maxPosition - jumpThreshold
-            )
+        val jumpToBottomButtonEnabled = scrollerPosition.value > jumpThreshold
 
         JumpToBottom(
             // Only show if the scroller is not at the bottom
@@ -353,6 +360,29 @@ private val ChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp)
 private val LastChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
 
 @Composable
+fun DayHeader(dayString: String) {
+    Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).preferredHeight(16.dp)) {
+        DayHeaderLine()
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            Text(
+                text = dayString,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.overline
+            )
+        }
+        DayHeaderLine()
+    }
+}
+
+@Composable
+private fun DayHeaderLine() {
+    Divider(
+        modifier = Modifier.weight(1f).gravity(Alignment.CenterVertically),
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+    )
+}
+
+@Composable
 fun ChatItemBubble(
     message: Message,
     lastMessageByAuthor: Boolean
@@ -408,6 +438,13 @@ fun channelBarPrev() {
     }
 }
 
-private val JumpToBottomThreshold = 56.dp
+@Preview
+@Composable
+fun DayHeaderPrev() {
+    DayHeader("Aug 6")
+}
 
-private fun ScrollerPosition.atBottom(): Boolean = maxPosition != Float.POSITIVE_INFINITY
+private val JumpToBottomThreshold = 56.dp
+private val BottomScrollerPosition = 0f
+
+private fun ScrollerPosition.atBottom(): Boolean = value == BottomScrollerPosition

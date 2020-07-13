@@ -65,9 +65,6 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
 
     val scrollerPosition = ScrollerPosition()
 
-    // How much user needs to scroll down for the fab to expand
-    val fabExpandScrollThreshold = with(DensityAmbient.current) { 5.dp.toPx() }
-
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
             modifier = Modifier.fillMaxWidth(),
@@ -102,7 +99,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 }
             }
             ProfileFab(
-                extended = scrollerPosition.value < fabExpandScrollThreshold,
+                extended = scrollerPosition.value == 0f,
                 userIsMe = userData.isMe(),
                 modifier = Modifier.gravity(Alignment.BottomEnd)
             )

@@ -34,7 +34,6 @@ import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.theme.Blue200
 
 private val bottomPadding = DpPropKey()
 
@@ -78,11 +77,6 @@ fun JumpToBottom(
             }
         ) { transition ->
 
-            val contentColor = if (MaterialTheme.colors.isLight) {
-                MaterialTheme.colors.primary
-            } else {
-                Blue200
-            }
             ExtendedFloatingActionButton(
                 icon = {
                     Icon(
@@ -95,7 +89,7 @@ fun JumpToBottom(
                 },
                 onClick = onClicked,
                 backgroundColor = MaterialTheme.colors.surface,
-                contentColor = contentColor,
+                contentColor = MaterialTheme.colors.primary,
                 modifier = modifier
                     .offset(x = 0.dp, y = -transition[bottomPadding])
                     .preferredHeight(36.dp)

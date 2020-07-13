@@ -18,6 +18,7 @@ package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
 import androidx.compose.Providers
+import androidx.compose.collectAsState
 import androidx.ui.geometry.Offset
 import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
@@ -32,6 +33,7 @@ import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,6 +50,8 @@ class ConversationTest {
     // See: https://issuetracker.google.com/160862278
     private lateinit var activity: ComponentActivity
 
+    private val themeIsDark = MutableStateFlow(false)
+
     @Before
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
@@ -55,7 +59,7 @@ class ConversationTest {
             // Launch the conversation screen
             composeTestRule.setContent {
                 Providers(BackPressedDispatcherAmbient provides newActivity) {
-                    JetchatTheme {
+                    JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                         ConversationContent(
                             uiState = exampleUiState,
                             navigateToProfile = { },
@@ -105,5 +109,49 @@ class ConversationTest {
         findJumpToBottom().assertDoesNotExist()
     }
 
+    @Test
+    fun jumpToBottom_snapsToBottomAfterUserInteracted() {
+        // First swipe
+        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
+            this.sendSwipe(
+                start = this.center,
+                end = Offset(this.center.x, this.center.y + 500),
+                duration = 200.milliseconds
+            )
+        }
+        // Second, snap to bottom
+        findJumpToBottom().doClick()
+
+        // Open Emoji selector
+        openEmojiSelector()
+
+        // Assert that the list is still snapped to bottom
+        findJumpToBottom().assertDoesNotExist()
+    }
+
+    @Test
+    fun changeTheme_scrollIsPersisted() {
+        // Swipe to show the jump to bottom button
+        findByLabel(activity.getString(R.string.conversation_desc)).doGesture {
+            this.sendSwipe(
+                start = this.center,
+                end = Offset(this.center.x, this.center.y + 500),
+                duration = 200.milliseconds
+            )
+        }
+
+        // Check that the jump to bottom button is shown
+        findJumpToBottom().assertIsDisplayed()
+
+        // Set theme to dark
+        themeIsDark.value = true
+
+        // Check that the jump to bottom button is still shown
+        findJumpToBottom().assertIsDisplayed()
+    }
+
     private fun findJumpToBottom() = findByText(activity.getString(R.string.jumpBottom))
+
+    private fun openEmojiSelector() =
+        findByLabel(activity.getString(R.string.emoji_selector_bt_desc)).doClick()
 }
