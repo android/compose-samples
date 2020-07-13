@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package com.example.jetsnack.ui
+package com.example.jetsnack.ui.home
 
 import androidx.compose.Composable
-import com.example.jetsnack.ui.home.Home
-import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.ProvideInsets
+import androidx.ui.core.Modifier
+import androidx.ui.foundation.Text
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.wrapContentSize
+import androidx.ui.res.stringResource
+import com.example.jetsnack.R
 
 @Composable
-fun JetsnackApp() {
-    ProvideInsets {
-        JetsnackTheme {
-            Home()
-        }
-    }
+fun Cart(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.home_cart),
+        modifier = modifier
+            .fillMaxSize()
+            .wrapContentSize()
+    )
 }
