@@ -49,7 +49,7 @@ import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Scaffold
+import androidx.ui.material.Surface
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.icons.Icons
@@ -66,9 +66,11 @@ import com.example.jetcaster.data.PodcastWithLastEpisodeDate
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.util.DominantColorVerticalGradient
 import com.example.jetcaster.util.Pager
 import com.example.jetcaster.util.PagerState
 import com.example.jetcaster.util.quantityStringResource
+import com.example.jetcaster.util.statusBarPadding
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.Duration
 import java.time.LocalDateTime
@@ -80,25 +82,16 @@ fun Home() {
 
     val viewState by viewModel.state.collectAsState()
 
-    Scaffold(
-        topBar = {
-            HomeAppBar(
-                // TODO: change height to 48.dp in landscape
-                Modifier.fillMaxWidth()
-                    .preferredHeight(56.dp)
-            )
-        },
-        bodyContent = {
-            HomeContent(
-                featuredPodcasts = viewState.featuredPodcasts,
-                isRefreshing = viewState.refreshing,
-                homeCategories = viewState.homeCategories,
-                selectedHomeCategory = viewState.selectedHomeCategory,
-                onCategorySelected = viewModel::onHomeCategorySelected,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-    )
+    Surface(Modifier.fillMaxSize()) {
+        HomeContent(
+            featuredPodcasts = viewState.featuredPodcasts,
+            isRefreshing = viewState.refreshing,
+            homeCategories = viewState.homeCategories,
+            selectedHomeCategory = viewState.selectedHomeCategory,
+            onCategorySelected = viewModel::onHomeCategorySelected,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
 
 @Composable
@@ -145,15 +138,37 @@ fun HomeContent(
     onCategorySelected: (HomeCategory) -> Unit
 ) {
     Column(modifier = modifier) {
-        if (featuredPodcasts.isNotEmpty()) {
-            YourPodcasts(
-                items = featuredPodcasts,
-                modifier = Modifier.fillMaxWidth()
-                    .preferredHeight(200.dp)
-                    .padding(horizontal = Keyline1)
+        Stack(Modifier.fillMaxWidth()) {
+            val clock = AnimationClockAmbient.current
+            val pagerState = remember(clock) { PagerState(clock) }
+
+            DominantColorVerticalGradient(
+                imageSourceUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
+                    ?.podcast?.imageUrl,
+                modifier = Modifier.matchParentSize()
             )
 
-            Spacer(Modifier.height(16.dp))
+            Column(Modifier.fillMaxWidth()) {
+                HomeAppBar(
+                    modifier = Modifier.fillMaxWidth()
+                        .statusBarPadding()
+                        .preferredHeight(56.dp) /* TODO: change height to 48.dp in landscape */
+                )
+
+                if (featuredPodcasts.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+
+                    YourPodcasts(
+                        items = featuredPodcasts,
+                        pagerState = pagerState,
+                        modifier = Modifier.fillMaxWidth()
+                            .preferredHeight(200.dp)
+                            .padding(horizontal = Keyline1)
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+                }
+            }
         }
 
         if (isRefreshing) {
@@ -230,11 +245,12 @@ fun HomeCategoryTabIndicator(
 @Composable
 fun YourPodcasts(
     items: List<PodcastWithLastEpisodeDate>,
+    pagerState: PagerState = run {
+        val clock = AnimationClockAmbient.current
+        remember(clock) { PagerState(clock) }
+    },
     modifier: Modifier = Modifier
 ) {
-    val clock = AnimationClockAmbient.current
-    val pagerState = remember { PagerState(clock) }
-
     onCommit(items) {
         pagerState.maxPage = items.size - 1
     }

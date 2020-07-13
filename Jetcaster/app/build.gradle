@@ -85,6 +85,7 @@ dependencies {
 
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.palette
     implementation Libs.material
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
