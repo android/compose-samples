@@ -48,7 +48,6 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
-import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.ui.theme.JetcasterTheme
@@ -60,7 +59,7 @@ import java.time.format.FormatStyle
 
 @Composable
 fun PodcastCategoryEpisodesList(
-    category: Category,
+    categoryId: Long,
     modifier: Modifier = Modifier
 ) {
     /**
@@ -69,8 +68,8 @@ fun PodcastCategoryEpisodesList(
      */
     val viewModel: PodcastCategoryEpisodeListViewModel = viewModel(
         // We use a custom key, using the category parameter
-        key = "category_list_${category.name}",
-        factory = viewModelProviderFactoryOf { PodcastCategoryEpisodeListViewModel(category) }
+        key = "category_list_$categoryId",
+        factory = viewModelProviderFactoryOf { PodcastCategoryEpisodeListViewModel(categoryId) }
     )
 
     val state = viewModel.state.collectAsState()

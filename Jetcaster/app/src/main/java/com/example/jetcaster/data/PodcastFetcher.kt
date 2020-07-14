@@ -64,13 +64,13 @@ class PodcastsFetcher(
      * The feeds are fetched concurrently, meaning that the resulting emission order may not
      * match the order of [feedUrls].
      */
-    operator fun invoke(feedUrls: List<String>): Flow<PodcastWithEpisodes> = feedUrls.asFlow()
+    operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> = feedUrls.asFlow()
         // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
         .flatMapMerge { feedUrl ->
             flow { emit(fetchPodcast(feedUrl)) }
         }
 
-    private suspend fun fetchPodcast(url: String): PodcastWithEpisodes {
+    private suspend fun fetchPodcast(url: String): PodcastRssResponse {
         val request = Request.Builder()
             .url(url)
             .cacheControl(cacheControl)
@@ -86,16 +86,22 @@ class PodcastsFetcher(
         // from a stream.
         return withContext(ioDispatcher) {
             response.body!!.use { body ->
-                syndFeedInput.build(body.charStream()).toPodcastWithEpisodes(url)
+                syndFeedInput.build(body.charStream()).toPodcastResponse(url)
             }
         }
     }
 }
 
+data class PodcastRssResponse(
+    val podcast: Podcast,
+    val episodes: List<Episode>,
+    val categories: Set<Category>
+)
+
 /**
  * Map a Rome [SyndFeed] instance to our own [Podcast] data class.
  */
-private fun SyndFeed.toPodcastWithEpisodes(feedUrl: String): PodcastWithEpisodes {
+private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
     val podcastUri = uri ?: feedUrl
     val episodes = entries.map { it.toEpisode(podcastUri) }
 
@@ -106,12 +112,14 @@ private fun SyndFeed.toPodcastWithEpisodes(feedUrl: String): PodcastWithEpisodes
         description = feedInfo?.summary ?: description,
         author = author,
         copyright = copyright,
-        imageUrl = feedInfo?.imageUri?.toString(),
-        categories = feedInfo?.categories?.map { Category(it.name) }?.toSet() ?: emptySet(),
-        lastEpisodeDate = episodes.maxBy { it.published }?.published
+        imageUrl = feedInfo?.imageUri?.toString()
     )
 
-    return PodcastWithEpisodes(podcast, episodes)
+    val categories = feedInfo?.categories
+        ?.map { Category(name = it.name) }
+        ?.toSet() ?: emptySet()
+
+    return PodcastRssResponse(podcast, episodes, categories)
 }
 
 /**

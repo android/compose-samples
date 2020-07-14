@@ -19,25 +19,16 @@ package com.example.jetcaster.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
-import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.CategoryStore
 import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.PodcastStore
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class PodcastCategoryEpisodeListViewModel(
-    private val category: Category,
-    private val categoryStore: CategoryStore = Graph.categoryStore,
-    private val podcastStore: PodcastStore = Graph.podcastStore,
-    private val computationDispatcher: CoroutineDispatcher = Graph.computationDispatcher
+    private val categoryId: Long,
+    private val categoryStore: CategoryStore = Graph.categoryStore
 ) : ViewModel() {
     private val _state = MutableStateFlow(CategoryEpisodeListViewState())
 
@@ -46,23 +37,7 @@ class PodcastCategoryEpisodeListViewModel(
 
     init {
         viewModelScope.launch {
-            categoryStore.episodesInCategory(category)
-                .map {
-                    // Take the first 20 most recent episodes
-                    it.take(20)
-                }
-                .flatMapLatest { episodes ->
-                    // Now we need to join each episode with it's corresponding podcast.
-                    // We do that by combining each episode with the result of [podcastWithUri].
-                    val flowsOfEpisodeWithPodcasts = episodes.map { episode ->
-                        podcastStore.podcastWithUri(episode.podcastUri)
-                            .map { EpisodeToPodcast(episode, it) }
-                    }
-                    combine(flowsOfEpisodeWithPodcasts) {
-                        it.toList()
-                    }
-                }
-                .flowOn(computationDispatcher)
+            categoryStore.episodesWithPodcastsInCategory(categoryId, limit = 20)
                 .collect { _state.value = CategoryEpisodeListViewState(it) }
         }
     }

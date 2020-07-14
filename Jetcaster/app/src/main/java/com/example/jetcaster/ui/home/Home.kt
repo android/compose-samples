@@ -62,7 +62,7 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
-import com.example.jetcaster.data.Podcast
+import com.example.jetcaster.data.PodcastWithLastEpisodeDate
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
@@ -70,9 +70,9 @@ import com.example.jetcaster.util.Pager
 import com.example.jetcaster.util.PagerState
 import com.example.jetcaster.util.quantityStringResource
 import dev.chrisbanes.accompanist.coil.CoilImage
-import java.time.LocalDate
+import java.time.Duration
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import java.time.Period
 
 @Composable
 fun Home() {
@@ -137,7 +137,7 @@ fun HomeAppBar(
 
 @Composable
 fun HomeContent(
-    featuredPodcasts: List<Podcast>,
+    featuredPodcasts: List<PodcastWithLastEpisodeDate>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
@@ -229,7 +229,7 @@ fun HomeCategoryTabIndicator(
 
 @Composable
 fun YourPodcasts(
-    items: List<Podcast>,
+    items: List<PodcastWithLastEpisodeDate>,
     modifier: Modifier = Modifier
 ) {
     val clock = AnimationClockAmbient.current
@@ -243,10 +243,10 @@ fun YourPodcasts(
         state = pagerState,
         modifier = modifier
     ) {
-        val podcast = items[page]
+        val (podcast, lastEpisodeDate) = items[page]
         PodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
-            lastEpisodeDate = podcast.lastEpisodeDate,
+            lastEpisodeDate = lastEpisodeDate,
             modifier = Modifier.padding(4.dp)
                 .fillMaxHeight()
                 .scalePagerItems(unselectedScale = PodcastCarouselUnselectedScale)
@@ -295,16 +295,16 @@ fun PodcastCarouselItem(
 
 @Composable
 private fun lastUpdated(updated: OffsetDateTime): String {
-    val period = Period.between(updated.toLocalDate(), LocalDate.now())
+    val duration = Duration.between(updated.toLocalDateTime(), LocalDateTime.now())
+    val days = duration.toDays().toInt()
+
     return when {
-        period.months >= 1 -> stringResource(R.string.updated_longer)
-        period.days >= 7 -> {
-            val weeks = period.days / 7
+        days > 28 -> stringResource(R.string.updated_longer)
+        days >= 7 -> {
+            val weeks = days / 7
             quantityStringResource(R.plurals.updated_weeks_ago, weeks, weeks)
         }
-        period.days > 0 -> {
-            quantityStringResource(R.plurals.updated_days_ago, period.days, period.days)
-        }
+        days > 0 -> quantityStringResource(R.plurals.updated_days_ago, days, days)
         else -> stringResource(R.string.updated_today)
     }
 }
@@ -314,7 +314,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 fun PreviewHomeContent() {
     JetcasterTheme {
         HomeContent(
-            featuredPodcasts = PreviewPodcasts,
+            featuredPodcasts = PreviewPodcastsWithLastEpisodeDates,
             isRefreshing = false,
             homeCategories = HomeCategory.values().asList(),
             selectedHomeCategory = HomeCategory.Discover,
@@ -328,7 +328,6 @@ fun PreviewHomeContent() {
 fun PreviewPodcastCard() {
     JetcasterTheme {
         PodcastCarouselItem(
-            lastEpisodeDate = PreviewPodcasts[0].lastEpisodeDate,
             modifier = Modifier.size(128.dp)
         )
     }
