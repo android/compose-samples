@@ -49,6 +49,24 @@ abstract class PodcastsDao {
         limit: Int
     ): Flow<List<PodcastWithLastEpisodeDate>>
 
+    @Query(
+        """
+        SELECT podcasts.* FROM podcasts INNER JOIN (
+            SELECT episodes.podcast_uri, MAX(datetime(published)) AS last_episode_date
+            FROM episodes
+            INNER JOIN podcast_category_entries ON episodes.podcast_uri = podcast_category_entries.podcast_uri
+            WHERE category_id = :categoryId
+            GROUP BY episodes.podcast_uri
+        ) inner_query ON podcasts.uri = inner_query.podcast_uri
+        ORDER BY datetime(last_episode_date) DESC
+        LIMIT :limit
+        """
+    )
+    abstract fun podcastsInCategorySortedByLastEpisode(
+        categoryId: Long,
+        limit: Int
+    ): Flow<List<Podcast>>
+
     @Query("SELECT COUNT(*) FROM podcasts")
     abstract suspend fun count(): Int
 

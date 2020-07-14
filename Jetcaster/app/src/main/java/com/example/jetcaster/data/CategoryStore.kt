@@ -19,6 +19,7 @@ package com.example.jetcaster.data
 import com.example.jetcaster.data.room.CategoriesDao
 import com.example.jetcaster.data.room.EpisodesDao
 import com.example.jetcaster.data.room.PodcastCategoryEntryDao
+import com.example.jetcaster.data.room.PodcastsDao
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -27,7 +28,8 @@ import kotlinx.coroutines.flow.Flow
 class CategoryStore(
     private val categoriesDao: CategoriesDao,
     private val categoryEntryDao: PodcastCategoryEntryDao,
-    private val episodesDao: EpisodesDao
+    private val episodesDao: EpisodesDao,
+    private val podcastsDao: PodcastsDao
 ) {
     /**
      * Returns a flow containing a list of categories which is sorted by the number
@@ -39,11 +41,22 @@ class CategoryStore(
         return categoriesDao.categoriesSortedByPodcastCount(limit)
     }
 
-    fun episodesWithPodcastsInCategory(
+    /**
+     * Returns a flow containing a list of podcasts in the category with the given [categoryId],
+     * sorted by the their last episode date.
+     */
+    fun podcastsInCategorySortedByPodcastCount(
+        categoryId: Long,
+        limit: Int = 30
+    ): Flow<List<Podcast>> {
+        return podcastsDao.podcastsInCategorySortedByLastEpisode(categoryId, limit)
+    }
+
+    fun episodesFromPodcastsInCategory(
         categoryId: Long,
         limit: Int = Integer.MAX_VALUE
     ): Flow<List<EpisodeToPodcast>> {
-        return episodesDao.episodesForPodcastsInCategory(categoryId, limit)
+        return episodesDao.episodesFromPodcastsInCategory(categoryId, limit)
     }
 
     /**

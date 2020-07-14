@@ -18,6 +18,8 @@ package com.example.jetcaster.ui.home
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
+import androidx.compose.getValue
+import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
@@ -27,12 +29,19 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.lazy.LazyColumnItems
+import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.graphics.ColorFilter
+import androidx.ui.layout.Column
 import androidx.ui.layout.ConstraintLayout
 import androidx.ui.layout.Dimension
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.aspectRatio
 import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredSize
+import androidx.ui.layout.preferredWidth
+import androidx.ui.layout.width
 import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
@@ -58,7 +67,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun PodcastCategoryEpisodesList(
+fun PodcastCategory(
     categoryId: Long,
     modifier: Modifier = Modifier
 ) {
@@ -66,26 +75,53 @@ fun PodcastCategoryEpisodesList(
      * CategoryEpisodeListViewModel requires the category as part of it's constructor, therefore
      * we need to assist with it's instantiation with a custom factory and custom key.
      */
-    val viewModel: PodcastCategoryEpisodeListViewModel = viewModel(
+    val viewModel: PodcastCategoryViewModel = viewModel(
         // We use a custom key, using the category parameter
         key = "category_list_$categoryId",
-        factory = viewModelProviderFactoryOf { PodcastCategoryEpisodeListViewModel(categoryId) }
+        factory = viewModelProviderFactoryOf { PodcastCategoryViewModel(categoryId) }
     )
 
-    val state = viewModel.state.collectAsState()
+    val viewState by viewModel.state.collectAsState()
+
+    /**
+     * LazyColumnItems currently only supports a single type of item. To workaround that, we
+     * have the `sealed` [EpisodeItem] class which allows us to bake in different 'layout' types,
+     * which our [LazyColumnItems] switches on.
+     */
+    val items = ArrayList<PodcastCategoryItem>()
+    if (viewState.topPodcasts.isNotEmpty()) {
+        items += PodcastCategoryItem.TopPodcastsItem(viewState.topPodcasts)
+    }
+    viewState.episodes.mapTo(items) { (episode, podcast) ->
+        PodcastCategoryItem.EpisodeItem(episode, podcast)
+    }
 
     /**
      * TODO: reset scroll position when category changes
      */
     LazyColumnItems(
-        items = state.value.episodes,
+        items = items,
         modifier = modifier
-    ) { (episode, podcast) ->
-        EpisodeListItem(
-            episode = episode,
-            podcast = podcast,
-            modifier = Modifier.fillMaxWidth()
-        )
+    ) { item ->
+        when (item) {
+            is PodcastCategoryItem.EpisodeItem -> {
+                EpisodeListItem(
+                    episode = item.episode,
+                    podcast = item.podcast,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            is PodcastCategoryItem.TopPodcastsItem -> {
+                CategoryPodcastRow(
+                    podcasts = item.podcasts,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        // Ideally this would wrap height but LazyRowItems doesn't yet support
+                        // wrapping height
+                        .preferredHeight(188.dp)
+                )
+            }
+        }
     }
 }
 
@@ -260,6 +296,52 @@ fun EpisodeListItem(
     }
 }
 
+@Composable
+private fun CategoryPodcastRow(
+    podcasts: List<Podcast>,
+    modifier: Modifier = Modifier
+) {
+    LazyRowItems(items = podcasts, modifier = modifier) { podcast ->
+        TopPodcastRowItem(
+            podcastTitle = podcast.title,
+            podcastImageUrl = podcast.imageUrl,
+            modifier = Modifier.padding(8.dp).preferredWidth(128.dp)
+        )
+    }
+}
+
+@Composable
+private fun TopPodcastRowItem(
+    podcastTitle: String,
+    podcastImageUrl: String? = null,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier) {
+        if (podcastImageUrl != null) {
+            CoilImage(
+                data = podcastImageUrl,
+                contentScale = ContentScale.Crop,
+                loading = { /* TODO do something better here */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .gravity(Alignment.CenterHorizontally)
+                    .clip(MaterialTheme.shapes.medium)
+            )
+        }
+
+        ProvideEmphasis(EmphasisAmbient.current.high) {
+            Text(
+                text = podcastTitle,
+                style = MaterialTheme.typography.caption,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 8.dp).weight(1f)
+            )
+        }
+    }
+}
+
 private val MediumDateFormatter by lazy {
     DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 }
@@ -274,4 +356,9 @@ fun PreviewEpisodeListItem() {
             modifier = Modifier.fillMaxWidth()
         )
     }
+}
+
+private sealed class PodcastCategoryItem {
+    data class EpisodeItem(val episode: Episode, val podcast: Podcast) : PodcastCategoryItem()
+    data class TopPodcastsItem(val podcasts: List<Podcast>) : PodcastCategoryItem()
 }
