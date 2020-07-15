@@ -47,11 +47,15 @@ class CategoryStore(
      */
     fun podcastsInCategorySortedByPodcastCount(
         categoryId: Long,
-        limit: Int = 30
-    ): Flow<List<Podcast>> {
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>> {
         return podcastsDao.podcastsInCategorySortedByLastEpisode(categoryId, limit)
     }
 
+    /**
+     * Returns a flow containing a list of episodes from podcasts in the category with the
+     * given [categoryId], sorted by the their last episode date.
+     */
     fun episodesFromPodcastsInCategory(
         categoryId: Long,
         limit: Int = Integer.MAX_VALUE

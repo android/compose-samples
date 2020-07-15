@@ -35,13 +35,14 @@ import androidx.ui.layout.Column
 import androidx.ui.layout.ConstraintLayout
 import androidx.ui.layout.Dimension
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.Stack
 import androidx.ui.layout.aspectRatio
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredSize
 import androidx.ui.layout.preferredWidth
-import androidx.ui.layout.width
 import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
@@ -59,8 +60,10 @@ import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
+import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.viewModelProviderFactoryOf
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.format.DateTimeFormatter
@@ -114,6 +117,7 @@ fun PodcastCategory(
             is PodcastCategoryItem.TopPodcastsItem -> {
                 CategoryPodcastRow(
                     podcasts = item.podcasts,
+                    onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
                     modifier = Modifier
                         .padding(horizontal = 12.dp, vertical = 8.dp)
                         // Ideally this would wrap height but LazyRowItems doesn't yet support
@@ -298,13 +302,16 @@ fun EpisodeListItem(
 
 @Composable
 private fun CategoryPodcastRow(
-    podcasts: List<Podcast>,
+    podcasts: List<PodcastWithExtraInfo>,
+    onTogglePodcastFollowed: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyRowItems(items = podcasts, modifier = modifier) { podcast ->
+    LazyRowItems(items = podcasts, modifier = modifier) { (podcast, _, isFollowed) ->
         TopPodcastRowItem(
             podcastTitle = podcast.title,
             podcastImageUrl = podcast.imageUrl,
+            isFollowed = isFollowed,
+            onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
             modifier = Modifier.padding(8.dp).preferredWidth(128.dp)
         )
     }
@@ -313,21 +320,34 @@ private fun CategoryPodcastRow(
 @Composable
 private fun TopPodcastRowItem(
     podcastTitle: String,
+    isFollowed: Boolean,
+    onToggleFollowClicked: () -> Unit,
     podcastImageUrl: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        if (podcastImageUrl != null) {
-            CoilImage(
-                data = podcastImageUrl,
-                contentScale = ContentScale.Crop,
-                loading = { /* TODO do something better here */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .gravity(Alignment.CenterHorizontally)
-                    .clip(MaterialTheme.shapes.medium)
-            )
+        Stack(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .gravity(Alignment.CenterHorizontally)
+        ) {
+            if (podcastImageUrl != null) {
+                CoilImage(
+                    data = podcastImageUrl,
+                    contentScale = ContentScale.Crop,
+                    loading = { /* TODO do something better here */ },
+                    modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium)
+                )
+            }
+
+            ProvideEmphasis(EmphasisAmbient.current.high) {
+                ToggleFollowPodcastIconButton(
+                    onClick = onToggleFollowClicked,
+                    isFollowed = isFollowed,
+                    modifier = Modifier.gravity(Alignment.BottomEnd)
+                )
+            }
         }
 
         ProvideEmphasis(EmphasisAmbient.current.high) {
@@ -360,5 +380,5 @@ fun PreviewEpisodeListItem() {
 
 private sealed class PodcastCategoryItem {
     data class EpisodeItem(val episode: Episode, val podcast: Podcast) : PodcastCategoryItem()
-    data class TopPodcastsItem(val podcasts: List<Podcast>) : PodcastCategoryItem()
+    data class TopPodcastsItem(val podcasts: List<PodcastWithExtraInfo>) : PodcastCategoryItem()
 }

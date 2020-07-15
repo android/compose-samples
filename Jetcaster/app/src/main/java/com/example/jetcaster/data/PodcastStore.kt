@@ -16,14 +16,18 @@
 
 package com.example.jetcaster.data
 
+import com.example.jetcaster.data.room.PodcastFollowedEntryDao
 import com.example.jetcaster.data.room.PodcastsDao
+import com.example.jetcaster.data.room.TransactionRunner
 import kotlinx.coroutines.flow.Flow
 
 /**
  * A data repository for [Podcast] instances.
  */
 class PodcastStore(
-    private val podcastDao: PodcastsDao
+    private val podcastDao: PodcastsDao,
+    private val podcastFollowedEntryDao: PodcastFollowedEntryDao,
+    private val transactionRunner: TransactionRunner
 ) {
     /**
      * Return a flow containing the [Podcast] with the given [uri].
@@ -38,8 +42,34 @@ class PodcastStore(
      */
     fun podcastsSortedByLastEpisode(
         limit: Int = Int.MAX_VALUE
-    ): Flow<List<PodcastWithLastEpisodeDate>> {
+    ): Flow<List<PodcastWithExtraInfo>> {
         return podcastDao.podcastsSortedByLastEpisode(limit)
+    }
+
+    /**
+     * Returns a flow containing a list of all followed podcasts, sorted by the their last
+     * episode date.
+     */
+    fun followedPodcastsSortedByLastEpisode(
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>> {
+        return podcastDao.followedPodcastsSortedByLastEpisode(limit)
+    }
+
+    suspend fun followPodcast(podcastUri: String) {
+        podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
+    }
+
+    suspend fun togglePodcastFollowed(podcastUri: String) = transactionRunner {
+        if (podcastFollowedEntryDao.isPodcastFollowed(podcastUri)) {
+            unfollowPodcast(podcastUri)
+        } else {
+            followPodcast(podcastUri)
+        }
+    }
+
+    suspend fun unfollowPodcast(podcastUri: String) {
+        podcastFollowedEntryDao.deleteWithPodcastUri(podcastUri)
     }
 
     /**

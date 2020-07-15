@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
 import com.example.jetcaster.data.PodcastStore
-import com.example.jetcaster.data.PodcastWithLastEpisodeDate
+import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.data.PodcastsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,7 +53,7 @@ class HomeViewModel(
             combine(
                 categories,
                 selectedCategory,
-                podcastStore.podcastsSortedByLastEpisode(limit = 10),
+                podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
                 refreshing
             ) { categories, selectedCategory, podcasts, refreshing ->
                 HomeViewState(
@@ -89,6 +89,12 @@ class HomeViewModel(
     fun onHomeCategorySelected(category: HomeCategory) {
         selectedCategory.value = category
     }
+
+    fun onPodcastUnfollowed(podcastUri: String) {
+        viewModelScope.launch {
+            podcastStore.unfollowPodcast(podcastUri)
+        }
+    }
 }
 
 enum class HomeCategory {
@@ -96,7 +102,7 @@ enum class HomeCategory {
 }
 
 data class HomeViewState(
-    val featuredPodcasts: List<PodcastWithLastEpisodeDate> = emptyList(),
+    val featuredPodcasts: List<PodcastWithExtraInfo> = emptyList(),
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),

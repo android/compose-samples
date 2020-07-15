@@ -19,7 +19,7 @@ package com.example.jetcaster.ui.home
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
-import com.example.jetcaster.data.PodcastWithLastEpisodeDate
+import com.example.jetcaster.data.PodcastWithExtraInfo
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -42,10 +42,11 @@ val PreviewPodcasts = listOf(
     )
 )
 
-val PreviewPodcastsWithLastEpisodeDates = PreviewPodcasts.map { podcast ->
-    PodcastWithLastEpisodeDate().apply {
+val PreviewPodcastsWithExtraInfo = PreviewPodcasts.mapIndexed { index, podcast ->
+    PodcastWithExtraInfo().apply {
         this.podcast = podcast
         this.lastEpisodeDate = OffsetDateTime.now()
+        this.isFollowed = index % 2 == 0
     }
 }
 
