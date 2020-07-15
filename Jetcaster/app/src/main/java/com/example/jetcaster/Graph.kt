@@ -19,6 +19,7 @@ package com.example.jetcaster
 import android.content.Context
 import com.example.jetcaster.data.CategoryStore
 import com.example.jetcaster.data.EpisodeStore
+import com.example.jetcaster.data.PodcastRepository
 import com.example.jetcaster.data.PodcastStore
 import com.example.jetcaster.data.PodcastsFetcher
 import com.rometools.rome.io.SyndFeedInput
@@ -39,6 +40,15 @@ object Graph {
         private set
 
     val syndFeedInput by lazy { SyndFeedInput() }
+
+    val podcastRepository by lazy {
+        PodcastRepository(
+            podcastsFetcher = podcastFetcher,
+            podcastStore = podcastStore,
+            episodeStore = episodeStore,
+            mainDispatcher = mainDispatcher
+        )
+    }
 
     val podcastFetcher by lazy {
         PodcastsFetcher(

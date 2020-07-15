@@ -19,30 +19,30 @@ package com.example.jetcaster.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
-import com.example.jetcaster.data.Category
-import com.example.jetcaster.data.CategoryStore
-import com.example.jetcaster.data.EpisodeStore
 import com.example.jetcaster.data.Podcast
+import com.example.jetcaster.data.PodcastRepository
 import com.example.jetcaster.data.PodcastStore
-import com.example.jetcaster.data.PodcastsFetcher
-import com.example.jetcaster.data.SampleFeeds
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val podcastsFetcher: PodcastsFetcher = Graph.podcastFetcher,
-    private val podcastStore: PodcastStore = Graph.podcastStore,
-    private val episodeStore: EpisodeStore = Graph.episodeStore,
-    private val categoryStore: CategoryStore = Graph.categoryStore
+    private val podcastRepository: PodcastRepository = Graph.podcastRepository,
+    private val podcastStore: PodcastStore = Graph.podcastStore
 ) : ViewModel() {
-    // Holds our currently selected category
-    private val _selectedCategory = MutableStateFlow<Category?>(null)
+    // Holds our currently selected home category
+    private val selectedCategory = MutableStateFlow(HomeCategory.Discover)
+    // Holds the currently available home categories
+    private val categories = MutableStateFlow(HomeCategory.values().asList())
+
     // Holds our view state which the UI collects via [state]
     private val _state = MutableStateFlow(HomeViewState())
+
+    private val refreshing = MutableStateFlow(false)
 
     val state: StateFlow<HomeViewState>
         get() = _state
@@ -52,52 +52,52 @@ class HomeViewModel(
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
             combine(
+                categories,
+                selectedCategory,
                 podcastStore.sortedByLastEpisodeDate().map { it.take(10) },
-                categoryStore.sortedByCount().map { it.take(10) },
-                _selectedCategory
-            ) { podcasts, genres, selectedCategory ->
+                refreshing
+            ) { categories, selectedCategory, podcasts, refreshing ->
                 HomeViewState(
+                    homeCategories = categories,
+                    selectedHomeCategory = selectedCategory,
                     featuredPodcasts = podcasts,
-                    refreshing = false,
-                    errorMessage = null,
-                    categories = genres,
-                    selectedCategory = selectedCategory
+                    refreshing = refreshing,
+                    errorMessage = null /* TODO */
                 )
-            }.collect { _state.value = it }
+            }.catch { throwable ->
+                // TODO: emit a UI error here. For now we'll just rethrow
+                throw throwable
+            }.collect {
+                _state.value = it
+            }
         }
 
         refresh()
     }
 
-    fun refresh() {
-        if (podcastStore.isEmpty()) {
-            fetchPodcasts()
+    fun refresh() = viewModelScope.launch {
+        runCatching {
+            refreshing.value = true
+            podcastRepository.updatePodcasts()
         }
+        // TODO: look at result of runCatching and show any errors
+
+        refreshing.value = false
     }
 
-    fun onCategorySelected(category: Category) {
-        _selectedCategory.value = category
+    fun onHomeCategorySelected(category: HomeCategory) {
+        selectedCategory.value = category
     }
+}
 
-    private fun fetchPodcasts() {
-        viewModelScope.launch {
-            // First clear the store
-            podcastStore.clear()
-            episodeStore.clear()
-
-            // Now fetch the podcasts, and add each to each store
-            podcastsFetcher(SampleFeeds).collect {
-                podcastStore.addPodcast(it.podcast)
-                episodeStore.addEpisodes(it.episodes)
-            }
-        }
-    }
+enum class HomeCategory {
+    Library, Discover
 }
 
 data class HomeViewState(
     val featuredPodcasts: List<Podcast> = emptyList(),
-    val categories: List<Category> = emptyList(),
-    val selectedCategory: Category? = null,
     val refreshing: Boolean = false,
+    val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
+    val homeCategories: List<HomeCategory> = emptyList(),
     val errorMessage: String? = null
 )

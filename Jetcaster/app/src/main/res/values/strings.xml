@@ -19,6 +19,9 @@
     <string name="your_podcasts">Your podcasts</string>
     <string name="latest_episodes">Latest episodes</string>
 
+    <string name="home_library">Your library</string>
+    <string name="home_discover">Discover</string>
+
     <string name="updated_longer">Updated a while ago</string>
     <plurals name="updated_weeks_ago">
         <item quantity="one">Updated %d week ago</item>

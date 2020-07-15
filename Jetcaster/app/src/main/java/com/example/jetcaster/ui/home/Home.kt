@@ -19,30 +19,32 @@ package com.example.jetcaster.ui.home
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
+import androidx.compose.onCommit
+import androidx.compose.remember
 import androidx.ui.core.Alignment
+import androidx.ui.core.AnimationClockAmbient
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
+import androidx.ui.core.clip
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.drawBackground
-import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
+import androidx.ui.layout.ColumnScope.gravity
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
+import androidx.ui.layout.aspectRatio
 import androidx.ui.layout.fillMaxHeight
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.height
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredHeightIn
 import androidx.ui.layout.preferredWidth
 import androidx.ui.layout.size
-import androidx.ui.material.Card
-import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
@@ -51,19 +53,22 @@ import androidx.ui.material.Scaffold
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.AccountCircle
 import androidx.ui.material.icons.filled.Search
 import androidx.ui.res.stringResource
+import androidx.ui.res.vectorResource
+import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
-import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Podcast
+import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.util.Pager
+import com.example.jetcaster.util.PagerState
 import com.example.jetcaster.util.quantityStringResource
-import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -85,11 +90,11 @@ fun Home() {
         },
         bodyContent = {
             HomeContent(
-                viewState.featuredPodcasts,
-                viewState.refreshing,
-                categories = viewState.categories,
-                selectedCategory = viewState.selectedCategory,
-                onCategorySelected = viewModel::onCategorySelected,
+                featuredPodcasts = viewState.featuredPodcasts,
+                isRefreshing = viewState.refreshing,
+                homeCategories = viewState.homeCategories,
+                selectedHomeCategory = viewState.selectedHomeCategory,
+                onCategorySelected = viewModel::onHomeCategorySelected,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -101,29 +106,32 @@ fun HomeAppBar(
     modifier: Modifier = Modifier
 ) {
     Stack(modifier = modifier) {
+        ProvideEmphasis(EmphasisAmbient.current.high) {
+            Icon(
+                asset = vectorResource(R.drawable.ic_text_logo),
+                modifier = Modifier.gravity(Alignment.Center)
+                    .padding(8.dp)
+                    .preferredHeightIn(maxHeight = 24.dp)
+            )
+        }
+
         ProvideEmphasis(EmphasisAmbient.current.medium) {
             IconButton(
-                onClick = { /* TODO: Open search */ },
+                onClick = { /* TODO: Open account? */ },
                 modifier = Modifier.gravity(Alignment.CenterStart)
                     .padding(start = 8.dp)
+            ) {
+                Icon(Icons.Default.AccountCircle)
+            }
+
+            IconButton(
+                onClick = { /* TODO: Open search */ },
+                modifier = Modifier.gravity(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
             ) {
                 Icon(Icons.Filled.Search)
             }
         }
-
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.gravity(Alignment.Center)
-        )
-
-        Box(
-            Modifier
-                .padding(horizontal = Keyline1)
-                .size(24.dp)
-                .drawBackground(Color.DarkGray, shape = MaterialTheme.shapes.small)
-                .gravity(Alignment.CenterEnd)
-        )
     }
 }
 
@@ -131,82 +139,90 @@ fun HomeAppBar(
 fun HomeContent(
     featuredPodcasts: List<Podcast>,
     isRefreshing: Boolean,
-    categories: List<Category>,
-    selectedCategory: Category?,
-    onCategorySelected: (Category) -> Unit,
-    modifier: Modifier = Modifier
+    selectedHomeCategory: HomeCategory,
+    homeCategories: List<HomeCategory>,
+    modifier: Modifier = Modifier,
+    onCategorySelected: (HomeCategory) -> Unit
 ) {
     Column(modifier = modifier) {
         if (featuredPodcasts.isNotEmpty()) {
-            Text(
-                text = stringResource(R.string.your_podcasts),
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(horizontal = Keyline1, vertical = 16.dp)
-            )
             YourPodcasts(
                 items = featuredPodcasts,
                 modifier = Modifier.fillMaxWidth()
-                    .preferredHeight(160.dp)
+                    .preferredHeight(200.dp)
                     .padding(horizontal = Keyline1)
             )
 
             Spacer(Modifier.height(16.dp))
-            Divider()
         }
 
         if (isRefreshing) {
             // TODO show a progress indicator or similar
         }
 
-        Text(
-            text = stringResource(R.string.latest_episodes),
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(horizontal = Keyline1, vertical = 16.dp)
-        )
-
-        if (categories.isNotEmpty()) {
-            val selectedIndex = if (selectedCategory != null) {
-                categories.indexOfFirst { it == selectedCategory }
-            } else 0
-            TabRow(
-                items = categories,
-                selectedIndex = selectedIndex,
-                scrollable = true,
-                indicatorContainer = { tabPositions ->
-                    TabRow.IndicatorContainer(tabPositions, selectedIndex) {
-                        TabIndicator(color = MaterialTheme.colors.primary)
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) { index, genre ->
-                Tab(
-                    selected = index == selectedIndex,
-                    onSelected = { onCategorySelected(genre) },
-                    text = { Text(text = genre.name, style = MaterialTheme.typography.body2) },
-                    activeColor = MaterialTheme.colors.primary,
-                    inactiveColor = EmphasisAmbient.current.medium.applyEmphasis(contentColor())
-                )
-            }
-
-            /**
-             * TODO, need to think about how this will scroll within the outer VerticalScroller
-             */
-            CategoryEpisodesList(
-                category = selectedCategory ?: categories[0],
-                modifier = Modifier.fillMaxWidth().weight(1f)
+        if (homeCategories.isNotEmpty()) {
+            HomeCategoryTabs(
+                categories = homeCategories,
+                selectedCategory = selectedHomeCategory,
+                onCategorySelected = onCategorySelected
             )
+        }
+
+        when (selectedHomeCategory) {
+            HomeCategory.Library -> {
+                // TODO
+            }
+            HomeCategory.Discover -> {
+                Discover(Modifier.fillMaxWidth().weight(1f))
+            }
         }
     }
 }
 
 @Composable
-fun TabIndicator(
-    modifier: Modifier = Modifier,
-    color: Color = contentColor()
+private fun HomeCategoryTabs(
+    categories: List<HomeCategory>,
+    selectedCategory: HomeCategory,
+    onCategorySelected: (HomeCategory) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier.fillMaxWidth()
+    val selectedIndex = categories.indexOfFirst { it == selectedCategory }
+    TabRow(
+        items = categories,
+        selectedIndex = selectedIndex,
+        indicatorContainer = { tabPositions ->
+            TabRow.IndicatorContainer(tabPositions, selectedIndex) {
+                HomeCategoryTabIndicator()
+            }
+        },
+        modifier = modifier
+    ) { index, category ->
+        Tab(
+            selected = index == selectedIndex,
+            onSelected = { onCategorySelected(category) },
+            text = {
+                Text(
+                    text = stringResource(
+                        when (category) {
+                            HomeCategory.Library -> R.string.home_library
+                            HomeCategory.Discover -> R.string.home_discover
+                        }
+                    )
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun HomeCategoryTabIndicator(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.primary
+) {
+    Spacer(
+        modifier.preferredWidth(112.dp)
             .preferredHeight(4.dp)
+            .gravity(Alignment.CenterHorizontally)
             .drawBackground(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
     )
 }
@@ -216,66 +232,62 @@ fun YourPodcasts(
     items: List<Podcast>,
     modifier: Modifier = Modifier
 ) {
-    LazyRowItems(
-        items = items,
+    val clock = AnimationClockAmbient.current
+    val pagerState = remember { PagerState(clock) }
+
+    onCommit(items) {
+        pagerState.maxPage = items.size - 1
+    }
+
+    Pager(
+        state = pagerState,
         modifier = modifier
-    ) { podcast ->
+    ) {
+        val podcast = items[page]
         PodcastCarouselItem(
-            podcastTitle = podcast.title,
             podcastImageUrl = podcast.imageUrl,
             lastEpisodeDate = podcast.lastEpisodeDate,
-            modifier = Modifier.padding(4.dp).preferredWidth(160.dp).fillMaxHeight()
+            modifier = Modifier.padding(4.dp)
+                .fillMaxHeight()
+                .scalePagerItems(unselectedScale = PodcastCarouselUnselectedScale)
         )
     }
 }
 
+private const val PodcastCarouselUnselectedScale = 0.85f
+
 @Composable
 fun PodcastCarouselItem(
-    podcastTitle: String,
     podcastImageUrl: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier) {
-        Stack(Modifier.fillMaxSize()) {
-            if (podcastImageUrl != null) {
-                CoilImage(
-                    data = podcastImageUrl,
-                    contentScale = ContentScale.Crop,
-                    loading = { /* TODO do something better here */ },
-                    modifier = Modifier.fillMaxSize()
-                        // We draw a scrim over the image, allowing the text some protection
-                        // and contrast. We use a < 1f decay, meaning that the scrim gradient
-                        // maintains stronger transparent over a longer distance.
-                        .verticalGradientScrim(
-                            color = Color.Black.copy(alpha = 0.9f),
-                            decay = 0.8f
-                        )
+    Column(
+        modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        if (podcastImageUrl != null) {
+            CoilImage(
+                data = podcastImageUrl,
+                contentScale = ContentScale.Crop,
+                loading = { /* TODO do something better here */ },
+                modifier = Modifier
+                    .weight(1f)
+                    .gravity(Alignment.CenterHorizontally)
+                    .aspectRatio(1f)
+                    .clip(MaterialTheme.shapes.medium)
+            )
+        }
+
+        if (lastEpisodeDate != null) {
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                Text(
+                    text = lastUpdated(lastEpisodeDate),
+                    style = MaterialTheme.typography.caption,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 8.dp)
+                        .gravity(Alignment.CenterHorizontally)
                 )
-            }
-
-            Column(
-                Modifier.gravity(Alignment.BottomStart)
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-            ) {
-                ProvideEmphasis(EmphasisAmbient.current.high) {
-                    Text(
-                        text = podcastTitle,
-                        style = MaterialTheme.typography.subtitle2,
-                        maxLines = 2,
-                        lineHeight = 18.sp
-                    )
-                }
-
-                if (lastEpisodeDate != null) {
-                    ProvideEmphasis(EmphasisAmbient.current.medium) {
-                        Text(
-                            text = lastUpdated(lastEpisodeDate),
-                            style = MaterialTheme.typography.caption,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-                }
             }
         }
     }
@@ -304,8 +316,8 @@ fun PreviewHomeContent() {
         HomeContent(
             featuredPodcasts = PreviewPodcasts,
             isRefreshing = false,
-            categories = PreviewCategories,
-            selectedCategory = null,
+            homeCategories = HomeCategory.values().asList(),
+            selectedHomeCategory = HomeCategory.Discover,
             onCategorySelected = {}
         )
     }
@@ -316,7 +328,6 @@ fun PreviewHomeContent() {
 fun PreviewPodcastCard() {
     JetcasterTheme {
         PodcastCarouselItem(
-            podcastTitle = PreviewPodcasts[0].title,
             lastEpisodeDate = PreviewPodcasts[0].lastEpisodeDate,
             modifier = Modifier.size(128.dp)
         )

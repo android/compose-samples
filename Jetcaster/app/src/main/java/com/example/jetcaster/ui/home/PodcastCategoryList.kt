@@ -40,13 +40,12 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.MoreVert
-import androidx.ui.material.icons.filled.PlayCircleFilled
+import androidx.ui.material.icons.filled.PlayCircleOutline
 import androidx.ui.material.icons.filled.PlaylistAdd
 import androidx.ui.res.stringResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Category
@@ -60,7 +59,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun CategoryEpisodesList(
+fun PodcastCategoryEpisodesList(
     category: Category,
     modifier: Modifier = Modifier
 ) {
@@ -68,10 +67,10 @@ fun CategoryEpisodesList(
      * CategoryEpisodeListViewModel requires the category as part of it's constructor, therefore
      * we need to assist with it's instantiation with a custom factory and custom key.
      */
-    val viewModel: CategoryEpisodeListViewModel = viewModel(
+    val viewModel: PodcastCategoryEpisodeListViewModel = viewModel(
         // We use a custom key, using the category parameter
         key = "category_list_${category.name}",
-        factory = viewModelProviderFactoryOf { CategoryEpisodeListViewModel(category) }
+        factory = viewModelProviderFactoryOf { PodcastCategoryEpisodeListViewModel(category) }
     )
 
     val state = viewModel.state.collectAsState()
@@ -122,7 +121,7 @@ fun EpisodeListItem(
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
                 modifier = Modifier.preferredSize(48.dp)
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
                         top.linkTo(parent.top, 16.dp)
@@ -144,7 +143,6 @@ fun EpisodeListItem(
             Text(
                 text = episode.title,
                 maxLines = 2,
-                lineHeight = 20.sp,
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier.constrainAs(episodeTitle) {
                     linkTo(
@@ -201,11 +199,12 @@ fun EpisodeListItem(
 
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Image(
-                asset = Icons.Default.PlayCircleFilled,
+                asset = Icons.Default.PlayCircleOutline,
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(contentColor()),
-                modifier = Modifier.preferredSize(48.dp)
+                modifier = Modifier
                     .clickable { /* TODO */ }
+                    .preferredSize(48.dp)
                     .constrainAs(playIcon) {
                         start.linkTo(parent.start, Keyline1)
                         top.linkTo(summary.bottom, margin = 16.dp)
