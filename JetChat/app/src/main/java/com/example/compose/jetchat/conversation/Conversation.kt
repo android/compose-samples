@@ -269,9 +269,9 @@ fun Message(
 ) {
     // TODO: get image from msg.author
     val image = if (isUserMe) {
-        imageResource(id = R.drawable.someone_else)
-    } else {
         imageResource(id = R.drawable.ali)
+    } else {
+        imageResource(id = R.drawable.someone_else)
     }
     val borderColor = if (isUserMe) {
         MaterialTheme.colors.primary

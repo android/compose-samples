@@ -39,7 +39,7 @@ private val initialMessages = listOf(
     ),
     Message(
         "Taylor Brooks",
-        "@aliconnors Take a look at the `Flow.collectAsState()` APIs",
+        "@aliconors Take a look at the `Flow.collectAsState()` APIs",
         "8:05 PM"
     ),
     Message(
@@ -67,28 +67,31 @@ val exampleUiState = ConversationUiState(
 )
 
 /**
- * Me.
+ * Example colleague profile
  */
-val meProfile = ProfileScreenState(
-    userId = "me",
+val colleagueProfile = ProfileScreenState(
+    userId = "12345",
     photo = R.drawable.someone_else,
     name = "Taylor Brooks",
-    status = "Active",
+    status = "Away",
     displayName = "taylor",
     position = "Senior Android Dev at Openlane",
     twitter = "twitter.com/taylorbrookscodes",
-    timeZone = null,
-    commonChannels = null
+    timeZone = "12:25 AM local time (Eastern Daylight Time)",
+    commonChannels = "2"
 )
 
-val someOneProfile = ProfileScreenState(
-    userId = "12345",
+/**
+ * Example "me" profile.
+ */
+val meProfile = ProfileScreenState(
+    userId = "me",
     photo = R.drawable.ali,
     name = "Ali Conors",
     status = "Online",
     displayName = "aliconors",
-    position = "Senior Android Dev at Yearin",
+    position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
     twitter = "twitter.com/aliconors",
-    timeZone = "GMT-7",
-    commonChannels = "2"
+    timeZone = "In your timezone",
+    commonChannels = null
 )
