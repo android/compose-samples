@@ -51,7 +51,7 @@ import androidx.ui.material.TabRow
 import androidx.ui.unit.dp
 import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.data.Category
-import com.example.jetcaster.ui.home.PodcastCategoryEpisodesList
+import com.example.jetcaster.ui.home.PodcastCategory
 import com.example.jetcaster.util.ItemSwitcher
 import com.example.jetcaster.util.ItemTransitionState
 
@@ -100,7 +100,7 @@ fun Discover(
                 /**
                  * TODO, need to think about how this will scroll within the outer VerticalScroller
                  */
-                PodcastCategoryEpisodesList(
+                PodcastCategory(
                     categoryId = category.id,
                     modifier = Modifier.fillMaxSize()
                         .drawLayer(

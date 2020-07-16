@@ -55,7 +55,7 @@ abstract class EpisodesDao {
         LIMIT :limit
         """
     )
-    abstract fun episodesForPodcastsInCategory(
+    abstract fun episodesFromPodcastsInCategory(
         categoryId: Long,
         limit: Int
     ): Flow<List<EpisodeToPodcast>>

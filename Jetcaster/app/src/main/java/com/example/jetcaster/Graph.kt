@@ -85,7 +85,8 @@ object Graph {
         CategoryStore(
             categoriesDao = database.categoriesDao(),
             categoryEntryDao = database.podcastCategoryEntryDao(),
-            episodesDao = database.episodesDao()
+            episodesDao = database.episodesDao(),
+            podcastsDao = database.podcastsDao()
         )
     }
 

@@ -257,7 +257,7 @@ fun YourPodcasts(
 private const val PodcastCarouselUnselectedScale = 0.85f
 
 @Composable
-fun PodcastCarouselItem(
+private fun PodcastCarouselItem(
     podcastImageUrl: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     modifier: Modifier = Modifier
