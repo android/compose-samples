@@ -20,8 +20,8 @@ import androidx.annotation.DrawableRes
 import androidx.compose.Immutable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
-import com.example.compose.jetchat.data.someOneProfile
 
 class ProfileViewModel : ViewModel() {
 
@@ -31,7 +31,7 @@ class ProfileViewModel : ViewModel() {
         if (newUserId != userId) {
             userId = newUserId ?: meProfile.userId
         }
-        userData.value = if (userId == meProfile.userId) meProfile else someOneProfile
+        userData.value = if (userId == meProfile.userId) meProfile else colleagueProfile
     }
 
     val userData = MutableLiveData<ProfileScreenState>()

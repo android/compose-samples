@@ -32,6 +32,7 @@ import androidx.ui.foundation.clickable
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
 import androidx.ui.layout.aspectRatio
 import androidx.ui.layout.fillMaxSize
@@ -57,7 +58,8 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
-import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.components.baselineHeight
+import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
@@ -111,42 +113,57 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
 private fun UserInfoFields(userData: ProfileScreenState) {
 
     Column {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-            Text(
-                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                text = userData.name,
-                style = MaterialTheme.typography.h4
-            )
-        }
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-            Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
-                text = userData.position,
-                style = MaterialTheme.typography.body1
-            )
-        }
+        Spacer(modifier = Modifier.preferredHeight(8.dp))
 
-        Divider(modifier = Modifier.padding(horizontal = 16.dp))
-        ProfileProperty(
-            stringResource(R.string.display_name), userData.displayName
-        )
+        NameAndPosition(userData)
 
-        Divider(modifier = Modifier.padding(horizontal = 16.dp))
-        ProfileProperty(
-            stringResource(R.string.status), userData.status
-        )
+        ProfileProperty(stringResource(R.string.display_name), userData.displayName)
 
-        Divider(modifier = Modifier.padding(horizontal = 16.dp))
-        ProfileProperty(
-            stringResource(R.string.twitter), userData.twitter, isLink = true
-        )
+        ProfileProperty(stringResource(R.string.status), userData.status)
+
+        ProfileProperty(stringResource(R.string.twitter), userData.twitter, isLink = true)
 
         userData.timeZone?.let {
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
-            ProfileProperty(
-                stringResource(R.string.timezone), userData.timeZone
-            )
+            ProfileProperty(stringResource(R.string.timezone), userData.timeZone)
         }
+    }
+}
+
+@Composable
+private fun NameAndPosition(
+    userData: ProfileScreenState
+) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Name(
+            userData,
+            modifier = Modifier.baselineHeight(32.dp)
+        )
+        Position(
+            userData,
+            modifier = Modifier.padding(bottom = 20.dp).baselineHeight(24.dp)
+        )
+    }
+}
+
+@Composable
+private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
+    ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        Text(
+            text = userData.name,
+            modifier = modifier,
+            style = MaterialTheme.typography.h5
+        )
+    }
+}
+
+@Composable
+private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
+    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        Text(
+            text = userData.position,
+            modifier = modifier,
+            style = MaterialTheme.typography.body1
+        )
     }
 }
 
@@ -184,10 +201,14 @@ private fun ProfileHeader(
 
 @Composable
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
-
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+        Divider()
         ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-            Text(label, style = MaterialTheme.typography.caption)
+            Text(
+                text = label,
+                modifier = Modifier.baselineHeight(24.dp),
+                style = MaterialTheme.typography.caption
+            )
         }
         val style = if (isLink) {
             MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.primary)
@@ -195,7 +216,11 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
             MaterialTheme.typography.body1
         }
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-            Text(value, style = style)
+            Text(
+                text = value,
+                modifier = Modifier.baselineHeight(24.dp),
+                style = style
+            )
         }
     }
 }
@@ -240,18 +265,10 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
     }
 }
 
-@Preview(widthDp = 480, name = "480 width - Me")
+@Preview
 @Composable
 fun ConvPreview480MeDefault() {
     JetchatTheme {
-        ProfileScreen(meProfile)
-    }
-}
-
-@Preview(widthDp = 480, name = "480 width - Other")
-@Composable
-fun ConvPreview480OtherDefault() {
-    JetchatTheme {
-        ProfileScreen(meProfile)
+        ProfileScreen(colleagueProfile)
     }
 }
