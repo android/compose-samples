@@ -16,10 +16,7 @@
 
 package com.example.jetsnack.ui.theme
 
-import androidx.compose.Composable
 import androidx.ui.graphics.Color
-import androidx.ui.graphics.compositeOver
-import androidx.ui.material.ColorPalette
 
 val Shadow11 = Color(0xff001787)
 val Shadow10 = Color(0xff00119e)
@@ -73,11 +70,18 @@ val Rose2 = Color(0xfffdbbcf)
 val Rose1 = Color(0xfffed6e2)
 val Rose0 = Color(0xfffff2f6)
 
-/**
- * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
- * given [alpha]. Useful for situations where semi-transparent colors are undesirable.
- */
-@Composable
-fun ColorPalette.compositedOnSurface(alpha: Float): Color {
-    return onSurface.copy(alpha = alpha).compositeOver(surface)
-}
+val Neutral8 = Color(0xff121212)
+val Neutral7 = Color(0xdef000000)
+val Neutral6 = Color(0x99000000)
+val Neutral5 = Color(0x61000000)
+val Neutral4 = Color(0x1f000000)
+val Neutral3 = Color(0x1fffffff)
+val Neutral2 = Color(0x61ffffff)
+val Neutral1 = Color(0xbdffffff)
+val Neutral0 = Color(0xffffffff)
+
+val FunctionalRed = Color(0xffd00036)
+val FunctionalRedDark = Color(0xffea6d7e)
+val FunctionalGreen = Color(0xff52c41a)
+
+const val AlphaNearOpaque = 0.95f
