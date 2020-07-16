@@ -71,7 +71,9 @@ object Graph {
 
     val podcastStore by lazy {
         PodcastStore(
-            podcastDao = database.podcastsDao()
+            podcastDao = database.podcastsDao(),
+            podcastFollowedEntryDao = database.podcastFollowedEntryDao(),
+            transactionRunner = transactionRunner
         )
     }
 

@@ -23,6 +23,7 @@ import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastCategoryEntry
+import com.example.jetcaster.data.PodcastFollowedEntry
 
 /**
  * The [RoomDatabase] we use in this app.
@@ -32,7 +33,8 @@ import com.example.jetcaster.data.PodcastCategoryEntry
         Podcast::class,
         Episode::class,
         PodcastCategoryEntry::class,
-        Category::class
+        Category::class,
+        PodcastFollowedEntry::class
     ],
     version = 1,
     exportSchema = false
@@ -44,4 +46,5 @@ abstract class JetcasterDatabase : RoomDatabase() {
     abstract fun categoriesDao(): CategoriesDao
     abstract fun podcastCategoryEntryDao(): PodcastCategoryEntryDao
     abstract fun transactionRunnerDao(): TransactionRunnerDao
+    abstract fun podcastFollowedEntryDao(): PodcastFollowedEntryDao
 }

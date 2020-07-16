@@ -21,7 +21,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
 import com.example.jetcaster.data.CategoryStore
 import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.Podcast
+import com.example.jetcaster.data.PodcastStore
+import com.example.jetcaster.data.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -30,7 +31,8 @@ import kotlinx.coroutines.launch
 
 class PodcastCategoryViewModel(
     private val categoryId: Long,
-    private val categoryStore: CategoryStore = Graph.categoryStore
+    private val categoryStore: CategoryStore = Graph.categoryStore,
+    private val podcastStore: PodcastStore = Graph.podcastStore
 ) : ViewModel() {
     private val _state = MutableStateFlow(PodcastCategoryViewState())
 
@@ -58,9 +60,15 @@ class PodcastCategoryViewModel(
             }.collect { _state.value = it }
         }
     }
+
+    fun onTogglePodcastFollowed(podcastUri: String) {
+        viewModelScope.launch {
+            podcastStore.togglePodcastFollowed(podcastUri)
+        }
+    }
 }
 
 data class PodcastCategoryViewState(
-    val topPodcasts: List<Podcast> = emptyList(),
+    val topPodcasts: List<PodcastWithExtraInfo> = emptyList(),
     val episodes: List<EpisodeToPodcast> = emptyList()
 )

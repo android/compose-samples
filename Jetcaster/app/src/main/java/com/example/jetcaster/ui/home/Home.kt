@@ -19,7 +19,6 @@ package com.example.jetcaster.ui.home
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
-import androidx.compose.onCommit
 import androidx.compose.remember
 import androidx.ui.core.Alignment
 import androidx.ui.core.AnimationClockAmbient
@@ -62,13 +61,14 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
-import com.example.jetcaster.data.PodcastWithLastEpisodeDate
+import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.DominantColorVerticalGradient
 import com.example.jetcaster.util.Pager
 import com.example.jetcaster.util.PagerState
+import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.statusBarPadding
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -89,6 +89,7 @@ fun Home() {
             homeCategories = viewState.homeCategories,
             selectedHomeCategory = viewState.selectedHomeCategory,
             onCategorySelected = viewModel::onHomeCategorySelected,
+            onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -130,11 +131,12 @@ fun HomeAppBar(
 
 @Composable
 fun HomeContent(
-    featuredPodcasts: List<PodcastWithLastEpisodeDate>,
+    featuredPodcasts: List<PodcastWithExtraInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
     modifier: Modifier = Modifier,
+    onPodcastUnfollowed: (String) -> Unit,
     onCategorySelected: (HomeCategory) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -158,12 +160,14 @@ fun HomeContent(
                 if (featuredPodcasts.isNotEmpty()) {
                     Spacer(Modifier.height(16.dp))
 
-                    YourPodcasts(
+                    FollowedPodcasts(
                         items = featuredPodcasts,
                         pagerState = pagerState,
-                        modifier = Modifier.fillMaxWidth()
+                        onPodcastUnfollowed = onPodcastUnfollowed,
+                        modifier = Modifier
+                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                            .fillMaxWidth()
                             .preferredHeight(200.dp)
-                            .padding(horizontal = Keyline1)
                     )
 
                     Spacer(Modifier.height(16.dp))
@@ -243,26 +247,26 @@ fun HomeCategoryTabIndicator(
 }
 
 @Composable
-fun YourPodcasts(
-    items: List<PodcastWithLastEpisodeDate>,
+fun FollowedPodcasts(
+    items: List<PodcastWithExtraInfo>,
     pagerState: PagerState = run {
         val clock = AnimationClockAmbient.current
         remember(clock) { PagerState(clock) }
     },
+    onPodcastUnfollowed: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    onCommit(items) {
-        pagerState.maxPage = items.size - 1
-    }
+    pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
 
     Pager(
         state = pagerState,
         modifier = modifier
     ) {
         val (podcast, lastEpisodeDate) = items[page]
-        PodcastCarouselItem(
+        FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
             lastEpisodeDate = lastEpisodeDate,
+            onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier.padding(4.dp)
                 .fillMaxHeight()
                 .scalePagerItems(unselectedScale = PodcastCarouselUnselectedScale)
@@ -273,25 +277,37 @@ fun YourPodcasts(
 private const val PodcastCarouselUnselectedScale = 0.85f
 
 @Composable
-private fun PodcastCarouselItem(
+private fun FollowedPodcastCarouselItem(
     podcastImageUrl: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
+    onUnfollowedClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier.padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        if (podcastImageUrl != null) {
-            CoilImage(
-                data = podcastImageUrl,
-                contentScale = ContentScale.Crop,
-                loading = { /* TODO do something better here */ },
-                modifier = Modifier
-                    .weight(1f)
-                    .gravity(Alignment.CenterHorizontally)
-                    .aspectRatio(1f)
-                    .clip(MaterialTheme.shapes.medium)
-            )
+        Stack(
+            Modifier
+                .weight(1f)
+                .gravity(Alignment.CenterHorizontally)
+                .aspectRatio(1f)
+        ) {
+            if (podcastImageUrl != null) {
+                CoilImage(
+                    data = podcastImageUrl,
+                    contentScale = ContentScale.Crop,
+                    loading = { /* TODO do something better here */ },
+                    modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium)
+                )
+            }
+
+            ProvideEmphasis(EmphasisAmbient.current.high) {
+                ToggleFollowPodcastIconButton(
+                    onClick = onUnfollowedClick,
+                    isFollowed = true, /* All podcasts are followed in this feed */
+                    modifier = Modifier.gravity(Alignment.BottomEnd)
+                )
+            }
         }
 
         if (lastEpisodeDate != null) {
@@ -330,11 +346,12 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 fun PreviewHomeContent() {
     JetcasterTheme {
         HomeContent(
-            featuredPodcasts = PreviewPodcastsWithLastEpisodeDates,
+            featuredPodcasts = PreviewPodcastsWithExtraInfo,
             isRefreshing = false,
             homeCategories = HomeCategory.values().asList(),
             selectedHomeCategory = HomeCategory.Discover,
-            onCategorySelected = {}
+            onCategorySelected = {},
+            onPodcastUnfollowed = {}
         )
     }
 }
@@ -343,8 +360,9 @@ fun PreviewHomeContent() {
 @Preview
 fun PreviewPodcastCard() {
     JetcasterTheme {
-        PodcastCarouselItem(
-            modifier = Modifier.size(128.dp)
+        FollowedPodcastCarouselItem(
+            modifier = Modifier.size(128.dp),
+            onUnfollowedClick = {}
         )
     }
 }
