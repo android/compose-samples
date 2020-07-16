@@ -16,43 +16,24 @@
 
 package com.example.jetcaster.data
 
-import kotlinx.coroutines.CoroutineDispatcher
+import com.example.jetcaster.data.room.EpisodesDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 /**
  * A data repository for [Episode] instances.
- *
- * Currently this is backed only with data in memory. Ideally this would be backed by a
- * Room database, to allow persistence and easier querying.
- *
- * @param mainDispatcher The main app [CoroutineDispatcher]
- * @param computationDispatcher [CoroutineDispatcher] to run computationally heavy tasks on
  */
 class EpisodeStore(
-    private val mainDispatcher: CoroutineDispatcher,
-    private val computationDispatcher: CoroutineDispatcher
+    private val episodesDao: EpisodesDao
 ) {
-    val items: Flow<Set<Episode>>
-        get() = _items
-
-    private val _items = MutableStateFlow(emptySet<Episode>())
-
     /**
      * Returns a flow containing the list of episodes associated with the podcast with the
      * given [podcastUri].
      */
-    fun episodesForPodcastUri(podcastUri: String): Flow<List<Episode>> {
-        return _items
-            .map { items ->
-                items.filter { it.podcastUri == podcastUri }
-            }
-            .distinctUntilChanged()
-            .flowOn(computationDispatcher)
+    fun episodesInPodcast(
+        podcastUri: String,
+        limit: Int = Integer.MAX_VALUE
+    ): Flow<List<Episode>> {
+        return episodesDao.episodesForPodcastUri(podcastUri, limit)
     }
 
     /**
@@ -60,27 +41,7 @@ class EpisodeStore(
      *
      * This automatically switches to the main thread to maintain thread consistency.
      */
-    suspend fun addEpisodes(episodes: Collection<Episode>) = withContext(mainDispatcher) {
-        _items.value = _items.value + episodes
-    }
+    suspend fun addEpisodes(episodes: Collection<Episode>) = episodesDao.insertAll(episodes)
 
-    /**
-     * Clear any [Episode]s currently stored in this store.
-     *
-     * This automatically switches to the main thread to maintain thread consistency.
-     */
-    suspend fun clear() = withContext(mainDispatcher) {
-        _items.value = emptySet()
-    }
-
-    fun isEmpty() = _items.value.isEmpty()
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun Flow<Collection<Episode>>.sortByPublishedDate(descending: Boolean): Flow<List<Episode>> {
-    return map { results ->
-        // Finally we sort the list of episodes according to the parameter
-        if (descending) results.sortedByDescending { it.published }
-        else results.sortedBy { it.published }
-    }
+    suspend fun isEmpty(): Boolean = episodesDao.count() == 0
 }

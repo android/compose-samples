@@ -88,6 +88,13 @@ object Libs {
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
         }
 
+        object Room {
+            private const val version = "2.2.5"
+            const val runtime = "androidx.room:room-runtime:${version}"
+            const val ktx = "androidx.room:room-ktx:${version}"
+            const val compiler = "androidx.room:room-compiler:${version}"
+        }
+
         object Lifecycle {
             private const val version = "2.2.0"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"

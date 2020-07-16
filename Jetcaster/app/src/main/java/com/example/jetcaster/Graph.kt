@@ -17,11 +17,14 @@
 package com.example.jetcaster
 
 import android.content.Context
+import androidx.room.Room
 import com.example.jetcaster.data.CategoryStore
 import com.example.jetcaster.data.EpisodeStore
-import com.example.jetcaster.data.PodcastRepository
 import com.example.jetcaster.data.PodcastStore
 import com.example.jetcaster.data.PodcastsFetcher
+import com.example.jetcaster.data.PodcastsRepository
+import com.example.jetcaster.data.room.JetcasterDatabase
+import com.example.jetcaster.data.room.TransactionRunner
 import com.rometools.rome.io.SyndFeedInput
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -39,13 +42,21 @@ object Graph {
     lateinit var okHttpClient: OkHttpClient
         private set
 
+    lateinit var database: JetcasterDatabase
+        private set
+
+    val transactionRunner: TransactionRunner
+        get() = database.transactionRunnerDao()
+
     val syndFeedInput by lazy { SyndFeedInput() }
 
     val podcastRepository by lazy {
-        PodcastRepository(
+        PodcastsRepository(
             podcastsFetcher = podcastFetcher,
             podcastStore = podcastStore,
             episodeStore = episodeStore,
+            categoryStore = categoryStore,
+            transactionRunner = transactionRunner,
             mainDispatcher = mainDispatcher
         )
     }
@@ -60,32 +71,26 @@ object Graph {
 
     val podcastStore by lazy {
         PodcastStore(
-            mainDispatcher = mainDispatcher,
-            computationDispatcher = computationDispatcher
+            podcastDao = database.podcastsDao()
         )
     }
 
     val episodeStore by lazy {
         EpisodeStore(
-            mainDispatcher = mainDispatcher,
-            computationDispatcher = computationDispatcher
+            episodesDao = database.episodesDao()
         )
     }
 
     val categoryStore by lazy {
         CategoryStore(
-            podcastStore = podcastStore,
-            episodeStore = episodeStore,
-            mainDispatcher = mainDispatcher,
-            computationDispatcher = computationDispatcher
+            categoriesDao = database.categoriesDao(),
+            categoryEntryDao = database.podcastCategoryEntryDao(),
+            episodesDao = database.episodesDao()
         )
     }
 
     val mainDispatcher: CoroutineDispatcher
         get() = Dispatchers.Main
-
-    val computationDispatcher: CoroutineDispatcher
-        get() = Dispatchers.Default
 
     val ioDispatcher: CoroutineDispatcher
         get() = Dispatchers.IO
@@ -96,6 +101,12 @@ object Graph {
             .apply {
                 if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory())
             }
+            .build()
+
+        database = Room.databaseBuilder(context, JetcasterDatabase::class.java, "data.db")
+            // This is not recommended for normal apps, but the goal of this sample isn't to
+            // showcase all of Room.
+            .fallbackToDestructiveMigration()
             .build()
     }
 }

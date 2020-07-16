@@ -19,19 +19,18 @@ package com.example.jetcaster.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
-import com.example.jetcaster.data.Podcast
-import com.example.jetcaster.data.PodcastRepository
 import com.example.jetcaster.data.PodcastStore
+import com.example.jetcaster.data.PodcastWithLastEpisodeDate
+import com.example.jetcaster.data.PodcastsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val podcastRepository: PodcastRepository = Graph.podcastRepository,
+    private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
     private val podcastStore: PodcastStore = Graph.podcastStore
 ) : ViewModel() {
     // Holds our currently selected home category
@@ -54,7 +53,7 @@ class HomeViewModel(
             combine(
                 categories,
                 selectedCategory,
-                podcastStore.sortedByLastEpisodeDate().map { it.take(10) },
+                podcastStore.podcastsSortedByLastEpisode(limit = 10),
                 refreshing
             ) { categories, selectedCategory, podcasts, refreshing ->
                 HomeViewState(
@@ -72,17 +71,19 @@ class HomeViewModel(
             }
         }
 
-        refresh()
+        refresh(force = false)
     }
 
-    fun refresh() = viewModelScope.launch {
-        runCatching {
-            refreshing.value = true
-            podcastRepository.updatePodcasts()
-        }
-        // TODO: look at result of runCatching and show any errors
+    fun refresh(force: Boolean) {
+        viewModelScope.launch {
+            runCatching {
+                refreshing.value = true
+                podcastsRepository.updatePodcasts(force)
+            }
+            // TODO: look at result of runCatching and show any errors
 
-        refreshing.value = false
+            refreshing.value = false
+        }
     }
 
     fun onHomeCategorySelected(category: HomeCategory) {
@@ -95,7 +96,7 @@ enum class HomeCategory {
 }
 
 data class HomeViewState(
-    val featuredPodcasts: List<Podcast> = emptyList(),
+    val featuredPodcasts: List<PodcastWithLastEpisodeDate> = emptyList(),
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),

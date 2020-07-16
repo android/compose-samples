@@ -22,16 +22,17 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.time.Duration
-import java.time.OffsetDateTime
 
 @Entity(
-    tableName = "episodes",
-    indices = [
-        Index("uri", unique = true),
-        Index("podcast_uri")
-    ],
+    tableName = "podcast_category_entries",
     foreignKeys = [
+        ForeignKey(
+            entity = Category::class,
+            parentColumns = ["id"],
+            childColumns = ["category_id"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        ),
         ForeignKey(
             entity = Podcast::class,
             parentColumns = ["uri"],
@@ -39,16 +40,16 @@ import java.time.OffsetDateTime
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("podcast_uri", "category_id", unique = true),
+        Index("category_id"),
+        Index("podcast_uri")
     ]
 )
 @Immutable
-data class Episode(
-    @PrimaryKey @ColumnInfo(name = "uri") val uri: String,
+data class PodcastCategoryEntry(
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
     @ColumnInfo(name = "podcast_uri") val podcastUri: String,
-    @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "subtitle") val subtitle: String? = null,
-    @ColumnInfo(name = "summary") val summary: String? = null,
-    @ColumnInfo(name = "author") val author: String? = null,
-    @ColumnInfo(name = "published") val published: OffsetDateTime,
-    @ColumnInfo(name = "duration") val duration: Duration? = null
+    @ColumnInfo(name = "category_id") val categoryId: Long
 )

@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -46,8 +45,7 @@ class DiscoverViewModel(
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
             combine(
-                categoryStore.sortedByCount()
-                    .map { it.take(10) }
+                categoryStore.categoriesSortedByPodcastCount()
                     .onEach { categories ->
                         // If we haven't got a selected category yet, select the first
                         if (categories.isNotEmpty() && _selectedCategory.value == null) {

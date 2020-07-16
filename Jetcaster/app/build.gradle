@@ -19,6 +19,12 @@ import com.example.jetcaster.buildsrc.Libs
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 android {
@@ -31,6 +37,15 @@ android {
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"
+                ]
+            }
+        }
     }
 
     packagingOptions {
@@ -87,6 +102,10 @@ dependencies {
 
     implementation Libs.Rome.rome
     implementation Libs.Rome.modules
+
+    implementation Libs.AndroidX.Room.runtime
+    implementation Libs.AndroidX.Room.ktx
+    kapt Libs.AndroidX.Room.compiler
 
     coreLibraryDesugaring Libs.jdkDesugar
 }

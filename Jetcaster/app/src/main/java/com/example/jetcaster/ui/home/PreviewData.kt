@@ -19,36 +19,42 @@ package com.example.jetcaster.ui.home
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
+import com.example.jetcaster.data.PodcastWithLastEpisodeDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 val PreviewCategories = listOf(
-    Category("Crime"),
-    Category("News"),
-    Category("Comedy")
+    Category(name = "Crime"),
+    Category(name = "News"),
+    Category(name = "Comedy")
 )
 
 val PreviewPodcasts = listOf(
     Podcast(
         uri = "fakeUri://podcast/1",
         title = "Android Developers Backstage",
-        author = "Android Developers",
-        categories = PreviewCategories.subList(0, 1).toSet()
+        author = "Android Developers"
     ),
     Podcast(
         uri = "fakeUri://podcast/2",
         title = "Google Developers podcast",
-        author = "Google Developers",
-        categories = PreviewCategories.subList(1, 2).toSet()
+        author = "Google Developers"
     )
 )
+
+val PreviewPodcastsWithLastEpisodeDates = PreviewPodcasts.map { podcast ->
+    PodcastWithLastEpisodeDate().apply {
+        this.podcast = podcast
+        this.lastEpisodeDate = OffsetDateTime.now()
+    }
+}
 
 val PreviewEpisodes = listOf(
     Episode(
         uri = "fakeUri://episode/1",
         podcastUri = PreviewPodcasts[0].uri,
         title = "Episode 140: Bubbles!",
-        summary = "In this episode, Romain, Chet and Tor talked with Mady Melor  and Artur Tsurkan from the System UI team about... Bubbles!",
+        summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur Tsurkan from the System UI team about... Bubbles!",
         published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("PST"))
     )
 )

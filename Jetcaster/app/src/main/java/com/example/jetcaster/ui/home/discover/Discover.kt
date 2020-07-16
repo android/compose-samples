@@ -101,7 +101,7 @@ fun Discover(
                  * TODO, need to think about how this will scroll within the outer VerticalScroller
                  */
                 PodcastCategoryEpisodesList(
-                    category = category,
+                    categoryId = category.id,
                     modifier = Modifier.fillMaxSize()
                         .drawLayer(
                             translationX = transitionState[Offset],

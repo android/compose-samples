@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.data
 
+import com.example.jetcaster.data.room.TransactionRunner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -25,29 +26,39 @@ import kotlinx.coroutines.launch
 /**
  * Data repository for Podcasts.
  */
-class PodcastRepository(
+class PodcastsRepository(
     private val podcastsFetcher: PodcastsFetcher,
     private val podcastStore: PodcastStore,
     private val episodeStore: EpisodeStore,
+    private val categoryStore: CategoryStore,
+    private val transactionRunner: TransactionRunner,
     private val mainDispatcher: CoroutineDispatcher
 ) {
     private var refreshingJob: Job? = null
 
     private val scope = CoroutineScope(mainDispatcher)
 
-    suspend fun updatePodcasts() {
+    suspend fun updatePodcasts(force: Boolean) {
         if (refreshingJob?.isActive == true) {
             refreshingJob?.join()
-        } else {
+        } else if (force || podcastStore.isEmpty()) {
             refreshingJob = scope.launch {
-                // First clear the stores
-                podcastStore.clear()
-                episodeStore.clear()
-
                 // Now fetch the podcasts, and add each to each store
-                podcastsFetcher(SampleFeeds).collect { podcastWithEpisodes ->
-                    podcastStore.addPodcast(podcastWithEpisodes.podcast)
-                    episodeStore.addEpisodes(podcastWithEpisodes.episodes)
+                podcastsFetcher(SampleFeeds).collect { (podcast, episodes, categories) ->
+                    transactionRunner {
+                        podcastStore.addPodcast(podcast)
+                        episodeStore.addEpisodes(episodes)
+
+                        categories.forEach { category ->
+                            // First insert the category
+                            val categoryId = categoryStore.addCategory(category)
+                            // Now we can add the podcast to the category
+                            categoryStore.addPodcastToCategory(
+                                podcastUri = podcast.uri,
+                                categoryId = categoryId
+                            )
+                        }
+                    }
                 }
             }
         }
