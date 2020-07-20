@@ -30,8 +30,6 @@ import androidx.ui.foundation.isSystemInDarkTheme
 import androidx.ui.graphics.Color
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
-import androidx.ui.material.lightColorPalette
 import com.example.jetsnack.ui.utils.SystemUiControllerAmbient
 
 private val LightColorPalette = JetsnackColorPalette(
@@ -249,7 +247,9 @@ private class ExplosiveColorPalette(
     override val surface: Color
         get() = error(ErrorMessage)
 }
-private const val ErrorMessage = "Do not use MaterialTheme.colors directly, use JetsnackTheme.colors"
+
+private const val ErrorMessage =
+    "Do not use MaterialTheme.colors directly, use JetsnackTheme.colors"
 
 @Composable
 fun ProvideJetsnackColors(
