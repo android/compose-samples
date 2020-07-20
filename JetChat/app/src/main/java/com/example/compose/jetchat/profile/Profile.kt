@@ -22,6 +22,7 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
+import androidx.ui.core.drawOpacity
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
@@ -31,7 +32,6 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.clickable
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
-import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
 import androidx.ui.layout.Stack
 import androidx.ui.layout.aspectRatio
@@ -41,7 +41,6 @@ import androidx.ui.layout.heightIn
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.widthIn
-import androidx.ui.layout.wrapContentHeight
 import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.FloatingActionButton
@@ -57,6 +56,7 @@ import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.colleagueProfile
@@ -233,34 +233,32 @@ fun ProfileError() {
 @Composable
 fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifier) {
     key(userIsMe) { // Prevent multiple invocations to execute during composition
-        val aspectRatioModifier = if (!extended) Modifier.aspectRatio(1f) else Modifier
         FloatingActionButton(
             onClick = { /* TODO */ },
             modifier = modifier
                 .padding(16.dp)
                 .preferredHeight(48.dp)
-                .widthIn(minWidth = 48.dp)
-                .plus(aspectRatioModifier),
+                .widthIn(minWidth = 48.dp),
             backgroundColor = MaterialTheme.colors.primary,
             contentColor = MaterialTheme.colors.onPrimary
         ) {
-            Row(modifier = Modifier.wrapContentHeight()) {
-                Icon(
-                    asset = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
-                    modifier = Modifier.padding(14.dp)
-                )
-                // TODO: Animate
-                if (extended) {
+            AnimatingFabContent(
+                icon = {
+                    Icon(
+                        asset = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat
+                    )
+                },
+                text = { opacity ->
                     Text(
                         text = stringResource(
                             id = if (userIsMe) R.string.edit_profile else R.string.message
                         ),
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .gravity(Alignment.CenterVertically)
+                        modifier = Modifier.drawOpacity(opacity)
                     )
-                }
-            }
+                },
+                extended = extended
+
+            )
         }
     }
 }
