@@ -66,10 +66,6 @@ subprojects {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
 
-            // Don't require parens on fun type annotations e.g. `@Composable~()~ () -> Unit`
-            // TODO: Remove when we move to Kotlin 1.4
-            freeCompilerArgs += '-XXLanguage:+NonParenthesizedAnnotationsOnFunctionalTypes'
-
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
 
             // Enable experimental coroutines APIs, including Flow
@@ -77,15 +73,10 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.FlowPreview'
             freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
 
+            freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
+
             // Set JVM target to 1.8
             jvmTarget = "1.8"
-
-            // Compose is based on the Kotlin 1.4 compiler, but we need to use the 1.3.x Kotlin
-            // library due to library compatibility, etc. Therefore we explicit set our apiVersion
-            // to 1.3 to fix any warnings. Binary dependencies (such as Compose) can continue to
-            // use 1.4 if built with that library.
-            // TODO: remove this once we move to Kotlin 1.4
-            apiVersion = "1.3"
         }
     }
 }

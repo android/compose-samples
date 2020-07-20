@@ -16,29 +16,29 @@
 
 package com.example.jetcaster.util
 
-import androidx.animation.AnimationClockObservable
-import androidx.animation.fling
-import androidx.compose.Composable
-import androidx.compose.Immutable
-import androidx.compose.getValue
-import androidx.compose.key
-import androidx.compose.mutableStateOf
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.compose.structuralEqualityPolicy
-import androidx.ui.animation.AnimatedFloatModel
-import androidx.ui.core.Layout
-import androidx.ui.core.Measurable
-import androidx.ui.core.Modifier
-import androidx.ui.core.ParentDataModifier
-import androidx.ui.core.drawWithContent
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentGravity
-import androidx.ui.foundation.gestures.DragDirection
-import androidx.ui.foundation.gestures.draggable
-import androidx.ui.graphics.drawscope.scale
-import androidx.ui.unit.Density
-import androidx.ui.util.lerp
+import androidx.compose.animation.AnimatedFloatModel
+import androidx.compose.animation.core.AnimationClockObservable
+import androidx.compose.animation.core.fling
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.ui.Layout
+import androidx.compose.ui.Measurable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.ParentDataModifier
+import androidx.compose.ui.drawWithContent
+import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.util.lerp
 import kotlin.math.roundToInt
 
 /**
@@ -148,7 +148,7 @@ fun Pager(
             }
         },
         modifier = modifier.draggable(
-            dragDirection = DragDirection.Horizontal,
+            orientation = Orientation.Horizontal,
             onDragStarted = {
                 state.selectionState = PagerState.SelectionState.Undecided
             },
@@ -165,7 +165,6 @@ fun Pager(
                 val newPos = (pos + dy).coerceIn(min.toFloat(), max.toFloat())
                 currentPageOffset = newPos / pageSize
             }
-            dy
         }
     ) { measurables, constraints ->
         layout(constraints.maxWidth, constraints.maxHeight) {

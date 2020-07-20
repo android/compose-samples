@@ -16,11 +16,11 @@
 
 package com.example.jetcaster.ui.theme
 
-import androidx.compose.Composable
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.compositeOver
-import androidx.ui.material.ColorPalette
-import androidx.ui.material.darkColorPalette
+import androidx.compose.material.ColorPalette
+import androidx.compose.material.darkColorPalette
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 
 /**
  * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the

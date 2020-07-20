@@ -74,7 +74,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion Libs.AndroidX.Compose.kotlinCompilerVersion
+        kotlinCompilerVersion Libs.Kotlin.version
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 }
@@ -90,7 +90,7 @@ dependencies {
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
 
-    implementation Libs.AndroidX.Compose.core
+    implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended

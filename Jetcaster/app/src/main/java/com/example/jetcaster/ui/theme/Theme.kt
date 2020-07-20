@@ -16,8 +16,8 @@
 
 package com.example.jetcaster.ui.theme
 
-import androidx.compose.Composable
-import androidx.ui.material.MaterialTheme
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
 
 @Composable
 fun JetcasterTheme(

@@ -16,40 +16,40 @@
 
 package com.example.jetcaster.ui.home.discover
 
-import androidx.animation.FloatPropKey
-import androidx.animation.LinearEasing
-import androidx.animation.LinearOutSlowInEasing
-import androidx.animation.TransitionDefinition
-import androidx.animation.transitionDefinition
-import androidx.animation.tween
-import androidx.compose.Composable
-import androidx.compose.collectAsState
-import androidx.compose.emptyContent
-import androidx.compose.getValue
-import androidx.compose.onCommit
-import androidx.compose.remember
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.drawLayer
-import androidx.ui.foundation.Border
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.contentColor
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
-import androidx.ui.material.Tab
-import androidx.ui.material.TabRow
-import androidx.ui.unit.dp
-import androidx.ui.viewmodel.viewModel
+import androidx.compose.animation.core.FloatPropKey
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.TransitionDefinition
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Border
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.emptyContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.drawLayer
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.viewModel
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.ui.home.PodcastCategory
 import com.example.jetcaster.util.ItemSwitcher
@@ -133,7 +133,7 @@ private fun PodcastCategoryTabs(
         selectedIndex = selectedIndex,
         scrollable = true,
         divider = emptyContent(), /* Disable the built-in divider */
-        indicatorContainer = { _ -> },
+        indicatorContainer = {},
         modifier = modifier
     ) { index, category ->
         Tab(

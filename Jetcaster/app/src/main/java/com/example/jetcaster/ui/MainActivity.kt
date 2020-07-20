@@ -19,7 +19,7 @@ package com.example.jetcaster.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
+import androidx.compose.ui.platform.setContent
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ProvideDisplayInsets
 

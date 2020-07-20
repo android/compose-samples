@@ -16,19 +16,18 @@
 
 package com.example.jetcaster.util
 
-import androidx.animation.TransitionDefinition
-import androidx.animation.TransitionState
-import androidx.animation.createAnimation
-import androidx.compose.Composable
-import androidx.compose.invalidate
-import androidx.compose.key
-import androidx.compose.onCommit
-import androidx.compose.remember
-import androidx.ui.animation.asDisposableClock
-import androidx.ui.core.AnimationClockAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.layout.Stack
-import androidx.ui.util.fastForEach
+import androidx.compose.animation.asDisposableClock
+import androidx.compose.animation.core.TransitionDefinition
+import androidx.compose.animation.core.TransitionState
+import androidx.compose.animation.core.createAnimation
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.invalidate
+import androidx.compose.runtime.key
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.AnimationClockAmbient
 
 /**
  * [ItemSwitcher] allows to switch between two layouts with a transition defined by
@@ -96,7 +95,7 @@ fun <T> ItemSwitcher(
     }
     Stack(modifier) {
         state.invalidate = invalidate
-        state.items.fastForEach { (item, transition) ->
+        state.items.forEach { (item, transition) ->
             key(item) {
                 transition { transitionState ->
                     content(item, transitionState)

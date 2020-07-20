@@ -17,8 +17,8 @@
 package com.example.jetcaster.util
 
 import androidx.annotation.PluralsRes
-import androidx.compose.Composable
-import androidx.ui.core.ContextAmbient
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ContextAmbient
 
 /**
  * Load a quantity string resource.

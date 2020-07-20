@@ -16,47 +16,48 @@
 
 package com.example.jetcaster.ui.home
 
-import androidx.compose.Composable
-import androidx.compose.collectAsState
-import androidx.compose.getValue
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContentScale
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.contentColor
-import androidx.ui.foundation.lazy.LazyColumnItems
-import androidx.ui.foundation.lazy.LazyRowItems
-import androidx.ui.graphics.ColorFilter
-import androidx.ui.layout.Column
-import androidx.ui.layout.ConstraintLayout
-import androidx.ui.layout.Dimension
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.aspectRatio
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.preferredWidth
-import androidx.ui.material.Divider
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.MoreVert
-import androidx.ui.material.icons.filled.PlayCircleOutline
-import androidx.ui.material.icons.filled.PlaylistAdd
-import androidx.ui.res.stringResource
-import androidx.ui.text.style.TextOverflow
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ConstraintLayout
+import androidx.compose.foundation.layout.Dimension
+import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumnItems
+import androidx.compose.foundation.lazy.LazyRowForIndexed
+import androidx.compose.material.Divider
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayCircleOutline
+import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
-import androidx.ui.viewmodel.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
@@ -102,9 +103,11 @@ fun PodcastCategory(
     /**
      * TODO: reset scroll position when category changes
      */
-    LazyColumnItems(
+    LazyColumnFor(
         items = items,
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = InnerPadding(0.dp),
+        horizontalGravity = Alignment.Start
     ) { item ->
         when (item) {
             is PodcastCategoryItem.EpisodeItem -> {
@@ -118,11 +121,7 @@ fun PodcastCategory(
                 CategoryPodcastRow(
                     podcasts = item.podcasts,
                     onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                        // Ideally this would wrap height but LazyRowItems doesn't yet support
-                        // wrapping height
-                        .preferredHeight(188.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -137,7 +136,7 @@ fun EpisodeListItem(
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
-        modifier = Modifier.clickable { /* TODO */ }.plus(modifier)
+        modifier = Modifier.clickable { /* TODO */ } then modifier
     ) {
         val (
             divider, episodeTitle, podcastTitle, summary, image, playIcon,
@@ -306,14 +305,21 @@ private fun CategoryPodcastRow(
     onTogglePodcastFollowed: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyRowItems(items = podcasts, modifier = modifier) { (podcast, _, isFollowed) ->
+    val lastIndex = podcasts.size - 1
+    LazyRowForIndexed(
+        items = podcasts,
+        modifier = modifier,
+        contentPadding = InnerPadding(16.dp)
+    ) { index, (podcast, _, isFollowed) ->
         TopPodcastRowItem(
             podcastTitle = podcast.title,
             podcastImageUrl = podcast.imageUrl,
             isFollowed = isFollowed,
             onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
-            modifier = Modifier.padding(8.dp).preferredWidth(128.dp)
+            modifier = Modifier.preferredWidth(128.dp)
         )
+
+        if (index < lastIndex) Spacer(Modifier.preferredWidth(8.dp))
     }
 }
 

@@ -16,17 +16,17 @@
 
 package com.example.jetcaster.util
 
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.drawBackground
-import androidx.ui.layout.padding
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.Add
-import androidx.ui.material.icons.filled.Check
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun ToggleFollowPodcastIconButton(
@@ -45,7 +45,7 @@ fun ToggleFollowPodcastIconButton(
                 else -> Icons.Default.Add
             },
             modifier = Modifier
-                .drawBackground(
+                .background(
                     color = MaterialTheme.colors.surface,
                     shape = MaterialTheme.shapes.small
                 )

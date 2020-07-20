@@ -19,29 +19,28 @@
 package com.example.jetcaster.util
 
 import android.view.View
-import androidx.compose.Composable
-import androidx.compose.Providers
-import androidx.compose.Stable
-import androidx.compose.getValue
-import androidx.compose.mutableStateOf
-import androidx.compose.onCommit
-import androidx.compose.remember
-import androidx.compose.setValue
-import androidx.compose.staticAmbientOf
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.ui.LayoutModifier
+import androidx.compose.ui.Measurable
+import androidx.compose.ui.MeasureScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.layout.IntrinsicMeasurable
+import androidx.compose.ui.layout.IntrinsicMeasureScope
+import androidx.compose.ui.platform.ViewAmbient
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.offset
 import androidx.core.view.ViewCompat
-import androidx.ui.core.Constraints
-import androidx.ui.core.IntrinsicMeasurable
-import androidx.ui.core.IntrinsicMeasureScope
-import androidx.ui.core.LayoutDirection
-import androidx.ui.core.LayoutModifier
-import androidx.ui.core.Measurable
-import androidx.ui.core.MeasureScope
-import androidx.ui.core.Modifier
-import androidx.ui.core.ViewAmbient
-import androidx.ui.core.composed
-import androidx.ui.core.offset
-import androidx.ui.layout.height
-import androidx.ui.layout.width
 import kotlin.math.min
 
 /**
@@ -283,7 +282,7 @@ private inline fun Modifier.insetsPadding(
     top: Boolean = false,
     right: Boolean = false,
     bottom: Boolean = false
-) = this + InsetsPaddingModifier(insets, left, top, right, bottom)
+) = this then InsetsPaddingModifier(insets, left, top, right, bottom)
 
 private data class InsetsPaddingModifier(
     private val insets: Insets,
@@ -294,8 +293,7 @@ private data class InsetsPaddingModifier(
 ) : LayoutModifier {
     override fun MeasureScope.measure(
         measurable: Measurable,
-        constraints: Constraints,
-        layoutDirection: LayoutDirection
+        constraints: Constraints
     ): MeasureScope.MeasureResult {
         val left = if (applyLeft) insets.left else 0
         val top = if (applyTop) insets.top else 0
@@ -347,8 +345,7 @@ private data class InsetsSizeModifier(
 
     override fun MeasureScope.measure(
         measurable: Measurable,
-        constraints: Constraints,
-        layoutDirection: LayoutDirection
+        constraints: Constraints
     ): MeasureScope.MeasureResult {
         val wrappedConstraints = targetConstraints.let { targetConstraints ->
             val resolvedMinWidth = if (widthSide != null) {
@@ -381,36 +378,32 @@ private data class InsetsSizeModifier(
 
     override fun IntrinsicMeasureScope.minIntrinsicWidth(
         measurable: IntrinsicMeasurable,
-        height: Int,
-        layoutDirection: LayoutDirection
-    ) = measurable.minIntrinsicWidth(height, layoutDirection).let {
+        height: Int
+    ) = measurable.minIntrinsicWidth(height).let {
         val constraints = targetConstraints
         it.coerceIn(constraints.minWidth, constraints.maxWidth)
     }
 
     override fun IntrinsicMeasureScope.maxIntrinsicWidth(
         measurable: IntrinsicMeasurable,
-        height: Int,
-        layoutDirection: LayoutDirection
-    ) = measurable.maxIntrinsicWidth(height, layoutDirection).let {
+        height: Int
+    ) = measurable.maxIntrinsicWidth(height).let {
         val constraints = targetConstraints
         it.coerceIn(constraints.minWidth, constraints.maxWidth)
     }
 
     override fun IntrinsicMeasureScope.minIntrinsicHeight(
         measurable: IntrinsicMeasurable,
-        width: Int,
-        layoutDirection: LayoutDirection
-    ) = measurable.minIntrinsicHeight(width, layoutDirection).let {
+        width: Int
+    ) = measurable.minIntrinsicHeight(width).let {
         val constraints = targetConstraints
         it.coerceIn(constraints.minHeight, constraints.maxHeight)
     }
 
     override fun IntrinsicMeasureScope.maxIntrinsicHeight(
         measurable: IntrinsicMeasurable,
-        width: Int,
-        layoutDirection: LayoutDirection
-    ) = measurable.maxIntrinsicHeight(width, layoutDirection).let {
+        width: Int
+    ) = measurable.maxIntrinsicHeight(width).let {
         val constraints = targetConstraints
         it.coerceIn(constraints.minHeight, constraints.maxHeight)
     }

@@ -16,7 +16,7 @@
 
 package com.example.jetcaster.data
 
-import androidx.compose.Immutable
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index

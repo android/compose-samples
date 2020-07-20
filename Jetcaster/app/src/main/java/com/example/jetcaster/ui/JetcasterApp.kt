@@ -16,7 +16,7 @@
 
 package com.example.jetcaster.ui
 
-import androidx.compose.Composable
+import androidx.compose.runtime.Composable
 import com.example.jetcaster.ui.home.Home
 
 @Composable
