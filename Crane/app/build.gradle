@@ -86,5 +86,5 @@ dependencies {
     implementation Libs.AndroidX.UI.tooling
 
     implementation Libs.AndroidX.appcompat
-    implementation Libs.picasso
+    implementation Libs.Accompanist.coil
 }

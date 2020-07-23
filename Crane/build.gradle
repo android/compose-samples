@@ -38,9 +38,11 @@ subprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven { url Urls.kotlinEap }
         if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
             maven { url Urls.composeSnapshotRepo }
+            maven { url Urls.mavenCentralSnapshotRepo }
         }
     }
 

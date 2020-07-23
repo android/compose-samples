@@ -19,7 +19,6 @@ package androidx.compose.samples.crane.base
 import androidx.compose.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.data.ExploreModel
-import androidx.compose.samples.crane.data.ExploreUiModel
 import androidx.compose.samples.crane.home.OnExploreItemClicked
 import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.samples.crane.ui.crane_caption
@@ -36,6 +35,7 @@ import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
+import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
@@ -47,6 +47,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
+import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun ExploreSection(
@@ -64,7 +65,7 @@ fun ExploreSection(
             Spacer(Modifier.preferredHeight(8.dp))
             LazyColumnItems(
                 modifier = Modifier.weight(1f),
-                items = exploreList.map { ExploreUiModel(it) }
+                items = exploreList
             ) { item ->
                 ExploreItem(
                     modifier = Modifier.fillMaxWidth(),
@@ -80,34 +81,38 @@ fun ExploreSection(
 @Composable
 private fun ExploreItem(
     modifier: Modifier = Modifier,
-    item: ExploreUiModel,
+    item: ExploreModel,
     onItemClicked: OnExploreItemClicked
 ) {
     Row(
         modifier = modifier
-            .clickable { onItemClicked(item.exploreModel) }
+            .clickable { onItemClicked(item) }
             .padding(top = 12.dp, bottom = 12.dp)
     ) {
         ExploreImageContainer {
-            if (item.image == null) {
-                Image(asset = vectorResource(id = R.drawable.ic_crane_logo))
-            } else {
-                Image(
-                    asset = item.image!!,
-                    alignment = Alignment.Center,
-                    contentScale = ContentScale.Crop
-                )
-            }
+            CoilImageWithCrossfade(
+                data = item.imageUrl,
+                contentScale = ContentScale.Crop,
+                loading = {
+                    Stack(Modifier.fillMaxSize()) {
+                        Image(
+                            modifier = Modifier.preferredSize(36.dp).gravity(Alignment.Center),
+                            asset = vectorResource(id = R.drawable.ic_crane_logo)
+                        )
+                    }
+                },
+                modifier = modifier.fillMaxWidth()
+            )
         }
         Spacer(Modifier.preferredWidth(24.dp))
         Column {
             Text(
-                text = item.exploreModel.city.nameToDisplay,
+                text = item.city.nameToDisplay,
                 style = MaterialTheme.typography.h6
             )
             Spacer(Modifier.preferredHeight(8.dp))
             Text(
-                text = item.exploreModel.description,
+                text = item.description,
                 style = MaterialTheme.typography.caption.copy(color = crane_caption)
             )
         }

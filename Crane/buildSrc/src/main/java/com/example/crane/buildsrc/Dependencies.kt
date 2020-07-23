@@ -26,6 +26,12 @@ object Libs {
     const val picasso = "com.squareup.picasso:picasso:2.71828"
     const val googleMaps = "com.google.android.gms:play-services-maps:17.0.0"
 
+    object Accompanist {
+//        private const val version = "0.1.7.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
+        private const val version = "0.1.7"
+        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+    }
+
     object Kotlin {
         private const val version = "1.4-M3"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
@@ -38,7 +44,7 @@ object Libs {
 
         object Compose {
             const val snapshot = "6695716"
-            const val version = "0.1.0-SNAPSHOT"
+            const val version = "0.1.0-dev15"
 
             const val kotlinCompilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -57,6 +63,7 @@ object Libs {
 
 object Urls {
     const val kotlinEap = "https://dl.bintray.com/kotlin/kotlin-eap/"
+    const val mavenCentralSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
     const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
         // Dev15
         "${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
