@@ -17,15 +17,9 @@
 package com.example.jetnews
 
 import android.content.Context
-import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.lifecycle.SavedStateHandle
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
 import androidx.ui.test.ComposeTestRule
-import androidx.ui.test.SemanticsNodeInteractionCollection
-import androidx.ui.test.findAll
-import androidx.ui.test.hasSubstring
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.NavigationViewModel
@@ -49,23 +43,4 @@ fun ComposeTestRule.launchJetNewsApp(context: Context) {
 fun JetnewsStatus.resetState() {
     favorites.clear()
     selectedTopics.clear()
-}
-
-/**
- * Helper method that can be used to test Jetnews UI Composables in isolation
- */
-fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
-    setContent {
-        MaterialTheme {
-            Surface {
-                children()
-            }
-        }
-    }
-}
-
-fun findAllBySubstring(text: String, ignoreCase: Boolean = false): SemanticsNodeInteractionCollection {
-    return findAll(
-        hasSubstring(text, ignoreCase)
-    )
 }

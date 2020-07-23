@@ -23,8 +23,8 @@ import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Image
+import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.Color
@@ -73,7 +73,7 @@ private val defaultSpacerSize = 16.dp
 
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
-    VerticalScroller(
+    ScrollableColumn(
         modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
         Spacer(Modifier.preferredHeight(defaultSpacerSize))

@@ -18,7 +18,6 @@ package com.example.jetnews.ui
 
 import android.os.Bundle
 import androidx.annotation.MainThread
-import androidx.compose.frames.ModelList
 import androidx.compose.getValue
 import androidx.compose.setValue
 import androidx.core.os.bundleOf
@@ -102,7 +101,7 @@ private fun Bundle.getStringOrThrow(key: String) =
  * application is [MainActivity].
  *
  * This app has simplified navigation; the back stack is always [Home] or [Home, dest] and more
- * levels are not allowed. To use a similar pattern with a longer back stack, use a [ModelList] to
+ * levels are not allowed. To use a similar pattern with a longer back stack, use a [StateList] to
  * hold the back stack state.
  */
 class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
