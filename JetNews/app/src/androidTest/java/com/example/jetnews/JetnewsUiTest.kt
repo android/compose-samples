@@ -50,7 +50,7 @@ class JetnewsUiTest {
 
     @Test
     fun app_opensArticle() {
-        // Using unmerged tree because of b/161979921
+        // Using unmerged tree because of https://issuetracker.google.com/issues/161979921
         onAllNodes(hasSubstring("Manuel Vivo"), useUnmergedTree = true)[0].performClick()
         onAllNodes(hasSubstring("3 min read"), useUnmergedTree = true)[0].assertIsDisplayed()
     }
