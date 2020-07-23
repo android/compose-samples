@@ -16,6 +16,7 @@
 
 import com.example.crane.buildsrc.Libs
 import com.example.crane.buildsrc.Urls
+import com.example.crane.buildsrc.Versions
 
 buildscript {
     repositories {
@@ -29,13 +30,28 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.diffplug.gradle.spotless' version '4.3.0'
+}
+
 subprojects {
     repositories {
         google()
         jcenter()
         maven { url Urls.kotlinEap }
         if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
-            maven { url Urls.snapshotUrl }
+            maven { url Urls.composeSnapshotRepo }
+        }
+    }
+
+    apply plugin: 'com.diffplug.gradle.spotless'
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            targetExclude("$buildDir/**/*.kt")
+            targetExclude('bin/**/*.kt')
+            ktlint(Versions.ktLint)
+            licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }
 }

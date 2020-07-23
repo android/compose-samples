@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright $YEAR The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,3 @@
  * limitations under the License.
  */
 
-package androidx.compose.samples.crane.base
-
-import androidx.compose.samples.crane.calendar.model.DatesSelectedState
-
-object ServiceLocator {
-    val datesSelected = DatesSelectedState()
-}

@@ -73,10 +73,6 @@ tasks.withType(KotlinCompile).configureEach {
     }
 }
 
-configurations {
-    ktlint
-}
-
 dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.googleMaps
@@ -94,24 +90,4 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.extensions
 
     implementation Libs.picasso
-
-    ktlint Libs.ktLint
-}
-
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check Kotlin code style."
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    // Ignoring paren-spacing as it flags a composable type param as an error
-    args "-F", "src/**/*.kt", "--disabled_rules", "paren-spacing"
-}
-
-check.dependsOn ktlint
-
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    description = "Fix Kotlin code style deviations."
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    // Ignoring paren-spacing as it flags a composable type param as an error
-    args "-F", "src/**/*.kt", "--disabled_rules", "paren-spacing"
 }
