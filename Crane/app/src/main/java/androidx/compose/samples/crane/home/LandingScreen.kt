@@ -16,29 +16,25 @@
 
 package androidx.compose.samples.crane.home
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.onCommit
+import androidx.compose.launchInComposition
 import androidx.compose.samples.crane.R
-import androidx.core.os.postDelayed
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Image
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.res.vectorResource
+import kotlinx.coroutines.delay
 
-private const val SPLASH_WAIT_TIME: Long = 2000
+private const val SplashWaitTime: Long = 2000
 
 @Composable
-fun LandingScreen(modifier: Modifier = Modifier, splashShownState: MutableState<SplashState>) {
+fun LandingScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
     Box(modifier = modifier.fillMaxSize(), gravity = ContentGravity.Center) {
-        onCommit {
-            Handler(Looper.getMainLooper()).postDelayed(SPLASH_WAIT_TIME) {
-                splashShownState.value = SplashState.COMPLETED
-            }
+        launchInComposition {
+            delay(SplashWaitTime)
+            onTimeout()
         }
         Image(asset = vectorResource(id = R.drawable.ic_crane_drawer))
     }

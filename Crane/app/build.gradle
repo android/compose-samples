@@ -78,6 +78,7 @@ dependencies {
     implementation Libs.googleMaps
 
     implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.layout
@@ -85,9 +86,5 @@ dependencies {
     implementation Libs.AndroidX.UI.tooling
 
     implementation Libs.AndroidX.appcompat
-    implementation Libs.AndroidX.Lifecycle.viewModelKtx
-    implementation Libs.AndroidX.activityKtx
-    implementation Libs.AndroidX.Lifecycle.extensions
-
     implementation Libs.picasso
 }

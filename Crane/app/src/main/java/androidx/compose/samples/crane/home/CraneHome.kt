@@ -17,19 +17,21 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.State
+import androidx.compose.getValue
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.BackdropFrontLayerDraggable
+import androidx.compose.setValue
 import androidx.compose.state
 import androidx.ui.core.Modifier
 import androidx.ui.layout.Column
+import androidx.ui.livedata.observeAsState
 import androidx.ui.material.DrawerState
 import androidx.ui.material.ModalDrawerLayout
+import androidx.ui.viewmodel.viewModel
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
 
@@ -38,29 +40,10 @@ enum class CraneScreen {
 }
 
 @Composable
-fun MainContent(
-    modifier: Modifier = Modifier,
-    destinations: List<ExploreModel>,
+fun CraneHome(
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit,
-    viewModel: MainViewModel
-) {
-    CraneHome(
-        modifier = modifier,
-        viewModel = viewModel,
-        onExploreItemClicked = onExploreItemClicked,
-        onDateSelectionClicked = onDateSelectionClicked,
-        suggestedDestinations = destinations
-    )
-}
-
-@Composable
-private fun CraneHome(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel,
-    onExploreItemClicked: OnExploreItemClicked,
-    onDateSelectionClicked: () -> Unit,
-    suggestedDestinations: List<ExploreModel>
 ) {
     val (drawerState, onDrawerStateChange) = state { DrawerState.Closed }
     ModalDrawerLayout(
@@ -71,8 +54,6 @@ private fun CraneHome(
         bodyContent = {
             CraneHomeContent(
                 modifier = modifier,
-                viewModel = viewModel,
-                suggestedDestinations = suggestedDestinations,
                 onExploreItemClicked = onExploreItemClicked,
                 onDateSelectionClicked = onDateSelectionClicked,
                 openDrawer = { onDrawerStateChange(DrawerState.Opened) }
@@ -83,21 +64,22 @@ private fun CraneHome(
 
 @Composable
 fun CraneHomeContent(
-    modifier: Modifier = Modifier,
-    viewModel: MainViewModel,
-    suggestedDestinations: List<ExploreModel>,
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit,
-    openDrawer: () -> Unit
+    openDrawer: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    val viewModel: MainViewModel = viewModel()
+    val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
+
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    val tabSelected = state { CraneScreen.FLY }
+    var tabSelected by state { CraneScreen.FLY }
 
     BackdropFrontLayerDraggable(
         modifier = modifier,
         staticChildren = { staticModifier ->
             Column(modifier = staticModifier) {
-                HomeTabBar(openDrawer, tabSelected)
+                HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })
                 SearchContent(
                     tabSelected,
                     viewModel,
@@ -108,14 +90,16 @@ fun CraneHomeContent(
             }
         },
         backdropChildren = { backdropModifier ->
-            when (tabSelected.value) {
+            when (tabSelected) {
                 CraneScreen.FLY -> {
-                    ExploreSection(
-                        modifier = backdropModifier,
-                        title = "Explore Flights by Destination",
-                        exploreList = suggestedDestinations,
-                        onItemClicked = onExploreItemClicked
-                    )
+                    suggestedDestinations?.let { destinations ->
+                        ExploreSection(
+                            modifier = backdropModifier,
+                            title = "Explore Flights by Destination",
+                            exploreList = destinations,
+                            onItemClicked = onExploreItemClicked
+                        )
+                    }
                 }
                 CraneScreen.SLEEP -> {
                     ExploreSection(
@@ -141,7 +125,8 @@ fun CraneHomeContent(
 @Composable
 private fun HomeTabBar(
     openDrawer: () -> Unit,
-    tabSelected: MutableState<CraneScreen>,
+    tabSelected: CraneScreen,
+    onTabSelected: (CraneScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     CraneTabBar(
@@ -151,23 +136,21 @@ private fun HomeTabBar(
         CraneTabs(
             modifier = tabBarModifier,
             titles = CraneScreen.values().map { it.name },
-            tabSelected = tabSelected.value,
-            onTabSelected = { newTab ->
-                tabSelected.value = CraneScreen.values()[newTab.ordinal]
-            }
+            tabSelected = tabSelected,
+            onTabSelected = { newTab -> onTabSelected(CraneScreen.values()[newTab.ordinal]) }
         )
     }
 }
 
 @Composable
 private fun SearchContent(
-    tabSelected: State<CraneScreen>,
+    tabSelected: CraneScreen,
     viewModel: MainViewModel,
     onPeopleChanged: (Int) -> Unit,
     onDateSelectionClicked: () -> Unit,
     onExploreItemClicked: OnExploreItemClicked
 ) {
-    when (tabSelected.value) {
+    when (tabSelected) {
         CraneScreen.FLY -> FlySearchContent(
             searchUpdates = FlySearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,

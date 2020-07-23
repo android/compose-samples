@@ -35,7 +35,6 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
-        const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
 
         object Compose {
             const val snapshot = "6695716"
@@ -43,6 +42,7 @@ object Libs {
 
             const val kotlinCompilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
             const val runtime = "androidx.compose.runtime:runtime:$version"
+            const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -51,13 +51,6 @@ object Libs {
 
         object UI {
             const val tooling = "androidx.ui:ui-tooling:${Compose.version}"
-        }
-
-        object Lifecycle {
-            private const val version = "2.2.0"
-
-            const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
-            const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
         }
     }
 }

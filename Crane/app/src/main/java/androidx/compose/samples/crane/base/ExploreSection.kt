@@ -28,9 +28,9 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Image
-import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
@@ -62,18 +62,16 @@ fun ExploreSection(
                 style = MaterialTheme.typography.caption.copy(color = crane_caption)
             )
             Spacer(Modifier.preferredHeight(8.dp))
-            ScrollableColumn(modifier = Modifier.weight(1f)) {
-                exploreList.map { ExploreUiModel(it) }.forEachIndexed { index, item ->
-                    ExploreItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        item = item,
-                        onItemClicked = onItemClicked
-                    )
-// ---------------  b/137080715
-                    if (index != exploreList.size - 1) {
-                        Divider(color = crane_divider_color)
-                    }
-                }
+            LazyColumnItems(
+                modifier = Modifier.weight(1f),
+                items = exploreList.map { ExploreUiModel(it) }
+            ) { item ->
+                ExploreItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    item = item,
+                    onItemClicked = onItemClicked
+                )
+                Divider(color = crane_divider_color)
             }
         }
     }
