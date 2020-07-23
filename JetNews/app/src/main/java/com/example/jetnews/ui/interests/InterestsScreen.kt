@@ -25,8 +25,8 @@ import androidx.ui.core.clip
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
+import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.selection.toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
@@ -157,7 +157,7 @@ private fun PublicationsTab(publications: List<String>) {
 
 @Composable
 private fun TabWithTopics(tabName: String, topics: List<String>) {
-    VerticalScroller(modifier = Modifier.padding(top = 16.dp)) {
+    ScrollableColumn(modifier = Modifier.padding(top = 16.dp)) {
         topics.forEach { topic ->
             TopicItem(
                 getTopicKey(
@@ -177,7 +177,7 @@ private fun TabWithSections(
     tabName: String,
     sections: Map<String, List<String>>
 ) {
-    VerticalScroller {
+    ScrollableColumn {
         sections.forEach { (section, topics) ->
             Text(
                 text = section,
