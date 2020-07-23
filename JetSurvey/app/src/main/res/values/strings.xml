@@ -32,4 +32,19 @@
         handle your data according to our Privacy Policy.</string>
     <string name="feature_not_available">Feature not available</string>
     <string name="dismiss">Dismiss</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!-- survey-->
+    <string name="which_jetpack_library">Which Jetpack library are you?</string>
+    <string name="in_my_free_time">In my free time I like to …</string>
+    <string name="read">Read</string>
+    <string name="work_out">Work out</string>
+    <string name="draw">Draw</string>
+    <string name="play_games">Play games</string>
+    <string name="room">Room</string>
+    <string name="room_description">You like to bla bla and bla!</string>
+    <string name="in_my_free_time2">2In my free time I like to …</string>
+    <string name="in_my_free_time3">3In my free time I like to …</string>
+    <string name="in_my_free_time4">4In my free time I like to …</string>
 </resources>
