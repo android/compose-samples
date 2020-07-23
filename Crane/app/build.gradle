@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 /*
  * Copyright 2019 Google, Inc.
  *
@@ -16,19 +14,24 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+import com.example.crane.buildsrc.Libs
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 // Reads the Google maps key that is used in the AndroidManifest
 Properties properties = new Properties()
 properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "androidx.compose.samples.crane"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -55,13 +58,16 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerVersion "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
-        kotlinCompilerExtensionVersion "0.1.0-SNAPSHOT"
+        kotlinCompilerVersion Libs.AndroidX.Compose.kotlinCompilerVersion
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 }
 
 tasks.withType(KotlinCompile).configureEach {
     kotlinOptions {
+        // Treat all Kotlin warnings as errors
+        allWarningsAsErrors = true
+
         jvmTarget = "1.8"
         freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
     }
@@ -72,25 +78,24 @@ configurations {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4-M3'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation Libs.Kotlin.stdlib
+    implementation Libs.googleMaps
 
-    def composeVersion = "0.1.0-SNAPSHOT"
-    implementation "androidx.compose.runtime:runtime:$composeVersion"
-    implementation "androidx.compose.material:material:$composeVersion"
-    implementation "androidx.compose.foundation:foundation:$composeVersion"
-    implementation "androidx.compose.foundation:foundation-layout:$composeVersion"
-    implementation "androidx.compose.animation:animation:$composeVersion"
-    implementation "androidx.ui:ui-tooling:$composeVersion"
+    implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.foundation
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.animation
+    implementation Libs.AndroidX.UI.tooling
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.activity:activity-ktx:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.Lifecycle.viewModelKtx
+    implementation Libs.AndroidX.activityKtx
+    implementation Libs.AndroidX.Lifecycle.extensions
 
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation Libs.picasso
 
-    ktlint "com.pinterest:ktlint:0.37.2"
+    ktlint Libs.ktLint
 }
 
 task ktlint(type: JavaExec, group: "verification") {
