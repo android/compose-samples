@@ -16,9 +16,9 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.frames.ModelList
+import androidx.compose.mutableStateListOf
 
 object JetnewsStatus {
-    val favorites = ModelList<String>()
-    val selectedTopics = ModelList<String>()
+    val favorites = mutableStateListOf<String>()
+    val selectedTopics = mutableStateListOf<String>()
 }

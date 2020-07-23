@@ -24,10 +24,10 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.HorizontalScroller
 import androidx.ui.foundation.Icon
+import androidx.ui.foundation.ScrollableColumn
+import androidx.ui.foundation.ScrollableRow
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.clickable
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -172,7 +172,7 @@ private fun HomeScreenBody(
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    VerticalScroller(modifier = modifier) {
+    ScrollableColumn(modifier = modifier) {
         HomeScreenTopSection(postTop, navigateTo)
         HomeScreenSimpleSection(postsSimple, navigateTo)
         HomeScreenPopularSection(postsPopular, navigateTo)
@@ -264,7 +264,7 @@ private fun HomeScreenPopularSection(
                 style = MaterialTheme.typography.subtitle1
             )
         }
-        HorizontalScroller(modifier = Modifier.padding(end = 16.dp)) {
+        ScrollableRow(modifier = Modifier.padding(end = 16.dp)) {
             posts.forEach { post ->
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }
