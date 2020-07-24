@@ -16,11 +16,11 @@
 
 package com.example.compose.jetchat
 
-import androidx.compose.Composable
-import androidx.ui.foundation.Text
-import androidx.ui.material.AlertDialog
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TextButton
+import androidx.compose.foundation.Text
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
 
 @Composable
 fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {

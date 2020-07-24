@@ -16,13 +16,13 @@
 
 package com.example.compose.jetchat.theme
 
-import androidx.compose.Composable
-import androidx.ui.foundation.isSystemInDarkTheme
-import androidx.ui.graphics.Color
-import androidx.ui.material.ColorPalette
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
-import androidx.ui.material.lightColorPalette
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ColorPalette
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColorPalette
+import androidx.compose.material.lightColorPalette
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val Yellow400 = Color(0xFFF6E547)
 private val Yellow600 = Color(0xFFF5CF1B)

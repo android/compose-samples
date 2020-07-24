@@ -17,10 +17,11 @@
 package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
-import androidx.compose.Providers
-import androidx.compose.collectAsState
-import androidx.ui.geometry.Offset
-import androidx.ui.test.android.AndroidComposeTestRule
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.milliseconds
+import androidx.ui.test.android.createAndroidComposeRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.center
 import androidx.ui.test.onNodeWithLabel
@@ -28,7 +29,6 @@ import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
 import androidx.ui.test.performGesture
 import androidx.ui.test.swipe
-import androidx.ui.unit.milliseconds
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
@@ -44,7 +44,7 @@ import org.junit.Test
 class ConversationTest {
 
     @get:Rule
-    val composeTestRule = AndroidComposeTestRule<NavActivity>()
+    val composeTestRule = createAndroidComposeRule<NavActivity>(disableTransitions = true)
 
     // Note that keeping these references is only safe if the activity is not recreated.
     // See: https://issuetracker.google.com/160862278

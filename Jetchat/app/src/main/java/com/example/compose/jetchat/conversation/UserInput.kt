@@ -16,65 +16,66 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.getValue
-import androidx.compose.onCommit
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.core.focus.FocusModifier
-import androidx.ui.core.semantics.semantics
-import androidx.ui.foundation.Border
-import androidx.ui.foundation.HorizontalScroller
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.TextField
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.contentColor
-import androidx.ui.foundation.currentTextStyle
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.input.ImeAction
-import androidx.ui.input.KeyboardType
-import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.InnerPadding
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.sizeIn
-import androidx.ui.layout.wrapContentHeight
-import androidx.ui.material.Button
-import androidx.ui.material.Divider
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
-import androidx.ui.material.TextButton
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.AlternateEmail
-import androidx.ui.material.icons.outlined.Duo
-import androidx.ui.material.icons.outlined.InsertPhoto
-import androidx.ui.material.icons.outlined.Mood
-import androidx.ui.material.icons.outlined.Place
-import androidx.ui.res.stringResource
-import androidx.ui.savedinstancestate.savedInstanceState
-import androidx.ui.semantics.SemanticsPropertyKey
-import androidx.ui.semantics.SemanticsPropertyReceiver
-import androidx.ui.semantics.accessibilityLabel
-import androidx.ui.text.SoftwareKeyboardController
-import androidx.ui.text.style.TextAlign
+import androidx.compose.foundation.BaseTextField
+import androidx.compose.foundation.Border
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableRow
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Surface
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AlternateEmail
+import androidx.compose.material.icons.outlined.Duo
+import androidx.compose.material.icons.outlined.InsertPhoto
+import androidx.compose.material.icons.outlined.Mood
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.FocusModifier
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.compositedOnSurface
@@ -99,6 +100,7 @@ fun UserInputPreview() {
     UserInput(onMessageSent = {})
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(onMessageSent: (String) -> Unit) {
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
@@ -171,6 +173,7 @@ private fun SelectorExpanded(
     if (currentSelector == InputSelector.NONE) return
 
     // Request focus to force the TextField to lose it
+    @Suppress("DEPRECATION")
     val focusModifier = FocusModifier()
     // If the selector is shown, always request focus to trigger a TextField.onFocusChange.
     onCommit {
@@ -326,6 +329,7 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
 var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
+@ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -359,7 +363,7 @@ private fun UserInputText(
         Stack(
             modifier = Modifier.preferredHeight(48.dp).weight(1f).gravity(Alignment.Bottom)
         ) {
-            TextField(
+            BaseTextField(
                 value = textFieldValue,
                 onValueChange = { onTextChanged(it) },
                 modifier = Modifier
@@ -368,7 +372,7 @@ private fun UserInputText(
                     .gravity(Alignment.CenterStart),
                 keyboardType = keyboardType,
                 imeAction = ImeAction.Send,
-                onFocusChange = onTextFieldFocused,
+                onFocusChanged = onTextFieldFocused,
                 onTextInputStarted = { controller -> keyboardController = controller }
             )
 
@@ -411,7 +415,7 @@ fun EmojiSelector(
                 modifier = Modifier.weight(1f)
             )
         }
-        HorizontalScroller {
+        ScrollableRow {
             EmojiTable(onTextAdded)
         }
     }

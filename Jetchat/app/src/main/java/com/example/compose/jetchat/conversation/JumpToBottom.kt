@@ -16,28 +16,27 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.animation.transitionDefinition
-import androidx.compose.Composable
-import androidx.compose.state
-import androidx.ui.animation.DpPropKey
-import androidx.ui.animation.transition
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.layout.offset
-import androidx.ui.layout.preferredHeight
-import androidx.ui.material.ExtendedFloatingActionButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.ArrowDownward
-import androidx.ui.res.stringResource
+import androidx.compose.animation.DpPropKey
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.transition
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
 
 private val bottomPadding = DpPropKey()
 
-private val definition = transitionDefinition {
+private val definition = transitionDefinition<Visibility> {
     state(Visibility.GONE) {
         this[bottomPadding] = 0.dp
     }

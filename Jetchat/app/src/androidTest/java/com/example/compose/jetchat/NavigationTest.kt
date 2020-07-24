@@ -18,11 +18,11 @@ package com.example.compose.jetchat
 
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.compose.Providers
+import androidx.compose.runtime.Providers
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
-import androidx.ui.test.android.AndroidComposeTestRule
+import androidx.ui.test.android.createAndroidComposeRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.onNodeWithText
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
@@ -40,7 +40,7 @@ import org.junit.Test
 class NavigationTest {
 
     @get:Rule
-    val composeTestRule = AndroidComposeTestRule<NavActivity>()
+    val composeTestRule = createAndroidComposeRule<NavActivity>(disableTransitions = true)
 
     // Note that keeping these references is only safe if the activity is not recreated.
     // See: https://issuetracker.google.com/160862278

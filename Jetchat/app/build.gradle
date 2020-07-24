@@ -54,7 +54,8 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = '1.8'
+        allWarningsAsErrors = true
     }
 
     buildFeatures {
@@ -62,7 +63,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion Libs.AndroidX.Compose.kotlinCompilerVersion
+        kotlinCompilerVersion Libs.Kotlin.version
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 

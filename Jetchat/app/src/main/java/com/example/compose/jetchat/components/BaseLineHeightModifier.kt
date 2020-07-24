@@ -16,15 +16,14 @@
 
 package com.example.compose.jetchat.components
 
-import androidx.ui.core.Constraints
-import androidx.ui.core.LayoutDirection
-import androidx.ui.core.LayoutModifier
-import androidx.ui.core.Measurable
-import androidx.ui.core.MeasureScope
-import androidx.ui.core.Modifier
-import androidx.ui.text.FirstBaseline
-import androidx.ui.text.LastBaseline
-import androidx.ui.unit.Dp
+import androidx.compose.foundation.text.FirstBaseline
+import androidx.compose.foundation.text.LastBaseline
+import androidx.compose.ui.LayoutModifier
+import androidx.compose.ui.Measurable
+import androidx.compose.ui.MeasureScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 
 /**
  * Applied to a Text, it sets the distance between the top and the first baseline. It
@@ -45,8 +44,7 @@ data class BaselineHeightModifier(
 
     override fun MeasureScope.measure(
         measurable: Measurable,
-        constraints: Constraints,
-        layoutDirection: LayoutDirection // TODO: Support RTL
+        constraints: Constraints
     ): MeasureScope.MeasureResult {
 
         val textPlaceable = measurable.measure(constraints)
@@ -62,4 +60,4 @@ data class BaselineHeightModifier(
 }
 
 fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier =
-    this + BaselineHeightModifier(heightFromBaseline)
+    this.then(BaselineHeightModifier(heightFromBaseline))
