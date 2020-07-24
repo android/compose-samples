@@ -19,6 +19,7 @@ import com.example.jetsnack.buildsrc.Libs
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
 }
 
 android {

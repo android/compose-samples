@@ -18,31 +18,25 @@ package com.example.jetsnack.ui.components
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Border
 import androidx.ui.graphics.Color
-import androidx.ui.graphics.Shape
-import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Divider
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun JetsnackCard(
+fun JetsnackDivider(
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.medium,
-    color: Color = JetsnackTheme.colors.uiBackground,
-    contentColor: Color = JetsnackTheme.colors.textPrimary,
-    border: Border? = null,
-    elevation: Dp = 1.dp,
-    content: @Composable () -> Unit
+    color: Color = JetsnackTheme.colors.uiBorder.copy(alpha = DividerAlpha),
+    thickness: Dp = 1.dp,
+    startIndent: Dp = 0.dp
 ) {
-    JetsnackSurface(
+    Divider(
         modifier = modifier,
-        shape = shape,
         color = color,
-        contentColor = contentColor,
-        elevation = elevation,
-        border = border,
-        content = content
+        thickness = thickness,
+        startIndent = startIndent
     )
 }
+
+private const val DividerAlpha = 0.12f

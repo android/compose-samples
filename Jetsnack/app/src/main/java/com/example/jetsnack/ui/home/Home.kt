@@ -54,8 +54,6 @@ import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.material.Surface
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.outlined.AccountCircle
 import androidx.ui.material.icons.outlined.Home
@@ -73,7 +71,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.systemBarPadding
 
 @Composable
-fun Home() {
+fun Home(onSnackSelected: (Long) -> Unit) {
     val (currentSection, setCurrentSection) = state { HomeSections.Feed }
     val navItems = HomeSections.values().toList()
     JetsnackScaffold(
@@ -89,7 +87,7 @@ fun Home() {
         Crossfade(currentSection) { section ->
             when (section) {
                 HomeSections.Feed -> Feed(
-                    onSnackClick = { /* todo */ },
+                    onSnackClick = onSnackSelected,
                     modifier = modifier
                 )
                 HomeSections.Search -> Search(modifier)
