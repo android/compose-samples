@@ -18,4 +18,12 @@
     <string name="home_search">Search</string>
     <string name="home_cart">My Cart</string>
     <string name="home_profile">Profile</string>
+
+    <!-- Snack Detail -->
+    <string name="detail_header">Details</string>
+    <string name="detail_placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud...</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="ingredients_list">Vanilla, Almond Flour, Eggs, Butter, Cream, Sugar</string>
+    <string name="quantity">Qty</string>
+    <string name="add_to_cart">ADD TO CART</string>
 </resources>

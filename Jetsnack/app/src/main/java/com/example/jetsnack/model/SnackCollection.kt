@@ -33,6 +33,8 @@ enum class CollectionType { Normal, Highlight }
  */
 object SnackRepo {
     fun getSnacks(): List<SnackCollection> = snackCollections
+    fun getSnack(snackId: Long) = snacks.find { it.id == snackId }!!
+    fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
 }
 
 /**
@@ -184,10 +186,20 @@ val exclusive = tastyTreats.copy(
     name = "Only on Jetsnack"
 )
 
+val also = tastyTreats.copy(
+    id = 6L,
+    name = "Customers also bought"
+)
+
 val snackCollections = listOf(
     tastyTreats,
     popular,
     wfhFavs,
     newlyAdded,
     exclusive
+)
+
+val related = listOf(
+    also,
+    popular
 )
