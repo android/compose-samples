@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,9 +18,9 @@ package com.example.jetsnack.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Providers
-import androidx.compose.remember
-import androidx.ui.core.setContent
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.setContent
 import com.example.jetsnack.ui.utils.SystemUiController
 import com.example.jetsnack.ui.utils.SystemUiControllerAmbient
 

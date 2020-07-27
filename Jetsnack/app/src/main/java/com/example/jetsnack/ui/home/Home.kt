@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,54 +16,55 @@
 
 package com.example.jetsnack.ui.home
 
-import androidx.animation.AnimationBuilder
-import androidx.animation.PhysicsBuilder
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
-import androidx.compose.Composable
-import androidx.compose.onCommit
-import androidx.compose.remember
-import androidx.compose.state
+import androidx.compose.animation.AnimatedFloatModel
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animate
+import androidx.compose.animation.animatedFloat
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.drawBorder
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.state
+import androidx.compose.ui.Layout
+import androidx.compose.ui.MeasureScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Placeable
+import androidx.compose.ui.TransformOrigin
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.drawLayer
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.layout.id
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.AnimationClockAmbient
+import androidx.compose.ui.platform.ConfigurationAmbient
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
-import androidx.ui.animation.AnimatedFloatModel
-import androidx.ui.animation.Crossfade
-import androidx.ui.animation.animate
-import androidx.ui.animation.animatedFloat
-import androidx.ui.core.AnimationClockAmbient
-import androidx.ui.core.ConfigurationAmbient
-import androidx.ui.core.Layout
-import androidx.ui.core.MeasureScope
-import androidx.ui.core.Modifier
-import androidx.ui.core.Placeable
-import androidx.ui.core.TransformOrigin
-import androidx.ui.core.clip
-import androidx.ui.core.drawLayer
-import androidx.ui.core.tag
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentGravity
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.drawBorder
-import androidx.ui.foundation.selection.selectable
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.Shape
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.AccountCircle
-import androidx.ui.material.icons.outlined.Home
-import androidx.ui.material.icons.outlined.Search
-import androidx.ui.material.icons.outlined.ShoppingCart
-import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.Dp
-import androidx.ui.unit.dp
-import androidx.ui.util.lerp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -110,8 +111,8 @@ private fun JetsnackBottomNav(
         color = color,
         contentColor = contentColor
     ) {
-        val animBuilder = remember {
-            PhysicsBuilder<Float>(
+        val springSpec = remember {
+            SpringSpec<Float>(
                 // Determined experimentally
                 stiffness = 800f,
                 dampingRatio = 0.8f
@@ -121,16 +122,18 @@ private fun JetsnackBottomNav(
             selectedIndex = currentSection.ordinal,
             itemCount = items.size,
             indicator = { JetsnackBottomNavIndicator() },
-            animBuilder = animBuilder,
+            animSpec = springSpec,
             modifier = Modifier.systemBarPadding(bottom = true)
         ) {
             items.forEach { section ->
                 val selected = section == currentSection
-                val tint = animate(if (selected) {
-                    JetsnackTheme.colors.iconInteractive
-                } else {
-                    JetsnackTheme.colors.iconInteractiveInactive
-                })
+                val tint = animate(
+                    if (selected) {
+                        JetsnackTheme.colors.iconInteractive
+                    } else {
+                        JetsnackTheme.colors.iconInteractiveInactive
+                    }
+                )
 
                 JetsnackBottomNavigationItem(
                     icon = {
@@ -153,7 +156,7 @@ private fun JetsnackBottomNav(
                     },
                     selected = selected,
                     onSelected = { onSectionSelected(section) },
-                    animBuilder = animBuilder,
+                    animSpec = springSpec,
                     modifier = BottomNavigationItemPadding
                         .clip(BottomNavIndicatorShape)
                 )
@@ -166,7 +169,7 @@ private fun JetsnackBottomNav(
 private fun JetsnackBottomNavLayout(
     selectedIndex: Int,
     itemCount: Int,
-    animBuilder: AnimationBuilder<Float>,
+    animSpec: AnimationSpec<Float>,
     indicator: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -184,7 +187,7 @@ private fun JetsnackBottomNavLayout(
         selectionFractions.forEachIndexed { index, selectionFraction ->
             val target = if (index == selectedIndex) 1f else 0f
             if (selectionFraction.targetValue != target) {
-                selectionFraction.animateTo(target, animBuilder)
+                selectionFraction.animateTo(target, animSpec)
             }
         }
     }
@@ -195,15 +198,15 @@ private fun JetsnackBottomNavLayout(
         modifier = modifier.preferredHeight(BottomNavHeight),
         children = {
             content()
-            Box(Modifier.tag("indicator"), children = indicator)
+            Box(Modifier.layoutId("indicator"), children = indicator)
         }
-    ) { measurables, constraints, _ ->
+    ) { measurables, constraints ->
         check(itemCount == (measurables.size - 1)) // account for indicator
 
         // Divide the width into n+1 slots and give the selected item 2 slots
         val unselectedWidth = constraints.maxWidth / (itemCount + 1)
         val selectedWidth = constraints.maxWidth - (itemCount - 1) * unselectedWidth
-        val indicatorMeasurable = measurables.first { it.tag == "indicator" }
+        val indicatorMeasurable = measurables.first { it.id == "indicator" }
 
         val itemPlaceables = measurables
             .filterNot { it == indicatorMeasurable }
@@ -227,12 +230,12 @@ private fun JetsnackBottomNavLayout(
         // Animate the indicator position
         val targetIndicatorLeft = selectedIndex * unselectedWidth.toFloat()
         if (indicatorLeft.targetValue != targetIndicatorLeft) {
-            indicatorLeft.animateTo(targetIndicatorLeft, animBuilder)
+            indicatorLeft.animateTo(targetIndicatorLeft, animSpec)
         }
 
         layout(
             width = constraints.maxWidth,
-            height = itemPlaceables.maxBy { it.height }?.height ?: 0
+            height = itemPlaceables.maxByOrNull { it.height }?.height ?: 0
         ) {
             indicatorPlaceable.place(x = indicatorLeft.value.toInt(), y = 0)
             var x = 0
@@ -250,7 +253,7 @@ fun JetsnackBottomNavigationItem(
     text: @Composable () -> Unit,
     selected: Boolean,
     onSelected: () -> Unit,
-    animBuilder: AnimationBuilder<Float>,
+    animSpec: AnimationSpec<Float>,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -258,7 +261,7 @@ fun JetsnackBottomNavigationItem(
         gravity = ContentGravity.Center
     ) {
         // Animate the icon/text positions within the item based on selection
-        val animationProgress = animate(if (selected) 1f else 0f, animBuilder)
+        val animationProgress = animate(if (selected) 1f else 0f, animSpec)
         JetsnackBottomNavItemLayout(
             icon = icon,
             text = text,
@@ -275,11 +278,11 @@ private fun JetsnackBottomNavItemLayout(
 ) {
     Layout(
         children = {
-            Box(Modifier.tag("icon"), children = icon)
+            Box(Modifier.layoutId("icon"), children = icon)
             val scale = lerp(0.6f, 1f, animationProgress)
             Box(
                 modifier = Modifier
-                    .tag("text")
+                    .layoutId("text")
                     .drawLayer(
                         alpha = animationProgress,
                         scaleX = scale,
@@ -290,9 +293,9 @@ private fun JetsnackBottomNavItemLayout(
                 children = text
             )
         }
-    ) { measurables, constraints, _ ->
-        val iconPlaceable = measurables.first { it.tag == "icon" }.measure(constraints)
-        val textPlaceable = measurables.first { it.tag == "text" }.measure(constraints)
+    ) { measurables, constraints ->
+        val iconPlaceable = measurables.first { it.id == "icon" }.measure(constraints)
+        val textPlaceable = measurables.first { it.id == "text" }.measure(constraints)
 
         placeTextAndIcon(
             textPlaceable,
@@ -335,7 +338,7 @@ private fun JetsnackBottomNavIndicator(
     Spacer(
         modifier = Modifier
             .fillMaxSize()
-            + BottomNavigationItemPadding
+            .then(BottomNavigationItemPadding)
             .drawBorder(strokeWidth, color, shape)
     )
 }

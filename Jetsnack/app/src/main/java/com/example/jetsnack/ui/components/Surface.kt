@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,23 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.Composable
-import androidx.compose.Providers
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.core.drawShadow
-import androidx.ui.core.zIndex
-import androidx.ui.foundation.Border
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentColorAmbient
-import androidx.ui.foundation.drawBackground
-import androidx.ui.foundation.drawBorder
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.RectangleShape
-import androidx.ui.graphics.Shape
-import androidx.ui.graphics.compositeOver
-import androidx.ui.unit.Dp
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Border
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.background
+import androidx.compose.foundation.drawBorder
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.ln
 
@@ -52,8 +52,8 @@ fun JetsnackSurface(
     Box(
         modifier = modifier.drawShadow(elevation = elevation, shape = shape, clip = false)
             .zIndex(elevation.value)
-            + (if (border != null) Modifier.drawBorder(border, shape) else Modifier)
-            .drawBackground(
+            .then(if (border != null) Modifier.drawBorder(border, shape) else Modifier)
+            .background(
                 color = getBackgroundColorForElevation(color, elevation),
                 shape = shape
             )
@@ -65,9 +65,9 @@ fun JetsnackSurface(
 
 @Composable
 private fun getBackgroundColorForElevation(color: Color, elevation: Dp): Color {
-    return if (elevation > 0.dp //&& https://issuetracker.google.com/issues/161429530
-    //JetsnackTheme.colors.isDark //&&
-    //color == JetsnackTheme.colors.uiBackground
+    return if (elevation > 0.dp // && https://issuetracker.google.com/issues/161429530
+        // JetsnackTheme.colors.isDark //&&
+        // color == JetsnackTheme.colors.uiBackground
     ) {
         color.withElevation(elevation)
     } else {

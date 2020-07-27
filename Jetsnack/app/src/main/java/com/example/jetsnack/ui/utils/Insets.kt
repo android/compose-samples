@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,24 +17,24 @@
 package com.example.jetsnack.ui.utils
 
 import android.view.View
-import androidx.compose.Composable
-import androidx.compose.Immutable
-import androidx.compose.Providers
-import androidx.compose.getValue
-import androidx.compose.onActive
-import androidx.compose.onCommit
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.compose.staticAmbientOf
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onActive
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.ViewAmbient
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.ViewAmbient
-import androidx.ui.core.composed
-import androidx.ui.layout.padding
-import androidx.ui.unit.Dp
-import androidx.ui.unit.dp
 
 @Immutable
 data class Insets(

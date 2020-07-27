@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,38 +16,38 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.Composable
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContentScale
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.HorizontalScroller
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.ScrollerPosition
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredHeightIn
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.preferredWidth
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.ArrowForward
-import androidx.ui.text.style.TextOverflow
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableRow
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredHeightIn
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.Dp
-import androidx.ui.unit.dp
 import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -113,7 +113,7 @@ private fun HighlightedSnacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scroll = ScrollerPosition()
+    val scroll = rememberScrollState(0f)
     val gradient = when (index % 2) {
         0 -> JetsnackTheme.colors.interactivePrimary
         else -> JetsnackTheme.colors.interactiveSecondary
@@ -122,8 +122,8 @@ private fun HighlightedSnacks(
     val gradientWidth = with(DensityAmbient.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
-    HorizontalScroller(
-        scrollerPosition = scroll,
+    ScrollableRow(
+        scrollState = scroll,
         modifier = modifier
     ) {
         Spacer(modifier = Modifier.preferredWidth(24.dp))
@@ -140,7 +140,7 @@ private fun Snacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    HorizontalScroller(modifier = modifier) {
+    ScrollableRow(modifier = modifier) {
         Spacer(modifier = Modifier.preferredWidth(16.dp))
         snacks.forEach { snack ->
             SnackItem(snack, onSnackClick)
@@ -178,7 +178,6 @@ fun SnackItem(
         }
     }
 }
-
 
 @Composable
 private fun HighlightSnackItem(

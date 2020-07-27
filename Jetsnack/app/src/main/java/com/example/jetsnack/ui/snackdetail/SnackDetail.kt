@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,50 +16,51 @@
 
 package com.example.jetsnack.ui.snackdetail
 
-import androidx.compose.Composable
-import androidx.compose.key
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Constraints
-import androidx.ui.core.ContentScale
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Layout
-import androidx.ui.core.Modifier
-import androidx.ui.core.drawLayer
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.ScrollerPosition
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.drawBackground
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredHeightIn
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.preferredWidth
-import androidx.ui.layout.preferredWidthIn
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.AddCircleOutline
-import androidx.ui.material.icons.outlined.ArrowBack
-import androidx.ui.material.icons.outlined.RemoveCircleOutline
-import androidx.ui.res.stringResource
-import androidx.ui.text.style.TextAlign
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredHeightIn
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.preferredWidthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AddCircleOutline
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.RemoveCircleOutline
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Layout
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.drawLayer
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
-import androidx.ui.unit.lerp
-import androidx.ui.unit.sp
-import androidx.ui.util.lerp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -97,7 +98,7 @@ fun SnackDetail(
     val related = remember(snackId) { SnackRepo.getRelated(snackId) }
 
     Stack(Modifier.fillMaxSize()) {
-        val scroll = ScrollerPosition()
+        val scroll = rememberScrollState(0f)
         Header()
         Body(related, scroll)
         Title(snack, scroll.value)
@@ -125,7 +126,7 @@ private fun Up(upPress: () -> Unit) {
             .systemBarPadding(top = true)
             .padding(horizontal = 16.dp, vertical = 10.dp)
             .preferredSize(36.dp)
-            .drawBackground(
+            .background(
                 color = Neutral8.copy(alpha = 0.32f),
                 shape = CircleShape
             )
@@ -140,7 +141,7 @@ private fun Up(upPress: () -> Unit) {
 @Composable
 private fun Body(
     related: List<SnackCollection>,
-    scroll: ScrollerPosition
+    scroll: ScrollState
 ) {
     Column {
         Spacer(
@@ -149,7 +150,7 @@ private fun Body(
                 .systemBarPadding(top = true)
                 .preferredHeight(MinTitleOffset)
         )
-        VerticalScroller(scroll) {
+        ScrollableColumn(scrollState = scroll) {
             Spacer(Modifier.preferredHeight(GradientScroll))
             JetsnackSurface(Modifier.fillMaxWidth()) {
                 Column {
@@ -220,7 +221,7 @@ private fun Title(snack: Snack, scroll: Float) {
             .preferredHeightIn(minHeight = TitleHeight)
             .systemBarPadding(top = true)
             .drawLayer(translationY = offset)
-            .drawBackground(color = JetsnackTheme.colors.uiBackground)
+            .background(color = JetsnackTheme.colors.uiBackground)
     ) {
         Spacer(Modifier.preferredHeight(16.dp))
         Text(
@@ -259,7 +260,7 @@ private fun Image(
 
     CollapsingImageLayout(
         collapseFraction = collapseFraction,
-        modifier = HzPadding + Modifier.systemBarPadding(top = true)
+        modifier = HzPadding.then(Modifier.systemBarPadding(top = true))
     ) {
         JetsnackSurface(
             color = Color.LightGray,
@@ -283,7 +284,7 @@ private fun CollapsingImageLayout(
     Layout(
         modifier = modifier,
         children = image
-    ) { measurables, constraints, _ ->
+    ) { measurables, constraints ->
         check(measurables.size == 1)
 
         val imageMaxSize = min(ExpandedImageSize.toIntPx(), constraints.maxWidth)
@@ -316,7 +317,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                 verticalGravity = Alignment.CenterVertically,
                 modifier = Modifier
                     .systemBarPadding(bottom = true)
-                    + HzPadding
+                    .then(HzPadding)
                     .preferredHeightIn(minHeight = BottomBarHeight)
             ) {
                 Text(

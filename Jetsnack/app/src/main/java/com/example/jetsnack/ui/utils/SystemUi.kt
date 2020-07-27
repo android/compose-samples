@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,11 @@ package com.example.jetsnack.ui.utils
 import android.os.Build
 import android.view.View
 import android.view.Window
-import androidx.compose.staticAmbientOf
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.compositeOver
-import androidx.ui.graphics.luminance
-import androidx.ui.graphics.toArgb
+import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
 
 /**
  * A helper class for setting the navigation and status bar colors for a [Window], gracefully

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,24 +16,24 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.getValue
-import androidx.compose.remember
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.animation.animate
-import androidx.ui.core.Modifier
-import androidx.ui.core.composed
-import androidx.ui.core.drawWithContent
-import androidx.ui.foundation.drawBackground
-import androidx.ui.foundation.drawBorder
-import androidx.ui.geometry.Size
-import androidx.ui.graphics.BlendMode
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.HorizontalGradient
-import androidx.ui.graphics.LinearGradient
-import androidx.ui.graphics.Shape
-import androidx.ui.graphics.TileMode
-import androidx.ui.unit.dp
+import androidx.compose.animation.animate
+import androidx.compose.foundation.background
+import androidx.compose.foundation.drawBorder
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.drawWithContent
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.HorizontalGradient
+import androidx.compose.ui.graphics.LinearGradient
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.unit.dp
 
 fun Modifier.horizontalGradientBackground(
     colors: List<Color>
@@ -92,7 +92,7 @@ fun Modifier.offsetGradientBackground(
     colors: List<Color>,
     width: Float,
     offset: Float = 0f
-) = drawBackground(
+) = background(
     HorizontalGradient(
         colors,
         startX = -offset,

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,8 +19,8 @@ package com.example.jetsnack.ui.utils
 import android.os.Parcelable
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.frames.modelListOf
-import androidx.ui.savedinstancestate.listSaver
+import androidx.compose.runtime.savedinstancestate.listSaver
+import androidx.compose.runtime.toMutableStateList
 
 /**
  * A simple navigator which maintains a back stack.
@@ -34,7 +34,7 @@ class Navigator<T : Parcelable> private constructor(
         backDispatcher: OnBackPressedDispatcher
     ) : this(listOf(initial), backDispatcher)
 
-    private val backStack = modelListOf<T>().apply { addAll(initialBackStack) }
+    private val backStack = initialBackStack.toMutableStateList()
     private val backCallback = object : OnBackPressedCallback(canGoBack()) {
         override fun handleOnBackPressed() {
             back()

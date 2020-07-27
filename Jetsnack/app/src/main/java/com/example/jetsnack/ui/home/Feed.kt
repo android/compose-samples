@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,38 +16,39 @@
 
 package com.example.jetsnack.ui.home
 
-import androidx.compose.Composable
-import androidx.compose.key
-import androidx.compose.remember
-import androidx.ui.animation.animate
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.HorizontalScroller
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.selection.toggleable
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.Shape
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredHeightIn
-import androidx.ui.layout.preferredWidth
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TopAppBar
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.ExpandMore
-import androidx.ui.material.icons.rounded.FilterList
-import androidx.ui.text.style.TextAlign
-import androidx.ui.text.style.TextOverflow
+import androidx.compose.animation.animate
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.ScrollableRow
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope.gravity
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredHeightIn
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.rounded.FilterList
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
@@ -60,7 +61,6 @@ import com.example.jetsnack.ui.components.gradientBorder
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.systemBarPadding
-
 
 @Composable
 fun Feed(
@@ -84,7 +84,7 @@ private fun SnackCollectionList(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    VerticalScroller(modifier = modifier) {
+    ScrollableColumn(modifier = modifier) {
         Spacer(
             modifier = Modifier
                 .systemBarPadding(top = true)
@@ -146,7 +146,7 @@ private fun DestinationBar(modifier: Modifier = Modifier) {
 
 @Composable
 private fun FilterBar(filters: List<Filter>) {
-    HorizontalScroller(modifier = Modifier.preferredHeightIn(minHeight = 56.dp)) {
+    ScrollableRow(modifier = Modifier.preferredHeightIn(minHeight = 56.dp)) {
         Spacer(Modifier.preferredWidth(8.dp))
         IconButton(
             onClick = { /* todo */ },
@@ -190,7 +190,7 @@ private fun FilterChip(
         if (selected) JetsnackTheme.colors.textInteractive else JetsnackTheme.colors.textSecondary
     )
     JetsnackSurface(
-        modifier = modifier.preferredHeight(28.dp) + border,
+        modifier = modifier.preferredHeight(28.dp).then(border),
         color = backgroundColor,
         contentColor = textColor,
         shape = shape,

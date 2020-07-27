@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,25 +16,25 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.layout.InnerPadding
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun JetsnackScaffold(
-    //scaffoldState: ScaffoldState = remember { ScaffoldState() },
+    // scaffoldState: ScaffoldState = remember { ScaffoldState() },
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable (() -> Unit)? = null,
-    //floatingActionButton: @Composable (() -> Unit)? = null,
-    //floatingActionButtonPosition: Scaffold.FabPosition = Scaffold.FabPosition.End,
-    //isFloatingActionButtonDocked: Boolean = false,
-    //drawerContent: @Composable (() -> Unit)? = null,
-    //drawerShape: Shape = MaterialTheme.shapes.large,
-    //drawerElevation: Dp = DrawerConstants.DefaultElevation,
+    // floatingActionButton: @Composable (() -> Unit)? = null,
+    // floatingActionButtonPosition: Scaffold.FabPosition = Scaffold.FabPosition.End,
+    // isFloatingActionButtonDocked: Boolean = false,
+    // drawerContent: @Composable (() -> Unit)? = null,
+    // drawerShape: Shape = MaterialTheme.shapes.large,
+    // drawerElevation: Dp = DrawerConstants.DefaultElevation,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
     bodyContent: @Composable (InnerPadding) -> Unit
 ) {
