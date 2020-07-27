@@ -43,9 +43,9 @@ subprojects {
         kotlinOptions {
             jvmTarget = '1.8'
             allWarningsAsErrors = true
+            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-            freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
         }
     }
     apply plugin: 'com.diffplug.gradle.spotless'

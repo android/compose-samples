@@ -32,7 +32,7 @@ fun JetsnackGradientTintedIconButton(
     colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
     // This should use a layer + srcIn but needs investigation
-    val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.darken else BlendMode.plus
+    val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
     IconButton(onClick = onClick) {
         Icon(
             asset = asset,

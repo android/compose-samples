@@ -50,8 +50,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.drawLayer
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -70,11 +68,11 @@ import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackGradientTintedIconButton
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackCollection
+import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.systemBarPadding
-import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlin.math.max
 import kotlin.math.min
 
@@ -164,6 +162,7 @@ private fun Body(
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
+                    Spacer(Modifier.preferredHeight(4.dp))
                     Text(
                         text = stringResource(R.string.detail_placeholder),
                         style = MaterialTheme.typography.body1,
@@ -178,6 +177,7 @@ private fun Body(
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
+                    Spacer(Modifier.preferredHeight(4.dp))
                     Text(
                         text = stringResource(R.string.ingredients_list),
                         style = MaterialTheme.typography.body1,
@@ -262,16 +262,10 @@ private fun Image(
         collapseFraction = collapseFraction,
         modifier = HzPadding.then(Modifier.systemBarPadding(top = true))
     ) {
-        JetsnackSurface(
-            color = Color.LightGray,
-            shape = CircleShape,
+        SnackImage(
+            imageUrl = imageUrl,
             modifier = Modifier.fillMaxSize()
-        ) {
-            CoilImage(
-                data = imageUrl,
-                contentScale = ContentScale.Crop
-            )
-        }
+        )
     }
 }
 

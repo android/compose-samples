@@ -44,7 +44,7 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Layout
 import androidx.compose.ui.MeasureScope
 import androidx.compose.ui.Modifier
@@ -68,12 +68,13 @@ import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.systemBarPadding
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
-    val (currentSection, setCurrentSection) = state { HomeSections.Feed }
+    val (currentSection, setCurrentSection) = savedInstanceState { HomeSections.Feed }
     val navItems = HomeSections.values().toList()
     JetsnackScaffold(
         bottomBar = {
@@ -91,7 +92,7 @@ fun Home(onSnackSelected: (Long) -> Unit) {
                     onSnackClick = onSnackSelected,
                     modifier = modifier
                 )
-                HomeSections.Search -> Search(modifier)
+                HomeSections.Search -> Search(onSnackSelected, modifier)
                 HomeSections.Cart -> Cart(modifier)
                 HomeSections.Profile -> Profile(modifier)
             }

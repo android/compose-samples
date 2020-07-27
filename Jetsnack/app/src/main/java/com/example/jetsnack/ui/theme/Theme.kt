@@ -17,7 +17,7 @@
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.ColorPalette
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
@@ -28,7 +28,6 @@ import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticAmbientOf
-import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
 import com.example.jetsnack.ui.utils.SystemUiControllerAmbient
 
@@ -36,6 +35,7 @@ private val LightColorPalette = JetsnackColorPalette(
     brand = Shadow5,
     uiBackground = Neutral0,
     uiBorder = Neutral4,
+    uiFloated = FunctionalGrey,
     textSecondary = Neutral7,
     textHelp = Neutral6,
     textInteractive = Neutral0,
@@ -54,9 +54,10 @@ private val LightColorPalette = JetsnackColorPalette(
 )
 
 private val DarkColorPalette = JetsnackColorPalette(
-    brand = Shadow5,
+    brand = Shadow1,
     uiBackground = Neutral8,
     uiBorder = Neutral3,
+    uiFloated = FunctionalDarkGrey,
     textPrimary = Shadow1,
     textSecondary = Neutral0,
     textHelp = Neutral1,
@@ -92,7 +93,7 @@ fun JetsnackTheme(
 
     ProvideJetsnackColors(colors) {
         MaterialTheme(
-            colors = ExplosiveColorPalette(!darkTheme),
+            colors = debugColors(darkTheme),
             typography = Typography,
             shapes = Shapes,
             content = content
@@ -107,7 +108,7 @@ object JetsnackTheme {
 }
 
 /**
- * Jetsnack Color Palette
+ * Jetsnack custom Color Palette
  */
 @Stable
 class JetsnackColorPalette(
@@ -120,6 +121,7 @@ class JetsnackColorPalette(
     brand: Color,
     uiBackground: Color,
     uiBorder: Color,
+    uiFloated: Color,
     interactivePrimary: List<Color> = gradient2_1,
     interactiveSecondary: List<Color> = gradient2_2,
     interactiveMask: List<Color> = gradient6_1,
@@ -136,56 +138,55 @@ class JetsnackColorPalette(
     notificationBadge: Color = error,
     isDark: Boolean
 ) {
-    var gradient6_1 by mutableStateOf(gradient6_1, structuralEqualityPolicy())
+    var gradient6_1 by mutableStateOf(gradient6_1)
         private set
-    var gradient6_2 by mutableStateOf(gradient6_2, structuralEqualityPolicy())
+    var gradient6_2 by mutableStateOf(gradient6_2)
         private set
-    var gradient3_1 by mutableStateOf(gradient3_1, structuralEqualityPolicy())
+    var gradient3_1 by mutableStateOf(gradient3_1)
         private set
-    var gradient3_2 by mutableStateOf(gradient3_2, structuralEqualityPolicy())
+    var gradient3_2 by mutableStateOf(gradient3_2)
         private set
-    var gradient2_1 by mutableStateOf(gradient2_1, structuralEqualityPolicy())
+    var gradient2_1 by mutableStateOf(gradient2_1)
         private set
-    var gradient2_2 by mutableStateOf(gradient2_2, structuralEqualityPolicy())
+    var gradient2_2 by mutableStateOf(gradient2_2)
         private set
-    var brand by mutableStateOf(brand, structuralEqualityPolicy())
+    var brand by mutableStateOf(brand)
         private set
-    var uiBackground by mutableStateOf(uiBackground, structuralEqualityPolicy())
+    var uiBackground by mutableStateOf(uiBackground)
         private set
-    var uiBorder by mutableStateOf(uiBorder, structuralEqualityPolicy())
+    var uiBorder by mutableStateOf(uiBorder)
         private set
-    var interactivePrimary by mutableStateOf(interactivePrimary, structuralEqualityPolicy())
+    var uiFloated by mutableStateOf(uiFloated)
         private set
-    var interactiveSecondary by mutableStateOf(interactiveSecondary, structuralEqualityPolicy())
+    var interactivePrimary by mutableStateOf(interactivePrimary)
         private set
-    var interactiveMask by mutableStateOf(interactiveMask, structuralEqualityPolicy())
+    var interactiveSecondary by mutableStateOf(interactiveSecondary)
         private set
-    var textPrimary by mutableStateOf(textPrimary, structuralEqualityPolicy())
+    var interactiveMask by mutableStateOf(interactiveMask)
         private set
-    var textSecondary by mutableStateOf(textSecondary, structuralEqualityPolicy())
+    var textPrimary by mutableStateOf(textPrimary)
         private set
-    var textHelp by mutableStateOf(textHelp, structuralEqualityPolicy())
+    var textSecondary by mutableStateOf(textSecondary)
         private set
-    var textInteractive by mutableStateOf(textInteractive, structuralEqualityPolicy())
+    var textHelp by mutableStateOf(textHelp)
         private set
-    var textLink by mutableStateOf(textLink, structuralEqualityPolicy())
+    var textInteractive by mutableStateOf(textInteractive)
         private set
-    var iconPrimary by mutableStateOf(iconPrimary, structuralEqualityPolicy())
+    var textLink by mutableStateOf(textLink)
         private set
-    var iconSecondary by mutableStateOf(iconSecondary, structuralEqualityPolicy())
+    var iconPrimary by mutableStateOf(iconPrimary)
         private set
-    var iconInteractive by mutableStateOf(iconInteractive, structuralEqualityPolicy())
+    var iconSecondary by mutableStateOf(iconSecondary)
         private set
-    var iconInteractiveInactive by mutableStateOf(
-        iconInteractiveInactive,
-        structuralEqualityPolicy()
-    )
+    var iconInteractive by mutableStateOf(iconInteractive)
         private set
-    var error by mutableStateOf(error, structuralEqualityPolicy())
+    var iconInteractiveInactive by mutableStateOf(iconInteractiveInactive)
         private set
-    var notificationBadge by mutableStateOf(notificationBadge, structuralEqualityPolicy())
+    var error by mutableStateOf(error)
         private set
-    var isDark by mutableStateOf(isDark, structuralEqualityPolicy())
+    var notificationBadge by mutableStateOf(notificationBadge)
+        private set
+    var isDark by mutableStateOf(isDark)
         private set
 
     fun update(other: JetsnackColorPalette) {
@@ -198,6 +199,7 @@ class JetsnackColorPalette(
         brand = other.brand
         uiBackground = other.uiBackground
         uiBorder = other.uiBorder
+        uiFloated = other.uiFloated
         interactivePrimary = other.interactivePrimary
         interactiveSecondary = other.interactiveSecondary
         interactiveMask = other.interactiveMask
@@ -216,44 +218,6 @@ class JetsnackColorPalette(
     }
 }
 
-/**
- * A Material [ColorPalette] implementation which throws if accessed. This prevents direct usage
- * of [MaterialTheme.colors], directing callers to [JetsnackTheme.colors].
- *
- * Note we allow usage of [ColorPalette.isLight] which is used by [ripples][androidx.ui.material.ripple.DefaultRippleTheme]
- */
-private class ExplosiveColorPalette(
-    override val isLight: Boolean
-) : ColorPalette {
-    override val background: Color
-        get() = error(ErrorMessage)
-    override val error: Color
-        get() = error(ErrorMessage)
-    override val onBackground: Color
-        get() = error(ErrorMessage)
-    override val onError: Color
-        get() = error(ErrorMessage)
-    override val onPrimary: Color
-        get() = error(ErrorMessage)
-    override val onSecondary: Color
-        get() = error(ErrorMessage)
-    override val onSurface: Color
-        get() = error(ErrorMessage)
-    override val primary: Color
-        get() = error(ErrorMessage)
-    override val primaryVariant: Color
-        get() = error(ErrorMessage)
-    override val secondary: Color
-        get() = error(ErrorMessage)
-    override val secondaryVariant: Color
-        get() = error(ErrorMessage)
-    override val surface: Color
-        get() = error(ErrorMessage)
-}
-
-private const val ErrorMessage =
-    "Do not use MaterialTheme.colors directly, use JetsnackTheme.colors"
-
 @Composable
 fun ProvideJetsnackColors(
     colors: JetsnackColorPalette,
@@ -267,3 +231,26 @@ fun ProvideJetsnackColors(
 private val JetsnackColorAmbient = staticAmbientOf<JetsnackColorPalette> {
     error("No JetsnackColorPalette provided")
 }
+
+/**
+ * A Material [Colors] implementation which sets all colors to [debugColor] to discourage usage of
+ * [MaterialTheme.colors] in preference to [JetsnackTheme.colors].
+ */
+fun debugColors(
+    darkTheme: Boolean,
+    debugColor: Color = Color.Magenta
+) = Colors(
+    primary = debugColor,
+    primaryVariant = debugColor,
+    secondary = debugColor,
+    secondaryVariant = debugColor,
+    background = debugColor,
+    surface = debugColor,
+    error = debugColor,
+    onPrimary = debugColor,
+    onSecondary = debugColor,
+    onBackground = debugColor,
+    onSurface = debugColor,
+    onError = debugColor,
+    isLight = !darkTheme
+)

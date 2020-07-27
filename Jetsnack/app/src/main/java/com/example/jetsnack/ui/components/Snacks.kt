@@ -115,8 +115,8 @@ private fun HighlightedSnacks(
 ) {
     val scroll = rememberScrollState(0f)
     val gradient = when (index % 2) {
-        0 -> JetsnackTheme.colors.interactivePrimary
-        else -> JetsnackTheme.colors.interactiveSecondary
+        0 -> JetsnackTheme.colors.gradient6_1
+        else -> JetsnackTheme.colors.gradient6_2
     }
     // The Cards show a gradient which spans 3 cards and scrolls with parallax.
     val gradientWidth = with(DensityAmbient.current) {
@@ -167,7 +167,8 @@ fun SnackItem(
         ) {
             SnackImage(
                 imageUrl = snack.imageUrl,
-                elevation = 4.dp
+                elevation = 4.dp,
+                modifier = Modifier.preferredSize(120.dp)
             )
             Text(
                 text = snack.name,
@@ -220,12 +221,16 @@ private fun HighlightSnackItem(
                 )
                 SnackImage(
                     imageUrl = snack.imageUrl,
-                    modifier = Modifier.gravity(Alignment.BottomCenter)
+                    modifier = Modifier
+                        .preferredSize(120.dp)
+                        .gravity(Alignment.BottomCenter)
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(8.dp))
             Text(
                 text = snack.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.h6,
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -251,11 +256,12 @@ fun SnackImage(
         color = Color.LightGray,
         elevation = elevation,
         shape = CircleShape,
-        modifier = modifier.preferredSize(120.dp)
+        modifier = modifier
     ) {
         CoilImage(
             data = imageUrl,
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

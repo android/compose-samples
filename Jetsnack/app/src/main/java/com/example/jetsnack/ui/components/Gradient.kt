@@ -65,7 +65,7 @@ fun Modifier.gradientBackground(
     colors: List<Color>,
     brushProvider: (List<Color>, Size) -> LinearGradient
 ): Modifier = composed {
-    var size by state { Size.zero }
+    var size by state { Size.Zero }
     val gradient = remember(colors, size) { brushProvider(colors, size) }
     drawWithContent {
         size = this.size
@@ -79,7 +79,7 @@ fun Modifier.gradientTint(
     blendMode: BlendMode,
     brushProvider: (List<Color>, Size) -> LinearGradient
 ) = composed {
-    var size by state { Size.zero }
+    var size by state { Size.Zero }
     val gradient = remember(colors, size) { brushProvider(colors, size) }
     drawWithContent {
         drawContent()

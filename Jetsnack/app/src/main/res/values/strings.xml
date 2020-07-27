@@ -14,10 +14,18 @@
   -->
 <resources>
     <string name="app_name">Jetsnack</string>
+
+    <!-- Home Tabs -->
     <string name="home_feed">Home</string>
     <string name="home_search">Search</string>
     <string name="home_cart">My Cart</string>
     <string name="home_profile">Profile</string>
+
+    <!-- Search -->
+    <string name="search_jetsnack">Search Jetsnack</string>
+    <string name="search_no_matches">No matches for “%1s”</string>
+    <string name="search_no_matches_retry">Try broadening your search</string>
+    <string name="search_count">%1d items</string>
 
     <!-- Snack Detail -->
     <string name="detail_header">Details</string>
