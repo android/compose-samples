@@ -61,6 +61,11 @@ object Libs {
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }
 
+        object Material {
+            private const val version = "1.2.0"
+            const val material = "com.google.android.material:material:$version"
+        }
+
         object Test {
             private const val version = "1.2.0"
             const val core = "androidx.test:core:$version"
