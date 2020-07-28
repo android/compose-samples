@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,31 +16,31 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.Composable
-import androidx.compose.launchInComposition
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.animation.Crossfade
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.contentColor
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.wrapContentHeight
-import androidx.ui.material.Button
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Snackbar
-import androidx.ui.material.TextButton
-import androidx.ui.res.stringResource
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Snackbar
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.snackbarAction
@@ -76,8 +76,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(id = R.string.forgot_password),
-                            modifier = Modifier.gravity(Alignment.CenterHorizontally)
+                            text = stringResource(id = R.string.forgot_password)
                         )
                     }
                 }

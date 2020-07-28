@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.example.compose.jetsurvey.buildsrc.Libs
 
 plugins {
     id 'com.android.application'
@@ -51,52 +52,31 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion Libs.Kotlin.version
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 }
 
-configurations {
-    ktlint
-}
-
 dependencies {
+    implementation Libs.Kotlin.stdlib
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation "com.google.android.material:material:1.2.0-beta01"
+    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.Navigation.fragment
+    implementation Libs.AndroidX.Navigation.uiKtx
+    implementation Libs.material
 
-    implementation("androidx.compose:compose-runtime:$compose_version")
-    implementation("androidx.ui:ui-core:$compose_version")
-    implementation("androidx.ui:ui-layout:$compose_version")
-    implementation("androidx.ui:ui-material:$compose_version")
-    implementation("androidx.ui:ui-material-icons-extended:$compose_version")
-    implementation("androidx.ui:ui-foundation:$compose_version")
-    implementation("androidx.ui:ui-animation:$compose_version")
-    implementation "androidx.ui:ui-tooling:$compose_version"
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.materialIconsExtended
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.runtimeLivedata
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    ktlint "com.pinterest:ktlint:0.37.0"
-}
-
-// Disable the 'paren-spacing' rule which conflicts with non-paren annotations on functional types
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check Kotlin code style."
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    args "src/**/*.kt"
-}
-check.dependsOn ktlint
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    description = "Fix Kotlin code style deviations."
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    args "-F", "src/**/*.kt"
+    androidTestImplementation Libs.junit
+    androidTestImplementation Libs.AndroidX.Test.core
+    androidTestImplementation Libs.AndroidX.Test.espressoCore
+    androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Test.Ext.junit
+    androidTestImplementation Libs.AndroidX.Compose.uiTest
 }
