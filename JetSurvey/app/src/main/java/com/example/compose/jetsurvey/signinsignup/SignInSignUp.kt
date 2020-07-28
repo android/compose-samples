@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,43 +16,43 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.Composable
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.currentTextStyle
-import androidx.ui.input.PasswordVisualTransformation
-import androidx.ui.input.VisualTransformation
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
-import androidx.ui.layout.wrapContentSize
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.OutlinedButton
-import androidx.ui.material.OutlinedTextField
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
-import androidx.ui.material.TopAppBar
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.ChevronLeft
-import androidx.ui.material.icons.filled.Visibility
-import androidx.ui.material.icons.filled.VisibilityOff
-import androidx.ui.res.stringResource
-import androidx.ui.text.style.TextAlign
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Surface
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.compose.jetsurvey.R
 
 @Composable
@@ -65,7 +65,7 @@ fun SignInSignUpScreen(
 ) {
     Column(modifier = modifier) {
         SignInSignUpTopAppBar(topAppBarText, onBackPressed)
-        VerticalScroller {
+        ScrollableColumn {
             Spacer(modifier = Modifier.preferredHeight(44.dp))
             Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
                 content()
@@ -110,20 +110,20 @@ fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
     OutlinedTextField(
         value = emailState.text,
         onValueChange = { emailState.text = it },
-        onFocusChange = { focused ->
-            emailState.onFocusChange(focused)
-            if (!focused) {
-                emailState.enableShowErrors()
-            }
-        },
-        modifier = Modifier.fillMaxWidth(),
-        textStyle = MaterialTheme.typography.body2,
         label = {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                 Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
                 )
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+        textStyle = MaterialTheme.typography.body2,
+        onFocusChanged = { focused ->
+            emailState.onFocusChange(focused)
+            if (!focused) {
+                emailState.enableShowErrors()
             }
         },
         isErrorValue = emailState.showErrors()

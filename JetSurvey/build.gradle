@@ -14,34 +14,61 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    ext.kotlin_version = "1.3.72"
-    ext.compose_version = "0.1.0-SNAPSHOT"
+import com.example.compose.jetsurvey.buildsrc.Libs
+import com.example.compose.jetsurvey.buildsrc.Versions
 
+buildscript {
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha04'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath Libs.androidGradlePlugin
+        classpath Libs.Kotlin.gradlePlugin
     }
 }
 
-allprojects {
-    repositories {
-        def snapshot = "6602655"
-        maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
-        google()
-        jcenter()
-    }
-    repositories {
-        google()
-        jcenter()
-    }
+plugins {
+    id 'com.diffplug.gradle.spotless' version '4.3.0'
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+subprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+
+        if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
+            maven {
+                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
+            }
+        }
+    }
+
+    apply plugin: 'com.diffplug.gradle.spotless'
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            targetExclude("$buildDir/**/*.kt")
+            targetExclude('bin/**/*.kt')
+
+            ktlint(Versions.ktlint)
+            licenseHeaderFile rootProject.file('spotless/copyright.kt')
+        }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+
+            // Enable experimental coroutines APIs, including Flow
+            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
+            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.FlowPreview'
+            freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+
+            // Set JVM target to 1.8
+            jvmTarget = "1.8"
+        }
+    }
 }
