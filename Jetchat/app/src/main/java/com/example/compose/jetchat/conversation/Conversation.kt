@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import androidx.compose.foundation.ClickableText
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -52,6 +53,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -63,6 +65,7 @@ import androidx.compose.ui.gesture.rawDragGestureFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.UriHandlerAmbient
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.accessibilityLabel
@@ -389,6 +392,7 @@ fun ChatItemBubble(
     message: Message,
     lastMessageByAuthor: Boolean
 ) {
+
     val backgroundBubbleColor =
         if (MaterialTheme.colors.isLight) {
             Color(0xFFF5F5F5)
@@ -400,10 +404,8 @@ fun ChatItemBubble(
     Column {
         Surface(color = backgroundBubbleColor, shape = bubbleShape) {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = message.content,
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier.padding(8.dp)
+                ClickableMessage(
+                    message = message
                 )
             }
         }
@@ -419,6 +421,31 @@ fun ChatItemBubble(
             }
         }
     }
+}
+
+@Composable
+fun ClickableMessage(message: Message) {
+    val uriHandler = UriHandlerAmbient.current
+
+    val styledMessage = messageFormatter(text = message.content)
+
+    ClickableText(
+        text = styledMessage,
+        style = MaterialTheme.typography.body1,
+        modifier = Modifier.padding(8.dp),
+        onClick = {
+            styledMessage
+                .getStringAnnotations(start = it, end = it)
+                .firstOrNull()?.let { annotation ->
+                    when (annotation.tag) {
+                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
+                        // TODO(yrezgui): Open profile screen when click PERSON tag
+                        //  (e.g. @aliconors)
+                        else -> Unit
+                    }
+                }
+        }
+    )
 }
 
 @Preview
