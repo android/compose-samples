@@ -16,29 +16,29 @@
 
 package androidx.compose.samples.crane.ui
 
-import androidx.animation.AnimatedFloat
-import androidx.animation.AnimationClockObservable
-import androidx.animation.AnimationEndReason
-import androidx.animation.AnimationSpec
-import androidx.animation.ExponentialDecay
-import androidx.animation.OnAnimationEnd
-import androidx.animation.Spring
-import androidx.animation.TargetAnimation
-import androidx.annotation.FloatRange
-import androidx.compose.onCommit
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.animation.asDisposableClock
-import androidx.ui.core.AnimationClockAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.composed
-import androidx.ui.core.gesture.scrollorientationlocking.Orientation
-import androidx.ui.foundation.InteractionState
-import androidx.ui.foundation.animation.FlingConfig
-import androidx.ui.foundation.animation.fling
-import androidx.ui.foundation.gestures.draggable
-import androidx.ui.util.fastFirstOrNull
-import androidx.ui.util.lerp
+import androidx.compose.animation.asDisposableClock
+import androidx.compose.animation.core.AnimatedFloat
+import androidx.compose.animation.core.AnimationClockObservable
+import androidx.compose.animation.core.AnimationEndReason
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.ExponentialDecay
+import androidx.compose.animation.core.OnAnimationEnd
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.TargetAnimation
+import androidx.compose.foundation.InteractionState
+import androidx.compose.foundation.animation.FlingConfig
+import androidx.compose.foundation.animation.fling
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.state
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
+import androidx.compose.ui.platform.AnimationClockAmbient
+import androidx.compose.ui.util.annotation.FloatRange
+import androidx.compose.ui.util.fastFirstOrNull
+import androidx.compose.ui.util.lerp
 import kotlin.math.sign
 
 /**

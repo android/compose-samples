@@ -20,22 +20,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Composable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.base.ServiceLocator
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DaySelected
-import androidx.ui.core.setContent
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.Text
-import androidx.ui.layout.Column
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
-import androidx.ui.material.TopAppBar
-import androidx.ui.res.vectorResource
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.vectorResource
 
 fun launchCalendarActivity(context: Context) {
     val intent = Intent(context, CalendarActivity::class.java)

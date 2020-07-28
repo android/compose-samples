@@ -16,22 +16,22 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.Composable
-import androidx.compose.getValue
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.DrawerState
+import androidx.compose.material.ModalDrawerLayout
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.BackdropFrontLayerDraggable
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Modifier
-import androidx.ui.layout.Column
-import androidx.ui.livedata.observeAsState
-import androidx.ui.material.DrawerState
-import androidx.ui.material.ModalDrawerLayout
-import androidx.ui.viewmodel.viewModel
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.viewModel
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
 

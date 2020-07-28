@@ -23,17 +23,16 @@ object Versions {
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha05"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
-    const val picasso = "com.squareup.picasso:picasso:2.71828"
     const val googleMaps = "com.google.android.gms:play-services-maps:17.0.0"
 
     object Accompanist {
-//        private const val version = "0.1.7.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
-        private const val version = "0.1.7"
+        private const val version = "0.1.8.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
+//        private const val version = "0.1.7"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4-M3"
+        private const val version = "1.4.0-rc"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -43,10 +42,9 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
 
         object Compose {
-            const val snapshot = "6695716"
-            const val version = "0.1.0-dev15"
+            const val snapshot = "6713401"
+            const val version = "0.1.0-SNAPSHOT"
 
-            const val kotlinCompilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -62,9 +60,8 @@ object Libs {
 }
 
 object Urls {
-    const val kotlinEap = "https://dl.bintray.com/kotlin/kotlin-eap/"
     const val mavenCentralSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
     const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
-        // Dev15
+        // early versions Dev16
         "${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
 }

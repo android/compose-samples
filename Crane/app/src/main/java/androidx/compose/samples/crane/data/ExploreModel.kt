@@ -16,7 +16,7 @@
 
 package androidx.compose.samples.crane.data
 
-import androidx.compose.Immutable
+import androidx.compose.runtime.Immutable
 
 @Immutable
 data class City(

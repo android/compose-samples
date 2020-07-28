@@ -16,10 +16,10 @@
 
 package androidx.compose.samples.crane.base
 
-import androidx.compose.Composable
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.ui.CraneTheme
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
 
 @Composable
 fun CraneScaffold(children: @Composable () -> Unit) {

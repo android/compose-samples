@@ -58,7 +58,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerVersion Libs.AndroidX.Compose.kotlinCompilerVersion
+        kotlinCompilerVersion Libs.Kotlin.version
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 }
@@ -66,10 +66,14 @@ android {
 tasks.withType(KotlinCompile).configureEach {
     kotlinOptions {
         // Treat all Kotlin warnings as errors
-        allWarningsAsErrors = true
+        // TODO: Uncomment this the AndroidView refactoring is done
+//        allWarningsAsErrors = true
 
         jvmTarget = "1.8"
-        freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
+
+        // Use experimental APIs
+        freeCompilerArgs += '-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi'
+        freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
     }
 }
 

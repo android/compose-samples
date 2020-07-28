@@ -16,30 +16,30 @@
 
 package androidx.compose.samples.crane.ui
 
-import androidx.animation.SpringSpec
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.mutableStateOf
-import androidx.compose.remember
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.compose.structuralEqualityPolicy
-import androidx.ui.core.Constraints
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.WithConstraints
-import androidx.ui.core.gesture.scrollorientationlocking.Orientation
-import androidx.ui.core.onPositioned
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Canvas
-import androidx.ui.layout.DpConstraints
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.offset
-import androidx.ui.layout.preferredSizeIn
-import androidx.ui.material.MaterialTheme
-import androidx.ui.unit.IntSize
-import androidx.ui.unit.dp
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.DpConstraints
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.preferredSizeIn
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.WithConstraints
+import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
+import androidx.compose.ui.onPositioned
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 
 enum class FullScreenState {
     MINIMISED,

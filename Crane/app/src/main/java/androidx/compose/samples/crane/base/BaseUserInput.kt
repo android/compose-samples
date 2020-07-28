@@ -17,30 +17,30 @@
 package androidx.compose.samples.crane.base
 
 import androidx.annotation.DrawableRes
-import androidx.compose.Composable
-import androidx.compose.getValue
+import androidx.compose.foundation.BaseTextField
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.ui.captionTextStyle
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.TextField
-import androidx.ui.foundation.contentColor
-import androidx.ui.graphics.Color
-import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.preferredWidth
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
-import androidx.ui.res.vectorResource
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 
 @Composable
 fun SimpleUserInput(
@@ -90,13 +90,13 @@ fun CraneEditableUserInput(
         showCaption = { !isHint() },
         vectorImageId = vectorImageId
     ) {
-        TextField(
+        BaseTextField(
             value = textFieldState,
             onValueChange = {
                 textFieldState = it
                 if (!isHint()) onInputChanged(textFieldState.text)
             },
-            textStyle = if (isHint()) captionTextStyle else MaterialTheme.typography.body1
+            textStyle = if (isHint()) captionTextStyle else MaterialTheme.typography.body1,
         )
     }
 }

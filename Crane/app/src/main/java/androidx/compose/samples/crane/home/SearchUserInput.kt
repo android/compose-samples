@@ -16,31 +16,33 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.animation.transitionDefinition
-import androidx.animation.tween
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.mutableStateOf
-import androidx.compose.remember
+import androidx.compose.animation.ColorPropKey
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.transition
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneEditableUserInput
 import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.base.ServiceLocator
-import androidx.compose.setValue
-import androidx.ui.animation.ColorPropKey
-import androidx.ui.animation.transition
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.material.MaterialTheme
+import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
+import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class PeopleUserInputState {
     var people by mutableStateOf(1)
         private set
 
-    var animationState: PeopleUserInputAnimationState = PeopleUserInputAnimationState.Valid
+    var animationState: PeopleUserInputAnimationState = Valid
         private set
 
     fun addPerson() {
@@ -50,8 +52,8 @@ class PeopleUserInputState {
 
     private fun updateAnimationState() {
         val newState =
-            if (people > MAX_PEOPLE) PeopleUserInputAnimationState.Invalid
-            else PeopleUserInputAnimationState.Valid
+            if (people > MAX_PEOPLE) Invalid
+            else Valid
 
         if (animationState != newState) animationState = newState
     }
@@ -85,7 +87,7 @@ fun PeopleUserInput(
             vectorImageId = R.drawable.ic_person,
             tint = transition[tintKey]
         )
-        if (peopleState.animationState == PeopleUserInputAnimationState.Invalid) {
+        if (peopleState.animationState == Invalid) {
             Text(
                 text = "Error: We don't support more than $MAX_PEOPLE people",
                 style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary)
@@ -127,20 +129,20 @@ enum class PeopleUserInputAnimationState { Valid, Invalid }
 private fun generateTransitionDefinition(
     validColor: Color,
     invalidColor: Color
-) = transitionDefinition {
-    state(PeopleUserInputAnimationState.Valid) {
+) = transitionDefinition<PeopleUserInputAnimationState> {
+    state(Valid) {
         this[tintKey] = validColor
     }
-    state(PeopleUserInputAnimationState.Invalid) {
+    state(Invalid) {
         this[tintKey] = invalidColor
     }
-    transition(fromState = PeopleUserInputAnimationState.Valid to PeopleUserInputAnimationState.Invalid) {
-        tintKey using tween<Color>(
+    transition(fromState = Valid) {
+        tintKey using tween(
             durationMillis = 300
         )
     }
-    transition(fromState = PeopleUserInputAnimationState.Invalid to PeopleUserInputAnimationState.Valid) {
-        tintKey using tween<Color>(
+    transition(fromState = Invalid) {
+        tintKey using tween(
             durationMillis = 300
         )
     }

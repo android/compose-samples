@@ -16,14 +16,14 @@
 
 package androidx.compose.samples.crane.ui
 
-import androidx.compose.Composable
-import androidx.ui.foundation.shape.corner.CornerSize
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.foundation.shape.corner.ZeroCornerSize
-import androidx.ui.graphics.Color
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.lightColorPalette
-import androidx.ui.unit.dp
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.ZeroCornerSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.lightColorPalette
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 val crane_caption = Color.DarkGray
 val crane_divider_color = Color.LightGray

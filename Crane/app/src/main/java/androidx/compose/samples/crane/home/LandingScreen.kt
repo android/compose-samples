@@ -16,15 +16,15 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.Composable
-import androidx.compose.launchInComposition
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.launchInComposition
 import androidx.compose.samples.crane.R
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentGravity
-import androidx.ui.foundation.Image
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.res.vectorResource
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.vectorResource
 import kotlinx.coroutines.delay
 
 private const val SplashWaitTime: Long = 2000

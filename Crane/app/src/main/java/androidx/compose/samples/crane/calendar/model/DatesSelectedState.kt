@@ -16,10 +16,10 @@
 
 package androidx.compose.samples.crane.calendar.model
 
-import androidx.compose.getValue
-import androidx.compose.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.calendar.data.year2020
-import androidx.compose.setValue
 
 class DatesSelectedState {
     private var from by mutableStateOf(DaySelectedEmpty)

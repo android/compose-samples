@@ -20,23 +20,23 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Composable
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.data.ExploreModel
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.core.setContent
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Text
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.material.MaterialTheme
-import androidx.ui.unit.dp
-import androidx.ui.viewinterop.AndroidView
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -105,21 +105,19 @@ fun DetailsScreen(args: DetailsActivityArg) {
             // For the map to work, you need to get an API key from
             // https://developers.google.com/maps/documentation/android-sdk/get-api-key
             // and put it in the google.maps.key variable of your local properties
-            AndroidView(
-                resId = R.layout.layout_details_map,
-                postInflationCallback = { view ->
-                    val fragment = (view.context as AppCompatActivity).supportFragmentManager
-                        .findFragmentById(R.id.map)
+            // TODO: This is WIP
+            AndroidView(R.layout.layout_details_map) { view ->
+                val fragment = (view.context as AppCompatActivity).supportFragmentManager
+                    .findFragmentById(R.id.map)
 
-                    (fragment as SupportMapFragment).getMapAsync { map ->
-                        val position = LatLng(args.latitude.toDouble(), args.longitude.toDouble())
-                        map.addMarker(
-                            MarkerOptions().position(position).title("Marker in ${args.name}")
-                        )
-                        map.moveCamera(CameraUpdateFactory.newLatLng(position))
-                    }
+                (fragment as SupportMapFragment).getMapAsync { map ->
+                    val position = LatLng(args.latitude.toDouble(), args.longitude.toDouble())
+                    map.addMarker(
+                        MarkerOptions().position(position).title("Marker in ${args.name}")
+                    )
+                    map.moveCamera(CameraUpdateFactory.newLatLng(position))
                 }
-            )
+            }
         }
     }
 }

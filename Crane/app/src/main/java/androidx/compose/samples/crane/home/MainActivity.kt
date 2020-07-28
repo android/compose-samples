@@ -17,31 +17,31 @@
 package androidx.compose.samples.crane.home
 
 import android.os.Bundle
-import androidx.animation.FloatPropKey
-import androidx.animation.Spring.StiffnessLow
-import androidx.animation.spring
-import androidx.animation.transitionDefinition
-import androidx.animation.tween
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.remember
+import androidx.compose.animation.DpPropKey
+import androidx.compose.animation.core.FloatPropKey
+import androidx.compose.animation.core.Spring.StiffnessLow
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.transition
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.animation.DpPropKey
-import androidx.ui.animation.transition
-import androidx.ui.core.Modifier
-import androidx.ui.core.drawOpacity
-import androidx.ui.core.setContent
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.padding
-import androidx.ui.unit.Dp
-import androidx.ui.unit.dp
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawOpacity
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 class MainActivity : AppCompatActivity() {
 
@@ -99,7 +99,7 @@ private val splashAlphaKey = FloatPropKey()
 private val contentAlphaKey = FloatPropKey()
 private val contentTopPaddingKey = DpPropKey()
 
-private val splashTransitionDefinition = transitionDefinition {
+private val splashTransitionDefinition = transitionDefinition<SplashState> {
     state(SplashState.SHOWN) {
         this[splashAlphaKey] = 1f
         this[contentAlphaKey] = 0f
@@ -111,13 +111,13 @@ private val splashTransitionDefinition = transitionDefinition {
         this[contentTopPaddingKey] = 0.dp
     }
     transition {
-        splashAlphaKey using tween<Float>(
+        splashAlphaKey using tween(
             durationMillis = 100
         )
-        contentAlphaKey using tween<Float>(
+        contentAlphaKey using tween(
             durationMillis = 300
         )
-        contentTopPaddingKey using spring<Dp>(
+        contentTopPaddingKey using spring(
             stiffness = StiffnessLow
         )
     }
