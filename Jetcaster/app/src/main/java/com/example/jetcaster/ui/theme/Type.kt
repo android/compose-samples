@@ -31,7 +31,7 @@ private val Montserrat = fontFamily(
     font(R.font.montserrat_semibold, FontWeight.SemiBold)
 )
 
-val Typography = Typography(
+val JetcasterTypography = Typography(
     h1 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 96.sp,

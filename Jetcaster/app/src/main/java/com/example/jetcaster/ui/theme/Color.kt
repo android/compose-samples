@@ -34,7 +34,7 @@ fun Colors.compositedOnSurface(alpha: Float): Color {
 val Yellow800 = Color(0xFFF29F05)
 val Red300 = Color(0xFFEA6D7E)
 
-val Colors = darkColors(
+val JetcasterColors = darkColors(
     primary = Yellow800,
     onPrimary = Color.Black,
     primaryVariant = Yellow800,

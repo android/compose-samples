@@ -49,11 +49,18 @@ fun Modifier.verticalGradientScrim(
     numStops: Int = 16
 ): Modifier = composed {
     val colors = remember(color, numStops) {
-        val baseAlpha = color.alpha
-        List(numStops) { i ->
-            val x = i * 1f / (numStops - 1)
-            val opacity = x.pow(decay)
-            color.copy(alpha = baseAlpha * opacity)
+        if (decay != 1f) {
+            // If we have a non-linear decay, we need to create the color gradient steps
+            // manually
+            val baseAlpha = color.alpha
+            List(numStops) { i ->
+                val x = i * 1f / (numStops - 1)
+                val opacity = x.pow(decay)
+                color.copy(alpha = baseAlpha * opacity)
+            }
+        } else {
+            // If we have a linear decay, we just create a simple list of start + end colors
+            listOf(color.copy(alpha = 0f), color)
         }
     }
 

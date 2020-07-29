@@ -24,9 +24,9 @@ fun JetcasterTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = Colors,
-        typography = Typography,
-        shapes = Shapes,
+        colors = JetcasterColors,
+        typography = JetcasterTypography,
+        shapes = JetcasterShapes,
         content = content
     )
 }

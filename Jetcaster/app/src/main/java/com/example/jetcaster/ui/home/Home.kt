@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
@@ -47,6 +48,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,12 +67,15 @@ import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
-import com.example.jetcaster.util.DominantColorVerticalGradient
+import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.Pager
 import com.example.jetcaster.util.PagerState
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
+import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
+import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.statusBarPadding
+import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.Duration
 import java.time.LocalDateTime
@@ -129,6 +134,13 @@ fun HomeAppBar(
     }
 }
 
+/**
+ * This is the minimum amount of calculated constrast for a color to be used on top of the
+ * surface color. These values are defined within the WCAG AA guidelines, and we use a value of
+ * 3:1 which is the minimum for user-interface components.
+ */
+private const val MinConstastOfPrimaryVsSurface = 3f
+
 @Composable
 fun HomeContent(
     featuredPodcasts: List<PodcastWithExtraInfo>,
@@ -140,37 +152,63 @@ fun HomeContent(
     onCategorySelected: (HomeCategory) -> Unit
 ) {
     Column(modifier = modifier) {
-        Stack(Modifier.fillMaxWidth()) {
+        // We dynamically theme this sub-section of the layout to match the selected
+        // 'top podcast'
+
+        val surfaceColor = MaterialTheme.colors.surface
+        val dominantColorState = rememberDominantColorState { color ->
+            // We want a color which has sufficient contrast against the surface color
+            color.constrastAgainst(surfaceColor) >= MinConstastOfPrimaryVsSurface
+        }
+
+        DynamicThemePrimaryColorsFromImage(dominantColorState) {
             val clock = AnimationClockAmbient.current
             val pagerState = remember(clock) { PagerState(clock) }
 
-            DominantColorVerticalGradient(
-                imageSourceUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
-                    ?.podcast?.imageUrl,
-                modifier = Modifier.matchParentSize()
-            )
+            val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
+                ?.podcast?.imageUrl
 
-            Column(Modifier.fillMaxWidth()) {
-                HomeAppBar(
-                    modifier = Modifier.fillMaxWidth()
-                        .statusBarPadding()
-                        .preferredHeight(56.dp) /* TODO: change height to 48.dp in landscape */
+            // When the selected image url changes, call updateColorsFromImageUrl() or reset()
+            if (selectedImageUrl != null) {
+                launchInComposition(selectedImageUrl) {
+                    dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
+                }
+            } else {
+                dominantColorState.reset()
+            }
+
+            Stack(Modifier.fillMaxWidth()) {
+                Box(
+                    Modifier.matchParentSize()
+                        .verticalGradientScrim(
+                            color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
+                            startYPercentage = 1f,
+                            endYPercentage = 0f
+                        )
                 )
 
-                if (featuredPodcasts.isNotEmpty()) {
-                    Spacer(Modifier.height(16.dp))
-
-                    FollowedPodcasts(
-                        items = featuredPodcasts,
-                        pagerState = pagerState,
-                        onPodcastUnfollowed = onPodcastUnfollowed,
-                        modifier = Modifier
-                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
-                            .fillMaxWidth()
-                            .preferredHeight(200.dp)
+                Column(Modifier.fillMaxWidth()) {
+                    HomeAppBar(
+                        Modifier.fillMaxWidth()
+                            .statusBarPadding()
+                            .preferredHeight(56.dp) /* TODO: change height to 48.dp in landscape */
                     )
 
-                    Spacer(Modifier.height(16.dp))
+                    if (featuredPodcasts.isNotEmpty()) {
+                        Spacer(Modifier.height(16.dp))
+
+                        FollowedPodcasts(
+                            items = featuredPodcasts,
+                            pagerState = pagerState,
+                            onPodcastUnfollowed = onPodcastUnfollowed,
+                            modifier = Modifier
+                                .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                                .fillMaxWidth()
+                                .preferredHeight(200.dp)
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+                    }
                 }
             }
         }
