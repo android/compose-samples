@@ -16,17 +16,17 @@
 
 package com.example.compose.jetchat.components
 
-import androidx.animation.FastOutSlowInEasing
-import androidx.animation.FloatPropKey
-import androidx.animation.LinearEasing
-import androidx.animation.transitionDefinition
-import androidx.animation.tween
-import androidx.compose.Composable
-import androidx.compose.remember
-import androidx.ui.animation.transition
-import androidx.ui.core.Layout
-import androidx.ui.core.Modifier
-import androidx.ui.util.lerp
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FloatPropKey
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.transition
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Layout
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.util.lerp
 import kotlin.math.roundToInt
 
 /**
@@ -107,40 +107,41 @@ private val TextOpacity = FloatPropKey()
 private enum class ExpandableFabStates { Collapsed, Extended }
 
 @Suppress("RemoveExplicitTypeArguments")
-private fun fabTransitionDefinition(duration: Int = 200) = transitionDefinition {
-    state(ExpandableFabStates.Collapsed) {
-        this[FabWidthFactor] = 0f
-        this[TextOpacity] = 0f
+private fun fabTransitionDefinition(duration: Int = 200) =
+    transitionDefinition<ExpandableFabStates> {
+        state(ExpandableFabStates.Collapsed) {
+            this[FabWidthFactor] = 0f
+            this[TextOpacity] = 0f
+        }
+        state(ExpandableFabStates.Extended) {
+            this[FabWidthFactor] = 1f
+            this[TextOpacity] = 1f
+        }
+        transition(
+            fromState = ExpandableFabStates.Extended,
+            toState = ExpandableFabStates.Collapsed
+        ) {
+            TextOpacity using tween<Float>(
+                easing = LinearEasing,
+                durationMillis = (duration / 12f * 5).roundToInt() // 5 out of 12 frames
+            )
+            FabWidthFactor using tween<Float>(
+                easing = FastOutSlowInEasing,
+                durationMillis = duration
+            )
+        }
+        transition(
+            fromState = ExpandableFabStates.Collapsed,
+            toState = ExpandableFabStates.Extended
+        ) {
+            TextOpacity using tween<Float>(
+                easing = LinearEasing,
+                delayMillis = (duration / 3f).roundToInt(), // 4 out of 12 frames
+                durationMillis = (duration / 12f * 5).roundToInt() // 5 out of 12 frames
+            )
+            FabWidthFactor using tween<Float>(
+                easing = FastOutSlowInEasing,
+                durationMillis = duration
+            )
+        }
     }
-    state(ExpandableFabStates.Extended) {
-        this[FabWidthFactor] = 1f
-        this[TextOpacity] = 1f
-    }
-    transition(
-        fromState = ExpandableFabStates.Extended,
-        toState = ExpandableFabStates.Collapsed
-    ) {
-        TextOpacity using tween<Float>(
-            easing = LinearEasing,
-            durationMillis = (duration / 12f * 5).roundToInt() // 5 out of 12 frames
-        )
-        FabWidthFactor using tween<Float>(
-            easing = FastOutSlowInEasing,
-            durationMillis = duration
-        )
-    }
-    transition(
-        fromState = ExpandableFabStates.Collapsed,
-        toState = ExpandableFabStates.Extended
-    ) {
-        TextOpacity using tween<Float>(
-            easing = LinearEasing,
-            delayMillis = (duration / 3f).roundToInt(), // 4 out of 12 frames
-            durationMillis = (duration / 12f * 5).roundToInt() // 5 out of 12 frames
-        )
-        FabWidthFactor using tween<Float>(
-            easing = FastOutSlowInEasing,
-            durationMillis = duration
-        )
-    }
-}

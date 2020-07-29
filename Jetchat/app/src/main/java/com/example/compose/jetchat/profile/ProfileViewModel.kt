@@ -17,7 +17,7 @@
 package com.example.compose.jetchat.profile
 
 import androidx.annotation.DrawableRes
-import androidx.compose.Immutable
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.compose.jetchat.data.colleagueProfile

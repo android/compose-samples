@@ -16,19 +16,19 @@
 
 package com.example.compose.jetchat.components
 
-import androidx.compose.Composable
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.clickable
-import androidx.ui.layout.RowScope
-import androidx.ui.layout.RowScope.gravity
-import androidx.ui.layout.fillMaxHeight
-import androidx.ui.layout.padding
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TopAppBar
-import androidx.ui.res.vectorResource
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.RowScope.gravity
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 
 @Composable

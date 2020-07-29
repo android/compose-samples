@@ -17,11 +17,11 @@
 package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
-import androidx.compose.Providers
+import androidx.compose.runtime.Providers
 import androidx.test.espresso.Espresso
 import androidx.ui.test.SemanticsMatcher
 import androidx.ui.test.SemanticsNodeInteraction
-import androidx.ui.test.android.AndroidComposeTestRule
+import androidx.ui.test.android.createAndroidComposeRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertIsEnabled
 import androidx.ui.test.assertIsNotEnabled
@@ -49,7 +49,7 @@ import org.junit.Test
 class UserInputTest {
 
     @get:Rule
-    val composeTestRule = AndroidComposeTestRule<NavActivity>()
+    val composeTestRule = createAndroidComposeRule<NavActivity>(disableTransitions = true)
 
     // Note that keeping these references is only safe if the activity is not recreated.
     // See: https://issuetracker.google.com/160862278

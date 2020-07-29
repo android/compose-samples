@@ -16,58 +16,59 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.onCommit
-import androidx.compose.setValue
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContentScale
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.core.gesture.DragObserver
-import androidx.ui.core.gesture.rawDragGestureFilter
-import androidx.ui.core.semantics.semantics
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.ScrollerPosition
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.drawBorder
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.geometry.Offset
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.RowScope.gravity
-import androidx.ui.layout.RowScope.weight
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.height
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.preferredWidth
-import androidx.ui.layout.relativePaddingFrom
-import androidx.ui.material.Divider
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.Info
-import androidx.ui.material.icons.outlined.Search
-import androidx.ui.res.imageResource
-import androidx.ui.res.stringResource
-import androidx.ui.savedinstancestate.savedInstanceState
-import androidx.ui.semantics.accessibilityLabel
-import androidx.ui.text.LastBaseline
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.drawBorder
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope.weight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope.gravity
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.relativePaddingFrom
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.LastBaseline
+import androidx.compose.material.Divider
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.gesture.DragObserver
+import androidx.compose.ui.gesture.rawDragGestureFilter
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
@@ -181,18 +182,18 @@ fun Messages(
     modifier: Modifier = Modifier
 ) {
     // Scroll is reversed so a value of 0 is the bottom
-    val scrollerPosition = ScrollerPosition(isReversed = true)
+    val scrollState = rememberScrollState()
 
     // Used to tell between manual and programmatic scrolling
     var userScrolled by savedInstanceState { false }
 
-    onCommit(userScrolled, scrollerPosition) {
+    onCommit(userScrolled, scrollState) {
         // Scroll to last message
         if (!userScrolled && // Don't scroll if the user triggered the scrolling
-            !scrollerPosition.atBottom() // Don't scroll if already at the bottom
+            !scrollState.atBottom() // Don't scroll if already at the bottom
         ) {
             // Scroll smoothly after the first scroll
-            scrollerPosition.smoothScrollTo(BottomScrollerPosition)
+            scrollState.smoothScrollTo(BottomScrollState)
         }
     }
 
@@ -204,8 +205,9 @@ fun Messages(
             }
         }
         val a11yLabel = stringResource(R.string.conversation_desc)
-        VerticalScroller(
-            scrollerPosition = scrollerPosition,
+        ScrollableColumn(
+            scrollState = scrollState,
+            reverseScrollDirection = true,
             // Using [rawDragGestureFilter] so [DragObserver.onStart] is called immediately,
             modifier = Modifier
                 .semantics { accessibilityLabel = a11yLabel }
@@ -245,7 +247,7 @@ fun Messages(
         }
 
         // Apply the threshold:
-        val jumpToBottomButtonEnabled = scrollerPosition.value > jumpThreshold
+        val jumpToBottomButtonEnabled = scrollState.value > jumpThreshold
 
         JumpToBottom(
             // Only show if the scroller is not at the bottom
@@ -445,6 +447,6 @@ fun DayHeaderPrev() {
 }
 
 private val JumpToBottomThreshold = 56.dp
-private val BottomScrollerPosition = 0f
+private val BottomScrollState = 0f
 
-private fun ScrollerPosition.atBottom(): Boolean = value == BottomScrollerPosition
+private fun ScrollState.atBottom(): Boolean = value == BottomScrollState

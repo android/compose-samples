@@ -16,11 +16,12 @@
 
 package com.example.compose.jetchat.theme
 
-import androidx.compose.Composable
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.compositeOver
-import androidx.ui.material.ColorPalette
-import androidx.ui.unit.Dp
+import androidx.compose.material.ColorPalette
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.unit.Dp
 import kotlin.math.ln
 
 /**

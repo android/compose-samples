@@ -16,45 +16,46 @@
 
 package com.example.compose.jetchat.profile
 
-import androidx.compose.Composable
-import androidx.compose.key
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContentScale
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.drawOpacity
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.ScrollerPosition
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.clickable
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.aspectRatio
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.heightIn
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.widthIn
-import androidx.ui.material.Divider
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.FloatingActionButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.Chat
-import androidx.ui.material.icons.outlined.Create
-import androidx.ui.material.icons.outlined.MoreVert
-import androidx.ui.res.imageResource
-import androidx.ui.res.stringResource
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.Divider
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawOpacity
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
@@ -65,7 +66,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
 
-    val scrollerPosition = ScrollerPosition()
+    val scrollState = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
@@ -86,14 +87,14 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             }
         )
         Stack(modifier = Modifier.weight(1f)) {
-            VerticalScroller(
+            ScrollableColumn(
                 modifier = Modifier.fillMaxSize(),
-                scrollerPosition = scrollerPosition
+                scrollState = scrollState
             ) {
                 Surface {
                     Column {
                         ProfileHeader(
-                            scrollerPosition,
+                            scrollState,
                             userData
                         )
                         UserInfoFields(userData)
@@ -101,7 +102,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 }
             }
             ProfileFab(
-                extended = scrollerPosition.value == 0f,
+                extended = scrollState.value == 0f,
                 userIsMe = userData.isMe(),
                 modifier = Modifier.gravity(Alignment.BottomEnd)
             )
@@ -169,10 +170,10 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 
 @Composable
 private fun ProfileHeader(
-    scrollerPosition: ScrollerPosition,
+    scrollState: ScrollState,
     data: ProfileScreenState
 ) {
-    val offset = (scrollerPosition.value / 2)
+    val offset = (scrollState.value / 2)
     val offsetDp = with(DensityAmbient.current) { offset.toDp() }
 
     data.photo?.let {
