@@ -16,6 +16,8 @@
 
 package androidx.compose.samples.crane.ui
 
+import androidx.compose.animation.asDisposableClock
+import androidx.compose.animation.core.AnimationClockObservable
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Canvas
@@ -25,9 +27,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.preferredSizeIn
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.fractionalThresholds
+import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.state
@@ -36,25 +40,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.onPositioned
+import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
-enum class FullScreenState {
-    MINIMISED,
-    COLLAPSED,
-    EXPANDED,
-}
-
-class DraggableBackdropState(value: FullScreenState = FullScreenState.MINIMISED) {
-    var value by mutableStateOf(value)
-}
-
+// BackdropFrontLayer is missing a proper nested scrolling behavior as right now,
+// instead of scrolling only the parts that are visible on the screen, it scrolls
+// all its content. Waiting for a NestedScrollController that makes this easier:
+// https://issuetracker.google.com/162408885
 @Composable
-fun BackdropFrontLayerDraggable(
+fun BackdropFrontLayer(
     modifier: Modifier = Modifier,
-    backdropState: DraggableBackdropState = remember { DraggableBackdropState() },
+    backdropState: SwipeableBackdropState = rememberSwipeableBackdropState(),
     staticChildren: @Composable (Modifier) -> Unit,
     backdropChildren: @Composable (Modifier) -> Unit
 ) {
@@ -65,24 +64,21 @@ fun BackdropFrontLayerDraggable(
             val fullHeight = constraints.maxHeight.toFloat()
             val anchors = getAnchors(backgroundChildrenSize, fullHeight)
 
-            var backdropPosition by state { fullHeight }
             Stack(
-                Modifier.stateDraggable(
-                    state = backdropState.value,
-                    onStateChange = { newExploreState -> backdropState.value = newExploreState },
-                    anchorsToState = anchors,
-                    animationSpec = AnimationSpec,
+                Modifier.swipeable(
+                    state = backdropState,
+                    anchors = anchors,
+                    thresholds = fractionalThresholds(0.5f),
                     orientation = Orientation.Vertical,
                     minValue = VerticalExplorePadding,
                     maxValue = fullHeight,
-                    enabled = true,
-                    onNewValue = { backdropPosition = it }
+                    enabled = true
                 )
             ) {
                 staticChildren(
                     Modifier.onPositioned { coordinates ->
                         if (backgroundChildrenSize.height == 0) {
-                            backdropState.value = FullScreenState.COLLAPSED
+                            backdropState.value = FullScreenState.Collapsed
                         }
                         backgroundChildrenSize = coordinates.size
                     }
@@ -90,14 +86,14 @@ fun BackdropFrontLayerDraggable(
 
                 val shadowColor = MaterialTheme.colors.surface.copy(alpha = 0.8f)
                 val revealValue = backgroundChildrenSize.height / 2
-                if (backdropPosition < revealValue) {
+                if (backdropState.offset.value < revealValue) {
                     Canvas(Modifier.fillMaxSize()) {
                         drawRect(size = size, color = shadowColor)
                     }
                 }
 
                 val yOffset = with(DensityAmbient.current) {
-                    backdropPosition.toDp()
+                    backdropState.offset.value.toDp()
                 }
 
                 backdropChildren(
@@ -109,19 +105,27 @@ fun BackdropFrontLayerDraggable(
     }
 }
 
-private const val ANCHOR_BOTTOM_OFFSET = 130f
+enum class FullScreenState {
+    Minimised,
+    Collapsed,
+    Expanded,
+}
 
-private fun getAnchors(
-    searchChildrenSize: IntSize,
-    fullHeight: Float
-): List<Pair<Float, FullScreenState>> {
-    val mediumValue = searchChildrenSize.height + 50.dp.value
-    val maxValue = fullHeight - ANCHOR_BOTTOM_OFFSET
-    return listOf(
-        0f to FullScreenState.EXPANDED,
-        mediumValue to FullScreenState.COLLAPSED,
-        maxValue to FullScreenState.MINIMISED
-    )
+class SwipeableBackdropState(
+    initialValue: FullScreenState = FullScreenState.Minimised,
+    clock: AnimationClockObservable,
+    confirmStateChange: (FullScreenState) -> Boolean = { true }
+) : SwipeableState<FullScreenState>(initialValue, clock, confirmStateChange, AnimationSpec)
+
+@Composable
+fun rememberSwipeableBackdropState(
+    initialValue: FullScreenState = FullScreenState.Minimised,
+    confirmStateChange: (FullScreenState) -> Boolean = { true }
+): SwipeableBackdropState {
+    val clock = AnimationClockAmbient.current.asDisposableClock()
+    return remember(clock, confirmStateChange) {
+        SwipeableBackdropState(initialValue, clock, confirmStateChange)
+    }
 }
 
 @Composable
@@ -131,6 +135,20 @@ private fun currentConstraints(pxConstraints: Constraints): DpConstraints {
     }
 }
 
+private fun getAnchors(
+    searchChildrenSize: IntSize,
+    fullHeight: Float
+): Map<Float, FullScreenState> {
+    val mediumValue = searchChildrenSize.height + 50.dp.value
+    val maxValue = fullHeight - AnchorBottomOffset
+    return mapOf(
+        VerticalExplorePadding to FullScreenState.Expanded,
+        mediumValue to FullScreenState.Collapsed,
+        maxValue to FullScreenState.Minimised
+    )
+}
+
+private const val AnchorBottomOffset = 130f
 private const val VerticalExplorePadding = 0f
 private const val ExploreStiffness = 1000f
 private val AnimationSpec = SpringSpec<Float>(stiffness = ExploreStiffness)

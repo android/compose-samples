@@ -20,7 +20,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.lightColorPalette
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -33,7 +33,7 @@ private val crane_purple_700 = Color(0xFF720D5D)
 private val crane_purple_800 = Color(0xFF5D1049)
 private val crane_purple_900 = Color(0xFF4E0D3A)
 
-val craneColors = lightColorPalette(
+val craneColors = lightColors(
     primary = crane_purple_800,
     secondary = crane_red,
     surface = crane_purple_900,

@@ -54,37 +54,37 @@ class DatesSelectedState {
     private fun setDates(newFrom: DaySelected, newTo: DaySelected) {
         if (newTo == DaySelectedEmpty) {
             from = newFrom
-            from.calendarDay.value.status = SelectedStatus.FIRST_LAST_DAY
+            from.calendarDay.value.status = SelectedStatus.FirstLastDay
         } else {
-            from = newFrom.apply { calendarDay.value.status = SelectedStatus.FIRST_DAY }
+            from = newFrom.apply { calendarDay.value.status = SelectedStatus.FirstDay }
             selectDatesInBetween(newFrom, newTo)
-            to = newTo.apply { calendarDay.value.status = SelectedStatus.LAST_DAY }
+            to = newTo.apply { calendarDay.value.status = SelectedStatus.LastDay }
         }
     }
 
     private fun selectDatesInBetween(from: DaySelected, to: DaySelected) {
         if (from.month == to.month) {
             for (i in (from.day + 1) until to.day)
-                from.month.getDay(i).status = SelectedStatus.SELECTED
+                from.month.getDay(i).status = SelectedStatus.Selected
         } else {
             // Fill from's month
             for (i in (from.day + 1) until from.month.numDays) {
-                from.month.getDay(i).status = SelectedStatus.SELECTED
+                from.month.getDay(i).status = SelectedStatus.Selected
             }
-            from.month.getDay(from.month.numDays).status = SelectedStatus.LAST_DAY
+            from.month.getDay(from.month.numDays).status = SelectedStatus.LastDay
             // Fill in-between months
             for (i in (from.month.monthNumber + 1) until to.month.monthNumber) {
                 val month = year2020[i - 1]
-                month.getDay(1).status = SelectedStatus.FIRST_DAY
+                month.getDay(1).status = SelectedStatus.FirstDay
                 for (j in 2 until month.numDays) {
-                    month.getDay(j).status = SelectedStatus.SELECTED
+                    month.getDay(j).status = SelectedStatus.Selected
                 }
-                month.getDay(month.numDays).status = SelectedStatus.LAST_DAY
+                month.getDay(month.numDays).status = SelectedStatus.LastDay
             }
             // Fill to's month
-            to.month.getDay(1).status = SelectedStatus.FIRST_DAY
+            to.month.getDay(1).status = SelectedStatus.FirstDay
             for (i in 2 until to.day) {
-                to.month.getDay(i).status = SelectedStatus.SELECTED
+                to.month.getDay(i).status = SelectedStatus.Selected
             }
         }
     }
@@ -94,22 +94,22 @@ class DatesSelectedState {
             // Unselect dates from the same month
             if (from.month == to.month) {
                 for (i in from.day..to.day)
-                    from.month.getDay(i).status = SelectedStatus.NO_SELECTED
+                    from.month.getDay(i).status = SelectedStatus.NoSelected
             } else {
                 // Unselect from's month
                 for (i in from.day..from.month.numDays) {
-                    from.month.getDay(i).status = SelectedStatus.NO_SELECTED
+                    from.month.getDay(i).status = SelectedStatus.NoSelected
                 }
                 // Fill in-between months
                 for (i in (from.month.monthNumber + 1) until to.month.monthNumber) {
                     val month = year2020[i - 1]
                     for (j in 1..month.numDays) {
-                        month.getDay(j).status = SelectedStatus.NO_SELECTED
+                        month.getDay(j).status = SelectedStatus.NoSelected
                     }
                 }
                 // Fill to's month
                 for (i in 1..to.day) {
-                    to.month.getDay(i).status = SelectedStatus.NO_SELECTED
+                    to.month.getDay(i).status = SelectedStatus.NoSelected
                 }
             }
         }

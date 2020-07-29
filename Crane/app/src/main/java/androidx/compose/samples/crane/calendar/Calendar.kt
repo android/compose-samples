@@ -32,7 +32,7 @@ import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.ColorPalette
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -147,10 +147,10 @@ private fun DaysOfWeek(modifier: Modifier = Modifier) {
 
 @Composable
 private fun Day(day: CalendarDay, onDayClicked: (CalendarDay) -> Unit) {
-    val enabled = day.status != SelectedStatus.NON_CLICKABLE
+    val enabled = day.status != SelectedStatus.NonClickable
     DayContainer(
         modifier = Modifier.clickable(enabled) {
-            if (day.status != SelectedStatus.NON_CLICKABLE) onDayClicked(day)
+            if (day.status != SelectedStatus.NonClickable) onDayClicked(day)
         },
         backgroundColor = day.status.color(MaterialTheme.colors)
     ) {
@@ -201,9 +201,9 @@ private fun DayStatusContainer(
 
             WithConstraints {
                 Circle(constraints = constraints, color = color)
-                if (status == SelectedStatus.FIRST_DAY) {
+                if (status == SelectedStatus.FirstDay) {
                     SemiRect(constraints = constraints, color = color, lookingLeft = false)
-                } else if (status == SelectedStatus.LAST_DAY) {
+                } else if (status == SelectedStatus.LastDay) {
                     SemiRect(constraints = constraints, color = color, lookingLeft = true)
                 }
                 children()
@@ -214,8 +214,8 @@ private fun DayStatusContainer(
     }
 }
 
-private fun SelectedStatus.color(theme: ColorPalette): Color = when (this) {
-    SelectedStatus.SELECTED -> theme.secondary
+private fun SelectedStatus.color(theme: Colors): Color = when (this) {
+    SelectedStatus.Selected -> theme.secondary
     else -> Color.Transparent
 }
 
@@ -252,10 +252,10 @@ private fun getLeftRightWeekColors(week: CalendarWeek, month: CalendarMonth): Pa
 
 private fun SelectedStatus.isMarked(): Boolean {
     return when (this) {
-        SelectedStatus.SELECTED -> true
-        SelectedStatus.FIRST_DAY -> true
-        SelectedStatus.LAST_DAY -> true
-        SelectedStatus.FIRST_LAST_DAY -> true
+        SelectedStatus.Selected -> true
+        SelectedStatus.FirstDay -> true
+        SelectedStatus.LastDay -> true
+        SelectedStatus.FirstLastDay -> true
         else -> false
     }
 }

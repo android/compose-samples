@@ -57,12 +57,12 @@ class MainActivity : AppCompatActivity() {
                     { launchCalendarActivity(this) }
                 }
 
-                var splashShown by state { SplashState.SHOWN }
+                var splashShown by state { SplashState.Shown }
                 val transition = transition(splashTransitionDefinition, splashShown)
                 Stack {
                     LandingScreen(
                         modifier = Modifier.drawOpacity(transition[splashAlphaKey]),
-                        onTimeout = { splashShown = SplashState.COMPLETED }
+                        onTimeout = { splashShown = SplashState.Completed }
                     )
                     MainContent(
                         modifier = Modifier.drawOpacity(transition[contentAlphaKey]),
@@ -93,19 +93,19 @@ private fun MainContent(
     }
 }
 
-enum class SplashState { SHOWN, COMPLETED }
+enum class SplashState { Shown, Completed }
 
 private val splashAlphaKey = FloatPropKey()
 private val contentAlphaKey = FloatPropKey()
 private val contentTopPaddingKey = DpPropKey()
 
 private val splashTransitionDefinition = transitionDefinition<SplashState> {
-    state(SplashState.SHOWN) {
+    state(SplashState.Shown) {
         this[splashAlphaKey] = 1f
         this[contentAlphaKey] = 0f
         this[contentTopPaddingKey] = 100.dp
     }
-    state(SplashState.COMPLETED) {
+    state(SplashState.Completed) {
         this[splashAlphaKey] = 0f
         this[contentAlphaKey] = 1f
         this[contentTopPaddingKey] = 0.dp

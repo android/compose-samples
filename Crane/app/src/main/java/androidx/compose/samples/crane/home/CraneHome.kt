@@ -17,8 +17,9 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalDrawerLayout
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,14 +30,14 @@ import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
-import androidx.compose.samples.crane.ui.BackdropFrontLayerDraggable
+import androidx.compose.samples.crane.ui.BackdropFrontLayer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.viewModel
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
 
 enum class CraneScreen {
-    FLY, SLEEP, EAT
+    Fly, Sleep, Eat
 }
 
 @Composable
@@ -45,18 +46,17 @@ fun CraneHome(
     onDateSelectionClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val (drawerState, onDrawerStateChange) = state { DrawerState.Closed }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     ModalDrawerLayout(
         drawerState = drawerState,
-        onStateChange = onDrawerStateChange,
-        gesturesEnabled = drawerState == DrawerState.Opened,
+        gesturesEnabled = drawerState.isOpen,
         drawerContent = { CraneDrawer() },
         bodyContent = {
             CraneHomeContent(
                 modifier = modifier,
                 onExploreItemClicked = onExploreItemClicked,
                 onDateSelectionClicked = onDateSelectionClicked,
-                openDrawer = { onDrawerStateChange(DrawerState.Opened) }
+                openDrawer = { drawerState.open() }
             )
         }
     )
@@ -73,9 +73,9 @@ fun CraneHomeContent(
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    var tabSelected by state { CraneScreen.FLY }
+    var tabSelected by state { CraneScreen.Fly }
 
-    BackdropFrontLayerDraggable(
+    BackdropFrontLayer(
         modifier = modifier,
         staticChildren = { staticModifier ->
             Column(modifier = staticModifier) {
@@ -91,7 +91,7 @@ fun CraneHomeContent(
         },
         backdropChildren = { backdropModifier ->
             when (tabSelected) {
-                CraneScreen.FLY -> {
+                CraneScreen.Fly -> {
                     suggestedDestinations?.let { destinations ->
                         ExploreSection(
                             modifier = backdropModifier,
@@ -101,7 +101,7 @@ fun CraneHomeContent(
                         )
                     }
                 }
-                CraneScreen.SLEEP -> {
+                CraneScreen.Sleep -> {
                     ExploreSection(
                         modifier = backdropModifier,
                         title = "Explore Properties by Destination",
@@ -109,7 +109,7 @@ fun CraneHomeContent(
                         onItemClicked = onExploreItemClicked
                     )
                 }
-                CraneScreen.EAT -> {
+                CraneScreen.Eat -> {
                     ExploreSection(
                         modifier = backdropModifier,
                         title = "Explore Restaurants by Destination",
@@ -151,7 +151,7 @@ private fun SearchContent(
     onExploreItemClicked: OnExploreItemClicked
 ) {
     when (tabSelected) {
-        CraneScreen.FLY -> FlySearchContent(
+        CraneScreen.Fly -> FlySearchContent(
             searchUpdates = FlySearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onToDestinationChanged = { viewModel.toDestinationChanged(it) },
@@ -159,14 +159,14 @@ private fun SearchContent(
                 onExploreItemClicked = onExploreItemClicked
             )
         )
-        CraneScreen.SLEEP -> SleepSearchContent(
+        CraneScreen.Sleep -> SleepSearchContent(
             sleepUpdates = SleepSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,
                 onExploreItemClicked = onExploreItemClicked
             )
         )
-        CraneScreen.EAT -> EatSearchContent(
+        CraneScreen.Eat -> EatSearchContent(
             eatUpdates = EatSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,

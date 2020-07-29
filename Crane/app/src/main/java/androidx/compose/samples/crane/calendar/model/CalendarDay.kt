@@ -21,22 +21,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 enum class DayOfWeek {
-    SUNDAY,
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY
+    Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
 enum class SelectedStatus {
-    NO_SELECTED,
-    SELECTED,
-    NON_CLICKABLE,
-    FIRST_DAY,
-    LAST_DAY,
-    FIRST_LAST_DAY
+    NoSelected, Selected, NonClickable, FirstDay, LastDay, FirstLastDay
 }
 
 class CalendarDay(val value: String, status: SelectedStatus) {

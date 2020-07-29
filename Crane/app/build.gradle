@@ -73,6 +73,7 @@ tasks.withType(KotlinCompile).configureEach {
 
         // Use experimental APIs
         freeCompilerArgs += '-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi'
+        freeCompilerArgs += '-Xopt-in=androidx.compose.material.ExperimentalMaterialApi'
         freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
     }
 }

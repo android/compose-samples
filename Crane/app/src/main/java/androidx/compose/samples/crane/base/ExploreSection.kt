@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
@@ -68,7 +67,7 @@ fun ExploreSection(
                 items = exploreList
             ) { item ->
                 ExploreItem(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillParentMaxWidth(),
                     item = item,
                     onItemClicked = onItemClicked
                 )
@@ -100,8 +99,7 @@ private fun ExploreItem(
                             asset = vectorResource(id = R.drawable.ic_crane_logo)
                         )
                     }
-                },
-                modifier = modifier.fillMaxWidth()
+                }
             )
         }
         Spacer(Modifier.preferredWidth(24.dp))
