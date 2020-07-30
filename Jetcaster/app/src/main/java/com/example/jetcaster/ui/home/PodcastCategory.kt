@@ -114,14 +114,14 @@ fun PodcastCategory(
                 EpisodeListItem(
                     episode = item.episode,
                     podcast = item.podcast,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
             }
             is PodcastCategoryItem.TopPodcastsItem -> {
                 CategoryPodcastRow(
                     podcasts = item.podcasts,
                     onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
             }
         }

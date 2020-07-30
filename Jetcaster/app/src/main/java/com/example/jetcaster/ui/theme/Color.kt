@@ -16,8 +16,8 @@
 
 package com.example.jetcaster.ui.theme
 
-import androidx.compose.material.ColorPalette
-import androidx.compose.material.darkColorPalette
+import androidx.compose.material.Colors
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
@@ -27,14 +27,14 @@ import androidx.compose.ui.graphics.compositeOver
  * given [alpha]. Useful for situations where semi-transparent colors are undesirable.
  */
 @Composable
-fun ColorPalette.compositedOnSurface(alpha: Float): Color {
+fun Colors.compositedOnSurface(alpha: Float): Color {
     return onSurface.copy(alpha = alpha).compositeOver(surface)
 }
 
 val Yellow800 = Color(0xFFF29F05)
 val Red300 = Color(0xFFEA6D7E)
 
-val Colors = darkColorPalette(
+val Colors = darkColors(
     primary = Yellow800,
     onPrimary = Color.Black,
     primaryVariant = Yellow800,
