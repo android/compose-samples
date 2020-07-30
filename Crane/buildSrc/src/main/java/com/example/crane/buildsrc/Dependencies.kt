@@ -21,9 +21,9 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha06"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
-    const val googleMaps = "com.google.android.gms:play-services-maps:17.0.0"
+    const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
     object Accompanist {
         private const val version = "0.1.8.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
@@ -42,7 +42,7 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
 
         object Compose {
-            const val snapshot = "6717962"
+            const val snapshot = "6721902"
             const val version = "0.1.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -51,10 +51,22 @@ object Libs {
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
             const val animation = "androidx.compose.animation:animation:$version"
+            const val uiTest = "androidx.ui:ui-test:$version"
         }
 
         object UI {
             const val tooling = "androidx.ui:ui-tooling:${Compose.version}"
+        }
+
+        object Test {
+            private const val version = "1.2.0"
+            const val runner = "androidx.test:runner:$version"
+            const val rules = "androidx.test:rules:$version"
+            object Ext {
+                private const val version = "1.1.2-rc01"
+                const val junit = "androidx.test.ext:junit-ktx:$version"
+            }
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
         }
     }
 }

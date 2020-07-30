@@ -66,8 +66,7 @@ android {
 tasks.withType(KotlinCompile).configureEach {
     kotlinOptions {
         // Treat all Kotlin warnings as errors
-        // TODO: Uncomment this the AndroidView refactoring is done
-//        allWarningsAsErrors = true
+        allWarningsAsErrors = true
 
         jvmTarget = "1.8"
 
@@ -92,4 +91,10 @@ dependencies {
 
     implementation Libs.AndroidX.appcompat
     implementation Libs.Accompanist.coil
+
+    androidTestImplementation Libs.AndroidX.Test.runner
+    androidTestImplementation Libs.AndroidX.Test.espressoCore
+    androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Test.Ext.junit
+    androidTestImplementation Libs.AndroidX.Compose.uiTest
 }

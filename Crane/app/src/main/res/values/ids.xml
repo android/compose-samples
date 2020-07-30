@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~   Copyright 2020 Google LLC
+  ~   Copyright 2020 The Android Open Source Project
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
   ~   you may not use this file except in compliance with the License.
@@ -15,17 +14,6 @@
   ~   limitations under the License.
   ~
   -->
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    map:cameraZoom="5"
-    map:mapType="normal"
-    map:uiCompass="false"
-    map:uiRotateGestures="true"
-    map:uiScrollGestures="false"
-    map:uiTiltGestures="true"
-    map:uiZoomControls="false"
-    map:uiZoomGestures="true"/>
+<resources>
+    <item name="map" type="id" />
+</resources>
