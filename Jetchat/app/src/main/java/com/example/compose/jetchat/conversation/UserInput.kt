@@ -20,6 +20,7 @@ import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.Border
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.EmphasisAmbient
@@ -79,6 +81,7 @@ import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.compositedOnSurface
+import com.example.compose.jetchat.theme.elevatedSurface
 
 enum class InputSelector {
     NONE,
@@ -97,12 +100,15 @@ enum class EmojiStickerSelector {
 @Preview
 @Composable
 fun UserInputPreview() {
-    UserInput(onMessageSent = {})
+    UserInput(onMessageSent = {}, scrollState = rememberScrollState())
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserInput(onMessageSent: (String) -> Unit) {
+fun UserInput(
+    onMessageSent: (String) -> Unit,
+    scrollState: ScrollState
+) {
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
     backPressHandler(
@@ -128,6 +134,7 @@ fun UserInput(onMessageSent: (String) -> Unit) {
                     currentInputSelector = InputSelector.NONE
                 }
                 textFieldFocusState = focused
+                scrollState.smoothScrollTo(0f)
             },
             focusState = textFieldFocusState
         )
@@ -138,6 +145,8 @@ fun UserInput(onMessageSent: (String) -> Unit) {
                 onMessageSent(textState.value.text)
                 // Reset text field and close keyboard
                 textState.value = TextFieldValue()
+                // Move scroll to bottom
+                scrollState.smoothScrollTo(0f)
                 dismissKeyboard()
             },
             currentInputSelector = currentInputSelector
@@ -195,6 +204,15 @@ private fun SelectorExpanded(
             InputSelector.PICTURE -> NotAvailablePopup(onCloseRequested)
             else -> { throw NotImplementedError() }
         }
+    }
+}
+
+@Composable
+fun getSelectorExpandedColor(): Color {
+    return if (MaterialTheme.colors.isLight) {
+        MaterialTheme.colors.compositedOnSurface(0.02f)
+    } else {
+        MaterialTheme.colors.elevatedSurface(3.dp)
     }
 }
 
@@ -401,7 +419,7 @@ fun EmojiSelector(
 
     val a11yLabel = stringResource(id = R.string.emoji_selector_desc)
     Column(modifier = modifier.semantics { accessibilityLabel = a11yLabel }) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.emojis_label),
                 onClick = { selected = EmojiStickerSelector.EMOJI },
@@ -416,7 +434,7 @@ fun EmojiSelector(
             )
         }
         ScrollableRow {
-            EmojiTable(onTextAdded)
+            EmojiTable(onTextAdded, modifier = Modifier.padding(8.dp))
         }
     }
     if (selected == EmojiStickerSelector.STICKER) {
@@ -434,7 +452,8 @@ fun ExtendedSelectorInnerButton(
     val backgroundColor = if (selected) {
         MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
     } else {
-        MaterialTheme.colors.surface
+        // Same as background
+        getSelectorExpandedColor()
     }
     val color = if (selected) {
         MaterialTheme.colors.onSurface
@@ -444,7 +463,7 @@ fun ExtendedSelectorInnerButton(
     TextButton(
         onClick = onClick,
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
             .preferredHeight(30.dp),
         shape = MaterialTheme.shapes.medium,
         backgroundColor = backgroundColor,
@@ -460,9 +479,10 @@ fun ExtendedSelectorInnerButton(
 
 @Composable
 fun EmojiTable(
-    onTextAdded: (String) -> Unit
+    onTextAdded: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier.fillMaxWidth()) {
         repeat(4) { x ->
             Row(
                 modifier = Modifier.fillMaxWidth(),

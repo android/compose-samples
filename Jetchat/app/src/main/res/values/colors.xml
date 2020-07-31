@@ -24,4 +24,12 @@
     <color name="blue300">#6F7EF9</color>
     <color name="blue400">#4860F7</color>
     <color name="yellow400">#F6E547</color>
+
+    <!-- Logo -->
+    <color name="yellow_logo">@color/yellow700</color>
+    <color name="blue_logo">@color/blue500</color>
+
+    <!-- Status bar -->
+    <color name="black30">#4D000000</color>
+
 </resources>

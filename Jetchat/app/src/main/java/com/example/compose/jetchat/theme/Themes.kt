@@ -17,10 +17,10 @@
 package com.example.compose.jetchat.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.ColorPalette
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColorPalette
-import androidx.compose.material.lightColorPalette
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -37,7 +37,7 @@ private val Blue800 = Color(0xFF001CCF)
 private val Red300 = Color(0xFFEA6D7E)
 private val Red800 = Color(0xFFD00036)
 
-private val JetchatDarkPalette = darkColorPalette(
+private val JetchatDarkPalette = darkColors(
     primary = Blue200,
     primaryVariant = Blue400,
     onPrimary = Color.Black,
@@ -49,7 +49,7 @@ private val JetchatDarkPalette = darkColorPalette(
     onError = Color.Black
 )
 
-private val JetchatLightPalette = lightColorPalette(
+private val JetchatLightPalette = lightColors(
     primary = Blue500,
     primaryVariant = Blue800,
     onPrimary = Color.White,
@@ -65,7 +65,7 @@ private val JetchatLightPalette = lightColorPalette(
 @Composable
 fun JetchatTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
-    colors: ColorPalette? = null,
+    colors: Colors? = null,
     content: @Composable() () -> Unit
 ) {
     val myColors = colors ?: if (isDarkTheme) JetchatDarkPalette else JetchatLightPalette

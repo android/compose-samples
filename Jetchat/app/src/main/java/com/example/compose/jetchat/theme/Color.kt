@@ -16,7 +16,7 @@
 
 package com.example.compose.jetchat.theme
 
-import androidx.compose.material.ColorPalette
+import androidx.compose.material.Colors
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -29,14 +29,14 @@ import kotlin.math.ln
  * given [alpha]. Useful for situations where semi-transparent colors are undesirable.
  */
 @Composable
-fun ColorPalette.compositedOnSurface(alpha: Float): Color {
+fun Colors.compositedOnSurface(alpha: Float): Color {
     return onSurface.copy(alpha = alpha).compositeOver(surface)
 }
 
 /**
  * Elevation overlay logic copied from [Surface] — STOPSHIP remove b/155181601
  */
-fun ColorPalette.elevatedSurface(elevation: Dp): Color {
+fun Colors.elevatedSurface(elevation: Dp): Color {
     if (isLight) return surface
     val foreground = calculateForeground(elevation)
     return foreground.compositeOver(surface)
