@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package androidx.compose.samples.crane
+package androidx.compose.samples.crane.details
 
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
-import androidx.compose.samples.crane.details.DetailsActivity
-import androidx.compose.samples.crane.details.createDetailsActivityIntent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed

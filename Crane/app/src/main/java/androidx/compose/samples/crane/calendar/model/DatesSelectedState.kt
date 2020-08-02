@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.calendar.model
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -54,62 +55,63 @@ class DatesSelectedState {
     private fun setDates(newFrom: DaySelected, newTo: DaySelected) {
         if (newTo == DaySelectedEmpty) {
             from = newFrom
-            from.calendarDay.value.status = SelectedStatus.FirstLastDay
+            from.calendarDay.value.status = DaySelectedStatus.FirstLastDay
         } else {
-            from = newFrom.apply { calendarDay.value.status = SelectedStatus.FirstDay }
+            from = newFrom.apply { calendarDay.value.status = DaySelectedStatus.FirstDay }
             selectDatesInBetween(newFrom, newTo)
-            to = newTo.apply { calendarDay.value.status = SelectedStatus.LastDay }
+            to = newTo.apply { calendarDay.value.status = DaySelectedStatus.LastDay }
         }
     }
 
     private fun selectDatesInBetween(from: DaySelected, to: DaySelected) {
         if (from.month == to.month) {
             for (i in (from.day + 1) until to.day)
-                from.month.getDay(i).status = SelectedStatus.Selected
+                from.month.getDay(i).status = DaySelectedStatus.Selected
         } else {
             // Fill from's month
             for (i in (from.day + 1) until from.month.numDays) {
-                from.month.getDay(i).status = SelectedStatus.Selected
+                from.month.getDay(i).status = DaySelectedStatus.Selected
             }
-            from.month.getDay(from.month.numDays).status = SelectedStatus.LastDay
+            from.month.getDay(from.month.numDays).status = DaySelectedStatus.LastDay
             // Fill in-between months
             for (i in (from.month.monthNumber + 1) until to.month.monthNumber) {
                 val month = year2020[i - 1]
-                month.getDay(1).status = SelectedStatus.FirstDay
+                month.getDay(1).status = DaySelectedStatus.FirstDay
                 for (j in 2 until month.numDays) {
-                    month.getDay(j).status = SelectedStatus.Selected
+                    month.getDay(j).status = DaySelectedStatus.Selected
                 }
-                month.getDay(month.numDays).status = SelectedStatus.LastDay
+                month.getDay(month.numDays).status = DaySelectedStatus.LastDay
             }
             // Fill to's month
-            to.month.getDay(1).status = SelectedStatus.FirstDay
+            to.month.getDay(1).status = DaySelectedStatus.FirstDay
             for (i in 2 until to.day) {
-                to.month.getDay(i).status = SelectedStatus.Selected
+                to.month.getDay(i).status = DaySelectedStatus.Selected
             }
         }
     }
 
-    private fun clearDates() {
+    @VisibleForTesting
+    fun clearDates() {
         if (from != DaySelectedEmpty && to != DaySelectedEmpty) {
             // Unselect dates from the same month
             if (from.month == to.month) {
                 for (i in from.day..to.day)
-                    from.month.getDay(i).status = SelectedStatus.NoSelected
+                    from.month.getDay(i).status = DaySelectedStatus.NoSelected
             } else {
                 // Unselect from's month
                 for (i in from.day..from.month.numDays) {
-                    from.month.getDay(i).status = SelectedStatus.NoSelected
+                    from.month.getDay(i).status = DaySelectedStatus.NoSelected
                 }
                 // Fill in-between months
                 for (i in (from.month.monthNumber + 1) until to.month.monthNumber) {
                     val month = year2020[i - 1]
                     for (j in 1..month.numDays) {
-                        month.getDay(j).status = SelectedStatus.NoSelected
+                        month.getDay(j).status = DaySelectedStatus.NoSelected
                     }
                 }
                 // Fill to's month
                 for (i in 1..to.day) {
-                    to.month.getDay(i).status = SelectedStatus.NoSelected
+                    to.month.getDay(i).status = DaySelectedStatus.NoSelected
                 }
             }
         }

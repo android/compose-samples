@@ -24,10 +24,10 @@ enum class DayOfWeek {
     Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
-enum class SelectedStatus {
+enum class DaySelectedStatus {
     NoSelected, Selected, NonClickable, FirstDay, LastDay, FirstLastDay
 }
 
-class CalendarDay(val value: String, status: SelectedStatus) {
+class CalendarDay(val value: String, status: DaySelectedStatus) {
     var status by mutableStateOf(status)
 }

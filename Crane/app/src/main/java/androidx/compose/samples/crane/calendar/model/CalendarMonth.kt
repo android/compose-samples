@@ -29,7 +29,7 @@ data class CalendarMonth(
             add(
                 CalendarDay(
                     "",
-                    SelectedStatus.NonClickable
+                    DaySelectedStatus.NonClickable
                 )
             )
         }
@@ -38,7 +38,7 @@ data class CalendarMonth(
             add(
                 CalendarDay(
                     i.toString(),
-                    SelectedStatus.NoSelected
+                    DaySelectedStatus.NoSelected
                 )
             )
         }
@@ -69,7 +69,7 @@ data class CalendarMonth(
                 mutableList.add(
                     CalendarDay(
                         "",
-                        SelectedStatus.NonClickable
+                        DaySelectedStatus.NonClickable
                     )
                 )
                 gapsToFill--

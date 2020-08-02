@@ -17,6 +17,7 @@
 import com.example.crane.buildsrc.Libs
 import com.example.crane.buildsrc.Urls
 import com.example.crane.buildsrc.Versions
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -54,4 +55,18 @@ subprojects {
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }
+
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions {
+            // Treat all Kotlin warnings as errors
+            allWarningsAsErrors = true
+
+            jvmTarget = "1.8"
+
+            // Use experimental APIs
+            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+        }
+    }
+
 }

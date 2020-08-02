@@ -18,30 +18,22 @@ package androidx.compose.samples.crane.util
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.preferredSizeIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.unit.Constraints
-import kotlin.math.min
 
 @Composable
-fun Circle(constraints: Constraints, color: Color) {
-    Canvas(modifier = constraints.toCanvasModifier()) {
-        drawCircle(
-            center = Offset(size.width / 2, size.height / 2),
-            radius = min(size.height, size.width) / 2,
-            color = color
-        )
+fun Circle(color: Color) {
+    Canvas(Modifier.fillMaxSize()) {
+        drawCircle(color)
     }
 }
 
 @Composable
-fun SemiRect(constraints: Constraints, color: Color, lookingLeft: Boolean = true) {
-    Canvas(modifier = constraints.toCanvasModifier()) {
+fun SemiRect(color: Color, lookingLeft: Boolean = true) {
+    Canvas(Modifier.fillMaxSize()) {
         val offset = if (lookingLeft) {
             Offset(0f, 0f)
         } else {
@@ -51,14 +43,4 @@ fun SemiRect(constraints: Constraints, color: Color, lookingLeft: Boolean = true
 
         drawRect(size = size, topLeft = offset, color = color)
     }
-}
-
-@Composable
-private fun Constraints.toCanvasModifier(): Modifier = with(DensityAmbient.current) {
-    Modifier.preferredSizeIn(
-        minWidth = minWidth.toDp(),
-        minHeight = minHeight.toDp(),
-        maxWidth = maxWidth.toDp(),
-        maxHeight = maxHeight.toDp()
-    ).fillMaxSize()
 }
