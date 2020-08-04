@@ -33,6 +33,9 @@ import androidx.compose.ui.graphics.HorizontalGradient
 import androidx.compose.ui.graphics.LinearGradient
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.onPositioned
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
 fun Modifier.horizontalGradientBackground(
@@ -101,31 +104,52 @@ fun Modifier.offsetGradientBackground(
     )
 )
 
-fun Modifier.gradientBorder(
+fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
+    borderSize: Dp = 2.dp,
     shape: Shape
-) = drawBorder(
-    size = 2.dp,
-    shape = shape,
-    brush = LinearGradient(
-        colors = colors,
+) = gradientBorder(
+    colors = colors,
+    borderSize = borderSize,
+    shape = shape
+) { gradientColors, size ->
+    LinearGradient(
+        colors = gradientColors,
         startX = 0f,
         startY = 0f,
-        endX = 111f,
-        endY = 59f
+        endX = size.width.toFloat(),
+        endY = size.height.toFloat()
     )
-)
+}
 
-fun Modifier.fadeInGradientBorder(
+fun Modifier.fadeInDiagonalGradientBorder(
     showBorder: Boolean,
     colors: List<Color>,
+    borderSize: Dp = 2.dp,
     shape: Shape
 ) = composed {
     val animatedColors = List(colors.size) { i ->
         animate(if (showBorder) colors[i] else colors[i].copy(alpha = 0f))
     }
-    gradientBorder(
+    diagonalGradientBorder(
         colors = animatedColors,
+        borderSize = borderSize,
+        shape = shape
+    )
+}
+
+fun Modifier.gradientBorder(
+    colors: List<Color>,
+    borderSize: Dp = 2.dp,
+    shape: Shape,
+    brushProvider: (List<Color>, IntSize) -> LinearGradient
+) = composed {
+    var size by state { IntSize.Zero }
+    val gradient = remember(colors, size) { brushProvider(colors, size) }
+    val sizeProvider = onPositioned { size = it.size }
+    sizeProvider then drawBorder(
+        size = borderSize,
+        brush = gradient,
         shape = shape
     )
 }

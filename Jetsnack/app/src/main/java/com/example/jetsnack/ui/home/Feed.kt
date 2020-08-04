@@ -23,7 +23,6 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.RowScope.gravity
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,8 +55,8 @@ import com.example.jetsnack.model.filters
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackCollection
-import com.example.jetsnack.ui.components.fadeInGradientBorder
-import com.example.jetsnack.ui.components.gradientBorder
+import com.example.jetsnack.ui.components.diagonalGradientBorder
+import com.example.jetsnack.ui.components.fadeInDiagonalGradientBorder
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.systemBarPadding
@@ -155,7 +154,7 @@ private fun FilterBar(filters: List<Filter>) {
             Icon(
                 asset = Icons.Rounded.FilterList,
                 tint = JetsnackTheme.colors.brand,
-                modifier = Modifier.gradientBorder(
+                modifier = Modifier.diagonalGradientBorder(
                     colors = JetsnackTheme.colors.interactiveSecondary,
                     shape = CircleShape
                 )
@@ -181,7 +180,7 @@ private fun FilterChip(
     val (selected, setSelected) = filter.enabled
     val backgroundColor =
         animate(if (selected) JetsnackTheme.colors.brand else JetsnackTheme.colors.uiBackground)
-    val border = Modifier.fadeInGradientBorder(
+    val border = Modifier.fadeInDiagonalGradientBorder(
         showBorder = !selected,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = shape
