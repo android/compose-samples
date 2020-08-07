@@ -21,15 +21,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.setContent
+import com.example.jetsnack.ui.utils.SysUiController
 import com.example.jetsnack.ui.utils.SystemUiController
-import com.example.jetsnack.ui.utils.SystemUiControllerAmbient
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val systemUiController = remember { SystemUiController(window) }
-            Providers(SystemUiControllerAmbient provides systemUiController) {
+            Providers(SysUiController provides systemUiController) {
                 JetsnackApp(onBackPressedDispatcher)
             }
         }

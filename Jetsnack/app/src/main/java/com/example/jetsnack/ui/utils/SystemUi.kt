@@ -25,11 +25,35 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 
+interface SystemUiController {
+    fun setStatusBarColor(
+        color: Color,
+        darkIcons: Boolean = color.luminance() > 0.5f,
+        transformColorForLightContent: (Color) -> Color = BlackScrimmed
+    )
+
+    fun setNavigationBarColor(
+        color: Color,
+        darkIcons: Boolean = color.luminance() > 0.5f,
+        transformColorForLightContent: (Color) -> Color = BlackScrimmed
+    )
+
+    fun setSystemBarsColor(
+        color: Color,
+        darkIcons: Boolean = color.luminance() > 0.5f,
+        transformColorForLightContent: (Color) -> Color = BlackScrimmed
+    )
+}
+
+fun SystemUiController(window: Window): SystemUiController {
+    return SystemUiControllerImpl(window)
+}
+
 /**
  * A helper class for setting the navigation and status bar colors for a [Window], gracefully
  * degrading behavior based upon API level.
  */
-class SystemUiController(private val window: Window) {
+private class SystemUiControllerImpl(private val window: Window) : SystemUiController {
 
     /**
      * Set the status bar color.
@@ -41,10 +65,10 @@ class SystemUiController(private val window: Window) {
      * @param transformColorForLightContent A lambda which will be invoked to transform [color] if
      * dark icons were requested but are not available. Defaults to applying a black scrim.
      */
-    fun setStatusBarColor(
+    override fun setStatusBarColor(
         color: Color,
-        darkIcons: Boolean = color.luminance() > 0.5f,
-        transformColorForLightContent: (Color) -> Color = BlackScrimmed
+        darkIcons: Boolean,
+        transformColorForLightContent: (Color) -> Color
     ) {
         val statusBarColor = when {
             darkIcons && Build.VERSION.SDK_INT < 23 -> transformColorForLightContent(color)
@@ -76,10 +100,10 @@ class SystemUiController(private val window: Window) {
      * @param transformColorForLightContent A lambda which will be invoked to transform [color] if
      * dark icons were requested but are not available. Defaults to applying a black scrim.
      */
-    fun setNavigationBarColor(
+    override fun setNavigationBarColor(
         color: Color,
-        darkIcons: Boolean = color.luminance() > 0.5f,
-        transformColorForLightContent: (Color) -> Color = BlackScrimmed
+        darkIcons: Boolean,
+        transformColorForLightContent: (Color) -> Color
     ) {
         val navBarColor = when {
             Build.VERSION.SDK_INT >= 29 -> Color.Transparent // For gesture nav
@@ -106,10 +130,10 @@ class SystemUiController(private val window: Window) {
      * @see setStatusBarColor
      * @see setNavigationBarColor
      */
-    fun setSystemBarsColor(
+    override fun setSystemBarsColor(
         color: Color,
-        darkIcons: Boolean = color.luminance() > 0.5f,
-        transformColorForLightContent: (Color) -> Color = BlackScrimmed
+        darkIcons: Boolean,
+        transformColorForLightContent: (Color) -> Color
     ) {
         setStatusBarColor(color, darkIcons, transformColorForLightContent)
         setNavigationBarColor(color, darkIcons, transformColorForLightContent)
@@ -117,14 +141,37 @@ class SystemUiController(private val window: Window) {
 }
 
 /**
- * An [androidx.compose.Ambient] holding the current [SystemUiController] or throws an error if none
- * is [provided][androidx.compose.Providers].
+ * An [androidx.compose.runtime.Ambient] holding the current [SysUiController]. Defaults to a
+ * no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
  */
-val SystemUiControllerAmbient = staticAmbientOf<SystemUiController> {
-    error("No SystemUiController provided")
+val SysUiController = staticAmbientOf<SystemUiController> {
+    FakeSystemUiController
 }
 
 private val BlackScrim = Color(0f, 0f, 0f, 0.2f) // 20% opaque black
 private val BlackScrimmed: (Color) -> Color = { original ->
     BlackScrim.compositeOver(original)
+}
+
+/**
+ * A fake implementation, useful as a default or used in Previews.
+ */
+private object FakeSystemUiController : SystemUiController {
+    override fun setStatusBarColor(
+        color: Color,
+        darkIcons: Boolean,
+        transformColorForLightContent: (Color) -> Color
+    ) = Unit
+
+    override fun setNavigationBarColor(
+        color: Color,
+        darkIcons: Boolean,
+        transformColorForLightContent: (Color) -> Color
+    ) = Unit
+
+    override fun setSystemBarsColor(
+        color: Color,
+        darkIcons: Boolean,
+        transformColorForLightContent: (Color) -> Color
+    ) = Unit
 }
