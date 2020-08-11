@@ -17,9 +17,9 @@
 package com.example.compose.jetsurvey.signinsignup
 
 class PasswordState :
-    FilledTextFieldState(validator = ::isPasswordValid, errorFor = ::passwordValidationError)
+    TextFieldState(validator = ::isPasswordValid, errorFor = ::passwordValidationError)
 
-class ConfirmPasswordState(private val passwordState: PasswordState) : FilledTextFieldState() {
+class ConfirmPasswordState(private val passwordState: PasswordState) : TextFieldState() {
     override val isValid
         get() = passwordAndConfirmationValid(passwordState.text, text)
 

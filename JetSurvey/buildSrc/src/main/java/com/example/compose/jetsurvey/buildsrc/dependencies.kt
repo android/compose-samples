@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha04"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha07"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
@@ -40,7 +40,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
         object Compose {
-            const val snapshot = "6713401"
+            const val snapshot = "6750543"
             const val version = "0.1.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"

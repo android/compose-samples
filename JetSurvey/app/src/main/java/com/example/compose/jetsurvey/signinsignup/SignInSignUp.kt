@@ -43,8 +43,8 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -106,7 +106,7 @@ private fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Un
 }
 
 @Composable
-fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
+fun Email(emailState: TextFieldState = remember { EmailState() }) {
     OutlinedTextField(
         value = emailState.text,
         onValueChange = { emailState.text = it },
@@ -129,12 +129,12 @@ fun Email(emailState: FilledTextFieldState = remember { EmailState() }) {
         isErrorValue = emailState.showErrors()
     )
 
-    emailState.getError()?.let { error -> FilledTextFieldError(textError = error) }
+    emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
 @Composable
-fun Password(label: String, passwordState: FilledTextFieldState) {
-    val showPassword = state { false }
+fun Password(label: String, passwordState: TextFieldState) {
+    val showPassword = remember { mutableStateOf(false) }
     OutlinedTextField(
         value = passwordState.text,
         onValueChange = {
@@ -170,14 +170,14 @@ fun Password(label: String, passwordState: FilledTextFieldState) {
         isErrorValue = passwordState.showErrors()
     )
 
-    passwordState.getError()?.let { error -> FilledTextFieldError(textError = error) }
+    passwordState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
 /**
- * To be removed when [FilledTextField]s support error
+ * To be removed when [TextField]s support error
  */
 @Composable
-fun FilledTextFieldError(textError: String) {
+fun TextFieldError(textError: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.preferredWidth(16.dp))
         Text(
@@ -206,7 +206,7 @@ fun OrSignInAsGuest(
             }
         }
         OutlinedButton(
-            onClick = { onSignedInAsGuest() },
+            onClick = onSignedInAsGuest,
             modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 24.dp)
         ) {
             Text(text = stringResource(id = R.string.sign_in_guest))

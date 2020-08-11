@@ -17,14 +17,14 @@
 package com.example.compose.jetsurvey.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.ColorPalette
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColorPalette
-import androidx.compose.material.lightColorPalette
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val LightThemeColors = lightColorPalette(
+val LightThemeColors = lightColors(
     primary = Purple700,
     primaryVariant = Purple800,
     onPrimary = Color.White,
@@ -38,7 +38,7 @@ val LightThemeColors = lightColorPalette(
     onError = Color.White
 )
 
-val DarkThemeColors = darkColorPalette(
+val DarkThemeColors = darkColors(
     primary = Purple300,
     primaryVariant = Purple600,
     onPrimary = Color.Black,
@@ -53,7 +53,7 @@ val DarkThemeColors = darkColorPalette(
 )
 
 @Composable
-val ColorPalette.snackbarAction: Color
+val Colors.snackbarAction: Color
     get() = if (isLight) Purple300 else Purple700
 
 @Composable

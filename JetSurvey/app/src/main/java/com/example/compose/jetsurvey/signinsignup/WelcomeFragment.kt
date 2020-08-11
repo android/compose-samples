@@ -25,6 +25,7 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.ui.platform.setContent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.Screen
 import com.example.compose.jetsurvey.navigate
@@ -42,7 +43,7 @@ class WelcomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.navigateTo.observe(this) { navigateToEvent ->
+        viewModel.navigateTo.observe(viewLifecycleOwner) { navigateToEvent ->
             navigateToEvent.getContentIfNotHandled()?.let { navigateTo ->
                 navigate(navigateTo, Screen.Welcome)
             }

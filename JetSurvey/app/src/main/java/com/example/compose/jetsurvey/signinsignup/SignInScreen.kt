@@ -34,8 +34,8 @@ import androidx.compose.material.Snackbar
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -55,30 +55,26 @@ sealed class SignInEvent {
 
 @Composable
 fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
-    val showSnackbar = state { false }
+    val showSnackbar = remember { mutableStateOf(false) }
     Stack(modifier = Modifier.fillMaxSize()) {
-        Column {
-            SignInSignUpScreen(
-                topAppBarText = stringResource(id = R.string.sign_in),
-                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
-                onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    SignInContent(
-                        onSignInSubmitted = { email, password ->
-                            onNavigationEvent(SignInEvent.SignIn(email, password))
-                        }
-                    )
-                    Spacer(modifier = Modifier.preferredHeight(16.dp))
-                    TextButton(
-                        onClick = { showSnackbar.value = true },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.forgot_password)
-                        )
+        SignInSignUpScreen(
+            topAppBarText = stringResource(id = R.string.sign_in),
+            onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
+            onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                SignInContent(
+                    onSignInSubmitted = { email, password ->
+                        onNavigationEvent(SignInEvent.SignIn(email, password))
                     }
+                )
+                Spacer(modifier = Modifier.preferredHeight(16.dp))
+                TextButton(
+                    onClick = { showSnackbar.value = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(id = R.string.forgot_password))
                 }
             }
         }
@@ -137,7 +133,7 @@ fun ErrorSnackbar(
     Box(modifier = modifier.fillMaxWidth().wrapContentHeight(Alignment.Bottom)) {
         Crossfade(current = showError) {
             Snackbar(
-                modifier = modifier.padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 text = {
                     Text(
                         text = errorText,
@@ -146,9 +142,7 @@ fun ErrorSnackbar(
                 },
                 action = {
                     TextButton(
-                        onClick = {
-                            onDismiss()
-                        },
+                        onClick = onDismiss,
                         contentColor = contentColor()
                     ) {
                         Text(

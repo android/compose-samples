@@ -22,7 +22,7 @@ import java.util.regex.Pattern
 private const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)\$"
 
 class EmailState :
-    FilledTextFieldState(validator = ::isEmailValid, errorFor = ::emailValidationError)
+    TextFieldState(validator = ::isEmailValid, errorFor = ::emailValidationError)
 
 /**
  * Returns an error to be displayed or null if no error was found

@@ -20,6 +20,7 @@ import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.padding
@@ -29,11 +30,12 @@ import androidx.compose.material.Button
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.LayoutModifier
 import androidx.compose.ui.Measurable
@@ -61,37 +63,39 @@ sealed class WelcomeEvent {
 
 @Composable
 fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
-    var brandingBottom by state { 0f }
-    var showBranding by state { true }
-    var heightWithBranding by state { 0 }
+    var brandingBottom by remember { mutableStateOf(0f) }
+    var showBranding by remember { mutableStateOf(true) }
+    var heightWithBranding by remember { mutableStateOf(0) }
 
-    val currentOffsetHolder = state { 0f }
+    val currentOffsetHolder = remember { mutableStateOf(0f) }
     currentOffsetHolder.value = animate(
         if (showBranding) 0f else -brandingBottom
     )
     val heightDp = with(DensityAmbient.current) { heightWithBranding.toDp() }
-    Column(
-        modifier = Modifier.fillMaxWidth()
-            .brandingPreferredHeight(showBranding, heightDp)
-            .offsetPx(y = currentOffsetHolder)
-            .onPositioned {
-                if (showBranding) {
-                    heightWithBranding = it.size.height
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .brandingPreferredHeight(showBranding, heightDp)
+                .offsetPx(y = currentOffsetHolder)
+                .onPositioned {
+                    if (showBranding) {
+                        heightWithBranding = it.size.height
+                    }
                 }
-            }
-    ) {
-        Branding(
-            modifier = Modifier.fillMaxWidth().weight(1f).onPositioned {
-                if (brandingBottom == 0f) {
-                    brandingBottom = it.boundsInParent.bottom
+        ) {
+            Branding(
+                modifier = Modifier.fillMaxWidth().weight(1f).onPositioned {
+                    if (brandingBottom == 0f) {
+                        brandingBottom = it.boundsInParent.bottom
+                    }
                 }
-            }
-        )
-        SignInCreateAccount(
-            onEvent = onEvent,
-            onFocusChange = { focused -> showBranding = !focused },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-        )
+            )
+            SignInCreateAccount(
+                onEvent = onEvent,
+                onFocusChange = { focused -> showBranding = !focused },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+            )
+        }
     }
 }
 

@@ -20,7 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-open class FilledTextFieldState(
+open class TextFieldState(
     private val validator: (String) -> Boolean = { true },
     private val errorFor: (String) -> String = { "" }
 ) {

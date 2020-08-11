@@ -66,7 +66,6 @@ fun SignUpContent(onSignUpSubmitted: (email: String, password: String) -> Unit) 
         Email(emailState)
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-
         val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
@@ -74,12 +73,12 @@ fun SignUpContent(onSignUpSubmitted: (email: String, password: String) -> Unit) 
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-
         val confirmPasswordState = remember { ConfirmPasswordState(passwordState = passwordState) }
         Password(
             label = stringResource(id = R.string.confirm_password),
             passwordState = confirmPasswordState
         )
+
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
             Text(
@@ -87,6 +86,7 @@ fun SignUpContent(onSignUpSubmitted: (email: String, password: String) -> Unit) 
                 style = MaterialTheme.typography.caption
             )
         }
+
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
