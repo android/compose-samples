@@ -99,12 +99,6 @@ class UserInputTest {
         assertEmojiSelectorDoesNotExist()
     }
 
-    /**
-     * TODO: Flaky test:
-     *    1/5 - ` Reason: Expected exactly '1' node but could not find any node
-     *  that satisfies: (KeyboardShownKey = 'false')`
-     *    1/20 - hitting r.android.com/1341840
-     */
     @Test
     fun keyboardShown_emojiSelectorOpened_keyboardHides() {
         // Click on text field to open the soft keyboard

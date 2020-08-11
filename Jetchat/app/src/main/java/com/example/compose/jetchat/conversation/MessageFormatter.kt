@@ -27,6 +27,7 @@ import androidx.compose.ui.text.annotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 
@@ -152,7 +153,8 @@ private fun getSymbolAnnotation(
                 spanStyle = SpanStyle(
                     fontFamily = FontFamily.Monospace,
                     fontSize = 12.sp,
-                    background = codeSnippetBackground
+                    background = codeSnippetBackground,
+                    baselineShift = BaselineShift(0.2f)
                 )
             ),
             null

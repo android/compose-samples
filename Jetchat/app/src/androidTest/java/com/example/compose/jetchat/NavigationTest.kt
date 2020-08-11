@@ -25,6 +25,7 @@ import androidx.test.espresso.Espresso
 import androidx.ui.test.android.createAndroidComposeRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.onNodeWithText
+import androidx.ui.test.runOnUiThread
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
@@ -80,7 +81,9 @@ class NavigationTest {
     @Test
     fun profileScreen_back_conversationScreen() {
         // Navigate to profile
-        navController.navigate(R.id.nav_profile)
+        runOnUiThread {
+            navController.navigate(R.id.nav_profile)
+        }
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check

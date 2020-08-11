@@ -66,7 +66,7 @@ private val JetchatLightPalette = lightColors(
 fun JetchatTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     colors: Colors? = null,
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val myColors = colors ?: if (isDarkTheme) JetchatDarkPalette else JetchatLightPalette
 

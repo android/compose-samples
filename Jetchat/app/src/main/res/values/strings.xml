@@ -59,5 +59,7 @@
     <string name="map_selector_desc">Location selector</string>
     <string name="videochat_desc">Start videochat</string>
     <string name="textfield_desc">Text input</string>
+    <string name="not_available">Functionality currently not available</string>
+    <string name="not_available_subtitle">Grab a beverage and check back later!</string>
 
 </resources>
