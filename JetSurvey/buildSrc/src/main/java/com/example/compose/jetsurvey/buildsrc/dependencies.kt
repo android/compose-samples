@@ -40,7 +40,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
         object Compose {
-            const val snapshot = "6750543"
+            const val snapshot = "6755561"
             const val version = "0.1.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"
