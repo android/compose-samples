@@ -29,9 +29,9 @@ import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
@@ -48,12 +48,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.draw.drawOpacity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
@@ -86,33 +88,34 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 }
             }
         )
-        Stack(modifier = Modifier.weight(1f)) {
-            ScrollableColumn(
-                modifier = Modifier.fillMaxSize(),
-                scrollState = scrollState
-            ) {
-                Surface {
-                    Column {
-                        ProfileHeader(
-                            scrollState,
-                            userData
-                        )
-                        UserInfoFields(userData)
+        WithConstraints {
+            Stack(modifier = Modifier.weight(1f)) {
+                ScrollableColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    scrollState = scrollState
+                ) {
+                    Surface {
+                        Column {
+                            ProfileHeader(
+                                scrollState,
+                                userData
+                            )
+                            UserInfoFields(userData, maxHeight)
+                        }
                     }
                 }
+                ProfileFab(
+                    extended = scrollState.value == 0f,
+                    userIsMe = userData.isMe(),
+                    modifier = Modifier.gravity(Alignment.BottomEnd)
+                )
             }
-            ProfileFab(
-                extended = scrollState.value == 0f,
-                userIsMe = userData.isMe(),
-                modifier = Modifier.gravity(Alignment.BottomEnd)
-            )
         }
     }
 }
 
 @Composable
-private fun UserInfoFields(userData: ProfileScreenState) {
-
+private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
     Column {
         Spacer(modifier = Modifier.preferredHeight(8.dp))
 
@@ -127,6 +130,10 @@ private fun UserInfoFields(userData: ProfileScreenState) {
         userData.timeZone?.let {
             ProfileProperty(stringResource(R.string.timezone), userData.timeZone)
         }
+
+        // Add a spacer that always shows part (320.dp) of the fields list regardless of the device,
+        // in order to always leave some content at the top.
+        Spacer(Modifier.preferredHeight((containerHeight - 320.dp).coerceAtLeast(0.dp)))
     }
 }
 
@@ -184,7 +191,7 @@ private fun ProfileHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 // Allow for landscape and portrait ratios
-                .heightIn(maxHeight = 320.dp)
+                .preferredHeightIn(maxHeight = 320.dp)
                 .aspectRatio(ratioAsset),
             backgroundColor = Color.LightGray
 

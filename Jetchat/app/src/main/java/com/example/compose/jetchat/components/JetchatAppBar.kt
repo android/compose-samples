@@ -18,10 +18,12 @@ package com.example.compose.jetchat.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.RowScope.gravity
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -30,29 +32,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.theme.elevatedSurface
 
 @Composable
 fun JetchatAppBar(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
-    title: @Composable() () -> Unit,
+    title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    TopAppBar(
-        modifier = modifier,
-        backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.95f),
-        contentColor = MaterialTheme.colors.onSurface,
-        actions = actions,
-        title = title,
-        navigationIcon = {
-            Image(
-                asset = vectorResource(id = R.drawable.ic_jetchat),
-                modifier = Modifier
-                    .gravity(Alignment.CenterVertically)
-                    .clickable(onClick = onNavIconPressed)
-                    .padding(horizontal = 16.dp)
-                    .fillMaxHeight()
-            )
-        }
-    )
+    Column {
+        // This bar needs to be translucent but, if the backgroundColor in TopAppBar is not
+        // opaque, the elevation is ignored. We need to manually calculate the elevated surface
+        // color for dark mode:
+        val backgroundColor = MaterialTheme.colors.elevatedSurface(3.dp)
+        TopAppBar(
+            modifier = modifier,
+            backgroundColor = backgroundColor.copy(alpha = 0.95f),
+            elevation = 0.dp, // No shadow needed
+            contentColor = MaterialTheme.colors.onSurface,
+            actions = actions,
+            title = title,
+            navigationIcon = {
+                Image(
+                    asset = vectorResource(id = R.drawable.ic_jetchat),
+                    modifier = Modifier
+                        .gravity(Alignment.CenterVertically)
+                        .clickable(onClick = onNavIconPressed)
+                        .padding(horizontal = 16.dp)
+                )
+            }
+        )
+        Divider()
+    }
 }

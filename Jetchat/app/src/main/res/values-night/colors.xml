@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2020 The Android Open Source Project
   ~
@@ -15,12 +16,7 @@
   -->
 
 <resources>
-
-    <style name="Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar" >
-        <item name="colorPrimary">@color/blue300</item>
-        <item name="colorPrimaryDark">@color/blue400</item>
-        <item name="colorAccent">@color/yellow400</item>
-        <item name="android:statusBarColor">@color/black30</item>
-    </style>
-
+    <!-- Logo -->
+    <color name="yellow_logo">@color/yellow400</color>
+    <color name="blue_logo">@color/blue300</color>
 </resources>

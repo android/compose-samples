@@ -34,14 +34,14 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 
-private val bottomPadding = DpPropKey()
+private val bottomOffset = DpPropKey()
 
 private val definition = transitionDefinition<Visibility> {
     state(Visibility.GONE) {
-        this[bottomPadding] = 0.dp
+        this[bottomOffset] = (-32).dp
     }
     state(Visibility.VISIBLE) {
-        this[bottomPadding] = 32.dp
+        this[bottomOffset] = 32.dp
     }
 }
 
@@ -64,7 +64,7 @@ fun JumpToBottom(
         definition = definition,
         toState = if (enabled) Visibility.VISIBLE else Visibility.GONE
     )
-    if (enabled) {
+    if (transition[bottomOffset] > 0.dp) {
         ExtendedFloatingActionButton(
             icon = {
                 Icon(
@@ -79,7 +79,7 @@ fun JumpToBottom(
             backgroundColor = MaterialTheme.colors.surface,
             contentColor = MaterialTheme.colors.primary,
             modifier = modifier
-                .offset(x = 0.dp, y = -transition[bottomPadding])
+                .offset(x = 0.dp, y = -transition[bottomOffset])
                 .preferredHeight(36.dp)
         )
     }

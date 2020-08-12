@@ -53,7 +53,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.onCommit
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -95,20 +94,24 @@ fun ConversationContent(
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
+
+    val scrollState = rememberScrollState()
     Surface(modifier = modifier) {
         Stack(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
                 Messages(
                     messages = uiState.messages,
                     navigateToProfile = navigateToProfile,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    scrollState = scrollState
                 )
                 UserInput(
                     onMessageSent = { content ->
                         uiState.addMessage(
                             Message(authorMe, content, timeNow)
                         )
-                    }
+                    },
+                    scrollState
                 )
             }
             // Channel name bar floats above the messages
@@ -134,10 +137,7 @@ fun ChannelNameBar(
         onNavIconPressed = onNavIconPressed,
         title = {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 8.dp)
-                    .gravity(Alignment.CenterVertically),
+                modifier = Modifier.weight(1f),
                 horizontalGravity = Alignment.CenterHorizontally
             ) {
                 // Channel name
@@ -182,11 +182,9 @@ fun ChannelNameBar(
 fun Messages(
     messages: List<Message>,
     navigateToProfile: (String) -> Unit,
+    scrollState: ScrollState,
     modifier: Modifier = Modifier
 ) {
-    // Scroll is reversed so a value of 0 is the bottom
-    val scrollState = rememberScrollState()
-
     // Used to tell between manual and programmatic scrolling
     var userScrolled by savedInstanceState { false }
 
@@ -284,7 +282,7 @@ fun Message(
         MaterialTheme.colors.secondary
     }
 
-    val spaceBetweenAuthors = if (isFirstMessageByAuthor) Modifier.padding(top = 4.dp) else Modifier
+    val spaceBetweenAuthors = if (isFirstMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Row(modifier = spaceBetweenAuthors) {
         if (isFirstMessageByAuthor) {
             // Avatar
@@ -436,7 +434,8 @@ fun ClickableMessage(message: Message) {
         onClick = {
             styledMessage
                 .getStringAnnotations(start = it, end = it)
-                .firstOrNull()?.let { annotation ->
+                .firstOrNull()
+                ?.let { annotation ->
                     when (annotation.tag) {
                         SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
                         // TODO(yrezgui): Open profile screen when click PERSON tag

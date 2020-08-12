@@ -16,7 +16,7 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.compose.material.ColorPalette
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -77,7 +77,7 @@ fun messageFormatter(
 
             val (annotatedString, stringAnnotation) = getSymbolAnnotation(
                 matchResult = token,
-                colorPalette = MaterialTheme.colors,
+                colors = MaterialTheme.colors,
                 codeSnippetBackground = codeSnippetBackground
             )
             append(annotatedString)
@@ -106,7 +106,7 @@ fun messageFormatter(
  */
 private fun getSymbolAnnotation(
     matchResult: MatchResult,
-    colorPalette: ColorPalette,
+    colors: Colors,
     codeSnippetBackground: Color
 ): SymbolAnnotation {
     return when (matchResult.value.first()) {
@@ -114,7 +114,7 @@ private fun getSymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
                 spanStyle = SpanStyle(
-                    color = colorPalette.primary,
+                    color = colors.primary,
                     fontWeight = FontWeight.Bold
                 )
             ),
@@ -161,7 +161,7 @@ private fun getSymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
                 spanStyle = SpanStyle(
-                    color = colorPalette.primary
+                    color = colors.primary
                 )
             ),
             StringAnnotation(
