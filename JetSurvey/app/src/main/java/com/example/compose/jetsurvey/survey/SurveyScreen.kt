@@ -18,9 +18,9 @@ package com.example.compose.jetsurvey.survey
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Icon
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope.gravity
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +32,9 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -46,58 +49,107 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyTheme
-
-data class QuestionUiModel(
-    val question: Question,
-    val questionIndex: Int,
-    val totalQuestionsCount: Int,
-    val enablePrevious: Boolean,
-    val enableNext: Boolean
-)
-
-private fun Survey.getNextQuestionUiModel(index: Int): QuestionUiModel {
-    val enablePrevious = index > 0
-    val enableNext = index < questions.size - 1
-    val question = questions[index]
-    return QuestionUiModel(question, index, questions.size, enablePrevious, enableNext)
-}
 
 @Composable
-fun SurveyScreen(
-    survey: Survey,
+fun SurveyQuestionsScreen(
+    questions: SurveyState.Questions,
+    onAction: (Int, SurveyActionType) -> Unit,
+    onDonePressed: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     var currentQuestionIndex by savedInstanceState { 0 }
-    val questionUiModel =
-        remember(currentQuestionIndex) { survey.getNextQuestionUiModel(currentQuestionIndex) }
+    val questionState =
+        remember(currentQuestionIndex) { questions.questionsState[currentQuestionIndex] }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        SurveyTopAppBar(survey, onBackPressed)
-        Question(
-            question = questionUiModel.question.questionText,
-            modifier = Modifier.fillMaxSize().weight(1f).padding(horizontal = 20.dp)
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = { SurveyTopAppBar(questions.surveyTitle, onBackPressed) },
+            bodyContent = { innerPadding ->
+                Question(
+                    question = questionState.question,
+                    answer = questionState.answer,
+                    onAnswer = { questionState.answer = it },
+                    onAction = onAction,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                )
+            },
+            bottomBar = {
+                SurveyBottomBar(
+                    questionState = questionState,
+                    onPreviousPressed = { currentQuestionIndex-- },
+                    onNextPressed = { currentQuestionIndex++ },
+                    onDonePressed = onDonePressed
+                )
+            }
         )
-        SurveyBottomBar(
-            questionUiModel = questionUiModel,
-            onPreviousPressed = { currentQuestionIndex-- },
-            onNextPressed = { currentQuestionIndex++ }
+    }
+}
+
+@Composable
+fun SurveyResultScreen(
+    result: SurveyState.Result,
+    onDonePressed: () -> Unit,
+    onBackPressed: () -> Unit
+) {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = { SurveyTopAppBar(result.surveyTitle, onBackPressed) },
+            bodyContent = { innerPadding ->
+                val modifier = Modifier.padding(innerPadding)
+                SurveyResult(result = result, modifier = modifier)
+            },
+            bottomBar = {
+                OutlinedButton(
+                    onClick = { onDonePressed() },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 24.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.done))
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.preferredHeight(44.dp))
+        Text(
+            text = result.surveyResult.library,
+            style = MaterialTheme.typography.h3,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+        Text(
+            text = stringResource(
+                result.surveyResult.result,
+                result.surveyResult.library
+            ),
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.padding(20.dp)
+        )
+        Text(
+            text = stringResource(result.surveyResult.description),
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.weight(1f).padding(horizontal = 20.dp)
         )
     }
 }
 
 @Composable
 private fun SurveyTopAppBar(
-    survey: Survey,
+    @StringRes surveyTitle: Int,
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
         title = {
             Text(
-                text = stringResource(id = survey.title),
+                text = stringResource(id = surveyTitle),
+                textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -117,9 +169,10 @@ private fun SurveyTopAppBar(
 
 @Composable
 private fun SurveyBottomBar(
-    questionUiModel: QuestionUiModel,
+    questionState: QuestionState,
     onPreviousPressed: () -> Unit,
-    onNextPressed: () -> Unit
+    onNextPressed: () -> Unit,
+    onDonePressed: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -129,20 +182,28 @@ private fun SurveyBottomBar(
         TextButton(
             modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.Start),
             onClick = onPreviousPressed,
-            enabled = questionUiModel.enablePrevious
+            enabled = questionState.enablePrevious
         ) {
             Text(text = stringResource(id = R.string.previous))
         }
         PageIndicator(
-            pagesCount = questionUiModel.totalQuestionsCount,
-            currentPageIndex = questionUiModel.questionIndex
+            pagesCount = questionState.totalQuestionsCount,
+            currentPageIndex = questionState.questionIndex
         )
-        TextButton(
-            modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.End),
-            onClick = onNextPressed,
-            enabled = questionUiModel.enableNext
-        ) {
-            Text(text = stringResource(id = R.string.next))
+        if (questionState.showDone) {
+            TextButton(
+                modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.End),
+                onClick = onDonePressed
+            ) {
+                Text(text = stringResource(id = R.string.done))
+            }
+        } else {
+            TextButton(
+                modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.End),
+                onClick = onNextPressed
+            ) {
+                Text(text = stringResource(id = R.string.next))
+            }
         }
     }
 }
@@ -165,32 +226,5 @@ private fun PageIndicator(pagesCount: Int, currentPageIndex: Int, modifier: Modi
                 tint = MaterialTheme.colors.primary
             )
         }
-    }
-}
-
-@Composable
-private fun Question(@StringRes question: Int, modifier: Modifier = Modifier) {
-    ScrollableColumn(modifier = modifier) {
-        Spacer(modifier = Modifier.preferredHeight(44.dp))
-        Text(
-            text = stringResource(id = question),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-        )
-    }
-}
-
-@Preview(name = "Survey light theme")
-@Composable
-fun SurveyScreenPreview() {
-    JetsurveyTheme {
-        SurveyScreen(SurveyRepository.getSurvey()) {}
-    }
-}
-
-@Preview(name = "Survey dark theme")
-@Composable
-fun SurveyScreenPreviewDark() {
-    JetsurveyTheme(darkTheme = true) {
-        SurveyScreen(SurveyRepository.getSurvey()) {}
     }
 }

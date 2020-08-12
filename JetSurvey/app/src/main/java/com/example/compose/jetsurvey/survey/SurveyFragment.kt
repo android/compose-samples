@@ -22,11 +22,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.setContent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.google.android.material.datepicker.MaterialDatePicker
 
 class SurveyFragment : Fragment() {
 
@@ -48,14 +50,51 @@ class SurveyFragment : Fragment() {
             )
             setContent(Recomposer.current()) {
                 JetsurveyTheme {
-                    SurveyScreen(
-                        survey = viewModel.survey,
-                        onBackPressed = {
-                            activity?.onBackPressedDispatcher?.onBackPressed()
+                    viewModel.uiState.observeAsState().value?.let { surveyState ->
+                        when (surveyState) {
+                            is SurveyState.Questions -> SurveyQuestionsScreen(
+                                questions = surveyState,
+                                onAction = { id, action -> handleSurveyAction(id, action) },
+                                onDonePressed = { viewModel.computeResult(surveyState) },
+                                onBackPressed = {
+                                    activity?.onBackPressedDispatcher?.onBackPressed()
+                                }
+                            )
+                            is SurveyState.Result -> SurveyResultScreen(
+                                result = surveyState,
+                                onDonePressed = { activity?.onBackPressedDispatcher?.onBackPressed() },
+                                onBackPressed = { activity?.onBackPressedDispatcher?.onBackPressed() }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
+    }
+
+    private fun handleSurveyAction(questionId: Int, actionType: SurveyActionType) {
+        when (actionType) {
+            SurveyActionType.PICK_DATE -> showDatePicker(questionId)
+            SurveyActionType.TAKE_PHOTO -> takeAPhoto(questionId)
+            SurveyActionType.SELECT_CONTACT -> selectContact(questionId)
+        }
+    }
+
+    private fun showDatePicker(questionId: Int) {
+        val picker = MaterialDatePicker.Builder.datePicker().build()
+        activity?.let {
+            picker.show(it.supportFragmentManager, picker.toString())
+            picker.addOnPositiveButtonClickListener {
+                viewModel.onDatePicked(questionId, picker.headerText)
+            }
+        }
+    }
+
+    private fun takeAPhoto(questionId: Int) {
+        // unsupported for now
+    }
+
+    private fun selectContact(questionId: Int) {
+        // unsupported for now
     }
 }
