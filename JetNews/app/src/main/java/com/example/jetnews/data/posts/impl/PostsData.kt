@@ -17,7 +17,7 @@
 package com.example.jetnews.data.posts.impl
 
 import android.content.res.Resources
-import androidx.ui.graphics.imageFromResource
+import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.R
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType

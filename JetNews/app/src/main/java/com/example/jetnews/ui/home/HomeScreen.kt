@@ -16,43 +16,45 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.Composable
-import androidx.compose.launchInComposition
-import androidx.compose.remember
-import androidx.compose.stateFor
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.foundation.ScrollableRow
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.contentColor
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.layout.Column
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.wrapContentSize
-import androidx.ui.material.CircularProgressIndicator
-import androidx.ui.material.Divider
-import androidx.ui.material.DrawerState
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Scaffold
-import androidx.ui.material.ScaffoldState
-import androidx.ui.material.Snackbar
-import androidx.ui.material.Surface
-import androidx.ui.material.TextButton
-import androidx.ui.material.TopAppBar
-import androidx.ui.res.vectorResource
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.ScrollableRow
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Snackbar
+import androidx.compose.material.Surface
+import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
@@ -74,14 +76,14 @@ import kotlinx.coroutines.delay
 fun HomeScreen(
     navigateTo: (Screen) -> Unit,
     postsRepository: PostsRepository,
-    scaffoldState: ScaffoldState = remember { ScaffoldState() }
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Home,
-                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
+                closeDrawer = { scaffoldState.drawerState.close() },
                 navigateTo = navigateTo
             )
         },
@@ -89,7 +91,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(text = "Jetnews") },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState = DrawerState.Opened }) {
+                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
                         Icon(vectorResource(R.drawable.ic_jetnews_logo))
                     }
                 }
@@ -118,7 +120,11 @@ private fun HomeScreenContent(
             onRefresh = { refreshPosts() },
             refreshIndicator = {
                 Surface(elevation = 10.dp, shape = CircleShape) {
-                    CircularProgressIndicator(Modifier.preferredSize(50.dp).padding(4.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .preferredSize(36.dp)
+                            .padding(4.dp)
+                    )
                 }
             }
         ) {
@@ -144,8 +150,8 @@ private fun HomeScreenBodyWrapper(
     // State for showing the Snackbar error. This state will reset with the content of the lambda
     // inside stateFor each time the RefreshableUiState input parameter changes.
     // showSnackbarError is the value of the error state, use updateShowSnackbarError to update it.
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(state) {
-        state is RefreshableUiState.Error
+    val (showSnackbarError, updateShowSnackbarError) = remember(state) {
+        mutableStateOf(state is RefreshableUiState.Error)
     }
 
     Stack(modifier = modifier.fillMaxSize()) {
@@ -307,9 +313,12 @@ fun PreviewHomeScreenBody() {
 @Composable
 private fun PreviewDrawerOpen() {
     ThemedPreview {
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Open)
+        )
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            scaffoldState = scaffoldState,
             navigateTo = { }
         )
     }
@@ -328,9 +337,12 @@ fun PreviewHomeScreenBodyDark() {
 @Composable
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkTheme = true) {
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Open)
+        )
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            scaffoldState = scaffoldState,
             navigateTo = { }
         )
     }
