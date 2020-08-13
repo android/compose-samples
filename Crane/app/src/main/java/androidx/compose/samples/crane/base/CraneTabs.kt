@@ -16,11 +16,12 @@
 
 package androidx.compose.samples.crane.base
 
-import androidx.compose.foundation.Border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.drawBorder
+import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -60,6 +61,7 @@ fun CraneTabBar(
     }
 }
 
+@OptIn(ExperimentalLayout::class)
 @Composable
 fun CraneTabs(
     modifier: Modifier = Modifier,
@@ -67,39 +69,34 @@ fun CraneTabs(
     tabSelected: CraneScreen,
     onTabSelected: (CraneScreen) -> Unit
 ) {
-    val indicatorContainer = @Composable { tabPositions: List<TabRow.TabPosition> ->
-        TabRow.IndicatorContainer(tabPositions, tabSelected.ordinal) {}
-    }
-
     TabRow(
+        selectedTabIndex = tabSelected.ordinal,
         modifier = modifier,
-        items = titles,
-        selectedIndex = tabSelected.ordinal,
         contentColor = MaterialTheme.colors.onSurface,
-        indicatorContainer = indicatorContainer,
-        divider = {}
-    ) { index, title ->
-        val selected = index == tabSelected.ordinal
-        val textModifier = if (!selected) {
-            Modifier
-        } else {
-            Modifier.drawBorder(
-                border = Border(2.dp, Color.White),
-                shape = RoundedCornerShape(16.dp)
-            ).padding(top = 8.dp, start = 16.dp, bottom = 8.dp, end = 16.dp)
-        }
+        indicator = { },
+        divider = { }
+    ) {
+        titles.forEachIndexed { index, title ->
+            val selected = index == tabSelected.ordinal
 
-        Tab(
-            text = {
+            var textModifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+            if (selected) {
+                textModifier =
+                    Modifier.border(BorderStroke(2.dp, Color.White), RoundedCornerShape(16.dp))
+                        .then(textModifier)
+            }
+
+            Tab(
+                selected = selected,
+                onClick = { onTabSelected(CraneScreen.values()[index]) }
+            ) {
                 Text(
                     modifier = textModifier,
                     text = title.toUpperCase(
                         ConfigurationCompat.getLocales(ConfigurationAmbient.current)[0]
                     )
                 )
-            },
-            selected = selected,
-            onSelected = { onTabSelected(CraneScreen.values()[index]) }
-        )
+            }
+        }
     }
 }

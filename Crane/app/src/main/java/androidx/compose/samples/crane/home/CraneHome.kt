@@ -23,8 +23,9 @@ import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
@@ -73,7 +74,7 @@ fun CraneHomeContent(
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    var tabSelected by state { CraneScreen.Fly }
+    var tabSelected by remember { mutableStateOf(CraneScreen.Fly) }
 
     BackdropFrontLayer(
         modifier = modifier,

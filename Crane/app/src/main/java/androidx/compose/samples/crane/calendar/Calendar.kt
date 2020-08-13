@@ -78,7 +78,7 @@ private fun Month(
 ) {
     Column(modifier = modifier) {
         MonthHeader(
-            modifier = Modifier.padding(start = 30.dp, end = 30.dp),
+            modifier = Modifier.padding(horizontal = 30.dp),
             month = month.name,
             year = month.year
         )
