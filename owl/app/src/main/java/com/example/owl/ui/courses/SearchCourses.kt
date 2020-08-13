@@ -31,6 +31,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +51,7 @@ fun SearchCourses(
     topics: List<Topic>,
     modifier: Modifier = Modifier
 ) {
-    val (searchTerm, updateSearchTerm) = state { TextFieldValue("") }
+    val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
     ScrollableColumn(modifier = modifier.systemBarPadding(top = true)) {
         AppBar(searchTerm, updateSearchTerm)
         val filteredTopics = getTopics(searchTerm.text, topics)

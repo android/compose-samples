@@ -16,7 +16,10 @@
 
 package com.example.owl.ui.onboarding
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.DpPropKey
+import androidx.compose.animation.core.FloatPropKey
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.transition
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
@@ -48,7 +51,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.state
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
@@ -65,9 +69,7 @@ import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.YellowTheme
 import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.heightRange
 import com.example.owl.ui.utils.systemBarPadding
-import com.example.owl.ui.utils.widthRange
 import kotlin.math.max
 
 @Composable
@@ -146,14 +148,36 @@ private fun TopicsGrid(modifier: Modifier = Modifier) {
     }
 }
 
+private enum class SelectionState { Unselected, Selected }
+
+private val CornerRadius = DpPropKey()
+private val SelectedAlpha = FloatPropKey()
+private val CheckScale = FloatPropKey()
+
+private val TopicSelect = transitionDefinition<SelectionState> {
+    state(SelectionState.Selected) {
+        this[CornerRadius] = 28.dp
+        this[SelectedAlpha] = 0.8f
+        this[CheckScale] = 1f
+    }
+    state(SelectionState.Unselected) {
+        this[CornerRadius] = 0.dp
+        this[SelectedAlpha] = 0f
+        this[CheckScale] = 0.6f
+    }
+}
+
 @Composable
 private fun TopicChip(topic: Topic) {
-    val (selected, onSelected) = state { false }
-    val tlCornerRadius = animate(target = if (selected) 28.dp else 0.dp)
+    val (selected, onSelected) = remember { mutableStateOf(false) }
+    val selectionState = transition(
+        definition = TopicSelect,
+        toState = if (selected) SelectionState.Selected else SelectionState.Unselected
+    )
     Surface(
         modifier = Modifier.padding(4.dp),
         elevation = OwlTheme.elevations.card,
-        shape = MaterialTheme.shapes.medium.copy(topLeft = CornerSize(tlCornerRadius))
+        shape = MaterialTheme.shapes.medium.copy(topLeft = CornerSize(selectionState[CornerRadius]))
     ) {
         Row(modifier = Modifier.toggleable(value = selected, onValueChange = onSelected)) {
             Stack {
@@ -163,8 +187,7 @@ private fun TopicChip(topic: Topic) {
                         .preferredSize(width = 72.dp, height = 72.dp)
                         .aspectRatio(1f)
                 )
-                val selectedAlpha = animate(target = if (selected) 0.8f else 0f)
-                val tickScale = animate(target = if (selected) 1f else 0.6f)
+                val selectedAlpha = selectionState[SelectedAlpha]
                 if (selectedAlpha > 0f) {
                     Surface(
                         color = pink500.copy(alpha = selectedAlpha),
@@ -174,8 +197,8 @@ private fun TopicChip(topic: Topic) {
                             asset = Icons.Filled.Done,
                             tint = MaterialTheme.colors.onPrimary.copy(alpha = selectedAlpha),
                             modifier = Modifier.drawLayer(
-                                scaleX = tickScale,
-                                scaleY = tickScale
+                                scaleX = selectionState[CheckScale],
+                                scaleY = selectionState[CheckScale]
                             )
                         )
                     }
@@ -238,9 +261,10 @@ private fun StaggeredGrid(
         }
 
         // Grid's width is the widest row
-        val width = rowWidths.maxOrNull()?.coerceIn(constraints.widthRange) ?: constraints.minWidth
+        val width = rowWidths.maxOrNull()?.coerceIn(constraints.minWidth, constraints.maxWidth)
+            ?: constraints.minWidth
         // Grid's height is the sum of each row
-        val height = rowHeights.sum().coerceIn(constraints.heightRange)
+        val height = rowHeights.sum().coerceIn(constraints.minHeight, constraints.maxHeight)
 
         // y co-ord of each row
         val rowY = IntArray(rows) { 0 }
@@ -266,4 +290,12 @@ private fun StaggeredGrid(
 @Composable
 private fun OnboardingPreview() {
     Onboarding(onboardingComplete = { })
+}
+
+@Preview("Topic Chip")
+@Composable
+private fun TopicChipPreview() {
+    YellowTheme {
+        TopicChip(topics.first())
+    }
 }

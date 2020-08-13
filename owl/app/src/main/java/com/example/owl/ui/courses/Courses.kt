@@ -34,6 +34,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +52,7 @@ import com.example.owl.ui.utils.systemBarPadding
 @Composable
 fun Courses(selectCourse: (Long) -> Unit) {
     BlueTheme {
-        val (selectedTab, setSelectedTab) = state { CourseTabs.FEATURED }
+        val (selectedTab, setSelectedTab) = remember { mutableStateOf(CourseTabs.FEATURED) }
         val tabs = CourseTabs.values()
         Scaffold(
             backgroundColor = MaterialTheme.colors.primarySurface,

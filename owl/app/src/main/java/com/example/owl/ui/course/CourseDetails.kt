@@ -17,8 +17,6 @@
 package com.example.owl.ui.course
 
 import androidx.compose.animation.animate
-import androidx.compose.animation.asDisposableClock
-import androidx.compose.animation.core.AnimationClockObservable
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
@@ -43,20 +41,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
-import androidx.compose.material.fractionalThresholds
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.material.primarySurface
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -66,7 +64,6 @@ import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.drawLayer
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -105,7 +102,7 @@ fun CourseDetails(
     val course = remember(courseId) { CourseRepo.getCourse(courseId) }
     PinkTheme {
         WithConstraints {
-            val sheetState = rememberSwipeableSheetState(SheetState.Closed)
+            val sheetState = rememberSwipeableState(SheetState.Closed)
             val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
             val dragRange = constraints.maxHeight - fabSize
 
@@ -123,7 +120,7 @@ fun CourseDetails(
                         0f to SheetState.Closed,
                         -dragRange to SheetState.Open
                     ),
-                    thresholds = fractionalThresholds(0.5f),
+                    thresholds = { _, _ -> FractionalThreshold(0.5f) },
                     orientation = Orientation.Vertical
                 )
             ) {
@@ -463,25 +460,6 @@ private fun Lesson(lesson: Lesson) {
 }
 
 private enum class SheetState { Open, Closed }
-
-@OptIn(ExperimentalMaterialApi::class)
-private class SwipeableSheetState(
-    initial: SheetState,
-    clock: AnimationClockObservable,
-    confirmStateChange: (SheetState) -> Boolean
-) : SwipeableState<SheetState>(initial, clock, confirmStateChange)
-
-@Composable
-private fun rememberSwipeableSheetState(initial: SheetState): SwipeableSheetState {
-    val clock = AnimationClockAmbient.current.asDisposableClock()
-    return remember(clock) {
-        SwipeableSheetState(
-            initial = initial,
-            clock = clock,
-            confirmStateChange = { true }
-        )
-    }
-}
 
 @Preview(name = "Course Details")
 @Composable

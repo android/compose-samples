@@ -26,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -58,7 +57,7 @@ fun ProvideInsets(
     setImmersive: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    var currentInsets by state<WindowInsetsCompat?> { null }
+    var currentInsets by remember { mutableStateOf<WindowInsetsCompat?>(null) }
     val view = ViewAmbient.current
     val density = DensityAmbient.current
     val insets = remember { Insets() }

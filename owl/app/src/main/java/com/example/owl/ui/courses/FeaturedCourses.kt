@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.OndemandVideo
 import androidx.compose.material.icons.rounded.OndemandVideo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Layout
@@ -44,7 +43,6 @@ import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.elevatedSurface
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.heightRange
 import com.example.owl.ui.utils.systemBarPadding
 import kotlin.math.ceil
 
@@ -183,7 +181,8 @@ fun StaggeredVerticalGrid(
             placeable
         }
 
-        val height = colHeights.maxOrNull()?.coerceIn(constraints.heightRange) ?: constraints.minHeight
+        val height = colHeights.maxOrNull()?.coerceIn(constraints.minHeight, constraints.maxHeight)
+            ?: constraints.minHeight
         layout(
             width = constraints.maxWidth,
             height = height
