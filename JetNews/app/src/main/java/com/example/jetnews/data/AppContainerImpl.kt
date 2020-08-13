@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +28,18 @@ import java.util.concurrent.Executors
 
 /**
  * Dependency Injection container at the application level.
+ */
+interface AppContainer {
+    val postsRepository: PostsRepository
+    val interestsRepository: InterestsRepository
+}
+
+/**
+ * Implementation for the Dependency Injection container at the application level.
  *
  * Variables are initialized lazily and the same instance is shared across the whole app.
  */
-class AppContainer(private val applicationContext: Context) {
+class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
     private val executorService: ExecutorService by lazy {
         Executors.newFixedThreadPool(4)
@@ -41,7 +49,7 @@ class AppContainer(private val applicationContext: Context) {
         Handler(Looper.getMainLooper())
     }
 
-    val postsRepository: PostsRepository by lazy {
+    override val postsRepository: PostsRepository by lazy {
         FakePostsRepository(
             executorService = executorService,
             resultThreadHandler = mainThreadHandler,
@@ -49,7 +57,7 @@ class AppContainer(private val applicationContext: Context) {
         )
     }
 
-    val interestsRepository: InterestsRepository by lazy {
+    override val interestsRepository: InterestsRepository by lazy {
         FakeInterestsRepository()
     }
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,14 +16,15 @@
 
 package com.example.jetnews.ui
 
-import androidx.annotation.DrawableRes
 import androidx.compose.Composable
 import androidx.ui.animation.Crossfade
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.Color
 import androidx.ui.graphics.ColorFilter
+import androidx.ui.graphics.vector.VectorAsset
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -37,6 +38,9 @@ import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.Home
+import androidx.ui.material.icons.filled.ListAlt
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -47,15 +51,16 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun JetnewsApp(appContainer: AppContainer) {
-
-    MaterialTheme(
-        colors = lightThemeColors,
-        typography = themeTypography
-    ) {
+fun JetnewsApp(
+    appContainer: AppContainer,
+    navigationViewModel: NavigationViewModel
+) {
+    JetnewsTheme {
         AppContent(
+            navigationViewModel = navigationViewModel,
             interestsRepository = appContainer.interestsRepository,
             postsRepository = appContainer.postsRepository
         )
@@ -64,17 +69,25 @@ fun JetnewsApp(appContainer: AppContainer) {
 
 @Composable
 private fun AppContent(
+    navigationViewModel: NavigationViewModel,
     postsRepository: PostsRepository,
     interestsRepository: InterestsRepository
 ) {
-    Crossfade(JetnewsStatus.currentScreen) { screen ->
+    Crossfade(navigationViewModel.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
             when (screen) {
-                is Screen.Home -> HomeScreen(postsRepository = postsRepository)
-                is Screen.Interests -> InterestsScreen(interestsRepository = interestsRepository)
+                is Screen.Home -> HomeScreen(
+                    navigateTo = navigationViewModel::navigateTo,
+                    postsRepository = postsRepository
+                )
+                is Screen.Interests -> InterestsScreen(
+                    navigateTo = navigationViewModel::navigateTo,
+                    interestsRepository = interestsRepository
+                )
                 is Screen.Article -> ArticleScreen(
                     postId = screen.postId,
-                    postsRepository = postsRepository
+                    postsRepository = postsRepository,
+                    onBack = { navigationViewModel.onBack() }
                 )
             }
         }
@@ -83,6 +96,7 @@ private fun AppContent(
 
 @Composable
 fun AppDrawer(
+    navigateTo: (Screen) -> Unit,
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
@@ -91,7 +105,7 @@ fun AppDrawer(
         JetNewsLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
-            icon = R.drawable.ic_home,
+            icon = Icons.Filled.Home,
             label = "Home",
             isSelected = currentScreen == Screen.Home,
             action = {
@@ -101,7 +115,7 @@ fun AppDrawer(
         )
 
         DrawerButton(
-            icon = R.drawable.ic_interests,
+            icon = Icons.Filled.ListAlt,
             label = "Interests",
             isSelected = currentScreen == Screen.Interests,
             action = {
@@ -113,7 +127,7 @@ fun AppDrawer(
 }
 
 @Composable
-private fun JetNewsLogo(modifier: Modifier = Modifier.None) {
+private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
             asset = vectorResource(R.drawable.ic_jetnews_logo),
@@ -129,11 +143,11 @@ private fun JetNewsLogo(modifier: Modifier = Modifier.None) {
 
 @Composable
 private fun DrawerButton(
-    @DrawableRes icon: Int,
+    icon: VectorAsset,
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
-    modifier: Modifier = Modifier.None
+    modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colors
     val imageAlpha = if (isSelected) {
@@ -149,7 +163,7 @@ private fun DrawerButton(
     val backgroundColor = if (isSelected) {
         colors.primary.copy(alpha = 0.12f)
     } else {
-        colors.surface
+        Color.Transparent
     }
 
     val surfaceModifier = modifier
@@ -158,19 +172,27 @@ private fun DrawerButton(
     Surface(
         modifier = surfaceModifier,
         color = backgroundColor,
-        shape = RoundedCornerShape(4.dp)
+        shape = MaterialTheme.shapes.small
     ) {
-        TextButton(onClick = action, modifier = Modifier.fillMaxWidth()) {
-            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+        TextButton(
+            onClick = action,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalGravity = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Image(
-                    asset = vectorResource(icon),
+                    asset = icon,
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
                 Spacer(Modifier.preferredWidth(16.dp))
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.body2.copy(color = textIconColor),
+                    style = MaterialTheme.typography.body2,
+                    color = textIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -183,7 +205,8 @@ private fun DrawerButton(
 fun PreviewJetnewsApp() {
     ThemedPreview {
         AppDrawer(
-            currentScreen = JetnewsStatus.currentScreen,
+            navigateTo = { },
+            currentScreen = Screen.Home,
             closeDrawer = { }
         )
     }
@@ -192,9 +215,10 @@ fun PreviewJetnewsApp() {
 @Preview("Drawer contents dark theme")
 @Composable
 fun PreviewJetnewsAppDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         AppDrawer(
-            currentScreen = JetnewsStatus.currentScreen,
+            navigateTo = { },
+            currentScreen = Screen.Home,
             closeDrawer = { }
         )
     }

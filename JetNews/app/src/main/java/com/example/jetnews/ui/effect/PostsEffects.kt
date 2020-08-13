@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,9 @@
 package com.example.jetnews.ui.effect
 
 import androidx.compose.Composable
-import androidx.compose.onActive
+import androidx.compose.getValue
+import androidx.compose.onCommit
+import androidx.compose.setValue
 import androidx.compose.state
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
@@ -35,11 +37,11 @@ import com.example.jetnews.ui.state.UiState
 @Composable
 fun fetchPost(postId: String, postsRepository: PostsRepository): UiState<Post> {
 
-    var postState: UiState<Post> by state { UiState.Loading }
+    var postState: UiState<Post> by state<UiState<Post>> { UiState.Loading }
 
     // Whenever this effect is used in a composable function, it'll load data from the repository
     // when the first composition is applied
-    onActive {
+    onCommit(postId, postsRepository) {
         postsRepository.getPost(postId) { result ->
             postState = when (result) {
                 is Result.Success -> {

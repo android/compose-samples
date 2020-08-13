@@ -20,8 +20,10 @@ import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.doClick
-import androidx.ui.test.findByText
+import androidx.ui.test.hasSubstring
+import androidx.ui.test.onAllNodes
+import androidx.ui.test.onNodeWithText
+import androidx.ui.test.performClick
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,21 +35,23 @@ import org.junit.runners.JUnit4
 class JetnewsUiTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createComposeRule(disableTransitions = true)
 
     @Before
     fun setUp() {
-        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().context)
+        // Using targetContext as the Context of the instrumentation code
+        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test
     fun app_launches() {
-        findByText("Jetnews").assertIsDisplayed()
+        onNodeWithText("Jetnews").assertIsDisplayed()
     }
 
     @Test
     fun app_opensArticle() {
-        findAllBySubstring("Manuel Vivo").first().doClick()
-        findAllBySubstring("July 30 • 3 min read").first().assertIsDisplayed()
+        // Using unmerged tree because of https://issuetracker.google.com/issues/161979921
+        onAllNodes(hasSubstring("Manuel Vivo"), useUnmergedTree = true)[0].performClick()
+        onAllNodes(hasSubstring("3 min read"), useUnmergedTree = true)[0].assertIsDisplayed()
     }
 }

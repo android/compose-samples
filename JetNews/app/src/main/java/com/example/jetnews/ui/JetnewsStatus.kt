@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package com.example.jetnews
+package com.example.jetnews.ui
 
-import android.app.Application
-import com.example.jetnews.data.AppContainer
-import com.example.jetnews.data.AppContainerImpl
+import androidx.compose.mutableStateListOf
 
-class JetnewsApplication : Application() {
-
-    // AppContainer instance used by the rest of classes to obtain dependencies
-    lateinit var container: AppContainer
-
-    override fun onCreate() {
-        super.onCreate()
-        container = AppContainerImpl(this)
-    }
+object JetnewsStatus {
+    val favorites = mutableStateListOf<String>()
+    val selectedTopics = mutableStateListOf<String>()
 }

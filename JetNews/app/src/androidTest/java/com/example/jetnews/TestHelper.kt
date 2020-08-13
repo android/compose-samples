@@ -17,17 +17,12 @@
 package com.example.jetnews
 
 import android.content.Context
-import androidx.compose.Composable
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
+import androidx.compose.remember
+import androidx.lifecycle.SavedStateHandle
 import androidx.ui.test.ComposeTestRule
-import androidx.ui.test.SemanticsNodeInteraction
-import androidx.ui.test.findAll
-import androidx.ui.test.hasSubstring
-import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.JetnewsStatus
-import com.example.jetnews.ui.Screen
+import com.example.jetnews.ui.NavigationViewModel
 
 /**
  * Launches the app from a test context
@@ -35,7 +30,10 @@ import com.example.jetnews.ui.Screen
 fun ComposeTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsStatus.resetState()
-        JetnewsApp(AppContainer(context))
+        JetnewsApp(
+            TestAppContainer(context),
+            remember { NavigationViewModel(SavedStateHandle()) }
+        )
     }
 }
 
@@ -43,26 +41,6 @@ fun ComposeTestRule.launchJetNewsApp(context: Context) {
  * Resets the state of the app. Needs to be executed in Compose code (within a frame)
  */
 fun JetnewsStatus.resetState() {
-    currentScreen = Screen.Home
     favorites.clear()
     selectedTopics.clear()
-}
-
-/**
- * Helper method that can be used to test Jetnews UI Composables in isolation
- */
-fun ComposeTestRule.setMaterialContent(children: @Composable() () -> Unit) {
-    setContent {
-        MaterialTheme {
-            Surface {
-                children()
-            }
-        }
-    }
-}
-
-fun findAllBySubstring(text: String, ignoreCase: Boolean = false): List<SemanticsNodeInteraction> {
-    return findAll(
-        hasSubstring(text, ignoreCase)
-    )
 }

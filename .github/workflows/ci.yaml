@@ -12,7 +12,7 @@ jobs:
     runs-on: macOS-latest # enables hardware acceleration in the virtual machine
     strategy:
       matrix:
-        api-level: [21, 29]
+        api-level: [23, 29]
     steps:
       - name: Checkout
         uses: actions/checkout@v2

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,14 +22,13 @@ import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
+import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
+import androidx.ui.graphics.ColorFilter
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
@@ -45,7 +44,8 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
 import androidx.ui.material.Surface
 import androidx.ui.material.Typography
-import androidx.ui.res.vectorResource
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.filled.AccountCircle
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.FirstBaseline
 import androidx.ui.text.ParagraphStyle
@@ -60,7 +60,6 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -69,32 +68,32 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 
 private val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(post: Post, modifier: Modifier = Modifier.None) {
-    VerticalScroller {
-        Column(modifier = modifier.padding(start = defaultSpacerSize, end = defaultSpacerSize)) {
-            Spacer(Modifier.preferredHeight(defaultSpacerSize))
-            PostHeaderImage(post)
-            Text(text = post.title, style = MaterialTheme.typography.h4)
-            Spacer(Modifier.preferredHeight(8.dp))
-            post.subtitle?.let { subtitle ->
-                ProvideEmphasis(EmphasisAmbient.current.medium) {
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.body2.merge(TextStyle(lineHeight = 20.sp))
-                    )
-                }
-                Spacer(Modifier.preferredHeight(defaultSpacerSize))
+fun PostContent(post: Post, modifier: Modifier = Modifier) {
+    ScrollableColumn(
+        modifier = modifier.padding(horizontal = defaultSpacerSize)
+    ) {
+        Spacer(Modifier.preferredHeight(defaultSpacerSize))
+        PostHeaderImage(post)
+        Text(text = post.title, style = MaterialTheme.typography.h4)
+        Spacer(Modifier.preferredHeight(8.dp))
+        post.subtitle?.let { subtitle ->
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.body2,
+                    lineHeight = 20.sp
+                )
             }
-            PostMetadata(post.metadata)
-            Spacer(Modifier.preferredHeight(24.dp))
-            PostContents(post.paragraphs)
-            Spacer(Modifier.preferredHeight(48.dp))
+            Spacer(Modifier.preferredHeight(defaultSpacerSize))
         }
+        PostMetadata(post.metadata)
+        Spacer(Modifier.preferredHeight(24.dp))
+        PostContents(post.paragraphs)
+        Spacer(Modifier.preferredHeight(48.dp))
     }
 }
 
@@ -104,7 +103,7 @@ private fun PostHeaderImage(post: Post) {
         val imageModifier = Modifier
             .preferredHeightIn(minHeight = 180.dp)
             .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(4.dp))
+            .clip(shape = MaterialTheme.shapes.medium)
         Image(image, imageModifier, contentScale = ContentScale.Crop)
         Spacer(Modifier.preferredHeight(defaultSpacerSize))
     }
@@ -114,7 +113,12 @@ private fun PostHeaderImage(post: Post) {
 private fun PostMetadata(metadata: Metadata) {
     val typography = MaterialTheme.typography
     Row {
-        Icon(vectorResource(R.drawable.ic_account_circle_black))
+        Image(
+            asset = Icons.Filled.AccountCircle,
+            modifier = Modifier.preferredSize(40.dp),
+            colorFilter = ColorFilter.tint(contentColor()),
+            contentScale = ContentScale.Fit
+        )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
             ProvideEmphasis(EmphasisAmbient.current.high) {
@@ -186,7 +190,7 @@ private fun CodeBlockParagraph(
 ) {
     Surface(
         color = MaterialTheme.colors.codeBlockBackground,
-        shape = RoundedCornerShape(4.dp),
+        shape = MaterialTheme.shapes.small,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
@@ -208,21 +212,21 @@ private fun BulletParagraph(
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
-                        .preferredSize(8.sp.toDp(), 8.sp.toDp())
-                        .alignWithSiblings {
-                            // Add an alignment "baseline" 1sp below the bottom of the circle
-                            9.sp.toIntPx()
-                        },
+                    .preferredSize(8.sp.toDp(), 8.sp.toDp())
+                    .alignWithSiblings {
+                        // Add an alignment "baseline" 1sp below the bottom of the circle
+                        9.sp.toIntPx()
+                    },
                 backgroundColor = contentColor(),
                 shape = CircleShape
             )
         }
         Text(
-                modifier = Modifier
-                        .weight(1f)
-                        .alignWithSiblings(FirstBaseline),
-                text = text,
-                style = textStyle.merge(paragraphStyle)
+            modifier = Modifier
+                .weight(1f)
+                .alignWithSiblings(FirstBaseline),
+            text = text,
+            style = textStyle.merge(paragraphStyle)
         )
     }
 }
@@ -275,7 +279,7 @@ private fun paragraphToAnnotatedString(
     typography: Typography,
     codeBlockBackground: Color
 ): AnnotatedString {
-    val styles: List<AnnotatedString.Item<SpanStyle>> = paragraph.markups
+    val styles: List<AnnotatedString.Range<SpanStyle>> = paragraph.markups
         .map { it.toAnnotatedStringItem(typography, codeBlockBackground) }
     return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
@@ -283,31 +287,31 @@ private fun paragraphToAnnotatedString(
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
     codeBlockBackground: Color
-): AnnotatedString.Item<SpanStyle> {
+): AnnotatedString.Range<SpanStyle> {
     return when (this.type) {
         MarkupType.Italic -> {
-            AnnotatedString.Item(
+            AnnotatedString.Range(
                 typography.body1.copy(fontStyle = FontStyle.Italic).toSpanStyle(),
                 start,
                 end
             )
         }
         MarkupType.Link -> {
-            AnnotatedString.Item(
+            AnnotatedString.Range(
                 typography.body1.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
                 start,
                 end
             )
         }
         MarkupType.Bold -> {
-            AnnotatedString.Item(
+            AnnotatedString.Range(
                 typography.body1.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
                 start,
                 end
             )
         }
         MarkupType.Code -> {
-            AnnotatedString.Item(
+            AnnotatedString.Range(
                 typography.body1
                     .copy(
                         background = codeBlockBackground,
@@ -334,7 +338,7 @@ fun PreviewPost() {
 @Preview("Post content dark theme")
 @Composable
 fun PreviewPostDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PostContent(post = post3)
     }
 }

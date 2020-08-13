@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,18 +19,18 @@ package com.example.jetnews.ui.interests
 import androidx.compose.Composable
 import androidx.compose.remember
 import androidx.compose.state
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Image
+import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.selection.Toggleable
+import androidx.ui.foundation.selection.toggleable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
-import androidx.ui.layout.RowAlign
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
 import androidx.ui.material.Divider
@@ -42,7 +42,6 @@ import androidx.ui.material.ScaffoldState
 import androidx.ui.material.Tab
 import androidx.ui.material.TabRow
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.imageResource
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
@@ -54,7 +53,6 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.darkThemeColors
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.previewDataFrom
 import com.example.jetnews.ui.state.uiStateFrom
@@ -67,6 +65,7 @@ private enum class Sections(val title: String) {
 
 @Composable
 fun InterestsScreen(
+    navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = remember { ScaffoldState() },
     interestsRepository: InterestsRepository
 ) {
@@ -75,10 +74,11 @@ fun InterestsScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
-                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed }
+                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
+                navigateTo = navigateTo
             )
         },
-        topAppBar = {
+        topBar = {
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
@@ -112,7 +112,8 @@ private fun InterestsScreenBody(
                 selected = currentSection.ordinal == index,
                 onSelected = {
                     updateSection(Sections.values()[index])
-                })
+                }
+            )
         }
         Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
@@ -156,19 +157,17 @@ private fun PublicationsTab(publications: List<String>) {
 
 @Composable
 private fun TabWithTopics(tabName: String, topics: List<String>) {
-    VerticalScroller {
-        Column(modifier = Modifier.padding(top = 16.dp)) {
-            topics.forEach { topic ->
-                TopicItem(
-                    getTopicKey(
-                        tabName,
-                        "- ",
-                        topic
-                    ),
+    ScrollableColumn(modifier = Modifier.padding(top = 16.dp)) {
+        topics.forEach { topic ->
+            TopicItem(
+                getTopicKey(
+                    tabName,
+                    "- ",
                     topic
-                )
-                TopicDivider()
-            }
+                ),
+                topic
+            )
+            TopicDivider()
         }
     }
 }
@@ -178,24 +177,23 @@ private fun TabWithSections(
     tabName: String,
     sections: Map<String, List<String>>
 ) {
-    VerticalScroller {
-        Column {
-            sections.forEach { (section, topics) ->
-                Text(
-                    text = section,
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.subtitle1
+    ScrollableColumn {
+        sections.forEach { (section, topics) ->
+            Text(
+                text = section,
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.subtitle1
+            )
+            topics.forEach { topic ->
+                TopicItem(
+                    getTopicKey(
+                        tabName,
+                        section,
+                        topic
+                    ),
+                    topic
                 )
-                topics.forEach { topic ->
-                    TopicItem(
-                        getTopicKey(
-                            tabName,
-                            section,
-                            topic
-                        ), topic
-                    )
-                    TopicDivider()
-                }
+                TopicDivider()
             }
         }
     }
@@ -208,34 +206,33 @@ private fun TopicItem(topicKey: String, itemTitle: String) {
     val onSelected = { it: Boolean ->
         selectTopic(topicKey, it)
     }
-    Toggleable(
-        value = selected,
-        onValueChange = onSelected,
-        modifier = Modifier.ripple()
+    Row(
+        modifier = Modifier
+            .toggleable(
+                value = selected,
+                onValueChange = onSelected
+            )
+            .padding(horizontal = 16.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        ) {
-            Image(
-                image,
-                Modifier
-                    .gravity(RowAlign.Center)
-                    .preferredSize(56.dp, 56.dp)
-                    .clip(RoundedCornerShape(4.dp))
-            )
-            Text(
-                text = itemTitle,
-                modifier = Modifier
-                    .weight(1f)
-                    .gravity(RowAlign.Center)
-                    .padding(16.dp),
-                style = MaterialTheme.typography.subtitle1
-            )
-            SelectTopicButton(
-                modifier = Modifier.gravity(RowAlign.Center),
-                selected = selected
-            )
-        }
+        Image(
+            image,
+            Modifier
+                .gravity(Alignment.CenterVertically)
+                .preferredSize(56.dp, 56.dp)
+                .clip(RoundedCornerShape(4.dp))
+        )
+        Text(
+            text = itemTitle,
+            modifier = Modifier
+                .weight(1f)
+                .gravity(Alignment.CenterVertically)
+                .padding(16.dp),
+            style = MaterialTheme.typography.subtitle1
+        )
+        SelectTopicButton(
+            modifier = Modifier.gravity(Alignment.CenterVertically),
+            selected = selected
+        )
     }
 }
 
@@ -263,15 +260,19 @@ private fun selectTopic(key: String, select: Boolean) {
 @Composable
 fun PreviewInterestsScreen() {
     ThemedPreview {
-        InterestsScreen(interestsRepository = FakeInterestsRepository())
+        InterestsScreen(
+            navigateTo = {},
+            interestsRepository = FakeInterestsRepository()
+        )
     }
 }
 
 @Preview("Interests screen dark theme")
 @Composable
 fun PreviewInterestsScreenDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         InterestsScreen(
+            navigateTo = {},
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
         )
@@ -283,6 +284,7 @@ fun PreviewInterestsScreenDark() {
 private fun PreviewDrawerOpen() {
     ThemedPreview {
         InterestsScreen(
+            navigateTo = {},
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
         )
@@ -292,8 +294,9 @@ private fun PreviewDrawerOpen() {
 @Preview("Interests screen drawer open dark theme")
 @Composable
 private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         InterestsScreen(
+            navigateTo = {},
             scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
             interestsRepository = FakeInterestsRepository()
         )
@@ -311,7 +314,7 @@ fun PreviewTopicsTab() {
 @Preview("Interests screen topics tab dark theme")
 @Composable
 fun PreviewTopicsTabDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         TopicsTab(loadFakeTopics())
     }
 }
@@ -332,7 +335,7 @@ fun PreviewPeopleTab() {
 @Preview("Interests screen people tab dark theme")
 @Composable
 fun PreviewPeopleTabDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PeopleTab(loadFakePeople())
     }
 }
@@ -353,7 +356,7 @@ fun PreviewPublicationsTab() {
 @Preview("Interests screen publications tab dark theme")
 @Composable
 fun PreviewPublicationsTabDark() {
-    ThemedPreview(darkThemeColors) {
+    ThemedPreview(darkTheme = true) {
         PublicationsTab(loadFakePublications())
     }
 }
@@ -374,7 +377,7 @@ fun PreviewTabWithTopics() {
 @Preview("Interests screen tab with topics dark theme")
 @Composable
 fun PreviewTabWithTopicsDark() {
-    ThemedPreview {
+    ThemedPreview(darkTheme = true) {
         TabWithTopics(tabName = "preview", topics = listOf("Hello", "Compose"))
     }
 }

@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.jetnews
+package com.example.jetnews.ui.theme
 
-import android.app.Application
-import com.example.jetnews.data.AppContainer
-import com.example.jetnews.data.AppContainerImpl
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.material.Shapes
+import androidx.ui.unit.dp
 
-class JetnewsApplication : Application() {
-
-    // AppContainer instance used by the rest of classes to obtain dependencies
-    lateinit var container: AppContainer
-
-    override fun onCreate() {
-        super.onCreate()
-        container = AppContainerImpl(this)
-    }
-}
+val Shapes = Shapes(
+    small = RoundedCornerShape(4.dp),
+    medium = RoundedCornerShape(4.dp),
+    large = RoundedCornerShape(8.dp)
+)

@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,9 @@
 package com.example.jetnews.ui.state
 
 import androidx.compose.Composable
+import androidx.compose.getValue
 import androidx.compose.onActive
+import androidx.compose.setValue
 import androidx.compose.state
 import com.example.jetnews.data.Result
 
@@ -52,7 +54,7 @@ fun <T> refreshableUiStateFrom(
     repositoryCall: RepositoryCall<T>
 ): RefreshableUiStateHandler<T> {
 
-    var state: RefreshableUiState<T> by state {
+    var state: RefreshableUiState<T> by state<RefreshableUiState<T>> {
         RefreshableUiState.Success(data = null, loading = true)
     }
 
