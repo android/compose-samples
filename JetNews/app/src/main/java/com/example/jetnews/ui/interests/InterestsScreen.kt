@@ -72,6 +72,7 @@ fun InterestsScreen(
     interestsRepository: InterestsRepository
 ) {
     Scaffold(
+        scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
