@@ -41,6 +41,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
+import androidx.compose.material.TabConstants.defaultTabIndicatorOffset
+import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -244,30 +246,31 @@ private fun HomeCategoryTabs(
     modifier: Modifier = Modifier
 ) {
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
+    val indicator = @Composable { tabPositions: List<TabPosition> ->
+        HomeCategoryTabIndicator(
+            Modifier.defaultTabIndicatorOffset(tabPositions[selectedIndex])
+        )
+    }
+
     TabRow(
-        items = categories,
-        selectedIndex = selectedIndex,
-        indicatorContainer = { tabPositions ->
-            TabRow.IndicatorContainer(tabPositions, selectedIndex) {
-                HomeCategoryTabIndicator()
-            }
-        },
+        selectedTabIndex = selectedIndex,
+        indicator = indicator,
         modifier = modifier
-    ) { index, category ->
-        Tab(
-            selected = index == selectedIndex,
-            onSelected = { onCategorySelected(category) },
-            text = {
-                Text(
-                    text = stringResource(
-                        when (category) {
-                            HomeCategory.Library -> R.string.home_library
-                            HomeCategory.Discover -> R.string.home_discover
+    ) {
+        categories.forEachIndexed { index, category ->
+            Tab(
+                selected = index == selectedIndex,
+                onClick = { onCategorySelected(category) },
+                text = {
+                    Text(
+                        text = when (category) {
+                            HomeCategory.Library -> stringResource(R.string.home_library)
+                            HomeCategory.Discover -> stringResource(R.string.home_discover)
                         }
                     )
-                )
-            }
-        )
+                }
+            )
+        }
     }
 }
 
