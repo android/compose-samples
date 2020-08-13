@@ -16,22 +16,18 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.animation.asDisposableClock
-import androidx.compose.animation.core.AnimationClockObservable
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.SwipeableState
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.onCommit
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
-import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.dp
 
@@ -46,8 +42,10 @@ fun SwipeToRefreshLayout(
     content: @Composable () -> Unit
 ) {
     val refreshDistance = with(DensityAmbient.current) { RefreshDistance.toPx() }
-    val state = rememberRefreshSwipeableState(refreshingState)
-
+    val state = rememberSwipeableState(refreshingState)
+    onCommit(refreshingState) {
+        state.animateTo(refreshingState)
+    }
     // When complete the swipe-to-refresh, kick off the action
     onCommit(state.value) {
         if (state.value) {
@@ -74,19 +72,3 @@ fun SwipeToRefreshLayout(
         }
     }
 }
-
-@Composable
-private fun rememberRefreshSwipeableState(
-    refreshingState: Boolean
-): RefreshSwipeableState {
-    val clock = AnimationClockAmbient.current.asDisposableClock()
-    return remember(refreshingState) {
-        RefreshSwipeableState(refreshingState, clock)
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-private class RefreshSwipeableState(
-    initial: Boolean,
-    clock: AnimationClockObservable,
-) : SwipeableState<Boolean>(initial, clock)
