@@ -22,7 +22,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JetChat">
+        android:theme="@style/Theme.Jetsurvey">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

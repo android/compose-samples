@@ -15,5 +15,5 @@
   ~
   -->
 <resources>
-    <color name="statusBarColor">#EFEFEF</color>
+    <color name="status_bar_color">#EFEFEF</color>
 </resources>

@@ -15,5 +15,5 @@
   ~
   -->
 <resources>
-    <color name="statusBarColor">#000000</color>
+    <color name="status_bar_color">#000000</color>
 </resources>
