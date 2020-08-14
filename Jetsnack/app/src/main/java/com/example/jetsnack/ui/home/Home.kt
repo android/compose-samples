@@ -28,7 +28,7 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.drawBorder
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -340,7 +340,7 @@ private fun JetsnackBottomNavIndicator(
         modifier = Modifier
             .fillMaxSize()
             .then(BottomNavigationItemPadding)
-            .drawBorder(strokeWidth, color, shape)
+            .border(strokeWidth, color, shape)
     )
 }
 

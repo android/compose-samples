@@ -18,11 +18,11 @@ package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.animate
 import androidx.compose.foundation.background
-import androidx.compose.foundation.drawBorder
+import androidx.compose.foundation.border
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.drawWithContent
@@ -65,7 +65,7 @@ fun Modifier.gradientBackground(
     colors: List<Color>,
     brushProvider: (List<Color>, Size) -> LinearGradient
 ): Modifier = composed {
-    var size by state { Size.Zero }
+    var size by remember { mutableStateOf(Size.Zero) }
     val gradient = remember(colors, size) { brushProvider(colors, size) }
     drawWithContent {
         size = this.size
@@ -79,7 +79,7 @@ fun Modifier.gradientTint(
     blendMode: BlendMode,
     brushProvider: (List<Color>, Size) -> LinearGradient
 ) = composed {
-    var size by state { Size.Zero }
+    var size by remember { mutableStateOf(Size.Zero) }
     val gradient = remember(colors, size) { brushProvider(colors, size) }
     drawWithContent {
         drawContent()
@@ -144,11 +144,11 @@ fun Modifier.gradientBorder(
     shape: Shape,
     brushProvider: (List<Color>, IntSize) -> LinearGradient
 ) = composed {
-    var size by state { IntSize.Zero }
+    var size by remember { mutableStateOf(IntSize.Zero) }
     val gradient = remember(colors, size) { brushProvider(colors, size) }
     val sizeProvider = onPositioned { size = it.size }
-    sizeProvider then drawBorder(
-        size = borderSize,
+    sizeProvider then border(
+        width = borderSize,
         brush = gradient,
         shape = shape
     )

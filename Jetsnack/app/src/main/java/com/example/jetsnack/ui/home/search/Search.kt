@@ -49,6 +49,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.focus.isFocused
+import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -160,7 +163,7 @@ class SearchState(
         }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalFocus::class)
 @Composable
 private fun SearchBar(
     query: TextFieldValue,
@@ -202,11 +205,14 @@ private fun SearchBar(
                     value = query,
                     onValueChange = onQueryChange,
                     textStyle = currentTextStyle().copy(color = contentColor()),
-                    onFocusChanged = onSearchFocusChange,
                     imeAction = ImeAction.Search,
                     onImeActionPerformed = { /* todo */ },
                     cursorColor = JetsnackTheme.colors.textPrimary,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusObserver {
+                            onSearchFocusChange(it.isFocused)
+                        }
                 )
                 if (searching) {
                     CircularProgressIndicator(

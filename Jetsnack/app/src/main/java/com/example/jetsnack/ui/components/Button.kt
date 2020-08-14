@@ -17,10 +17,12 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.Border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentColorAmbient
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.ProvideTextStyle
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.drawBorder
 import androidx.compose.foundation.layout.InnerPadding
@@ -44,12 +46,12 @@ fun JetsnackButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = ButtonShape,
-    border: Border? = null,
+    border: BorderStroke? = null,
     backgroundGradient: List<Color> = JetsnackTheme.colors.interactivePrimary,
     disabledBackgroundGradient: List<Color> = JetsnackTheme.colors.interactiveSecondary,
     contentColor: Color = JetsnackTheme.colors.textInteractive,
     disabledContentColor: Color = JetsnackTheme.colors.textHelp,
-    padding: InnerPadding = ButtonConstants.DefaultInnerPadding,
+    padding: InnerPadding = ButtonConstants.DefaultContentPadding,
     text: @Composable () -> Unit
 ) {
     Providers(ContentColorAmbient provides if (enabled) contentColor else disabledContentColor) {
@@ -62,7 +64,7 @@ fun JetsnackButton(
                     .horizontalGradientBackground(
                         colors = if (enabled) backgroundGradient else disabledBackgroundGradient
                     )
-                    .then(if (border != null) Modifier.drawBorder(border, shape) else Modifier)
+                    .then(if (border != null) Modifier.border(border, shape) else Modifier)
                     .semantics(mergeAllDescendants = true, properties = { })
                     .clickable(onClick = onClick, enabled = enabled),
                 paddingStart = padding.start,

@@ -16,53 +16,65 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.material.DrawerConstants
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FabPosition
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * Wrap Material [androidx.compose.material.Scaffold] and set [JetsnackTheme] colors.
+ */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun JetsnackScaffold(
-    // scaffoldState: ScaffoldState = remember { ScaffoldState() },
+    modifier: Modifier = Modifier,
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable (() -> Unit)? = null,
-    // floatingActionButton: @Composable (() -> Unit)? = null,
-    // floatingActionButtonPosition: Scaffold.FabPosition = Scaffold.FabPosition.End,
-    // isFloatingActionButtonDocked: Boolean = false,
-    // drawerContent: @Composable (() -> Unit)? = null,
-    // drawerShape: Shape = MaterialTheme.shapes.large,
-    // drawerElevation: Dp = DrawerConstants.DefaultElevation,
+    snackbarHost: @Composable (SnackbarHostState) -> Unit = { SnackbarHost(it) },
+    floatingActionButton: @Composable (() -> Unit)? = null,
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
+    isFloatingActionButtonDocked: Boolean = false,
+    drawerContent: @Composable (ColumnScope.() -> Unit)? = null,
+    drawerShape: Shape = MaterialTheme.shapes.large,
+    drawerElevation: Dp = DrawerConstants.DefaultElevation,
+    drawerBackgroundColor: Color = JetsnackTheme.colors.uiBackground,
+    drawerContentColor: Color = JetsnackTheme.colors.textSecondary,
+    drawerScrimColor: Color = JetsnackTheme.colors.uiBorder,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
+    contentColor: Color = JetsnackTheme.colors.textSecondary,
     bodyContent: @Composable (InnerPadding) -> Unit
 ) {
-    // Can't wrap scaffold yet b/161450249
-    /*Scaffold(
+    Scaffold(
+        modifier = modifier,
         scaffoldState = scaffoldState,
         topBar = topBar,
         bottomBar = bottomBar,
+        snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
         floatingActionButtonPosition = floatingActionButtonPosition,
         isFloatingActionButtonDocked = isFloatingActionButtonDocked,
         drawerContent = drawerContent,
         drawerShape = drawerShape,
         drawerElevation = drawerElevation,
+        drawerBackgroundColor = drawerBackgroundColor,
+        drawerContentColor = drawerContentColor,
+        drawerScrimColor = drawerScrimColor,
         backgroundColor = backgroundColor,
+        contentColor = contentColor,
         bodyContent = bodyContent
-    )*/
-    // Currently only need bottomBar so fake it with a Column
-    JetsnackSurface(
-        color = backgroundColor,
-        contentColor = JetsnackTheme.colors.textSecondary
-    ) {
-        Column {
-            if (topBar != null) topBar()
-            Box(modifier = Modifier.weight(1f)) {
-                bodyContent(InnerPadding())
-            }
-            if (bottomBar != null) bottomBar()
-        }
-    }
+    )
 }

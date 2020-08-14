@@ -44,6 +44,7 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
@@ -303,7 +304,7 @@ private fun CollapsingImageLayout(
 
 @Composable
 private fun CartBottomBar(modifier: Modifier = Modifier) {
-    val (count, updateCount) = state { 1 }
+    val (count, updateCount) = remember { mutableStateOf(1) }
     JetsnackSurface(modifier) {
         Column {
             JetsnackDivider()

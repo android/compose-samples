@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.Border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,7 +33,7 @@ fun JetsnackCard(
     shape: Shape = MaterialTheme.shapes.medium,
     color: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textPrimary,
-    border: Border? = null,
+    border: BorderStroke? = null,
     elevation: Dp = 1.dp,
     content: @Composable () -> Unit
 ) {

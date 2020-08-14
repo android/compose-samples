@@ -16,11 +16,11 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.Border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentColorAmbient
 import androidx.compose.foundation.background
-import androidx.compose.foundation.drawBorder
+import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
@@ -37,7 +37,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.ln
 
 /**
- * An alternative to [androidx.ui.material.Surface] utilizing [com.example.jetsnack.ui.theme.JetsnackColorPalette]
+ * An alternative to [androidx.compose.material.Surface] utilizing [com.example.jetsnack.ui.theme.JetsnackColorPalette]
  */
 @Composable
 fun JetsnackSurface(
@@ -45,14 +45,14 @@ fun JetsnackSurface(
     shape: Shape = RectangleShape,
     color: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textSecondary,
-    border: Border? = null,
+    border: BorderStroke? = null,
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
     Box(
         modifier = modifier.drawShadow(elevation = elevation, shape = shape, clip = false)
             .zIndex(elevation.value)
-            .then(if (border != null) Modifier.drawBorder(border, shape) else Modifier)
+            .then(if (border != null) Modifier.border(border, shape) else Modifier)
             .background(
                 color = getBackgroundColorForElevation(color, elevation),
                 shape = shape
@@ -66,8 +66,8 @@ fun JetsnackSurface(
 @Composable
 private fun getBackgroundColorForElevation(color: Color, elevation: Dp): Color {
     return if (elevation > 0.dp // && https://issuetracker.google.com/issues/161429530
-        // JetsnackTheme.colors.isDark //&&
-        // color == JetsnackTheme.colors.uiBackground
+    // JetsnackTheme.colors.isDark //&&
+    // color == JetsnackTheme.colors.uiBackground
     ) {
         color.withElevation(elevation)
     } else {
