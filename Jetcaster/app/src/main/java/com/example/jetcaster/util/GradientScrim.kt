@@ -19,9 +19,9 @@ package com.example.jetcaster.util
 import androidx.annotation.FloatRange
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.drawWithContent
@@ -64,7 +64,7 @@ fun Modifier.verticalGradientScrim(
         }
     }
 
-    var height by state { 0f }
+    var height by remember { mutableStateOf(0f) }
     val brush = remember(color, numStops, startYPercentage, endYPercentage, height) {
         VerticalGradient(
             colors = colors,

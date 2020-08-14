@@ -27,6 +27,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.state
 import androidx.compose.runtime.structuralEqualityPolicy
@@ -131,7 +132,7 @@ fun Pager(
     modifier: Modifier = Modifier,
     pageContent: @Composable PagerScope.() -> Unit
 ) {
-    var pageSize by state { 0 }
+    var pageSize by remember { mutableStateOf(0) }
     Layout(
         children = {
             val minPage = (state.currentPage - offscreenLimit).coerceAtLeast(state.minPage)

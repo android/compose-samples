@@ -89,8 +89,8 @@ fun PodcastCategory(
 
     /**
      * LazyColumnItems currently only supports a single type of item. To workaround that, we
-     * have the `sealed` [EpisodeItem] class which allows us to bake in different 'layout' types,
-     * which our [LazyColumnItems] switches on.
+     * have the `sealed` [EpisodeListItem] class which allows us to bake in different
+     * 'layout' types, which our [LazyColumnItems] switches on.
      */
     val items = ArrayList<PodcastCategoryItem>()
     if (viewState.topPodcasts.isNotEmpty()) {
@@ -309,7 +309,7 @@ private fun CategoryPodcastRow(
     LazyRowForIndexed(
         items = podcasts,
         modifier = modifier,
-        contentPadding = InnerPadding(16.dp)
+        contentPadding = InnerPadding(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 16.dp)
     ) { index, (podcast, _, isFollowed) ->
         TopPodcastRowItem(
             podcastTitle = podcast.title,

@@ -22,7 +22,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TransitionDefinition
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
@@ -33,17 +33,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
+import androidx.compose.material.TabPosition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.emptyContent
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.drawLayer
 import androidx.compose.ui.graphics.Color
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.ui.home.PodcastCategory
+import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ItemSwitcher
 import com.example.jetcaster.util.ItemTransitionState
 
@@ -70,7 +72,7 @@ fun Discover(
 
             // We need to keep track of the previously selected category, to determine the
             // change direction below for the transition
-            var previousSelectedCategory by state<Category?> { null }
+            var previousSelectedCategory by remember { mutableStateOf<Category?>(null) }
 
             PodcastCategoryTabs(
                 categories = viewState.categories,
@@ -120,6 +122,8 @@ fun Discover(
     }
 }
 
+private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
+
 @Composable
 private fun PodcastCategoryTabs(
     categories: List<Category>,
@@ -128,23 +132,24 @@ private fun PodcastCategoryTabs(
     modifier: Modifier = Modifier
 ) {
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
-    TabRow(
-        items = categories,
-        selectedIndex = selectedIndex,
-        scrollable = true,
+    ScrollableTabRow(
+        selectedTabIndex = selectedIndex,
         divider = emptyContent(), /* Disable the built-in divider */
-        indicatorContainer = {},
+        edgePadding = Keyline1,
+        indicator = emptyTabIndicator,
         modifier = modifier
-    ) { index, category ->
-        Tab(
-            selected = index == selectedIndex,
-            onSelected = { onCategorySelected(category) }
-        ) {
-            ChoiceChipContent(
-                text = category.name,
+    ) {
+        categories.forEachIndexed { index, category ->
+            Tab(
                 selected = index == selectedIndex,
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
-            )
+                onClick = { onCategorySelected(category) }
+            ) {
+                ChoiceChipContent(
+                    text = category.name,
+                    selected = index == selectedIndex,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+                )
+            }
         }
     }
 }
@@ -165,8 +170,8 @@ private fun ChoiceChipContent(
             else -> EmphasisAmbient.current.high.applyEmphasis(contentColor())
         },
         shape = MaterialTheme.shapes.small,
-        border = Border(
-            size = 1.dp,
+        border = BorderStroke(
+            width = 1.dp,
             color = when {
                 selected -> MaterialTheme.colors.primary
                 else -> EmphasisAmbient.current.disabled.applyEmphasis(contentColor())
