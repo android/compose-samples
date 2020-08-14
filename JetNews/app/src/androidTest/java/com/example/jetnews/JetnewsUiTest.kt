@@ -24,6 +24,7 @@ import androidx.ui.test.hasSubstring
 import androidx.ui.test.onAllNodes
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
+import androidx.ui.test.performScrollTo
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +48,7 @@ class JetnewsUiTest {
 
     @Test
     fun app_opensArticle() {
-        onAllNodes(hasSubstring("Manuel Vivo"))[0].performClick()
+        onAllNodes(hasSubstring("Manuel Vivo"))[0].performScrollTo().performClick()
         onAllNodes(hasSubstring("3 min read"))[0].assertIsDisplayed()
     }
 }
