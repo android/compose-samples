@@ -31,9 +31,9 @@ import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                     { launchCalendarActivity(this) }
                 }
 
-                var splashShown by state { SplashState.Shown }
+                var splashShown by remember { mutableStateOf(SplashState.Shown) }
                 val transition = transition(splashTransitionDefinition, splashShown)
                 Stack {
                     LandingScreen(

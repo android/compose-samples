@@ -16,9 +16,6 @@
 
 package androidx.compose.samples.crane.ui
 
-import androidx.compose.animation.asDisposableClock
-import androidx.compose.animation.core.AnimationClockObservable
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.DpConstraints
@@ -27,25 +24,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.preferredSizeIn
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeableState
-import androidx.compose.material.fractionalThresholds
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
-import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.onPositioned
-import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+
+enum class FullScreenState {
+    Minimised,
+    Collapsed,
+    Expanded,
+}
 
 // BackdropFrontLayer is missing a proper nested scrolling behavior as right now,
 // instead of scrolling only the parts that are visible on the screen, it scrolls
@@ -55,11 +57,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BackdropFrontLayer(
     modifier: Modifier = Modifier,
-    backdropState: SwipeableBackdropState = rememberSwipeableBackdropState(),
+    backdropState: SwipeableState<FullScreenState> =
+        rememberSwipeableState(FullScreenState.Minimised),
     staticChildren: @Composable (Modifier) -> Unit,
     backdropChildren: @Composable (Modifier) -> Unit
 ) {
-    var backgroundChildrenSize by state(structuralEqualityPolicy()) { IntSize(0, 0) }
+    var backgroundChildrenSize by remember { mutableStateOf(IntSize(0, 0)) }
 
     Box(modifier.fillMaxSize()) {
         // Use ConstraintLayout in the future when
@@ -72,10 +75,8 @@ fun BackdropFrontLayer(
                 Modifier.swipeable(
                     state = backdropState,
                     anchors = anchors,
-                    thresholds = fractionalThresholds(0.5f),
+                    thresholds = { _, _ -> FractionalThreshold(0.5f) },
                     orientation = Orientation.Vertical,
-                    minValue = VerticalExplorePadding,
-                    maxValue = fullHeight,
                     enabled = true
                 )
             ) {
@@ -109,30 +110,6 @@ fun BackdropFrontLayer(
     }
 }
 
-enum class FullScreenState {
-    Minimised,
-    Collapsed,
-    Expanded,
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-class SwipeableBackdropState(
-    initialValue: FullScreenState = FullScreenState.Minimised,
-    clock: AnimationClockObservable,
-    confirmStateChange: (FullScreenState) -> Boolean = { true }
-) : SwipeableState<FullScreenState>(initialValue, clock, confirmStateChange, AnimationSpec)
-
-@Composable
-fun rememberSwipeableBackdropState(
-    initialValue: FullScreenState = FullScreenState.Minimised,
-    confirmStateChange: (FullScreenState) -> Boolean = { true }
-): SwipeableBackdropState {
-    val clock = AnimationClockAmbient.current.asDisposableClock()
-    return remember(clock, confirmStateChange) {
-        SwipeableBackdropState(initialValue, clock, confirmStateChange)
-    }
-}
-
 @Composable
 private fun currentConstraints(pxConstraints: Constraints): DpConstraints {
     return with(DensityAmbient.current) {
@@ -156,4 +133,3 @@ private fun getAnchors(
 private const val AnchorBottomOffset = 130f
 private const val VerticalExplorePadding = 0f
 private const val ExploreStiffness = 1000f
-private val AnimationSpec = SpringSpec<Float>(stiffness = ExploreStiffness)

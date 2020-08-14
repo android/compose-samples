@@ -31,8 +31,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.Alignment
@@ -83,7 +84,7 @@ fun CraneEditableUserInput(
     @DrawableRes vectorImageId: Int? = null,
     onInputChanged: (String) -> Unit
 ) {
-    var textFieldState by state { TextFieldValue(text = hint) }
+    var textFieldState by remember { mutableStateOf(TextFieldValue(text = hint)) }
     val isHint = { textFieldState.text == hint }
 
     CraneBaseUserInput(

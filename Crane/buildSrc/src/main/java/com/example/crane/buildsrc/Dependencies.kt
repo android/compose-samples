@@ -42,7 +42,7 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
 
         object Compose {
-            const val snapshot = "6721902"
+            const val snapshot = "6759487"
             const val version = "0.1.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
