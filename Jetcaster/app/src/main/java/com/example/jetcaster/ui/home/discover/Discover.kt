@@ -52,7 +52,7 @@ import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.jetcaster.data.Category
-import com.example.jetcaster.ui.home.PodcastCategory
+import com.example.jetcaster.ui.home.category.PodcastCategory
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ItemSwitcher
 import com.example.jetcaster.util.ItemTransitionState

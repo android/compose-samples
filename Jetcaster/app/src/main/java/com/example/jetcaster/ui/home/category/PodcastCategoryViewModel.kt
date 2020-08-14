@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.home
+package com.example.jetcaster.ui.home.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

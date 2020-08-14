@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.home
+package com.example.jetcaster.ui.home.category
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
@@ -62,6 +62,8 @@ import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.ui.home.PreviewEpisodes
+import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
