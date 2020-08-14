@@ -15,7 +15,6 @@
  */
 
 import com.example.crane.buildsrc.Libs
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id 'com.android.application'
@@ -60,20 +59,6 @@ android {
     composeOptions {
         kotlinCompilerVersion Libs.Kotlin.version
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
-    }
-}
-
-tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
-        // Treat all Kotlin warnings as errors
-        allWarningsAsErrors = true
-
-        jvmTarget = "1.8"
-
-        // Use experimental APIs
-        freeCompilerArgs += '-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi'
-        freeCompilerArgs += '-Xopt-in=androidx.compose.material.ExperimentalMaterialApi'
-        freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
     }
 }
 

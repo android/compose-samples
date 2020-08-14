@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.preferredSizeIn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.fractionalThresholds
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 // instead of scrolling only the parts that are visible on the screen, it scrolls
 // all its content. Waiting for a NestedScrollController that makes this easier:
 // https://issuetracker.google.com/162408885
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BackdropFrontLayer(
     modifier: Modifier = Modifier,
@@ -60,6 +62,8 @@ fun BackdropFrontLayer(
     var backgroundChildrenSize by state(structuralEqualityPolicy()) { IntSize(0, 0) }
 
     Box(modifier.fillMaxSize()) {
+        // Use ConstraintLayout in the future when
+        // https://issuetracker.google.com/159103817 is fixed
         WithConstraints {
             val fullHeight = constraints.maxHeight.toFloat()
             val anchors = getAnchors(backgroundChildrenSize, fullHeight)
@@ -78,7 +82,7 @@ fun BackdropFrontLayer(
                 staticChildren(
                     Modifier.onPositioned { coordinates ->
                         if (backgroundChildrenSize.height == 0) {
-                            backdropState.value = FullScreenState.Collapsed
+                            backdropState.snapTo(FullScreenState.Collapsed)
                         }
                         backgroundChildrenSize = coordinates.size
                     }
@@ -111,6 +115,7 @@ enum class FullScreenState {
     Expanded,
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 class SwipeableBackdropState(
     initialValue: FullScreenState = FullScreenState.Minimised,
     clock: AnimationClockObservable,

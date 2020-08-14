@@ -35,8 +35,10 @@ import androidx.compose.samples.crane.home.CraneScreen
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ConfigurationAmbient
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.ConfigurationCompat
 
 @Composable
 fun CraneTabBar(
@@ -45,6 +47,7 @@ fun CraneTabBar(
     children: @Composable (Modifier) -> Unit
 ) {
     Row(modifier) {
+        // Separate Row as the children shouldn't have the padding
         Row(Modifier.padding(top = 8.dp)) {
             Image(
                 modifier = Modifier.padding(top = 8.dp).clickable(onClick = onMenuClicked),
@@ -87,7 +90,14 @@ fun CraneTabs(
         }
 
         Tab(
-            text = { Text(modifier = textModifier, text = title) },
+            text = {
+                Text(
+                    modifier = textModifier,
+                    text = title.toUpperCase(
+                        ConfigurationCompat.getLocales(ConfigurationAmbient.current)[0]
+                    )
+                )
+            },
             selected = selected,
             onSelected = { onTabSelected(CraneScreen.values()[index]) }
         )

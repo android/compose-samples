@@ -40,14 +40,17 @@ import androidx.compose.samples.crane.calendar.data.year2020
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DayOfWeek
-import androidx.compose.samples.crane.calendar.model.SelectedStatus
+import androidx.compose.samples.crane.calendar.model.DaySelectedStatus
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.util.Circle
 import androidx.compose.samples.crane.util.SemiRect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 
@@ -55,8 +58,8 @@ typealias CalendarWeek = List<CalendarDay>
 
 @Composable
 fun Calendar(
-    modifier: Modifier = Modifier,
-    onDayClicked: (CalendarDay, CalendarMonth) -> Unit
+    onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     ScrollableColumn(modifier = modifier) {
         Spacer(Modifier.preferredHeight(32.dp))
@@ -128,7 +131,13 @@ private fun Week(
             Spacer(Modifier.fillMaxHeight())
         }
         for (day in week) {
-            Day(day = day, onDayClicked = onDayClicked)
+            Day(
+                day, onDayClicked,
+                Modifier.semantics {
+                    accessibilityLabel = "${month.name} ${day.value}"
+                    dayStatusProperty = day.status
+                }
+            )
         }
         Surface(modifier = spaceModifiers, color = rightFillColor) {
             Spacer(Modifier.fillMaxHeight())
@@ -146,11 +155,15 @@ private fun DaysOfWeek(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Day(day: CalendarDay, onDayClicked: (CalendarDay) -> Unit) {
-    val enabled = day.status != SelectedStatus.NonClickable
+private fun Day(
+    day: CalendarDay,
+    onDayClicked: (CalendarDay) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val enabled = day.status != DaySelectedStatus.NonClickable
     DayContainer(
-        modifier = Modifier.clickable(enabled) {
-            if (day.status != SelectedStatus.NonClickable) onDayClicked(day)
+        modifier = modifier.clickable(enabled) {
+            if (day.status != DaySelectedStatus.NonClickable) onDayClicked(day)
         },
         backgroundColor = day.status.color(MaterialTheme.colors)
     ) {
@@ -192,30 +205,27 @@ private fun DayContainer(
 
 @Composable
 private fun DayStatusContainer(
-    status: SelectedStatus,
+    status: DaySelectedStatus,
     children: @Composable () -> Unit
 ) {
     if (status.isMarked()) {
         Stack {
             val color = MaterialTheme.colors.secondary
-
-            WithConstraints {
-                Circle(constraints = constraints, color = color)
-                if (status == SelectedStatus.FirstDay) {
-                    SemiRect(constraints = constraints, color = color, lookingLeft = false)
-                } else if (status == SelectedStatus.LastDay) {
-                    SemiRect(constraints = constraints, color = color, lookingLeft = true)
-                }
-                children()
+            Circle(color = color)
+            if (status == DaySelectedStatus.FirstDay) {
+                SemiRect(color = color, lookingLeft = false)
+            } else if (status == DaySelectedStatus.LastDay) {
+                SemiRect(color = color, lookingLeft = true)
             }
+            children()
         }
     } else {
         children()
     }
 }
 
-private fun SelectedStatus.color(theme: Colors): Color = when (this) {
-    SelectedStatus.Selected -> theme.secondary
+private fun DaySelectedStatus.color(theme: Colors): Color = when (this) {
+    DaySelectedStatus.Selected -> theme.secondary
     else -> Color.Transparent
 }
 
@@ -250,17 +260,20 @@ private fun getLeftRightWeekColors(week: CalendarWeek, month: CalendarMonth): Pa
     return leftFillColor to rightFillColor
 }
 
-private fun SelectedStatus.isMarked(): Boolean {
+private fun DaySelectedStatus.isMarked(): Boolean {
     return when (this) {
-        SelectedStatus.Selected -> true
-        SelectedStatus.FirstDay -> true
-        SelectedStatus.LastDay -> true
-        SelectedStatus.FirstLastDay -> true
+        DaySelectedStatus.Selected -> true
+        DaySelectedStatus.FirstDay -> true
+        DaySelectedStatus.LastDay -> true
+        DaySelectedStatus.FirstLastDay -> true
         else -> false
     }
 }
 
 private val CELL_SIZE = 48.dp
+
+val DayStatusKey = SemanticsPropertyKey<DaySelectedStatus>("DayStatusKey")
+var SemanticsPropertyReceiver.dayStatusProperty by DayStatusKey
 
 @Preview
 @Composable
