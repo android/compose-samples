@@ -1,0 +1,72 @@
+<!--
+  ~ Copyright 2020 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <group android:scaleX="0.27"
+      android:scaleY="0.27"
+      android:translateX="32.4"
+      android:translateY="32.4">
+    <path
+        android:pathData="M39.924,79.609C39.924,57.549 57.806,39.664 79.868,39.664V3.717C37.953,3.717 3.974,37.693 3.974,79.609V79.609H39.924Z"
+        android:fillColor="#005D57"
+        android:fillType="evenOdd"/>
+    <path
+        android:pathData="M39.924,79.609H3.974C3.974,121.522 37.953,155.5 79.868,155.5V119.553C57.806,119.553 39.924,101.669 39.924,79.609"
+        android:fillColor="#007D51"
+        android:fillType="evenOdd"/>
+    <path
+        android:pathData="M155.759,79.609H119.81C119.81,101.669 101.927,119.553 79.868,119.553V155.5C121.781,155.5 155.759,121.522 155.759,79.609"
+        android:fillColor="#37EFBA"
+        android:fillType="evenOdd"/>
+    <group>
+      <clip-path
+          android:pathData="M155.759,79.609H119.81C119.81,101.669 101.927,119.553 79.868,119.553V155.5C121.781,155.5 155.759,121.522 155.759,79.609"
+          android:fillType="evenOdd"/>
+      <path
+          android:pathData="M118.987,78.051H161.873V128.734H150.177L118.987,78.051Z"
+          android:strokeAlpha="0.08"
+          android:fillType="evenOdd"
+          android:fillAlpha="0.08">
+        <aapt:attr name="android:fillColor">
+          <gradient
+              android:startY="103.923"
+              android:startX="152.055"
+              android:endY="75.5372"
+              android:endX="140.702"
+              android:type="linear">
+            <item android:offset="0" android:color="#02000000"/>
+            <item android:offset="0.859318" android:color="#DB000000"/>
+            <item android:offset="1" android:color="#FF000000"/>
+          </gradient>
+        </aapt:attr>
+      </path>
+    </group>
+    <group>
+      <clip-path
+          android:pathData="M139.93,3.717C139.881,3.717 139.832,3.718 139.783,3.718H79.869V39.665C101.926,39.665 119.81,57.549 119.811,79.609H155.76V43.327V7.046C155.76,5.564 155.558,4.485 155.18,3.717L139.93,3.717V3.717Z"
+          android:fillType="evenOdd"/>
+      <path
+          android:pathData="M119.811,79.609H155.76V19.694C155.76,10.868 148.606,3.717 139.783,3.717H79.866V39.664C101.928,39.664 119.811,57.549 119.811,79.609"
+          android:fillColor="#1EB980"
+          android:fillType="evenOdd"/>
+    </group>
+  </group>
+</vector>
