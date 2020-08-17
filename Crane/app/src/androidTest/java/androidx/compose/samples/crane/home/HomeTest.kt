@@ -1,0 +1,58 @@
+/*
+ * Copyright 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package androidx.compose.samples.crane.home
+
+import androidx.compose.material.Surface
+import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.ui.test.createComposeRule
+import androidx.ui.test.onNodeWithText
+import androidx.ui.test.performClick
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+class HomeTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule(disableTransitions = true)
+
+    @Before
+    fun setUp() {
+        composeTestRule.setContent {
+            CraneTheme {
+                Surface {
+                    CraneHomeContent(
+                        onExploreItemClicked = { },
+                        onDateSelectionClicked = { },
+                        openDrawer = { }
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun home_navigatesToAllScreens() {
+        onNodeWithText("Explore Flights by Destination").assertExists()
+        onNodeWithText("SLEEP").performClick()
+        onNodeWithText("Explore Properties by Destination").assertExists()
+        onNodeWithText("EAT").performClick()
+        onNodeWithText("Explore Restaurants by Destination").assertExists()
+        onNodeWithText("FLY").performClick()
+        onNodeWithText("Explore Flights by Destination").assertExists()
+    }
+}
