@@ -44,7 +44,7 @@ Owl implements some utility functions of interest:
 ## Data
 Domain types are modelled in the [model package](app/src/main/java/com/example/owl/model), each containing static sample data exposed using fake `Repo`s objects.
 
-Imagery is sourced from [Unslpash](https://unsplash.com/) and [Pravatar](https://pravatar.cc/) and loaded using [coil-accompanist][coil-accompanist].
+Imagery is sourced from [Unsplash](https://unsplash.com/) and [Pravatar](https://pravatar.cc/) and loaded using [coil-accompanist][coil-accompanist].
 
 
 ## License

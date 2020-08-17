@@ -60,6 +60,7 @@ See how to:
 * Use `Slider` - for picking a value from a range
 * Use `Scaffold` - for screens with top bar, bottom bar and body
 * Display a `DialogFragment` when requested from compose
+
 [6]: app/src/main/java/com/example/compose/jetsurvey/survey
 
 ### Data
