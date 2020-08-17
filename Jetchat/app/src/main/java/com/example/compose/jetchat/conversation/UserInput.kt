@@ -250,28 +250,6 @@ fun getSelectorExpandedColor(): Color {
 }
 
 @Composable
-fun MapSelector(modifier: Modifier = Modifier) {
-    Surface(modifier = modifier.fillMaxWidth().preferredHeight(128.dp), color = Color.LightGray) {
-        Stack {
-            // TODO
-            Text(modifier = Modifier.gravity(Alignment.Center), text = "I'm here!")
-        }
-    }
-}
-
-@Composable
-fun StickerSelector(modifier: Modifier = Modifier) {
-    // TODO
-    Text("Stickers…", modifier = modifier)
-}
-
-@Composable
-fun StartCall(modifier: Modifier = Modifier) {
-    // TODO
-    Text("Calling…", modifier = modifier)
-}
-
-@Composable
 private fun UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
     sendMessageEnabled: Boolean,
