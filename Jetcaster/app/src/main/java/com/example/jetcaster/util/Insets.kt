@@ -19,8 +19,8 @@
 package com.example.jetcaster.util
 
 import android.view.View
+import androidx.compose.foundation.layout.InnerPadding
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.Stable
@@ -37,8 +37,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.layout.IntrinsicMeasurable
 import androidx.compose.ui.layout.IntrinsicMeasureScope
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.LayoutDirectionAmbient
 import androidx.compose.ui.platform.ViewAmbient
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.core.view.ViewCompat
 import kotlin.math.min
@@ -194,14 +200,19 @@ private fun Insets.updateFrom(insets: androidx.core.graphics.Insets) {
  * )
  * ```
  *
- * Internally this uses [Modifier.height] so has the same characteristics with regards to incoming
- * layout constraints.
+ * Internally this matches the behavior of the [Modifier.height] modifier.
+ *
+ * @param additional Any additional height to add to the status bar size.
  */
-fun Modifier.statusBarHeight() = composed {
+fun Modifier.statusBarHeight(additional: Dp = 0.dp) = composed {
     // TODO: Move to Android 11 WindowInsets APIs when they land in AndroidX.
     // It currently assumes that status bar == top which is probably fine, but doesn't work
     // in multi-window, etc.
-    InsetsSizeModifier(insets = InsetsAmbient.current.systemBars, heightSide = VerticalSide.Top)
+    InsetsSizeModifier(
+        insets = InsetsAmbient.current.systemBars,
+        heightSide = VerticalSide.Top,
+        additionalHeight = additional
+    )
 }
 
 /**
@@ -224,14 +235,19 @@ fun Modifier.statusBarHeight() = composed {
  * )
  * ```
  *
- * Internally this uses [Modifier.height] so has the same characteristics with regards to incoming
- * layout constraints.
+ * Internally this matches the behavior of the [Modifier.height] modifier.
+ *
+ * @param additional Any additional height to add to the navigation bar size.
  */
-fun Modifier.navigationBarHeight() = composed {
+fun Modifier.navigationBarHeight(additional: Dp = 0.dp) = composed {
     // TODO: Move to Android 11 WindowInsets APIs when they land in AndroidX.
     // It currently assumes that nav bar == bottom, which is wrong in landscape.
     // It also doesn't handle the IME correctly.
-    InsetsSizeModifier(insets = InsetsAmbient.current.systemBars, heightSide = VerticalSide.Bottom)
+    InsetsSizeModifier(
+        insets = InsetsAmbient.current.systemBars,
+        heightSide = VerticalSide.Bottom,
+        additionalHeight = additional
+    )
 }
 
 enum class HorizontalSide { Left, Right }
@@ -262,15 +278,60 @@ enum class VerticalSide { Top, Bottom }
  * )
  * ```
  *
- * Internally this uses [Modifier.width] so has the same characteristics with regards to incoming
- * layout constraints.
+ * Internally this matches the behavior of the [Modifier.height] modifier.
  *
  * @param side The navigation bar side to use as the source for the width.
+ * @param additional Any additional width to add to the status bar size.
  */
-fun Modifier.navigationBarWidth(side: HorizontalSide) = composed {
+fun Modifier.navigationBarWidth(
+    side: HorizontalSide,
+    additional: Dp = 0.dp
+) = composed {
     // TODO: Move to Android 11 WindowInsets APIs when they land in AndroidX.
     // It currently assumes that nav bar == left/right
-    InsetsSizeModifier(insets = InsetsAmbient.current.systemBars, widthSide = side)
+    InsetsSizeModifier(
+        insets = InsetsAmbient.current.systemBars,
+        widthSide = side,
+        additionalWidth = additional
+    )
+}
+
+/**
+ * Returns the current insets converted into a [InnerPadding].
+ *
+ * @param start Whether to apply the inset on the start dimension.
+ * @param top Whether to apply the inset on the top dimension.
+ * @param end Whether to apply the inset on the end dimension.
+ * @param bottom Whether to apply the inset on the bottom dimension.
+ */
+@Composable
+fun Insets.toInnerPadding(
+    start: Boolean = true,
+    top: Boolean = true,
+    end: Boolean = true,
+    bottom: Boolean = true
+): InnerPadding = with(DensityAmbient.current) {
+    val layoutDirection = LayoutDirectionAmbient.current
+    InnerPadding(
+        start = when {
+            start && layoutDirection == LayoutDirection.Ltr -> this@toInnerPadding.left.toDp()
+            start && layoutDirection == LayoutDirection.Rtl -> this@toInnerPadding.right.toDp()
+            else -> 0.dp
+        },
+        top = when {
+            top -> this@toInnerPadding.top.toDp()
+            else -> 0.dp
+        },
+        end = when {
+            end && layoutDirection == LayoutDirection.Ltr -> this@toInnerPadding.right.toDp()
+            end && layoutDirection == LayoutDirection.Rtl -> this@toInnerPadding.left.toDp()
+            else -> 0.dp
+        },
+        bottom = when {
+            bottom -> this@toInnerPadding.bottom.toDp()
+            else -> 0.dp
+        }
+    )
 }
 
 /**
@@ -317,37 +378,42 @@ private data class InsetsPaddingModifier(
 private data class InsetsSizeModifier(
     private val insets: Insets,
     private val widthSide: HorizontalSide? = null,
-    private val heightSide: VerticalSide? = null
+    private val additionalWidth: Dp = 0.dp,
+    private val heightSide: VerticalSide? = null,
+    private val additionalHeight: Dp = 0.dp
 ) : LayoutModifier {
-    private val targetConstraints
-        get() = Constraints(
-            minWidth = when (widthSide) {
+    private fun targetConstraints(density: Density): Constraints = with(density) {
+        val additionalWidthPx = additionalWidth.toIntPx()
+        val additionalHeightPx = additionalHeight.toIntPx()
+        Constraints(
+            minWidth = additionalWidthPx + when (widthSide) {
                 HorizontalSide.Left -> insets.left
                 HorizontalSide.Right -> insets.right
                 null -> 0
             },
-            minHeight = when (heightSide) {
+            minHeight = additionalHeightPx + when (heightSide) {
                 VerticalSide.Top -> insets.top
                 VerticalSide.Bottom -> insets.bottom
                 null -> 0
             },
             maxWidth = when (widthSide) {
-                HorizontalSide.Left -> insets.left
-                HorizontalSide.Right -> insets.right
+                HorizontalSide.Left -> insets.left + additionalWidthPx
+                HorizontalSide.Right -> insets.right + additionalWidthPx
                 null -> Constraints.Infinity
             },
             maxHeight = when (heightSide) {
-                VerticalSide.Top -> insets.top
-                VerticalSide.Bottom -> insets.bottom
+                VerticalSide.Top -> insets.top + additionalHeightPx
+                VerticalSide.Bottom -> insets.bottom + additionalHeightPx
                 null -> Constraints.Infinity
             }
         )
+    }
 
     override fun MeasureScope.measure(
         measurable: Measurable,
         constraints: Constraints
     ): MeasureScope.MeasureResult {
-        val wrappedConstraints = targetConstraints.let { targetConstraints ->
+        val wrappedConstraints = targetConstraints(this).let { targetConstraints ->
             val resolvedMinWidth = if (widthSide != null) {
                 targetConstraints.minWidth
             } else {
@@ -380,7 +446,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         height: Int
     ) = measurable.minIntrinsicWidth(height).let {
-        val constraints = targetConstraints
+        val constraints = targetConstraints(this)
         it.coerceIn(constraints.minWidth, constraints.maxWidth)
     }
 
@@ -388,7 +454,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         height: Int
     ) = measurable.maxIntrinsicWidth(height).let {
-        val constraints = targetConstraints
+        val constraints = targetConstraints(this)
         it.coerceIn(constraints.minWidth, constraints.maxWidth)
     }
 
@@ -396,7 +462,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         width: Int
     ) = measurable.minIntrinsicHeight(width).let {
-        val constraints = targetConstraints
+        val constraints = targetConstraints(this)
         it.coerceIn(constraints.minHeight, constraints.maxHeight)
     }
 
@@ -404,7 +470,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         width: Int
     ) = measurable.maxIntrinsicHeight(width).let {
-        val constraints = targetConstraints
+        val constraints = targetConstraints(this)
         it.coerceIn(constraints.minHeight, constraints.maxHeight)
     }
 }
