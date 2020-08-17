@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.core.view.ViewCompat
-import kotlin.math.min
 
 /**
  * Main holder of our inset values.
@@ -382,59 +381,65 @@ private data class InsetsSizeModifier(
     private val heightSide: VerticalSide? = null,
     private val additionalHeight: Dp = 0.dp
 ) : LayoutModifier {
-    private fun targetConstraints(density: Density): Constraints = with(density) {
-        val additionalWidthPx = additionalWidth.toIntPx()
-        val additionalHeightPx = additionalHeight.toIntPx()
-        Constraints(
-            minWidth = additionalWidthPx + when (widthSide) {
-                HorizontalSide.Left -> insets.left
-                HorizontalSide.Right -> insets.right
-                null -> 0
-            },
-            minHeight = additionalHeightPx + when (heightSide) {
-                VerticalSide.Top -> insets.top
-                VerticalSide.Bottom -> insets.bottom
-                null -> 0
-            },
-            maxWidth = when (widthSide) {
-                HorizontalSide.Left -> insets.left + additionalWidthPx
-                HorizontalSide.Right -> insets.right + additionalWidthPx
-                null -> Constraints.Infinity
-            },
-            maxHeight = when (heightSide) {
-                VerticalSide.Top -> insets.top + additionalHeightPx
-                VerticalSide.Bottom -> insets.bottom + additionalHeightPx
-                null -> Constraints.Infinity
-            }
-        )
-    }
+    private val Density.targetConstraints: Constraints
+        get() {
+            val additionalWidthPx = additionalWidth.toIntPx()
+            val additionalHeightPx = additionalHeight.toIntPx()
+            return Constraints(
+                minWidth = additionalWidthPx + when (widthSide) {
+                    HorizontalSide.Left -> insets.left
+                    HorizontalSide.Right -> insets.right
+                    null -> 0
+                },
+                minHeight = additionalHeightPx + when (heightSide) {
+                    VerticalSide.Top -> insets.top
+                    VerticalSide.Bottom -> insets.bottom
+                    null -> 0
+                },
+                maxWidth = when (widthSide) {
+                    HorizontalSide.Left -> insets.left + additionalWidthPx
+                    HorizontalSide.Right -> insets.right + additionalWidthPx
+                    null -> Constraints.Infinity
+                },
+                maxHeight = when (heightSide) {
+                    VerticalSide.Top -> insets.top + additionalHeightPx
+                    VerticalSide.Bottom -> insets.bottom + additionalHeightPx
+                    null -> Constraints.Infinity
+                }
+            )
+        }
 
     override fun MeasureScope.measure(
         measurable: Measurable,
         constraints: Constraints
     ): MeasureScope.MeasureResult {
-        val wrappedConstraints = targetConstraints(this).let { targetConstraints ->
+        val wrappedConstraints = targetConstraints.let { targetConstraints ->
             val resolvedMinWidth = if (widthSide != null) {
                 targetConstraints.minWidth
             } else {
-                min(constraints.minWidth, targetConstraints.maxWidth)
+                constraints.minWidth.coerceAtMost(targetConstraints.maxWidth)
             }
             val resolvedMaxWidth = if (widthSide != null) {
                 targetConstraints.maxWidth
             } else {
-                min(constraints.maxWidth, targetConstraints.minWidth)
+                constraints.maxWidth.coerceAtLeast(targetConstraints.minWidth)
             }
             val resolvedMinHeight = if (heightSide != null) {
                 targetConstraints.minHeight
             } else {
-                min(constraints.minHeight, targetConstraints.maxHeight)
+                constraints.minHeight.coerceAtMost(targetConstraints.maxHeight)
             }
             val resolvedMaxHeight = if (heightSide != null) {
                 targetConstraints.maxHeight
             } else {
-                min(constraints.maxHeight, targetConstraints.minHeight)
+                constraints.maxHeight.coerceAtLeast(targetConstraints.minHeight)
             }
-            Constraints(resolvedMinWidth, resolvedMaxWidth, resolvedMinHeight, resolvedMaxHeight)
+            Constraints(
+                resolvedMinWidth,
+                resolvedMaxWidth,
+                resolvedMinHeight,
+                resolvedMaxHeight
+            )
         }
         val placeable = measurable.measure(wrappedConstraints)
         return layout(placeable.width, placeable.height) {
@@ -446,7 +451,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         height: Int
     ) = measurable.minIntrinsicWidth(height).let {
-        val constraints = targetConstraints(this)
+        val constraints = targetConstraints
         it.coerceIn(constraints.minWidth, constraints.maxWidth)
     }
 
@@ -454,7 +459,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         height: Int
     ) = measurable.maxIntrinsicWidth(height).let {
-        val constraints = targetConstraints(this)
+        val constraints = targetConstraints
         it.coerceIn(constraints.minWidth, constraints.maxWidth)
     }
 
@@ -462,7 +467,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         width: Int
     ) = measurable.minIntrinsicHeight(width).let {
-        val constraints = targetConstraints(this)
+        val constraints = targetConstraints
         it.coerceIn(constraints.minHeight, constraints.maxHeight)
     }
 
@@ -470,7 +475,7 @@ private data class InsetsSizeModifier(
         measurable: IntrinsicMeasurable,
         width: Int
     ) = measurable.maxIntrinsicHeight(width).let {
-        val constraints = targetConstraints(this)
+        val constraints = targetConstraints
         it.coerceIn(constraints.minHeight, constraints.maxHeight)
     }
 }
