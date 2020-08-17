@@ -46,7 +46,7 @@ The data is hardcoded in the _CraneData_ [file][data] and exposed to the UI usin
 ## License
 
 ```
-Copyright 2020 Google LLC
+Copyright 2020 The Android Open Source Project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
