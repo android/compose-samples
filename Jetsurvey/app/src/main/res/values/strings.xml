@@ -1,0 +1,87 @@
+<!--
+  ~   Copyright 2020 The Android Open Source Project
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  -->
+<resources>
+    <string name="app_name">Jetsurvey</string>
+    <string name="app_tagline">Better surveys with Jetpack Compose</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in_guest">Sign in as guest</string>
+    <string name="sign_in_create_account">Sign in or create an account</string>
+    <string name="or">or</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="user_continue">Continue</string>
+    <string name="create_account">Create account</string>
+    <string name="terms_and_conditions">By continuing, you agree to our Terms of Service. We’ll
+        handle your data according to our Privacy Policy.</string>
+    <string name="feature_not_available">Feature not available</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="done">Done</string>
+
+    <!-- survey-->
+    <string name="which_jetpack_library">Which Jetpack library are you?</string>
+
+    <!-- question 1-->
+    <string name="in_my_free_time">In my free time I like to …</string>
+    <string name="read">Read</string>
+    <string name="work_out">Work out</string>
+    <string name="draw">Draw</string>
+    <string name="play_games">Play video games</string>
+    <string name="dance">Dance</string>
+    <string name="watch_movies">Watch movies</string>
+
+    <!-- question 2 -->
+    <string name="pick_superhero">Pick a superhero</string>
+    <string name="spiderman">Spider man (Avengers)</string>
+    <string name="ironman">Iron man (Avengers)</string>
+    <string name="unikitty">Uni-kitty (Lego Movie)</string>
+    <string name="captain_planet">Captain Planet</string>
+
+    <!-- question 3  -->
+    <string name="takeaway">When was the last time you ordered takeaway because you couldn\'t be bothered to cook?</string>
+    <string name="pick_date">Pick a date</string>
+    <string name="selected_date">🥡 📅  %s</string>
+
+    <!-- question 4-->
+    <string name="selfies">How do you feel about selfies 🤳?</string>
+    <string name="selfie_value_1">😒️</string>
+    <string name="selfie_value_2">😐</string>
+    <string name="selfie_value_3">🤩️</string>
+
+    <!-- question 5-->
+    <string name="selfie_skills">Show us your selfie skills!</string>
+    <string name="take_selfie">Take a selfie!</string>
+
+    <!-- question 6-->
+    <string name="best_friend">Who\'s your best friend?</string>
+    <string name="pick_contact">Pick a contact</string>
+
+    <!-- question 7-->
+    <string name="favourite_movie">What\'s your favourite movie?</string>
+    <string name="star_trek">Star Trek</string>
+    <string name="social_network">The social network</string>
+    <string name="back_to_future">Back to the future</string>
+    <string name="outbreak">Outbreak</string>
+
+    <string name="survey_result">Congratulations, you are %s</string>
+    <string name="survey_result_description">You are a curious developer, always willing to try
+        something new. You want to stay up to date with the trends to Compose is your middle name</string>
+</resources>
