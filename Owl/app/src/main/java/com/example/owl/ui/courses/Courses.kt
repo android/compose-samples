@@ -45,8 +45,8 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.navigationBarHeight
-import com.example.owl.ui.utils.navigationBarPadding
+import com.example.owl.ui.utils.navigationBarsHeightPlus
+import com.example.owl.ui.utils.navigationBarsPadding
 
 @Composable
 fun Courses(selectCourse: (Long) -> Unit) {
@@ -57,7 +57,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
             backgroundColor = MaterialTheme.colors.primarySurface,
             bottomBar = {
                 BottomNavigation(
-                    Modifier.navigationBarHeight(additional = 56.dp)
+                    Modifier.navigationBarsHeightPlus(56.dp)
                 ) {
                     tabs.forEach { tab ->
                         BottomNavigationItem(
@@ -68,7 +68,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
                             alwaysShowLabels = false,
                             selectedContentColor = MaterialTheme.colors.secondary,
                             unselectedContentColor = contentColor(),
-                            modifier = Modifier.navigationBarPadding()
+                            modifier = Modifier.navigationBarsPadding()
                         )
                     }
                 }

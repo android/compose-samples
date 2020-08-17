@@ -86,9 +86,9 @@ import com.example.owl.ui.utils.InsetsAmbient
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
-import com.example.owl.ui.utils.navigationBarPadding
+import com.example.owl.ui.utils.navigationBarsPadding
 import com.example.owl.ui.utils.scrim
-import com.example.owl.ui.utils.statusBarPadding
+import com.example.owl.ui.utils.statusBarsPadding
 import com.example.owl.ui.utils.toInnerPadding
 
 private val FabSize = 56.dp
@@ -173,7 +173,7 @@ private fun CourseDescriptionHeader(
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
             contentColor = Color.White, // always white as image has dark scrim
-            modifier = Modifier.statusBarPadding()
+            modifier = Modifier.statusBarsPadding()
         ) {
             IconButton(onClick = upPress) {
                 Icon(
@@ -271,7 +271,7 @@ private fun RelatedCourses(
             color = MaterialTheme.colors.primarySurface,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.navigationBarPadding()) {
+            Column(modifier = Modifier.navigationBarsPadding()) {
                 Text(
                     text = stringResource(id = R.string.you_ll_also_like),
                     style = MaterialTheme.typography.h6,
@@ -356,7 +356,7 @@ private fun Lessons(
             modifier = Modifier
                 .fillMaxSize()
                 .drawLayer(alpha = lessonsAlpha)
-                .statusBarPadding()
+                .statusBarsPadding()
         ) {
             val scroll = rememberScrollState()
             val appBarElevation = animate(if (scroll.value > 0f) 4.dp else 0.dp)

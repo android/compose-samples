@@ -43,7 +43,7 @@ import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.statusBarPadding
+import com.example.owl.ui.utils.statusBarsPadding
 
 @Composable
 fun SearchCourses(
@@ -51,7 +51,7 @@ fun SearchCourses(
     modifier: Modifier = Modifier
 ) {
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
-    ScrollableColumn(modifier = modifier.statusBarPadding()) {
+    ScrollableColumn(modifier = modifier.statusBarsPadding()) {
         AppBar(searchTerm, updateSearchTerm)
         val filteredTopics = getTopics(searchTerm.text, topics)
         filteredTopics.forEach { topic ->

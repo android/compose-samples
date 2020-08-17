@@ -25,7 +25,7 @@ import com.example.jetsnack.ui.home.Home
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.Navigator
-import com.example.jetsnack.ui.utils.ProvideInsets
+import com.example.jetsnack.ui.utils.ProvideDisplayInsets
 
 @Composable
 fun JetsnackApp(backDispatcher: OnBackPressedDispatcher) {
@@ -35,7 +35,7 @@ fun JetsnackApp(backDispatcher: OnBackPressedDispatcher) {
         Navigator(Destination.Home, backDispatcher)
     }
     val actions = remember(navigator) { Actions(navigator) }
-    ProvideInsets {
+    ProvideDisplayInsets {
         JetsnackTheme {
             Crossfade(navigator.current) { destination ->
                 when (destination) {

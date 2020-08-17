@@ -72,7 +72,8 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
-import com.example.jetsnack.ui.utils.systemBarPadding
+import com.example.jetsnack.ui.utils.navigationBarsPadding
+import com.example.jetsnack.ui.utils.statusBarsPadding
 import kotlin.math.max
 import kotlin.math.min
 
@@ -121,7 +122,7 @@ private fun Up(upPress: () -> Unit) {
     IconButton(
         onClick = upPress,
         modifier = Modifier
-            .systemBarPadding(top = true)
+            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 10.dp)
             .preferredSize(36.dp)
             .background(
@@ -145,7 +146,7 @@ private fun Body(
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .systemBarPadding(top = true)
+                .statusBarsPadding()
                 .preferredHeight(MinTitleOffset)
         )
         ScrollableColumn(scrollState = scroll) {
@@ -201,7 +202,7 @@ private fun Body(
                     Spacer(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
-                            .systemBarPadding(bottom = true)
+                            .navigationBarsPadding(left = false, right = false)
                             .preferredHeight(8.dp)
                     )
                 }
@@ -219,7 +220,7 @@ private fun Title(snack: Snack, scroll: Float) {
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .preferredHeightIn(minHeight = TitleHeight)
-            .systemBarPadding(top = true)
+            .statusBarsPadding()
             .drawLayer(translationY = offset)
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
@@ -260,7 +261,7 @@ private fun Image(
 
     CollapsingImageLayout(
         collapseFraction = collapseFraction,
-        modifier = HzPadding.then(Modifier.systemBarPadding(top = true))
+        modifier = HzPadding.then(Modifier.statusBarsPadding())
     ) {
         SnackImage(
             imageUrl = imageUrl,
@@ -310,7 +311,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
             Row(
                 verticalGravity = Alignment.CenterVertically,
                 modifier = Modifier
-                    .systemBarPadding(bottom = true)
+                    .navigationBarsPadding(left = false, right = false)
                     .then(HzPadding)
                     .preferredHeightIn(minHeight = BottomBarHeight)
             ) {

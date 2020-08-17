@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package com.example.jetcaster.util
 
@@ -47,58 +47,110 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsCompat.Type
+
+/**
+ * Taken from https://goo.gle/compose-insets. Requires androidx.core:core v1.5.0-alpha02+
+ */
 
 /**
  * Main holder of our inset values.
  */
 @Stable
 class DisplayInsets {
+    /**
+     * Inset values which match [WindowInsetsCompat.Type.systemBars]
+     */
     val systemBars = Insets()
+
+    /**
+     * Inset values which match [WindowInsetsCompat.Type.systemGestures]
+     */
     val systemGestures = Insets()
+
+    /**
+     * Inset values which match [WindowInsetsCompat.Type.navigationBars]
+     */
+    val navigationBars = Insets()
+
+    /**
+     * Inset values which match [WindowInsetsCompat.Type.statusBars]
+     */
+    val statusBars = Insets()
+
+    /**
+     * Inset values which match [WindowInsetsCompat.Type.ime]
+     */
+    val ime = Insets()
 }
 
 @Stable
 class Insets {
+    /**
+     * The left dimension of these insets in pixels.
+     */
     var left by mutableStateOf(0)
         internal set
+
+    /**
+     * The top dimension of these insets in pixels.
+     */
     var top by mutableStateOf(0)
         internal set
+
+    /**
+     * The right dimension of these insets in pixels.
+     */
     var right by mutableStateOf(0)
         internal set
+
+    /**
+     * The bottom dimension of these insets in pixels.
+     */
     var bottom by mutableStateOf(0)
         internal set
 
     /**
-     * TODO: doesn't currently work
+     * Whether the insets are currently visible.
      */
-    var visible by mutableStateOf(true)
+    var isVisible by mutableStateOf(true)
         internal set
 }
 
 val InsetsAmbient = staticAmbientOf<DisplayInsets>()
 
+/**
+ * Applies any [WindowInsetsCompat] values to [InsetsAmbient], which are then available
+ * within [content].
+ *
+ * @param consumeWindowInsets Whether to consume any [WindowInsetsCompat]s which are dispatched to
+ * the host view. Defaults to `true`.
+ */
 @Composable
-fun ProvideDisplayInsets(content: @Composable () -> Unit) {
+fun ProvideDisplayInsets(
+    consumeWindowInsets: Boolean = true,
+    content: @Composable () -> Unit
+) {
     val view = ViewAmbient.current
 
     val displayInsets = remember { DisplayInsets() }
 
     onCommit(view) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, windowInsets ->
-            displayInsets.systemBars.updateFrom(windowInsets.systemWindowInsets)
-            displayInsets.systemGestures.updateFrom(windowInsets.systemGestureInsets)
+            displayInsets.systemBars.updateFrom(windowInsets, Type.systemBars())
+            displayInsets.systemGestures.updateFrom(windowInsets, Type.systemGestures())
+            displayInsets.statusBars.updateFrom(windowInsets, Type.statusBars())
+            displayInsets.navigationBars.updateFrom(windowInsets, Type.navigationBars())
+            displayInsets.ime.updateFrom(windowInsets, Type.ime())
 
-            // Return the unconsumed insets
-            windowInsets
+            if (consumeWindowInsets) WindowInsetsCompat.CONSUMED else windowInsets
         }
 
         // Add an OnAttachStateChangeListener to request an inset pass each time we're attached
         // to the window
         val attachListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-                v.requestApplyInsets()
-            }
-
+            override fun onViewAttachedToWindow(v: View) = v.requestApplyInsets()
             override fun onViewDetachedFromWindow(v: View) = Unit
         }
         view.addOnAttachStateChangeListener(attachListener)
@@ -119,10 +171,23 @@ fun ProvideDisplayInsets(content: @Composable () -> Unit) {
 }
 
 /**
+ * Updates our mutable state backed [Insets] from an Android system insets.
+ */
+private fun Insets.updateFrom(windowInsets: WindowInsetsCompat, type: Int) {
+    val insets = windowInsets.getInsets(type)
+    left = insets.left
+    top = insets.top
+    right = insets.right
+    bottom = insets.bottom
+
+    isVisible = windowInsets.isVisible(type)
+}
+
+/**
  * Selectively apply additional space which matches the width/height of any system bars present
  * on the respective edges of the screen.
  *
- * @param enabled Whether to apply padding using the system bar dimensions on the respective edges.
+ * @param enabled Whether to apply padding using the system bars dimensions on the respective edges.
  * Defaults to `true`.
  */
 fun Modifier.systemBarsPadding(enabled: Boolean = true) = composed {
@@ -136,32 +201,32 @@ fun Modifier.systemBarsPadding(enabled: Boolean = true) = composed {
 }
 
 /**
- * Apply additional space which matches the height of the status height along the top edge
+ * Apply additional space which matches the height of the status bars height along the top edge
  * of the content.
  */
-fun Modifier.statusBarPadding() = composed {
-    insetsPadding(insets = InsetsAmbient.current.systemBars, top = true)
+fun Modifier.statusBarsPadding() = composed {
+    insetsPadding(insets = InsetsAmbient.current.statusBars, top = true)
 }
 
 /**
- * Apply additional space which matches the height of the navigation bar height
+ * Apply additional space which matches the height of the navigation bars height
  * along the [bottom] edge of the content, and additional space which matches the width of
- * the navigation bar on the respective [left] and [right] edges.
+ * the navigation bars on the respective [left] and [right] edges.
  *
- * @param bottom Whether to apply padding to the bottom edge, which matches the navigation bar
+ * @param bottom Whether to apply padding to the bottom edge, which matches the navigation bars
  * height (if present) at the bottom edge of the screen. Defaults to `true`.
- * @param left Whether to apply padding to the left edge, which matches the navigation bar width
+ * @param left Whether to apply padding to the left edge, which matches the navigation bars width
  * (if present) on the left edge of the screen. Defaults to `true`.
- * @param right Whether to apply padding to the right edge, which matches the navigation bar width
+ * @param right Whether to apply padding to the right edge, which matches the navigation bars width
  * (if present) on the right edge of the screen. Defaults to `true`.
  */
-fun Modifier.navigationBarPadding(
+fun Modifier.navigationBarsPadding(
     bottom: Boolean = true,
     left: Boolean = true,
     right: Boolean = true
 ) = composed {
     insetsPadding(
-        insets = InsetsAmbient.current.systemBars,
+        insets = InsetsAmbient.current.navigationBars,
         left = left,
         right = right,
         bottom = bottom
@@ -169,28 +234,18 @@ fun Modifier.navigationBarPadding(
 }
 
 /**
- * Updates our mutable state backed [Insets] from an Android system insets.
- */
-private fun Insets.updateFrom(insets: androidx.core.graphics.Insets) {
-    left = insets.left
-    top = insets.top
-    right = insets.right
-    bottom = insets.bottom
-}
-
-/**
- * Declare the height of the content to match the height of the status bar exactly.
+ * Declare the height of the content to match the height of the status bars exactly.
  *
- * This is very handy when used with `Spacer` to push content below the status bar:
+ * This is very handy when used with `Spacer` to push content below the status bars:
  * ```
  * Column {
  *     Spacer(Modifier.statusBarHeight())
  *
- *     // Content to be drawn below status bar (y-axis)
+ *     // Content to be drawn below status bars (y-axis)
  * }
  * ```
  *
- * It's also useful when used to draw a scrim which matches the status bar:
+ * It's also useful when used to draw a scrim which matches the status bars:
  * ```
  * Spacer(
  *     Modifier.statusBarHeight()
@@ -201,31 +256,81 @@ private fun Insets.updateFrom(insets: androidx.core.graphics.Insets) {
  *
  * Internally this matches the behavior of the [Modifier.height] modifier.
  *
- * @param additional Any additional height to add to the status bar size.
+ * @param additional Any additional height to add to the status bars size.
  */
-fun Modifier.statusBarHeight(additional: Dp = 0.dp) = composed {
-    // TODO: Move to Android 11 WindowInsets APIs when they land in AndroidX.
-    // It currently assumes that status bar == top which is probably fine, but doesn't work
-    // in multi-window, etc.
+fun Modifier.statusBarsHeight(additional: Dp = 0.dp) = composed {
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.systemBars,
+        insets = InsetsAmbient.current.statusBars,
         heightSide = VerticalSide.Top,
         additionalHeight = additional
     )
 }
 
 /**
- * Declare the preferred height of the content to match the height of the navigation bar when present at the bottom of the screen.
+ * Declare the height of the content to match the height of the status bars exactly.
  *
- * This is very handy when used with `Spacer` to push content below the navigation bar:
+ * This is very handy when used with `Spacer` to push content below the status bars:
  * ```
  * Column {
- *     // Content to be drawn above status bar (y-axis)
+ *     Spacer(Modifier.statusBarHeight())
+ *
+ *     // Content to be drawn below status bars (y-axis)
+ * }
+ * ```
+ *
+ * It's also useful when used to draw a scrim which matches the status bars:
+ * ```
+ * Spacer(
+ *     Modifier.statusBarHeight()
+ *         .fillMaxWidth()
+ *         .drawBackground(MaterialTheme.colors.background.copy(alpha = 0.3f)
+ * )
+ * ```
+ *
+ * Internally this matches the behavior of the [Modifier.height] modifier.
+ */
+inline fun Modifier.statusBarsHeight() = statusBarsHeightPlus(0.dp)
+
+/**
+ * Declare the height of the content to match the height of the status bars, plus some
+ * additional height passed in via [additional].
+ *
+ * As an example, this could be used with `Spacer` to push content below the status bar
+ * and app bars:
+ *
+ * ```
+ * Column {
+ *     Spacer(Modifier.statusBarHeightPlus(56.dp))
+ *
+ *     // Content to be drawn below status bars and app bar (y-axis)
+ * }
+ * ```
+ *
+ * Internally this matches the behavior of the [Modifier.height] modifier.
+ *
+ * @param additional Any additional height to add to the status bars size.
+ */
+fun Modifier.statusBarsHeightPlus(additional: Dp) = composed {
+    InsetsSizeModifier(
+        insets = InsetsAmbient.current.statusBars,
+        heightSide = VerticalSide.Top,
+        additionalHeight = additional
+    )
+}
+
+/**
+ * Declare the preferred height of the content to match the height of the navigation bars when
+ * present at the bottom of the screen.
+ *
+ * This is very handy when used with `Spacer` to push content below the navigation bars:
+ * ```
+ * Column {
+ *     // Content to be drawn above status bars (y-axis)
  *     Spacer(Modifier.navigationBarHeight())
  * }
  * ```
  *
- * It's also useful when used to draw a scrim which matches the navigation bar:
+ * It's also useful when used to draw a scrim which matches the navigation bars:
  * ```
  * Spacer(
  *     Modifier.navigationBarHeight()
@@ -235,15 +340,31 @@ fun Modifier.statusBarHeight(additional: Dp = 0.dp) = composed {
  * ```
  *
  * Internally this matches the behavior of the [Modifier.height] modifier.
- *
- * @param additional Any additional height to add to the navigation bar size.
  */
-fun Modifier.navigationBarHeight(additional: Dp = 0.dp) = composed {
-    // TODO: Move to Android 11 WindowInsets APIs when they land in AndroidX.
-    // It currently assumes that nav bar == bottom, which is wrong in landscape.
-    // It also doesn't handle the IME correctly.
+inline fun Modifier.navigationBarsHeight() = navigationBarsHeightPlus(0.dp)
+
+/**
+ * Declare the height of the content to match the height of the navigation bars, plus some
+ * additional height passed in via [additional]
+ *
+ * As an example, this could be used with `Spacer` to push content above the navigation bar
+ * and bottom app bars:
+ *
+ * ```
+ * Column {
+ *     // Content to be drawn above navigation bars and bottom app bar (y-axis)
+ *
+ *     Spacer(Modifier.statusBarHeightPlus(48.dp))
+ * }
+ * ```
+ *
+ * Internally this matches the behavior of the [Modifier.height] modifier.
+ *
+ * @param additional Any additional height to add to the status bars size.
+ */
+fun Modifier.navigationBarsHeightPlus(additional: Dp) = composed {
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.systemBars,
+        insets = InsetsAmbient.current.navigationBars,
         heightSide = VerticalSide.Bottom,
         additionalHeight = additional
     )
@@ -253,7 +374,7 @@ enum class HorizontalSide { Left, Right }
 enum class VerticalSide { Top, Bottom }
 
 /**
- * Declare the preferred width of the content to match the width of the navigation bar,
+ * Declare the preferred width of the content to match the width of the navigation bars,
  * on the given [side].
  *
  * This is very handy when used with `Spacer` to push content inside from any vertical
@@ -268,7 +389,7 @@ enum class VerticalSide { Top, Bottom }
  * }
  * ```
  *
- * It's also useful when used to draw a scrim which matches the navigation bar:
+ * It's also useful when used to draw a scrim which matches the navigation bars:
  * ```
  * Spacer(
  *     Modifier.navigationBarWidth(HorizontalSide.Left)
@@ -280,16 +401,24 @@ enum class VerticalSide { Top, Bottom }
  * Internally this matches the behavior of the [Modifier.height] modifier.
  *
  * @param side The navigation bar side to use as the source for the width.
- * @param additional Any additional width to add to the status bar size.
  */
-fun Modifier.navigationBarWidth(
+inline fun Modifier.navigationBarWidth(side: HorizontalSide) = navigationBarsWidthPlus(side, 0.dp)
+
+/**
+ * Declare the preferred width of the content to match the width of the navigation bars,
+ * on the given [side], plus additional width passed in via [additional].
+ *
+ * Internally this matches the behavior of the [Modifier.height] modifier.
+ *
+ * @param side The navigation bar side to use as the source for the width.
+ * @param additional Any additional width to add to the status bars size.
+ */
+fun Modifier.navigationBarsWidthPlus(
     side: HorizontalSide,
-    additional: Dp = 0.dp
+    additional: Dp
 ) = composed {
-    // TODO: Move to Android 11 WindowInsets APIs when they land in AndroidX.
-    // It currently assumes that nav bar == left/right
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.systemBars,
+        insets = InsetsAmbient.current.navigationBars,
         widthSide = side,
         additionalWidth = additional
     )

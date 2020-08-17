@@ -67,7 +67,7 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.systemBarPadding
+import com.example.jetsnack.ui.utils.statusBarsPadding
 
 @Composable
 fun Search(
@@ -77,7 +77,7 @@ fun Search(
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Column {
-            Spacer(modifier = Modifier.systemBarPadding(top = true))
+            Spacer(modifier = Modifier.statusBarsPadding())
             SearchBar(
                 query = state.query,
                 onQueryChange = { state.query = it },

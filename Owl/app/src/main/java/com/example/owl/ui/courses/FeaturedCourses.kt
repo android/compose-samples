@@ -43,7 +43,7 @@ import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.elevatedSurface
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.statusBarPadding
+import com.example.owl.ui.utils.statusBarsPadding
 import kotlin.math.ceil
 
 @Composable
@@ -52,7 +52,7 @@ fun FeaturedCourses(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScrollableColumn(modifier = modifier.statusBarPadding()) {
+    ScrollableColumn(modifier = modifier.statusBarsPadding()) {
         CoursesAppBar()
         StaggeredVerticalGrid(
             maxColumnWidth = 220.dp,
