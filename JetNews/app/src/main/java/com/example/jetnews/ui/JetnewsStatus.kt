@@ -16,7 +16,7 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.mutableStateListOf
+import androidx.compose.runtime.mutableStateListOf
 
 object JetnewsStatus {
     val favorites = mutableStateListOf<String>()

@@ -18,7 +18,7 @@ package com.example.jetnews.data.posts.impl
 
 import android.content.res.Resources
 import android.os.Handler
-import androidx.ui.graphics.imageFromResource
+import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post

@@ -15,8 +15,8 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4-M3'
-    ext.compose_version = '0.1.0-dev15'
+    ext.kotlin_version = '1.4.0-rc'
+    ext.compose_version = '0.1.0-SNAPSHOT'
 
     repositories {
         google()
@@ -26,13 +26,15 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha03'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha07'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 allprojects {
     repositories {
+        def snapshot = '6759487'
+        maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
         google()
         jcenter()
         maven {

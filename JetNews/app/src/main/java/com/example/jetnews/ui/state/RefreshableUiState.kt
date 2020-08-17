@@ -16,11 +16,13 @@
 
 package com.example.jetnews.ui.state
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.onActive
-import androidx.compose.setValue
-import androidx.compose.state
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
 import com.example.jetnews.data.Result
 
 /**
@@ -54,8 +56,8 @@ fun <T> refreshableUiStateFrom(
     repositoryCall: RepositoryCall<T>
 ): RefreshableUiStateHandler<T> {
 
-    var state: RefreshableUiState<T> by state<RefreshableUiState<T>> {
-        RefreshableUiState.Success(data = null, loading = true)
+    var state: RefreshableUiState<T> by remember {
+        mutableStateOf(RefreshableUiState.Success(data = null, loading = true))
     }
 
     val refresh = {

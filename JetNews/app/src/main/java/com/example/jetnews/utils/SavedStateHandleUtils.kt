@@ -17,8 +17,8 @@
 package com.example.jetnews.utils
 
 import android.os.Bundle
-import androidx.compose.MutableState
-import androidx.compose.mutableStateOf
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 
 /**
