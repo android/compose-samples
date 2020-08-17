@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
@@ -44,7 +43,7 @@ import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.systemBarPadding
+import com.example.owl.ui.utils.statusBarPadding
 
 @Composable
 fun SearchCourses(
@@ -52,7 +51,7 @@ fun SearchCourses(
     modifier: Modifier = Modifier
 ) {
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
-    ScrollableColumn(modifier = modifier.systemBarPadding(top = true)) {
+    ScrollableColumn(modifier = modifier.statusBarPadding()) {
         AppBar(searchTerm, updateSearchTerm)
         val filteredTopics = getTopics(searchTerm.text, topics)
         filteredTopics.forEach { topic ->

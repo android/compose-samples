@@ -86,8 +86,11 @@ import com.example.owl.ui.utils.InsetsAmbient
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
+import com.example.owl.ui.utils.navigationBarHeight
+import com.example.owl.ui.utils.navigationBarPadding
 import com.example.owl.ui.utils.scrim
-import com.example.owl.ui.utils.systemBarPadding
+import com.example.owl.ui.utils.statusBarPadding
+import com.example.owl.ui.utils.toInnerPadding
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
@@ -171,7 +174,7 @@ private fun CourseDescriptionHeader(
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
             contentColor = Color.White, // always white as image has dark scrim
-            modifier = Modifier.systemBarPadding(top = true)
+            modifier = Modifier.statusBarPadding()
         ) {
             IconButton(onClick = upPress) {
                 Icon(
@@ -269,7 +272,7 @@ private fun RelatedCourses(
             color = MaterialTheme.colors.primarySurface,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.systemBarPadding(bottom = true)) {
+            Column(modifier = Modifier.navigationBarPadding()) {
                 Text(
                     text = stringResource(id = R.string.you_ll_also_like),
                     style = MaterialTheme.typography.h6,
@@ -354,7 +357,7 @@ private fun Lessons(
             modifier = Modifier
                 .fillMaxSize()
                 .drawLayer(alpha = lessonsAlpha)
-                .systemBarPadding(top = true)
+                .statusBarPadding()
         ) {
             val scroll = rememberScrollState()
             val appBarElevation = animate(if (scroll.value > 0f) 4.dp else 0.dp)
@@ -382,7 +385,9 @@ private fun Lessons(
             }
             ScrollableColumn(
                 scrollState = scroll,
-                contentPadding = InnerPadding(bottom = InsetsAmbient.current.bottom)
+                contentPadding = InsetsAmbient.current.systemBars.toInnerPadding(
+                    top = false
+                )
             ) {
                 lessons.forEach { lesson ->
                     Lesson(lesson)

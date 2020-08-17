@@ -38,7 +38,7 @@ Compose makes it simple to create a library of components and use them throughou
 
 #### [Utilities](app/src/main/java/com/example/owl/ui/utils/)
 Owl implements some utility functions of interest:
-* [Window insets](app/src/main/java/com/example/owl/ui/utils/Insets.kt) will likely be provided by the Compose library at some point. Until then this demonstrates how it can be implemented.
+* [Window insets](https://goo.gle/compose-insets) will likely be provided by the Compose library at some point. Until then this demonstrates how it can be implemented.
 * [Navigation](app/src/main/java/com/example/owl/ui/Navigation.kt): an implementation of [Android Arcitecture Components Navigation](https://developer.android.com/guide/navigation) will be provided for Compose at some point. Until then this class provides a simple [`Navigator`](app/src/main/java/com/example/owl/ui/Navigation.kt#L32) with back-stack and a [`backHandler`](app/src/main/java/com/example/owl/ui/Navigation.kt#L79) effect.
 
 ## Data

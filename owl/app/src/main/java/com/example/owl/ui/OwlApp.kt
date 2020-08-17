@@ -27,7 +27,7 @@ import com.example.owl.ui.courses.Courses
 import com.example.owl.ui.onboarding.Onboarding
 import com.example.owl.ui.utils.BackDispatcherAmbient
 import com.example.owl.ui.utils.Navigator
-import com.example.owl.ui.utils.ProvideInsets
+import com.example.owl.ui.utils.ProvideDisplayInsets
 
 @Composable
 fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
@@ -40,7 +40,7 @@ fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
     val actions = remember(navigator) { Actions(navigator) }
 
     Providers(BackDispatcherAmbient provides backDispatcher) {
-        ProvideInsets {
+        ProvideDisplayInsets {
             Crossfade(navigator.current) { destination ->
                 when (destination) {
                     Destination.Onboarding -> Onboarding(actions.onboardingComplete)

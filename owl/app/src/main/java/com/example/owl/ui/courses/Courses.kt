@@ -36,7 +36,6 @@ import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -46,8 +45,8 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.InsetsAmbient
-import com.example.owl.ui.utils.systemBarPadding
+import com.example.owl.ui.utils.navigationBarHeight
+import com.example.owl.ui.utils.navigationBarPadding
 
 @Composable
 fun Courses(selectCourse: (Long) -> Unit) {
@@ -58,7 +57,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
             backgroundColor = MaterialTheme.colors.primarySurface,
             bottomBar = {
                 BottomNavigation(
-                    modifier = Modifier.preferredHeight(56.dp + InsetsAmbient.current.bottom)
+                    Modifier.navigationBarHeight(additional = 56.dp)
                 ) {
                     tabs.forEach { tab ->
                         BottomNavigationItem(
@@ -69,7 +68,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
                             alwaysShowLabels = false,
                             selectedContentColor = MaterialTheme.colors.secondary,
                             unselectedContentColor = contentColor(),
-                            modifier = Modifier.systemBarPadding(bottom = true)
+                            modifier = Modifier.navigationBarPadding()
                         )
                     }
                 }
