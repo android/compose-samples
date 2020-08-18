@@ -37,6 +37,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        style="@style/Widget.Jetchat.NavigationView"
+        style="Widget.MaterialComponents.NavigationView"
         app:menu="@menu/activity_main_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>

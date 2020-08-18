@@ -22,8 +22,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.drawBorder
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
@@ -51,16 +51,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.onCommit
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.gesture.DragObserver
-import androidx.compose.ui.gesture.rawDragGestureFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
@@ -185,60 +178,40 @@ fun Messages(
     scrollState: ScrollState,
     modifier: Modifier = Modifier
 ) {
-    // Used to tell between manual and programmatic scrolling
-    var userScrolled by savedInstanceState { false }
-
-    onCommit(userScrolled, scrollState) {
-        // Scroll to last message
-        if (!userScrolled && // Don't scroll if the user triggered the scrolling
-            !scrollState.atBottom() // Don't scroll if already at the bottom
-        ) {
-            // Scroll smoothly after the first scroll
-            scrollState.smoothScrollTo(BottomScrollState)
-        }
-    }
-
     Stack(modifier = modifier) {
-        // Not remembering this is fine as it's cheaper to recreate
-        val dragObserver = object : DragObserver {
-            override fun onStart(downPosition: Offset) {
-                userScrolled = true
-            }
-        }
+
         val a11yLabel = stringResource(R.string.conversation_desc)
         ScrollableColumn(
             scrollState = scrollState,
             reverseScrollDirection = true,
-            // Using [rawDragGestureFilter] so [DragObserver.onStart] is called immediately,
             modifier = Modifier
                 .semantics { accessibilityLabel = a11yLabel }
-                .rawDragGestureFilter(dragObserver = dragObserver)
                 .fillMaxWidth()
         ) {
             val authorMe = stringResource(id = R.string.author_me)
-            Column {
-                Spacer(modifier = Modifier.preferredHeight(64.dp))
-                messages.forEachIndexed { index, content ->
-                    val prevAuthor = messages.getOrNull(index - 1)?.author
-                    val nextAuthor = messages.getOrNull(index + 1)?.author
-                    val isFirstMessageByAuthor = prevAuthor != content.author
-                    val isLastMessageByAuthor = nextAuthor != content.author
+            Spacer(modifier = Modifier.preferredHeight(64.dp))
+            messages.forEachIndexed { index, content ->
+                val prevAuthor = messages.getOrNull(index - 1)?.author
+                val nextAuthor = messages.getOrNull(index + 1)?.author
+                val isFirstMessageByAuthor = prevAuthor != content.author
+                val isLastMessageByAuthor = nextAuthor != content.author
 
-                    // Hardcode day dividers for simplicity
-                    if (index == 0) {
-                        DayHeader("20 Aug")
-                    } else if (index == 4) {
-                        DayHeader("Today")
-                    }
-
-                    Message(
-                        onAuthorClick = { navigateToProfile(content.author) },
-                        msg = content,
-                        isUserMe = content.author == authorMe,
-                        isFirstMessageByAuthor = isFirstMessageByAuthor,
-                        isLastMessageByAuthor = isLastMessageByAuthor
-                    )
+                // Hardcode day dividers for simplicity
+                if (index == 0) {
+                    DayHeader("20 Aug")
+                } else if (index == 4) {
+                    DayHeader("Today")
                 }
+
+                Message(
+                    onAuthorClick = {
+                        navigateToProfile(content.author)
+                    },
+                    msg = content,
+                    isUserMe = content.author == authorMe,
+                    isFirstMessageByAuthor = isFirstMessageByAuthor,
+                    isLastMessageByAuthor = isLastMessageByAuthor
+                )
             }
         }
         // Jump to bottom button shows up when user scrolls past a threshold.
@@ -254,8 +227,7 @@ fun Messages(
             // Only show if the scroller is not at the bottom
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
-                // Reset the userScrolled flag, which is preventing the auto scroll
-                userScrolled = false
+                scrollState.smoothScrollTo(BottomScrollState)
             },
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
@@ -291,9 +263,8 @@ fun Message(
                     .clickable(onClick = onAuthorClick)
                     .padding(horizontal = 16.dp)
                     .preferredSize(42.dp)
-                    // TODO: border behavior will change in b/158160576
-                    .drawBorder(1.5.dp, borderColor, CircleShape)
-                    .drawBorder(3.dp, MaterialTheme.colors.surface, CircleShape)
+                    .border(1.5.dp, borderColor, CircleShape)
+                    .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
                     .gravity(Alignment.Top),
                 asset = image,

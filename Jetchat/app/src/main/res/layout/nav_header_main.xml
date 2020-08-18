@@ -21,15 +21,18 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
+    android:orientation="horizontal">
 
     <ImageView
         android:layout_width="@dimen/nav_header_logo_size"
         android:layout_height="@dimen/nav_header_logo_size"
         android:contentDescription="@string/nav_header_desc"
-        android:layout_margin="@dimen/nav_header_spacing"
+        android:layout_marginStart="@dimen/nav_header_spacing"
         app:srcCompat="@drawable/ic_jetchat" />
-
-    <!-- TODO: Add logo -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/nav_header_logo_size"
+        android:layout_marginStart="@dimen/nav_header_logo_spacing"
+        android:contentDescription="@string/nav_header_desc"
+        app:srcCompat="@drawable/jetchat_logo" />
 </LinearLayout>

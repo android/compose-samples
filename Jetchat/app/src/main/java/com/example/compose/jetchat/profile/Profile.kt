@@ -49,7 +49,6 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
-import androidx.compose.ui.draw.drawOpacity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
@@ -90,18 +89,16 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
         )
         WithConstraints {
             Stack(modifier = Modifier.weight(1f)) {
-                ScrollableColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    scrollState = scrollState
-                ) {
-                    Surface {
-                        Column {
-                            ProfileHeader(
-                                scrollState,
-                                userData
-                            )
-                            UserInfoFields(userData, maxHeight)
-                        }
+                Surface {
+                    ScrollableColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        scrollState = scrollState
+                    ) {
+                        ProfileHeader(
+                            scrollState,
+                            userData
+                        )
+                        UserInfoFields(userData, maxHeight)
                     }
                 }
                 ProfileFab(
@@ -256,12 +253,11 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
                         asset = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat
                     )
                 },
-                text = { opacity ->
+                text = {
                     Text(
                         text = stringResource(
                             id = if (userIsMe) R.string.edit_profile else R.string.message
                         ),
-                        modifier = Modifier.drawOpacity(opacity)
                     )
                 },
                 extended = extended

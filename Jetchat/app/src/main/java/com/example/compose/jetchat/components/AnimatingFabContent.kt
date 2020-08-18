@@ -22,10 +22,12 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.transition
+import androidx.compose.foundation.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawOpacity
 import androidx.compose.ui.util.lerp
 import kotlin.math.roundToInt
 
@@ -35,8 +37,8 @@ import kotlin.math.roundToInt
  */
 @Composable
 fun AnimatingFabContent(
-    icon: @Composable() () -> Unit,
-    text: @Composable() (opacity: Float) -> Unit,
+    icon: @Composable () -> Unit,
+    text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     extended: Boolean = true
 ) {
@@ -46,28 +48,31 @@ fun AnimatingFabContent(
         definition = transitionDefinition,
         toState = currentState
     )
+    // Using functions instead of Floats here can improve performance, preventing recompositions.
     IconAndTextRow(
         icon,
         text,
-        transition[TextOpacity],
-        transition[FabWidthFactor],
+        { transition[TextOpacity] },
+        { transition[FabWidthFactor] },
         modifier = modifier
     )
 }
 
 @Composable
 private fun IconAndTextRow(
-    icon: @Composable() () -> Unit,
-    text: @Composable() (opacity: Float) -> Unit,
-    opacityProgress: Float,
-    widthProgress: Float,
+    icon: @Composable () -> Unit,
+    text: @Composable () -> Unit,
+    opacityProgress: () -> Float, // Functions instead of Floats, to slightly improve performance
+    widthProgress: () -> Float,
     modifier: Modifier
 ) {
     Layout(
         modifier = modifier,
         children = {
             icon()
-            text(opacityProgress)
+            Box(modifier = Modifier.drawOpacity(opacityProgress())) {
+                text()
+            }
         }
     ) { measurables, constraints ->
 
@@ -86,7 +91,7 @@ private fun IconAndTextRow(
         val expandedWidth = iconPlaceable.width + textPlaceable.width + iconPadding * 3
 
         // Apply the animation factor to go from initialWidth to fullWidth
-        val width = lerp(initialWidth, expandedWidth, widthProgress)
+        val width = lerp(initialWidth, expandedWidth, widthProgress())
 
         layout(width.roundToInt(), height) {
             iconPlaceable.place(

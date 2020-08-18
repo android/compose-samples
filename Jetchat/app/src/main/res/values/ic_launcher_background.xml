@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2020 The Android Open Source Project
   ~
@@ -15,7 +16,5 @@
   -->
 
 <resources>
-
-    <style name="Widget.Jetchat.NavigationView" parent="Widget.MaterialComponents.NavigationView" />
-
+    <color name="ic_launcher_background">#0540F2</color>
 </resources>
