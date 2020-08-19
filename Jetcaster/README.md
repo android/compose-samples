@@ -26,7 +26,7 @@ This sample contains 1 screen so far: the home screen. It is split into sub-scre
 ### Dynamic theming
 The home screen currently implements dynamic theming, using the artwork of the currently selected podcast from the carousel to  update the  `primary` and `onPrimary` [colors](https://developer.android.com/reference/kotlin/androidx/compose/material/Colors). You can see it in action in the screenshots above: as the carousel item is changed, the background gradient is updated to match the artwork.
 
-This is impemented in [`DynamicTheming.kt`](app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt), which provides the `DynamicThemePrimaryColorsFromImage` composable, to automatically animate the theme colors based on the provided image URL, like so:
+This is implemented in [`DynamicTheming.kt`](app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt), which provides the `DynamicThemePrimaryColorsFromImage` composable, to automatically animate the theme colors based on the provided image URL, like so:
 
 ``` kotlin
 val dominantColorState: DominantColorState = rememberDominantColorState()
@@ -81,7 +81,7 @@ The podcast data in this sample is dynamically fetched from a number of podcast 
 The [`PodcastRepository`][podcastrepo] class is responsible for handling the data fetching of all podcast information:
 
  - Each podcast is fetched using [OkHttp][okhttp], and then parsed using [Rome][rome], within [`PodcastFetcher`][fetcher].
- - The parsed entites are then added to the local data stores: [`PodcastStore`][podcaststore], [`EpisodeStore`][epstore] &  [`CategoryStore`][catstore] for storage in the local [Room][room] [`JetcasterDatabase`][db] database.
+ - The parsed entities are then added to the local data stores: [`PodcastStore`][podcaststore], [`EpisodeStore`][epstore] &  [`CategoryStore`][catstore] for storage in the local [Room][room] [`JetcasterDatabase`][db] database.
 
  ### Follow podcasts
 

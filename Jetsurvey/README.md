@@ -6,9 +6,7 @@ showcase text input, validation and state capabilities of Compose.
 
 Screenshots
 -----------
-<img src="/screenshots/welcome.png" width="425"/> <img src="/screenshots/light_signin.png" width="425"/> <img src="/screenshots/dark_signin.png" width="425"/>
-
-<img src="/screenshots/signup_error.png" width="425"/> <img src="/screenshots/survey.gif" width="425"/>
+ <img src="screenshots/survey.gif" width="425"/>
 
 ## Features
 

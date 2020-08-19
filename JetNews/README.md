@@ -55,7 +55,7 @@ This screen dives into the Text API, showing how to use different fonts than the
 [`Typograhy`][5]. It also adds a bottom appbar, with custom actions.
 
 [4]: app/src/main/java/com/example/jetnews/ui/article
-[5]: app/src/main/java/com/example/jetnews/ui/Typography.kt
+[5]: app/src/main/java/com/example/jetnews/ui/theme/Type.kt
 
 ### Interests screen
 

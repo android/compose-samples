@@ -45,7 +45,7 @@ fun AccountsBody(accounts: List<Account>) {
 ```
 
 ### Theming
-Rally follows [Material Design][materialtheming], customizing [colors](app/src/main/java/com/example/compose/rally/ui/theme/Color.kt) and [typography](app/src/main/java/com/example/compose/rally/ui/theme/Theme.kt) used in the app via the [RallyTheme](app/src/main/java/com/example/compose/rally/ui/theme/Theme.kt). Rally's design only contains a dark theme, therefore the theme does not contain any light colors.
+Rally follows [Material Design][materialtheming], customizing [colors](app/src/main/java/com/example/compose/rally/ui/theme/Color.kt) and [typography](app/src/main/java/com/example/compose/rally/ui/theme/RallyTheme.kt) used in the app via the [RallyTheme](app/src/main/java/com/example/compose/rally/ui/theme/RallyTheme.kt). Rally's design only contains a dark theme, therefore the theme does not contain any light colors.
 
 ### Charts and animations
 This sample features a donut chart that combines drawing using [`Canvas`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Canvas) with animations combining two animated parameters: `AngleOffset` and `Shift`. This creates the animation with minimum boilerplate:
