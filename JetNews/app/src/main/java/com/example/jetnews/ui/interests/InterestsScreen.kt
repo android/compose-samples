@@ -90,8 +90,8 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 @Composable
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    interestsRepository: InterestsRepository
+    interestsRepository: InterestsRepository,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     // viewModel() is scoped to the Activity or Fragment Lifecycle that is displaying this
     // composable by default. Callers of this composable can modify this by providing a new scope
@@ -102,7 +102,7 @@ fun InterestsScreen(
     )
 
     // Describe the screen sections here since each section needs 2 states and 1 event from the
-    // ViewModel. Pass them to the stateless InterestsScreen using a tabSlot.
+    // ViewModel. Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
 
         // observeAsState will read a [LiveData] in Compose
@@ -154,7 +154,7 @@ fun InterestsScreen(
     tab: Sections,
     onTabChange: (Sections) -> Unit,
     navigateTo: (Screen) -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    scaffoldState: ScaffoldState,
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
