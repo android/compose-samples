@@ -37,6 +37,9 @@ import androidx.lifecycle.ViewModelStoreOwner
  * The scoped view model store is isolated from the current [ViewModelStoreOwnerAmbient]. It will
  * not attempt to lookup existing ViewModel instances in any parent [ViewModelStoreOwnerAmbient].
  *
+ * Warning: This simple implementation does not retain ViewModel instances during configuration
+ * changes like rotation.
+ *
  * Usage:
  *
  * ```
@@ -76,6 +79,9 @@ fun ViewModelLifecycleScope(content: @Composable () -> Unit) = Providers(
  * All [ViewModel]s created in this store will be cleared when the call to
  * [rememberScopedViewModelStore] leaves the composition tree.
  *
+ * Warning: This simple implementation does not retain ViewModel instances during configuration
+ * changes like rotation.
+ *
  * This store is independent of any other [ViewModelStoreOwner] and will not attempt to lookup
  * ViewModels created in another store.
  *
@@ -92,6 +98,9 @@ fun rememberScopedViewModelStore(): ViewModelStoreOwner = remember { ScopedViewM
 
 /**
  * A ViewModelStoreOwner that will automatically clear the store when removed from composition.
+ *
+ * Warning: This simple implementation does not retain ViewModel instances during configuration
+ * changes like rotation.
  */
 @Deprecated(
     message = "This code is a stand-in for a pending public API that will be created after " +
