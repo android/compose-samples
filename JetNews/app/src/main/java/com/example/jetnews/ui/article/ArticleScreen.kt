@@ -59,6 +59,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.utils.ViewModelLifecycleScope
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -73,11 +74,14 @@ fun ArticleScreen(
     postId: String,
     postsRepository: PostsRepository,
     onBack: () -> Unit
-) {
-    // viewModel() is scoped to the Application or Fragment Lifecycle that is displaying this
-    // composable by default. Callers of this composable can modify this by providing a new scope
-    // through [ViewModelStoreOwnerAmbient]. Navigation controller is expected to scope ViewModel in
-    // this manner.
+) = ViewModelLifecycleScope {
+    // viewModel() is scoped to the [ViewModelLifecycleScope], and will be cleared when this
+    // composable leaves composition. We use a [ViewModelLifecycleScope] on this screen because
+    // we're passing [postId] to the factory, and want to recreate the [ViewModel] when the user
+    // navigates to different screens.
+
+    // If we instead used the default Activity or Fragment lifecycle, the same [ArticleViewModel]
+    // instance would be re-used on different screens and the wrong post would be shown.
     val articleViewModel =
         viewModel<ArticleViewModel>(factory = ArticleViewModelFactory(postId, postsRepository))
 
@@ -86,7 +90,7 @@ fun ArticleScreen(
     // [observeAsState] is removed from the composition tree
     val post by articleViewModel.post.observeAsState(UiState())
     // TODO: handle errors when repository gains ability to cause them
-    val postData = post.data ?: return
+    val postData = post.data ?: return@ViewModelLifecycleScope
 
     // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
