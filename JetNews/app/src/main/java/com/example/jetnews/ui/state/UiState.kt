@@ -43,7 +43,7 @@ data class UiState<T>(
 }
 
 /**
- * Copy a DataLoading<T> based on a Result<T>.
+ * Copy a UiState<T> based on a Result<T>.
  *
  * Result.Success will set all fields
  * Result.Error will reset loading and exception only

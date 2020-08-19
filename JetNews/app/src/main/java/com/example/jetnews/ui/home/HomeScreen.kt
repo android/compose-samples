@@ -98,8 +98,8 @@ fun HomeScreen(
     // [observeAsState] will automatically observe a LiveData<T> and return a State<T> object that
     // updates whenever the LiveData emits a value. observation of the LiveData will stop when
     // [observeAsState] is removed from the composition tree
-    val postDataLoading =
-        homeViewModel.postDataLoading.observeAsState().value ?: return
+    val postUiState =
+        homeViewModel.postUiState.observeAsState().value ?: return
 
     // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
@@ -107,7 +107,7 @@ fun HomeScreen(
     val favorites by homeViewModel.favorites.collectAsState(setOf())
 
     HomeScreen(
-        postDataLoading,
+        postUiState,
         favorites,
         homeViewModel::onFavoriteToggled,
         homeViewModel::onPostRefresh,
@@ -188,7 +188,7 @@ fun HomeScreen(
  * @param empty (state) when true, display [emptyContent]
  * @param emptyContent (slot) the content to display for the empty state
  * @param loading (state) when true, display a loading spinner over [content]
- * @param refresh (event) event to request refresh
+ * @param onRefresh (event) event to request refresh
  * @param content (slot) the main content to show
  */
 @Composable

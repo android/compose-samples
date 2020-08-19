@@ -33,11 +33,11 @@ import kotlinx.coroutines.launch
  */
 class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() {
 
-    private val _postDataLoading = MutableLiveData<UiState<List<Post>>>(UiState())
+    private val _postUiState = MutableLiveData<UiState<List<Post>>>(UiState())
     /**
      * State: The current list to display, as well as error and loading status.
      */
-    val postDataLoading: LiveData<UiState<List<Post>>> = _postDataLoading
+    val postUiState: LiveData<UiState<List<Post>>> = _postUiState
 
     /**
      * State: Current favorites
@@ -59,7 +59,7 @@ class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() 
      * Event: Called when the UI wants to dismiss an error
      */
     fun onErrorDismissed() {
-        _postDataLoading.value = _postDataLoading.value?.copy(exception = null)
+        _postUiState.value = _postUiState.value?.copy(exception = null)
     }
 
     /**
@@ -77,11 +77,11 @@ class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() 
     @MainThread
     private suspend fun doRefresh() {
         try {
-            _postDataLoading.value = _postDataLoading.value?.copy(loading = true)
+            _postUiState.value = _postUiState.value?.copy(loading = true)
             val result = postsRepository.getPosts()
-            _postDataLoading.value = _postDataLoading.value?.copyWithResult(result)
+            _postUiState.value = _postUiState.value?.copyWithResult(result)
         } finally {
-            _postDataLoading.value = _postDataLoading.value?.copy(loading = false)
+            _postUiState.value = _postUiState.value?.copy(loading = false)
         }
     }
 }
