@@ -23,8 +23,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
+import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 /**
@@ -32,17 +34,17 @@ import kotlinx.coroutines.launch
  */
 class InterestsViewModel(private val interestsRepository: InterestsRepository) : ViewModel() {
 
-    private val _topics = MutableLiveData<UiState<Map<String, List<String>>>>(UiState())
+    private val _topics = MutableLiveData<UiState<TopicsMap>>(UiState())
 
     /**
      * state: List of topics to display, sectioned by category
      */
-    val topics: LiveData<UiState<Map<String, List<String>>>> = _topics
+    val topics: LiveData<UiState<TopicsMap>> = _topics
 
     /**
      * state: The currently selected topics as a Flow
      */
-    val selectedTopics = interestsRepository.getTopicsSelected()
+    val selectedTopics: Flow<Set<TopicSelection>> = interestsRepository.observeTopicsSelected()
 
     private val _people = MutableLiveData<UiState<List<String>>>(UiState())
 
@@ -54,7 +56,7 @@ class InterestsViewModel(private val interestsRepository: InterestsRepository) :
     /**
      * state: The currently selected people
      */
-    val selectedPeople = interestsRepository.getPeopleSelected()
+    val selectedPeople: Flow<Set<String>> = interestsRepository.observePeopleSelected()
 
     private val _publications = MutableLiveData<UiState<List<String>>>(UiState())
 
@@ -66,7 +68,7 @@ class InterestsViewModel(private val interestsRepository: InterestsRepository) :
     /**
      * state: The currently selected publications
      */
-    val selectedPublications = interestsRepository.getPublicationSelected()
+    val selectedPublications: Flow<Set<String>> = interestsRepository.observePublicationSelected()
 
     init {
         viewModelScope.launch {

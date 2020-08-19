@@ -26,10 +26,13 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 /**
- * Represents the UI state for the home screen
+ * Holds the UI state for the home screen.
+ *
+ * @param postsRepository data source
  */
 class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() {
 
@@ -42,7 +45,7 @@ class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() 
     /**
      * State: Current favorites
      */
-    val favorites = postsRepository.getFavorites()
+    val favorites: Flow<Set<String>> = postsRepository.observeFavorites()
 
     init {
         onPostRefresh()
@@ -73,6 +76,8 @@ class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() 
 
     /**
      * Refresh the list from the repository on a coroutine.
+     *
+     * This function must be called from the Main thread to allow optimal LiveData updates.
      */
     @MainThread
     private suspend fun doRefresh() {

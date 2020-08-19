@@ -19,6 +19,8 @@ package com.example.jetnews.data.interests.impl
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
+import com.example.jetnews.data.interests.TopicsMap
+import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,7 +73,7 @@ class FakeInterestsRepository : InterestsRepository {
     private val selectedPeople = MutableStateFlow(setOf<String>())
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
-    override suspend fun getTopics(): Result<Map<String, List<String>>> {
+    override suspend fun getTopics(): Result<TopicsMap> {
         return Result.Success(topics)
     }
 
@@ -101,15 +103,9 @@ class FakeInterestsRepository : InterestsRepository {
         selectedPublications.value = set
     }
 
-    override fun getTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
+    override fun observeTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
 
-    override fun getPeopleSelected(): Flow<Set<String>> = selectedPeople
+    override fun observePeopleSelected(): Flow<Set<String>> = selectedPeople
 
-    override fun getPublicationSelected(): Flow<Set<String>> = selectedPublications
-}
-
-private fun <E> MutableSet<E>.addOrRemove(element: E) {
-    if (!add(element)) {
-        remove(element)
-    }
+    override fun observePublicationSelected(): Flow<Set<String>> = selectedPublications
 }

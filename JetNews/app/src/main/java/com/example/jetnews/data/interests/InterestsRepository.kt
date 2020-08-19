@@ -19,6 +19,8 @@ package com.example.jetnews.data.interests
 import com.example.jetnews.data.Result
 import kotlinx.coroutines.flow.Flow
 
+typealias TopicsMap = Map<String, List<String>>
+
 /**
  * Interface to the Interests data layer.
  */
@@ -27,7 +29,7 @@ interface InterestsRepository {
     /**
      * Get relevant topics to the user.
      */
-    suspend fun getTopics(): Result<Map<String, List<String>>>
+    suspend fun getTopics(): Result<TopicsMap>
 
     /**
      * Get list of people.
@@ -57,17 +59,17 @@ interface InterestsRepository {
     /**
      * Currently selected topics
      */
-    fun getTopicsSelected(): Flow<Set<TopicSelection>>
+    fun observeTopicsSelected(): Flow<Set<TopicSelection>>
 
     /**
      * Currently selected people
      */
-    fun getPeopleSelected(): Flow<Set<String>>
+    fun observePeopleSelected(): Flow<Set<String>>
 
     /**
      * Currently selected publications
      */
-    fun getPublicationSelected(): Flow<Set<String>>
+    fun observePublicationSelected(): Flow<Set<String>>
 }
 
 data class TopicSelection(val section: String, val topic: String)

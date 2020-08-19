@@ -17,41 +17,49 @@
 package com.example.jetnews.ui.article
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+/**
+ * Holds UI state for article screen
+ *
+ * @param postId the post to show
+ * @param postsRepository data source to load posts and favorites from
+ */
 class ArticleViewModel(val postId: String, val postsRepository: PostsRepository) : ViewModel() {
 
-    private val _post = MutableLiveData<UiState<Post>>(UiState())
-    val post: LiveData<UiState<Post>> = _post
+    /**
+     * State: The post to show
+     */
+    val post: LiveData<UiState<Post>> = liveData {
+        // emit a loading state
+        var state = UiState<Post>(loading = true)
+        emit(state)
 
-    val favorites = postsRepository.getFavorites()
-
-    init {
-        refreshPost()
+        // when result comes in, update state and emit the final value
+        state = state.copyWithResult(postsRepository.getPost(postId))
+        emit(state)
     }
 
+    /**
+     * State: The current favorites
+     */
+    val favorites: Flow<Set<String>> = postsRepository.observeFavorites()
+
+    /**
+     * Event: Toggle the favorite value of this post
+     */
     fun toggleFavorite() {
         viewModelScope.launch {
             postsRepository.toggleFavorite(postId)
-        }
-    }
-
-    private fun refreshPost() {
-        viewModelScope.launch {
-            try {
-                _post.value = _post.value?.copy(loading = true)
-                _post.value = _post.value?.copyWithResult(postsRepository.getPost(postId))
-            } finally {
-                _post.value = _post.value?.copy(loading = false)
-            }
         }
     }
 }

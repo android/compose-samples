@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +44,7 @@ class BlockingFakePostsRepository(private val context: Context) : PostsRepositor
         }
     }
 
+    // for now, keep the favorites in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
     override suspend fun getPost(postId: String): Result<Post> {
@@ -60,13 +62,11 @@ class BlockingFakePostsRepository(private val context: Context) : PostsRepositor
         return Result.Success(postsWithResources)
     }
 
-    override fun getFavorites(): Flow<Set<String>> = favorites
+    override fun observeFavorites(): Flow<Set<String>> = favorites
 
     override suspend fun toggleFavorite(postId: String) {
         val set = favorites.value.toMutableSet()
-        if (!set.add(postId)) {
-            set.remove(postId)
-        }
+        set.addOrRemove(postId)
         favorites.value = set
     }
 }

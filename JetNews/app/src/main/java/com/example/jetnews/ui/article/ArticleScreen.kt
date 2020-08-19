@@ -58,7 +58,6 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.utils.ViewModelLifecycleScope
 import kotlinx.coroutines.runBlocking
 
@@ -69,6 +68,7 @@ import kotlinx.coroutines.runBlocking
  * @param postsRepository data source for [ArticleViewModel]
  * @param onBack (event) request back navigation
  */
+@Suppress("DEPRECATION") // allow ViewModelLifecycleScope call
 @Composable
 fun ArticleScreen(
     postId: String,
@@ -86,11 +86,11 @@ fun ArticleScreen(
         viewModel<ArticleViewModel>(factory = ArticleViewModelFactory(postId, postsRepository))
 
     // [observeAsState] will automatically observe a LiveData<T> and return a State<T> object that
-    // updates whenever the LiveData emits a value. observation of the LiveData will stop when
+    // updates whenever the LiveData emits a value. Observation of the LiveData will stop when
     // [observeAsState] is removed from the composition tree
-    val post by articleViewModel.post.observeAsState(UiState())
+    val post by articleViewModel.post.observeAsState()
     // TODO: handle errors when repository gains ability to cause them
-    val postData = post.data ?: return@ViewModelLifecycleScope
+    val postData = post?.data ?: return@ViewModelLifecycleScope
 
     // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is

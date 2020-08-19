@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.example.jetnews.utils
 
 import androidx.compose.runtime.Composable
@@ -56,6 +58,12 @@ import androidx.lifecycle.ViewModelStoreOwner
  * @param content composable lambda that uses the new view model scope
  */
 @Composable
+@Deprecated(
+    message = "This code is a stand-in for a pending public API that will be created after " +
+        "https://issuetracker.google.com/issues/165642391 lands. If you use this code please " +
+        "remove it from your codebase after that ticket is closed.",
+    level = DeprecationLevel.WARNING
+)
 fun ViewModelLifecycleScope(content: @Composable () -> Unit) = Providers(
     ViewModelStoreOwnerAmbient provides rememberScopedViewModelStore(),
     children = content
@@ -74,11 +82,23 @@ fun ViewModelLifecycleScope(content: @Composable () -> Unit) = Providers(
  * @see ViewModelLifecycleScope for usage example
  */
 @Composable
+@Deprecated(
+    message = "This code is a stand-in for a pending public API that will be created after " +
+        "https://issuetracker.google.com/issues/165642391 lands. If you use this code please " +
+        "remove it from your codebase after that ticket is closed.",
+    level = DeprecationLevel.WARNING
+)
 fun rememberScopedViewModelStore(): ViewModelStoreOwner = remember { ScopedViewModelStoreOwner() }
 
 /**
  * A ViewModelStoreOwner that will automatically clear the store when removed from composition.
  */
+@Deprecated(
+    message = "This code is a stand-in for a pending public API that will be created after " +
+        "https://issuetracker.google.com/issues/165642391 lands. If you use this code please " +
+        "remove it from your codebase after that ticket is closed.",
+    level = DeprecationLevel.WARNING
+)
 private class ScopedViewModelStoreOwner : ViewModelStoreOwner, CompositionLifecycleObserver {
     private val viewModelStore = ViewModelStore()
 
