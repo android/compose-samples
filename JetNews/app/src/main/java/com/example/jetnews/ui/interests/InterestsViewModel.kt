@@ -76,18 +76,27 @@ class InterestsViewModel(private val interestsRepository: InterestsRepository) :
         }
     }
 
+    /**
+     * Event: User has selected a topic
+     */
     fun onTopicSelect(topic: TopicSelection) {
         viewModelScope.launch {
             interestsRepository.toggleTopicSelection(topic)
         }
     }
 
+    /**
+     * Event: User has selected a person
+     */
     fun onPersonSelect(person: String) {
         viewModelScope.launch {
             interestsRepository.togglePersonSelected(person)
         }
     }
 
+    /**
+     * Event: User has selected a publication
+     */
     fun onPublicationSelect(publication: String) {
         viewModelScope.launch {
             interestsRepository.togglePublicationSelected(publication)
