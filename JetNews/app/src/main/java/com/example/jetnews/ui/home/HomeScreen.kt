@@ -16,7 +16,10 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
@@ -24,7 +27,12 @@ import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
@@ -41,7 +49,10 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -242,7 +253,6 @@ private fun HomeScreenErrorAndContent(
             onDismiss = onErrorDismiss,
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
-
     }
 }
 
@@ -414,7 +424,7 @@ private fun PostListPopularSection(
 
 /**
  * Full-width list items that display "based on your history" for [PostList]
- * 
+ *
  * @param posts (state) to display
  * @param navigateTo (event) request navigation to [Screen]
  */
@@ -446,7 +456,7 @@ private fun PostListDivider() {
 @Composable
 fun PreviewHomeScreenBody() {
     ThemedPreview {
-        val posts = previewPosts()
+        val posts = loadFakePosts()
         PostList(posts, { }, setOf(), {})
     }
 }
@@ -470,13 +480,13 @@ private fun PreviewDrawerOpen() {
 @Composable
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
-        val posts = previewPosts()
+        val posts = loadFakePosts()
         PostList(posts, {}, setOf(), {})
     }
 }
 
 @Composable
-private fun previewPosts(): List<Post> {
+private fun loadFakePosts(): List<Post> {
     val context = ContextAmbient.current
     val posts = runBlocking {
         BlockingFakePostsRepository(context).getPosts()

@@ -27,7 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import java.lang.IllegalArgumentException
 import kotlin.random.Random
 
 /**
@@ -56,7 +55,6 @@ class FakePostsRepository(
             )
         }
     }
-
 
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 

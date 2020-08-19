@@ -16,14 +16,18 @@
 
 package com.example.jetnews.ui.article
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
 import kotlinx.coroutines.launch
 
-class ArticleViewModel(val postId: String, val postsRepository: PostsRepository): ViewModel() {
+class ArticleViewModel(val postId: String, val postsRepository: PostsRepository) : ViewModel() {
 
     private val _post = MutableLiveData<UiState<Post>>(UiState())
     val post: LiveData<UiState<Post>> = _post
@@ -50,8 +54,6 @@ class ArticleViewModel(val postId: String, val postsRepository: PostsRepository)
             }
         }
     }
-
-
 }
 
 class ArticleViewModelFactory(
@@ -62,5 +64,4 @@ class ArticleViewModelFactory(
         @Suppress("UNCHECKED_CAST")
         return ArticleViewModel(postId, postsRepository) as T
     }
-
 }

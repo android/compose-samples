@@ -17,7 +17,11 @@
 package com.example.jetnews.ui.home
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.state.UiState
@@ -27,7 +31,7 @@ import kotlinx.coroutines.launch
 /**
  * Represents the UI state for the home screen
  */
-class HomeViewModel(private val postsRepository: PostsRepository): ViewModel() {
+class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() {
 
     private val _postDataLoading = MutableLiveData<UiState<List<Post>>>(UiState())
     /**
@@ -79,7 +83,6 @@ class HomeViewModel(private val postsRepository: PostsRepository): ViewModel() {
         } finally {
             _postDataLoading.value = _postDataLoading.value?.copy(loading = false)
         }
-
     }
 }
 
@@ -88,5 +91,4 @@ class HomeViewModelFactory(private val repository: PostsRepository) : ViewModelP
         @Suppress("UNCHECKED_CAST")
         return HomeViewModel(repository) as T
     }
-
 }

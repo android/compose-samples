@@ -38,7 +38,9 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
@@ -438,7 +440,6 @@ private fun loadFakeTopics(): Map<String, List<String>> {
         FakeInterestsRepository().getTopics()
     }
     return (topics as Result.Success).data
-
 }
 
 @Preview("Interests screen people tab")

@@ -16,7 +16,11 @@
 
 package com.example.jetnews.ui.interests
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.ui.state.UiState
@@ -106,12 +110,11 @@ class InterestsViewModel(private val interestsRepository: InterestsRepository) :
     }
 }
 
-class InterestsViewModelFactory(private val interestsRepository: InterestsRepository) :
-    ViewModelProvider.Factory
-{
+class InterestsViewModelFactory(
+    private val interestsRepository: InterestsRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return InterestsViewModel(interestsRepository) as T
     }
-
 }

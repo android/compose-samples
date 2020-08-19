@@ -17,14 +17,10 @@
 package com.example.jetnews.data
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.FakePostsRepository
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 /**
  * Dependency Injection container at the application level.
