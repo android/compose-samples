@@ -38,41 +38,87 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
+import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
-import com.example.jetnews.data.successOr
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.effect.fetchPost
 import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.ui.home.isFavorite
-import com.example.jetnews.ui.home.toggleBookmark
 import com.example.jetnews.ui.state.UiState
+import kotlinx.coroutines.runBlocking
 
+/**
+ * Stateful Article Screen that uses [ArticleViewModel] to manage its state.
+ *
+ * @param postId (state) the post to show
+ * @param postsRepository data source for [ArticleViewModel]
+ * @param onBack (event) request back navigation
+ */
 @Composable
-fun ArticleScreen(postId: String, postsRepository: PostsRepository, onBack: () -> Unit) {
-    val postsState = fetchPost(postId, postsRepository)
-    if (postsState is UiState.Success<Post>) {
-        ArticleScreen(postsState.data, onBack)
-    }
+fun ArticleScreen(
+    postId: String,
+    postsRepository: PostsRepository,
+    onBack: () -> Unit
+) {
+    // viewModel() is scoped to the Application or Fragment Lifecycle that is displaying this
+    // composable by default. Callers of this composable can modify this by providing a new scope
+    // through [ViewModelStoreOwnerAmbient]. Navigation controller is expected to scope ViewModel in
+    // this manner.
+    val articleViewModel =
+        viewModel<ArticleViewModel>(factory = ArticleViewModelFactory(postId, postsRepository))
+
+    // [observeAsState] will automatically observe a LiveData<T> and return a State<T> object that
+    // updates whenever the LiveData emits a value. observation of the LiveData will stop when
+    // [observeAsState] is removed from the composition tree
+    val post by articleViewModel.post.observeAsState(UiState())
+    // TODO: handle errors when repository gains ability to cause them
+    val postData = post.data ?: return
+
+    // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
+    // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
+    // removed from the composition tree.
+    val favorites by articleViewModel.favorites.collectAsState(setOf())
+    val isFavorite = favorites.contains(postId)
+
+    ArticleScreen(
+        post = postData,
+        onBack = onBack,
+        isFavorite = isFavorite,
+        onToggleFavorite = articleViewModel::toggleFavorite
+    )
 }
 
+/**
+ * Stateless Article Screen that displays a single post.
+ *
+ * @param post (state) item to display
+ * @param onBack (event) request navigate back
+ * @param isFavorite (state) is this item currently a favorite
+ * @param onToggleFavorite (event) request that this post toggle it's favorite state
+ */
 @Composable
-private fun ArticleScreen(post: Post, onBack: () -> Unit) {
+fun ArticleScreen(
+    post: Post,
+    onBack: () -> Unit,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit
+) {
 
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by savedInstanceState { false }
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
@@ -99,13 +145,31 @@ private fun ArticleScreen(post: Post, onBack: () -> Unit) {
             PostContent(post, modifier)
         },
         bottomBar = {
-            BottomBar(post) { showDialog = true }
+            BottomBar(
+                post = post,
+                onUnimplementedAction = { showDialog = true },
+                isFavorite = isFavorite,
+                onToggleFavorite = onToggleFavorite
+            )
         }
     )
 }
 
+/**
+ * Bottom bar for Article screen
+ *
+ * @param post (state) used in share sheet to share the post
+ * @param onUnimplementedAction (event) called when the user performs an unimplemented action
+ * @param isFavorite (state) if this post is currently a favorite
+ * @param onToggleFavorite (event) request this post toggle it's favorite status
+ */
 @Composable
-private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
+private fun BottomBar(
+    post: Post,
+    onUnimplementedAction: () -> Unit,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit
+) {
     Surface(elevation = 2.dp) {
         Row(
             verticalGravity = Alignment.CenterVertically,
@@ -117,8 +181,8 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
                 Icon(Icons.Filled.FavoriteBorder)
             }
             BookmarkButton(
-                isBookmarked = isFavorite(postId = post.id),
-                onBookmark = { toggleBookmark(postId = post.id) }
+                isBookmarked = isFavorite,
+                onClick = onToggleFavorite
             )
             val context = ContextAmbient.current
             IconButton(onClick = { sharePost(post, context) }) {
@@ -132,6 +196,11 @@ private fun BottomBar(post: Post, onUnimplementedAction: () -> Unit) {
     }
 }
 
+/**
+ * Display a popup explaining functionality not available.
+ *
+ * @param onDismiss (event) request the popup be dismissed
+ */
 @Composable
 private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     AlertDialog(
@@ -150,6 +219,12 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     )
 }
 
+/**
+ * Show a share sheet for a post
+ *
+ * @param post to share
+ * @param context Android context to show the share sheet in
+ */
 private fun sharePost(post: Post, context: Context) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
@@ -164,7 +239,7 @@ private fun sharePost(post: Post, context: Context) {
 fun PreviewArticle() {
     ThemedPreview {
         val post = loadFakePost(post3.id)
-        ArticleScreen(post, {})
+        ArticleScreen(post, {}, false, {})
     }
 }
 
@@ -173,15 +248,15 @@ fun PreviewArticle() {
 fun PreviewArticleDark() {
     ThemedPreview(darkTheme = true) {
         val post = loadFakePost(post3.id)
-        ArticleScreen(post, {})
+        ArticleScreen(post, {}, false, {})
     }
 }
 
 @Composable
 private fun loadFakePost(postId: String): Post {
-    var post: Post? = null
-    BlockingFakePostsRepository(ContextAmbient.current).getPost(postId) { result ->
-        post = result.successOr(null)
+    val context = ContextAmbient.current
+    val post = runBlocking {
+        (BlockingFakePostsRepository(context).getPost(postId) as Result.Success).data
     }
-    return post!!
+    return post
 }

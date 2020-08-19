@@ -21,11 +21,17 @@ import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 /**
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources synchronously.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class BlockingFakePostsRepository(private val context: Context) : PostsRepository {
 
     private val postsWithResources: List<Post> by lazy {
@@ -37,11 +43,30 @@ class BlockingFakePostsRepository(private val context: Context) : PostsRepositor
         }
     }
 
-    override fun getPost(postId: String, callback: (Result<Post?>) -> Unit) {
-        callback(Result.Success(postsWithResources.find { it.id == postId }))
+    private val favorites = MutableStateFlow<Set<String>>(setOf())
+
+    override suspend fun getPost(postId: String): Result<Post> {
+        return withContext(Dispatchers.IO) {
+            val post = postsWithResources.find { it.id == postId }
+            if (post == null) {
+                Result.Error(IllegalArgumentException("Unable to find post"))
+            } else {
+                Result.Success(post)
+            }
+        }
     }
 
-    override fun getPosts(callback: (Result<List<Post>>) -> Unit) {
-        callback(Result.Success(postsWithResources))
+    override suspend fun getPosts(): Result<List<Post>> {
+        return Result.Success(postsWithResources)
+    }
+
+    override fun getFavorites(): Flow<Set<String>> = favorites
+
+    override suspend fun toggleFavorite(postId: String) {
+        val set = favorites.value.toMutableSet()
+        if (!set.add(postId)) {
+            set.remove(postId)
+        }
+        favorites.value = set
     }
 }

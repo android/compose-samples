@@ -17,12 +17,16 @@
 package com.example.jetnews.data.posts.impl
 
 import android.content.res.Resources
-import android.os.Handler
 import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
-import java.util.concurrent.ExecutorService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 /**
@@ -32,9 +36,8 @@ import kotlin.random.Random
  *
  * The result is posted to the resultThreadHandler passed as a parameter.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class FakePostsRepository(
-    private val executorService: ExecutorService,
-    private val resultThreadHandler: Handler,
     private val resources: Resources
 ) : PostsRepository {
 
@@ -53,56 +56,42 @@ class FakePostsRepository(
         }
     }
 
-    override fun getPost(postId: String, callback: (Result<Post?>) -> Unit) {
-        executeInBackground(callback) {
-            resultThreadHandler.post {
-                callback(
-                    Result.Success(
-                        postsWithResources.find { it.id == postId }
-                    )
-                )
+    private val favorites = MutableStateFlow<Set<String>>(setOf())
+
+    override suspend fun getPost(postId: String): Result<Post> {
+        return withContext(Dispatchers.IO) {
+            val post = postsWithResources.find { it.id == postId }
+            if (post == null) {
+                Result.Error(IllegalArgumentException("Post not found"))
+            } else {
+                Result.Success(post)
             }
         }
     }
 
-    override fun getPosts(callback: (Result<List<Post>>) -> Unit) {
-        executeInBackground(callback) {
-            simulateNetworkRequest()
-            Thread.sleep(1500L)
+    override suspend fun getPosts(): Result<List<Post>> {
+        return withContext(Dispatchers.IO) {
+            delay(800) // pretend we're on a slow network
             if (shouldRandomlyFail()) {
-                throw IllegalStateException()
-            }
-            resultThreadHandler.post { callback(Result.Success(postsWithResources)) }
-        }
-    }
-
-    /**
-     * Executes a block of code in the past and returns an error in the [callback]
-     * if [block] throws an exception.
-     */
-    private fun executeInBackground(callback: (Result<Nothing>) -> Unit, block: () -> Unit) {
-        executorService.execute {
-            try {
-                block()
-            } catch (e: Exception) {
-                resultThreadHandler.post { callback(Result.Error(e)) }
+                Result.Error(IllegalStateException())
+            } else {
+                Result.Success(postsWithResources)
             }
         }
     }
 
-    /**
-     * Simulates network request
-     */
-    private var networkRequestDone = false
-    private fun simulateNetworkRequest() {
-        if (!networkRequestDone) {
-            Thread.sleep(2000L)
-            networkRequestDone = true
+    override fun getFavorites(): Flow<Set<String>> = favorites
+
+    override suspend fun toggleFavorite(postId: String) {
+        val set = favorites.value.toMutableSet()
+        if (!set.add(postId)) {
+            set.remove(postId)
         }
+        favorites.value = set.toSet()
     }
 
     /**
-     * 1/3 requests should fail loading
+     * Randomly fail some loads to simulate a real network
      */
-    private fun shouldRandomlyFail(): Boolean = Random.nextFloat() < 0.33f
+    private fun shouldRandomlyFail(): Boolean = Random.nextFloat() < 0.20f
 }
