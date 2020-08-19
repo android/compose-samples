@@ -19,7 +19,7 @@ The onboarding screen allows users to customize their experience by selecting to
 
 #### [Courses Screen](app/src/main/java/com/example/owl/ui/courses)
 The courses screen displays featured and saved course and a search screen. Notable fetures:
-* Custom [`StaggeredVeritcalGrid`](app/src/main/java/com/example/owl/ui/courses/FeaturedCourses.kt#L161) responsive to available size.
+* Custom [`StaggeredVerticalGrid`](app/src/main/java/com/example/owl/ui/courses/FeaturedCourses.kt#L161) responsive to available size.
 * [`FeaturedCourse`](app/src/main/java/com/example/owl/ui/courses/FeaturedCourses.kt#L70) composable demonstrates usage of [`ConstraintLayout`](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary.html#ConstraintLayout(androidx.compose.ui.Modifier,%20kotlin.Function1)).
 
 #### [Course Details Screen](app/src/main/java/com/example/owl/ui/course/CourseDetails.kt)
@@ -39,7 +39,7 @@ Compose makes it simple to create a library of components and use them throughou
 #### [Utilities](app/src/main/java/com/example/owl/ui/utils/)
 Owl implements some utility functions of interest:
 * [Window insets](https://goo.gle/compose-insets) will likely be provided by the Compose library at some point. Until then this demonstrates how it can be implemented.
-* [Navigation](app/src/main/java/com/example/owl/ui/Navigation.kt): an implementation of [Android Arcitecture Components Navigation](https://developer.android.com/guide/navigation) will be provided for Compose at some point. Until then this class provides a simple [`Navigator`](app/src/main/java/com/example/owl/ui/Navigation.kt#L32) with back-stack and a [`backHandler`](app/src/main/java/com/example/owl/ui/Navigation.kt#L79) effect.
+* [Navigation](app/src/main/java/com/example/owl/ui/Navigation.kt): an implementation of [Android Architecture Components Navigation](https://developer.android.com/guide/navigation) will be provided for Compose at some point. Until then this class provides a simple [`Navigator`](app/src/main/java/com/example/owl/ui/Navigation.kt#L32) with back-stack and a [`backHandler`](app/src/main/java/com/example/owl/ui/Navigation.kt#L79) effect.
 
 ## Data
 Domain types are modelled in the [model package](app/src/main/java/com/example/owl/model), each containing static sample data exposed using fake `Repo`s objects.
