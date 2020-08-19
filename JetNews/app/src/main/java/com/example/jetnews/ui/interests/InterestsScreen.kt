@@ -127,8 +127,12 @@ fun InterestsScreen(
         PublicationList(data, selectedPublications, interestsViewModel::onPublicationSelect)
     }
 
+    val tabContent = listOf(topicsSection, peopleSection, publicationSection)
+    val (currentSection, updateSection) = savedInstanceState { tabContent.first().section }
     InterestsScreen(
-        tabContent = listOf(topicsSection, peopleSection, publicationSection),
+        tabContent = tabContent,
+        tab = currentSection,
+        onTabChange = updateSection,
         navigateTo = navigateTo,
         scaffoldState = scaffoldState
     )
@@ -139,12 +143,16 @@ fun InterestsScreen(
  *
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a non-empty
  * list, tabs are displayed in the order specified by this list
+ * @param tab (state) the current tab to display, must be in [tabContent]
+ * @param onTabChange (event) request a change in [tab] to another tab from [tabContent]
  * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
 fun InterestsScreen(
     tabContent: List<TabContent>,
+    tab: Sections,
+    onTabChange: (Sections) -> Unit,
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
 ) {
@@ -168,8 +176,7 @@ fun InterestsScreen(
             )
         },
         bodyContent = {
-            val (currentSection, updateSection) = savedInstanceState { tabContent.first().section }
-            TabContent(currentSection, updateSection, tabContent)
+            TabContent(tab, onTabChange, tabContent)
         }
     )
 }
