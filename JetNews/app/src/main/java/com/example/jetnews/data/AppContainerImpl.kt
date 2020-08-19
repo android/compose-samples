@@ -41,18 +41,8 @@ interface AppContainer {
  */
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
-    private val executorService: ExecutorService by lazy {
-        Executors.newFixedThreadPool(4)
-    }
-
-    private val mainThreadHandler: Handler by lazy {
-        Handler(Looper.getMainLooper())
-    }
-
     override val postsRepository: PostsRepository by lazy {
         FakePostsRepository(
-            executorService = executorService,
-            resultThreadHandler = mainThreadHandler,
             resources = applicationContext.resources
         )
     }

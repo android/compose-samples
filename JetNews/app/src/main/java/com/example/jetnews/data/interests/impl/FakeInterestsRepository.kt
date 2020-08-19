@@ -18,11 +18,16 @@ package com.example.jetnews.data.interests.impl
 
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.interests.TopicSelection
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
  * topics, people and publications synchronously.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class FakeInterestsRepository : InterestsRepository {
 
     private val topics by lazy {
@@ -61,15 +66,50 @@ class FakeInterestsRepository : InterestsRepository {
         )
     }
 
-    override fun getTopics(callback: (Result<Map<String, List<String>>>) -> Unit) {
-        callback(Result.Success(topics))
+    // for now, keep the selections in memory
+    private val selectedTopics = MutableStateFlow(setOf<TopicSelection>())
+    private val selectedPeople = MutableStateFlow(setOf<String>())
+    private val selectedPublications = MutableStateFlow(setOf<String>())
+
+    override suspend fun getTopics(): Result<Map<String, List<String>>> {
+        return Result.Success(topics)
     }
 
-    override fun getPeople(callback: (Result<List<String>>) -> Unit) {
-        callback(Result.Success(people))
+    override suspend fun getPeople(): Result<List<String>> {
+        return Result.Success(people)
     }
 
-    override fun getPublications(callback: (Result<List<String>>) -> Unit) {
-        callback(Result.Success(publications))
+    override suspend fun getPublications(): Result<List<String>> {
+        return Result.Success(publications)
+    }
+
+    override suspend fun toggleTopicSelection(topic: TopicSelection) {
+        val set = selectedTopics.value.toMutableSet()
+        set.addOrRemove(topic)
+        selectedTopics.value = set
+    }
+
+    override suspend fun togglePersonSelected(person: String) {
+        val set = selectedPeople.value.toMutableSet()
+        set.addOrRemove(person)
+        selectedPeople.value = set
+    }
+
+    override suspend fun togglePublicationSelected(publication: String) {
+        val set = selectedPublications.value.toMutableSet()
+        set.addOrRemove(publication)
+        selectedPublications.value = set
+    }
+
+    override fun getTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
+
+    override fun getPeopleSelected(): Flow<Set<String>> = selectedPeople
+
+    override fun getPublicationSelected(): Flow<Set<String>> = selectedPublications
+}
+
+private fun <E> MutableSet<E>.addOrRemove(element: E) {
+    if (!add(element)) {
+        remove(element)
     }
 }
