@@ -387,7 +387,7 @@ private fun PostListSimpleSection(
                 post = post,
                 navigateTo = navigateTo,
                 isFavorite = favorites.contains(post.id),
-                toggleFavorite = { onToggleFavorite(post.id) }
+                onToggleFavorite = { onToggleFavorite(post.id) }
             )
             PostListDivider()
         }

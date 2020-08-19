@@ -89,7 +89,7 @@ fun PostCardSimple(
     post: Post,
     navigateTo: (Screen) -> Unit,
     isFavorite: Boolean,
-    toggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit
 ) {
     Row(
         modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
@@ -102,7 +102,7 @@ fun PostCardSimple(
         }
         BookmarkButton(
             isBookmarked = isFavorite,
-            onClick = toggleFavorite
+            onClick = onToggleFavorite
         )
     }
 }
