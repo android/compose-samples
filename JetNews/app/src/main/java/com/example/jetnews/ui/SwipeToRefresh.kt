@@ -43,13 +43,15 @@ fun SwipeToRefreshLayout(
 ) {
     val refreshDistance = with(DensityAmbient.current) { RefreshDistance.toPx() }
     val state = rememberSwipeableState(refreshingState)
-    // TODO (b/164113834): This state->event trampoline is a workaround for a bug in the
-    //  SwipableState API. It should be replaced with a correct solution when that bug closes.
+    // TODO (https://issuetracker.google.com/issues/164113834): This state->event trampoline is a
+    //  workaround for a bug in the SwipableState API. It should be replaced with a correct solution
+    //  when that bug closes.
     onCommit(refreshingState) {
         state.animateTo(refreshingState)
     }
-    // TODO (b/164113834): Hoist state changes when bug is fixed and do this logic in the ViewModel
-    //   Currently, state.value is a duplicated source of truth of refreshingState
+    // TODO (https://issuetracker.google.com/issues/164113834): Hoist state changes when bug is
+    //  fixed and do this logic in the ViewModel. Currently, state.value is a duplicated source of
+    //  truth of refreshingState
     onCommit(state.value) {
         if (state.value) {
             onRefresh()

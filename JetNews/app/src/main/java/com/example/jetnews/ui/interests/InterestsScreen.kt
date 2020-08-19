@@ -55,11 +55,11 @@ import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
+import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.state.UiState
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(val title: String) {
@@ -90,10 +90,10 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 @Composable
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    interestsRepository: InterestsRepository
+    interestsRepository: InterestsRepository,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    // viewModel() is scoped to the Application or Fragment Lifecycle that is displaying this
+    // viewModel() is scoped to the Activity or Fragment Lifecycle that is displaying this
     // composable by default. Callers of this composable can modify this by providing a new scope
     // through [ViewModelStoreOwnerAmbient]. Navigation controller is expected to scope ViewModel in
     // this manner.
@@ -102,28 +102,28 @@ fun InterestsScreen(
     )
 
     // Describe the screen sections here since each section needs 2 states and 1 event from the
-    // ViewModel. Pass them to the stateless InterestsScreen using a tabSlot.
+    // ViewModel. Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
 
         // observeAsState will read a [LiveData] in Compose
-        val topics by interestsViewModel.topics.observeAsState(UiState())
+        val topics by interestsViewModel.topics.observeAsState()
         // collectAsState will read a [Flow] in Compose
         val selectedTopics by interestsViewModel.selectedTopics.collectAsState(setOf())
-        val data = topics.data ?: return@TabContent
+        val data = topics?.data ?: return@TabContent
         TopicList(data, selectedTopics, interestsViewModel::onTopicSelect)
     }
 
     val peopleSection = TabContent(Sections.People) {
-        val people by interestsViewModel.people.observeAsState(UiState())
+        val people by interestsViewModel.people.observeAsState()
         val selectedPeople by interestsViewModel.selectedPeople.collectAsState(setOf())
-        val data = people.data ?: return@TabContent
+        val data = people?.data ?: return@TabContent
         PeopleList(data, selectedPeople, interestsViewModel::onPersonSelect)
     }
 
     val publicationSection = TabContent(Sections.Publications) {
-        val publications by interestsViewModel.publications.observeAsState(UiState())
+        val publications by interestsViewModel.publications.observeAsState()
         val selectedPublications by interestsViewModel.selectedPublications.collectAsState(setOf())
-        val data = publications.data ?: return@TabContent
+        val data = publications?.data ?: return@TabContent
         PublicationList(data, selectedPublications, interestsViewModel::onPublicationSelect)
     }
 
@@ -154,7 +154,7 @@ fun InterestsScreen(
     tab: Sections,
     onTabChange: (Sections) -> Unit,
     navigateTo: (Screen) -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    scaffoldState: ScaffoldState,
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -224,7 +224,7 @@ private fun TabContent(
  */
 @Composable
 private fun TopicList(
-    topics: Map<String, List<String>>,
+    topics: TopicsMap,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
@@ -296,7 +296,7 @@ private fun TabWithTopics(
  */
 @Composable
 private fun TabWithSections(
-    sections: Map<String, List<String>>,
+    sections: TopicsMap,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
@@ -442,7 +442,7 @@ fun PreviewTopicsTabDark() {
 }
 
 @Composable
-private fun loadFakeTopics(): Map<String, List<String>> {
+private fun loadFakeTopics(): TopicsMap {
     val topics = runBlocking {
         FakeInterestsRepository().getTopics()
     }

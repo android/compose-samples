@@ -21,20 +21,17 @@ import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 /**
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources after some delay in a background thread.
- * 1/3 of the times will throw an error.
- *
- * The result is posted to the resultThreadHandler passed as a parameter.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class FakePostsRepository(
@@ -56,6 +53,7 @@ class FakePostsRepository(
         }
     }
 
+    // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
     override suspend fun getPost(postId: String): Result<Post> {
@@ -80,18 +78,22 @@ class FakePostsRepository(
         }
     }
 
-    override fun getFavorites(): Flow<Set<String>> = favorites
+    override fun observeFavorites(): Flow<Set<String>> = favorites
 
     override suspend fun toggleFavorite(postId: String) {
         val set = favorites.value.toMutableSet()
-        if (!set.add(postId)) {
-            set.remove(postId)
-        }
+        set.addOrRemove(postId)
         favorites.value = set.toSet()
     }
 
+    // used to drive "random" failure in a predictable pattern, making the first request always
+    // succeed
+    private var requestCount = 0
+
     /**
-     * Randomly fail some loads to simulate a real network
+     * Randomly fail some loads to simulate a real network.
+     *
+     * This will fail on the 3rd, 6th, 9th request, etc.
      */
-    private fun shouldRandomlyFail(): Boolean = Random.nextFloat() < 0.20f
+    private fun shouldRandomlyFail(): Boolean = ++requestCount % 3 == 0
 }

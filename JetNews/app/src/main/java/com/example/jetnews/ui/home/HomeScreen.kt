@@ -89,7 +89,7 @@ fun HomeScreen(
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    // viewModel() is scoped to the Application or Fragment Lifecycle that is displaying this
+    // viewModel() is scoped to the Activity or Fragment Lifecycle that is displaying this
     // composable by default. Callers of this composable can modify this by providing a new scope
     // through [ViewModelStoreOwnerAmbient]. Navigation controller is expected to scope ViewModel in
     // this manner.
