@@ -18,6 +18,7 @@ package com.example.compose.jetchat.profile
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.compose.jetchat.data.colleagueProfile
@@ -31,10 +32,11 @@ class ProfileViewModel : ViewModel() {
         if (newUserId != userId) {
             userId = newUserId ?: meProfile.userId
         }
-        userData.value = if (userId == meProfile.userId) meProfile else colleagueProfile
+        _userData.value = if (userId == meProfile.userId) meProfile else colleagueProfile
     }
 
-    val userData = MutableLiveData<ProfileScreenState>()
+    private val _userData = MutableLiveData<ProfileScreenState>()
+    val userData: LiveData<ProfileScreenState> = _userData
 }
 
 @Immutable

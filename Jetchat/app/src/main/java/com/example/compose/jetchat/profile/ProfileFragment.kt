@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.setContent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -48,16 +49,8 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        return FrameLayout(requireContext()).apply {
-
-            // In order for savedState to work, the same ID needs to be used for all instances.
-            id = R.id.profile_fragment
-
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setContent(Recomposer.current()) {
+        return ComposeView(context = requireContext()).apply {
+            setContent {
                 viewModel.userData.observeAsState().value.let { userData: ProfileScreenState? ->
                     JetchatTheme {
                         if (userData == null) {

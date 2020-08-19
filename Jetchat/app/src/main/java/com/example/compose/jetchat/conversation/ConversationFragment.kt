@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.Recomposer
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.setContent
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -39,16 +40,8 @@ class ConversationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return FrameLayout(requireContext()).apply {
-
-            // In order for savedState to work, the same ID needs to be used for all instances.
-            id = R.id.conversation_fragment
-
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setContent(Recomposer.current()) {
+        return ComposeView(context = requireContext()).apply {
+            setContent {
                 Providers(BackPressedDispatcherAmbient provides requireActivity()) {
                     JetchatTheme {
                         ConversationContent(
