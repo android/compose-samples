@@ -75,11 +75,11 @@ fun ArticleScreen(
     postsRepository: PostsRepository,
     onBack: () -> Unit
 ) {
-    val (post) = postsRepository.launchUiStateProducer(postId) {
+    val (post) = launchUiStateProducer(postsRepository, postId) {
         getPost(postId)
     }
     // TODO: handle errors when the repository is capable of creating them
-    val postData = post.data ?: return
+    val postData = post.value.data ?: return
 
     // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is

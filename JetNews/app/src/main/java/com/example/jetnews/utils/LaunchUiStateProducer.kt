@@ -17,6 +17,7 @@
 package com.example.jetnews.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +26,7 @@ import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -38,12 +40,16 @@ import kotlinx.coroutines.flow.collect
  * val (result, refresh, clearError) = dataSource.launchUiStateProducer { loadData() }
  * ```
  */
-data class ProducerResult<T>(val result: T, val onRefresh: () -> Unit, val onClearError: () -> Unit)
+data class ProducerResult<T>(
+    val result: State<T>,
+    val onRefresh: () -> Unit,
+    val onClearError: () -> Unit
+)
 
 /**
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
  *
- * It is intended that you destructure this class at the call site:
+ * It is intended that you destructure this at the call site:
  *
  * ```
  * val (result, refresh, clearError) = dataSource.launchUiStateProducer { loadData() }
@@ -51,19 +57,20 @@ data class ProducerResult<T>(val result: T, val onRefresh: () -> Unit, val onCle
  *
  * Repeated calls to onRefresh are conflated while a request is in progress.
  *
- * @param Producer the data source to loading data from
- * @param block suspending lambda that produces a single value
+ * @param producer the data source to loading data from
+ * @param block suspending lambda that produces a single value from the data source
  * @return data state, onRefresh event, and onClearError event
  */
 @Composable
-fun <Producer, T> Producer.launchUiStateProducer(
+fun <Producer, T> launchUiStateProducer(
+    producer: Producer,
     block: suspend Producer.() -> Result<T>
-): ProducerResult<UiState<T>> = launchUiStateProducer(Unit, block)
+): ProducerResult<UiState<T>> = launchUiStateProducer(producer, Unit, block)
 
 /**
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
  *
- * It is intended that you destructure this class at the call site:
+ * It is intended that you destructure this at the call site:
  *
  * ```
  * val (result, refresh, clearError) = dataSource.launchUiStateProducer(dataId) { loadData(dataId) }
@@ -71,14 +78,15 @@ fun <Producer, T> Producer.launchUiStateProducer(
  *
  * Repeated calls to onRefresh are conflated while a request is in progress.
  *
- * @param Producer the data source to loading data from
+ * @param producer the data source to loading data from
  * @param v1 any argument used by production lambda, such as a resource ID
- * @param block suspending lambda that produces a single value
+ * @param block suspending lambda that produces a single value from the data source
  * @return data state, onRefresh event, and onClearError event
  */
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @Composable
-fun <Producer, T> Producer.launchUiStateProducer(
+fun <Producer, T> launchUiStateProducer(
+    producer: Producer,
     v1: Any,
     block: suspend Producer.() -> Result<T>
 ): ProducerResult<UiState<T>> {
@@ -86,7 +94,7 @@ fun <Producer, T> Producer.launchUiStateProducer(
 
     // posting to this channel will trigger a single refresh
     val refreshChannel =
-        remember { ConflatedBroadcastChannel(Unit) }
+        remember { Channel<Unit>(Channel.CONFLATED) }
 
     // event for caller to trigger a refresh
     val refresh: () -> Unit = { refreshChannel.offer(Unit) }
@@ -99,17 +107,17 @@ fun <Producer, T> Producer.launchUiStateProducer(
 
     // whenever Producer or v1 changes, launch a new coroutine to call block() and refresh whenever
     // the onRefresh callback is called
-    launchInComposition(this, v1) {
+    launchInComposition(producer, v1) {
         // whenever the coroutine restarts, clear the previous result immediately as they are no
         // longer valid
         producerState.value = UiState(loading = true)
         // force a refresh on coroutine restart
         refreshChannel.send(Unit)
         // whenever a refresh is triggered, call block again
-        refreshChannel.asFlow().collect {
+        for(refreshEvent in refreshChannel) {
             producerState.value = producerState.value.copy(loading = true)
-            producerState.value = producerState.value.copyWithResult(this@launchUiStateProducer.block())
+            producerState.value = producerState.value.copyWithResult(producer.block())
         }
     }
-    return ProducerResult(producerState.value, refresh, clearError)
+    return ProducerResult(producerState, refresh, clearError)
 }

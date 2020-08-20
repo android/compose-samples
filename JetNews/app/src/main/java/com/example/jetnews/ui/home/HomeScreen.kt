@@ -90,7 +90,7 @@ fun HomeScreen(
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val (postUiState, refreshPost, clearError) = postsRepository.launchUiStateProducer {
+    val (postUiState, refreshPost, clearError) = launchUiStateProducer(postsRepository) {
         getPosts()
     }
 
@@ -106,7 +106,7 @@ fun HomeScreen(
     }
 
     HomeScreen(
-        postUiState,
+        postUiState.value,
         favorites,
         toggleFavorites,
         refreshPost,

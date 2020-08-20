@@ -98,7 +98,7 @@ fun InterestsScreen(
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
-        val (topics) = interestsRepository.launchUiStateProducer {
+        val (topics) = launchUiStateProducer(interestsRepository) {
             getTopics()
         }
         // collectAsState will read a [Flow] in Compose
@@ -106,31 +106,31 @@ fun InterestsScreen(
         val onTopicSelect: (TopicSelection) -> Unit = {
             coroutineScope.launch { interestsRepository.toggleTopicSelection(it) }
         }
-        val data = topics.data ?: return@TabContent
+        val data = topics.value.data ?: return@TabContent
         TopicList(data, selectedTopics, onTopicSelect)
     }
 
     val peopleSection = TabContent(Sections.People) {
-        val (people) = interestsRepository.launchUiStateProducer {
+        val (people) = launchUiStateProducer(interestsRepository) {
             getPeople()
         }
         val selectedPeople by interestsRepository.observePeopleSelected().collectAsState(setOf())
         val onPeopleSelect: (String) -> Unit = {
             coroutineScope.launch { interestsRepository.togglePersonSelected(it) }
         }
-        val data = people.data ?: return@TabContent
+        val data = people.value.data ?: return@TabContent
         PeopleList(data, selectedPeople, onPeopleSelect)
     }
 
     val publicationSection = TabContent(Sections.Publications) {
-        val (publications) = interestsRepository.launchUiStateProducer {
+        val (publications) = launchUiStateProducer(interestsRepository) {
             getPublications()
         }
         val selectedPublications by interestsRepository.observePublicationSelected().collectAsState(setOf())
         val onPublicationSelect: (String) -> Unit = {
             coroutineScope.launch { interestsRepository.togglePublicationSelected(it) }
         }
-        val data = publications.data ?: return@TabContent
+        val data = publications.value.data ?: return@TabContent
         PublicationList(data, selectedPublications, onPublicationSelect)
     }
 
