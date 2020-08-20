@@ -26,13 +26,12 @@ object Libs {
     const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
     object Accompanist {
-        private const val version = "0.1.8.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
-//        private const val version = "0.1.7"
+        private const val version = "0.1.9"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.0-rc"
+        private const val version = "1.4.0"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -42,8 +41,8 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
 
         object Compose {
-            const val snapshot = "6759487"
-            const val version = "0.1.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "0.1.0-dev17"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"

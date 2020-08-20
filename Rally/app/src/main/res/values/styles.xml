@@ -14,11 +14,11 @@
   ~   limitations under the License.
   ~
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Rally" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarColor</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 </resources>

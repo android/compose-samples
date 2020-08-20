@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.ContextAmbient
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.Coil
-import coil.request.GetRequest
+import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
 import kotlinx.coroutines.Dispatchers
@@ -146,7 +146,7 @@ private suspend fun calculateSwatchesInImage(
     context: Context,
     imageUrl: String
 ): List<Palette.Swatch> {
-    val r = GetRequest.Builder(context)
+    val r = ImageRequest.Builder(context)
         .data(imageUrl)
         // We scale the image to cover 128px x 128px (i.e. min dimension == 128px)
         .size(128).scale(Scale.FILL)

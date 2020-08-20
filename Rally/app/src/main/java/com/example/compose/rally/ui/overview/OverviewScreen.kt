@@ -38,8 +38,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -70,7 +71,7 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
  */
 @Composable
 private fun AlertCard() {
-    var showDialog by state { false }
+    var showDialog by remember { mutableStateOf(false) }
     val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
     if (showDialog) {
@@ -110,7 +111,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
         }
         TextButton(
             onClick = onClickSeeAll,
-            padding = InnerPadding(0.dp),
+            contentPadding = InnerPadding(0.dp),
             modifier = Modifier.gravity(Alignment.CenterVertically)
         ) {
             Text(

@@ -48,7 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
-import androidx.compose.ui.focus.FocusState2
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -123,7 +123,7 @@ fun Email(emailState: TextFieldState = remember { EmailState() }) {
             }
         },
         modifier = Modifier.fillMaxWidth().focusObserver { focusState ->
-            val focused = focusState == FocusState2.Active
+            val focused = focusState == FocusState.Active
             emailState.onFocusChange(focused)
             if (!focused) {
                 emailState.enableShowErrors()

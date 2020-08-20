@@ -39,7 +39,7 @@ fun RallyAlertDialog(
 ) {
     RallyDialogThemeOverlay {
         AlertDialog(
-            onCloseRequest = onDismiss,
+            onDismissRequest = onDismiss,
             text = { Text(bodyText) },
             buttons = {
                 Column {
@@ -50,7 +50,7 @@ fun RallyAlertDialog(
                     TextButton(
                         onClick = onDismiss,
                         shape = RectangleShape,
-                        padding = InnerPadding(16.dp),
+                        contentPadding = InnerPadding(16.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(buttonText)

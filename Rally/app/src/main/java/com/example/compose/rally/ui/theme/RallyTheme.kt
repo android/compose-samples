@@ -18,7 +18,7 @@ package com.example.compose.rally.ui.theme
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
-import androidx.compose.material.darkColorPalette
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
@@ -46,7 +46,7 @@ private val RobotoCondensed = fontFamily(
 @Composable
 fun RallyTheme(content: @Composable () -> Unit) {
     // Rally is always dark themed.
-    val colors = darkColorPalette(
+    val colors = darkColors(
         primary = Green500,
         surface = DarkBlue900,
         onSurface = Color.White,
@@ -131,7 +131,7 @@ fun RallyTheme(content: @Composable () -> Unit) {
 @Composable
 fun RallyDialogThemeOverlay(content: @Composable () -> Unit) {
     // Rally is always dark themed.
-    val dialogColors = darkColorPalette(
+    val dialogColors = darkColors(
         primary = Color.White,
         surface = Color.White.copy(alpha = 0.12f).compositeOver(Color.Black),
         onSurface = Color.White

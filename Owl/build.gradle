@@ -48,14 +48,15 @@ subprojects {
             freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
         }
     }
-}
-apply plugin: 'com.diffplug.spotless'
-spotless {
-    kotlin {
-        target '**/*.kt'
-        targetExclude("$buildDir/**/*.kt")
-        targetExclude('bin/**/*.kt')
-        ktlint(Versions.ktlint)
-        // licenseHeaderFile rootProject.file('spotless/copyright.kt')
+
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            targetExclude("$buildDir/**/*.kt")
+            targetExclude('bin/**/*.kt')
+            ktlint(Versions.ktlint)
+            licenseHeaderFile rootProject.file('spotless/copyright.kt')
+        }
     }
 }

@@ -16,7 +16,6 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.Border
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentColorAmbient
@@ -24,7 +23,6 @@ import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.drawBorder
 import androidx.compose.foundation.layout.InnerPadding
 import androidx.compose.foundation.layout.preferredSizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape

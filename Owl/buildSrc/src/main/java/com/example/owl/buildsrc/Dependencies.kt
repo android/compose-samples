@@ -25,19 +25,19 @@ object Libs {
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.1.8.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
+        private const val version = "0.1.9"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.0-rc"
+        private const val version = "1.4.0"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
     object Coroutines {
-        private const val version = "1.3.8-1.4.0-rc"
+        private const val version = "1.3.9"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -48,8 +48,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
         object Compose {
-            const val snapshot = "6759487"
-            const val version = "0.1.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "0.1.0-dev17"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

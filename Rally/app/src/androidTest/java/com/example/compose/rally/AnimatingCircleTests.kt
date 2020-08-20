@@ -18,7 +18,6 @@ package com.example.compose.rally
 
 import android.os.Build
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
