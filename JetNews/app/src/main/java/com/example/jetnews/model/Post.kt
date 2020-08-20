@@ -16,7 +16,7 @@
 
 package com.example.jetnews.model
 
-import androidx.ui.graphics.ImageAsset
+import androidx.compose.ui.graphics.ImageAsset
 
 data class Post(
     val id: String,

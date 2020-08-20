@@ -19,7 +19,7 @@ package com.example.jetnews.ui
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
+import androidx.compose.ui.platform.setContent
 import com.example.jetnews.JetnewsApplication
 
 class MainActivity : AppCompatActivity() {
