@@ -43,6 +43,12 @@ The data is hardcoded in the _CraneData_ [file][data] and exposed to the UI usin
 [MainViewModel][mainViewModel]. Image resources are retrieved from
 [Unsplash](https://unsplash.com/).
 
+## Testing
+
+Crane has Compose-only tests (e.g. [HomeTest][homeTest]) but also tests covering Compose and the
+view-based system (e.g. [DetailsActivityTest][detailsTest]). The latter uses the `onActivity`
+method of the `ActivityScenarioRule` to access information from the `MapView`.
+
 ## License
 
 ```
@@ -68,4 +74,6 @@ limitations under the License.
 [details]: app/src/main/java/androidx/compose/samples/crane/details/DetailsActivity.kt
 [data]: app/src/main/java/androidx/compose/samples/crane/data/CraneData.kt
 [mainViewModel]: app/src/main/java/androidx/compose/samples/crane/home/MainViewModel.kt
+[homeTest]: app/src/androidTest/java/androidx/compose/samples/crane/home/HomeTest.kt
+[detailsTest]: app/src/androidTest/java/androidx/compose/samples/crane/details/DetailsActivityTest.kt
 [coil-accompanist]: https://github.com/chrisbanes/accompanist
