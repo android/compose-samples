@@ -93,7 +93,7 @@ class FakePostsRepository(
     /**
      * Randomly fail some loads to simulate a real network.
      *
-     * This will fail on the 3rd, 6th, 9th request, etc.
+     * This will fail deterministically every 5 requests
      */
-    private fun shouldRandomlyFail(): Boolean = ++requestCount % 3 == 0
+    private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 }
