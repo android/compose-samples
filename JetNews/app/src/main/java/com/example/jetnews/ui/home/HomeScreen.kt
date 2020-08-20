@@ -53,14 +53,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.launchInComposition
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -73,14 +72,16 @@ import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.snackbarAction
+import com.example.jetnews.utils.launchUiStateProducer
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful HomeScreen uses a [HomeViewModel] to manage UI state.
+ * Stateful HomeScreen uses manages state using [launchUiStateProducer]
  *
  * @param navigateTo (event) request navigation to [Screen]
- * @param postsRepository argument to [HomeViewModel] to allow it load data
+ * @param postsRepository data source for this screen
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
@@ -89,31 +90,29 @@ fun HomeScreen(
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    // viewModel() is scoped to the Activity or Fragment Lifecycle that is displaying this
-    // composable by default. Callers of this composable can modify this by providing a new scope
-    // through [ViewModelStoreOwnerAmbient]. Navigation controller is expected to scope ViewModel in
-    // this manner.
-    val homeViewModel = viewModel<HomeViewModel>(factory = HomeViewModelFactory(postsRepository))
-
-    // [observeAsState] will automatically observe a LiveData<T> and return a State<T> object that
-    // updates whenever the LiveData emits a value. observation of the LiveData will stop when
-    // [observeAsState] is removed from the composition tree
-    val postUiState =
-        homeViewModel.postUiState.observeAsState().value ?: return
+    val (postUiState, refreshPost, clearError) = launchUiStateProducer(postsRepository) {
+        getPosts()
+    }
 
     // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
     // removed from the composition tree.
-    val favorites by homeViewModel.favorites.collectAsState(setOf())
+    val favorites by postsRepository.observeFavorites().collectAsState(setOf())
+
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [HomeScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
+    val coroutineScope = rememberCoroutineScope()
 
     HomeScreen(
-        postUiState,
-        favorites,
-        homeViewModel::onFavoriteToggled,
-        homeViewModel::onPostRefresh,
-        homeViewModel::onErrorDismissed,
-        navigateTo,
-        scaffoldState
+        posts = postUiState.value,
+        favorites = favorites,
+        onToggleFavorite = {
+            coroutineScope.launch { postsRepository.toggleFavorite(it) }
+        },
+        onRefreshPosts = refreshPost,
+        onErrorDismiss = clearError,
+        navigateTo = navigateTo,
+        scaffoldState = scaffoldState
     )
 }
 

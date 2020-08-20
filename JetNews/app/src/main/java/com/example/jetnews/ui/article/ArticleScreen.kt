@@ -40,7 +40,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -58,14 +57,15 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.utils.ViewModelLifecycleScope
+import com.example.jetnews.utils.launchUiStateProducer
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful Article Screen that uses [ArticleViewModel] to manage its state.
+ * Stateful Article Screen that manages state using [launchUiStateProducer]
  *
  * @param postId (state) the post to show
- * @param postsRepository data source for [ArticleViewModel]
+ * @param postsRepository data source for this screen
  * @param onBack (event) request back navigation
  */
 @Suppress("DEPRECATION") // allow ViewModelLifecycleScope call
@@ -74,35 +74,30 @@ fun ArticleScreen(
     postId: String,
     postsRepository: PostsRepository,
     onBack: () -> Unit
-) = ViewModelLifecycleScope {
-    // viewModel() is scoped to the [ViewModelLifecycleScope], and will be cleared when this
-    // composable leaves composition. We use a [ViewModelLifecycleScope] on this screen because
-    // we're passing [postId] to the factory, and want to recreate the [ViewModel] when the user
-    // navigates to different screens.
-
-    // If we instead used the default Activity or Fragment lifecycle, the same [ArticleViewModel]
-    // instance would be re-used on different screens and the wrong post would be shown.
-    val articleViewModel =
-        viewModel<ArticleViewModel>(factory = ArticleViewModelFactory(postId, postsRepository))
-
-    // [observeAsState] will automatically observe a LiveData<T> and return a State<T> object that
-    // updates whenever the LiveData emits a value. Observation of the LiveData will stop when
-    // [observeAsState] is removed from the composition tree
-    val post by articleViewModel.post.observeAsState()
-    // TODO: handle errors when repository gains ability to cause them
-    val postData = post?.data ?: return@ViewModelLifecycleScope
+) {
+    val (post) = launchUiStateProducer(postsRepository, postId) {
+        getPost(postId)
+    }
+    // TODO: handle errors when the repository is capable of creating them
+    val postData = post.value.data ?: return
 
     // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
     // removed from the composition tree.
-    val favorites by articleViewModel.favorites.collectAsState(setOf())
+    val favorites by postsRepository.observeFavorites().collectAsState(setOf())
     val isFavorite = favorites.contains(postId)
+
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [ArticleScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
+    val coroutineScope = rememberCoroutineScope()
 
     ArticleScreen(
         post = postData,
         onBack = onBack,
         isFavorite = isFavorite,
-        onToggleFavorite = articleViewModel::toggleFavorite
+        onToggleFavorite = {
+            coroutineScope.launch { postsRepository.toggleFavorite(postId) }
+        }
     )
 }
 

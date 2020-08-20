@@ -24,6 +24,8 @@ import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
@@ -73,6 +75,9 @@ class FakeInterestsRepository : InterestsRepository {
     private val selectedPeople = MutableStateFlow(setOf<String>())
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
+    // Used to make suspend functions that read and update state safe to call from any thread
+    private val mutex = Mutex()
+
     override suspend fun getTopics(): Result<TopicsMap> {
         return Result.Success(topics)
     }
@@ -86,21 +91,27 @@ class FakeInterestsRepository : InterestsRepository {
     }
 
     override suspend fun toggleTopicSelection(topic: TopicSelection) {
-        val set = selectedTopics.value.toMutableSet()
-        set.addOrRemove(topic)
-        selectedTopics.value = set
+        mutex.withLock {
+            val set = selectedTopics.value.toMutableSet()
+            set.addOrRemove(topic)
+            selectedTopics.value = set
+        }
     }
 
     override suspend fun togglePersonSelected(person: String) {
-        val set = selectedPeople.value.toMutableSet()
-        set.addOrRemove(person)
-        selectedPeople.value = set
+        mutex.withLock {
+            val set = selectedPeople.value.toMutableSet()
+            set.addOrRemove(person)
+            selectedPeople.value = set
+        }
     }
 
     override suspend fun togglePublicationSelected(publication: String) {
-        val set = selectedPublications.value.toMutableSet()
-        set.addOrRemove(publication)
-        selectedPublications.value = set
+        mutex.withLock {
+            val set = selectedPublications.value.toMutableSet()
+            set.addOrRemove(publication)
+            selectedPublications.value = set
+        }
     }
 
     override fun observeTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics

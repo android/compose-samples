@@ -41,7 +41,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +49,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -60,6 +59,8 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.utils.launchUiStateProducer
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(val title: String) {
@@ -81,11 +82,11 @@ enum class Sections(val title: String) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Stateful InterestsScreen uses a [InterestsViewModel] to manage state.
+ * Stateful InterestsScreen manages state using [launchUiStateProducer]
  *
  * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) state for screen Scaffold
- * @param interestsRepository data source for [InterestsViewModel]
+ * @param interestsRepository data source for this screen
  */
 @Composable
 fun InterestsScreen(
@@ -93,38 +94,47 @@ fun InterestsScreen(
     interestsRepository: InterestsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    // viewModel() is scoped to the Activity or Fragment Lifecycle that is displaying this
-    // composable by default. Callers of this composable can modify this by providing a new scope
-    // through [ViewModelStoreOwnerAmbient]. Navigation controller is expected to scope ViewModel in
-    // this manner.
-    val interestsViewModel = viewModel<InterestsViewModel>(
-        factory = InterestsViewModelFactory(interestsRepository)
-    )
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
+    val coroutineScope = rememberCoroutineScope()
 
-    // Describe the screen sections here since each section needs 2 states and 1 event from the
-    // ViewModel. Pass them to the stateless InterestsScreen using a tabContent.
+    // Describe the screen sections here since each section needs 2 states and 1 event.
+    // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
-
-        // observeAsState will read a [LiveData] in Compose
-        val topics by interestsViewModel.topics.observeAsState()
+        val (topics) = launchUiStateProducer(interestsRepository) {
+            getTopics()
+        }
         // collectAsState will read a [Flow] in Compose
-        val selectedTopics by interestsViewModel.selectedTopics.collectAsState(setOf())
-        val data = topics?.data ?: return@TabContent
-        TopicList(data, selectedTopics, interestsViewModel::onTopicSelect)
+        val selectedTopics by interestsRepository.observeTopicsSelected().collectAsState(setOf())
+        val onTopicSelect: (TopicSelection) -> Unit = {
+            coroutineScope.launch { interestsRepository.toggleTopicSelection(it) }
+        }
+        val data = topics.value.data ?: return@TabContent
+        TopicList(data, selectedTopics, onTopicSelect)
     }
 
     val peopleSection = TabContent(Sections.People) {
-        val people by interestsViewModel.people.observeAsState()
-        val selectedPeople by interestsViewModel.selectedPeople.collectAsState(setOf())
-        val data = people?.data ?: return@TabContent
-        PeopleList(data, selectedPeople, interestsViewModel::onPersonSelect)
+        val (people) = launchUiStateProducer(interestsRepository) {
+            getPeople()
+        }
+        val selectedPeople by interestsRepository.observePeopleSelected().collectAsState(setOf())
+        val onPeopleSelect: (String) -> Unit = {
+            coroutineScope.launch { interestsRepository.togglePersonSelected(it) }
+        }
+        val data = people.value.data ?: return@TabContent
+        PeopleList(data, selectedPeople, onPeopleSelect)
     }
 
     val publicationSection = TabContent(Sections.Publications) {
-        val publications by interestsViewModel.publications.observeAsState()
-        val selectedPublications by interestsViewModel.selectedPublications.collectAsState(setOf())
-        val data = publications?.data ?: return@TabContent
-        PublicationList(data, selectedPublications, interestsViewModel::onPublicationSelect)
+        val (publications) = launchUiStateProducer(interestsRepository) {
+            getPublications()
+        }
+        val selectedPublications by interestsRepository.observePublicationSelected().collectAsState(setOf())
+        val onPublicationSelect: (String) -> Unit = {
+            coroutineScope.launch { interestsRepository.togglePublicationSelected(it) }
+        }
+        val data = publications.value.data ?: return@TabContent
+        PublicationList(data, selectedPublications, onPublicationSelect)
     }
 
     val tabContent = listOf(topicsSection, peopleSection, publicationSection)
