@@ -25,11 +25,7 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 
 /**
  * Result object for [launchUiStateProducer].
@@ -83,7 +79,7 @@ fun <Producer, T> launchUiStateProducer(
  * @param block suspending lambda that produces a single value from the data source
  * @return data state, onRefresh event, and onClearError event
  */
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun <Producer, T> launchUiStateProducer(
     producer: Producer,
@@ -114,7 +110,7 @@ fun <Producer, T> launchUiStateProducer(
         // force a refresh on coroutine restart
         refreshChannel.send(Unit)
         // whenever a refresh is triggered, call block again
-        for(refreshEvent in refreshChannel) {
+        for (refreshEvent in refreshChannel) {
             producerState.value = producerState.value.copy(loading = true)
             producerState.value = producerState.value.copyWithResult(producer.block())
         }
