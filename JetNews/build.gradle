@@ -28,9 +28,25 @@ buildscript {
     }
 }
 
-allprojects {
+plugins {
+    id 'com.diffplug.spotless' version '5.1.1'
+}
+
+subprojects {
     repositories {
         google()
         jcenter()
+    }
+
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            targetExclude("$buildDir/**/*.kt")
+            targetExclude('bin/**/*.kt')
+
+            ktlint("0.37.2")
+            licenseHeaderFile rootProject.file('spotless/copyright.kt')
+        }
     }
 }
