@@ -104,17 +104,15 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
 
     HomeScreen(
-        postUiState.value,
-        favorites,
-            {
-                coroutineScope.launch {
-                    postsRepository.toggleFavorite(it)
-                }
-            },
-        refreshPost,
-        clearError,
-        navigateTo,
-        scaffoldState
+        posts = postUiState.value,
+        favorites = favorites,
+        onToggleFavorite = {
+            coroutineScope.launch { postsRepository.toggleFavorite(it) }
+        },
+        onRefreshPosts = refreshPost,
+        onErrorDismiss = clearError,
+        navigateTo = navigateTo,
+        scaffoldState = scaffoldState
     )
 }
 
