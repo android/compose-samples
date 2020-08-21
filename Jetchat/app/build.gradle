@@ -19,12 +19,6 @@ import com.example.compose.jetchat.buildsrc.Libs
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-kapt'
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 android {

@@ -26,7 +26,7 @@ object Libs {
     const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
     object Accompanist {
-        private const val version = "0.1.9"
+        private const val version = "0.1.10.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -41,8 +41,8 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "0.1.0-dev17"
+            const val snapshot = "6765009"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"

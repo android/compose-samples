@@ -21,7 +21,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev/' }
     }
 
     dependencies {
@@ -40,12 +39,11 @@ subprojects {
         mavenCentral()
         jcenter()
 
-        if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
+        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven {
                 url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
             }
         }
-        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev/' }
 
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
