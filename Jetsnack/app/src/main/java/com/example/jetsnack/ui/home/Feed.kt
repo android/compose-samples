@@ -47,7 +47,8 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.systemBarPadding
+import com.example.jetsnack.ui.utils.navigationBarsPadding
+import com.example.jetsnack.ui.utils.statusBarsPadding
 
 @Composable
 fun Feed(
@@ -57,7 +58,7 @@ fun Feed(
     val data = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        Stack(modifier = Modifier.systemBarPadding(horizontal = true)) {
+        Stack(modifier = Modifier.navigationBarsPadding(left = true, right = true)) {
             SnackCollectionList(data, filters, onSnackClick)
             DestinationBar()
         }
@@ -74,7 +75,7 @@ private fun SnackCollectionList(
     ScrollableColumn(modifier = modifier) {
         Spacer(
             modifier = Modifier
-                .systemBarPadding(top = true)
+                .statusBarsPadding()
                 .preferredHeight(56.dp)
         )
         FilterBar(filters)
@@ -92,7 +93,7 @@ private fun SnackCollectionList(
         }
         Spacer(
             modifier = Modifier
-                .systemBarPadding(bottom = true)
+                .navigationBarsPadding(left = false, right = false)
                 .preferredHeight(8.dp)
         )
     }
@@ -100,7 +101,7 @@ private fun SnackCollectionList(
 
 @Composable
 private fun DestinationBar(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.systemBarPadding(top = true)) {
+    Column(modifier = modifier.statusBarsPadding()) {
         TopAppBar(
             backgroundColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
             contentColor = JetsnackTheme.colors.textSecondary,

@@ -76,7 +76,7 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
-import com.example.jetcaster.util.statusBarPadding
+import com.example.jetcaster.util.statusBarsPadding
 import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.Duration
@@ -192,7 +192,7 @@ fun HomeContent(
                 Column(Modifier.fillMaxWidth()) {
                     HomeAppBar(
                         Modifier.fillMaxWidth()
-                            .statusBarPadding()
+                            .statusBarsPadding()
                             .preferredHeight(56.dp) /* TODO: change height to 48.dp in landscape */
                     )
 

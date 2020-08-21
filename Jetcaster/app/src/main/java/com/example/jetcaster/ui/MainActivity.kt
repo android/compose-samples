@@ -17,9 +17,9 @@
 package com.example.jetcaster.ui
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.setContent
+import androidx.core.view.WindowCompat
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ProvideDisplayInsets
 
@@ -27,14 +27,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /**
-         * TODO: Move to WindowCompat.setDecorFitsSystemWindows() when it lands in
-         * android.core:core 1.5.0-alpha02
-         */
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        // This app draws behind the system bars, so we want to handle fitting system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             JetcasterTheme {

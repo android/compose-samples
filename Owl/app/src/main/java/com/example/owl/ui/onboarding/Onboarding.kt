@@ -69,8 +69,8 @@ import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.YellowTheme
 import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.navigationBarPadding
-import com.example.owl.ui.utils.statusBarPadding
+import com.example.owl.ui.utils.navigationBarsPadding
+import com.example.owl.ui.utils.statusBarsPadding
 import kotlin.math.max
 
 @Composable
@@ -82,7 +82,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = onboardingComplete,
-                    modifier = Modifier.navigationBarPadding()
+                    modifier = Modifier.navigationBarsPadding()
                 ) {
                     Icon(Icons.Rounded.Explore)
                 }
@@ -90,8 +90,8 @@ fun Onboarding(onboardingComplete: () -> Unit) {
         ) { innerPadding ->
             Column(
                 modifier = Modifier
-                    .statusBarPadding()
-                    .navigationBarPadding()
+                    .statusBarsPadding()
+                    .navigationBarsPadding()
                     .padding(innerPadding)
             ) {
                 ProvideEmphasis(EmphasisAmbient.current.high) {
@@ -123,7 +123,7 @@ private fun AppBar() {
         verticalGravity = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .statusBarPadding()
+            .statusBarsPadding()
     ) {
         Image(
             asset = vectorResource(id = OwlTheme.images.lockupLogo),

@@ -32,7 +32,7 @@ import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.CourseListItem
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.statusBarPadding
+import com.example.owl.ui.utils.statusBarsPadding
 
 @Composable
 fun MyCourses(
@@ -40,7 +40,7 @@ fun MyCourses(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.statusBarPadding()) {
+    Column(modifier = modifier.statusBarsPadding()) {
         // TODO appbar should scroll out
         CoursesAppBar()
         LazyColumnFor(courses) { course ->

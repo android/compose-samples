@@ -70,7 +70,7 @@ import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.systemBarPadding
+import com.example.jetsnack.ui.utils.navigationBarsPadding
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
@@ -124,7 +124,7 @@ private fun JetsnackBottomNav(
             itemCount = items.size,
             indicator = { JetsnackBottomNavIndicator() },
             animSpec = springSpec,
-            modifier = Modifier.systemBarPadding(bottom = true)
+            modifier = Modifier.navigationBarsPadding(left = false, right = false)
         ) {
             items.forEach { section ->
                 val selected = section == currentSection
