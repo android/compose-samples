@@ -94,7 +94,10 @@ fun InterestsScreen(
     interestsRepository: InterestsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
     val coroutineScope = rememberCoroutineScope()
+
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {

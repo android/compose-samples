@@ -27,6 +27,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 /**
@@ -56,6 +58,9 @@ class FakePostsRepository(
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
+    // for get/update/set of favorites
+    private val mutex = Mutex()
+
     override suspend fun getPost(postId: String): Result<Post> {
         return withContext(Dispatchers.IO) {
             val post = postsWithResources.find { it.id == postId }
@@ -81,9 +86,11 @@ class FakePostsRepository(
     override fun observeFavorites(): Flow<Set<String>> = favorites
 
     override suspend fun toggleFavorite(postId: String) {
-        val set = favorites.value.toMutableSet()
-        set.addOrRemove(postId)
-        favorites.value = set.toSet()
+        mutex.withLock {
+            val set = favorites.value.toMutableSet()
+            set.addOrRemove(postId)
+            favorites.value = set.toSet()
+        }
     }
 
     // used to drive "random" failure in a predictable pattern, making the first request always

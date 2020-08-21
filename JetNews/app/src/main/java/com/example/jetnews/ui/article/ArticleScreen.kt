@@ -87,18 +87,17 @@ fun ArticleScreen(
     val favorites by postsRepository.observeFavorites().collectAsState(setOf())
     val isFavorite = favorites.contains(postId)
 
-    val coroutinScope = rememberCoroutineScope()
-    val toggleFavorite: () -> Unit = {
-        coroutinScope.launch {
-            postsRepository.toggleFavorite(postId)
-        }
-    }
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [ArticleScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
+    val coroutineScope = rememberCoroutineScope()
 
     ArticleScreen(
         post = postData,
         onBack = onBack,
         isFavorite = isFavorite,
-        onToggleFavorite = toggleFavorite
+        onToggleFavorite = {
+            coroutineScope.launch { postsRepository.toggleFavorite(postId) }
+        }
     )
 }
 

@@ -98,17 +98,19 @@ fun HomeScreen(
     // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
     // removed from the composition tree.
     val favorites by postsRepository.observeFavorites().collectAsState(setOf())
+
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [HomeScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
     val coroutineScope = rememberCoroutineScope()
-    val toggleFavorites: (String) -> Unit = {
-        coroutineScope.launch {
-            postsRepository.toggleFavorite(it)
-        }
-    }
 
     HomeScreen(
         postUiState.value,
         favorites,
-        toggleFavorites,
+            {
+                coroutineScope.launch {
+                    postsRepository.toggleFavorite(it)
+                }
+            },
         refreshPost,
         clearError,
         navigateTo,

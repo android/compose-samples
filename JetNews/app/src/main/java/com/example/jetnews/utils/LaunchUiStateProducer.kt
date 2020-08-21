@@ -110,8 +110,7 @@ fun <Producer, T> launchUiStateProducer(
     val producerState = remember { mutableStateOf(UiState<T>(loading = true)) }
 
     // posting to this channel will trigger a single refresh
-    val refreshChannel =
-        remember { Channel<Unit>(Channel.CONFLATED) }
+    val refreshChannel = remember { Channel<Unit>(Channel.CONFLATED) }
 
     // event for caller to trigger a refresh
     val refresh: () -> Unit = { refreshChannel.offer(Unit) }
