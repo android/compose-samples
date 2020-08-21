@@ -75,7 +75,7 @@ class FakeInterestsRepository : InterestsRepository {
     private val selectedPeople = MutableStateFlow(setOf<String>())
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
-    // for get/update/set of selected*
+    // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
     override suspend fun getTopics(): Result<TopicsMap> {

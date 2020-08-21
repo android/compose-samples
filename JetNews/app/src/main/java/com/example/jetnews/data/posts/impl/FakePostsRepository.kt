@@ -58,7 +58,7 @@ class FakePostsRepository(
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
-    // for get/update/set of favorites
+    // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
     override suspend fun getPost(postId: String): Result<Post> {
