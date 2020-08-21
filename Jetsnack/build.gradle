@@ -29,7 +29,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.gradle.spotless' version '4.4.0'
+    id 'com.diffplug.spotless' version '5.1.1'
 }
 
 subprojects {
@@ -48,7 +48,7 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
         }
     }
-    apply plugin: 'com.diffplug.gradle.spotless'
+    apply plugin: 'com.diffplug.spotless'
     spotless {
         kotlin {
             target '**/*.kt'
