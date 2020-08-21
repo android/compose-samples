@@ -130,7 +130,9 @@ fun <Producer, T> launchUiStateProducer(
         producerState.value = UiState(loading = true)
         // force a refresh on coroutine restart
         refreshChannel.send(Unit)
-        // whenever a refresh is triggered, call block again
+        // whenever a refresh is triggered, call block again. This for-loop will suspend when
+        // refreshChannel is empty, and resume when the next value is offered or sent to the
+        // channel.
         for (refreshEvent in refreshChannel) {
             producerState.value = producerState.value.copy(loading = true)
             producerState.value = producerState.value.copyWithResult(producer.block())
