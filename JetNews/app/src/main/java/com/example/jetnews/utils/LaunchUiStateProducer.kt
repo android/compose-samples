@@ -33,8 +33,16 @@ import kotlinx.coroutines.channels.Channel
  * It is intended that you destructure this class at the call site:
  *
  * ```
- * val (result, refresh, clearError) = dataSource.launchUiStateProducer { loadData() }
+ * val (result, onRefresh, onClearError) = dataSource.launchUiStateProducer { loadData() }
+ * Text(result.value)
+ * Button(onClick = onRefresh) { Text("Refresh" }
+ * Button(onClick = onClearError) { Text("Clear loading error") }
  * ```
+ *
+ * @param result (state) the current result of this producer in a state object
+ * @param onRefresh (event) triggers a refresh of this producer
+ * @param onClearError (event) clear any error values returned by this producer, useful for
+ * transient error displays.
  */
 data class ProducerResult<T>(
     val result: State<T>,
@@ -45,15 +53,22 @@ data class ProducerResult<T>(
 /**
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
  *
+ * [Producer] is any object that has a suspending method that returns [Result]. In the [block] call
+ * the suspending method to produce a single value. The result of this call will be returned along
+ * with an event to refresh (or call [block] again, and another event to clear error results.
+ *
  * It is intended that you destructure this at the call site:
  *
  * ```
  * val (result, refresh, clearError) = dataSource.launchUiStateProducer { loadData() }
+ * Text(result.value)
+ * Button(onClick = onRefresh) { Text("Refresh" }
+ * Button(onClick = onClearError) { Text("Clear loading error") }
  * ```
  *
  * Repeated calls to onRefresh are conflated while a request is in progress.
  *
- * @param producer the data source to loading data from
+ * @param producer the data source to load data from
  * @param block suspending lambda that produces a single value from the data source
  * @return data state, onRefresh event, and onClearError event
  */
@@ -68,14 +83,20 @@ fun <Producer, T> launchUiStateProducer(
  *
  * It is intended that you destructure this at the call site:
  *
+ * [Producer] is any object that has a suspending method that returns [Result]. In the [block] call
+ * the suspending method to produce a single value. The result of this call will be returned along
+ * with an event to refresh (or call [block] again, and another event to clear error results.
  * ```
  * val (result, refresh, clearError) = dataSource.launchUiStateProducer(dataId) { loadData(dataId) }
+ * Text(result.value)
+ * Button(onClick = onRefresh) { Text("Refresh" }
+ * Button(onClick = onClearError) { Text("Clear loading error") }
  * ```
  *
  * Repeated calls to onRefresh are conflated while a request is in progress.
  *
- * @param producer the data source to loading data from
- * @param v1 any argument used by production lambda, such as a resource ID
+ * @param producer the data source to load data from
+ * @param key any argument used by production lambda, such as a resource ID
  * @param block suspending lambda that produces a single value from the data source
  * @return data state, onRefresh event, and onClearError event
  */
@@ -83,7 +104,7 @@ fun <Producer, T> launchUiStateProducer(
 @Composable
 fun <Producer, T> launchUiStateProducer(
     producer: Producer,
-    v1: Any,
+    key: Any?,
     block: suspend Producer.() -> Result<T>
 ): ProducerResult<UiState<T>> {
     val producerState = remember { mutableStateOf(UiState<T>(loading = true)) }
@@ -103,7 +124,7 @@ fun <Producer, T> launchUiStateProducer(
 
     // whenever Producer or v1 changes, launch a new coroutine to call block() and refresh whenever
     // the onRefresh callback is called
-    launchInComposition(producer, v1) {
+    launchInComposition(producer, key) {
         // whenever the coroutine restarts, clear the previous result immediately as they are no
         // longer valid
         producerState.value = UiState(loading = true)
