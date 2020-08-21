@@ -16,36 +16,38 @@
 
 package com.example.jetnews.ui.interests
 
-import androidx.compose.Composable
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.selection.toggleable
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredSize
-import androidx.ui.material.Divider
-import androidx.ui.material.DrawerState
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.material.ScaffoldState
-import androidx.ui.material.Tab
-import androidx.ui.material.TabRow
-import androidx.ui.material.TopAppBar
-import androidx.ui.res.imageResource
-import androidx.ui.res.vectorResource
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
@@ -66,7 +68,7 @@ private enum class Sections(val title: String) {
 @Composable
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
-    scaffoldState: ScaffoldState = remember { ScaffoldState() },
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     interestsRepository: InterestsRepository
 ) {
     Scaffold(
@@ -74,7 +76,7 @@ fun InterestsScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
-                closeDrawer = { scaffoldState.drawerState = DrawerState.Closed },
+                closeDrawer = { scaffoldState.drawerState.close() },
                 navigateTo = navigateTo
             )
         },
@@ -82,18 +84,20 @@ fun InterestsScreen(
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState = DrawerState.Opened }) {
+                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
                         Icon(vectorResource(R.drawable.ic_jetnews_logo))
                     }
                 }
             )
         },
         bodyContent = {
-            val (currentSection, updateSection) = state { Sections.Topics }
+            val (currentSection, updateSection) = remember { mutableStateOf(Sections.Topics) }
             InterestsScreenBody(currentSection, updateSection, interestsRepository)
         }
     )
 }
+
+private val Tabs = Sections.values().toList()
 
 @Composable
 private fun InterestsScreenBody(
@@ -101,19 +105,19 @@ private fun InterestsScreenBody(
     updateSection: (Sections) -> Unit,
     interestsRepository: InterestsRepository
 ) {
-    val sectionTitles = Sections.values().map { it.title }
-
     Column {
         TabRow(
-            items = sectionTitles, selectedIndex = currentSection.ordinal
-        ) { index, title ->
-            Tab(
-                text = { Text(title) },
-                selected = currentSection.ordinal == index,
-                onSelected = {
-                    updateSection(Sections.values()[index])
-                }
-            )
+            selectedTabIndex = currentSection.ordinal
+        ) {
+            Tabs.forEachIndexed { index, section ->
+                Tab(
+                    text = { Text(section.title) },
+                    selected = section.ordinal == index,
+                    onClick = {
+                        updateSection(Sections.values()[index])
+                    }
+                )
+            }
         }
         Box(modifier = Modifier.weight(1f)) {
             when (currentSection) {
@@ -271,9 +275,12 @@ fun PreviewInterestsScreen() {
 @Composable
 fun PreviewInterestsScreenDark() {
     ThemedPreview(darkTheme = true) {
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Open)
+        )
         InterestsScreen(
             navigateTo = {},
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            scaffoldState = scaffoldState,
             interestsRepository = FakeInterestsRepository()
         )
     }
@@ -283,9 +290,12 @@ fun PreviewInterestsScreenDark() {
 @Composable
 private fun PreviewDrawerOpen() {
     ThemedPreview {
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Open)
+        )
         InterestsScreen(
             navigateTo = {},
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            scaffoldState = scaffoldState,
             interestsRepository = FakeInterestsRepository()
         )
     }
@@ -295,9 +305,12 @@ private fun PreviewDrawerOpen() {
 @Composable
 private fun PreviewDrawerOpenDark() {
     ThemedPreview(darkTheme = true) {
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Open)
+        )
         InterestsScreen(
             navigateTo = {},
-            scaffoldState = ScaffoldState(drawerState = DrawerState.Opened),
+            scaffoldState = scaffoldState,
             interestsRepository = FakeInterestsRepository()
         )
     }

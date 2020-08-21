@@ -15,18 +15,15 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4-M3'
-    ext.compose_version = '0.1.0-dev15'
+    ext.kotlin_version = '1.4.0'
+    ext.compose_version = '0.1.0-dev17'
 
     repositories {
         google()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/kotlin/kotlin-eap/"
-        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha03'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha07'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -35,8 +32,5 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/kotlin/kotlin-eap/"
-        }
     }
 }

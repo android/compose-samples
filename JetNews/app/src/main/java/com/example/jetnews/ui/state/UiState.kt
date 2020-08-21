@@ -16,11 +16,13 @@
 
 package com.example.jetnews.ui.state
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.onActive
-import androidx.compose.setValue
-import androidx.compose.state
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
 import com.example.jetnews.data.Result
 
 typealias RepositoryCall<T> = ((Result<T>) -> Unit) -> Unit
@@ -42,7 +44,7 @@ sealed class UiState<out T> {
 fun <T> uiStateFrom(
     repositoryCall: RepositoryCall<T>
 ): UiState<T> {
-    var state: UiState<T> by state<UiState<T>> { UiState.Loading }
+    var state: UiState<T> by remember { mutableStateOf(UiState.Loading) }
 
     // Whenever this effect is used in a composable function, it'll load data from the repository
     // when the first composition is applied

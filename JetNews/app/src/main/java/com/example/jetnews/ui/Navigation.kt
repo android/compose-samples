@@ -18,8 +18,8 @@ package com.example.jetnews.ui
 
 import android.os.Bundle
 import androidx.annotation.MainThread
-import androidx.compose.getValue
-import androidx.compose.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

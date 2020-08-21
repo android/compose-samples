@@ -76,14 +76,14 @@ dependencies {
 
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha05"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha06"
 
     androidTestImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation "androidx.ui:ui-test:$compose_version"
 
-    ktlint 'com.pinterest:ktlint:0.37.0'
+    ktlint 'com.pinterest:ktlint:0.38.0-alpha01'
 }
 
 task ktlint(type: JavaExec, group: 'verification') {
@@ -104,7 +104,23 @@ task ktlintFormat(type: JavaExec, group: 'formatting') {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
+        // Treat all Kotlin warnings as errors
+        allWarningsAsErrors = true
+        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        // Enable experimental coroutines APIs, including Flow
+        freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+        // Set JVM target to 1.8
         jvmTarget = "1.8"
-        freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
+    }
+}
+
+// TODO: Figure out which dependencies need this and force them individually
+configurations.configureEach() {
+    resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.jetbrains.kotlin') {
+                details.useVersion kotlin_version
+            }
+        }
     }
 }

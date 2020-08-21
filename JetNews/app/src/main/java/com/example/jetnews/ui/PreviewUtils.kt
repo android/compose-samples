@@ -16,14 +16,14 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.Composable
-import androidx.ui.material.Surface
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 internal fun ThemedPreview(
     darkTheme: Boolean = false,
-    children: @Composable() () -> Unit
+    children: @Composable () -> Unit
 ) {
     JetnewsTheme(darkTheme = darkTheme) {
         Surface {
