@@ -23,7 +23,7 @@ categories:   [Compose]
 languages:    [Kotlin]
 solutions:    [Mobile]
 github:       android/compose-samples
-level:        INTERMEDIATE
+level:        ADVANCED
 apiRefs:
     - android:androidx.compose.Composable
 license: apache2
