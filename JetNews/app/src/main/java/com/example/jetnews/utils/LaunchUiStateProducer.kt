@@ -55,8 +55,8 @@ data class ProducerResult<T>(
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
  *
  * [Producer] is any object that has a suspending method that returns [Result]. In the [block] call
- * the suspending method to produce a single value. The result of this call will be returned along
- * with an event to refresh (or call [block] again, and another event to clear error results.
+ * the suspending method that produces a single value. The result of this call will be returned
+ * along with an event to refresh (or call [block] again), and another event to clear error results.
  *
  * It is intended that you destructure the return at the call site. Here is an example usage that
  * calls dataSource.loadData() and then displays a UI based on the result.
@@ -84,8 +84,8 @@ fun <Producer, T> launchUiStateProducer(
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
  *
  * [Producer] is any object that has a suspending method that returns [Result]. In the [block] call
- * the suspending method to produce a single value. The result of this call will be returned along
- * with an event to refresh (or call [block] again, and another event to clear error results.
+ * the suspending method that produces a single value. The result of this call will be returned
+ * along with an event to refresh (or call [block] again), and another event to clear error results.
  *
  * It is intended that you destructure the return at the call site. Here is an example usage that
  * calls dataSource.loadData(resourceId) and then displays a UI based on the result.
