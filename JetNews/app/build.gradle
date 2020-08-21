@@ -51,6 +51,7 @@ android {
     }
 
     composeOptions {
+        kotlinCompilerVersion kotlin_version
         kotlinCompilerExtensionVersion compose_version
     }
 }
@@ -89,16 +90,5 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
         // Set JVM target to 1.8
         jvmTarget = "1.8"
-    }
-}
-
-// TODO: Figure out which dependencies need this and force them individually
-configurations.configureEach() {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.jetbrains.kotlin') {
-                details.useVersion kotlin_version
-            }
-        }
     }
 }

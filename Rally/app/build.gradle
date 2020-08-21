@@ -56,6 +56,7 @@ android {
     }
 
     composeOptions {
+        kotlinCompilerVersion Libs.Kotlin.version
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 
@@ -84,14 +85,4 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.AndroidX.Compose.uiTest
-}
-
-configurations.configureEach() {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.jetbrains.kotlin') {
-                details.useVersion Libs.Kotlin.version
-            }
-        }
-    }
 }
