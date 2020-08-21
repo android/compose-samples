@@ -138,6 +138,8 @@ fun <Producer, T> launchUiStateProducer(
         // whenever a refresh is triggered, call block again. This for-loop will suspend when
         // refreshChannel is empty, and resume when the next value is offered or sent to the
         // channel.
+
+        // This for-loop will loop until the [launchInComposition] coroutine is cancelled.
         for (refreshEvent in refreshChannel) {
             producerState.value = producerState.value.copy(loading = true)
             producerState.value = producerState.value.copyWithResult(producer.block())
