@@ -29,8 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.1.9"
-        const val mdcTheme = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"
+        private const val version = "0.1.10.ui-${AndroidX.Compose.snapshot}-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -60,8 +59,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "0.1.0-dev17"
+            const val snapshot = "6765009"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:${version}"

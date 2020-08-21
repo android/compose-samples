@@ -23,7 +23,9 @@ plugins {
 
 // Reads the Google maps key that is used in the AndroidManifest
 Properties properties = new Properties()
-properties.load(project.rootProject.file("local.properties").newDataInputStream())
+if (rootProject.file("local.properties").exists()) {
+    properties.load(rootProject.file("local.properties").newDataInputStream())
+}
 
 android {
     compileSdkVersion 30

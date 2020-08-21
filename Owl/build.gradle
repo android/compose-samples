@@ -34,11 +34,18 @@ plugins {
 
 subprojects {
     repositories {
-        maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository" }
         google()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         jcenter()
+
+        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
+            maven {
+                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
+            }
+        }
+
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
+
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             jvmTarget = '1.8'
