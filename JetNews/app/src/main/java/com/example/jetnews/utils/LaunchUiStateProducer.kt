@@ -30,10 +30,11 @@ import kotlinx.coroutines.channels.Channel
 /**
  * Result object for [launchUiStateProducer].
  *
- * It is intended that you destructure this class at the call site:
+ * It is intended that you destructure this class at the call site. Here is an example usage that
+ * calls dataSource.loadData() and then displays a UI based on the result.
  *
  * ```
- * val (result, onRefresh, onClearError) = dataSource.launchUiStateProducer { loadData() }
+ * val (result, onRefresh, onClearError) = launchUiStateProducer(dataSource) { loadData() }
  * Text(result.value)
  * Button(onClick = onRefresh) { Text("Refresh" }
  * Button(onClick = onClearError) { Text("Clear loading error") }
@@ -57,10 +58,11 @@ data class ProducerResult<T>(
  * the suspending method to produce a single value. The result of this call will be returned along
  * with an event to refresh (or call [block] again, and another event to clear error results.
  *
- * It is intended that you destructure this at the call site:
+ * It is intended that you destructure the return at the call site. Here is an example usage that
+ * calls dataSource.loadData() and then displays a UI based on the result.
  *
  * ```
- * val (result, refresh, clearError) = dataSource.launchUiStateProducer { loadData() }
+ * val (result, onRefresh, onClearError) = launchUiStateProducer(dataSource) { loadData() }
  * Text(result.value)
  * Button(onClick = onRefresh) { Text("Refresh" }
  * Button(onClick = onClearError) { Text("Clear loading error") }
@@ -81,13 +83,17 @@ fun <Producer, T> launchUiStateProducer(
 /**
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
  *
- * It is intended that you destructure this at the call site:
- *
  * [Producer] is any object that has a suspending method that returns [Result]. In the [block] call
  * the suspending method to produce a single value. The result of this call will be returned along
  * with an event to refresh (or call [block] again, and another event to clear error results.
+ *
+ * It is intended that you destructure the return at the call site. Here is an example usage that
+ * calls dataSource.loadData(resourceId) and then displays a UI based on the result.
+ *
  * ```
- * val (result, refresh, clearError) = dataSource.launchUiStateProducer(dataId) { loadData(dataId) }
+ * val (result, onRefresh, onClearError) = launchUiStateProducer(dataSource, resourceId) {
+ *     loadData(resourceId)
+ * }
  * Text(result.value)
  * Button(onClick = onRefresh) { Text("Refresh" }
  * Button(onClick = onClearError) { Text("Clear loading error") }
