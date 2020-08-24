@@ -16,6 +16,10 @@
 
 package com.example.jetnews.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
@@ -46,16 +50,19 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.launchInComposition
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
+import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
@@ -63,20 +70,72 @@ import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.ui.state.RefreshableUiState
-import com.example.jetnews.ui.state.currentData
-import com.example.jetnews.ui.state.loading
-import com.example.jetnews.ui.state.previewDataFrom
-import com.example.jetnews.ui.state.refreshableUiStateFrom
-import com.example.jetnews.ui.state.refreshing
+import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.snackbarAction
+import com.example.jetnews.utils.launchUiStateProducer
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
+/**
+ * Stateful HomeScreen uses manages state using [launchUiStateProducer]
+ *
+ * @param navigateTo (event) request navigation to [Screen]
+ * @param postsRepository data source for this screen
+ * @param scaffoldState (state) state for the [Scaffold] component on this screen
+ */
 @Composable
 fun HomeScreen(
     navigateTo: (Screen) -> Unit,
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
+) {
+    val (postUiState, refreshPost, clearError) = launchUiStateProducer(postsRepository) {
+        getPosts()
+    }
+
+    // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
+    // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
+    // removed from the composition tree.
+    val favorites by postsRepository.observeFavorites().collectAsState(setOf())
+
+    // Returns a [CoroutineScope] that is scoped to the lifecycle of [HomeScreen]. When this
+    // screen is removed from composition, the scope will be cancelled.
+    val coroutineScope = rememberCoroutineScope()
+
+    HomeScreen(
+        posts = postUiState.value,
+        favorites = favorites,
+        onToggleFavorite = {
+            coroutineScope.launch { postsRepository.toggleFavorite(it) }
+        },
+        onRefreshPosts = refreshPost,
+        onErrorDismiss = clearError,
+        navigateTo = navigateTo,
+        scaffoldState = scaffoldState
+    )
+}
+
+/**
+ * Responsible for displaying the Home Screen of this application.
+ *
+ * Stateless composable is not coupled to any specific state management.
+ *
+ * @param posts (state) the data to show on the screen
+ * @param onRefreshPosts (event) request a refresh of posts
+ * @param onErrorDismiss (event) request the current error be dismissed
+ * @param navigateTo (event) request navigation to [Screen]
+ * @param scaffoldState (state) state for the [Scaffold] component on this screen
+ */
+@Composable
+fun HomeScreen(
+    posts: UiState<List<Post>>,
+    favorites: Set<String>,
+    onToggleFavorite: (String) -> Unit,
+    onRefreshPosts: () -> Unit,
+    onErrorDismiss: () -> Unit,
+    navigateTo: (Screen) -> Unit,
+    scaffoldState: ScaffoldState
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -99,25 +158,52 @@ fun HomeScreen(
         },
         bodyContent = { innerPadding ->
             val modifier = Modifier.padding(innerPadding)
-            HomeScreenContent(postsRepository, navigateTo, modifier)
+            LoadingContent(
+                empty = posts.initialLoad,
+                emptyContent = { FullScreenLoading() },
+                loading = posts.loading,
+                onRefresh = onRefreshPosts,
+                content = {
+                    HomeScreenErrorAndContent(
+                        posts = posts,
+                        onRefresh = {
+                            onRefreshPosts()
+                        },
+                        onErrorDismiss = onErrorDismiss,
+                        navigateTo = navigateTo,
+                        favorites = favorites,
+                        onToggleFavorite = onToggleFavorite,
+                        modifier = modifier
+                    )
+                }
+            )
         }
     )
 }
 
+/**
+ * Display an initial empty state or swipe to refresh content.
+ *
+ * @param empty (state) when true, display [emptyContent]
+ * @param emptyContent (slot) the content to display for the empty state
+ * @param loading (state) when true, display a loading spinner over [content]
+ * @param onRefresh (event) event to request refresh
+ * @param content (slot) the main content to show
+ */
 @Composable
-private fun HomeScreenContent(
-    postsRepository: PostsRepository,
-    navigateTo: (Screen) -> Unit,
-    modifier: Modifier = Modifier
+private fun LoadingContent(
+    empty: Boolean,
+    emptyContent: @Composable () -> Unit,
+    loading: Boolean,
+    onRefresh: () -> Unit,
+    content: @Composable () -> Unit
 ) {
-    val (postsState, refreshPosts) = refreshableUiStateFrom(postsRepository::getPosts)
-
-    if (postsState.loading && !postsState.refreshing) {
-        LoadingHomeScreen()
+    if (empty) {
+        emptyContent()
     } else {
         SwipeToRefreshLayout(
-            refreshingState = postsState.refreshing,
-            onRefresh = { refreshPosts() },
+            refreshingState = loading,
+            onRefresh = onRefresh,
             refreshIndicator = {
                 Surface(elevation = 10.dp, shape = CircleShape) {
                     CircularProgressIndicator(
@@ -126,52 +212,66 @@ private fun HomeScreenContent(
                             .padding(4.dp)
                     )
                 }
-            }
-        ) {
-            HomeScreenBodyWrapper(
-                modifier = modifier,
-                state = postsState,
-                onErrorAction = {
-                    refreshPosts()
-                },
-                navigateTo = navigateTo
-            )
-        }
+            },
+            content = content,
+        )
     }
 }
 
+/**
+ * Responsible for displaying any error conditions around [PostList].
+ *
+ * @param posts (state) list of posts and error state to display
+ * @param onRefresh (event) request to refresh data
+ * @param onErrorDismiss (event) request that the current error be dismissed
+ * @param navigateTo (event) request navigation to [Screen]
+ * @param modifier modifier for root element
+ */
 @Composable
-private fun HomeScreenBodyWrapper(
-    modifier: Modifier = Modifier,
-    state: RefreshableUiState<List<Post>>,
-    onErrorAction: () -> Unit,
-    navigateTo: (Screen) -> Unit
+private fun HomeScreenErrorAndContent(
+    posts: UiState<List<Post>>,
+    onRefresh: () -> Unit,
+    onErrorDismiss: () -> Unit,
+    navigateTo: (Screen) -> Unit,
+    favorites: Set<String>,
+    onToggleFavorite: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // State for showing the Snackbar error. This state will reset with the content of the lambda
-    // inside stateFor each time the RefreshableUiState input parameter changes.
-    // showSnackbarError is the value of the error state, use updateShowSnackbarError to update it.
-    val (showSnackbarError, updateShowSnackbarError) = remember(state) {
-        mutableStateOf(state is RefreshableUiState.Error)
-    }
-
     Stack(modifier = modifier.fillMaxSize()) {
-        state.currentData?.let { posts ->
-            HomeScreenBody(posts = posts, navigateTo = navigateTo)
+        if (posts.data != null) {
+            PostList(posts.data, navigateTo, favorites, onToggleFavorite)
+        } else if (!posts.hasError) {
+            // if there are no posts, and no error, let the user refresh manually
+            TextButton(onClick = onRefresh, Modifier.fillMaxSize()) {
+                Text("Tap to load content", textAlign = TextAlign.Center)
+            }
         }
         ErrorSnackbar(
-            showError = showSnackbarError,
-            onErrorAction = onErrorAction,
-            onDismiss = { updateShowSnackbarError(false) },
+            showError = posts.hasError,
+            onErrorAction = onRefresh,
+            onDismiss = onErrorDismiss,
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
     }
 }
 
+/**
+ * Display a list of posts.
+ *
+ * When a post is clicked on, [navigateTo] will be called to navigate to the detail screen for that
+ * post.
+ *
+ * @param posts (state) the list to display
+ * @param navigateTo (event) request navigation to [Screen]
+ * @param modifier modifier for the root element
+ */
 @Composable
-private fun HomeScreenBody(
+private fun PostList(
     posts: List<Post>,
-    modifier: Modifier = Modifier,
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    favorites: Set<String>,
+    onToggleFavorite: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
@@ -179,36 +279,53 @@ private fun HomeScreenBody(
     val postsHistory = posts.subList(7, 10)
 
     ScrollableColumn(modifier = modifier) {
-        HomeScreenTopSection(postTop, navigateTo)
-        HomeScreenSimpleSection(postsSimple, navigateTo)
-        HomeScreenPopularSection(postsPopular, navigateTo)
-        HomeScreenHistorySection(postsHistory, navigateTo)
+        PostListTopSection(postTop, navigateTo)
+        PostListSimpleSection(postsSimple, navigateTo, favorites, onToggleFavorite)
+        PostListPopularSection(postsPopular, navigateTo)
+        PostListHistorySection(postsHistory, navigateTo)
     }
 }
 
+/**
+ * Full screen circular progress indicator
+ */
 @Composable
-private fun LoadingHomeScreen() {
+private fun FullScreenLoading() {
     Box(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
         CircularProgressIndicator()
     }
 }
 
+/**
+ * Display an error snackbar when network requests fail.
+ *
+ * @param showError (state) if true, this snackbar will display
+ * @param modifier modifier for root element
+ * @param onErrorAction (event) user has requested error action by clicking on it
+ * @param onDismiss (event) request that this snackbar be dismissed.
+ */
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ErrorSnackbar(
+private fun ErrorSnackbar(
     showError: Boolean,
     modifier: Modifier = Modifier,
     onErrorAction: () -> Unit = { },
     onDismiss: () -> Unit = { }
 ) {
-    if (showError) {
-        // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
-        launchInComposition {
-            delay(timeMillis = 5000L)
-            onDismiss()
-        }
+    // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
+    launchInComposition(showError) {
+        delay(timeMillis = 5000L)
+        if (showError) { onDismiss() }
+    }
 
+    AnimatedVisibility(
+        visible = showError,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
+        modifier = modifier
+    ) {
         Snackbar(
-            modifier = modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             text = { Text("Can't update latest news") },
             action = {
                 TextButton(
@@ -228,8 +345,14 @@ fun ErrorSnackbar(
     }
 }
 
+/**
+ * Top section of [PostList]
+ *
+ * @param post (state) highlighted post to display
+ * @param navigateTo (event) request navigation to [Screen]
+ */
 @Composable
-private fun HomeScreenTopSection(post: Post, navigateTo: (Screen) -> Unit) {
+private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
     ProvideEmphasis(EmphasisAmbient.current.high) {
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
@@ -241,24 +364,43 @@ private fun HomeScreenTopSection(post: Post, navigateTo: (Screen) -> Unit) {
         post = post,
         modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
     )
-    HomeScreenDivider()
+    PostListDivider()
 }
 
+/**
+ * Full-width list items for [PostList]
+ *
+ * @param posts (state) to display
+ * @param navigateTo (event) request navigation to [Screen]
+ */
 @Composable
-private fun HomeScreenSimpleSection(
+private fun PostListSimpleSection(
     posts: List<Post>,
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    favorites: Set<String>,
+    onToggleFavorite: (String) -> Unit
 ) {
     Column {
         posts.forEach { post ->
-            PostCardSimple(post, navigateTo)
-            HomeScreenDivider()
+            PostCardSimple(
+                post = post,
+                navigateTo = navigateTo,
+                isFavorite = favorites.contains(post.id),
+                onToggleFavorite = { onToggleFavorite(post.id) }
+            )
+            PostListDivider()
         }
     }
 }
 
+/**
+ * Horizontal scrolling cards for [PostList]
+ *
+ * @param posts (state) to display
+ * @param navigateTo (event) request navigation to [Screen]
+ */
 @Composable
-private fun HomeScreenPopularSection(
+private fun PostListPopularSection(
     posts: List<Post>,
     navigateTo: (Screen) -> Unit
 ) {
@@ -275,25 +417,34 @@ private fun HomeScreenPopularSection(
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }
         }
-        HomeScreenDivider()
+        PostListDivider()
     }
 }
 
+/**
+ * Full-width list items that display "based on your history" for [PostList]
+ *
+ * @param posts (state) to display
+ * @param navigateTo (event) request navigation to [Screen]
+ */
 @Composable
-private fun HomeScreenHistorySection(
+private fun PostListHistorySection(
     posts: List<Post>,
     navigateTo: (Screen) -> Unit
 ) {
     Column {
         posts.forEach { post ->
             PostCardHistory(post, navigateTo)
-            HomeScreenDivider()
+            PostListDivider()
         }
     }
 }
 
+/**
+ * Full-width divider with padding for [PostList]
+ */
 @Composable
-private fun HomeScreenDivider() {
+private fun PostListDivider() {
     Divider(
         modifier = Modifier.padding(horizontal = 14.dp),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
@@ -305,7 +456,7 @@ private fun HomeScreenDivider() {
 fun PreviewHomeScreenBody() {
     ThemedPreview {
         val posts = loadFakePosts()
-        HomeScreenBody(posts, navigateTo = { })
+        PostList(posts, { }, setOf(), {})
     }
 }
 
@@ -329,8 +480,17 @@ private fun PreviewDrawerOpen() {
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
         val posts = loadFakePosts()
-        HomeScreenBody(posts, navigateTo = {})
+        PostList(posts, {}, setOf(), {})
     }
+}
+
+@Composable
+private fun loadFakePosts(): List<Post> {
+    val context = ContextAmbient.current
+    val posts = runBlocking {
+        BlockingFakePostsRepository(context).getPosts()
+    }
+    return (posts as Result.Success).data
 }
 
 @Preview("Home screen, open drawer dark theme")
@@ -346,9 +506,4 @@ private fun PreviewDrawerOpenDark() {
             navigateTo = { }
         )
     }
-}
-
-@Composable
-private fun loadFakePosts(): List<Post> {
-    return previewDataFrom(BlockingFakePostsRepository(ContextAmbient.current)::getPosts)
 }

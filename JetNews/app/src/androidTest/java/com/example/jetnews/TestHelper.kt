@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
 import androidx.ui.test.ComposeTestRule
 import com.example.jetnews.ui.JetnewsApp
-import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.NavigationViewModel
 
 /**
@@ -29,18 +28,9 @@ import com.example.jetnews.ui.NavigationViewModel
  */
 fun ComposeTestRule.launchJetNewsApp(context: Context) {
     setContent {
-        JetnewsStatus.resetState()
         JetnewsApp(
             TestAppContainer(context),
             remember { NavigationViewModel(SavedStateHandle()) }
         )
     }
-}
-
-/**
- * Resets the state of the app. Needs to be executed in Compose code (within a frame)
- */
-fun JetnewsStatus.resetState() {
-    favorites.clear()
-    selectedTopics.clear()
 }
