@@ -2,7 +2,14 @@
 
 # Jetchat sample
 
-Jetchat is a sample chat app built with [Jetpack Compose][compose]. This sample showcases:
+Jetchat is a sample chat app built with [Jetpack Compose][compose].
+
+To try out these sample apps, you need to use the latest Canary version of Android Studio 4.2.
+You can clone this repository or import the
+project from Android Studio following the steps
+[here](https://developer.android.com/jetpack/compose/setup#sample).
+
+This sample showcases:
 
 * UI state management
 * Integration with Architecture Components: Navigation, Fragments, LiveData, ViewModel

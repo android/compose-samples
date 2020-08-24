@@ -5,6 +5,11 @@ Studies built with [Jetpack Compose](https://developer.android.com/jetpack/compo
 The goal of the sample is to showcase Material components, draggable UI elements, Android Views
 inside Compose, and UI state handling.
 
+To try out this sample app, you need to use the latest Canary version of Android Studio 4.2.
+You can clone this repository or import the
+project from Android Studio following the steps
+[here](https://developer.android.com/jetpack/compose/setup#sample).
+
 ## Screenshots
 
 <img src="screenshots/crane.gif"/>

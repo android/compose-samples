@@ -1,6 +1,13 @@
 # Owl sample
 
-This sample is a [Jetpack Compose][compose] implementation of [Owl][owl], a Material Design study. This sample showcases:
+This sample is a [Jetpack Compose][compose] implementation of [Owl][owl], a Material Design study.
+
+To try out these sample apps, you need to use the latest Canary version of Android Studio 4.2.
+You can clone this repository or import the
+project from Android Studio following the steps
+[here](https://developer.android.com/jetpack/compose/setup#sample).
+
+This sample showcases:
 
 * [Material theming][materialtheming] & light/dark themes
 * Custom layout

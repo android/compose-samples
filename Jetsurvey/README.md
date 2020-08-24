@@ -4,6 +4,11 @@ Jetsurvey is a sample survey app, built with
 [Jetpack Compose](https://developer.android.com/jetpack/compose). The goal of the sample is to
 showcase text input, validation and state capabilities of Compose.
 
+To try out these sample apps, you need to use the latest Canary version of Android Studio 4.2.
+You can clone this repository or import the
+project from Android Studio following the steps
+[here](https://developer.android.com/jetpack/compose/setup#sample).
+
 Screenshots
 -----------
  <img src="screenshots/survey.gif" width="425"/>
