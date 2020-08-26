@@ -18,6 +18,7 @@ package com.example.jetnews.data.posts
 
 import com.example.jetnews.data.Result
 import com.example.jetnews.model.Post
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Interface to the Posts data layer.
@@ -27,10 +28,20 @@ interface PostsRepository {
     /**
      * Get a specific JetNews post.
      */
-    fun getPost(postId: String, callback: (Result<Post?>) -> Unit)
+    suspend fun getPost(postId: String): Result<Post>
 
     /**
      * Get JetNews posts.
      */
-    fun getPosts(callback: (Result<List<Post>>) -> Unit)
+    suspend fun getPosts(): Result<List<Post>>
+
+    /**
+     * Observe the current favorites
+     */
+    fun observeFavorites(): Flow<Set<String>>
+
+    /**
+     * Toggle a postId to be a favorite or not.
+     */
+    suspend fun toggleFavorite(postId: String)
 }

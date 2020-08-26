@@ -16,34 +16,33 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredSize
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.IconToggleButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.Surface
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.Bookmark
-import androidx.ui.material.icons.filled.BookmarkBorder
-import androidx.ui.material.icons.filled.MoreVert
-import androidx.ui.res.imageResource
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.IconToggleButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.JetnewsStatus
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 
@@ -86,7 +85,12 @@ fun PostTitle(post: Post) {
 }
 
 @Composable
-fun PostCardSimple(post: Post, navigateTo: (Screen) -> Unit) {
+fun PostCardSimple(
+    post: Post,
+    navigateTo: (Screen) -> Unit,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit
+) {
     Row(
         modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
@@ -97,8 +101,8 @@ fun PostCardSimple(post: Post, navigateTo: (Screen) -> Unit) {
             AuthorAndReadTime(post)
         }
         BookmarkButton(
-            isBookmarked = isFavorite(postId = post.id),
-            onBookmark = { toggleBookmark(postId = post.id) }
+            isBookmarked = isFavorite,
+            onClick = onToggleFavorite
         )
     }
 }
@@ -135,12 +139,12 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,
-    onBookmark: (Boolean) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     IconToggleButton(
         checked = isBookmarked,
-        onCheckedChange = onBookmark
+        onCheckedChange = { onClick() }
     ) {
         modifier.fillMaxSize()
         if (isBookmarked) {
@@ -157,24 +161,12 @@ fun BookmarkButton(
     }
 }
 
-fun toggleBookmark(postId: String) {
-    with(JetnewsStatus) {
-        if (favorites.contains(postId)) {
-            favorites.remove(postId)
-        } else {
-            favorites.add(postId)
-        }
-    }
-}
-
-fun isFavorite(postId: String) = JetnewsStatus.favorites.contains(postId)
-
 @Preview("Bookmark Button")
 @Composable
 fun BookmarkButtonPreview() {
     ThemedPreview {
         Surface {
-            BookmarkButton(isBookmarked = false, onBookmark = { })
+            BookmarkButton(isBookmarked = false, onClick = { })
         }
     }
 }
@@ -184,7 +176,7 @@ fun BookmarkButtonPreview() {
 fun BookmarkButtonBookmarkedPreview() {
     ThemedPreview {
         Surface {
-            BookmarkButton(isBookmarked = true, onBookmark = { })
+            BookmarkButton(isBookmarked = true, onClick = { })
         }
     }
 }
@@ -193,7 +185,7 @@ fun BookmarkButtonBookmarkedPreview() {
 @Composable
 fun SimplePostPreview() {
     ThemedPreview {
-        PostCardSimple(post3, {})
+        PostCardSimple(post3, {}, false, {})
     }
 }
 
@@ -209,6 +201,6 @@ fun HistoryPostPreview() {
 @Composable
 fun SimplePostDarkPreview() {
     ThemedPreview(darkTheme = true) {
-        PostCardSimple(post3, {})
+        PostCardSimple(post3, {}, false, {})
     }
 }

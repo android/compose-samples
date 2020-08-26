@@ -17,14 +17,10 @@
 package com.example.jetnews.data
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.FakePostsRepository
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 /**
  * Dependency Injection container at the application level.
@@ -41,18 +37,8 @@ interface AppContainer {
  */
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
-    private val executorService: ExecutorService by lazy {
-        Executors.newFixedThreadPool(4)
-    }
-
-    private val mainThreadHandler: Handler by lazy {
-        Handler(Looper.getMainLooper())
-    }
-
     override val postsRepository: PostsRepository by lazy {
         FakePostsRepository(
-            executorService = executorService,
-            resultThreadHandler = mainThreadHandler,
             resources = applicationContext.resources
         )
     }

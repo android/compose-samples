@@ -16,58 +16,41 @@
 
 package com.example.jetnews.ui.state
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.onActive
-import androidx.compose.setValue
-import androidx.compose.state
 import com.example.jetnews.data.Result
 
-typealias RepositoryCall<T> = ((Result<T>) -> Unit) -> Unit
-
-sealed class UiState<out T> {
-    object Loading : UiState<Nothing>()
-    data class Success<out T>(val data: T) : UiState<T>()
-    data class Error(val exception: Exception) : UiState<Nothing>()
-}
-
 /**
- * UiState factory that updates its internal state with the [com.example.jetnews.data.Result]
- * of a repository called as a parameter.
+ * Immutable data class that allows for loading, data, and exception to be managed independently.
  *
- * To load asynchronous data, effects are better pattern than using @Model classes since
- * effects are Compose lifecycle aware.
+ * This is useful for screens that want to show the last successful result while loading or a later
+ * refresh has caused an error.
  */
-@Composable
-fun <T> uiStateFrom(
-    repositoryCall: RepositoryCall<T>
-): UiState<T> {
-    var state: UiState<T> by state<UiState<T>> { UiState.Loading }
+data class UiState<T>(
+    val loading: Boolean = false,
+    val exception: Exception? = null,
+    val data: T? = null
+) {
+    /**
+     * True if this contains an error
+     */
+    val hasError: Boolean
+        get() = exception != null
 
-    // Whenever this effect is used in a composable function, it'll load data from the repository
-    // when the first composition is applied
-    onActive {
-        repositoryCall { result ->
-            state = when (result) {
-                is Result.Success -> UiState.Success(result.data)
-                is Result.Error -> UiState.Error(result.exception)
-            }
-        }
-    }
-
-    return state
+    /**
+     * True if this represents a first load
+     */
+    val initialLoad: Boolean
+        get() = data == null && loading && !hasError
 }
 
 /**
- * Helper function that loads data from a repository call. Only use in Previews!
+ * Copy a UiState<T> based on a Result<T>.
+ *
+ * Result.Success will set all fields
+ * Result.Error will reset loading and exception only
  */
-@Composable
-fun <T> previewDataFrom(
-    repositoryCall: RepositoryCall<T>
-): T {
-    var state: T? = null
-    repositoryCall { result ->
-        state = (result as Result.Success).data
+fun <T> UiState<T>.copyWithResult(value: Result<T>): UiState<T> {
+    return when (value) {
+        is Result.Success -> copy(loading = false, exception = null, data = value.data)
+        is Result.Error -> copy(loading = false, exception = value.exception)
     }
-    return state!!
 }

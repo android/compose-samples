@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui
+package com.example.jetnews.utils
 
-import androidx.compose.mutableStateListOf
-
-object JetnewsStatus {
-    val favorites = mutableStateListOf<String>()
-    val selectedTopics = mutableStateListOf<String>()
+internal fun <E> MutableSet<E>.addOrRemove(element: E) {
+    if (!add(element)) {
+        remove(element)
+    }
 }
