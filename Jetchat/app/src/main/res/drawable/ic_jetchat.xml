@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright 2020 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+  <path
+      android:pathData="M15.6968,11.4122C15.6968,8.8077 17.8081,6.6964 20.4126,6.6964H27.2841C29.8886,6.6964 31.9999,8.8077 31.9999,11.4122C31.9999,14.0167 29.8886,16.128 27.2841,16.128H20.4126C17.8081,16.128 15.6968,14.0167 15.6968,11.4122Z"
+      android:fillColor="@color/yellow_logo"/>
+  <path
+      android:pathData="M25.5326,6.6964C25.5326,6.6965 25.5326,6.6965 25.5326,6.6966C25.5326,9.3011 23.4212,11.4124 20.8168,11.4124H15.6968C15.6968,11.4123 15.6968,11.4123 15.6968,11.4122C15.6968,8.8077 17.8081,6.6964 20.4126,6.6964H25.5326Z"
+      android:fillColor="@color/blue_logo"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M0,20.8438C0,18.2393 2.1113,16.128 4.7158,16.128H11.7221C14.3266,16.128 16.4379,18.2393 16.4379,20.8438C16.4379,23.4482 14.3266,25.5596 11.7221,25.5596H4.7158C2.1113,25.5596 0,23.4482 0,20.8438Z"
+      android:fillColor="@color/blue_logo"/>
+  <path
+      android:pathData="M16.4379,20.8438C16.4379,20.8439 16.4379,20.8439 16.4379,20.844C16.4379,23.4485 14.3266,25.5598 11.7221,25.5598H6.2653C6.2653,25.5597 6.2653,25.5597 6.2653,25.5596C6.2653,22.9551 8.3766,20.8438 10.981,20.8438H16.4379Z"
+      android:fillColor="@color/yellow_logo"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M19.2,25.5596C19.2,22.9551 21.3113,20.8438 23.9157,20.8438C26.5202,20.8438 28.6315,22.9551 28.6315,25.5596C28.6315,28.1641 26.5202,30.2754 23.9157,30.2754C21.3113,30.2754 19.2,28.1641 19.2,25.5596Z"
+      android:fillColor="@color/yellow_logo"/>
+  <path
+      android:pathData="M3.5032,6.6964C3.5032,4.092 5.6145,1.9806 8.219,1.9806C10.8234,1.9806 12.9348,4.092 12.9348,6.6964C12.9348,9.3009 10.8234,11.4122 8.219,11.4122C5.6145,11.4122 3.5032,9.3009 3.5032,6.6964Z"
+      android:fillColor="@color/blue_logo"/>
+</vector>
