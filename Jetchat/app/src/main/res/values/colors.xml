@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2020 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <!-- Light -->
+    <color name="blue500">#0540F2</color>
+    <color name="blue800">#001CCF</color>
+    <color name="yellow700">#F3B711</color>
+    <!-- Dark -->
+    <color name="blue300">#6F7EF9</color>
+    <color name="blue400">#4860F7</color>
+    <color name="yellow400">#F6E547</color>
+
+    <!-- Logo -->
+    <color name="yellow_logo">@color/yellow700</color>
+    <color name="blue_logo">@color/blue500</color>
+
+    <!-- Status bar -->
+    <color name="black30">#4D000000</color>
+
+</resources>

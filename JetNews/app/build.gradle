@@ -56,10 +56,6 @@ android {
     }
 }
 
-configurations {
-    ktlint
-}
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
@@ -84,31 +80,18 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation "androidx.ui:ui-test:$compose_version"
-
-    ktlint 'com.pinterest:ktlint:0.37.2'
-}
-
-task ktlint(type: JavaExec, group: 'verification') {
-    description = 'Check Kotlin code style.'
-    main = 'com.pinterest.ktlint.Main'
-    classpath = configurations.ktlint
-    args 'src/**/*.kt'
-}
-
-check.dependsOn ktlint
-
-task ktlintFormat(type: JavaExec, group: 'formatting') {
-    description = 'Fix Kotlin code style deviations.'
-    main = 'com.pinterest.ktlint.Main'
-    classpath = configurations.ktlint
-    args '-F', 'src/**/*.kt'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
-        // Opt-in to experimental compose APIs
+        // Treat all Kotlin warnings as errors
+        allWarningsAsErrors = true
         freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        // Enable experimental coroutines APIs, including Flow
+        freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+        freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+
+        // Set JVM target to 1.8
+        jvmTarget = "1.8"
     }
 }

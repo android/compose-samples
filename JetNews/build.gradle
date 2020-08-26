@@ -15,30 +15,39 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4.0-rc'
-    ext.compose_version = '0.1.0-SNAPSHOT'
+    ext.kotlin_version = '1.4.0'
+    ext.compose_version = '1.0.0-alpha01'
 
     repositories {
         google()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/kotlin/kotlin-eap/"
-        }
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha07'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha08'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-allprojects {
+plugins {
+    id 'com.diffplug.spotless' version '5.1.1'
+}
+
+subprojects {
     repositories {
-        def snapshot = '6759487'
-        maven { url "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository" }
         google()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/kotlin/kotlin-eap/"
+    }
+
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            targetExclude("$buildDir/**/*.kt")
+            targetExclude('bin/**/*.kt')
+
+            ktlint("0.37.2")
+            licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }
 }
