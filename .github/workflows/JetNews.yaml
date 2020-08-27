@@ -35,18 +35,11 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches/modules-2
-          key: ${{ runner.os }}-gradlemodules-${{ hashFiles('checksum.txt') }}
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches/jars-3
-          key: ${{ runner.os }}-gradlejars-${{ hashFiles('checksum.txt') }}
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches/build-cache-1
-          key: ${{ runner.os }}-gradlebuildcache-${{ hashFiles('checksum.txt') }}
+          path: |
+            ~/.gradle/caches/modules-2
+            ~/.gradle/caches/jars-3
+            ~/.gradle/caches/build-cache-1
+          key: gradle-${{ hashFiles('checksum.txt') }}
 
       - name: Build project
         working-directory: ${{ env.SAMPLE_PATH }}
@@ -58,7 +51,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        api-level: [23, 26, 30]
+        api-level: [23, 26, 29]
 
     steps:
       - name: Checkout
@@ -77,18 +70,11 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches/modules-2
-          key: ${{ runner.os }}-gradlemodules-${{ hashFiles('checksum.txt') }}
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches/jars-3
-          key: ${{ runner.os }}-gradlejars-${{ hashFiles('checksum.txt') }}
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches/build-cache-1
-          key: ${{ runner.os }}-gradlebuildcache-${{ hashFiles('checksum.txt') }}
+          path: |
+            ~/.gradle/caches/modules-2
+            ~/.gradle/caches/jars-3
+            ~/.gradle/caches/build-cache-1
+          key: gradle-${{ hashFiles('checksum.txt') }}
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
