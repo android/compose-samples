@@ -39,8 +39,8 @@ project from Android Studio following the steps
 ------------
 
 To see how Compose and view-based UIs can coexist and interact together, check out these samples:
-* [Sunflower's `compose` branch](goo.gle/sunflower-compose)
-* [Tivi](tivi.app)
+* [Sunflower's `compose` branch](https://goo.gle/sunflower-compose)
+* [Tivi](https://tivi.app)
 
 ## License
 ```
