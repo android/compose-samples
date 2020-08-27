@@ -1,17 +1,17 @@
-name: Jetsnack
+name: Jetsurvey
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'Jetsnack/**'
+      - 'Jetsurvey/**'
   pull_request:
     paths:
-      - 'Jetsnack/**'
+      - 'Jetsurvey/**'
 
 env:
-  SAMPLE_PATH: Jetsnack
+  SAMPLE_PATH: Jetsurvey
 
 jobs:
   build:
