@@ -94,7 +94,7 @@ The [`PodcastRepository`][podcastrepo] class is responsible for handling the dat
 
  ### Date + time
 
- The sample uses the JDK 8 [date and time APIs](https://developer.android.com/reference/java/time/package-summary) through the [desugaring support][jdk8desugar] available in Android Gradle Plugin 4.0+. Relevant Room [`TypeConverters`](https://developer.android.com/reference/kotlin/androidx/room/TypeConverters) are implemented in [`DataTimeTypeConverters.kt`](app/src/main/java/com/example/jetcaster/data/room/DateTimeTypeConverters.kt).
+ The sample uses the JDK 8 [date and time APIs](https://developer.android.com/reference/java/time/package-summary) through the [desugaring support][jdk8desugar] available in Android Gradle Plugin 4.0+. Relevant Room [`TypeConverters`](https://developer.android.com/reference/kotlin/androidx/room/TypeConverters) are implemented in [`DateTimeTypeConverters.kt`](app/src/main/java/com/example/jetcaster/data/room/DateTimeTypeConverters.kt).
 
 ## License
 
