@@ -35,6 +35,12 @@ project from Android Studio following the steps
 |  |  |
 | <br><img src="readme/owl.png" alt="Owl" width="240"></img>  <br><br>A Compose implementation of the Owl Material study. The Owl brand uses bold color, shape, and typography to express its brand attributes: energy, daring, and fun.<br><br>• Medium complexity<br>• Material theming & light/dark themes<br>• Custom layout<br>• Animation<br><br>**[> Browse](Owl/)** <br><br>  | <img src="readme/screenshots/Owl.png" width="320" alt="Owl sample demo">|
 
+🧬 Compose in existing app samples
+------------
+
+To see how Compose and view-based UIs can coexist and interact together, check out these samples:
+* [Sunflower's `compose` branch](goo.gle/sunflower-compose)
+* [Tivi](tivi.app)
 
 ## License
 ```
