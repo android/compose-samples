@@ -54,8 +54,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradlebuildcache-
 
-      - name: Ktlint
-        run: cd JetNews && ./gradlew ktlint --stacktrace
+      - name: Spotless
+        run: cd JetNews && ./gradlew spotlessCheck --stacktrace
 
       - name: Build project
         run: cd JetNews && ./gradlew assemble --stacktrace
