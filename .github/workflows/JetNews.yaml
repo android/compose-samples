@@ -98,15 +98,9 @@ jobs:
           script: ./gradlew connectedCheck --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}
 
-      - name: Copy test results
-        if: always()
-        run: |
-          mkdir -p junit
-          find . -type f -regex "${SAMPLE_PATH}/*/build/test-results/.*xml" -exec cp {} junit/ \;
-
-      - name: Upload test results
+      - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: junit-results
-          path: junit
+          name: test-reports
+          path: ${{ env.SAMPLE_PATH }}/app/build/reports
