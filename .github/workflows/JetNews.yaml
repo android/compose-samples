@@ -45,6 +45,19 @@ jobs:
         working-directory: ${{ env.SAMPLE_PATH }}
         run: ./gradlew spotlessCheck assembleDebug --stacktrace
 
+      - name: Upload build outputs (APKs)
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-outputs
+          path: ${{ env.SAMPLE_PATH }}/build/outputs
+
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-reports
+          path: ${{ env.SAMPLE_PATH }}/build/reports
+
   test:
     needs: build
     runs-on: macOS-latest # enables hardware acceleration in the virtual machine
