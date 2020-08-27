@@ -49,14 +49,14 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-outputs
-          path: ${{ env.SAMPLE_PATH }}/build/outputs
+          path: ${{ env.SAMPLE_PATH }}/app/build/outputs
 
       - name: Upload build reports
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: build-reports
-          path: ${{ env.SAMPLE_PATH }}/build/reports
+          path: ${{ env.SAMPLE_PATH }}/app/build/reports
 
   test:
     needs: build
