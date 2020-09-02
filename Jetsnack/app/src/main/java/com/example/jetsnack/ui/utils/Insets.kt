@@ -118,7 +118,7 @@ class Insets {
         internal set
 }
 
-val InsetsAmbient = staticAmbientOf<DisplayInsets>()
+val InsetsAmbient = staticAmbientOf { DisplayInsets() }
 
 /**
  * Applies any [WindowInsetsCompat] values to [InsetsAmbient], which are then available
