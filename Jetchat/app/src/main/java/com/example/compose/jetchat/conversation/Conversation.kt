@@ -51,9 +51,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -135,9 +135,9 @@ fun ChannelNameBar(
 
     if (showNotAvailablePopup) {
         FunctionalityNotAvailablePopup(
-                onDismiss = {
-                    showNotAvailablePopup = false
-                }
+            onDismiss = {
+                showNotAvailablePopup = false
+            }
         )
     }
 
