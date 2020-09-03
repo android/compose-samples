@@ -2,8 +2,6 @@ name: Jetchat
 
 on:
   push:
-    branches:
-      - master
     paths:
       - 'Jetchat/**'
   pull_request:

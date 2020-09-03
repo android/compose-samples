@@ -2,8 +2,6 @@ name: Jetcaster
 
 on:
   push:
-    branches:
-      - master
     paths:
       - 'Jetcaster/**'
   pull_request:

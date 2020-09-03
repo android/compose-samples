@@ -2,8 +2,6 @@ name: Rally
 
 on:
   push:
-    branches:
-      - master
     paths:
       - 'Rally/**'
   pull_request:

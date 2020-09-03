@@ -2,8 +2,6 @@ name: Owl
 
 on:
   push:
-    branches:
-      - master
     paths:
       - 'Owl/**'
   pull_request:
