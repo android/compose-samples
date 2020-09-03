@@ -51,6 +51,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +68,7 @@ import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
@@ -125,6 +130,17 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { }
 ) {
+
+    var showNotAvailablePopup by remember { mutableStateOf(false) }
+
+    if (showNotAvailablePopup) {
+        FunctionalityNotAvailablePopup(
+                onDismiss = {
+                    showNotAvailablePopup = false
+                }
+        )
+    }
+
     JetchatAppBar(
         modifier = modifier,
         onNavIconPressed = onNavIconPressed,
@@ -154,7 +170,7 @@ fun ChannelNameBar(
                 Icon(
                     asset = Icons.Outlined.Search,
                     modifier = Modifier
-                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .clickable(onClick = { showNotAvailablePopup = true })
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .preferredHeight(24.dp)
                 )
@@ -162,7 +178,7 @@ fun ChannelNameBar(
                 Icon(
                     asset = Icons.Outlined.Info,
                     modifier = Modifier
-                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .clickable(onClick = { showNotAvailablePopup = true })
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .preferredHeight(24.dp)
                 )
