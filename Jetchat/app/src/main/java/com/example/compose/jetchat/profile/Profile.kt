@@ -46,6 +46,10 @@ import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
@@ -57,6 +61,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
@@ -68,6 +73,15 @@ import com.example.compose.jetchat.theme.JetchatTheme
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
 
     val scrollState = rememberScrollState()
+    var showFunctionalityNotAvailablePopup by remember { mutableStateOf(false) }
+
+    if (showFunctionalityNotAvailablePopup) {
+        FunctionalityNotAvailablePopup(
+                onDismiss = {
+                    showFunctionalityNotAvailablePopup = false
+                }
+        )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
@@ -80,7 +94,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                     Icon(
                         asset = Icons.Outlined.MoreVert,
                         modifier = Modifier
-                            .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                            .clickable(onClick = { showFunctionalityNotAvailablePopup = true })
                             .padding(horizontal = 12.dp, vertical = 16.dp)
                             .preferredHeight(24.dp)
                     )
