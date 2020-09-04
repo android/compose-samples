@@ -37,7 +37,7 @@ jobs:
         with:
           path: |
             ~/.gradle/caches/modules-2
-            ~/.gradle/caches/jars-3
+            ~/.gradle/caches/jars-8
             ~/.gradle/caches/build-cache-1
           key: gradle-${{ hashFiles('checksum.txt') }}
 
@@ -85,7 +85,7 @@ jobs:
         with:
           path: |
             ~/.gradle/caches/modules-2
-            ~/.gradle/caches/jars-3
+            ~/.gradle/caches/jars-8
             ~/.gradle/caches/build-cache-1
           key: gradle-${{ hashFiles('checksum.txt') }}
 
