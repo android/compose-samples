@@ -106,7 +106,7 @@ fun SignUpContent(
             onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),
             enabled = emailState.isValid &&
-                    passwordState.isValid && confirmPasswordState.isValid
+                passwordState.isValid && confirmPasswordState.isValid
         ) {
             Text(
                 text = stringResource(id = R.string.create_account)
