@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful HomeScreen uses manages state using [launchUiStateProducer]
+ * Stateful HomeScreen which manages state using [launchUiStateProducer]
  *
  * @param navigateTo (event) request navigation to [Screen]
  * @param postsRepository data source for this screen
