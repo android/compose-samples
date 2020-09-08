@@ -73,8 +73,8 @@ private val jetpackQuestions = listOf(
         answer = PossibleAnswer.Slider(
             range = 1f..10f,
             steps = 3,
-            startText = R.string.selfie_value_1,
-            endText = R.string.selfie_value_3
+            startText = R.string.selfie_min,
+            endText = R.string.selfie_max
         )
     )
 )

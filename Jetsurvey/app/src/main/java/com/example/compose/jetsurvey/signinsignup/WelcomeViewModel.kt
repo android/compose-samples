@@ -45,6 +45,7 @@ class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 class WelcomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(WelcomeViewModel::class.java)) {
