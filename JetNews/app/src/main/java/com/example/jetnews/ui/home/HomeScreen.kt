@@ -139,11 +139,9 @@ fun HomeScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState
 ) {
-
-    val errorMessage = stringResource(id = R.string.load_error)
-    val retryMessage = stringResource(id = R.string.retry)
-
     if (posts.hasError) {
+        val errorMessage = stringResource(id = R.string.load_error)
+        val retryMessage = stringResource(id = R.string.retry)
         // Show snackbar message using a coroutine scope
         launchInComposition(posts) {
             val result = scaffoldState.snackbarHostState.showSnackbar(
