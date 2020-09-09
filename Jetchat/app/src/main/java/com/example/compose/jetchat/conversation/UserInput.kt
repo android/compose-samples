@@ -29,8 +29,11 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.gestures.rememberScrollableController
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.InnerPadding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +41,7 @@ import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.relativePaddingFrom
 import androidx.compose.foundation.layout.sizeIn
@@ -59,20 +63,27 @@ import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.Saver
+import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.focusRequester
+import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.stringResource
@@ -81,10 +92,12 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
@@ -92,6 +105,8 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.compositedOnSurface
 import com.example.compose.jetchat.theme.elevatedSurface
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 enum class InputSelector {
     NONE,
@@ -209,7 +224,9 @@ private fun SelectorExpanded(
             InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
             InputSelector.MAP -> FunctionalityNotAvailablePanel()
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
-            else -> { throw NotImplementedError() }
+            else -> {
+                throw NotImplementedError()
+            }
         }
     }
 }
@@ -358,7 +375,7 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
 var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
-@OptIn(ExperimentalFocus::class)
+@OptIn(ExperimentalFocus::class, ExperimentalLayout::class)
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
@@ -367,7 +384,8 @@ private fun UserInputText(
     textFieldValue: TextFieldValue,
     keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
-    focusState: Boolean
+    focusState: Boolean,
+    imeAction: ImeAction = ImeAction.Unspecified
 ) {
     // Grab a reference to the keyboard controller whenever text input starts
     var keyboardController by remember { mutableStateOf<SoftwareKeyboardController?>(null) }
@@ -380,10 +398,11 @@ private fun UserInputText(
     }
 
     val a11ylabel = stringResource(id = R.string.textfield_desc)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .preferredHeight(48.dp)
+            .preferredHeightIn(56.dp)
             .semantics {
                 accessibilityLabel = a11ylabel
                 keyboardShownProperty = keyboardShown
@@ -391,26 +410,38 @@ private fun UserInputText(
         horizontalArrangement = Arrangement.End
     ) {
         Stack(
-            modifier = Modifier.preferredHeight(48.dp).weight(1f).gravity(Alignment.Bottom)
+            modifier = Modifier.weight(1f).gravity(Alignment.CenterVertically)
         ) {
             var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
-            BaseTextField(
-                value = textFieldValue,
-                onValueChange = { onTextChanged(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp)
-                    .gravity(Alignment.CenterStart)
-                    .focusObserver { state ->
-                        if (lastFocusState != state) {
-                            onTextFieldFocused(state == FocusState.Active)
-                        }
-                        lastFocusState = state
+
+            TextFieldScroller(
+                scrollerPosition = rememberSavedInstanceState(
+                    saver = TextFieldScrollerPosition.Saver
+                ) {
+                    TextFieldScrollerPosition()
+                },
+                modifier = Modifier.preferredHeightIn(minHeight = 32.dp, maxHeight = 78.dp).fillMaxWidth()
+                    .padding(horizontal = 16.dp).padding(top = 8.dp)
+            ) {
+                BaseTextField(
+                    value = textFieldValue,
+                    onValueChange = {
+                        onTextChanged(it)
                     },
-                keyboardType = keyboardType,
-                imeAction = ImeAction.Send,
-                onTextInputStarted = { controller -> keyboardController = controller }
-            )
+                    textStyle = TextStyle(),
+                    modifier = Modifier
+                        .gravity(Alignment.CenterStart)
+                        .focusObserver { state ->
+                            if (lastFocusState != state) {
+                                onTextFieldFocused(state == FocusState.Active)
+                            }
+                            lastFocusState = state
+                        },
+                    keyboardType = keyboardType,
+                    imeAction = imeAction,
+                    onTextInputStarted = { controller -> keyboardController = controller }
+                )
+            }
 
             // FilledTextField has a placeholder but it shows a bottom indicator: b/155943102
             val disableContentColor =
@@ -425,6 +456,68 @@ private fun UserInputText(
                 )
             }
         }
+    }
+}
+
+/**
+ * Similar to [androidx.compose.foundation.ScrollableColumn] but does not lose the minWidth constraints.
+ */
+@Composable
+private fun TextFieldScroller(
+    scrollerPosition: TextFieldScrollerPosition,
+    modifier: Modifier = Modifier,
+    textField: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier
+            .clipToBounds()
+            .scrollable(
+                orientation = Orientation.Vertical,
+                canScroll = { scrollerPosition.maximum != 0f },
+                controller = rememberScrollableController { delta ->
+                    val newPosition = scrollerPosition.current + delta
+                    val consumedDelta = when {
+                        newPosition > scrollerPosition.maximum ->
+                            scrollerPosition.maximum - scrollerPosition.current // too much down
+                        newPosition < 0f -> -scrollerPosition.current // scrolled too much up
+                        else -> delta
+                    }
+                    scrollerPosition.current += consumedDelta
+                    consumedDelta
+                }
+            ),
+        children = textField,
+        measureBlock = { measurables, constraints ->
+            val childConstraints = constraints.copy(maxHeight = Constraints.Infinity)
+            val placeable = measurables.first().measure(childConstraints)
+            val height = min(placeable.height, constraints.maxHeight)
+            val diff = placeable.height.toFloat() - height.toFloat()
+            layout(placeable.width, height) {
+                // update current and maximum positions to correctly calculate delta in scrollable
+                scrollerPosition.maximum = diff
+                if (scrollerPosition.current > diff) scrollerPosition.current = diff
+
+                val yOffset = scrollerPosition.current - diff
+                placeable.placeRelative(0, yOffset.roundToInt())
+            }
+        }
+    )
+}
+
+@Stable
+private class TextFieldScrollerPosition(private val initial: Float = 0f) {
+    var current by mutableStateOf(initial, structuralEqualityPolicy())
+    var maximum by mutableStateOf(Float.POSITIVE_INFINITY, structuralEqualityPolicy())
+
+    companion object {
+        val Saver = Saver<TextFieldScrollerPosition, Float>(
+            save = { it.current },
+            restore = { restored ->
+                TextFieldScrollerPosition(
+                    initial = restored
+                )
+            }
+        )
     }
 }
 
