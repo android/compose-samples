@@ -51,6 +51,7 @@ class HomeScreenSnackbarTest {
             val snackbarHostState = SnackbarHostState()
             val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
 
+            // When the Home screen receives data with an error
             HomeScreen(
                 posts = UiState(exception = IllegalStateException()),
                 favorites = emptySet(),
@@ -61,17 +62,19 @@ class HomeScreenSnackbarTest {
                 scaffoldState = scaffoldState
             )
 
+            // Then the first message received in the Snackbar is an error message
             val latch = CountDownLatch(1)
+            // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             snapshotFlow { snackbarHostState.currentSnackbarData }
                 .onEach {
-                    if (it != null) {
-                        val snackbarText =
-                            InstrumentationRegistry.getInstrumentation().targetContext.resources
-                                .getString(R.string.load_error)
-                        onNodeWithText(snackbarText).assertIsDisplayed()
-                        latch.countDown()
-                    }
+                    val snackbarText =
+                        InstrumentationRegistry.getInstrumentation().targetContext.resources
+                            .getString(R.string.load_error)
+                    onNodeWithText(snackbarText).assertIsDisplayed()
+                    // Unblock the latch.await below and
+                    latch.countDown()
                 }
+            // Wait until the snackbar text is received and checked or fail
             latch.await(2, TimeUnit.SECONDS)
         }
     }

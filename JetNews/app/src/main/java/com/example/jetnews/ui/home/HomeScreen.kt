@@ -48,6 +48,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.launchInComposition
@@ -88,7 +89,7 @@ fun HomeScreen(
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val (postUiState, refreshPost, clearError: () -> Unit) = launchUiStateProducer(postsRepository) {
+    val (postUiState, refreshPost, clearError) = launchUiStateProducer(postsRepository) {
         getPosts()
     }
 
@@ -123,10 +124,9 @@ fun HomeScreen(
  * @param favorites (state) favorite posts
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onRefreshPosts (event) request a refresh of posts
- * @param onErrorDismiss (event) indicate an error can be dismissed
+ * @param onErrorDismiss (event) request the current error be dismissed
  * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
- * @param coroutineScope Home screen coroutine scope
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -144,11 +144,11 @@ fun HomeScreen(
         val retryMessage = stringResource(id = R.string.retry)
         // Show snackbar message using a coroutine scope
         launchInComposition(posts) {
-            val result = scaffoldState.snackbarHostState.showSnackbar(
+            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
             )
-            when (result) {
+            when (snackbarResult) {
                 SnackbarResult.ActionPerformed -> onRefreshPosts()
                 SnackbarResult.Dismissed -> onErrorDismiss()
             }
