@@ -409,6 +409,10 @@ private fun UserInputText(
             modifier = Modifier.weight(1f).gravity(Alignment.CenterVertically)
         ) {
             var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
+
+            // TODO (https://issuetracker.google.com/168187755): TextFieldScroller is a
+            // workaround to make BaseTextField's multiline values scrollable. It should
+            // be replaced with the correct solution when the requested feature is available.
             TextFieldScroller(
                 scrollerPosition = rememberSavedInstanceState(
                     saver = TextFieldScrollerPosition.Saver
