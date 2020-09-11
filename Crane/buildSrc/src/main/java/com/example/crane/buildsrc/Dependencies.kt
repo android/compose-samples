@@ -26,7 +26,7 @@ object Libs {
     const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
     object Accompanist {
-        private const val version = "0.2.0"
+        private const val version = "0.2.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
