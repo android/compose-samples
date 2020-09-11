@@ -17,7 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.DrawerConstants
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FabPosition
@@ -56,7 +56,7 @@ fun JetsnackScaffold(
     drawerScrimColor: Color = JetsnackTheme.colors.uiBorder,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textSecondary,
-    bodyContent: @Composable (InnerPadding) -> Unit
+    bodyContent: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         modifier = modifier,
