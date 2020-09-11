@@ -25,7 +25,7 @@ object Libs {
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.2.0"
+        private const val version = "0.2.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
