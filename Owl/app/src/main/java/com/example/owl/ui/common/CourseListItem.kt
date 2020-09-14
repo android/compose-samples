@@ -87,7 +87,7 @@ fun CourseListItem(
                         .weight(1f)
                         .padding(bottom = 4.dp)
                 )
-                Row(verticalGravity = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         asset = Icons.Rounded.OndemandVideo,
                         tint = MaterialTheme.colors.primary,

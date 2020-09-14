@@ -25,7 +25,7 @@ class ConfirmPasswordState(private val passwordState: PasswordState) : TextField
 
     override fun getError(): String? {
         return if (showErrors()) {
-            passwordConfirmationError(passwordState.text, text)
+            passwordConfirmationError()
         } else {
             null
         }
@@ -44,6 +44,6 @@ private fun passwordValidationError(password: String): String {
     return "Invalid password"
 }
 
-private fun passwordConfirmationError(password: String, confirmedPassword: String): String {
+private fun passwordConfirmationError(): String {
     return "Passwords don't match"
 }

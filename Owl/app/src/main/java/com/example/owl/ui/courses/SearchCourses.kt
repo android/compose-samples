@@ -97,7 +97,7 @@ private fun AppBar(
             asset = vectorResource(id = R.drawable.ic_search),
             modifier = Modifier
                 .padding(16.dp)
-                .gravity(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically)
         )
         // TODO hint
         BaseTextField(
@@ -106,10 +106,10 @@ private fun AppBar(
             textStyle = MaterialTheme.typography.subtitle1,
             modifier = Modifier
                 .weight(1f)
-                .gravity(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically)
         )
         IconButton(
-            modifier = Modifier.gravity(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically),
             onClick = { /* todo */ }
         ) {
             Icon(Icons.Filled.AccountCircle)
