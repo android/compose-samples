@@ -35,6 +35,7 @@ import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -77,6 +78,7 @@ class ConversationTest {
         onNodeWithText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
     }
 
+    @Ignore("https://issuetracker.google.com/166589947")
     @Test
     fun userScrollsUp_jumpToBottomAppears() {
         // Check list is snapped to bottom and swipe up
@@ -92,6 +94,7 @@ class ConversationTest {
         findJumpToBottom().assertIsDisplayed()
     }
 
+    @Ignore("https://issuetracker.google.com/166589947")
     @Test
     fun jumpToBottom_snapsToBottomAndDisappears() {
         // When the scroll is not snapped to the bottom
@@ -109,6 +112,7 @@ class ConversationTest {
         findJumpToBottom().assertDoesNotExist()
     }
 
+    @Ignore("https://issuetracker.google.com/166589947")
     @Test
     fun jumpToBottom_snapsToBottomAfterUserInteracted() {
         // First swipe
@@ -129,6 +133,7 @@ class ConversationTest {
         findJumpToBottom().assertDoesNotExist()
     }
 
+    @Ignore("https://issuetracker.google.com/166589947")
     @Test
     fun changeTheme_scrollIsPersisted() {
         // Swipe to show the jump to bottom button
