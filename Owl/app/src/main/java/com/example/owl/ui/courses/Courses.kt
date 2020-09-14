@@ -64,7 +64,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
                             icon = { Icon(vectorResource(tab.icon)) },
                             label = { Text(stringResource(tab.title).toUpperCase()) },
                             selected = tab == selectedTab,
-                            onSelect = { setSelectedTab(tab) },
+                            onClick = { setSelectedTab(tab) },
                             alwaysShowLabels = false,
                             selectedContentColor = MaterialTheme.colors.secondary,
                             unselectedContentColor = contentColor(),
@@ -93,11 +93,11 @@ fun CoursesAppBar() {
         Image(
             modifier = Modifier
                 .padding(16.dp)
-                .gravity(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically),
             asset = vectorResource(id = R.drawable.ic_lockup_white)
         )
         IconButton(
-            modifier = Modifier.gravity(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically),
             onClick = { /* todo */ }
         ) {
             Icon(Icons.Filled.AccountCircle)

@@ -120,7 +120,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
 private fun AppBar() {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalGravity = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
@@ -220,7 +220,7 @@ private fun TopicChip(topic: Topic) {
                         bottom = 8.dp
                     )
                 )
-                Row(verticalGravity = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                         Icon(
                             asset = vectorResource(R.drawable.ic_grain),
