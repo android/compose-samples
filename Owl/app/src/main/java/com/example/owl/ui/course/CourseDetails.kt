@@ -25,7 +25,7 @@ import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
@@ -89,7 +89,7 @@ import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.navigationBarsPadding
 import com.example.owl.ui.utils.scrim
 import com.example.owl.ui.utils.statusBarsPadding
-import com.example.owl.ui.utils.toInnerPadding
+import com.example.owl.ui.utils.toPaddingValues
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
@@ -185,7 +185,7 @@ private fun CourseDescriptionHeader(
                 modifier = Modifier
                     .padding(bottom = 4.dp)
                     .preferredSize(24.dp)
-                    .gravity(Alignment.CenterVertically)
+                    .align(Alignment.CenterVertically)
             )
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -193,7 +193,7 @@ private fun CourseDescriptionHeader(
             url = course.instructor,
             modifier = Modifier
                 .preferredSize(40.dp)
-                .gravity(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter)
                 .offset(y = 20.dp) // overlap bottom of image
         )
     }
@@ -284,7 +284,7 @@ private fun RelatedCourses(
                         )
                 )
                 ScrollableRow(
-                    contentPadding = InnerPadding(
+                    contentPadding = PaddingValues(
                         start = 16.dp,
                         bottom = 32.dp,
                         end = FabSize + 8.dp
@@ -373,18 +373,18 @@ private fun Lessons(
                     modifier = Modifier
                         .padding(16.dp)
                         .weight(1f)
-                        .gravity(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically)
                 )
                 IconButton(
                     onClick = { updateSheet(SheetState.Closed) },
-                    modifier = Modifier.gravity(Alignment.CenterVertically)
+                    modifier = Modifier.align(Alignment.CenterVertically)
                 ) {
                     Icon(asset = Icons.Rounded.ExpandMore)
                 }
             }
             ScrollableColumn(
                 scrollState = scroll,
-                contentPadding = InsetsAmbient.current.systemBars.toInnerPadding(
+                contentPadding = InsetsAmbient.current.systemBars.toPaddingValues(
                     top = false
                 )
             ) {
@@ -404,7 +404,7 @@ private fun Lessons(
                 .drawLayer(alpha = fabAlpha)
         ) {
             IconButton(
-                modifier = Modifier.gravity(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center),
                 onClick = { updateSheet(SheetState.Open) }
             ) {
                 Icon(
@@ -441,7 +441,7 @@ private fun Lesson(lesson: Lesson) {
             ProvideEmphasis(EmphasisAmbient.current.medium) {
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
-                    verticalGravity = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         asset = Icons.Rounded.PlayCircleOutline,
