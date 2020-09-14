@@ -74,7 +74,7 @@ class CalendarTest {
 
     @Test
     fun scrollsToTheBottom() {
-        composeTestRule.onNodeWithLabel("January 1", false, false).assertExists()
+        composeTestRule.onNodeWithLabel("January 1").assertExists()
         composeTestRule.onNodeWithLabel("December 31").performScrollTo().performClick()
         assert(dateSelected == "December 31")
     }
