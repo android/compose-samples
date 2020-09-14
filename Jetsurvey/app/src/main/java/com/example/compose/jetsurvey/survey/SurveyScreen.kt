@@ -20,9 +20,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.gravity
+import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -213,7 +212,7 @@ private fun PageIndicator(pagesCount: Int, currentPageIndex: Int, modifier: Modi
     Row(
         modifier = modifier
             .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .gravity(align = Alignment.CenterVertically)
+            .align(Alignment.CenterVertically)
     ) {
         for (pageIndex in 0 until pagesCount) {
             val asset = if (currentPageIndex == pageIndex) {

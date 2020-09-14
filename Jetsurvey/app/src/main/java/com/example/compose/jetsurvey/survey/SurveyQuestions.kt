@@ -20,7 +20,7 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +53,7 @@ fun Question(
 ) {
     ScrollableColumn(
         modifier = modifier,
-        contentPadding = InnerPadding(start = 20.dp, end = 20.dp)
+        contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
         Spacer(modifier = Modifier.preferredHeight(44.dp))
         Text(
@@ -133,7 +133,7 @@ private fun SingleChoiceQuestion(
                         onClick = onClickHandle
                     )
                     .padding(vertical = 4.dp),
-                verticalGravity = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
                     selected = (text == selectedOption),
@@ -233,7 +233,7 @@ private fun SliderQuestion(
     Row(modifier = modifier) {
         Text(
             text = stringResource(id = possibleAnswer.startText),
-            modifier = Modifier.gravity(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         Slider(
             value = sliderPosition,
@@ -247,7 +247,7 @@ private fun SliderQuestion(
         )
         Text(
             text = stringResource(id = possibleAnswer.endText),
-            modifier = Modifier.gravity(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }
