@@ -22,9 +22,10 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope.align
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
@@ -108,8 +109,8 @@ fun PodcastCategory(
     LazyColumnFor(
         items = items,
         modifier = modifier,
-        contentPadding = InnerPadding(0.dp),
-        horizontalGravity = Alignment.Start
+        contentPadding = PaddingValues(0.dp),
+        horizontalAlignment = Alignment.Start
     ) { item ->
         when (item) {
             is PodcastCategoryItem.EpisodeItem -> {
@@ -311,7 +312,7 @@ private fun CategoryPodcastRow(
     LazyRowForIndexed(
         items = podcasts,
         modifier = modifier,
-        contentPadding = InnerPadding(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 16.dp)
+        contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 16.dp)
     ) { index, (podcast, _, isFollowed) ->
         TopPodcastRowItem(
             podcastTitle = podcast.title,
@@ -338,7 +339,7 @@ private fun TopPodcastRowItem(
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .gravity(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
                 CoilImage(
@@ -353,7 +354,7 @@ private fun TopPodcastRowItem(
                 ToggleFollowPodcastIconButton(
                     onClick = onToggleFollowClicked,
                     isFollowed = isFollowed,
-                    modifier = Modifier.gravity(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd)
                 )
             }
         }
