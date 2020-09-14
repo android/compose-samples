@@ -20,6 +20,7 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -116,11 +117,11 @@ private fun DestinationBar(modifier: Modifier = Modifier) {
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .weight(1f)
-                    .gravity(Alignment.CenterVertically)
+                    .align(Alignment.CenterVertically)
             )
             IconButton(
                 onClick = { /* todo */ },
-                modifier = Modifier.gravity(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
                     asset = Icons.Outlined.ExpandMore,

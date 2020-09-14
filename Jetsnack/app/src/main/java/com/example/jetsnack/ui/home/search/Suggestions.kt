@@ -42,7 +42,7 @@ fun SearchSuggestions(
             style = MaterialTheme.typography.h6,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier
-                .preferredHeightIn(minHeight = 56.dp)
+                .preferredHeightIn(min = 56.dp)
                 .padding(horizontal = 24.dp, vertical = 4.dp)
                 .wrapContentHeight()
         )
@@ -52,7 +52,7 @@ fun SearchSuggestions(
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .preferredHeightIn(minHeight = 48.dp)
+                    .preferredHeightIn(min = 48.dp)
                     .clickable { onSuggestionSelect(suggestion) }
                     .padding(start = 24.dp)
                     .wrapContentHeight()

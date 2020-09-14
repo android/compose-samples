@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -155,7 +155,7 @@ private fun SearchResult(
         JetsnackButton(
             onClick = { /* todo */ },
             shape = CircleShape,
-            padding = InnerPadding(0.dp),
+            padding = PaddingValues(0.dp),
             modifier = Modifier
                 .preferredSize(36.dp)
                 .constrainAs(add) {
@@ -174,7 +174,7 @@ fun NoResults(
     modifier: Modifier = Modifier
 ) {
     Column(
-        horizontalGravity = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
             .wrapContentSize()

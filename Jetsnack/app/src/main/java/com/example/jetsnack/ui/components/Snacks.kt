@@ -23,6 +23,7 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -75,9 +76,9 @@ fun SnackCollection(
 ) {
     Column(modifier = modifier) {
         Row(
-            verticalGravity = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .preferredHeightIn(minHeight = 56.dp)
+                .preferredHeightIn(min = 56.dp)
                 .padding(start = 24.dp)
         ) {
             Text(
@@ -90,7 +91,7 @@ fun SnackCollection(
             )
             IconButton(
                 onClick = { /* todo */ },
-                modifier = Modifier.gravity(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
                     asset = Icons.Outlined.ArrowForward,
@@ -160,7 +161,7 @@ fun SnackItem(
         modifier = modifier.padding(bottom = 8.dp)
     ) {
         Column(
-            horizontalGravity = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable(onClick = { onSnackClick(snack.id) })
                 .padding(8.dp)
@@ -223,7 +224,7 @@ private fun HighlightSnackItem(
                     imageUrl = snack.imageUrl,
                     modifier = Modifier
                         .preferredSize(120.dp)
-                        .gravity(Alignment.BottomCenter)
+                        .align(Alignment.BottomCenter)
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(8.dp))
