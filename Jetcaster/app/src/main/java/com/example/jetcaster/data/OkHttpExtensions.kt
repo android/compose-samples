@@ -28,21 +28,23 @@ import kotlin.coroutines.resumeWithException
  * Suspending wrapper around an OkHttp [Call], using [Call.enqueue].
  */
 suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
-    enqueue(object : Callback {
-        override fun onResponse(call: Call, response: Response) {
-            continuation.resume(response) {
-                // If we have a response but we're cancelled while resuming, we need to
-                // close() the unused response
-                if (response.body != null) {
-                    response.closeQuietly()
+    enqueue(
+        object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                continuation.resume(response) {
+                    // If we have a response but we're cancelled while resuming, we need to
+                    // close() the unused response
+                    if (response.body != null) {
+                        response.closeQuietly()
+                    }
                 }
             }
-        }
 
-        override fun onFailure(call: Call, e: IOException) {
-            continuation.resumeWithException(e)
+            override fun onFailure(call: Call, e: IOException) {
+                continuation.resumeWithException(e)
+            }
         }
-    })
+    )
 
     continuation.invokeOnCancellation {
         try {
