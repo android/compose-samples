@@ -47,12 +47,12 @@ class HomeTest {
 
     @Test
     fun home_navigatesToAllScreens() {
-        onNodeWithText("Explore Flights by Destination").assertExists()
-        onNodeWithText("SLEEP").performClick()
-        onNodeWithText("Explore Properties by Destination").assertExists()
-        onNodeWithText("EAT").performClick()
-        onNodeWithText("Explore Restaurants by Destination").assertExists()
-        onNodeWithText("FLY").performClick()
-        onNodeWithText("Explore Flights by Destination").assertExists()
+        composeTestRule.onNodeWithText("Explore Flights by Destination").assertExists()
+        composeTestRule.onNodeWithText("SLEEP").performClick()
+        composeTestRule.onNodeWithText("Explore Properties by Destination").assertExists()
+        composeTestRule.onNodeWithText("EAT").performClick()
+        composeTestRule.onNodeWithText("Explore Restaurants by Destination").assertExists()
+        composeTestRule.onNodeWithText("FLY").performClick()
+        composeTestRule.onNodeWithText("Explore Flights by Destination").assertExists()
     }
 }

@@ -25,7 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.android.AndroidComposeTestRule
+import androidx.ui.test.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.onNodeWithText
 import com.google.android.libraries.maps.MapView
@@ -52,8 +52,8 @@ class DetailsActivityTest {
 
     @Test
     fun mapView_cameraPositioned() {
-        onNodeWithText(MADRID.nameToDisplay).assertIsDisplayed()
-        onNodeWithText(expectedDescription).assertIsDisplayed()
+        composeTestRule.onNodeWithText(MADRID.nameToDisplay).assertIsDisplayed()
+        composeTestRule.onNodeWithText(expectedDescription).assertIsDisplayed()
         onView(withId(R.id.map)).check(matches(isDisplayed()))
 
         var cameraPosition: CameraPosition? = null
