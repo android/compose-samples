@@ -104,7 +104,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 ProfileFab(
                     extended = scrollState.value == 0f,
                     userIsMe = userData.isMe(),
-                    modifier = Modifier.gravity(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd)
                 )
             }
         }
@@ -188,7 +188,7 @@ private fun ProfileHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 // Allow for landscape and portrait ratios
-                .preferredHeightIn(maxHeight = 320.dp)
+                .preferredHeightIn(max = 320.dp)
                 .aspectRatio(ratioAsset),
             backgroundColor = Color.LightGray
 
@@ -243,7 +243,7 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             modifier = modifier
                 .padding(16.dp)
                 .preferredHeight(48.dp)
-                .widthIn(minWidth = 48.dp),
+                .widthIn(min = 48.dp),
             backgroundColor = MaterialTheme.colors.primary,
             contentColor = MaterialTheme.colors.onPrimary
         ) {

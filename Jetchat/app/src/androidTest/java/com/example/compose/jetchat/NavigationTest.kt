@@ -22,10 +22,9 @@ import androidx.compose.runtime.Providers
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
-import androidx.ui.test.android.createAndroidComposeRule
 import androidx.ui.test.assertIsDisplayed
+import androidx.ui.test.createAndroidComposeRule
 import androidx.ui.test.onNodeWithText
-import androidx.ui.test.runOnUiThread
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
@@ -81,13 +80,13 @@ class NavigationTest {
     @Test
     fun profileScreen_back_conversationScreen() {
         // Navigate to profile
-        runOnUiThread {
+        composeTestRule.runOnUiThread {
             navController.navigate(R.id.nav_profile)
         }
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check
-        onNodeWithText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
 
         // Press back
         Espresso.pressBack()

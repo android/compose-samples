@@ -31,7 +31,7 @@ import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
@@ -45,6 +45,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.FirstBaseline
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.Divider
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.IconButton
@@ -221,7 +222,7 @@ fun FunctionalityNotAvailablePanel() {
         Column(
             modifier = Modifier.preferredHeight(320.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
-            horizontalGravity = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
                 Text(
@@ -262,7 +263,7 @@ private fun UserInputSelector(
             .preferredHeight(56.dp)
             .wrapContentHeight()
             .padding(horizontal = 4.dp),
-        verticalGravity = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.EMOJI) },
@@ -315,10 +316,16 @@ private fun UserInputSelector(
             elevation = 0.dp,
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
-            disabledBackgroundColor = MaterialTheme.colors.surface,
+            backgroundColor = ButtonConstants.defaultButtonBackgroundColor(
+                enabled = false,
+                defaultColor = MaterialTheme.colors.surface
+            ),
             border = border,
-            disabledContentColor = disableContentColor,
-            contentPadding = InnerPadding(0.dp) // TODO: Workaround for b/158830170
+            contentColor = ButtonConstants.defaultButtonContentColor(
+                enabled = false,
+                defaultColor = disableContentColor
+            ),
+            contentPadding = PaddingValues(0.dp) // TODO: Workaround for b/158830170
         ) {
             Text(
                 stringResource(id = R.string.send),
@@ -391,7 +398,7 @@ private fun UserInputText(
         horizontalArrangement = Arrangement.End
     ) {
         Stack(
-            modifier = Modifier.preferredHeight(48.dp).weight(1f).gravity(Alignment.Bottom)
+            modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
         ) {
             var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
             BaseTextField(
@@ -400,7 +407,7 @@ private fun UserInputText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp)
-                    .gravity(Alignment.CenterStart)
+                    .align(Alignment.CenterStart)
                     .focusObserver { state ->
                         if (lastFocusState != state) {
                             onTextFieldFocused(state == FocusState.Active)
@@ -418,7 +425,7 @@ private fun UserInputText(
             if (textFieldValue.text.isEmpty() && !focusState) {
                 Text(
                     modifier = Modifier
-                        .gravity(Alignment.CenterStart)
+                        .align(Alignment.CenterStart)
                         .padding(start = 16.dp),
                     text = stringResource(id = R.string.textfield_hint),
                     style = MaterialTheme.typography.body1.copy(color = disableContentColor)
@@ -492,7 +499,7 @@ fun ExtendedSelectorInnerButton(
         shape = MaterialTheme.shapes.medium,
         backgroundColor = backgroundColor,
         contentColor = color,
-        contentPadding = InnerPadding(0.dp) // TODO: Workaround for b/158830170
+        contentPadding = PaddingValues(0.dp) // TODO: Workaround for b/158830170
     ) {
         Text(
             text = text,
