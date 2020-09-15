@@ -101,7 +101,7 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
         val imageModifier = Modifier
-            .preferredHeightIn(minHeight = 180.dp)
+            .preferredHeightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
         Image(image, imageModifier, contentScale = ContentScale.Crop)

@@ -180,7 +180,7 @@ private fun DrawerButton(
         ) {
             Row(
                 horizontalArrangement = Arrangement.Start,
-                verticalGravity = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(

@@ -250,7 +250,7 @@ private fun HomeScreenErrorAndContent(
             showError = posts.hasError,
             onErrorAction = onRefresh,
             onDismiss = onErrorDismiss,
-            modifier = Modifier.gravity(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }

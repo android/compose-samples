@@ -16,7 +16,7 @@
 
 buildscript {
     ext.kotlin_version = '1.4.0'
-    ext.compose_version = '1.0.0-alpha02'
+    ext.compose_version = '1.0.0-SNAPSHOT'
 
     repositories {
         google()
@@ -24,7 +24,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha09'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -37,6 +37,10 @@ subprojects {
     repositories {
         google()
         jcenter()
+
+        maven {
+            url "https://androidx.dev/snapshots/builds/6824694/artifacts/ui/repository/"
+        }
     }
 
     apply plugin: 'com.diffplug.spotless'

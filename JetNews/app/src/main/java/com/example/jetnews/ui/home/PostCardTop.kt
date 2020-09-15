@@ -47,7 +47,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
         post.image?.let { image ->
             val imageModifier = Modifier
-                .preferredHeightIn(minHeight = 180.dp)
+                .preferredHeightIn(min = 180.dp)
                 .fillMaxWidth()
                 .clip(shape = MaterialTheme.shapes.medium)
             Image(image, modifier = imageModifier, contentScale = ContentScale.Crop)
