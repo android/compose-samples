@@ -82,7 +82,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
             showError = showSnackbar.value,
             errorText = stringResource(id = R.string.feature_not_available),
             onDismiss = { showSnackbar.value = false },
-            modifier = Modifier.gravity(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }

@@ -117,7 +117,7 @@ private fun Branding(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
-        Logo(modifier = Modifier.gravity(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
+        Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
                 text = stringResource(id = R.string.app_tagline),
@@ -151,7 +151,7 @@ private fun SignInCreateAccount(
     onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier, horizontalGravity = Alignment.CenterHorizontally) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
             Text(
                 text = stringResource(id = R.string.sign_in_create_account),

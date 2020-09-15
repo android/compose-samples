@@ -199,7 +199,7 @@ fun OrSignInAsGuest(
 ) {
     Column(
         modifier = modifier,
-        horizontalGravity = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
