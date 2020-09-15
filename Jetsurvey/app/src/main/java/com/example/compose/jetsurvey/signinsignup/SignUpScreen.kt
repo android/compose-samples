@@ -28,7 +28,11 @@ import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
@@ -59,24 +63,34 @@ fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFocus::class)
 @Composable
-fun SignUpContent(onSignUpSubmitted: (email: String, password: String) -> Unit) {
+fun SignUpContent(
+    onSignUpSubmitted: (email: String, password: String) -> Unit,
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
+        val passwordFocusRequest = remember { FocusRequester() }
+        val confirmationPasswordFocusRequest = remember { FocusRequester() }
         val emailState = remember { EmailState() }
-        Email(emailState)
+        Email(emailState, onImeAction = { passwordFocusRequest.requestFocus() })
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
-            passwordState = passwordState
+            passwordState = passwordState,
+            imeAction = ImeAction.Next,
+            onImeAction = { confirmationPasswordFocusRequest.requestFocus() },
+            modifier = Modifier.focusRequester(passwordFocusRequest)
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         val confirmPasswordState = remember { ConfirmPasswordState(passwordState = passwordState) }
         Password(
             label = stringResource(id = R.string.confirm_password),
-            passwordState = confirmPasswordState
+            passwordState = confirmPasswordState,
+            onImeAction = { onSignUpSubmitted(emailState.text, passwordState.text) },
+            modifier = Modifier.focusRequester(confirmationPasswordFocusRequest)
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))

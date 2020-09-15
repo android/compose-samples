@@ -18,8 +18,8 @@ package com.example.compose.jetsurvey.survey
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
@@ -116,7 +116,7 @@ fun SurveyResultScreen(
 
 @Composable
 private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxSize()) {
+    ScrollableColumn(modifier = modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.preferredHeight(44.dp))
         Text(
             text = result.surveyResult.library,
@@ -134,7 +134,7 @@ private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifi
         Text(
             text = stringResource(result.surveyResult.description),
             style = MaterialTheme.typography.body1,
-            modifier = Modifier.weight(1f).padding(horizontal = 20.dp)
+            modifier = Modifier.padding(horizontal = 20.dp)
         )
     }
 }
