@@ -27,7 +27,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.gravity
+import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -111,7 +111,6 @@ fun ConversationContent(
             ChannelNameBar(
                 channelName = uiState.channelName,
                 channelMembers = uiState.channelMembers,
-                modifier = Modifier.gravity(Alignment.TopCenter),
                 onNavIconPressed = onNavIconPressed
             )
         }
@@ -131,7 +130,7 @@ fun ChannelNameBar(
         title = {
             Column(
                 modifier = Modifier.weight(1f),
-                horizontalGravity = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Channel name
                 Text(
@@ -229,7 +228,7 @@ fun Messages(
             onClicked = {
                 scrollState.smoothScrollTo(BottomScrollState)
             },
-            modifier = Modifier.gravity(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
@@ -266,7 +265,7 @@ fun Message(
                     .border(1.5.dp, borderColor, CircleShape)
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
-                    .gravity(Alignment.Top),
+                    .align(Alignment.Top),
                 asset = image,
                 contentScale = ContentScale.Crop
             )
@@ -351,7 +350,7 @@ fun DayHeader(dayString: String) {
 @Composable
 private fun DayHeaderLine() {
     Divider(
-        modifier = Modifier.weight(1f).gravity(Alignment.CenterVertically),
+        modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
     )
 }
