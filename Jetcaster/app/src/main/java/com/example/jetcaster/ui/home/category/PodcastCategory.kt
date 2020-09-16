@@ -22,7 +22,6 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.align
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,8 +33,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.lazy.LazyColumnItems
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRowForIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.EmphasisAmbient
@@ -69,10 +68,11 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.viewModelProviderFactoryOf
-import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun PodcastCategory(
     categoryId: Long,
@@ -91,42 +91,27 @@ fun PodcastCategory(
     val viewState by viewModel.state.collectAsState()
 
     /**
-     * LazyColumnItems currently only supports a single type of item. To workaround that, we
-     * have the `sealed` [EpisodeListItem] class which allows us to bake in different
-     * 'layout' types, which our [LazyColumnItems] switches on.
-     */
-    val items = ArrayList<PodcastCategoryItem>()
-    if (viewState.topPodcasts.isNotEmpty()) {
-        items += PodcastCategoryItem.TopPodcastsItem(viewState.topPodcasts)
-    }
-    viewState.episodes.mapTo(items) { (episode, podcast) ->
-        PodcastCategoryItem.EpisodeItem(episode, podcast)
-    }
-
-    /**
      * TODO: reset scroll position when category changes
      */
-    LazyColumnFor(
-        items = items,
+    LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(0.dp),
         horizontalAlignment = Alignment.Start
-    ) { item ->
-        when (item) {
-            is PodcastCategoryItem.EpisodeItem -> {
-                EpisodeListItem(
-                    episode = item.episode,
-                    podcast = item.podcast,
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-            }
-            is PodcastCategoryItem.TopPodcastsItem -> {
-                CategoryPodcastRow(
-                    podcasts = item.podcasts,
-                    onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-            }
+    ) {
+        item {
+            CategoryPodcastRow(
+                podcasts = viewState.topPodcasts,
+                onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+                modifier = Modifier.fillParentMaxWidth()
+            )
+        }
+
+        items(viewState.episodes) { item ->
+            EpisodeListItem(
+                episode = item.episode,
+                podcast = item.podcast,
+                modifier = Modifier.fillParentMaxWidth()
+            )
         }
     }
 }
@@ -157,7 +142,7 @@ fun EpisodeListItem(
 
         if (podcast.imageUrl != null) {
             // If we have an image Url, we can show it using [CoilImage]
-            CoilImage(
+            CoilImageWithCrossfade(
                 data = podcast.imageUrl,
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
@@ -342,7 +327,7 @@ private fun TopPodcastRowItem(
                 .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
-                CoilImage(
+                CoilImageWithCrossfade(
                     data = podcastImageUrl,
                     contentScale = ContentScale.Crop,
                     loading = { /* TODO do something better here */ },
@@ -385,9 +370,4 @@ fun PreviewEpisodeListItem() {
             modifier = Modifier.fillMaxWidth()
         )
     }
-}
-
-private sealed class PodcastCategoryItem {
-    data class EpisodeItem(val episode: Episode, val podcast: Podcast) : PodcastCategoryItem()
-    data class TopPodcastsItem(val podcasts: List<PodcastWithExtraInfo>) : PodcastCategoryItem()
 }
