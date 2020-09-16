@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.EmphasisAmbient
@@ -266,7 +265,8 @@ private fun HomeCategoryTabs(
                         text = when (category) {
                             HomeCategory.Library -> stringResource(R.string.home_library)
                             HomeCategory.Discover -> stringResource(R.string.home_discover)
-                        }
+                        },
+                        style = MaterialTheme.typography.body2
                     )
                 }
             )
@@ -277,10 +277,10 @@ private fun HomeCategoryTabs(
 @Composable
 fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.primary
+    color: Color = MaterialTheme.colors.onSurface
 ) {
     Spacer(
-        modifier.preferredWidth(112.dp)
+        modifier.padding(horizontal = 24.dp)
             .preferredHeight(4.dp)
             .align(Alignment.CenterHorizontally)
             .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
