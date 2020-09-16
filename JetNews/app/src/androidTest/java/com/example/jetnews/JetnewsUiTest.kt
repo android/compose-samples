@@ -23,7 +23,6 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.hasSubstring
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
-import kotlinx.coroutines.flow.combineTransform
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
