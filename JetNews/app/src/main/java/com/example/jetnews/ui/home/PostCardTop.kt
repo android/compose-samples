@@ -18,8 +18,12 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.preferredHeightIn
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis

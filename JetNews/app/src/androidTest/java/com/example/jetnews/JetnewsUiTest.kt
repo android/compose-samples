@@ -17,13 +17,7 @@
 package com.example.jetnews
 
 import androidx.test.filters.MediumTest
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasSubstring
-import androidx.ui.test.onAllNodes
-import androidx.ui.test.onNodeWithText
-import androidx.ui.test.performClick
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
