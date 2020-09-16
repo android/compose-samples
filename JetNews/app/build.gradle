@@ -67,18 +67,18 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.animation:animation:$compose_version"
     implementation "androidx.ui:ui-tooling:$compose_version"
-    implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
-    implementation 'androidx.activity:activity-ktx:1.1.0'
-    implementation 'androidx.core:core-ktx:1.5.0-alpha01'
-
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha06"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha06"
+    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
+    implementation 'androidx.activity:activity-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.5.0-alpha02'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha07"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha07"
 
     androidTestImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation "androidx.ui:ui-test:$compose_version"
 }
 
