@@ -21,6 +21,7 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
@@ -42,11 +43,11 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun FilterBar(filters: List<Filter>) {
-    ScrollableRow(modifier = Modifier.preferredHeightIn(minHeight = 56.dp)) {
+    ScrollableRow(modifier = Modifier.preferredHeightIn(min = 56.dp)) {
         Spacer(Modifier.preferredWidth(8.dp))
         IconButton(
             onClick = { /* todo */ },
-            modifier = Modifier.gravity(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Icon(
                 asset = Icons.Rounded.FilterList,
@@ -61,7 +62,7 @@ fun FilterBar(filters: List<Filter>) {
         filters.forEach { filter ->
             FilterChip(
                 filter = filter,
-                modifier = Modifier.gravity(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             )
             Spacer(Modifier.preferredWidth(8.dp))
         }

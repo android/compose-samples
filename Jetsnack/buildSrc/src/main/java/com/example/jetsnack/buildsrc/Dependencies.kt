@@ -17,15 +17,15 @@
 package com.example.jetsnack.buildsrc
 
 object Versions {
-    const val ktlint = "0.37.2"
+    const val ktlint = "0.38.1"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha08"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha10"
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.2.0"
+        private const val version = "0.2.2.ui-6824694-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -44,12 +44,12 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
+        const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha02"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha01"
+            const val snapshot = "6824694"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:${version}"

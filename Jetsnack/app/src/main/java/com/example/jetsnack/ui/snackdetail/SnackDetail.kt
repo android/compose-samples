@@ -103,7 +103,7 @@ fun SnackDetail(
         Title(snack, scroll.value)
         Image(snack.imageUrl, scroll.value)
         Up(upPress)
-        CartBottomBar(modifier = Modifier.gravity(Alignment.BottomCenter))
+        CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
 
@@ -219,7 +219,7 @@ private fun Title(snack: Snack, scroll: Float) {
     Column(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
-            .preferredHeightIn(minHeight = TitleHeight)
+            .preferredHeightIn(min = TitleHeight)
             .statusBarsPadding()
             .drawLayer(translationY = offset)
             .background(color = JetsnackTheme.colors.uiBackground)
@@ -309,11 +309,11 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
         Column {
             JetsnackDivider()
             Row(
-                verticalGravity = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .navigationBarsPadding(left = false, right = false)
                     .then(HzPadding)
-                    .preferredHeightIn(minHeight = BottomBarHeight)
+                    .preferredHeightIn(min = BottomBarHeight)
             ) {
                 Text(
                     text = stringResource(R.string.quantity),
@@ -330,7 +330,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                     fontSize = 18.sp,
                     color = JetsnackTheme.colors.textPrimary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.preferredWidthIn(minWidth = 24.dp)
+                    modifier = Modifier.preferredWidthIn(min = 24.dp)
                 )
                 JetsnackGradientTintedIconButton(
                     asset = Icons.Outlined.AddCircleOutline,
