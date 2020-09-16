@@ -19,7 +19,6 @@ package com.example.jetnews
 import android.content.Context
 import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
-import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.ComposeTestRuleJUnit
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.NavigationViewModel

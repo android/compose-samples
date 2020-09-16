@@ -65,7 +65,7 @@ class HomeScreenSnackbarTest {
 
         // Then the first message received in the Snackbar is an error message
         val snackbarText = InstrumentationRegistry.getInstrumentation()
-                .targetContext.resources.getString(R.string.load_error)
+            .targetContext.resources.getString(R.string.load_error)
         runBlocking {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             // wait for the first a non-null `currentSnackbarData`
