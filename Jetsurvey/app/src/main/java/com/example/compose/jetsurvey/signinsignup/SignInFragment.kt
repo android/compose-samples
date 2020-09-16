@@ -20,9 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.compose.runtime.Recomposer
-import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -43,13 +41,13 @@ class SignInFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.navigateTo.observe(this) { navigateToEvent ->
+        viewModel.navigateTo.observe(owner = viewLifecycleOwner) { navigateToEvent ->
             navigateToEvent.getContentIfNotHandled()?.let { navigateTo ->
                 navigate(navigateTo, Screen.SignIn)
             }
         }
 
-        return FrameLayout(requireContext()).apply {
+        return ComposeView(requireContext()).apply {
             // In order for savedState to work, the same ID needs to be used for all instances.
             id = R.id.sign_in_fragment
 
@@ -57,7 +55,7 @@ class SignInFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
-            setContent(Recomposer.current()) {
+            setContent {
                 JetsurveyTheme {
                     SignIn(
                         onNavigationEvent = { event ->

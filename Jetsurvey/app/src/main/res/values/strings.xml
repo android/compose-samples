@@ -21,7 +21,6 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_up">Sign up</string>
     <string name="sign_in_guest">Sign in as guest</string>
     <string name="sign_in_create_account">Sign in or create an account</string>
     <string name="or">or</string>
@@ -62,9 +61,8 @@
 
     <!-- question 4-->
     <string name="selfies">How do you feel about selfies 🤳?</string>
-    <string name="selfie_value_1">😒️</string>
-    <string name="selfie_value_2">😐</string>
-    <string name="selfie_value_3">🤩️</string>
+    <string name="selfie_min">😒️</string>
+    <string name="selfie_max">🤩️</string>
 
     <!-- question 5-->
     <string name="selfie_skills">Show us your selfie skills!</string>
