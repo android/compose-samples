@@ -111,7 +111,6 @@ fun ConversationContent(
             ChannelNameBar(
                 channelName = uiState.channelName,
                 channelMembers = uiState.channelMembers,
-                // modifier = Modifier.gravity(Alignment.TopCenter),
                 onNavIconPressed = onNavIconPressed
             )
         }
