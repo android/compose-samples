@@ -21,15 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.contentColor
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.FirstBaseline
 import androidx.compose.material.Colors
@@ -101,7 +93,7 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
 private fun PostHeaderImage(post: Post) {
     post.image?.let { image ->
         val imageModifier = Modifier
-            .preferredHeightIn(min = 180.dp)
+            .heightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
         Image(image, imageModifier, contentScale = ContentScale.Crop)

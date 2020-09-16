@@ -18,11 +18,7 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
@@ -47,7 +43,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
         post.image?.let { image ->
             val imageModifier = Modifier
-                .preferredHeightIn(min = 180.dp)
+                .heightIn(min = 180.dp)
                 .fillMaxWidth()
                 .clip(shape = MaterialTheme.shapes.medium)
             Image(image, modifier = imageModifier, contentScale = ContentScale.Crop)

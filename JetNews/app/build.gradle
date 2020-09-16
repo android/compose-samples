@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+import com.example.jetnews.buildsrc.Libs
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 android {
     compileSdkVersion 30
@@ -51,47 +55,33 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion kotlin_version
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion Libs.Kotlin.version
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation Libs.Kotlin.stdlib
 
-    implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.foundation:foundation-layout:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.animation:animation:$compose_version"
-    implementation "androidx.ui:ui-tooling:$compose_version"
-    implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
-    implementation 'androidx.activity:activity-ktx:1.1.0'
-    implementation 'androidx.core:core-ktx:1.5.0-alpha01'
+    implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.foundation
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.ui
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.animation
+    implementation Libs.AndroidX.Compose.iconsExtended
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.runtimeLivedata
 
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.activityKtx
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha06"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha06"
+    implementation Libs.AndroidX.Lifecycle.viewmodelSavedState
+    implementation Libs.AndroidX.Lifecycle.livedataKtx
 
-    androidTestImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation "androidx.ui:ui-test:$compose_version"
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        // Treat all Kotlin warnings as errors
-        allWarningsAsErrors = true
-        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-        // Enable experimental coroutines APIs, including Flow
-        freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
-        freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
-
-        // Set JVM target to 1.8
-        jvmTarget = "1.8"
-    }
+    androidTestImplementation Libs.junit
+    androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Test.runner
+    androidTestImplementation Libs.AndroidX.Compose.Test.uiTest
 }

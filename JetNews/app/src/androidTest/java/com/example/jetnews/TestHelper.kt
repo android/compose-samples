@@ -26,11 +26,11 @@ import com.example.jetnews.ui.NavigationViewModel
 /**
  * Launches the app from a test context
  */
-fun ComposeTestRule.launchJetNewsApp(context: Context) {
-    setContent {
-        JetnewsApp(
-            TestAppContainer(context),
-            remember { NavigationViewModel(SavedStateHandle()) }
-        )
-    }
+fun ComposeTestRule.launchJetNewsApp() {
+//    setContent {
+//        JetnewsApp(
+//            TestAppContainer(context),
+//            remember { NavigationViewModel(SavedStateHandle()) }
+//        )
+//    }
 }

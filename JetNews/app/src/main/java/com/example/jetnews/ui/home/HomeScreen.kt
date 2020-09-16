@@ -141,8 +141,10 @@ fun HomeScreen(
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
-        // Show snackbar message using a coroutine scope
-        launchInComposition(posts) {
+        // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
+        // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
+        // only start when posts.hasError is true (due to the above if-check).
+        launchInComposition(posts.hasError) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-buildscript {
-    ext.kotlin_version = '1.4.0'
-    ext.compose_version = '1.0.0-SNAPSHOT'
+import com.example.jetnews.buildsrc.Libs
+import com.example.jetnews.buildsrc.Versions
 
+buildscript {
     repositories {
         google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha10'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath Libs.androidGradlePlugin
+        classpath Libs.Kotlin.gradlePlugin
     }
 }
 
@@ -38,8 +38,24 @@ subprojects {
         google()
         jcenter()
 
-        maven {
-            url "https://androidx.dev/snapshots/builds/6824694/artifacts/ui/repository/"
+        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
+            maven {
+                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
+            }
+        }
+
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = '1.8'
+            allWarningsAsErrors = true
+            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+            // Opt-in to experimental compose APIs
+            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            // Enable experimental coroutines APIs, including Flow
+            freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
         }
     }
 
@@ -50,7 +66,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.37.2")
+            ktlint(Versions.ktlint)
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }
