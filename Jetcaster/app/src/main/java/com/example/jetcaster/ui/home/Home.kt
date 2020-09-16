@@ -16,7 +16,6 @@
 
 package com.example.jetcaster.ui.home
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
@@ -180,42 +179,38 @@ fun HomeContent(
                 dominantColorState.reset()
             }
 
-            Stack(Modifier.fillMaxWidth()) {
-                Box(
-                    Modifier.matchParentSize()
-                        .verticalGradientScrim(
-                            color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
-                            startYPercentage = 1f,
-                            endYPercentage = 0f
-                        )
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .verticalGradientScrim(
+                        color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
+                        startYPercentage = 1f,
+                        endYPercentage = 0f
+                    )
+            ) {
+                val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
+
+                // Draw a scrim over the status bar which matches the app bar
+                Spacer(Modifier.background(appBarColor).fillMaxWidth().statusBarsHeight())
+
+                HomeAppBar(
+                    backgroundColor = appBarColor,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                Column(Modifier.fillMaxWidth()) {
-                    val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
+                if (featuredPodcasts.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
 
-                    // Draw a scrim over the status bar which matches the app bar
-                    Spacer(Modifier.background(appBarColor).fillMaxWidth().statusBarsHeight())
-
-                    HomeAppBar(
-                        backgroundColor = appBarColor,
-                        modifier = Modifier.fillMaxWidth()
+                    FollowedPodcasts(
+                        items = featuredPodcasts,
+                        pagerState = pagerState,
+                        onPodcastUnfollowed = onPodcastUnfollowed,
+                        modifier = Modifier
+                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                            .fillMaxWidth()
+                            .preferredHeight(200.dp)
                     )
 
-                    if (featuredPodcasts.isNotEmpty()) {
-                        Spacer(Modifier.height(16.dp))
-
-                        FollowedPodcasts(
-                            items = featuredPodcasts,
-                            pagerState = pagerState,
-                            onPodcastUnfollowed = onPodcastUnfollowed,
-                            modifier = Modifier
-                                .padding(start = Keyline1, top = 16.dp, end = Keyline1)
-                                .fillMaxWidth()
-                                .preferredHeight(200.dp)
-                        )
-
-                        Spacer(Modifier.height(16.dp))
-                    }
+                    Spacer(Modifier.height(16.dp))
                 }
             }
         }
