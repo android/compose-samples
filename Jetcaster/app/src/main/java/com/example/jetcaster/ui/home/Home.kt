@@ -313,9 +313,7 @@ fun FollowedPodcasts(
             podcastImageUrl = podcast.imageUrl,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
-            modifier = Modifier.padding(4.dp)
-                .fillMaxHeight()
-                .scalePagerItems(unselectedScale = PodcastCarouselUnselectedScale)
+            modifier = Modifier.padding(4.dp).fillMaxHeight()
         )
     }
 }
