@@ -349,7 +349,7 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
         Image(
             image,
             Modifier
-                .gravity(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically)
                 .preferredSize(56.dp, 56.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
@@ -357,12 +357,12 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             text = itemTitle,
             modifier = Modifier
                 .weight(1f)
-                .gravity(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically)
                 .padding(16.dp),
             style = MaterialTheme.typography.subtitle1
         )
         SelectTopicButton(
-            modifier = Modifier.gravity(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically),
             selected = selected
         )
     }
