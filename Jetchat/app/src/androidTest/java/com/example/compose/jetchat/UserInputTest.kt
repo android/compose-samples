@@ -75,12 +75,12 @@ class UserInputTest {
 
     @Test
     fun emojiSelector_isClosedWithBack() {
-        // Click on text field
-        composeTestRule.onNodeWithSubstring(activity.getString(R.string.textfield_hint)).performClick()
         // Open emoji selector
         openEmojiSelector()
         // Check emoji selector is displayed
         assertEmojiSelectorIsDisplayed()
+
+        composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
         // Press back button
         Espresso.pressBack()
         // Check the emoji selector is not displayed

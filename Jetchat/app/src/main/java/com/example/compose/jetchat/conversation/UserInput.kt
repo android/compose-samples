@@ -53,6 +53,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
 import androidx.compose.material.TextButton
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AlternateEmail
 import androidx.compose.material.icons.outlined.Duo
@@ -198,7 +199,7 @@ private fun SelectorExpanded(
     // If the selector is shown, always request focus to trigger a TextField.onFocusChange.
     onCommit {
         if (currentSelector == InputSelector.EMOJI) {
-            focusRequester.captureFocus()
+            focusRequester.requestFocus()
         }
     }
     val selectorExpandedColor = getSelectorExpandedColor()
@@ -308,6 +309,10 @@ private fun UserInputSelector(
         val disableContentColor =
             EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
 
+        val backgroundColor = ButtonConstants.defaultButtonBackgroundColor(
+            enabled = sendMessageEnabled,
+            disabledColor = MaterialTheme.colors.surface
+        )
         // Send button
         Button(
             modifier = Modifier
@@ -316,14 +321,12 @@ private fun UserInputSelector(
             elevation = 0.dp,
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
-            backgroundColor = ButtonConstants.defaultButtonBackgroundColor(
-                enabled = false,
-                defaultColor = MaterialTheme.colors.surface
-            ),
+            backgroundColor = backgroundColor,
             border = border,
             contentColor = ButtonConstants.defaultButtonContentColor(
-                enabled = false,
-                defaultColor = disableContentColor
+                enabled = sendMessageEnabled,
+                defaultColor = contentColorFor(backgroundColor),
+                disabledColor = disableContentColor
             ),
             contentPadding = PaddingValues(0.dp) // TODO: Workaround for b/158830170
         ) {
