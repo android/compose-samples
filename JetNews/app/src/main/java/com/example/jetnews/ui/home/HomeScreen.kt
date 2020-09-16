@@ -125,7 +125,6 @@ fun HomeScreen(
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) request the current error be dismissed
  * @param navigateTo (event) request navigation to [Screen]
- * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -247,8 +246,9 @@ private fun LoadingContent(
  *
  * @param posts (state) list of posts and error state to display
  * @param onRefresh (event) request to refresh data
- * @param onError (event) indicates there has been an error
  * @param navigateTo (event) request navigation to [Screen]
+ * @param favorites (state) all favorites
+ * @param onToggleFavorite (event) request a single favorite be toggled
  * @param modifier modifier for root element
  */
 @Composable

@@ -27,11 +27,11 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.onNodeWithText
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.state.UiState
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 /**
  * Checks that the Snackbar is shown when the HomeScreen data contains an error.
@@ -47,8 +47,8 @@ class HomeScreenSnackbarTest {
     )
     @Test
     fun postsContainError_snackbarShown() {
+        val snackbarHostState = SnackbarHostState()
         composeTestRule.setContent {
-            val snackbarHostState = SnackbarHostState()
             val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
 
             // When the Home screen receives data with an error
@@ -61,21 +61,16 @@ class HomeScreenSnackbarTest {
                 navigateTo = {},
                 scaffoldState = scaffoldState
             )
+        }
 
-            // Then the first message received in the Snackbar is an error message
-            val latch = CountDownLatch(1)
+        // Then the first message received in the Snackbar is an error message
+        val snackbarText = InstrumentationRegistry.getInstrumentation()
+                .targetContext.resources.getString(R.string.load_error)
+        runBlocking {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
-            snapshotFlow { snackbarHostState.currentSnackbarData }
-                .onEach {
-                    val snackbarText =
-                        InstrumentationRegistry.getInstrumentation().targetContext.resources
-                            .getString(R.string.load_error)
-                    onNodeWithText(snackbarText).assertIsDisplayed()
-                    // Unblock the latch.await below and
-                    latch.countDown()
-                }
-            // Wait until the snackbar text is received and checked or fail
-            latch.await(2, TimeUnit.SECONDS)
+            // wait for the first a non-null `currentSnackbarData`
+            snapshotFlow { snackbarHostState.currentSnackbarData }.filterNotNull().first()
+            composeTestRule.onNodeWithText(snackbarText, false, false).assertIsDisplayed()
         }
     }
 }
