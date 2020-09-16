@@ -18,10 +18,12 @@ package com.example.jetcaster.ui.home
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope.align
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
@@ -44,6 +46,7 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabConstants.defaultTabIndicatorOffset
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
@@ -76,7 +79,7 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
-import com.example.jetcaster.util.statusBarsPadding
+import com.example.jetcaster.util.statusBarsHeight
 import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.Duration
@@ -104,36 +107,34 @@ fun Home() {
 
 @Composable
 fun HomeAppBar(
+    backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
-    Stack(modifier = modifier) {
-        ProvideEmphasis(EmphasisAmbient.current.high) {
-            Icon(
-                asset = vectorResource(R.drawable.ic_text_logo),
-                modifier = Modifier.align(Alignment.Center)
-                    .padding(8.dp)
-                    .preferredHeightIn(max = 24.dp)
-            )
-        }
-
-        ProvideEmphasis(EmphasisAmbient.current.medium) {
-            IconButton(
-                onClick = { /* TODO: Open account? */ },
-                modifier = Modifier.align(Alignment.CenterStart)
-                    .padding(start = 8.dp)
-            ) {
-                Icon(Icons.Default.AccountCircle)
+    TopAppBar(
+        title = {
+            Row {
+                Image(asset = vectorResource(R.drawable.ic_logo))
+                Icon(
+                    asset = vectorResource(R.drawable.ic_text_logo),
+                    modifier = Modifier.padding(start = 4.dp).preferredHeightIn(max = 24.dp)
+                )
             }
-
-            IconButton(
-                onClick = { /* TODO: Open search */ },
-                modifier = Modifier.align(Alignment.CenterEnd)
-                    .padding(end = 8.dp)
-            ) {
-                Icon(Icons.Filled.Search)
+        },
+        backgroundColor = backgroundColor,
+        actions = {
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                IconButton(
+                    onClick = { /* TODO: Open search */ },
+                    icon = { Icon(Icons.Filled.Search) }
+                )
+                IconButton(
+                    onClick = { /* TODO: Open account? */ },
+                    icon = { Icon(Icons.Default.AccountCircle) }
+                )
             }
-        }
-    }
+        },
+        modifier = modifier
+    )
 }
 
 /**
@@ -190,10 +191,14 @@ fun HomeContent(
                 )
 
                 Column(Modifier.fillMaxWidth()) {
+                    val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
+
+                    // Draw a scrim over the status bar which matches the app bar
+                    Spacer(Modifier.background(appBarColor).fillMaxWidth().statusBarsHeight())
+
                     HomeAppBar(
-                        Modifier.fillMaxWidth()
-                            .statusBarsPadding()
-                            .preferredHeight(56.dp) /* TODO: change height to 48.dp in landscape */
+                        backgroundColor = appBarColor,
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     if (featuredPodcasts.isNotEmpty()) {
