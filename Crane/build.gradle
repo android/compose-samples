@@ -69,5 +69,4 @@ subprojects {
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
         }
     }
-
 }

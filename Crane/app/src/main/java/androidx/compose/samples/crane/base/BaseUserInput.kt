@@ -126,13 +126,13 @@ private fun CraneBaseUserInput(
             }
             if (caption != null && showCaption()) {
                 Text(
-                    modifier = Modifier.gravity(Alignment.CenterVertically),
+                    modifier = Modifier.align(Alignment.CenterVertically),
                     text = caption,
                     style = (captionTextStyle).copy(color = tint)
                 )
                 Spacer(Modifier.preferredWidth(8.dp))
             }
-            Row(Modifier.weight(1f).gravity(Alignment.CenterVertically)) {
+            Row(Modifier.weight(1f).align(Alignment.CenterVertically)) {
                 children()
             }
         }

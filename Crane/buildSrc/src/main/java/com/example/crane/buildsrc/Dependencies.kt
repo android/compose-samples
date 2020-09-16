@@ -21,12 +21,12 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha08"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha10"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
     const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
     object Accompanist {
-        private const val version = "0.2.0"
+        private const val version = "0.2.2.ui-6824694-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -41,8 +41,8 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-alpha01"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha01"
+            const val snapshot = "6824694"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -73,6 +73,5 @@ object Libs {
 object Urls {
     const val mavenCentralSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
     const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
-        // early versions Dev16
         "${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
 }

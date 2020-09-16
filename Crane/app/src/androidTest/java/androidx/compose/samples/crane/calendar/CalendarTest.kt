@@ -28,11 +28,10 @@ import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.LastDay
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.NoSelected
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.Selected
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.SemanticsMatcher
 import androidx.ui.test.assertLabelEquals
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.onAllNodes
-import androidx.ui.test.onNode
 import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.performClick
 import androidx.ui.test.performScrollTo
@@ -75,48 +74,48 @@ class CalendarTest {
 
     @Test
     fun scrollsToTheBottom() {
-        onNodeWithLabel("January 1").assertExists()
-        onNodeWithLabel("December 31").performScrollTo().performClick()
+        composeTestRule.onNodeWithLabel("January 1").assertExists()
+        composeTestRule.onNodeWithLabel("December 31").performScrollTo().performClick()
         assert(dateSelected == "December 31")
     }
 
     @Test
     fun onDaySelected() {
-        onNodeWithLabel("January 1").assertExists()
-        onNodeWithLabel("January 2").assertExists().performClick()
-        onNodeWithLabel("January 3").assertExists()
+        composeTestRule.onNodeWithLabel("January 1").assertExists()
+        composeTestRule.onNodeWithLabel("January 2").assertExists().performClick()
+        composeTestRule.onNodeWithLabel("January 3").assertExists()
 
-        val datesNoSelected = onDateNodes(NoSelected)
+        val datesNoSelected = composeTestRule.onDateNodes(NoSelected)
         datesNoSelected[0].assertLabelEquals("January 1")
         datesNoSelected[1].assertLabelEquals("January 3")
 
-        onDateNode(FirstLastDay).assertLabelEquals("January 2")
+        composeTestRule.onDateNode(FirstLastDay).assertLabelEquals("January 2")
     }
 
     @Test
     fun twoDaysSelected() {
-        onNodeWithLabel("January 2").assertExists().performClick()
+        composeTestRule.onNodeWithLabel("January 2").assertExists().performClick()
 
-        val datesNoSelectedOneClick = onDateNodes(NoSelected)
+        val datesNoSelectedOneClick = composeTestRule.onDateNodes(NoSelected)
         datesNoSelectedOneClick[0].assertLabelEquals("January 1")
         datesNoSelectedOneClick[1].assertLabelEquals("January 3")
 
-        onNodeWithLabel("January 4").assertExists().performClick()
+        composeTestRule.onNodeWithLabel("January 4").assertExists().performClick()
 
-        onDateNode(FirstDay).assertLabelEquals("January 2")
-        onDateNode(Selected).assertLabelEquals("January 3")
-        onDateNode(LastDay).assertLabelEquals("January 4")
+        composeTestRule.onDateNode(FirstDay).assertLabelEquals("January 2")
+        composeTestRule.onDateNode(Selected).assertLabelEquals("January 3")
+        composeTestRule.onDateNode(LastDay).assertLabelEquals("January 4")
 
-        val datesNoSelected = onDateNodes(NoSelected)
+        val datesNoSelected = composeTestRule.onDateNodes(NoSelected)
         datesNoSelected[0].assertLabelEquals("January 1")
         datesNoSelected[1].assertLabelEquals("January 5")
     }
 }
 
-private fun onDateNode(status: DaySelectedStatus) = onNode(
+private fun ComposeTestRule.onDateNode(status: DaySelectedStatus) = onNode(
     SemanticsMatcher.expectValue(DayStatusKey, status)
 )
 
-private fun onDateNodes(status: DaySelectedStatus) = onAllNodes(
+private fun ComposeTestRule.onDateNodes(status: DaySelectedStatus) = onAllNodes(
     SemanticsMatcher.expectValue(DayStatusKey, status)
 )
