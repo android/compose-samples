@@ -29,7 +29,6 @@ import androidx.ui.test.hasAnyAncestor
 import androidx.ui.test.hasInputMethodsSupport
 import androidx.ui.test.hasLabel
 import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
 import androidx.ui.test.performTextInput
