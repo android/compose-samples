@@ -21,17 +21,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ToggleFollowPodcastIconButton(
     isFollowed: Boolean,
     onClick: () -> Unit,
+    elevation: Dp = 0.dp,
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    contentColor: Color = contentColorFor(backgroundColor),
     modifier: Modifier = Modifier
 ) {
     IconButton(
@@ -44,11 +51,10 @@ fun ToggleFollowPodcastIconButton(
                 isFollowed -> Icons.Default.Check
                 else -> Icons.Default.Add
             },
+            tint = contentColor,
             modifier = Modifier
-                .background(
-                    color = MaterialTheme.colors.surface,
-                    shape = MaterialTheme.shapes.small
-                )
+                .drawShadow(elevation = elevation, shape = MaterialTheme.shapes.small)
+                .background(color = backgroundColor, shape = MaterialTheme.shapes.small)
                 .padding(4.dp)
         )
     }
