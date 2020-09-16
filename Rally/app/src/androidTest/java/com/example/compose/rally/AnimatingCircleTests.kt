@@ -47,7 +47,7 @@ class AnimatingCircleTests {
     @Test
     fun circleAnimation_idle_screenshot() {
         showAnimatedCircle()
-        assertScreenshotMatchesGolden("circle_done", onRoot())
+        assertScreenshotMatchesGolden("circle_done", composeTestRule.onRoot())
     }
 
     @Test
@@ -81,7 +81,7 @@ class AnimatingCircleTests {
         composeTestRule.clockTestRule.advanceClock(timeMs)
 
         // Take screenshot and compare with golden image in androidTest/assets
-        assertScreenshotMatchesGolden(goldenName, onRoot())
+        assertScreenshotMatchesGolden(goldenName, composeTestRule.onRoot())
     }
 
     private fun showAnimatedCircle() {

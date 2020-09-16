@@ -51,18 +51,18 @@ fun <T> StatementBody(
             AnimatedCircle(
                 accountsProportion,
                 circleColors,
-                Modifier.preferredHeight(300.dp).gravity(Alignment.Center).fillMaxWidth()
+                Modifier.preferredHeight(300.dp).align(Alignment.Center).fillMaxWidth()
             )
-            Column(modifier = Modifier.gravity(Alignment.Center)) {
+            Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(
                     text = circleLabel,
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.gravity(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = formatAmount(amountsTotal),
                     style = MaterialTheme.typography.h2,
-                    modifier = Modifier.gravity(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
         }
