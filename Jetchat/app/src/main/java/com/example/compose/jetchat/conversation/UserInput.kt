@@ -306,12 +306,17 @@ private fun UserInputSelector(
             null
         }
         Spacer(modifier = Modifier.weight(1f))
-        val disableContentColor =
-            EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
 
         val backgroundColor = ButtonConstants.defaultButtonBackgroundColor(
             enabled = sendMessageEnabled,
             disabledColor = MaterialTheme.colors.surface
+        )
+        val disabledContentColor =
+            EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
+        val contentColor = ButtonConstants.defaultButtonContentColor(
+            enabled = sendMessageEnabled,
+            defaultColor = contentColorFor(backgroundColor),
+            disabledColor = disabledContentColor
         )
         // Send button
         Button(
@@ -321,13 +326,9 @@ private fun UserInputSelector(
             elevation = 0.dp,
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
+            contentColor = contentColor,
             backgroundColor = backgroundColor,
             border = border,
-            contentColor = ButtonConstants.defaultButtonContentColor(
-                enabled = sendMessageEnabled,
-                defaultColor = contentColorFor(backgroundColor),
-                disabledColor = disableContentColor
-            ),
             contentPadding = PaddingValues(0.dp) // TODO: Workaround for b/158830170
         ) {
             Text(
