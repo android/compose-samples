@@ -43,8 +43,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -128,7 +129,7 @@ fun EpisodeListItem(
         modifier = Modifier.clickable { /* TODO */ } then modifier
     ) {
         val (
-            divider, episodeTitle, podcastTitle, summary, image, playIcon,
+            divider, episodeTitle, podcastTitle, image, playIcon,
             date, duration, addPlaylist, overflow
         ) = createRefs()
 
@@ -147,7 +148,7 @@ fun EpisodeListItem(
                 data = podcast.imageUrl,
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
-                modifier = Modifier.preferredSize(48.dp)
+                modifier = Modifier.preferredSize(56.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
@@ -192,7 +193,7 @@ fun EpisodeListItem(
             Text(
                 text = podcast.title,
                 maxLines = 2,
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.constrainAs(podcastTitle) {
                     linkTo(
                         start = parent.start,
@@ -201,40 +202,26 @@ fun EpisodeListItem(
                         endMargin = 16.dp,
                         bias = 0f
                     )
-                    top.linkTo(episodeTitle.bottom, 4.dp)
+                    top.linkTo(episodeTitle.bottom, 6.dp)
 
                     width = Dimension.preferredWrapContent
                 }
             )
-
-            episode.summary?.let {
-                Text(
-                    text = it,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption,
-                    modifier = Modifier.constrainAs(summary) {
-                        start.linkTo(parent.start, Keyline1)
-                        end.linkTo(image.end)
-                        top.linkTo(titleImageBarrier, 16.dp)
-
-                        width = Dimension.fillToConstraints
-                    }
-                )
-            }
         }
 
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Image(
-                asset = Icons.Default.PlayCircleOutline,
+                asset = Icons.Rounded.PlayCircleFilled,
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(contentColor()),
                 modifier = Modifier
-                    .clickable { /* TODO */ }
-                    .preferredSize(48.dp)
+                    .clickable(indication = RippleIndication(bounded = false, radius = 24.dp)) {
+                        /* TODO */
+                    }
+                    .preferredSize(36.dp)
                     .constrainAs(playIcon) {
                         start.linkTo(parent.start, Keyline1)
-                        top.linkTo(summary.bottom, margin = 16.dp)
+                        top.linkTo(titleImageBarrier, margin = 16.dp)
                         bottom.linkTo(parent.bottom, 16.dp)
                     }
             )
@@ -259,7 +246,7 @@ fun EpisodeListItem(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier.constrainAs(date) {
-                    start.linkTo(playIcon.end, margin = 16.dp)
+                    start.linkTo(playIcon.end, margin = 12.dp)
                     end.linkTo(addPlaylist.start, margin = 16.dp)
                     centerVerticallyTo(playIcon)
 
