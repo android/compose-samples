@@ -46,6 +46,7 @@ import androidx.compose.ui.onPositioned
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Constraints.Companion.Infinity
@@ -117,7 +118,7 @@ private fun Branding(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
-        Logo(modifier = Modifier.gravity(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
+        Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
                 text = stringResource(id = R.string.app_tagline),
@@ -151,7 +152,8 @@ private fun SignInCreateAccount(
     onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier, horizontalGravity = Alignment.CenterHorizontally) {
+    val emailState = remember { EmailState() }
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
             Text(
                 text = stringResource(id = R.string.sign_in_create_account),
@@ -160,18 +162,17 @@ private fun SignInCreateAccount(
                 modifier = Modifier.padding(vertical = 24.dp)
             )
         }
-        val emailState = remember { EmailState() }
+        val onSubmit = {
+            if (emailState.isValid) {
+                onEvent(WelcomeEvent.SignInSignUp(emailState.text))
+            } else {
+                emailState.enableShowErrors()
+            }
+        }
         onFocusChange(emailState.isFocused)
-        Email(emailState)
-
+        Email(emailState = emailState, imeAction = ImeAction.Done, onImeAction = onSubmit)
         Button(
-            onClick = {
-                if (emailState.isValid) {
-                    onEvent(WelcomeEvent.SignInSignUp(emailState.text))
-                } else {
-                    emailState.enableShowErrors()
-                }
-            },
+            onClick = onSubmit,
             modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp)
         ) {
             Text(

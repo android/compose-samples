@@ -21,7 +21,7 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.gravity
+import androidx.compose.foundation.layout.ColumnScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
@@ -110,16 +110,16 @@ fun HomeAppBar(
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Icon(
                 asset = vectorResource(R.drawable.ic_text_logo),
-                modifier = Modifier.gravity(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center)
                     .padding(8.dp)
-                    .preferredHeightIn(maxHeight = 24.dp)
+                    .preferredHeightIn(max = 24.dp)
             )
         }
 
         ProvideEmphasis(EmphasisAmbient.current.medium) {
             IconButton(
                 onClick = { /* TODO: Open account? */ },
-                modifier = Modifier.gravity(Alignment.CenterStart)
+                modifier = Modifier.align(Alignment.CenterStart)
                     .padding(start = 8.dp)
             ) {
                 Icon(Icons.Default.AccountCircle)
@@ -127,7 +127,7 @@ fun HomeAppBar(
 
             IconButton(
                 onClick = { /* TODO: Open search */ },
-                modifier = Modifier.gravity(Alignment.CenterEnd)
+                modifier = Modifier.align(Alignment.CenterEnd)
                     .padding(end = 8.dp)
             ) {
                 Icon(Icons.Filled.Search)
@@ -282,7 +282,7 @@ fun HomeCategoryTabIndicator(
     Spacer(
         modifier.preferredWidth(112.dp)
             .preferredHeight(4.dp)
-            .gravity(Alignment.CenterHorizontally)
+            .align(Alignment.CenterHorizontally)
             .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
     )
 }
@@ -330,7 +330,7 @@ private fun FollowedPodcastCarouselItem(
         Stack(
             Modifier
                 .weight(1f)
-                .gravity(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally)
                 .aspectRatio(1f)
         ) {
             if (podcastImageUrl != null) {
@@ -348,7 +348,7 @@ private fun FollowedPodcastCarouselItem(
                 ToggleFollowPodcastIconButton(
                     onClick = onUnfollowedClick,
                     isFollowed = true, /* All podcasts are followed in this feed */
-                    modifier = Modifier.gravity(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd)
                 )
             }
         }
@@ -361,7 +361,7 @@ private fun FollowedPodcastCarouselItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 8.dp)
-                        .gravity(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally)
                 )
             }
         }

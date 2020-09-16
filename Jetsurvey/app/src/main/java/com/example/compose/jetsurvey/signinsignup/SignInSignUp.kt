@@ -51,6 +51,7 @@ import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -110,10 +111,16 @@ private fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Un
 
 @OptIn(ExperimentalFocus::class)
 @Composable
-fun Email(emailState: TextFieldState = remember { EmailState() }) {
+fun Email(
+    emailState: TextFieldState = remember { EmailState() },
+    imeAction: ImeAction = ImeAction.Next,
+    onImeAction: () -> Unit = {}
+) {
     OutlinedTextField(
         value = emailState.text,
-        onValueChange = { emailState.text = it },
+        onValueChange = {
+            emailState.text = it
+        },
         label = {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                 Text(
@@ -130,14 +137,27 @@ fun Email(emailState: TextFieldState = remember { EmailState() }) {
             }
         },
         textStyle = MaterialTheme.typography.body2,
-        isErrorValue = emailState.showErrors()
+        isErrorValue = emailState.showErrors(),
+        imeAction = imeAction,
+        onImeActionPerformed = { action, softKeyboardController ->
+            if (action == ImeAction.Done) {
+                softKeyboardController?.hideSoftwareKeyboard()
+            }
+            onImeAction()
+        }
     )
 
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
 @Composable
-fun Password(label: String, passwordState: TextFieldState) {
+fun Password(
+    label: String,
+    passwordState: TextFieldState,
+    modifier: Modifier = Modifier,
+    imeAction: ImeAction = ImeAction.Done,
+    onImeAction: () -> Unit = {}
+) {
     val showPassword = remember { mutableStateOf(false) }
     OutlinedTextField(
         value = passwordState.text,
@@ -145,7 +165,7 @@ fun Password(label: String, passwordState: TextFieldState) {
             passwordState.text = it
             passwordState.enableShowErrors()
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         textStyle = MaterialTheme.typography.body2,
         label = {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
@@ -171,7 +191,14 @@ fun Password(label: String, passwordState: TextFieldState) {
         } else {
             PasswordVisualTransformation()
         },
-        isErrorValue = passwordState.showErrors()
+        isErrorValue = passwordState.showErrors(),
+        imeAction = imeAction,
+        onImeActionPerformed = { action, softKeyboardController ->
+            if (action == ImeAction.Done) {
+                softKeyboardController?.hideSoftwareKeyboard()
+            }
+            onImeAction()
+        }
     )
 
     passwordState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -199,7 +226,7 @@ fun OrSignInAsGuest(
 ) {
     Column(
         modifier = modifier,
-        horizontalGravity = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
