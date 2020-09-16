@@ -20,7 +20,6 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope.align
 import androidx.compose.foundation.layout.Row
@@ -345,8 +344,6 @@ private fun FollowedPodcastCarouselItem(
                 ToggleFollowPodcastIconButton(
                     onClick = onUnfollowedClick,
                     isFollowed = true, /* All podcasts are followed in this feed */
-                    backgroundColor = MaterialTheme.colors.surface.copy(0.38f),
-                    contentColor = contentColor(),
                     modifier = Modifier.align(Alignment.BottomEnd)
                 )
             }

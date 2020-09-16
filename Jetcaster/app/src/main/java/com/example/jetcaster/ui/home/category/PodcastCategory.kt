@@ -52,7 +52,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -118,7 +117,6 @@ fun PodcastCategory(
     }
 }
 
-@Suppress("UNUSED_VARIABLE")
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -130,7 +128,7 @@ fun EpisodeListItem(
     ) {
         val (
             divider, episodeTitle, podcastTitle, image, playIcon,
-            date, duration, addPlaylist, overflow
+            date, addPlaylist, overflow
         ) = createRefs()
 
         Divider(
@@ -285,7 +283,7 @@ private fun CategoryPodcastRow(
     LazyRowForIndexed(
         items = podcasts,
         modifier = modifier,
-        contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 16.dp)
+        contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 24.dp)
     ) { index, (podcast, _, isFollowed) ->
         TopPodcastRowItem(
             podcastTitle = podcast.title,
@@ -295,7 +293,7 @@ private fun CategoryPodcastRow(
             modifier = Modifier.preferredWidth(128.dp)
         )
 
-        if (index < lastIndex) Spacer(Modifier.preferredWidth(8.dp))
+        if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
     }
 }
 
@@ -327,9 +325,6 @@ private fun TopPodcastRowItem(
                 ToggleFollowPodcastIconButton(
                     onClick = onToggleFollowClicked,
                     isFollowed = isFollowed,
-                    elevation = 1.dp,
-                    backgroundColor = Color.White,
-                    contentColor = EmphasisAmbient.current.high.applyEmphasis(Color.Black),
                     modifier = Modifier.align(Alignment.BottomEnd)
                 )
             }
@@ -338,10 +333,10 @@ private fun TopPodcastRowItem(
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Text(
                 text = podcastTitle,
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.body2,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 8.dp).weight(1f)
+                modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
             )
         }
     }
