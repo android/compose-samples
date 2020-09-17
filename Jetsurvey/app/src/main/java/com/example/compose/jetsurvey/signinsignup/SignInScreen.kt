@@ -16,8 +16,6 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
@@ -29,13 +27,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.launchInComposition
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
@@ -47,7 +48,7 @@ import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.snackbarAction
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -56,36 +57,58 @@ sealed class SignInEvent {
     object NavigateBack : SignInEvent()
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
-    val showSnackbar = remember { mutableStateOf(false) }
-    Stack(modifier = Modifier.fillMaxSize()) {
-        SignInSignUpScreen(
-            topAppBarText = stringResource(id = R.string.sign_in),
-            onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
-            onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                SignInContent(
-                    onSignInSubmitted = { email, password ->
-                        onNavigationEvent(SignInEvent.SignIn(email, password))
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val snackbarErrorText = stringResource(id = R.string.feature_not_available)
+    val snackbarActionLabel = stringResource(id = R.string.dismiss)
+
+    Scaffold(
+        topBar = {
+            SignInSignUpTopAppBar(
+                topAppBarText = stringResource(id = R.string.sign_in),
+                onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) }
+            )
+        },
+        bodyContent = {
+            SignInSignUpScreen(
+                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    SignInContent(
+                        onSignInSubmitted = { email, password ->
+                            onNavigationEvent(SignInEvent.SignIn(email, password))
+                        }
+                    )
+                    Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    TextButton(
+                        onClick = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = snackbarErrorText,
+                                    actionLabel = snackbarActionLabel
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(id = R.string.forgot_password))
                     }
-                )
-                Spacer(modifier = Modifier.preferredHeight(16.dp))
-                TextButton(
-                    onClick = { showSnackbar.value = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = stringResource(id = R.string.forgot_password))
                 }
             }
         }
+    )
+
+    Stack(modifier = Modifier.fillMaxSize()) {
         ErrorSnackbar(
-            showError = showSnackbar.value,
-            errorText = stringResource(id = R.string.feature_not_available),
-            onDismiss = { showSnackbar.value = false },
-            modifier = Modifier.align(Alignment.BottomCenter)
+            snackbarHostState = snackbarHostState,
+            onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() },
+            modifier = Modifier.align(Alignment.TopCenter)
         )
     }
 }
@@ -122,46 +145,44 @@ fun SignInContent(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ErrorSnackbar(
-    showError: Boolean,
-    errorText: String,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = { }
 ) {
-    if (!showError) {
-        return
-    }
-
-    // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
-    launchInComposition() {
-        delay(5000L)
-        onDismiss()
-    }
-
-    Box(modifier = modifier.fillMaxWidth().wrapContentHeight(Alignment.Bottom)) {
-        Crossfade(current = showError) {
-            Snackbar(
-                modifier = Modifier.padding(16.dp),
-                text = {
-                    Text(
-                        text = errorText,
-                        style = MaterialTheme.typography.body2
-                    )
-                },
-                action = {
-                    TextButton(
-                        onClick = onDismiss,
-                        contentColor = contentColor()
-                    ) {
+    snackbarHostState.currentSnackbarData?.let { data ->
+        SnackbarHost(
+            hostState = snackbarHostState,
+            snackbar = {
+                Snackbar(
+                    modifier = Modifier.padding(16.dp),
+                    text = {
                         Text(
-                            text = stringResource(id = R.string.dismiss),
-                            color = MaterialTheme.colors.snackbarAction
+                            text = data.message,
+                            style = MaterialTheme.typography.body2
                         )
+                    },
+                    action = {
+                        data.actionLabel?.let {
+                            TextButton(
+                                onClick = onDismiss,
+                                contentColor = contentColor()
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.dismiss),
+                                    color = MaterialTheme.colors.snackbarAction
+                                )
+                            }
+                        }
                     }
-                }
-            )
-        }
+                )
+            },
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight(Alignment.Bottom)
+        )
     }
 }
 
