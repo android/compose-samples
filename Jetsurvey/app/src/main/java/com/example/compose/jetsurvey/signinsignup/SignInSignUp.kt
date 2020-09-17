@@ -61,30 +61,25 @@ import com.example.compose.jetsurvey.R
 
 @Composable
 fun SignInSignUpScreen(
-    topAppBarText: String,
     onSignedInAsGuest: () -> Unit,
-    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable() () -> Unit
 ) {
-    Column(modifier = modifier) {
-        SignInSignUpTopAppBar(topAppBarText, onBackPressed)
-        ScrollableColumn {
-            Spacer(modifier = Modifier.preferredHeight(44.dp))
-            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                content()
-            }
-            Spacer(modifier = Modifier.preferredHeight(16.dp))
-            OrSignInAsGuest(
-                onSignedInAsGuest = onSignedInAsGuest,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-            )
+    ScrollableColumn(modifier = modifier) {
+        Spacer(modifier = Modifier.preferredHeight(44.dp))
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+            content()
         }
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        OrSignInAsGuest(
+            onSignedInAsGuest = onSignedInAsGuest,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+        )
     }
 }
 
 @Composable
-private fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
+fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
     TopAppBar(
         title = {
             Text(
@@ -249,9 +244,7 @@ fun OrSignInAsGuest(
 @Composable
 fun SignInSignUpScreenPreview() {
     SignInSignUpScreen(
-        topAppBarText = "Preview",
         onSignedInAsGuest = {},
-        onBackPressed = {},
         content = {}
     )
 }
