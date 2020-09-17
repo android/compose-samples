@@ -108,7 +108,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         ErrorSnackbar(
             snackbarHostState = snackbarHostState,
             onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() },
-            modifier = Modifier.align(Alignment.TopCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
