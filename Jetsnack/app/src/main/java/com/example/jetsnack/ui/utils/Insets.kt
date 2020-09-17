@@ -19,7 +19,7 @@
 package com.example.jetsnack.ui.utils
 
 import android.view.View
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
@@ -425,7 +425,7 @@ fun Modifier.navigationBarsWidthPlus(
 }
 
 /**
- * Returns the current insets converted into a [InnerPadding].
+ * Returns the current insets converted into [PaddingValues].
  *
  * @param start Whether to apply the inset on the start dimension.
  * @param top Whether to apply the inset on the top dimension.
@@ -433,30 +433,30 @@ fun Modifier.navigationBarsWidthPlus(
  * @param bottom Whether to apply the inset on the bottom dimension.
  */
 @Composable
-fun Insets.toInnerPadding(
+fun Insets.toPaddingValues(
     start: Boolean = true,
     top: Boolean = true,
     end: Boolean = true,
     bottom: Boolean = true
-): InnerPadding = with(DensityAmbient.current) {
+): PaddingValues = with(DensityAmbient.current) {
     val layoutDirection = LayoutDirectionAmbient.current
-    InnerPadding(
+    PaddingValues(
         start = when {
-            start && layoutDirection == LayoutDirection.Ltr -> this@toInnerPadding.left.toDp()
-            start && layoutDirection == LayoutDirection.Rtl -> this@toInnerPadding.right.toDp()
+            start && layoutDirection == LayoutDirection.Ltr -> this@toPaddingValues.left.toDp()
+            start && layoutDirection == LayoutDirection.Rtl -> this@toPaddingValues.right.toDp()
             else -> 0.dp
         },
         top = when {
-            top -> this@toInnerPadding.top.toDp()
+            top -> this@toPaddingValues.top.toDp()
             else -> 0.dp
         },
         end = when {
-            end && layoutDirection == LayoutDirection.Ltr -> this@toInnerPadding.right.toDp()
-            end && layoutDirection == LayoutDirection.Rtl -> this@toInnerPadding.left.toDp()
+            end && layoutDirection == LayoutDirection.Ltr -> this@toPaddingValues.right.toDp()
+            end && layoutDirection == LayoutDirection.Rtl -> this@toPaddingValues.left.toDp()
             else -> 0.dp
         },
         bottom = when {
-            bottom -> this@toInnerPadding.bottom.toDp()
+            bottom -> this@toPaddingValues.bottom.toDp()
             else -> 0.dp
         }
     )

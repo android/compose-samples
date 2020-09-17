@@ -188,7 +188,7 @@ private fun SearchBar(
                 SearchHint()
             }
             Row(
-                verticalGravity = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentHeight()
@@ -234,7 +234,7 @@ private val IconSize = 48.dp
 @Composable
 private fun SearchHint() {
     Row(
-        verticalGravity = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxSize().wrapContentSize()
     ) {
         Icon(

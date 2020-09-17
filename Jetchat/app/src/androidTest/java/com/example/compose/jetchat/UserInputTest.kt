@@ -21,16 +21,14 @@ import androidx.compose.runtime.Providers
 import androidx.test.espresso.Espresso
 import androidx.ui.test.SemanticsMatcher
 import androidx.ui.test.SemanticsNodeInteraction
-import androidx.ui.test.android.createAndroidComposeRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertIsEnabled
 import androidx.ui.test.assertIsNotEnabled
+import androidx.ui.test.createAndroidComposeRule
 import androidx.ui.test.hasAnyAncestor
 import androidx.ui.test.hasInputMethodsSupport
 import androidx.ui.test.hasLabel
-import androidx.ui.test.onNode
 import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
 import androidx.ui.test.performTextInput
@@ -76,12 +74,12 @@ class UserInputTest {
 
     @Test
     fun emojiSelector_isClosedWithBack() {
-        // Click on text field
-        onNodeWithSubstring(activity.getString(R.string.textfield_hint)).performClick()
         // Open emoji selector
         openEmojiSelector()
         // Check emoji selector is displayed
         assertEmojiSelectorIsDisplayed()
+
+        composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
         // Press back button
         Espresso.pressBack()
         // Check the emoji selector is not displayed
@@ -103,14 +101,14 @@ class UserInputTest {
     fun keyboardShown_emojiSelectorOpened_keyboardHides() {
         // Click on text field to open the soft keyboard
         clickOnTextField()
-        onNode(SemanticsMatcher.expectValue(KeyboardShownKey, true)).assertExists()
+        composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, true)).assertExists()
 
         // When the emoji selector is extended
         openEmojiSelector()
 
         // Check that the keyboard is hidden
-        dumpSemanticNodes() // TODO: Remove when flakiness is gone
-        onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
+        composeTestRule.dumpSemanticNodes() // TODO: Remove when flakiness is gone
+        composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
     }
 
     @Test
@@ -127,22 +125,22 @@ class UserInputTest {
     }
 
     private fun clickOnTextField() {
-        onNodeWithLabel(activity.getString(R.string.textfield_desc)).performClick()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.textfield_desc)).performClick()
     }
 
     private fun openEmojiSelector() =
-        onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
 
     private fun assertEmojiSelectorIsDisplayed() =
-        onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertIsDisplayed()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertIsDisplayed()
 
     private fun assertEmojiSelectorDoesNotExist() =
-        onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertDoesNotExist()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertDoesNotExist()
 
-    private fun findSendButton() = onNodeWithText(activity.getString(R.string.send))
+    private fun findSendButton() = composeTestRule.onNodeWithText(activity.getString(R.string.send))
 
     private fun findTextInputField(): SemanticsNodeInteraction {
-        return onNode(
+        return composeTestRule.onNode(
             hasInputMethodsSupport() and
                 hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
         )

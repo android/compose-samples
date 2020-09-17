@@ -16,19 +16,13 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
@@ -38,12 +32,13 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
@@ -57,6 +52,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -71,9 +67,7 @@ import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.state.UiState
-import com.example.jetnews.ui.theme.snackbarAction
 import com.example.jetnews.utils.launchUiStateProducer
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -122,11 +116,13 @@ fun HomeScreen(
  * Stateless composable is not coupled to any specific state management.
  *
  * @param posts (state) the data to show on the screen
+ * @param favorites (state) favorite posts
+ * @param onToggleFavorite (event) toggles favorite for a post
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) request the current error be dismissed
  * @param navigateTo (event) request navigation to [Screen]
- * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     posts: UiState<List<Post>>,
@@ -137,6 +133,24 @@ fun HomeScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState
 ) {
+    if (posts.hasError) {
+        val errorMessage = stringResource(id = R.string.load_error)
+        val retryMessage = stringResource(id = R.string.retry)
+        // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
+        // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
+        // only start when posts.hasError is true (due to the above if-check).
+        launchInComposition(posts.hasError) {
+            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = retryMessage
+            )
+            when (snackbarResult) {
+                SnackbarResult.ActionPerformed -> onRefreshPosts()
+                SnackbarResult.Dismissed -> onErrorDismiss()
+            }
+        }
+    }
+
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
@@ -147,8 +161,9 @@ fun HomeScreen(
             )
         },
         topBar = {
+            val title = stringResource(id = R.string.app_name)
             TopAppBar(
-                title = { Text(text = "Jetnews") },
+                title = { Text(text = title) },
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
                         Icon(vectorResource(R.drawable.ic_jetnews_logo))
@@ -169,7 +184,6 @@ fun HomeScreen(
                         onRefresh = {
                             onRefreshPosts()
                         },
-                        onErrorDismiss = onErrorDismiss,
                         navigateTo = navigateTo,
                         favorites = favorites,
                         onToggleFavorite = onToggleFavorite,
@@ -223,35 +237,27 @@ private fun LoadingContent(
  *
  * @param posts (state) list of posts and error state to display
  * @param onRefresh (event) request to refresh data
- * @param onErrorDismiss (event) request that the current error be dismissed
  * @param navigateTo (event) request navigation to [Screen]
+ * @param favorites (state) all favorites
+ * @param onToggleFavorite (event) request a single favorite be toggled
  * @param modifier modifier for root element
  */
 @Composable
 private fun HomeScreenErrorAndContent(
     posts: UiState<List<Post>>,
     onRefresh: () -> Unit,
-    onErrorDismiss: () -> Unit,
     navigateTo: (Screen) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Stack(modifier = modifier.fillMaxSize()) {
-        if (posts.data != null) {
-            PostList(posts.data, navigateTo, favorites, onToggleFavorite)
-        } else if (!posts.hasError) {
-            // if there are no posts, and no error, let the user refresh manually
-            TextButton(onClick = onRefresh, Modifier.fillMaxSize()) {
-                Text("Tap to load content", textAlign = TextAlign.Center)
-            }
+    if (posts.data != null) {
+        PostList(posts.data, navigateTo, favorites, onToggleFavorite, modifier)
+    } else if (!posts.hasError) {
+        // if there are no posts, and no error, let the user refresh manually
+        TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
+            Text("Tap to load content", textAlign = TextAlign.Center)
         }
-        ErrorSnackbar(
-            showError = posts.hasError,
-            onErrorAction = onRefresh,
-            onDismiss = onErrorDismiss,
-            modifier = Modifier.gravity(Alignment.BottomCenter)
-        )
     }
 }
 
@@ -293,55 +299,6 @@ private fun PostList(
 private fun FullScreenLoading() {
     Box(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
         CircularProgressIndicator()
-    }
-}
-
-/**
- * Display an error snackbar when network requests fail.
- *
- * @param showError (state) if true, this snackbar will display
- * @param modifier modifier for root element
- * @param onErrorAction (event) user has requested error action by clicking on it
- * @param onDismiss (event) request that this snackbar be dismissed.
- */
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-private fun ErrorSnackbar(
-    showError: Boolean,
-    modifier: Modifier = Modifier,
-    onErrorAction: () -> Unit = { },
-    onDismiss: () -> Unit = { }
-) {
-    // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
-    launchInComposition(showError) {
-        delay(timeMillis = 5000L)
-        if (showError) { onDismiss() }
-    }
-
-    AnimatedVisibility(
-        visible = showError,
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it }),
-        modifier = modifier
-    ) {
-        Snackbar(
-            modifier = Modifier.padding(16.dp),
-            text = { Text("Can't update latest news") },
-            action = {
-                TextButton(
-                    onClick = {
-                        onErrorAction()
-                        onDismiss()
-                    },
-                    contentColor = contentColor()
-                ) {
-                    Text(
-                        text = "RETRY",
-                        color = MaterialTheme.colors.snackbarAction
-                    )
-                }
-            }
-        )
     }
 }
 

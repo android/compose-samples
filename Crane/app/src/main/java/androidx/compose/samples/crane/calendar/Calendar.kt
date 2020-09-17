@@ -109,7 +109,7 @@ private fun MonthHeader(modifier: Modifier = Modifier, month: String, year: Stri
             style = MaterialTheme.typography.h6
         )
         Text(
-            modifier = Modifier.gravity(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically),
             text = year,
             style = MaterialTheme.typography.caption
         )
@@ -126,13 +126,14 @@ private fun Week(
     val (leftFillColor, rightFillColor) = getLeftRightWeekColors(week, month)
 
     Row(modifier = modifier) {
-        val spaceModifiers = Modifier.weight(1f).preferredHeightIn(maxHeight = CELL_SIZE)
+        val spaceModifiers = Modifier.weight(1f).preferredHeightIn(max = CELL_SIZE)
         Surface(modifier = spaceModifiers, color = leftFillColor) {
             Spacer(Modifier.fillMaxHeight())
         }
         for (day in week) {
             Day(
-                day, onDayClicked,
+                day,
+                onDayClicked,
                 Modifier.semantics {
                     accessibilityLabel = "${month.name} ${day.value}"
                     dayStatusProperty = day.status

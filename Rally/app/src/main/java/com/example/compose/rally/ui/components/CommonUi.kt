@@ -80,7 +80,7 @@ private fun BaseRow(
 ) {
     Row(
         modifier = Modifier.preferredHeight(68.dp),
-        verticalGravity = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         val typography = MaterialTheme.typography
         AccountIndicator(
@@ -103,14 +103,14 @@ private fun BaseRow(
             Text(
                 text = if (negative) "–$ " else "$ ",
                 style = typography.h6,
-                modifier = Modifier.gravity(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             )
             Text(
                 text = formatAmount(
                     amount
                 ),
                 style = typography.h6,
-                modifier = Modifier.gravity(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
         Spacer(Modifier.preferredWidth(16.dp))

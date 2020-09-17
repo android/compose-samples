@@ -57,7 +57,7 @@ fun CraneTabBar(
             Spacer(Modifier.preferredWidth(8.dp))
             Image(asset = vectorResource(id = R.drawable.ic_crane_logo))
         }
-        children(Modifier.weight(1f).gravity(Alignment.CenterVertically))
+        children(Modifier.weight(1f).align(Alignment.CenterVertically))
     }
 }
 

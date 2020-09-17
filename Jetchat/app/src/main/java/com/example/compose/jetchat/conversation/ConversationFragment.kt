@@ -22,7 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.setContent
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController

@@ -23,7 +23,7 @@ import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.preferredSizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonConstants
@@ -49,7 +49,7 @@ fun JetsnackButton(
     disabledBackgroundGradient: List<Color> = JetsnackTheme.colors.interactiveSecondary,
     contentColor: Color = JetsnackTheme.colors.textInteractive,
     disabledContentColor: Color = JetsnackTheme.colors.textHelp,
-    padding: InnerPadding = ButtonConstants.DefaultContentPadding,
+    padding: PaddingValues = ButtonConstants.DefaultContentPadding,
     text: @Composable () -> Unit
 ) {
     Providers(ContentColorAmbient provides if (enabled) contentColor else disabledContentColor) {

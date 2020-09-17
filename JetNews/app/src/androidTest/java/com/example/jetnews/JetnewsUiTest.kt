@@ -21,7 +21,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.hasSubstring
-import androidx.ui.test.onAllNodes
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
 import org.junit.Before
@@ -41,16 +40,16 @@ class JetnewsUiTest {
         composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
-    @Ignore // TODO Investigate why this passes locally but fail on CI
+    @Ignore("TODO Investigate why this passes locally but fail on CI")
     @Test
     fun app_launches() {
-        onNodeWithText("Jetnews").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Jetnews").assertIsDisplayed()
     }
 
-    @Ignore // TODO Investigate why this passes locally but fail on CI
+    @Ignore("TODO Investigate why this passes locally but fail on CI")
     @Test
     fun app_opensArticle() {
-        onAllNodes(hasSubstring("Manuel Vivo"))[0].performClick()
-        onAllNodes(hasSubstring("3 min read"))[0].assertIsDisplayed()
+        composeTestRule.onAllNodes(hasSubstring("Manuel Vivo"))[0].performClick()
+        composeTestRule.onAllNodes(hasSubstring("3 min read"))[0].assertIsDisplayed()
     }
 }

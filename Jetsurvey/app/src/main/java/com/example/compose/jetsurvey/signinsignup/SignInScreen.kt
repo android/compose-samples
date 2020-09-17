@@ -38,6 +38,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -82,23 +85,29 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
             showError = showSnackbar.value,
             errorText = stringResource(id = R.string.feature_not_available),
             onDismiss = { showSnackbar.value = false },
-            modifier = Modifier.gravity(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
 
+@OptIn(ExperimentalFocus::class)
 @Composable
-fun SignInContent(onSignInSubmitted: (email: String, password: String) -> Unit) {
+fun SignInContent(
+    onSignInSubmitted: (email: String, password: String) -> Unit,
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
+        val focusRequester = remember { FocusRequester() }
         val emailState = remember { EmailState() }
-        Email(emailState)
+        Email(emailState, onImeAction = { focusRequester.requestFocus() })
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
-            passwordState = passwordState
+            passwordState = passwordState,
+            modifier = Modifier.focusRequester(focusRequester),
+            onImeAction = { onSignInSubmitted(emailState.text, passwordState.text) }
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(

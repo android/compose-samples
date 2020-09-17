@@ -14,4 +14,6 @@
   -->
 <resources>
     <string name="app_name">Jetnews</string>
+    <string name="load_error">Can\'t update latest news</string>
+    <string name="retry">Retry</string>
 </resources>

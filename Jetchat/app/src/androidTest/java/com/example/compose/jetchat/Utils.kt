@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.onRoot
 import androidx.ui.test.printToLog
 
@@ -24,6 +25,6 @@ import androidx.ui.test.printToLog
  *
  * TODO: Replace with aosp/1355659
  */
-fun dumpSemanticNodes() {
-    onRoot().printToLog(tag = "JetchatLog")
+fun ComposeTestRule.dumpSemanticNodes() {
+    this.onRoot().printToLog(tag = "JetchatLog")
 }
