@@ -36,9 +36,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: |
-            ~/.gradle/caches/modules-2
-            ~/.gradle/caches/jars-3
-            ~/.gradle/caches/build-cache-1
+            ~/.gradle/caches/modules-*
+            ~/.gradle/caches/jars-*
+            ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
       - name: Build project
