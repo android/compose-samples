@@ -132,7 +132,8 @@ private fun Week(
         }
         for (day in week) {
             Day(
-                day, onDayClicked,
+                day,
+                onDayClicked,
                 Modifier.semantics {
                     accessibilityLabel = "${month.name} ${day.value}"
                     dayStatusProperty = day.status
