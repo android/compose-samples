@@ -171,7 +171,7 @@ private fun BottomBar(
 ) {
     Surface(elevation = 2.dp) {
         Row(
-            verticalGravity = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .preferredHeight(56.dp)
                 .fillMaxWidth()

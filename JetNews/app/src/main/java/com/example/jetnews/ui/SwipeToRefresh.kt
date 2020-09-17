@@ -42,26 +42,15 @@ fun SwipeToRefreshLayout(
     content: @Composable () -> Unit
 ) {
     val refreshDistance = with(DensityAmbient.current) { RefreshDistance.toPx() }
-    val state = rememberSwipeableState(refreshingState)
-    // TODO (https://issuetracker.google.com/issues/164113834): This state->event trampoline is a
-    //  workaround for a bug in the SwipableState API. It should be replaced with a correct solution
-    //  when that bug closes.
-    onCommit(refreshingState) {
-        state.animateTo(refreshingState)
-    }
-    // TODO (https://issuetracker.google.com/issues/164113834): Hoist state changes when bug is
-    //  fixed and do this logic in the ViewModel. Currently, state.value is a duplicated source of
-    //  truth of refreshingState
-    onCommit(state.value) {
-        if (state.value) {
-            onRefresh()
-        }
+    val state = rememberSwipeableState(refreshingState) { newValue ->
+        // compare both copies of the swipe state before calling onRefresh(). This is a workaround.
+        if (newValue && !refreshingState) onRefresh()
+        true
     }
 
     Stack(
         modifier = Modifier.swipeable(
             state = state,
-            enabled = !state.value,
             anchors = mapOf(
                 -refreshDistance to false,
                 refreshDistance to true
@@ -71,10 +60,17 @@ fun SwipeToRefreshLayout(
         )
     ) {
         content()
-        Box(Modifier.gravity(Alignment.TopCenter).offsetPx(y = state.offset)) {
+        Box(Modifier.align(Alignment.TopCenter).offsetPx(y = state.offset)) {
             if (state.offset.value != -refreshDistance) {
                 refreshIndicator()
             }
+        }
+
+        // TODO (https://issuetracker.google.com/issues/164113834): This state->event trampoline is a
+        //  workaround for a bug in the SwipableState API. Currently, state.value is a duplicated
+        //  source of truth of refreshingState.
+        onCommit(refreshingState) {
+            state.animateTo(refreshingState)
         }
     }
 }
