@@ -152,38 +152,36 @@ fun ErrorSnackbar(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = { }
 ) {
-    snackbarHostState.currentSnackbarData?.let { data ->
-        SnackbarHost(
-            hostState = snackbarHostState,
-            snackbar = {
-                Snackbar(
-                    modifier = Modifier.padding(16.dp),
-                    text = {
-                        Text(
-                            text = data.message,
-                            style = MaterialTheme.typography.body2
-                        )
-                    },
-                    action = {
-                        data.actionLabel?.let {
-                            TextButton(
-                                onClick = onDismiss,
-                                contentColor = contentColor()
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.dismiss),
-                                    color = MaterialTheme.colors.snackbarAction
-                                )
-                            }
+    SnackbarHost(
+        hostState = snackbarHostState,
+        snackbar = { data ->
+            Snackbar(
+                modifier = Modifier.padding(16.dp),
+                text = {
+                    Text(
+                        text = data.message,
+                        style = MaterialTheme.typography.body2
+                    )
+                },
+                action = {
+                    data.actionLabel?.let {
+                        TextButton(
+                            onClick = onDismiss,
+                            contentColor = contentColor()
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.dismiss),
+                                color = MaterialTheme.colors.snackbarAction
+                            )
                         }
                     }
-                )
-            },
-            modifier = modifier
-                .fillMaxWidth()
-                .wrapContentHeight(Alignment.Bottom)
-        )
-    }
+                }
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(Alignment.Bottom)
+    )
 }
 
 @Preview(name = "Sign in light theme")
