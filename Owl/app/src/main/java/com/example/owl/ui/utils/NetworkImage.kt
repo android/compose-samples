@@ -32,6 +32,7 @@ import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
 import coil.request.ImageResult
+import coil.size.PixelSize
 import com.example.owl.ui.theme.compositedOnSurface
 import dev.chrisbanes.accompanist.coil.CoilImage
 import okhttp3.HttpUrl
