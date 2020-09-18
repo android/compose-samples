@@ -32,7 +32,6 @@ import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
 import coil.request.ImageResult
-import coil.size.PixelSize
 import com.example.owl.ui.theme.compositedOnSurface
 import dev.chrisbanes.accompanist.coil.CoilImage
 import okhttp3.HttpUrl
@@ -88,11 +87,11 @@ object UnsplashSizingInterceptor : Interceptor {
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
         val data = chain.request.data
         val size = chain.size
-        if (data is String
-            && data.startsWith("https://images.unsplash.com/photo-")
-            && size is PixelSize
-            && size.width > 0
-            && size.height > 0
+        if (data is String &&
+            data.startsWith("https://images.unsplash.com/photo-") &&
+            size is PixelSize &&
+            size.width > 0 &&
+            size.height > 0
         ) {
             val url = HttpUrl.parse(data)!!
                 .newBuilder()
