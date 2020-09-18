@@ -25,6 +25,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -47,20 +48,28 @@ sealed class SignUpEvent {
 
 @Composable
 fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
-    SignInSignUpScreen(
-        topAppBarText = stringResource(id = R.string.create_account),
-        onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
-        onBackPressed = { onNavigationEvent(SignUpEvent.NavigateBack) },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column {
-            SignUpContent(
-                onSignUpSubmitted = { email, password ->
-                    onNavigationEvent(SignUpEvent.SignUp(email, password))
-                }
+    Scaffold(
+        topBar = {
+            SignInSignUpTopAppBar(
+                topAppBarText = stringResource(id = R.string.create_account),
+                onBackPressed = { onNavigationEvent(SignUpEvent.NavigateBack) }
             )
+        },
+        bodyContent = {
+            SignInSignUpScreen(
+                onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    SignUpContent(
+                        onSignUpSubmitted = { email, password ->
+                            onNavigationEvent(SignUpEvent.SignUp(email, password))
+                        }
+                    )
+                }
+            }
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalFocus::class)
