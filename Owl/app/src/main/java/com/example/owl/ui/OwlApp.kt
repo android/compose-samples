@@ -28,6 +28,7 @@ import com.example.owl.ui.onboarding.Onboarding
 import com.example.owl.ui.utils.BackDispatcherAmbient
 import com.example.owl.ui.utils.Navigator
 import com.example.owl.ui.utils.ProvideDisplayInsets
+import com.example.owl.ui.utils.ProvideImageLoader
 
 @Composable
 fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
@@ -41,15 +42,17 @@ fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
 
     Providers(BackDispatcherAmbient provides backDispatcher) {
         ProvideDisplayInsets {
-            Crossfade(navigator.current) { destination ->
-                when (destination) {
-                    Destination.Onboarding -> Onboarding(actions.onboardingComplete)
-                    Destination.Courses -> Courses(actions.selectCourse)
-                    is Destination.Course -> CourseDetails(
-                        destination.courseId,
-                        actions.selectCourse,
-                        actions.upPress
-                    )
+            ProvideImageLoader {
+                Crossfade(navigator.current) { destination ->
+                    when (destination) {
+                        Destination.Onboarding -> Onboarding(actions.onboardingComplete)
+                        Destination.Courses -> Courses(actions.selectCourse)
+                        is Destination.Course -> CourseDetails(
+                            destination.courseId,
+                            actions.selectCourse,
+                            actions.upPress
+                        )
+                    }
                 }
             }
         }
