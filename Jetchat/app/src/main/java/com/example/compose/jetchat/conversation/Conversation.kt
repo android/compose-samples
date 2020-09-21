@@ -53,8 +53,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus
-import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
@@ -62,7 +60,6 @@ import androidx.compose.ui.platform.UriHandlerAmbient
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -173,7 +170,7 @@ fun ChannelNameBar(
     )
 }
 
-val ConversationTestTag = "ConversationTestTag"
+const val ConversationTestTag = "ConversationTestTag"
 
 @Composable
 fun Messages(
@@ -312,7 +309,8 @@ fun AuthorAndTextMessage(
 
 @Composable
 private fun AuthorNameTimestamp(msg: Message) {
-    Row {
+    // Combine author and timestamp for a11y.
+    Row(modifier = Modifier.semantics(mergeAllDescendants = true) {}) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
                 text = msg.author,
