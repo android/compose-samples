@@ -53,10 +53,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.UriHandlerAmbient
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.accessibilityLabel
@@ -170,6 +173,8 @@ fun ChannelNameBar(
     )
 }
 
+val ConversationTestTag = "ConversationTestTag"
+
 @Composable
 fun Messages(
     messages: List<Message>,
@@ -178,12 +183,12 @@ fun Messages(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        val a11yLabel = stringResource(R.string.conversation_desc)
+
         ScrollableColumn(
             scrollState = scrollState,
             reverseScrollDirection = true,
             modifier = Modifier
-                .semantics { accessibilityLabel = a11yLabel }
+                .testTag(ConversationTestTag)
                 .fillMaxWidth()
         ) {
             val authorMe = stringResource(id = R.string.author_me)
