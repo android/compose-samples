@@ -39,54 +39,54 @@ val lessons = listOf(
         title = "An introduction to the Landscape",
         formattedStepNumber = "01",
         length = "4:14",
-        imageUrl = "https://source.unsplash.com/NRQV-hBF10M"
+        imageUrl = "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
     ),
     Lesson(
         title = "Movement and Expression",
         formattedStepNumber = "02",
         length = "7:28",
-        imageUrl = "https://source.unsplash.com/JhqhGfX_Wd8"
+        imageUrl = "https://images.unsplash.com/photo-1511715282680-fbf93a50e721"
     ),
     Lesson(
         title = "Composition and the Urban Canvas",
         formattedStepNumber = "03",
         length = "3:43",
-        imageUrl = "https://source.unsplash.com/0OjzOqlJyoU"
+        imageUrl = "https://images.unsplash.com/photo-1494616150024-f6040d5220c0"
     ),
     Lesson(
         title = "Lighting Techniques and Aesthetics",
         formattedStepNumber = "04",
         length = "4:45",
-        imageUrl = "https://source.unsplash.com/J5-Kqu_fxyo"
+        imageUrl = "https://images.unsplash.com/photo-1544980944-0bf2ec0063ef"
     ),
     Lesson(
         title = "Special Effects",
         formattedStepNumber = "05",
         length = "6:19",
-        imageUrl = "https://source.unsplash.com/9ZCZoH69dZQ"
+        imageUrl = "https://images.unsplash.com/photo-1508521049563-61d4bb00b270"
     ),
     Lesson(
         title = "Techniques with Structures",
         formattedStepNumber = "06",
         length = "9:41",
-        imageUrl = "https://source.unsplash.com/RFDP7_80v5A"
+        imageUrl = "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8"
     ),
     Lesson(
         title = "Deep Focus Using a Camera Dolly",
         formattedStepNumber = "07",
         length = "4:43",
-        imageUrl = "https://source.unsplash.com/0rZ2-QWtkwY"
+        imageUrl = "https://images.unsplash.com/photo-1495854245347-f3936493f799"
     ),
     Lesson(
         title = "Point of View Shots with Structures",
         formattedStepNumber = "08",
         length = "9:41",
-        imageUrl = "https://source.unsplash.com/iQnR_xEsBj0"
+        imageUrl = "https://images.unsplash.com/photo-1534971710649-2f97e5f98bc4"
     ),
     Lesson(
         title = "Photojournalism: Street Art",
         formattedStepNumber = "09",
         length = "9:41",
-        imageUrl = "https://source.unsplash.com/qX9Ie7ieb1E"
+        imageUrl = "https://images.unsplash.com/photo-1453814235491-3cfac3999928"
     )
 )

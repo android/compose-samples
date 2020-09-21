@@ -53,6 +53,7 @@ subprojects {
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
+            freeCompilerArgs += "-Xjvm-default=enable"
         }
     }
 
