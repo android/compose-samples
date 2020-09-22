@@ -136,7 +136,7 @@ fun SignInContent(
         Button(
             onClick = { onSignInSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-            enabled = emailState.isValid
+            enabled = emailState.isValid && passwordState.isValid
         ) {
             Text(
                 text = stringResource(id = R.string.sign_in)
