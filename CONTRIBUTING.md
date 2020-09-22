@@ -18,7 +18,7 @@ accept your pull requests.
 
 ## Contributing A Patch
 
-All development is done on the `develop` branch. You should base any changes from this branch.
+All development is done on the latest `dev_XX` branch. You should base any changes from this branch.
 
 1. Submit an issue describing your proposed change to the repo in question.
 1. The repo owner will respond to your issue promptly.
