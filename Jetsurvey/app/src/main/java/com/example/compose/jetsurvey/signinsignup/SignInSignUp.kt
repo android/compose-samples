@@ -145,6 +145,7 @@ fun Email(
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
+@OptIn(ExperimentalFocus::class)
 @Composable
 fun Password(
     label: String,
@@ -160,7 +161,13 @@ fun Password(
             passwordState.text = it
             passwordState.enableShowErrors()
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().focusObserver { focusState ->
+            val focused = focusState == FocusState.Active
+            passwordState.onFocusChange(focused)
+            if (!focused) {
+                passwordState.enableShowErrors()
+            }
+        },
         textStyle = MaterialTheme.typography.body2,
         label = {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
