@@ -2,8 +2,8 @@ name: GitHub Release with APKs
 
 on:
   push:
-    # tags:
-    # - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    tags:
+    - 'v*'
 
 jobs:
   build:
@@ -31,11 +31,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          #tag_name: "${{ github.ref }}"
-          #release_name: ${{ github.ref }}
-          draft: true # TODO update
-          tag_name: "test"
-          release_name: "Test"
+          tag_name: "${{ github.ref }}"
+          release_name: ${{ github.ref }}
+          draft: true
           prerelease: false
 
       - name: Upload Crane
@@ -116,4 +114,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: Jetsurvey/app/build/outputs/apk/debug/app-debug.apk
           asset_name: jetsurvey-debug.apk
-          asset_content_type: application/vnd.android.package-archive    
+          asset_content_type: application/vnd.android.package-archive
