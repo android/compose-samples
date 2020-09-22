@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -34,6 +34,7 @@ jobs:
           #tag_name: "${{ github.ref }}"
           #release_name: ${{ github.ref }}
           draft: true # TODO update
+          tag_name: "test"
           release_name: "Test"
           prerelease: false
 
