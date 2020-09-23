@@ -32,7 +32,8 @@ package com.example.owl.ui.common
  * limitations under the License.
  */
 
-import androidx.compose.foundation.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -55,9 +56,10 @@ fun OutlinedAvatar(
     outlineColor: Color = MaterialTheme.colors.surface
 ) {
     Box(
-        backgroundColor = outlineColor,
-        shape = CircleShape,
-        modifier = modifier
+        modifier = modifier.background(
+            color = outlineColor,
+            shape = CircleShape
+        )
     ) {
         NetworkImage(
             url = url,
