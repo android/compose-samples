@@ -112,7 +112,6 @@ dependencies {
 
     kotlinCompilerPlugin Libs.AndroidX.Compose.compiler
 
-    implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended

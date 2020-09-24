@@ -67,18 +67,6 @@ subprojects {
     def compilerPluginConfig = project.configurations.create("kotlinCompilerPlugin")
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { compile ->
-
-        compile.dependsOn(compilerPluginConfig)
-        compile.doFirst {
-            if (!compilerPluginConfig.isEmpty()) {
-                // Add the compiler plugin JARs using the -Xplugin flag
-                compile.kotlinOptions.freeCompilerArgs +=
-                        "-Xplugin=${compilerPluginConfig.files.first()}"
-                // Need to turn on the IR compiler too
-                compile.kotlinOptions.useIR = true
-            }
-        }
-
         kotlinOptions {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
@@ -94,6 +82,17 @@ subprojects {
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
+        }
+
+        compile.dependsOn(compilerPluginConfig)
+        compile.doFirst {
+            if (!compilerPluginConfig.isEmpty()) {
+                // Add the compiler plugin JARs using the -Xplugin flag
+                compile.kotlinOptions.freeCompilerArgs +=
+                        "-Xplugin=${compilerPluginConfig.files.first()}"
+                // Need to turn on the IR compiler too
+                compile.kotlinOptions.useIR = true
+            }
         }
     }
 }
