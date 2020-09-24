@@ -281,7 +281,6 @@ fun HomeCategoryTabIndicator(
     Spacer(
         modifier.padding(horizontal = 24.dp)
             .preferredHeight(4.dp)
-            // .align(Alignment.CenterHorizontally)
             .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
     )
 }
