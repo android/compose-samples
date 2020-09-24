@@ -191,7 +191,9 @@ fun Modifier.noHeightConstraints() = this then NoHeightConstraints
 
 /**
  * A modifier that removes any height constraints and positions the wrapped layout at
- * the top of the available space. This should be provided in Compose b/158559319
+ * the top of the available space.
+ *
+ * TODO: This should be provided in Compose https://issuetracker.google.com/158559319
  */
 object NoHeightConstraints : LayoutModifier {
     override fun MeasureScope.measure(
