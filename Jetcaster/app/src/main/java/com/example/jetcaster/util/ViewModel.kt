@@ -31,8 +31,7 @@ fun <VM : ViewModel> viewModelProviderFactoryOf(
 ): ViewModelProvider.Factory = SimpleFactory(create)
 
 /**
- * This needs to be a named class currently to workaround a compiler issue:
- *  https://issuetracker.google.com/163807311
+ * This needs to be a named class currently to workaround a compiler issue: b/163807311
  */
 private class SimpleFactory<VM : ViewModel>(
     private val create: () -> VM
