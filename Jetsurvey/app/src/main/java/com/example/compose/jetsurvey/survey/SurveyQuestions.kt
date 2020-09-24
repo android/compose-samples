@@ -138,7 +138,7 @@ private fun SingleChoiceQuestion(
                 RadioButton(
                     selected = (text == selectedOption),
                     onClick = onClickHandle,
-                    selectedColor = MaterialTheme.colors.primary
+//                    selectedColor = MaterialTheme.colors.primary
                 )
                 Text(
                     text = text,
