@@ -424,7 +424,6 @@ private fun UserInputText(
                 onTextInputStarted = { controller -> keyboardController = controller }
             )
 
-
             val disableContentColor =
                 EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
             if (textFieldValue.text.isEmpty() && !focusState) {
