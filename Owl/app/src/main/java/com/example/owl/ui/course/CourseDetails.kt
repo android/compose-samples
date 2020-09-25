@@ -17,18 +17,17 @@
 package com.example.owl.ui.course
 
 import androidx.compose.animation.animate
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -113,7 +112,7 @@ fun CourseDetails(
                 onBack = { sheetState.animateTo(SheetState.Closed) }
             )
 
-            Stack(
+            Box(
                 // The Lessons sheet is initially closed and appears as a FAB. Make it openable by
                 // swiping or clicking the FAB.
                 Modifier.swipeable(
@@ -161,7 +160,7 @@ private fun CourseDescriptionHeader(
     course: Course,
     upPress: () -> Unit
 ) {
-    Stack {
+    Box {
         NetworkImage(
             url = course.thumbUrl,
             modifier = Modifier
@@ -349,7 +348,7 @@ private fun Lessons(
 ) {
     val lessons: List<Lesson> = LessonsRepo.getLessons(course.id)
 
-    Stack(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         // When sheet open, show a list of the lessons
         val lessonsAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
         Column(
