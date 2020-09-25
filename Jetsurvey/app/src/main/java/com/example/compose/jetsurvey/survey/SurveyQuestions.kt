@@ -31,6 +31,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -116,6 +117,7 @@ private fun SingleChoiceQuestion(
     } else {
         null
     }
+
     val (selectedOption, onOptionSelected) = remember(answer) { mutableStateOf(selected) }
 
     Column(modifier = modifier) {
@@ -125,21 +127,27 @@ private fun SingleChoiceQuestion(
                 options[text]?.let { onAnswerSelected(it) }
                 Unit
             }
+            val optionSelected = text == selectedOption
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .selectable(
-                        selected = (text == selectedOption),
+                        selected = optionSelected,
                         onClick = onClickHandle
                     )
                     .padding(vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (text == selectedOption),
+                    selected = optionSelected,
                     onClick = onClickHandle,
-                    selectedColor = MaterialTheme.colors.primary
+                    color = RadioButtonConstants.animateDefaultColor(
+                        selected = optionSelected,
+                        enabled = true,
+                        selectedColor = MaterialTheme.colors.primary
+                    )
                 )
+
                 Text(
                     text = text,
                     modifier = Modifier.padding(horizontal = 16.dp)

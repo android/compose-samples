@@ -20,11 +20,10 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.align
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -282,7 +281,6 @@ fun HomeCategoryTabIndicator(
     Spacer(
         modifier.padding(horizontal = 24.dp)
             .preferredHeight(4.dp)
-            .align(Alignment.CenterHorizontally)
             .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
     )
 }
@@ -323,7 +321,7 @@ private fun FollowedPodcastCarouselItem(
     Column(
         modifier.padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        Stack(
+        Box(
             Modifier
                 .weight(1f)
                 .align(Alignment.CenterHorizontally)
