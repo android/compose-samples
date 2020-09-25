@@ -66,7 +66,13 @@ android {
     }
 
     buildFeatures {
-        compose true
+        // We turn off the Compose feature for now, due to using Compose SNAPSHOTs where the
+        // Compose compiler artifact has changed artifact group/name.
+        // Instead we add the compiler manually below in the dependencies {}. Also see
+        // the root build.gradle for info on how to apply the plugin.
+        // TODO: remove this once we upgrade to an AGP version which uses the new artifact details
+
+        // compose true
     }
 
     composeOptions {
@@ -79,6 +85,10 @@ android {
 dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.android
+
+    // Temporary workaround (see above)
+    // TODO: remove Compose.compiler once we upgrade to an AGP version which uses the new artifact details
+    kotlinCompilerPlugin Libs.AndroidX.Compose.compiler
 
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
