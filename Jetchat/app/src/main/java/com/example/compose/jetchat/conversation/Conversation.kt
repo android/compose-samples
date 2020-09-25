@@ -24,12 +24,11 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.align
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -90,7 +89,7 @@ fun ConversationContent(
 
     val scrollState = rememberScrollState()
     Surface(modifier = modifier) {
-        Stack(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
                 Messages(
                     messages = uiState.messages,
@@ -177,8 +176,7 @@ fun Messages(
     scrollState: ScrollState,
     modifier: Modifier = Modifier
 ) {
-    Stack(modifier = modifier) {
-
+    Box(modifier = modifier) {
         val a11yLabel = stringResource(R.string.conversation_desc)
         ScrollableColumn(
             scrollState = scrollState,
@@ -348,7 +346,7 @@ fun DayHeader(dayString: String) {
 }
 
 @Composable
-private fun DayHeaderLine() {
+private fun RowScope.DayHeaderLine() {
     Divider(
         modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)

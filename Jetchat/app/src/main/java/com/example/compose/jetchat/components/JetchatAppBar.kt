@@ -20,6 +20,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
@@ -38,7 +39,7 @@ import com.example.compose.jetchat.theme.elevatedSurface
 fun JetchatAppBar(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
-    title: @Composable () -> Unit,
+    title: @Composable RowScope.() -> Unit,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     Column {
@@ -52,7 +53,7 @@ fun JetchatAppBar(
             elevation = 0.dp, // No shadow needed
             contentColor = MaterialTheme.colors.onSurface,
             actions = actions,
-            title = title,
+            title = { Row { title() } }, // https://issuetracker.google.com/168793068
             navigationIcon = {
                 Image(
                     asset = vectorResource(id = R.drawable.ic_jetchat),
