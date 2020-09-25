@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
@@ -100,11 +99,10 @@ private fun Modifier.brandingPreferredHeight(
     heightDp: Dp
 ): Modifier {
     return if (!showBranding) {
-        Modifier
-            .wrapContentSize(unbounded = true)
+        this.wrapContentHeight(unbounded = true)
             .preferredHeight(heightDp)
     } else {
-        Modifier
+        this
     }
 }
 
