@@ -96,7 +96,8 @@ dependencies {
 
     // Temporary workaround (see above)
     // TODO: remove Compose.compiler once we upgrade to an AGP version which uses the new artifact details
-    implementation Libs.AndroidX.Compose.compiler
+    kotlinCompilerPlugin Libs.AndroidX.Compose.compiler
+
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended
