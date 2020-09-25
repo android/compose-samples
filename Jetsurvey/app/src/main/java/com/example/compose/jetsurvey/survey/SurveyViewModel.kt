@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class SurveyViewModel(val surveyRepository: SurveyRepository) : ViewModel() {
+class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewModel() {
 
     private val _uiState = MutableLiveData<SurveyState>()
     val uiState: LiveData<SurveyState>
@@ -69,6 +69,7 @@ class SurveyViewModel(val surveyRepository: SurveyRepository) : ViewModel() {
 }
 
 class SurveyViewModelFactory : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveyViewModel::class.java)) {
             return SurveyViewModel(SurveyRepository) as T

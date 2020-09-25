@@ -50,6 +50,7 @@ class SignUpViewModel(private val userRepository: UserRepository) : ViewModel() 
 }
 
 class SignUpViewModelFactory : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {
             return SignUpViewModel(UserRepository) as T
