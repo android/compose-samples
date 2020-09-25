@@ -21,12 +21,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,7 +69,7 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.viewModelProviderFactoryOf
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -142,8 +142,9 @@ fun EpisodeListItem(
 
         if (podcast.imageUrl != null) {
             // If we have an image Url, we can show it using [CoilImage]
-            CoilImageWithCrossfade(
+            CoilImage(
                 data = podcast.imageUrl,
+                fadeIn = true,
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
                 modifier = Modifier.preferredSize(56.dp)
@@ -306,15 +307,16 @@ private fun TopPodcastRowItem(
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        Stack(
+        Box(
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
-                CoilImageWithCrossfade(
+                CoilImage(
                     data = podcastImageUrl,
+                    fadeIn = true,
                     contentScale = ContentScale.Crop,
                     loading = { /* TODO do something better here */ },
                     modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium)

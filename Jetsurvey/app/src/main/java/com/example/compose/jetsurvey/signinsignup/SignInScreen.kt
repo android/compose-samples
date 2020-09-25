@@ -18,9 +18,9 @@ package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -104,7 +104,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         }
     )
 
-    Stack(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         ErrorSnackbar(
             snackbarHostState = snackbarHostState,
             onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() },

@@ -20,7 +20,7 @@ import androidx.compose.animation.asDisposableClock
 import androidx.compose.animation.core.TransitionDefinition
 import androidx.compose.animation.core.TransitionState
 import androidx.compose.animation.core.createAnimation
-import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.invalidate
 import androidx.compose.runtime.key
@@ -93,7 +93,7 @@ fun <T> ItemSwitcher(
             }
         }
     }
-    Stack(modifier) {
+    Box(modifier) {
         state.invalidate = invalidate
         state.items.forEach { (item, transition) ->
             key(item) {
