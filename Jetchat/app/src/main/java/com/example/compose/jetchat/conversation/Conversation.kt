@@ -137,7 +137,8 @@ fun ChannelNameBar(
                     style = MaterialTheme.typography.subtitle1
                 )
                 // Number of members
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) { // Broken - b/159017896
+                // TODO: Multiple emphasis layers - https://issuetracker.google.com/159017896
+                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
                         style = MaterialTheme.typography.caption,

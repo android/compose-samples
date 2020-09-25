@@ -49,7 +49,7 @@ fun Colors.compositedOnSurface(alpha: Float): Color {
 }
 
 /**
- * Elevation overlay logic copied from [Surface] — STOPSHIP remove b/155181601
+ * Elevation overlay logic copied from [Surface] — https://issuetracker.google.com/155181601
  */
 fun Colors.elevatedSurface(elevation: Dp): Color {
     if (isLight) return surface
