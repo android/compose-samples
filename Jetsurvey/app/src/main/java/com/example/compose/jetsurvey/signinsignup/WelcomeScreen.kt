@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
@@ -37,9 +38,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.LayoutModifier
-import androidx.compose.ui.Measurable
-import androidx.compose.ui.MeasureScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.onPositioned
@@ -48,11 +46,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Constraints.Companion.Infinity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
@@ -106,7 +101,7 @@ private fun Modifier.brandingPreferredHeight(
 ): Modifier {
     return if (!showBranding) {
         Modifier
-            .noHeightConstraints()
+            .wrapContentSize(unbounded = true)
             .preferredHeight(heightDp)
     } else {
         Modifier
@@ -184,32 +179,6 @@ private fun SignInCreateAccount(
             onSignedInAsGuest = { onEvent(WelcomeEvent.SignInAsGuest) },
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-fun Modifier.noHeightConstraints() = this then NoHeightConstraints
-
-/**
- * A modifier that removes any height constraints and positions the wrapped layout at
- * the top of the available space. This should be provided in Compose b/158559319
- */
-object NoHeightConstraints : LayoutModifier {
-    override fun MeasureScope.measure(
-        measurable: Measurable,
-        constraints: Constraints,
-    ): MeasureScope.MeasureResult {
-        val placeable = measurable.measure(
-            constraints.copy(
-                minHeight = 0,
-                maxHeight = Infinity
-            )
-        )
-        return layout(
-            placeable.width,
-            min(placeable.height.toDp(), constraints.maxHeight.dp).toIntPx()
-        ) {
-            placeable.place(0, 0)
-        }
     }
 }
 
