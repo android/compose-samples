@@ -21,13 +21,13 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -209,11 +209,7 @@ private fun SurveyBottomBar(
 
 @Composable
 private fun PageIndicator(pagesCount: Int, currentPageIndex: Int, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .align(Alignment.CenterVertically)
-    ) {
+    Row(modifier = modifier.wrapContentSize(align = Alignment.Center)) {
         for (pageIndex in 0 until pagesCount) {
             val asset = if (currentPageIndex == pageIndex) {
                 Icons.Filled.FiberManualRecord
