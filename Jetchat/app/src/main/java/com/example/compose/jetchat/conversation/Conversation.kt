@@ -57,9 +57,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.UriHandlerAmbient
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -170,6 +170,8 @@ fun ChannelNameBar(
     )
 }
 
+const val ConversationTestTag = "ConversationTestTag"
+
 @Composable
 fun Messages(
     messages: List<Message>,
@@ -178,12 +180,12 @@ fun Messages(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        val a11yLabel = stringResource(R.string.conversation_desc)
+
         ScrollableColumn(
             scrollState = scrollState,
             reverseScrollDirection = true,
             modifier = Modifier
-                .semantics { accessibilityLabel = a11yLabel }
+                .testTag(ConversationTestTag)
                 .fillMaxWidth()
         ) {
             val authorMe = stringResource(id = R.string.author_me)
@@ -307,7 +309,8 @@ fun AuthorAndTextMessage(
 
 @Composable
 private fun AuthorNameTimestamp(msg: Message) {
-    Row {
+    // Combine author and timestamp for a11y.
+    Row(modifier = Modifier.semantics(mergeAllDescendants = true) {}) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
                 text = msg.author,
