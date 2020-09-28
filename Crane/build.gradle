@@ -17,7 +17,6 @@
 import com.example.crane.buildsrc.Libs
 import com.example.crane.buildsrc.Urls
 import com.example.crane.buildsrc.Versions
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -57,7 +56,13 @@ subprojects {
         }
     }
 
-    tasks.withType(KotlinCompile).configureEach {
+    // Create a configuration which allows us to intercept the JARs, and add them to
+    // Kotlin Compiler freeCompilerArgs. This is needed because we can't currently use the
+    // built-in `compose` feature in AGP, since it depends on the old Compose Compiler artifacts.
+    // TODO: Remove this once AGP uses the new Compose Compiler artifact name
+    def compilerPluginConfig = project.configurations.create("kotlinCompilerPlugin")
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { compile ->
         kotlinOptions {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
@@ -67,6 +72,17 @@ subprojects {
             // Use experimental APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+        }
+
+        compile.dependsOn(compilerPluginConfig)
+        compile.doFirst {
+            if (!compilerPluginConfig.isEmpty()) {
+                // Add the compiler plugin JARs using the -Xplugin flag
+                compile.kotlinOptions.freeCompilerArgs +=
+                        "-Xplugin=${compilerPluginConfig.files.first()}"
+                // Need to turn on the IR compiler too
+                compile.kotlinOptions.useIR = true
+            }
         }
     }
 
