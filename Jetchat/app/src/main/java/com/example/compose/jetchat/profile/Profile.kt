@@ -16,16 +16,16 @@
 
 package com.example.compose.jetchat.profile
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -88,7 +88,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             }
         )
         WithConstraints {
-            Stack(modifier = Modifier.weight(1f)) {
+            Box(modifier = Modifier.weight(1f)) {
                 Surface {
                     ScrollableColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -189,9 +189,8 @@ private fun ProfileHeader(
                 .fillMaxWidth()
                 // Allow for landscape and portrait ratios
                 .preferredHeightIn(max = 320.dp)
-                .aspectRatio(ratioAsset),
-            backgroundColor = Color.LightGray
-
+                .aspectRatio(ratioAsset)
+                .background(Color.LightGray)
         ) {
             Image(
                 modifier = Modifier
