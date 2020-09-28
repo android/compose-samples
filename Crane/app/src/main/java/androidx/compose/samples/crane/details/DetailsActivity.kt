@@ -19,8 +19,8 @@ package androidx.compose.samples.crane.details
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -73,7 +73,7 @@ data class DetailsActivityArg(
     val longitude: String
 )
 
-class DetailsActivity : AppCompatActivity() {
+class DetailsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

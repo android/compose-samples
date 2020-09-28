@@ -21,7 +21,7 @@ import androidx.compose.material.BackdropValue
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalDrawerLayout
-import androidx.compose.material.rememberBackdropState
+import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,7 +82,7 @@ fun CraneHomeContent(
 
     BackdropScaffold(
         modifier = modifier,
-        backdropScaffoldState = rememberBackdropState(BackdropValue.Revealed),
+        scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
         frontLayerScrimColor = Color.Transparent,
         appBar = {
             HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })

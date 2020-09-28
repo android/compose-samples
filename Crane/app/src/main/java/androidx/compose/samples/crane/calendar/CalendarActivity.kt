@@ -19,7 +19,7 @@ package androidx.compose.samples.crane.calendar
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
@@ -42,7 +42,7 @@ fun launchCalendarActivity(context: Context) {
     context.startActivity(intent)
 }
 
-class CalendarActivity : AppCompatActivity() {
+class CalendarActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
