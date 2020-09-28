@@ -24,11 +24,11 @@ import androidx.compose.animation.animate
 import androidx.compose.animation.animatedFloat
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SpringSpec
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Layout
 import androidx.compose.ui.MeasureScope
 import androidx.compose.ui.Modifier
@@ -171,7 +172,7 @@ private fun JetsnackBottomNavLayout(
     selectedIndex: Int,
     itemCount: Int,
     animSpec: AnimationSpec<Float>,
-    indicator: @Composable () -> Unit,
+    indicator: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -250,8 +251,8 @@ private fun JetsnackBottomNavLayout(
 
 @Composable
 fun JetsnackBottomNavigationItem(
-    icon: @Composable () -> Unit,
-    text: @Composable () -> Unit,
+    icon: @Composable BoxScope.() -> Unit,
+    text: @Composable BoxScope.() -> Unit,
     selected: Boolean,
     onSelected: () -> Unit,
     animSpec: AnimationSpec<Float>,
@@ -259,7 +260,7 @@ fun JetsnackBottomNavigationItem(
 ) {
     Box(
         modifier = modifier.selectable(selected = selected, onClick = onSelected),
-        gravity = ContentGravity.Center
+        alignment = Alignment.Center
     ) {
         // Animate the icon/text positions within the item based on selection
         val animationProgress = animate(if (selected) 1f else 0f, animSpec)
@@ -273,8 +274,8 @@ fun JetsnackBottomNavigationItem(
 
 @Composable
 private fun JetsnackBottomNavItemLayout(
-    icon: @Composable () -> Unit,
-    text: @Composable () -> Unit,
+    icon: @Composable BoxScope.() -> Unit,
+    text: @Composable BoxScope.() -> Unit,
     @FloatRange(from = 0.0, to = 1.0) animationProgress: Float
 ) {
     Layout(
@@ -284,13 +285,13 @@ private fun JetsnackBottomNavItemLayout(
             Box(
                 modifier = Modifier
                     .layoutId("text")
+                    .padding(start = TextIconSpacing)
                     .drawLayer(
                         alpha = animationProgress,
                         scaleX = scale,
                         scaleY = scale,
                         transformOrigin = BottomNavLabelTransformOrigin
                     ),
-                paddingStart = TextIconSpacing,
                 children = text
             )
         }

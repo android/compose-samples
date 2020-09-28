@@ -155,7 +155,7 @@ private fun SearchResult(
         JetsnackButton(
             onClick = { /* todo */ },
             shape = CircleShape,
-            padding = PaddingValues(0.dp),
+            contentPadding = PaddingValues(0.dp),
             modifier = Modifier
                 .preferredSize(36.dp)
                 .constrainAs(add) {

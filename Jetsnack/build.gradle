@@ -23,13 +23,16 @@ buildscript {
         jcenter()
     }
     dependencies {
+        // Downgrade R8 due to b/169095082
+        // TODO remove this
+        classpath 'com.android.tools:r8:2.1.66'
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.1.1'
+    id 'com.diffplug.spotless' version '5.6.1'
 }
 
 subprojects {
@@ -46,13 +49,30 @@ subprojects {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    // Create a configuration which allows us to intercept the JARs, and add them to
+    // Kotlin Compiler freeCompilerArgs. This is needed because we can't currently use the
+    // built-in `compose` feature in AGP, since it depends on the old Compose Compiler artifacts.
+    // TODO: Remove this once AGP uses the new Compose Compiler artifact name
+    def compilerPluginConfig = project.configurations.create("kotlinCompilerPlugin")
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { compile ->
         kotlinOptions {
             jvmTarget = '1.8'
             allWarningsAsErrors = true
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        }
+
+        compile.dependsOn(compilerPluginConfig)
+        compile.doFirst {
+            if (!compilerPluginConfig.isEmpty()) {
+                // Add the compiler plugin JARs using the -Xplugin flag
+                compile.kotlinOptions.freeCompilerArgs +=
+                        "-Xplugin=${compilerPluginConfig.files.first()}"
+                // Need to turn on the IR compiler too
+                compile.kotlinOptions.useIR = true
+            }
         }
     }
     apply plugin: 'com.diffplug.spotless'

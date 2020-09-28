@@ -19,10 +19,9 @@ package com.example.jetsnack.ui.home
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.IconButton
@@ -59,7 +58,7 @@ fun Feed(
     val data = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        Stack(modifier = Modifier.navigationBarsPadding(left = true, right = true)) {
+        Box(modifier = Modifier.navigationBarsPadding(left = true, right = true)) {
             SnackCollectionList(data, filters, onSnackClick)
             DestinationBar()
         }
