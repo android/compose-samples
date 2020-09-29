@@ -54,11 +54,11 @@ fun Feed(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val filters = remember { SnackRepo.getFilters() }
     val snackCollections = remember { SnackRepo.getSnacks() }
+    val filters = remember { SnackRepo.getFilters() }
     Feed(
-        filters,
         snackCollections,
+        filters,
         onSnackClick,
         modifier
     )
@@ -66,14 +66,14 @@ fun Feed(
 
 @Composable
 private fun Feed(
-    filters: List<Filter>,
     snackCollections: List<SnackCollection>,
+    filters: List<Filter>,
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
-            SnackCollectionList(filters, snackCollections, onSnackClick)
+            SnackCollectionList(snackCollections, filters, onSnackClick)
             DestinationBar()
         }
     }
@@ -82,8 +82,8 @@ private fun Feed(
 @OptIn(ExperimentalLazyDsl::class)
 @Composable
 private fun SnackCollectionList(
-    filters: List<Filter>,
     snackCollections: List<SnackCollection>,
+    filters: List<Filter>,
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
