@@ -64,7 +64,7 @@ subprojects {
         }
     }
 
-    tasks.withType(KotlinCompile).all {
+    tasks.withType(KotlinCompile).configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
