@@ -84,13 +84,7 @@ android {
     }
 
     buildFeatures {
-        // We turn off the Compose feature for now, due to using Compose SNAPSHOTs where the
-        // Compose compiler artifact has changed artifact group/name.
-        // Instead we add the compiler manually below in the dependencies {}. Also see
-        // the root build.gradle for info on how to apply the plugin.
-        // TODO: remove this once we upgrade to an AGP version which uses the new artifact details
-
-        // compose true
+        compose true
     }
 
     composeOptions {
@@ -107,8 +101,6 @@ dependencies {
     implementation Libs.AndroidX.palette
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
-
-    kotlinCompilerPlugin Libs.AndroidX.Compose.compiler
 
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
