@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 fun Modifier.horizontalGradientBackground(
     colors: List<Color>
 ) = drawWithCache {
+    // Use drawWithCache modifier to create and cache the gradient once size is known or changes.
     val gradient = HorizontalGradient(
         startX = 0.0f,
         endX = size.width,
