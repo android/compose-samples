@@ -320,9 +320,9 @@ private fun LessonsSheet(
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
     val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
-    val fabHeight = fabSize + InsetsAmbient.current.systemBars.bottom
+    val fabSheetHeight = fabSize + InsetsAmbient.current.systemBars.bottom
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
-    val offsetY = lerp(height - fabHeight, 0f, openFraction)
+    val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
     val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
     val surfaceColor = lerp(
         startColor = pink500,
