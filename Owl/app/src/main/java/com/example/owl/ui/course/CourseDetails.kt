@@ -17,18 +17,17 @@
 package com.example.owl.ui.course
 
 import androidx.compose.animation.animate
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -113,7 +112,7 @@ fun CourseDetails(
                 onBack = { sheetState.animateTo(SheetState.Closed) }
             )
 
-            Stack(
+            Box(
                 // The Lessons sheet is initially closed and appears as a FAB. Make it openable by
                 // swiping or clicking the FAB.
                 Modifier.swipeable(
@@ -126,7 +125,11 @@ fun CourseDetails(
                     orientation = Orientation.Vertical
                 )
             ) {
-                val openFraction = -sheetState.offset.value / dragRange
+                val openFraction = if (sheetState.offset.value.isNaN()) {
+                    0f
+                } else {
+                    -sheetState.offset.value / dragRange
+                }.coerceIn(0f, 1f)
                 CourseDescription(course, selectCourse, upPress)
                 LessonsSheet(
                     course,
@@ -161,7 +164,7 @@ private fun CourseDescriptionHeader(
     course: Course,
     upPress: () -> Unit
 ) {
-    Stack {
+    Box {
         NetworkImage(
             url = course.thumbUrl,
             modifier = Modifier
@@ -317,8 +320,9 @@ private fun LessonsSheet(
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
     val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
+    val fabSheetHeight = fabSize + InsetsAmbient.current.systemBars.bottom
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
-    val offsetY = lerp(height - fabSize, 0f, openFraction)
+    val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
     val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
     val surfaceColor = lerp(
         startColor = pink500,
@@ -347,9 +351,9 @@ private fun Lessons(
     surfaceColor: Color = MaterialTheme.colors.surface,
     updateSheet: (SheetState) -> Unit
 ) {
-    val lessons: List<Lesson> = LessonsRepo.getLessons(course.id)
+    val lessons: List<Lesson> = remember(course.id) { LessonsRepo.getLessons(course.id) }
 
-    Stack(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         // When sheet open, show a list of the lessons
         val lessonsAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
         Column(

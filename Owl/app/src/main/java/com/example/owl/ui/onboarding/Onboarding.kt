@@ -25,10 +25,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -185,7 +185,7 @@ private fun TopicChip(topic: Topic) {
         shape = MaterialTheme.shapes.medium.copy(topLeft = CornerSize(selectionState[CornerRadius]))
     ) {
         Row(modifier = Modifier.toggleable(value = selected, onValueChange = onSelected)) {
-            Stack {
+            Box {
                 NetworkImage(
                     url = topic.imageUrl,
                     modifier = Modifier

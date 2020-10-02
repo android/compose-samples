@@ -21,21 +21,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.align
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.lazy.LazyColumnItems
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRowForIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.EmphasisAmbient
@@ -44,8 +43,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,6 +73,7 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun PodcastCategory(
     categoryId: Long,
@@ -91,47 +92,31 @@ fun PodcastCategory(
     val viewState by viewModel.state.collectAsState()
 
     /**
-     * LazyColumnItems currently only supports a single type of item. To workaround that, we
-     * have the `sealed` [EpisodeListItem] class which allows us to bake in different
-     * 'layout' types, which our [LazyColumnItems] switches on.
-     */
-    val items = ArrayList<PodcastCategoryItem>()
-    if (viewState.topPodcasts.isNotEmpty()) {
-        items += PodcastCategoryItem.TopPodcastsItem(viewState.topPodcasts)
-    }
-    viewState.episodes.mapTo(items) { (episode, podcast) ->
-        PodcastCategoryItem.EpisodeItem(episode, podcast)
-    }
-
-    /**
      * TODO: reset scroll position when category changes
      */
-    LazyColumnFor(
-        items = items,
+    LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(0.dp),
         horizontalAlignment = Alignment.Start
-    ) { item ->
-        when (item) {
-            is PodcastCategoryItem.EpisodeItem -> {
-                EpisodeListItem(
-                    episode = item.episode,
-                    podcast = item.podcast,
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-            }
-            is PodcastCategoryItem.TopPodcastsItem -> {
-                CategoryPodcastRow(
-                    podcasts = item.podcasts,
-                    onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-            }
+    ) {
+        item {
+            CategoryPodcastRow(
+                podcasts = viewState.topPodcasts,
+                onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+                modifier = Modifier.fillParentMaxWidth()
+            )
+        }
+
+        items(viewState.episodes) { item ->
+            EpisodeListItem(
+                episode = item.episode,
+                podcast = item.podcast,
+                modifier = Modifier.fillParentMaxWidth()
+            )
         }
     }
 }
 
-@Suppress("UNUSED_VARIABLE")
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -142,8 +127,8 @@ fun EpisodeListItem(
         modifier = Modifier.clickable { /* TODO */ } then modifier
     ) {
         val (
-            divider, episodeTitle, podcastTitle, summary, image, playIcon,
-            date, duration, addPlaylist, overflow
+            divider, episodeTitle, podcastTitle, image, playIcon,
+            date, addPlaylist, overflow
         ) = createRefs()
 
         Divider(
@@ -159,9 +144,10 @@ fun EpisodeListItem(
             // If we have an image Url, we can show it using [CoilImage]
             CoilImage(
                 data = podcast.imageUrl,
+                fadeIn = true,
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
-                modifier = Modifier.preferredSize(48.dp)
+                modifier = Modifier.preferredSize(56.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
@@ -206,7 +192,7 @@ fun EpisodeListItem(
             Text(
                 text = podcast.title,
                 maxLines = 2,
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.constrainAs(podcastTitle) {
                     linkTo(
                         start = parent.start,
@@ -215,40 +201,26 @@ fun EpisodeListItem(
                         endMargin = 16.dp,
                         bias = 0f
                     )
-                    top.linkTo(episodeTitle.bottom, 4.dp)
+                    top.linkTo(episodeTitle.bottom, 6.dp)
 
                     width = Dimension.preferredWrapContent
                 }
             )
-
-            episode.summary?.let {
-                Text(
-                    text = it,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption,
-                    modifier = Modifier.constrainAs(summary) {
-                        start.linkTo(parent.start, Keyline1)
-                        end.linkTo(image.end)
-                        top.linkTo(titleImageBarrier, 16.dp)
-
-                        width = Dimension.fillToConstraints
-                    }
-                )
-            }
         }
 
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Image(
-                asset = Icons.Default.PlayCircleOutline,
+                asset = Icons.Rounded.PlayCircleFilled,
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(contentColor()),
                 modifier = Modifier
-                    .clickable { /* TODO */ }
-                    .preferredSize(48.dp)
+                    .clickable(indication = RippleIndication(bounded = false, radius = 24.dp)) {
+                        /* TODO */
+                    }
+                    .preferredSize(36.dp)
                     .constrainAs(playIcon) {
                         start.linkTo(parent.start, Keyline1)
-                        top.linkTo(summary.bottom, margin = 16.dp)
+                        top.linkTo(titleImageBarrier, margin = 16.dp)
                         bottom.linkTo(parent.bottom, 16.dp)
                     }
             )
@@ -273,7 +245,7 @@ fun EpisodeListItem(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier.constrainAs(date) {
-                    start.linkTo(playIcon.end, margin = 16.dp)
+                    start.linkTo(playIcon.end, margin = 12.dp)
                     end.linkTo(addPlaylist.start, margin = 16.dp)
                     centerVerticallyTo(playIcon)
 
@@ -312,7 +284,7 @@ private fun CategoryPodcastRow(
     LazyRowForIndexed(
         items = podcasts,
         modifier = modifier,
-        contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 16.dp)
+        contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 24.dp)
     ) { index, (podcast, _, isFollowed) ->
         TopPodcastRowItem(
             podcastTitle = podcast.title,
@@ -322,7 +294,7 @@ private fun CategoryPodcastRow(
             modifier = Modifier.preferredWidth(128.dp)
         )
 
-        if (index < lastIndex) Spacer(Modifier.preferredWidth(8.dp))
+        if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
     }
 }
 
@@ -335,7 +307,7 @@ private fun TopPodcastRowItem(
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        Stack(
+        Box(
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -344,6 +316,7 @@ private fun TopPodcastRowItem(
             if (podcastImageUrl != null) {
                 CoilImage(
                     data = podcastImageUrl,
+                    fadeIn = true,
                     contentScale = ContentScale.Crop,
                     loading = { /* TODO do something better here */ },
                     modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium)
@@ -362,10 +335,10 @@ private fun TopPodcastRowItem(
         ProvideEmphasis(EmphasisAmbient.current.high) {
             Text(
                 text = podcastTitle,
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.body2,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 8.dp).weight(1f)
+                modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
             )
         }
     }
@@ -385,9 +358,4 @@ fun PreviewEpisodeListItem() {
             modifier = Modifier.fillMaxWidth()
         )
     }
-}
-
-private sealed class PodcastCategoryItem {
-    data class EpisodeItem(val episode: Episode, val podcast: Podcast) : PodcastCategoryItem()
-    data class TopPodcastsItem(val podcasts: List<PodcastWithExtraInfo>) : PodcastCategoryItem()
 }

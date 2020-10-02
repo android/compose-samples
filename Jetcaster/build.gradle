@@ -16,7 +16,6 @@
 
 import com.example.jetcaster.buildsrc.Libs
 import com.example.jetcaster.buildsrc.Versions
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -25,6 +24,10 @@ buildscript {
     }
 
     dependencies {
+        // Downgrade R8 due to b/169095082
+        // TODO remove this
+        classpath 'com.android.tools:r8:2.1.66'
+
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
     }
@@ -61,7 +64,7 @@ subprojects {
         }
     }
 
-    tasks.withType(KotlinCompile).all {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true

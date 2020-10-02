@@ -22,7 +22,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TransitionDefinition
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
@@ -47,7 +45,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.drawLayer
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
@@ -163,25 +160,18 @@ private fun ChoiceChipContent(
     Surface(
         color = when {
             selected -> MaterialTheme.colors.primary.copy(alpha = 0.08f)
-            else -> Color.Transparent
+            else -> MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
         },
         contentColor = when {
             selected -> MaterialTheme.colors.primary
-            else -> EmphasisAmbient.current.high.applyEmphasis(contentColor())
+            else -> MaterialTheme.colors.onSurface
         },
         shape = MaterialTheme.shapes.small,
-        border = BorderStroke(
-            width = 1.dp,
-            color = when {
-                selected -> MaterialTheme.colors.primary
-                else -> EmphasisAmbient.current.disabled.applyEmphasis(contentColor())
-            }
-        ),
         modifier = modifier
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.subtitle2,
+            style = MaterialTheme.typography.body2,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }

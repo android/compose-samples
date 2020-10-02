@@ -69,4 +69,18 @@ subprojects {
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
         }
     }
+
+    // Crane uses Compose alpha03 and Android Gradle Plugin 4.2.0-alpha13 which are incompatible
+    // TODO: Remove this workaround when updating to >alpha04
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def group = details.requested.group
+            def module = details.requested.module.name
+            def version = details.requested.version
+
+            if (group == 'androidx.compose.compiler' && module == 'compiler') {
+                details.useTarget("androidx.compose:compose-compiler:$version")
+            }
+        }
+    }
 }

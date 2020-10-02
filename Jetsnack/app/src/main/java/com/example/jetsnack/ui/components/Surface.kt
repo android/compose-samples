@@ -17,10 +17,10 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentColorAmbient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
@@ -37,7 +37,8 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.ln
 
 /**
- * An alternative to [androidx.compose.material.Surface] utilizing [com.example.jetsnack.ui.theme.JetsnackColorPalette]
+ * An alternative to [androidx.compose.material.Surface] utilizing
+ * [com.example.jetsnack.ui.theme.JetsnackColorPalette]
  */
 @Composable
 fun JetsnackSurface(
@@ -78,13 +79,14 @@ private fun getBackgroundColorForElevation(color: Color, elevation: Dp): Color {
 /**
  * Applies a [Color.White] overlay to this color based on the [elevation]. This increases visibility
  * of elevation for surfaces in a dark theme.
+ *
+ * TODO: Remove when public https://issuetracker.google.com/155181601
  */
 private fun Color.withElevation(elevation: Dp): Color {
     val foreground = calculateForeground(elevation)
     return foreground.compositeOver(this)
 }
 
-// TODO: b/145802792 - clarify this algorithm
 /**
  * @return the alpha-modified [Color.White] to overlay on top of the surface color to produce
  * the resultant color.

@@ -14,11 +14,13 @@
   -->
 <resources>
 
-    <style name="Theme.Owl" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="colorPrimary">#ff00ff</item>
-        <item name="colorAccent">#ff00ff</item>
+    <style name="Theme.Owl" parent="@style/Theme.Material.DayNight.NoActionBar">
+        <item name="android:colorPrimary">#ff00ff</item>
+        <item name="android:colorAccent">#ff00ff</item>
         <item name="android:statusBarColor">@color/immersive_sys_ui</item>
         <item name="android:navigationBarColor">@color/nav_bar</item>
     </style>
+
+    <style name="Theme.Material.DayNight.NoActionBar" parent="@android:style/Theme.Material.Light.NoActionBar" />
 
 </resources>

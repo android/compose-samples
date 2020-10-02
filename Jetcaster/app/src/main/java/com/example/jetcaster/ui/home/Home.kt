@@ -16,14 +16,14 @@
 
 package com.example.jetcaster.ui.home
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.align
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.EmphasisAmbient
@@ -44,6 +43,7 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabConstants.defaultTabIndicatorOffset
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
@@ -76,7 +76,7 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
-import com.example.jetcaster.util.statusBarsPadding
+import com.example.jetcaster.util.statusBarsHeight
 import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.Duration
@@ -104,36 +104,34 @@ fun Home() {
 
 @Composable
 fun HomeAppBar(
+    backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
-    Stack(modifier = modifier) {
-        ProvideEmphasis(EmphasisAmbient.current.high) {
-            Icon(
-                asset = vectorResource(R.drawable.ic_text_logo),
-                modifier = Modifier.align(Alignment.Center)
-                    .padding(8.dp)
-                    .preferredHeightIn(max = 24.dp)
-            )
-        }
-
-        ProvideEmphasis(EmphasisAmbient.current.medium) {
-            IconButton(
-                onClick = { /* TODO: Open account? */ },
-                modifier = Modifier.align(Alignment.CenterStart)
-                    .padding(start = 8.dp)
-            ) {
-                Icon(Icons.Default.AccountCircle)
+    TopAppBar(
+        title = {
+            Row {
+                Image(asset = vectorResource(R.drawable.ic_logo))
+                Icon(
+                    asset = vectorResource(R.drawable.ic_text_logo),
+                    modifier = Modifier.padding(start = 4.dp).preferredHeightIn(max = 24.dp)
+                )
             }
-
-            IconButton(
-                onClick = { /* TODO: Open search */ },
-                modifier = Modifier.align(Alignment.CenterEnd)
-                    .padding(end = 8.dp)
-            ) {
-                Icon(Icons.Filled.Search)
+        },
+        backgroundColor = backgroundColor,
+        actions = {
+            ProvideEmphasis(EmphasisAmbient.current.medium) {
+                IconButton(
+                    onClick = { /* TODO: Open search */ },
+                    icon = { Icon(Icons.Filled.Search) }
+                )
+                IconButton(
+                    onClick = { /* TODO: Open account? */ },
+                    icon = { Icon(Icons.Default.AccountCircle) }
+                )
             }
-        }
-    }
+        },
+        modifier = modifier
+    )
 }
 
 /**
@@ -179,38 +177,38 @@ fun HomeContent(
                 dominantColorState.reset()
             }
 
-            Stack(Modifier.fillMaxWidth()) {
-                Box(
-                    Modifier.matchParentSize()
-                        .verticalGradientScrim(
-                            color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
-                            startYPercentage = 1f,
-                            endYPercentage = 0f
-                        )
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .verticalGradientScrim(
+                        color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
+                        startYPercentage = 1f,
+                        endYPercentage = 0f
+                    )
+            ) {
+                val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
+
+                // Draw a scrim over the status bar which matches the app bar
+                Spacer(Modifier.background(appBarColor).fillMaxWidth().statusBarsHeight())
+
+                HomeAppBar(
+                    backgroundColor = appBarColor,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                Column(Modifier.fillMaxWidth()) {
-                    HomeAppBar(
-                        Modifier.fillMaxWidth()
-                            .statusBarsPadding()
-                            .preferredHeight(56.dp) /* TODO: change height to 48.dp in landscape */
+                if (featuredPodcasts.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+
+                    FollowedPodcasts(
+                        items = featuredPodcasts,
+                        pagerState = pagerState,
+                        onPodcastUnfollowed = onPodcastUnfollowed,
+                        modifier = Modifier
+                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                            .fillMaxWidth()
+                            .preferredHeight(200.dp)
                     )
 
-                    if (featuredPodcasts.isNotEmpty()) {
-                        Spacer(Modifier.height(16.dp))
-
-                        FollowedPodcasts(
-                            items = featuredPodcasts,
-                            pagerState = pagerState,
-                            onPodcastUnfollowed = onPodcastUnfollowed,
-                            modifier = Modifier
-                                .padding(start = Keyline1, top = 16.dp, end = Keyline1)
-                                .fillMaxWidth()
-                                .preferredHeight(200.dp)
-                        )
-
-                        Spacer(Modifier.height(16.dp))
-                    }
+                    Spacer(Modifier.height(16.dp))
                 }
             }
         }
@@ -266,7 +264,8 @@ private fun HomeCategoryTabs(
                         text = when (category) {
                             HomeCategory.Library -> stringResource(R.string.home_library)
                             HomeCategory.Discover -> stringResource(R.string.home_discover)
-                        }
+                        },
+                        style = MaterialTheme.typography.body2
                     )
                 }
             )
@@ -277,12 +276,11 @@ private fun HomeCategoryTabs(
 @Composable
 fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.primary
+    color: Color = MaterialTheme.colors.onSurface
 ) {
     Spacer(
-        modifier.preferredWidth(112.dp)
+        modifier.padding(horizontal = 24.dp)
             .preferredHeight(4.dp)
-            .align(Alignment.CenterHorizontally)
             .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
     )
 }
@@ -308,14 +306,10 @@ fun FollowedPodcasts(
             podcastImageUrl = podcast.imageUrl,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
-            modifier = Modifier.padding(4.dp)
-                .fillMaxHeight()
-                .scalePagerItems(unselectedScale = PodcastCarouselUnselectedScale)
+            modifier = Modifier.padding(4.dp).fillMaxHeight()
         )
     }
 }
-
-private const val PodcastCarouselUnselectedScale = 0.85f
 
 @Composable
 private fun FollowedPodcastCarouselItem(
@@ -327,7 +321,7 @@ private fun FollowedPodcastCarouselItem(
     Column(
         modifier.padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        Stack(
+        Box(
             Modifier
                 .weight(1f)
                 .align(Alignment.CenterHorizontally)

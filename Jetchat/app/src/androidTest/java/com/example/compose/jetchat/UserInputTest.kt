@@ -79,7 +79,8 @@ class UserInputTest {
         // Check emoji selector is displayed
         assertEmojiSelectorIsDisplayed()
 
-        composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
+        composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false))
+            .assertExists()
         // Press back button
         Espresso.pressBack()
         // Check the emoji selector is not displayed
@@ -101,13 +102,16 @@ class UserInputTest {
     fun keyboardShown_emojiSelectorOpened_keyboardHides() {
         // Click on text field to open the soft keyboard
         clickOnTextField()
+
+        // TODO: Soft keyboard is not correctly synchronized https://issuetracker.google.com/169235317
+        Thread.sleep(200)
+
         composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, true)).assertExists()
 
         // When the emoji selector is extended
         openEmojiSelector()
 
         // Check that the keyboard is hidden
-        composeTestRule.dumpSemanticNodes() // TODO: Remove when flakiness is gone
         composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, false)).assertExists()
     }
 
@@ -124,18 +128,21 @@ class UserInputTest {
         findSendButton().assertIsEnabled()
     }
 
-    private fun clickOnTextField() {
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.textfield_desc)).performClick()
-    }
+    private fun clickOnTextField() =
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.textfield_desc))
+            .performClick()
 
     private fun openEmojiSelector() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc))
+            .performClick()
 
     private fun assertEmojiSelectorIsDisplayed() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertIsDisplayed()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc))
+            .assertIsDisplayed()
 
     private fun assertEmojiSelectorDoesNotExist() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc)).assertDoesNotExist()
+        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc))
+            .assertDoesNotExist()
 
     private fun findSendButton() = composeTestRule.onNodeWithText(activity.getString(R.string.send))
 

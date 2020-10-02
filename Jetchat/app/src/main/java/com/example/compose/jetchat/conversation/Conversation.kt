@@ -24,12 +24,11 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.align
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,9 +57,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.UriHandlerAmbient
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -90,7 +89,7 @@ fun ConversationContent(
 
     val scrollState = rememberScrollState()
     Surface(modifier = modifier) {
-        Stack(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
                 Messages(
                     messages = uiState.messages,
@@ -138,7 +137,8 @@ fun ChannelNameBar(
                     style = MaterialTheme.typography.subtitle1
                 )
                 // Number of members
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) { // Broken - b/159017896
+                // TODO: Multiple emphasis layers - https://issuetracker.google.com/159017896
+                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
                         style = MaterialTheme.typography.caption,
@@ -170,6 +170,8 @@ fun ChannelNameBar(
     )
 }
 
+const val ConversationTestTag = "ConversationTestTag"
+
 @Composable
 fun Messages(
     messages: List<Message>,
@@ -177,14 +179,13 @@ fun Messages(
     scrollState: ScrollState,
     modifier: Modifier = Modifier
 ) {
-    Stack(modifier = modifier) {
+    Box(modifier = modifier) {
 
-        val a11yLabel = stringResource(R.string.conversation_desc)
         ScrollableColumn(
             scrollState = scrollState,
             reverseScrollDirection = true,
             modifier = Modifier
-                .semantics { accessibilityLabel = a11yLabel }
+                .testTag(ConversationTestTag)
                 .fillMaxWidth()
         ) {
             val authorMe = stringResource(id = R.string.author_me)
@@ -308,7 +309,8 @@ fun AuthorAndTextMessage(
 
 @Composable
 private fun AuthorNameTimestamp(msg: Message) {
-    Row {
+    // Combine author and timestamp for a11y.
+    Row(modifier = Modifier.semantics(mergeAllDescendants = true) {}) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
                 text = msg.author,
@@ -348,7 +350,7 @@ fun DayHeader(dayString: String) {
 }
 
 @Composable
-private fun DayHeaderLine() {
+private fun RowScope.DayHeaderLine() {
     Divider(
         modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)

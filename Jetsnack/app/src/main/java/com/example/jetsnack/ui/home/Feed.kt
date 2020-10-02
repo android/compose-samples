@@ -17,21 +17,19 @@
 package com.example.jetsnack.ui.home
 
 import androidx.compose.foundation.Icon
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +46,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.navigationBarsPadding
+import com.example.jetsnack.ui.utils.statusBarsHeight
 import com.example.jetsnack.ui.utils.statusBarsPadding
 
 @Composable
@@ -56,47 +54,54 @@ fun Feed(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val data = remember { SnackRepo.getSnacks() }
+    val snackCollections = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
+    Feed(
+        snackCollections,
+        filters,
+        onSnackClick,
+        modifier
+    )
+}
+
+@Composable
+private fun Feed(
+    snackCollections: List<SnackCollection>,
+    filters: List<Filter>,
+    onSnackClick: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        Stack(modifier = Modifier.navigationBarsPadding(left = true, right = true)) {
-            SnackCollectionList(data, filters, onSnackClick)
+        Box {
+            SnackCollectionList(snackCollections, filters, onSnackClick)
             DestinationBar()
         }
     }
 }
 
+@OptIn(ExperimentalLazyDsl::class)
 @Composable
 private fun SnackCollectionList(
-    data: List<SnackCollection>,
+    snackCollections: List<SnackCollection>,
     filters: List<Filter>,
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScrollableColumn(modifier = modifier) {
-        Spacer(
-            modifier = Modifier
-                .statusBarsPadding()
-                .preferredHeight(56.dp)
-        )
-        FilterBar(filters)
-        data.forEachIndexed { index, snackCollection ->
+    LazyColumn(modifier) {
+        item {
+            Spacer(Modifier.statusBarsHeight(additional = 56.dp))
+            FilterBar(filters)
+        }
+        itemsIndexed(snackCollections) { index, snackCollection ->
             if (index > 0) {
                 JetsnackDivider(thickness = 2.dp)
             }
-            key(snackCollection.id) {
-                SnackCollection(
-                    snackCollection = snackCollection,
-                    onSnackClick = onSnackClick,
-                    index = index
-                )
-            }
+            SnackCollection(
+                snackCollection = snackCollection,
+                onSnackClick = onSnackClick,
+                index = index
+            )
         }
-        Spacer(
-            modifier = Modifier
-                .navigationBarsPadding(left = false, right = false)
-                .preferredHeight(8.dp)
-        )
     }
 }
 

@@ -17,7 +17,7 @@
 package com.example.jetsnack.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.setContent
@@ -25,7 +25,7 @@ import androidx.core.view.WindowCompat
 import com.example.jetsnack.ui.utils.SysUiController
 import com.example.jetsnack.ui.utils.SystemUiController
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

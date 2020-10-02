@@ -16,16 +16,15 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.LazyRowFor
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
@@ -141,12 +141,12 @@ private fun Snacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScrollableRow(modifier = modifier) {
-        Spacer(modifier = Modifier.preferredWidth(16.dp))
-        snacks.forEach { snack ->
-            SnackItem(snack, onSnackClick)
-            Spacer(modifier = Modifier.preferredWidth(8.dp))
-        }
+    LazyRowFor(
+        items = snacks,
+        modifier = modifier,
+        contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
+    ) { snack ->
+        SnackItem(snack, onSnackClick)
     }
 }
 
@@ -158,7 +158,11 @@ fun SnackItem(
 ) {
     JetsnackSurface(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier.padding(bottom = 8.dp)
+        modifier = modifier.padding(
+            start = 4.dp,
+            end = 4.dp,
+            bottom = 8.dp
+        )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,7 +212,7 @@ private fun HighlightSnackItem(
                 .clickable(onClick = { onSnackClick(snack.id) })
                 .fillMaxSize()
         ) {
-            Stack(
+            Box(
                 modifier = Modifier
                     .preferredHeight(160.dp)
                     .fillMaxWidth()

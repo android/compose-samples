@@ -30,11 +30,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
@@ -83,6 +83,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SoftwareKeyboardController
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -177,7 +178,7 @@ private fun TextFieldValue.addText(newString: String): TextFieldValue {
         this.selection.end,
         newString
     )
-    val newSelection = this.selection.copy(
+    val newSelection = TextRange(
         start = newText.length,
         end = newText.length
     )
@@ -329,7 +330,8 @@ private fun UserInputSelector(
             contentColor = contentColor,
             backgroundColor = backgroundColor,
             border = border,
-            contentPadding = PaddingValues(0.dp) // TODO: Workaround for b/158830170
+            // TODO: Workaround for https://issuetracker.google.com/158830170
+            contentPadding = PaddingValues(0.dp)
         ) {
             Text(
                 stringResource(id = R.string.send),
@@ -401,7 +403,7 @@ private fun UserInputText(
             },
         horizontalArrangement = Arrangement.End
     ) {
-        Stack(
+        Box(
             modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
         ) {
             var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
@@ -423,7 +425,6 @@ private fun UserInputText(
                 onTextInputStarted = { controller -> keyboardController = controller }
             )
 
-            // FilledTextField has a placeholder but it shows a bottom indicator: b/155943102
             val disableContentColor =
                 EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
             if (textFieldValue.text.isEmpty() && !focusState) {
@@ -503,7 +504,8 @@ fun ExtendedSelectorInnerButton(
         shape = MaterialTheme.shapes.medium,
         backgroundColor = backgroundColor,
         contentColor = color,
-        contentPadding = PaddingValues(0.dp) // TODO: Workaround for b/158830170
+        // TODO: Workaround for https://issuetracker.google.com//158830170
+        contentPadding = PaddingValues(0.dp)
     ) {
         Text(
             text = text,
