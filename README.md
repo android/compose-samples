@@ -16,7 +16,6 @@ project from Android Studio following the steps
 🧬 Samples
 ------------
 
-
 | Project | |
 |:-----|---------|
 |  <br><img src="readme/jetnews.png" alt="JetNews" width="240"></img> <br><br> A sample blog post viewer that demonstrates the use of Compose with a typical Material app and real-world architecture. <br><br> • Medium complexity<br>• Varied UI<br>• Light & dark themes<br>• Resource loading<br>• UI Testing <br><br> **[> Browse](JetNews/)**<br><br> | <img src="readme/screenshots/JetNews.png" width="320" alt="Jetnews sample demo"> |
@@ -41,6 +40,12 @@ project from Android Studio following the steps
 To see how Compose and view-based UIs can coexist and interact together, check out these samples:
 * [Sunflower's `compose` branch](https://goo.gle/sunflower-compose)
 * [Tivi](https://tivi.app)
+
+🚧 Known issues
+------------
+
+Jetnews and Crane are not updated to version `alpha04` due to this
+[bug](https://issuetracker.google.com/169629547).
 
 ## License
 ```
