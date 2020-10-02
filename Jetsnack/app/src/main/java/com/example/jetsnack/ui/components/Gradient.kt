@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.drawWithCache
 import androidx.compose.ui.drawWithContent
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -40,12 +41,16 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.horizontalGradientBackground(
     colors: List<Color>
-) = gradientBackground(colors) { gradientColors, size ->
-    HorizontalGradient(
-        colors = gradientColors,
-        startX = 0f,
-        endX = size.width
+) = drawWithCache {
+    // Use drawWithCache modifier to create and cache the gradient once size is known or changes.
+    val gradient = HorizontalGradient(
+        startX = 0.0f,
+        endX = size.width,
+        colors = colors
     )
+    onDraw {
+        drawRect(brush = gradient)
+    }
 }
 
 fun Modifier.diagonalGradientTint(
@@ -59,19 +64,6 @@ fun Modifier.diagonalGradientTint(
         endX = size.width,
         endY = size.height
     )
-}
-
-fun Modifier.gradientBackground(
-    colors: List<Color>,
-    brushProvider: (List<Color>, Size) -> LinearGradient
-): Modifier = composed {
-    var size by remember { mutableStateOf(Size.Zero) }
-    val gradient = remember(colors, size) { brushProvider(colors, size) }
-    drawWithContent {
-        size = this.size
-        drawRect(brush = gradient)
-        drawContent()
-    }
 }
 
 fun Modifier.gradientTint(
