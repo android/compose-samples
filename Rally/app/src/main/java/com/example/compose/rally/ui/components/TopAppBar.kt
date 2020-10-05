@@ -37,6 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyScreen
 
@@ -82,6 +85,7 @@ private fun RallyTab(
     )
     Row(
         modifier = Modifier
+            .testTag(text)
             .padding(16.dp)
             .animateContentSize()
             .preferredHeight(TabHeight)

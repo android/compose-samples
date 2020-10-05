@@ -57,11 +57,13 @@ fun <T> StatementBody(
                 Text(
                     text = circleLabel,
                     style = MaterialTheme.typography.body1,
+                    color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = formatAmount(amountsTotal),
                     style = MaterialTheme.typography.h2,
+                    color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }

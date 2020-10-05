@@ -27,19 +27,21 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.onRoot
 import com.example.compose.rally.ui.components.AnimatedCircle
 import com.example.compose.rally.ui.theme.RallyTheme
+import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
 
 /**
- * Test to showcase [AnimationClockTestRule] present in [ComposeTestRule]. It allows for animation
- * testing at specific points in time.
+ * Test to showcase screenshot tests capabilities using [Shot](https://github.com/karumi/Shot)
+ * testing library combined with [AnimationClockTestRule] present in [ComposeTestRule]. It allows
+ * for animation testing at specific points in time.
  *
- * For assertions, a simple screenshot testing framework is used. It requires SDK 26+ and to
- * be run on a device with 420dpi, as that the density used to generate the golden images
- * present in androidTest/assets. It runs bitmap comparisons on device.
+ * For assertions, a screenshot testing framework is used. It requires SDK 21+ and to
+ * be run on a device specific device. You can find some scripts to start the screenshot test
+ * emulator in the scripts root folder.
  */
 @SdkSuppress(minSdkVersion = Build.VERSION_CODES.O)
-class AnimatingCircleTests {
+class AnimatingCircleTest : ScreenshotTest {
 
     @get:Rule
     val composeTestRule = createComposeRule(disableTransitions = false)
@@ -47,30 +49,31 @@ class AnimatingCircleTests {
     @Test
     fun circleAnimation_idle_screenshot() {
         showAnimatedCircle()
-        assertScreenshotMatchesGolden("circle_done", composeTestRule.onRoot())
+
+        compareScreenshot(composeTestRule)
     }
 
     @Test
     fun circleAnimation_initial_screenshot() {
-        compareTimeScreenshot(0, "circle_initial")
+        compareTimeScreenshot(0)
     }
 
     @Test
     fun circleAnimation_beforeDelay_screenshot() {
-        compareTimeScreenshot(499, "circle_initial")
+        compareTimeScreenshot(499)
     }
 
     @Test
     fun circleAnimation_midAnimation_screenshot() {
-        compareTimeScreenshot(600, "circle_100")
+        compareTimeScreenshot(600)
     }
 
     @Test
     fun circleAnimation_animationDone_screenshot() {
-        compareTimeScreenshot(1400, "circle_done")
+        compareTimeScreenshot(1400)
     }
 
-    private fun compareTimeScreenshot(timeMs: Long, goldenName: String) {
+    private fun compareTimeScreenshot(timeMs: Long) {
         // Start with a paused clock
         composeTestRule.clockTestRule.pauseClock()
 
@@ -80,8 +83,8 @@ class AnimatingCircleTests {
         // Advance clock (keeping it paused)
         composeTestRule.clockTestRule.advanceClock(timeMs)
 
-        // Take screenshot and compare with golden image in androidTest/assets
-        assertScreenshotMatchesGolden(goldenName, composeTestRule.onRoot())
+        // Take screenshot and compare with golden image in app/screenshots
+        compareScreenshot(composeTestRule)
     }
 
     private fun showAnimatedCircle() {
