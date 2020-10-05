@@ -35,6 +35,10 @@ object Libs {
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
+    object Shot {
+        const val gradlePlugin = "com.karumi:shot:5.0.1"
+    }
+
     object Coroutines {
         private const val version = "1.3.9"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"

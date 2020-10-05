@@ -20,12 +20,14 @@ import com.example.compose.rally.buildsrc.Versions
 buildscript {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 
     dependencies {
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
+        classpath Libs.Shot.gradlePlugin
     }
 }
 

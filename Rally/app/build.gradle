@@ -21,6 +21,8 @@ plugins {
     id 'kotlin-android'
 }
 
+apply plugin: 'shot'
+
 android {
     compileSdkVersion 30
 
@@ -30,7 +32,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName '1.0'
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
 
         vectorDrawables.useSupportLibrary = true
     }
