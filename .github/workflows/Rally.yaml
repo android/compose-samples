@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
@@ -41,9 +41,16 @@ jobs:
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
+      - name: Start emulator
+        run: ./scripts/start_emulator.sh
+
       - name: Build project
         working-directory: ${{ env.SAMPLE_PATH }}
         run: ./gradlew spotlessCheck assembleDebug lintDebug --stacktrace
+
+      - name: Execute screenshot tests
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew debugScreenshotTests --stacktrace
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2
