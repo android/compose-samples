@@ -56,13 +56,7 @@ subprojects {
         }
     }
 
-    // Create a configuration which allows us to intercept the JARs, and add them to
-    // Kotlin Compiler freeCompilerArgs. This is needed because we can't currently use the
-    // built-in `compose` feature in AGP, since it depends on the old Compose Compiler artifacts.
-    // TODO: Remove this once AGP uses the new Compose Compiler artifact name
-    def compilerPluginConfig = project.configurations.create("kotlinCompilerPlugin")
-
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { compile ->
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
@@ -72,31 +66,6 @@ subprojects {
             // Use experimental APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
-        }
-
-        compile.dependsOn(compilerPluginConfig)
-        compile.doFirst {
-            if (!compilerPluginConfig.isEmpty()) {
-                // Add the compiler plugin JARs using the -Xplugin flag
-                compile.kotlinOptions.freeCompilerArgs +=
-                        "-Xplugin=${compilerPluginConfig.files.first()}"
-                // Need to turn on the IR compiler too
-                compile.kotlinOptions.useIR = true
-            }
-        }
-    }
-
-    // Crane uses Compose alpha03 and Android Gradle Plugin 4.2.0-alpha13 which are incompatible
-    // TODO: Remove this workaround when updating to >alpha04
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            def group = details.requested.group
-            def module = details.requested.module.name
-            def version = details.requested.version
-
-            if (group == 'androidx.compose.compiler' && module == 'compiler') {
-                details.useTarget("androidx.compose:compose-compiler:$version")
-            }
         }
     }
 }
