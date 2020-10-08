@@ -16,11 +16,11 @@
 
 package com.example.jetcaster.ui.home.category
 
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
@@ -36,8 +36,8 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRowForIndexed
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -166,7 +166,7 @@ fun EpisodeListItem(
             )
         }
 
-        ProvideEmphasis(EmphasisAmbient.current.high) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Text(
                 text = episode.title,
                 maxLines = 2,
@@ -188,7 +188,7 @@ fun EpisodeListItem(
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        ProvideEmphasis(EmphasisAmbient.current.medium) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
             Text(
                 text = podcast.title,
                 maxLines = 2,
@@ -208,11 +208,11 @@ fun EpisodeListItem(
             )
         }
 
-        ProvideEmphasis(EmphasisAmbient.current.high) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Image(
                 asset = Icons.Rounded.PlayCircleFilled,
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(contentColor()),
+                colorFilter = ColorFilter.tint(AmbientContentColor.current),
                 modifier = Modifier
                     .clickable(indication = RippleIndication(bounded = false, radius = 24.dp)) {
                         /* TODO */
@@ -226,7 +226,7 @@ fun EpisodeListItem(
             )
         }
 
-        ProvideEmphasis(EmphasisAmbient.current.medium) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
             Text(
                 text = when {
                     episode.duration != null -> {
@@ -245,11 +245,14 @@ fun EpisodeListItem(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier.constrainAs(date) {
-                    start.linkTo(playIcon.end, margin = 12.dp)
-                    end.linkTo(addPlaylist.start, margin = 16.dp)
                     centerVerticallyTo(playIcon)
-
-                    width = Dimension.fillToConstraints
+                    linkTo(
+                        start = playIcon.end,
+                        startMargin = 12.dp,
+                        end = addPlaylist.start,
+                        endMargin = 16.dp,
+                        bias = 0f // float this towards the start
+                    )
                 }
             )
 
@@ -323,7 +326,7 @@ private fun TopPodcastRowItem(
                 )
             }
 
-            ProvideEmphasis(EmphasisAmbient.current.high) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
                 ToggleFollowPodcastIconButton(
                     onClick = onToggleFollowClicked,
                     isFollowed = isFollowed,
@@ -332,7 +335,7 @@ private fun TopPodcastRowItem(
             }
         }
 
-        ProvideEmphasis(EmphasisAmbient.current.high) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Text(
                 text = podcastTitle,
                 style = MaterialTheme.typography.body2,
