@@ -245,11 +245,14 @@ fun EpisodeListItem(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier.constrainAs(date) {
-                    start.linkTo(playIcon.end, margin = 12.dp)
-                    end.linkTo(addPlaylist.start, margin = 16.dp)
                     centerVerticallyTo(playIcon)
-
-                    width = Dimension.fillToConstraints
+                    linkTo(
+                        start = playIcon.end,
+                        startMargin = 12.dp,
+                        end = addPlaylist.start,
+                        endMargin = 16.dp,
+                        bias = 0f // float this towards the start
+                    )
                 }
             )
 
