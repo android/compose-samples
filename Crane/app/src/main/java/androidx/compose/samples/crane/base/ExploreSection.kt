@@ -19,10 +19,10 @@ package androidx.compose.samples.crane.base
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
@@ -46,7 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun ExploreSection(
@@ -89,11 +89,12 @@ private fun ExploreItem(
             .padding(top = 12.dp, bottom = 12.dp)
     ) {
         ExploreImageContainer {
-            CoilImageWithCrossfade(
+            CoilImage(
                 data = item.imageUrl,
+                fadeIn = true,
                 contentScale = ContentScale.Crop,
                 loading = {
-                    Stack(Modifier.fillMaxSize()) {
+                    Box(Modifier.fillMaxSize()) {
                         Image(
                             modifier = Modifier.preferredSize(36.dp).align(Alignment.Center),
                             asset = vectorResource(id = R.drawable.ic_crane_logo)

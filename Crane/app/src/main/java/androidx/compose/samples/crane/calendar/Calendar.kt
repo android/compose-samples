@@ -19,10 +19,10 @@ package androidx.compose.samples.crane.calendar
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -210,7 +210,7 @@ private fun DayStatusContainer(
     children: @Composable () -> Unit
 ) {
     if (status.isMarked()) {
-        Stack {
+        Box {
             val color = MaterialTheme.colors.secondary
             Circle(color = color)
             if (status == DaySelectedStatus.FirstDay) {
