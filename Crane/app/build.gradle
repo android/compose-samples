@@ -99,7 +99,6 @@ dependencies {
     implementation Libs.AndroidX.Compose.animation
     implementation Libs.AndroidX.UI.tooling
 
-    implementation Libs.AndroidX.appcompat
     implementation Libs.Accompanist.coil
 
     androidTestImplementation Libs.AndroidX.Test.runner
