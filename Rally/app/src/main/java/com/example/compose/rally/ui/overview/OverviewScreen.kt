@@ -28,8 +28,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Card
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -102,7 +102,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
         modifier = Modifier.padding(RallyDefaultPadding).fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
                 text = "Alerts",
                 style = MaterialTheme.typography.subtitle2,
@@ -128,7 +128,7 @@ private fun AlertItem(message: String) {
         modifier = Modifier.padding(RallyDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.weight(1f),
