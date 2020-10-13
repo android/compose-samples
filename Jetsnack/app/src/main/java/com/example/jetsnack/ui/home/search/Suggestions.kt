@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -50,7 +49,11 @@ fun SearchSuggestions(
                 SuggestionHeader(suggestionGroup.name)
             }
             items(suggestionGroup.suggestions) { suggestion ->
-                Suggestion(suggestion, onSuggestionSelect)
+                Suggestion(
+                    suggestion = suggestion,
+                    onSuggestionSelect = onSuggestionSelect,
+                    modifier = Modifier.fillParentMaxWidth()
+                )
             }
             item {
                 Spacer(Modifier.preferredHeight(4.dp))
@@ -60,12 +63,15 @@ fun SearchSuggestions(
 }
 
 @Composable
-private fun SuggestionHeader(name: String) {
+private fun SuggestionHeader(
+    name: String,
+    modifier: Modifier = Modifier
+) {
     Text(
         text = name,
         style = MaterialTheme.typography.h6,
         color = JetsnackTheme.colors.textPrimary,
-        modifier = Modifier
+        modifier = modifier
             .preferredHeightIn(min = 56.dp)
             .padding(horizontal = 24.dp, vertical = 4.dp)
             .wrapContentHeight()
@@ -73,15 +79,15 @@ private fun SuggestionHeader(name: String) {
 }
 
 @Composable
-private fun LazyItemScope.Suggestion(
+private fun Suggestion(
     suggestion: String,
-    onSuggestionSelect: (String) -> Unit
+    onSuggestionSelect: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = suggestion,
         style = MaterialTheme.typography.subtitle1,
-        modifier = Modifier
-            .fillParentMaxWidth()
+        modifier = modifier
             .preferredHeightIn(min = 48.dp)
             .clickable { onSuggestionSelect(suggestion) }
             .padding(start = 24.dp)
