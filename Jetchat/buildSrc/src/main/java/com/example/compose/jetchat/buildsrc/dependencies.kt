@@ -90,7 +90,6 @@ object Libs {
 }
 
 object Urls {
-    const val mavenCentralSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
     const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
         "${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
 }
