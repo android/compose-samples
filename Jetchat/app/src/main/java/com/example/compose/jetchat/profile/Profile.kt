@@ -34,8 +34,8 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -75,7 +75,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                     // More icon
                     Icon(
                         asset = Icons.Outlined.MoreVert,
@@ -152,7 +152,7 @@ private fun NameAndPosition(
 
 @Composable
 private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
         Text(
             text = userData.name,
             modifier = modifier,
@@ -163,7 +163,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
 
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
         Text(
             text = userData.position,
             modifier = modifier,
@@ -207,7 +207,7 @@ private fun ProfileHeader(
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
         Divider()
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = label,
                 modifier = Modifier.baselineHeight(24.dp),
@@ -219,7 +219,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         } else {
             MaterialTheme.typography.body1
         }
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
                 text = value,
                 modifier = Modifier.baselineHeight(24.dp),
