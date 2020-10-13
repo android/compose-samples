@@ -16,13 +16,14 @@
 
 package com.example.jetnews.ui.interests
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.selection.toggleable
@@ -59,7 +60,7 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
-import com.example.jetnews.utils.launchUiStateProducer
+import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -82,7 +83,7 @@ enum class Sections(val title: String) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Stateful InterestsScreen manages state using [launchUiStateProducer]
+ * Stateful InterestsScreen manages state using [produceUiState]
  *
  * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) state for screen Scaffold
@@ -101,7 +102,7 @@ fun InterestsScreen(
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
-        val (topics) = launchUiStateProducer(interestsRepository) {
+        val (topics) = produceUiState(interestsRepository) {
             getTopics()
         }
         // collectAsState will read a [Flow] in Compose
@@ -114,7 +115,7 @@ fun InterestsScreen(
     }
 
     val peopleSection = TabContent(Sections.People) {
-        val (people) = launchUiStateProducer(interestsRepository) {
+        val (people) = produceUiState(interestsRepository) {
             getPeople()
         }
         val selectedPeople by interestsRepository.observePeopleSelected().collectAsState(setOf())
@@ -126,7 +127,7 @@ fun InterestsScreen(
     }
 
     val publicationSection = TabContent(Sections.Publications) {
-        val (publications) = launchUiStateProducer(interestsRepository) {
+        val (publications) = produceUiState(interestsRepository) {
             getPublications()
         }
         val selectedPublications by interestsRepository.observePublicationSelected().collectAsState(setOf())
@@ -356,11 +357,11 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
         Text(
             text = itemTitle,
             modifier = Modifier
-                .weight(1f)
                 .align(Alignment.CenterVertically)
                 .padding(16.dp),
             style = MaterialTheme.typography.subtitle1
         )
+        Spacer(Modifier.weight(1f))
         SelectTopicButton(
             modifier = Modifier.align(Alignment.CenterVertically),
             selected = selected
