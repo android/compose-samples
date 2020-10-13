@@ -31,7 +31,7 @@ import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.graphics.Color
 import com.example.jetsnack.ui.utils.SysUiController
 
-private val LightColorPalette = JetsnackColorPalette(
+private val LightColorPalette = JetsnackColors(
     brand = Shadow5,
     uiBackground = Neutral0,
     uiBorder = Neutral4,
@@ -53,7 +53,7 @@ private val LightColorPalette = JetsnackColorPalette(
     isDark = false
 )
 
-private val DarkColorPalette = JetsnackColorPalette(
+private val DarkColorPalette = JetsnackColors(
     brand = Shadow1,
     uiBackground = Neutral8,
     uiBorder = Neutral3,
@@ -103,15 +103,15 @@ fun JetsnackTheme(
 
 object JetsnackTheme {
     @Composable
-    val colors: JetsnackColorPalette
-        get() = JetsnackColorAmbient.current
+    val colors: JetsnackColors
+        get() = AmbientJetsnackColors.current
 }
 
 /**
  * Jetsnack custom Color Palette
  */
 @Stable
-class JetsnackColorPalette(
+class JetsnackColors(
     gradient6_1: List<Color>,
     gradient6_2: List<Color>,
     gradient3_1: List<Color>,
@@ -189,7 +189,7 @@ class JetsnackColorPalette(
     var isDark by mutableStateOf(isDark)
         private set
 
-    fun update(other: JetsnackColorPalette) {
+    fun update(other: JetsnackColors) {
         gradient6_1 = other.gradient6_1
         gradient6_2 = other.gradient6_2
         gradient3_1 = other.gradient3_1
@@ -220,15 +220,15 @@ class JetsnackColorPalette(
 
 @Composable
 fun ProvideJetsnackColors(
-    colors: JetsnackColorPalette,
+    colors: JetsnackColors,
     content: @Composable () -> Unit
 ) {
     val colorPalette = remember { colors }
     colorPalette.update(colors)
-    Providers(JetsnackColorAmbient provides colorPalette, children = content)
+    Providers(AmbientJetsnackColors provides colorPalette, children = content)
 }
 
-private val JetsnackColorAmbient = staticAmbientOf<JetsnackColorPalette> {
+private val AmbientJetsnackColors = staticAmbientOf<JetsnackColors> {
     error("No JetsnackColorPalette provided")
 }
 
