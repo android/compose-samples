@@ -16,8 +16,8 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -167,7 +167,7 @@ fun ErrorSnackbar(
                     data.actionLabel?.let {
                         TextButton(
                             onClick = onDismiss,
-                            contentColor = contentColor()
+                            contentColor = AmbientContentColor.current
                         ) {
                             Text(
                                 text = stringResource(id = R.string.dismiss),

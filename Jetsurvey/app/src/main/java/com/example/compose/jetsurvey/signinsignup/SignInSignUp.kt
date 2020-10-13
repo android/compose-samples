@@ -16,10 +16,10 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
+import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -117,7 +117,7 @@ fun Email(
             emailState.text = it
         },
         label = {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
@@ -170,7 +170,7 @@ fun Password(
         },
         textStyle = MaterialTheme.typography.body2,
         label = {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2
@@ -216,7 +216,7 @@ fun TextFieldError(textError: String) {
         Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
-            style = currentTextStyle().copy(color = MaterialTheme.colors.error)
+            style = AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
         )
     }
 }
@@ -231,7 +231,7 @@ fun OrSignInAsGuest(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = stringResource(id = R.string.or),
                     style = MaterialTheme.typography.subtitle2
