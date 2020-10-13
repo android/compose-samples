@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.onGloballyPositioned
+import androidx.compose.ui.onSizeChanged
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -72,9 +73,9 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
             modifier = Modifier.fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
                 .offsetPx(y = currentOffsetHolder)
-                .onGloballyPositioned {
+                .onSizeChanged {
                     if (showBranding) {
-                        heightWithBranding = it.size.height
+                        heightWithBranding = it.height
                     }
                 }
         ) {
