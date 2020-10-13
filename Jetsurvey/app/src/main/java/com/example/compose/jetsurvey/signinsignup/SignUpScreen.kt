@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Scaffold
@@ -103,7 +103,7 @@ fun SignUpContent(
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = stringResource(id = R.string.terms_and_conditions),
                 style = MaterialTheme.typography.caption
