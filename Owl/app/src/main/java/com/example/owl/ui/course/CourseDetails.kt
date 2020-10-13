@@ -37,8 +37,8 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.IconButton
@@ -81,7 +81,7 @@ import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.PinkTheme
 import com.example.owl.ui.theme.pink500
-import com.example.owl.ui.utils.InsetsAmbient
+import com.example.owl.ui.utils.AmbientInsets
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
@@ -227,7 +227,7 @@ private fun CourseDescriptionBody(course: Course) {
             .padding(horizontal = 16.dp)
     )
     Spacer(modifier = Modifier.preferredHeight(16.dp))
-    ProvideEmphasis(EmphasisAmbient.current.medium) {
+    ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
         Text(
             text = stringResource(id = R.string.course_desc),
             style = MaterialTheme.typography.body1,
@@ -246,7 +246,7 @@ private fun CourseDescriptionBody(course: Course) {
             .fillMaxWidth()
             .padding(16.dp)
     )
-    ProvideEmphasis(EmphasisAmbient.current.medium) {
+    ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
         Text(
             text = stringResource(id = R.string.needs),
             style = MaterialTheme.typography.body1,
@@ -320,7 +320,7 @@ private fun LessonsSheet(
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
     val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
-    val fabSheetHeight = fabSize + InsetsAmbient.current.systemBars.bottom
+    val fabSheetHeight = fabSize + AmbientInsets.current.systemBars.bottom
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
     val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
     val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
@@ -388,7 +388,7 @@ private fun Lessons(
             }
             ScrollableColumn(
                 scrollState = scroll,
-                contentPadding = InsetsAmbient.current.systemBars.toPaddingValues(
+                contentPadding = AmbientInsets.current.systemBars.toPaddingValues(
                     top = false
                 )
             ) {
@@ -442,7 +442,7 @@ private fun Lesson(lesson: Lesson) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically

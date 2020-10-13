@@ -38,7 +38,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -94,7 +94,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                     .navigationBarsPadding()
                     .padding(innerPadding)
             ) {
-                ProvideEmphasis(EmphasisAmbient.current.high) {
+                ProvideEmphasis(AmbientEmphasisLevels.current.high) {
                     Text(
                         text = stringResource(R.string.choose_topics_that_interest_you),
                         style = MaterialTheme.typography.h4,
@@ -129,7 +129,7 @@ private fun AppBar() {
             asset = vectorResource(id = OwlTheme.images.lockupLogo),
             modifier = Modifier.padding(16.dp)
         )
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             IconButton(
                 modifier = Modifier.padding(16.dp),
                 onClick = { /* todo */ }
@@ -221,7 +221,7 @@ private fun TopicChip(topic: Topic) {
                     )
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                         Icon(
                             asset = vectorResource(R.drawable.ic_grain),
                             modifier = Modifier

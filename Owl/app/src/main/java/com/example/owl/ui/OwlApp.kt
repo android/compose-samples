@@ -25,7 +25,7 @@ import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import com.example.owl.ui.course.CourseDetails
 import com.example.owl.ui.courses.Courses
 import com.example.owl.ui.onboarding.Onboarding
-import com.example.owl.ui.utils.BackDispatcherAmbient
+import com.example.owl.ui.utils.AmbientBackDispatcher
 import com.example.owl.ui.utils.Navigator
 import com.example.owl.ui.utils.ProvideDisplayInsets
 import com.example.owl.ui.utils.ProvideImageLoader
@@ -40,7 +40,7 @@ fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
     }
     val actions = remember(navigator) { Actions(navigator) }
 
-    Providers(BackDispatcherAmbient provides backDispatcher) {
+    Providers(AmbientBackDispatcher provides backDispatcher) {
         ProvideDisplayInsets {
             ProvideImageLoader {
                 Crossfade(navigator.current) { destination ->

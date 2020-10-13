@@ -18,10 +18,10 @@ package com.example.owl.ui.courses
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.BottomNavigation
@@ -67,7 +67,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
                             onClick = { setSelectedTab(tab) },
                             alwaysShowLabels = false,
                             selectedContentColor = MaterialTheme.colors.secondary,
-                            unselectedContentColor = contentColor(),
+                            unselectedContentColor = AmbientContentColor.current,
                             modifier = Modifier.navigationBarsPadding()
                         )
                     }
