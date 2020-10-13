@@ -253,15 +253,14 @@ private fun HomeScreenErrorAndContent(
 ) {
     if (posts.data != null) {
         PostList(posts.data, navigateTo, favorites, onToggleFavorite, modifier)
-    } else {
-        Box(Modifier.fillMaxSize()) {
-            if (!posts.hasError) {
-                // if there are no posts, and no error, let the user refresh manually
-                TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
-                    Text("Tap to load content", textAlign = TextAlign.Center)
-                }
-            }
+    } else if (!posts.hasError) {
+        // if there are no posts, and no error, let the user refresh manually
+        TextButton(onClick = onRefresh, Modifier.fillMaxSize()) {
+            Text("Tap to load content", textAlign = TextAlign.Center)
         }
+    } else {
+        // there's currently an error showing, don't show any content
+        Box(modifier.fillMaxSize()) { /* empty screen */ }
     }
 }
 
