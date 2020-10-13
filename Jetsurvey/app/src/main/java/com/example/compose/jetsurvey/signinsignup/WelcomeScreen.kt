@@ -26,8 +26,8 @@ import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
@@ -39,7 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.onPositioned
+import androidx.compose.ui.onGloballyPositioned
+import androidx.compose.ui.onSizeChanged
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -72,14 +73,14 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
             modifier = Modifier.fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
                 .offsetPx(y = currentOffsetHolder)
-                .onPositioned {
+                .onSizeChanged {
                     if (showBranding) {
-                        heightWithBranding = it.size.height
+                        heightWithBranding = it.height
                     }
                 }
         ) {
             Branding(
-                modifier = Modifier.fillMaxWidth().weight(1f).onPositioned {
+                modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
                     if (brandingBottom == 0f) {
                         brandingBottom = it.boundsInParent.bottom
                     }
@@ -112,7 +113,7 @@ private fun Branding(modifier: Modifier = Modifier) {
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
                 text = stringResource(id = R.string.app_tagline),
                 style = MaterialTheme.typography.subtitle1,
@@ -147,7 +148,7 @@ private fun SignInCreateAccount(
 ) {
     val emailState = remember { EmailState() }
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = stringResource(id = R.string.sign_in_create_account),
                 style = MaterialTheme.typography.subtitle2,
