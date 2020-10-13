@@ -118,10 +118,10 @@ class Insets {
         internal set
 }
 
-val InsetsAmbient = staticAmbientOf { DisplayInsets() }
+val AmbientInsets = staticAmbientOf { DisplayInsets() }
 
 /**
- * Applies any [WindowInsetsCompat] values to [InsetsAmbient], which are then available
+ * Applies any [WindowInsetsCompat] values to [AmbientInsets], which are then available
  * within [content].
  *
  * @param consumeWindowInsets Whether to consume any [WindowInsetsCompat]s which are dispatched to
@@ -165,7 +165,7 @@ fun ProvideDisplayInsets(
         }
     }
 
-    Providers(InsetsAmbient provides displayInsets) {
+    Providers(AmbientInsets provides displayInsets) {
         content()
     }
 }
@@ -192,7 +192,7 @@ private fun Insets.updateFrom(windowInsets: WindowInsetsCompat, type: Int) {
  */
 fun Modifier.systemBarsPadding(enabled: Boolean = true) = composed {
     insetsPadding(
-        insets = InsetsAmbient.current.systemBars,
+        insets = AmbientInsets.current.systemBars,
         left = enabled,
         top = enabled,
         right = enabled,
@@ -205,7 +205,7 @@ fun Modifier.systemBarsPadding(enabled: Boolean = true) = composed {
  * of the content.
  */
 fun Modifier.statusBarsPadding() = composed {
-    insetsPadding(insets = InsetsAmbient.current.statusBars, top = true)
+    insetsPadding(insets = AmbientInsets.current.statusBars, top = true)
 }
 
 /**
@@ -226,7 +226,7 @@ fun Modifier.navigationBarsPadding(
     right: Boolean = true
 ) = composed {
     insetsPadding(
-        insets = InsetsAmbient.current.navigationBars,
+        insets = AmbientInsets.current.navigationBars,
         left = left,
         right = right,
         bottom = bottom
@@ -260,7 +260,7 @@ fun Modifier.navigationBarsPadding(
  */
 fun Modifier.statusBarsHeight(additional: Dp = 0.dp) = composed {
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.statusBars,
+        insets = AmbientInsets.current.statusBars,
         heightSide = VerticalSide.Top,
         additionalHeight = additional
     )
@@ -312,7 +312,7 @@ inline fun Modifier.statusBarsHeight() = statusBarsHeightPlus(0.dp)
  */
 fun Modifier.statusBarsHeightPlus(additional: Dp) = composed {
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.statusBars,
+        insets = AmbientInsets.current.statusBars,
         heightSide = VerticalSide.Top,
         additionalHeight = additional
     )
@@ -364,7 +364,7 @@ inline fun Modifier.navigationBarsHeight() = navigationBarsHeightPlus(0.dp)
  */
 fun Modifier.navigationBarsHeightPlus(additional: Dp) = composed {
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.navigationBars,
+        insets = AmbientInsets.current.navigationBars,
         heightSide = VerticalSide.Bottom,
         additionalHeight = additional
     )
@@ -418,7 +418,7 @@ fun Modifier.navigationBarsWidthPlus(
     additional: Dp
 ) = composed {
     InsetsSizeModifier(
-        insets = InsetsAmbient.current.navigationBars,
+        insets = AmbientInsets.current.navigationBars,
         widthSide = side,
         additionalWidth = additional
     )
