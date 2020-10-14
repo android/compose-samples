@@ -16,8 +16,8 @@
 
 package com.example.jetsnack.ui.components
 
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ContentColorAmbient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -38,7 +38,7 @@ import kotlin.math.ln
 
 /**
  * An alternative to [androidx.compose.material.Surface] utilizing
- * [com.example.jetsnack.ui.theme.JetsnackColorPalette]
+ * [com.example.jetsnack.ui.theme.JetsnackColors]
  */
 @Composable
 fun JetsnackSurface(
@@ -60,7 +60,7 @@ fun JetsnackSurface(
             )
             .clip(shape)
     ) {
-        Providers(ContentColorAmbient provides contentColor, children = content)
+        Providers(AmbientContentColor provides contentColor, children = content)
     }
 }
 

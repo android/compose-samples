@@ -18,23 +18,23 @@ package com.example.jetnews.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.launchInComposition
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import com.example.jetnews.data.Result
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.state.copyWithResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 
 /**
- * Result object for [launchUiStateProducer].
+ * Result object for [produceUiState].
  *
  * It is intended that you destructure this class at the call site. Here is an example usage that
  * calls dataSource.loadData() and then displays a UI based on the result.
  *
  * ```
- * val (result, onRefresh, onClearError) = launchUiStateProducer(dataSource) { loadData() }
+ * val (result, onRefresh, onClearError) = produceUiState(dataSource) { loadData() }
  * Text(result.value)
  * Button(onClick = onRefresh) { Text("Refresh" }
  * Button(onClick = onClearError) { Text("Clear loading error") }
@@ -62,7 +62,7 @@ data class ProducerResult<T>(
  * calls dataSource.loadData() and then displays a UI based on the result.
  *
  * ```
- * val (result, onRefresh, onClearError) = launchUiStateProducer(dataSource) { loadData() }
+ * val (result, onRefresh, onClearError) = produceUiState(dataSource) { loadData() }
  * Text(result.value)
  * Button(onClick = onRefresh) { Text("Refresh" }
  * Button(onClick = onClearError) { Text("Clear loading error") }
@@ -75,10 +75,10 @@ data class ProducerResult<T>(
  * @return data state, onRefresh event, and onClearError event
  */
 @Composable
-fun <Producer, T> launchUiStateProducer(
+fun <Producer, T> produceUiState(
     producer: Producer,
     block: suspend Producer.() -> Result<T>
-): ProducerResult<UiState<T>> = launchUiStateProducer(producer, Unit, block)
+): ProducerResult<UiState<T>> = produceUiState(producer, Unit, block)
 
 /**
  * Launch a coroutine to create refreshable [UiState] from a suspending producer.
@@ -91,7 +91,7 @@ fun <Producer, T> launchUiStateProducer(
  * calls dataSource.loadData(resourceId) and then displays a UI based on the result.
  *
  * ```
- * val (result, onRefresh, onClearError) = launchUiStateProducer(dataSource, resourceId) {
+ * val (result, onRefresh, onClearError) = produceUiState(dataSource, resourceId) {
  *     loadData(resourceId)
  * }
  * Text(result.value)
@@ -108,42 +108,44 @@ fun <Producer, T> launchUiStateProducer(
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun <Producer, T> launchUiStateProducer(
+fun <Producer, T> produceUiState(
     producer: Producer,
     key: Any?,
     block: suspend Producer.() -> Result<T>
 ): ProducerResult<UiState<T>> {
-    val producerState = remember { mutableStateOf(UiState<T>(loading = true)) }
-
     // posting to this channel will trigger a single refresh
     val refreshChannel = remember { Channel<Unit>(Channel.CONFLATED) }
+    // posting to this channel will clear the current error condition (if any)
+    val errorClearChannel = remember { Channel<Unit>(Channel.CONFLATED) }
 
-    // event for caller to trigger a refresh
-    val refresh: () -> Unit = { refreshChannel.offer(Unit) }
-
-    // event for caller to clear any errors on the current result (useful for transient error
-    // displays)
-    val clearError: () -> Unit = {
-        producerState.value = producerState.value.copy(exception = null)
-    }
-
-    // whenever Producer or v1 changes, launch a new coroutine to call block() and refresh whenever
-    // the onRefresh callback is called
-    launchInComposition(producer, key) {
-        // whenever the coroutine restarts, clear the previous result immediately as they are no
-        // longer valid
-        producerState.value = UiState(loading = true)
-        // force a refresh on coroutine restart
+    val result = produceState(UiState<T>(loading = true), producer, key) {
+        // whenever the coroutine restarts from producer or key changes, clear the previous result
+        // immediately and force refresh
+        value = UiState(loading = true)
         refreshChannel.send(Unit)
-        // whenever a refresh is triggered, call block again. This for-loop will suspend when
-        // refreshChannel is empty, and resume when the next value is offered or sent to the
-        // channel.
 
-        // This for-loop will loop until the [launchInComposition] coroutine is cancelled.
+        // launch a new coroutine to handle errorClear events async
+        launch {
+            // This for-loop will loop until the [produceState] coroutine is cancelled.
+            for (clearEvent in errorClearChannel) {
+                // This for-loop will suspend when errorClearChanel is empty, and resume when the
+                // next value is offered or sent to the chanel.
+                value = value.copy(exception = null)
+            }
+        }
+
+        // This for-loop will loop until the [produceState] coroutine is cancelled.
         for (refreshEvent in refreshChannel) {
-            producerState.value = producerState.value.copy(loading = true)
-            producerState.value = producerState.value.copyWithResult(producer.block())
+            // whenever a refresh is triggered, call block again. This for-loop will suspend when
+            // refreshChannel is empty, and resume when the next value is offered or sent to the
+            // channel.
+            value = value.copy(loading = true)
+            value = value.copyWithResult(producer.block())
         }
     }
-    return ProducerResult(producerState, refresh, clearError)
+    return ProducerResult(
+        result = result,
+        onRefresh = { refreshChannel.offer(Unit) },
+        onClearError = { errorClearChannel.offer(Unit) }
+    )
 }

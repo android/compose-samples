@@ -17,11 +17,11 @@
 package androidx.compose.samples.crane.base
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -63,7 +63,7 @@ fun CraneUserInput(
     modifier: Modifier = Modifier,
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null,
-    tint: Color = contentColor()
+    tint: Color = AmbientContentColor.current
 ) {
     CraneBaseUserInput(
         modifier = modifier,
@@ -111,7 +111,7 @@ private fun CraneBaseUserInput(
     @DrawableRes vectorImageId: Int? = null,
     showCaption: () -> Boolean = { true },
     tintIcon: () -> Boolean,
-    tint: Color = contentColor(),
+    tint: Color = AmbientContentColor.current,
     children: @Composable () -> Unit
 ) {
     Surface(modifier = modifier, color = MaterialTheme.colors.primaryVariant) {

@@ -23,7 +23,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
-import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -110,7 +109,7 @@ private fun SearchResult(
                         bottom = parent.bottom,
                         bottomMargin = 16.dp
                     )
-                    linkTo(start = parent.start, end = name.start)
+                    start.linkTo(parent.start)
                 }
         )
         Text(
@@ -122,9 +121,9 @@ private fun SearchResult(
                     start = image.end,
                     startMargin = 16.dp,
                     end = add.start,
-                    endMargin = 16.dp
+                    endMargin = 16.dp,
+                    bias = 0f
                 )
-                width = Dimension.fillToConstraints
             }
         )
         Text(
@@ -132,8 +131,13 @@ private fun SearchResult(
             style = MaterialTheme.typography.body1,
             color = JetsnackTheme.colors.textHelp,
             modifier = Modifier.constrainAs(tag) {
-                linkTo(start = name.start, end = name.end)
-                width = Dimension.fillToConstraints
+                linkTo(
+                    start = image.end,
+                    startMargin = 16.dp,
+                    end = add.start,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
             }
         )
         Spacer(
@@ -148,8 +152,13 @@ private fun SearchResult(
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.constrainAs(price) {
-                linkTo(start = name.start, end = name.end)
-                width = Dimension.fillToConstraints
+                linkTo(
+                    start = image.end,
+                    startMargin = 16.dp,
+                    end = add.start,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
             }
         )
         JetsnackButton(
@@ -160,7 +169,7 @@ private fun SearchResult(
                 .preferredSize(36.dp)
                 .constrainAs(add) {
                     linkTo(top = parent.top, bottom = parent.bottom)
-                    linkTo(start = name.end, end = parent.end)
+                    end.linkTo(parent.end)
                 }
         ) {
             Icon(Icons.Outlined.Add)

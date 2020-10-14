@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.4.0"
+        private const val version = "1.4.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -41,9 +41,12 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-alpha04"
+            const val version = "1.0.0-alpha05"
 
-            const val core = "androidx.compose.ui:ui:$version"
+            @get:JvmStatic
+            val snapshotUrl: String
+                get() = "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository/"
+
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
             const val material = "androidx.compose.material:material:$version"

@@ -192,8 +192,7 @@ private fun DrawerButton(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,
-                    color = textIconColor,
-                    modifier = Modifier.fillMaxWidth()
+                    color = textIconColor
                 )
             }
         }

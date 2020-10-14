@@ -110,9 +110,9 @@ fun PinkTheme(
     OwlTheme(darkTheme, colors, content)
 }
 
-private val LightElevation = Elevation()
+private val LightElevation = Elevations()
 
-private val DarkElevation = Elevation(card = 1.dp)
+private val DarkElevation = Elevations(card = 1.dp)
 
 private val LightImages = Images(lockupLogo = R.drawable.ic_lockup_blue)
 
@@ -127,8 +127,8 @@ private fun OwlTheme(
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val images = if (darkTheme) DarkImages else LightImages
     Providers(
-        ElevationAmbient provides elevation,
-        ImageAmbient provides images
+        AmbientElevations provides elevation,
+        AmbientImages provides images
     ) {
         MaterialTheme(
             colors = colors,
@@ -140,7 +140,7 @@ private fun OwlTheme(
 }
 
 /**
- * Alternate to [MaterialTheme] allowing us to add our own theme systems (e.g. [Elevation]) or to
+ * Alternate to [MaterialTheme] allowing us to add our own theme systems (e.g. [Elevations]) or to
  * extend [MaterialTheme]'s types e.g. return our own [Colors] extension
  */
 object OwlTheme {
@@ -167,16 +167,16 @@ object OwlTheme {
         get() = MaterialTheme.shapes
 
     /**
-     * Retrieves the current [Elevation] at the call site's position in the hierarchy.
+     * Retrieves the current [Elevations] at the call site's position in the hierarchy.
      */
     @Composable
-    val elevations: Elevation
-        get() = ElevationAmbient.current
+    val elevations: Elevations
+        get() = AmbientElevations.current
 
     /**
      * Retrieves the current [Images] at the call site's position in the hierarchy.
      */
     @Composable
     val images: Images
-        get() = ImageAmbient.current
+        get() = AmbientImages.current
 }

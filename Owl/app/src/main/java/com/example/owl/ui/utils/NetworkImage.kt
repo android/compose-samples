@@ -51,7 +51,7 @@ fun NetworkImage(
         data = url,
         modifier = modifier,
         contentScale = contentScale,
-        imageLoader = ImageLoaderAmbient.current,
+        imageLoader = AmbientImageLoader.current,
         loading = {
             if (placeholderColor != null) {
                 Spacer(
@@ -64,7 +64,7 @@ fun NetworkImage(
     )
 }
 
-private val ImageLoaderAmbient = staticAmbientOf<ImageLoader> {
+private val AmbientImageLoader = staticAmbientOf<ImageLoader> {
     error("No loader provided")
 }
 
@@ -77,7 +77,7 @@ fun ProvideImageLoader(content: @Composable () -> Unit) {
                 add(UnsplashSizingInterceptor)
             }.build()
     }
-    Providers(ImageLoaderAmbient provides loader, children = content)
+    Providers(AmbientImageLoader provides loader, children = content)
 }
 
 /**

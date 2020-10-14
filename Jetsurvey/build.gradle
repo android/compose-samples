@@ -38,10 +38,8 @@ subprojects {
         mavenCentral()
         jcenter()
 
-        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
-            maven {
-                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
-            }
+        if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
+            maven { url Libs.AndroidX.Compose.snapshotUrl }
         }
     }
 

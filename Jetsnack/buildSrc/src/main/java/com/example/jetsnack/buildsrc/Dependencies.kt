@@ -25,7 +25,7 @@ object Libs {
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.3.0"
+        private const val version = "0.3.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -48,7 +48,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-alpha04"
+            const val version = "1.0.0-alpha05"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:${version}"

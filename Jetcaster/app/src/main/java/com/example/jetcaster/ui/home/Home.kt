@@ -34,7 +34,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -48,9 +48,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -119,7 +119,7 @@ fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 IconButton(
                     onClick = { /* TODO: Open search */ },
                     icon = { Icon(Icons.Filled.Search) }
@@ -170,7 +170,7 @@ fun HomeContent(
 
             // When the selected image url changes, call updateColorsFromImageUrl() or reset()
             if (selectedImageUrl != null) {
-                launchInComposition(selectedImageUrl) {
+                LaunchedTask(selectedImageUrl) {
                     dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
                 }
             } else {
@@ -338,7 +338,7 @@ private fun FollowedPodcastCarouselItem(
                 )
             }
 
-            ProvideEmphasis(EmphasisAmbient.current.high) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
                 ToggleFollowPodcastIconButton(
                     onClick = onUnfollowedClick,
                     isFollowed = true, /* All podcasts are followed in this feed */
@@ -348,7 +348,7 @@ private fun FollowedPodcastCarouselItem(
         }
 
         if (lastEpisodeDate != null) {
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = lastUpdated(lastEpisodeDate),
                     style = MaterialTheme.typography.caption,
