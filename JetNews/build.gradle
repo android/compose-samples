@@ -34,7 +34,7 @@ plugins {
 }
 
 subprojects {
-    def snapshot = "6891475"
+    def snapshot = "6901934"
     repositories {
         maven {
             url "https://androidx.dev/snapshots/builds/${snapshot}/artifacts/ui/repository/"

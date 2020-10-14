@@ -61,7 +61,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha02"
 
         object Compose {
-            private const val snapshot = "6891475"
+            private const val snapshot = "6901934"
             const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
