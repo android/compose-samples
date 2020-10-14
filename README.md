@@ -41,12 +41,6 @@ To see how Compose and view-based UIs can coexist and interact together, check o
 * [Sunflower's `compose` branch](https://goo.gle/sunflower-compose)
 * [Tivi](https://tivi.app)
 
-🚧 Known issues
-------------
-
-Jetnews and Crane are not updated to version `alpha04` due to this
-[bug](https://issuetracker.google.com/169629547).
-
 ## License
 ```
 Copyright 2020 The Android Open Source Project
