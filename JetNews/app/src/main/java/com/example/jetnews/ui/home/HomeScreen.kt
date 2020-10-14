@@ -255,7 +255,7 @@ private fun HomeScreenErrorAndContent(
         PostList(posts.data, navigateTo, favorites, onToggleFavorite, modifier)
     } else if (!posts.hasError) {
         // if there are no posts, and no error, let the user refresh manually
-        TextButton(onClick = onRefresh, Modifier.fillMaxSize()) {
+        TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
             Text("Tap to load content", textAlign = TextAlign.Center)
         }
     } else {
