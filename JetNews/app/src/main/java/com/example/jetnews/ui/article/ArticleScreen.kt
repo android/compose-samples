@@ -18,9 +18,9 @@ package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,12 +57,12 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.utils.launchUiStateProducer
+import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful Article Screen that manages state using [launchUiStateProducer]
+ * Stateful Article Screen that manages state using [produceUiState]
  *
  * @param postId (state) the post to show
  * @param postsRepository data source for this screen
@@ -75,7 +75,7 @@ fun ArticleScreen(
     postsRepository: PostsRepository,
     onBack: () -> Unit
 ) {
-    val (post) = launchUiStateProducer(postsRepository, postId) {
+    val (post) = produceUiState(postsRepository, postId) {
         getPost(postId)
     }
     // TODO: handle errors when the repository is capable of creating them
@@ -129,7 +129,7 @@ fun ArticleScreen(
                     Text(
                         text = "Published in: ${post.publication?.name}",
                         style = MaterialTheme.typography.subtitle2,
-                        color = contentColor()
+                        color = AmbientContentColor.current
                     )
                 },
                 navigationIcon = {

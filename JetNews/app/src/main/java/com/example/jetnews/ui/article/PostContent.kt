@@ -16,11 +16,12 @@
 
 package com.example.jetnews.ui.article
 
-import androidx.compose.foundation.Box
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,8 +33,8 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.FirstBaseline
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Colors
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
@@ -81,7 +82,7 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         Text(text = post.title, style = MaterialTheme.typography.h4)
         Spacer(Modifier.preferredHeight(8.dp))
         post.subtitle?.let { subtitle ->
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.body2,
@@ -116,19 +117,19 @@ private fun PostMetadata(metadata: Metadata) {
         Image(
             asset = Icons.Filled.AccountCircle,
             modifier = Modifier.preferredSize(40.dp),
-            colorFilter = ColorFilter.tint(contentColor()),
+            colorFilter = ColorFilter.tint(AmbientContentColor.current),
             contentScale = ContentScale.Fit
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
-            ProvideEmphasis(EmphasisAmbient.current.high) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
                 Text(
                     text = metadata.author.name,
                     style = typography.caption,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
                     style = typography.caption
@@ -216,10 +217,9 @@ private fun BulletParagraph(
                     .alignWithSiblings {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
                         9.sp.toIntPx()
-                    },
-                backgroundColor = contentColor(),
-                shape = CircleShape
-            )
+                    }
+                    .background(AmbientContentColor.current, CircleShape),
+            ) { /* no content */ }
         }
         Text(
             modifier = Modifier

@@ -24,8 +24,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Card
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
@@ -62,7 +62,7 @@ fun PostCardPopular(
                     .fillMaxWidth()
             )
             Column(modifier = Modifier.padding(16.dp)) {
-                val emphasisLevels = EmphasisAmbient.current
+                val emphasisLevels = AmbientEmphasisLevels.current
                 ProvideEmphasis(emphasisLevels.high) {
                     Text(
                         text = post.title,

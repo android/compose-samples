@@ -20,7 +20,7 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
@@ -49,7 +49,7 @@ fun SelectTopicButton(
         shape = CircleShape,
         modifier = modifier.preferredSize(36.dp, 36.dp)
     ) {
-        ProvideEmphasis(EmphasisAmbient.current.high) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Icon(icon)
         }
     }
