@@ -23,41 +23,87 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
+import com.example.jetsnack.model.SearchRepo
 import com.example.jetsnack.model.SearchSuggestionGroup
+import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun SearchSuggestions(
     suggestions: List<SearchSuggestionGroup>,
     onSuggestionSelect: (String) -> Unit
 ) {
-    LazyColumnFor(suggestions) { suggestionGroup ->
-        Text(
-            text = suggestionGroup.name,
-            style = MaterialTheme.typography.h6,
-            color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier
-                .preferredHeightIn(min = 56.dp)
-                .padding(horizontal = 24.dp, vertical = 4.dp)
-                .wrapContentHeight()
-        )
-        suggestionGroup.suggestions.forEach { suggestion ->
-            Text(
-                text = suggestion,
-                style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .preferredHeightIn(min = 48.dp)
-                    .clickable { onSuggestionSelect(suggestion) }
-                    .padding(start = 24.dp)
-                    .wrapContentHeight()
+    LazyColumn {
+        suggestions.forEach { suggestionGroup ->
+            item {
+                SuggestionHeader(suggestionGroup.name)
+            }
+            items(suggestionGroup.suggestions) { suggestion ->
+                Suggestion(
+                    suggestion = suggestion,
+                    onSuggestionSelect = onSuggestionSelect,
+                    modifier = Modifier.fillParentMaxWidth()
+                )
+            }
+            item {
+                Spacer(Modifier.preferredHeight(4.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuggestionHeader(
+    name: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = name,
+        style = MaterialTheme.typography.h6,
+        color = JetsnackTheme.colors.textPrimary,
+        modifier = modifier
+            .preferredHeightIn(min = 56.dp)
+            .padding(horizontal = 24.dp, vertical = 4.dp)
+            .wrapContentHeight()
+    )
+}
+
+@Composable
+private fun Suggestion(
+    suggestion: String,
+    onSuggestionSelect: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = suggestion,
+        style = MaterialTheme.typography.subtitle1,
+        modifier = modifier
+            .preferredHeightIn(min = 48.dp)
+            .clickable { onSuggestionSelect(suggestion) }
+            .padding(start = 24.dp)
+            .wrapContentSize(Alignment.CenterStart)
+    )
+}
+
+@Preview
+@Composable
+fun PreviewSuggestions() {
+    JetsnackTheme {
+        JetsnackSurface {
+            SearchSuggestions(
+                suggestions = SearchRepo.getSuggestions(),
+                onSuggestionSelect = { }
             )
         }
-        Spacer(Modifier.preferredHeight(4.dp))
     }
 }

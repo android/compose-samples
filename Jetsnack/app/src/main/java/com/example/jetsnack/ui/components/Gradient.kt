@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.HorizontalGradient
 import androidx.compose.ui.graphics.LinearGradient
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.onPositioned
+import androidx.compose.ui.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -138,7 +138,7 @@ fun Modifier.gradientBorder(
 ) = composed {
     var size by remember { mutableStateOf(IntSize.Zero) }
     val gradient = remember(colors, size) { brushProvider(colors, size) }
-    val sizeProvider = onPositioned { size = it.size }
+    val sizeProvider = onSizeChanged { size = it }
     sizeProvider then border(
         width = borderSize,
         brush = gradient,

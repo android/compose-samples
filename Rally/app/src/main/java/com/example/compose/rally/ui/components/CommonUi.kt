@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.icons.Icons
@@ -89,10 +89,10 @@ private fun BaseRow(
         )
         Spacer(Modifier.preferredWidth(12.dp))
         Column(Modifier) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
                 Text(text = title, style = typography.body1)
             }
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(text = subtitle, style = typography.subtitle1)
             }
         }
@@ -115,7 +115,7 @@ private fun BaseRow(
         }
         Spacer(Modifier.preferredWidth(16.dp))
 
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Icon(
                 asset = Icons.Filled.ChevronRight,
                 modifier = Modifier

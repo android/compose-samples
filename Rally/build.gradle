@@ -15,6 +15,7 @@
  */
 
 import com.example.compose.rally.buildsrc.Libs
+import com.example.compose.rally.buildsrc.Urls
 import com.example.compose.rally.buildsrc.Versions
 
 buildscript {
@@ -40,12 +41,8 @@ subprojects {
         jcenter()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
-            maven {
-                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
-            }
+            maven { url Urls.composeSnapshotRepo }
         }
-
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 
     apply plugin: 'com.diffplug.spotless'

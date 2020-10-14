@@ -21,7 +21,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.contentColor
-import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,9 +40,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -88,7 +87,7 @@ fun Search(
             )
             JetsnackDivider()
 
-            launchInComposition(state.query.text) {
+            LaunchedTask(state.query.text) {
                 state.searching = true
                 state.searchResults = SearchRepo.search(state.query.text)
                 state.searching = false
@@ -204,7 +203,6 @@ private fun SearchBar(
                 BaseTextField(
                     value = query,
                     onValueChange = onQueryChange,
-                    textStyle = currentTextStyle().copy(color = contentColor()),
                     imeAction = ImeAction.Search,
                     onImeActionPerformed = { /* todo */ },
                     cursorColor = JetsnackTheme.colors.textPrimary,
