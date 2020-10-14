@@ -16,13 +16,13 @@
 
 package com.example.owl.ui.courses
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,19 +32,24 @@ import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.CourseListItem
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.statusBarsPadding
+import com.example.owl.ui.utils.statusBarsHeight
 
+@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun MyCourses(
     courses: List<Course>,
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.statusBarsPadding()) {
-        // TODO appbar should scroll out
-        CoursesAppBar()
-        LazyColumnFor(courses) { course ->
-            MyCourse(course, selectCourse)
+    LazyColumn(modifier) {
+        item {
+            Spacer(Modifier.statusBarsHeight())
+        }
+        item {
+            CoursesAppBar()
+        }
+        itemsIndexed(courses) { index, course ->
+            MyCourse(course, index, selectCourse)
         }
     }
 }
@@ -52,10 +57,11 @@ fun MyCourses(
 @Composable
 fun MyCourse(
     course: Course,
+    index: Int,
     selectCourse: (Long) -> Unit
 ) {
     Row(modifier = Modifier.padding(bottom = 8.dp)) {
-        val stagger = if (course.id % 2L == 0L) 72.dp else 16.dp
+        val stagger = if (index % 2 == 0) 72.dp else 16.dp
         Spacer(modifier = Modifier.preferredWidth(stagger))
         CourseListItem(
             course = course,

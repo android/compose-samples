@@ -19,6 +19,8 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -28,7 +30,6 @@ import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
-import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,10 +45,10 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.FirstBaseline
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonConstants
 import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -226,13 +227,13 @@ fun FunctionalityNotAvailablePanel() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
                 Text(
                     text = stringResource(id = R.string.not_available),
                     style = MaterialTheme.typography.subtitle1
                 )
             }
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = stringResource(id = R.string.not_available_subtitle),
                     modifier = Modifier.relativePaddingFrom(FirstBaseline, before = 32.dp),
@@ -313,7 +314,7 @@ private fun UserInputSelector(
             disabledColor = MaterialTheme.colors.surface
         )
         val disabledContentColor =
-            EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
+            AmbientEmphasisLevels.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
         val contentColor = ButtonConstants.defaultButtonContentColor(
             enabled = sendMessageEnabled,
             defaultColor = contentColorFor(backgroundColor),
@@ -352,8 +353,8 @@ private fun InputSelectorButton(
         onClick = onClick,
         modifier = Modifier.semantics { accessibilityLabel = description }
     ) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-            val tint = if (selected) MaterialTheme.colors.primary else contentColor()
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            val tint = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current
             Icon(
                 icon,
                 tint = tint,
@@ -426,7 +427,7 @@ private fun UserInputText(
             )
 
             val disableContentColor =
-                EmphasisAmbient.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
+                AmbientEmphasisLevels.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
             if (textFieldValue.text.isEmpty() && !focusState) {
                 Text(
                     modifier = Modifier
@@ -533,7 +534,7 @@ fun EmojiTable(
                             .sizeIn(minWidth = 42.dp, minHeight = 42.dp)
                             .padding(8.dp),
                         text = emoji,
-                        style = currentTextStyle().copy(
+                        style = AmbientTextStyle.current.copy(
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center
                         )

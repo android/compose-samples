@@ -41,8 +41,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.LastBaseline
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
@@ -138,7 +138,7 @@ fun ChannelNameBar(
                 )
                 // Number of members
                 // TODO: Multiple emphasis layers - https://issuetracker.google.com/159017896
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
                         style = MaterialTheme.typography.caption,
@@ -148,7 +148,7 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 // Search icon
                 Icon(
                     asset = Icons.Outlined.Search,
@@ -311,7 +311,7 @@ fun AuthorAndTextMessage(
 private fun AuthorNameTimestamp(msg: Message) {
     // Combine author and timestamp for a11y.
     Row(modifier = Modifier.semantics(mergeAllDescendants = true) {}) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
                 text = msg.author,
                 style = MaterialTheme.typography.subtitle1,
@@ -321,7 +321,7 @@ private fun AuthorNameTimestamp(msg: Message) {
             )
         }
         Spacer(modifier = Modifier.preferredWidth(8.dp))
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = msg.timestamp,
                 style = MaterialTheme.typography.caption,
@@ -338,7 +338,7 @@ private val LastChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
 fun DayHeader(dayString: String) {
     Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).preferredHeight(16.dp)) {
         DayHeaderLine()
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = dayString,
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -373,7 +373,7 @@ fun ChatItemBubble(
     val bubbleShape = if (lastMessageByAuthor) LastChatBubbleShape else ChatBubbleShape
     Column {
         Surface(color = backgroundBubbleColor, shape = bubbleShape) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
                 ClickableMessage(
                     message = message
                 )

@@ -26,4 +26,4 @@ import androidx.compose.runtime.staticAmbientOf
 @Immutable
 data class Images(@DrawableRes val lockupLogo: Int)
 
-internal val ImageAmbient = staticAmbientOf<Images>()
+internal val AmbientImages = staticAmbientOf<Images>()

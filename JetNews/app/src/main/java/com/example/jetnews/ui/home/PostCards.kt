@@ -25,7 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -52,7 +52,7 @@ fun AuthorAndReadTime(
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
-        ProvideEmphasis(EmphasisAmbient.current.medium) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
             val textStyle = MaterialTheme.typography.body2
             Text(
                 text = post.metadata.author.name,
@@ -79,7 +79,7 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
 
 @Composable
 fun PostTitle(post: Post) {
-    ProvideEmphasis(EmphasisAmbient.current.high) {
+    ProvideEmphasis(AmbientEmphasisLevels.current.high) {
         Text(post.title, style = MaterialTheme.typography.subtitle1)
     }
 }
@@ -118,7 +118,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            ProvideEmphasis(EmphasisAmbient.current.medium) {
+            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = "BASED ON YOUR HISTORY",
                     style = MaterialTheme.typography.overline
@@ -130,7 +130,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        ProvideEmphasis(EmphasisAmbient.current.medium) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
             Icon(asset = Icons.Filled.MoreVert)
         }
     }

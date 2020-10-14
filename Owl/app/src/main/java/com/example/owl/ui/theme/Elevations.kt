@@ -25,6 +25,6 @@ import androidx.compose.ui.unit.dp
  * Elevation values that can be themed.
  */
 @Immutable
-data class Elevation(val card: Dp = 0.dp)
+data class Elevations(val card: Dp = 0.dp)
 
-internal val ElevationAmbient = staticAmbientOf { Elevation() }
+internal val AmbientElevations = staticAmbientOf { Elevations() }

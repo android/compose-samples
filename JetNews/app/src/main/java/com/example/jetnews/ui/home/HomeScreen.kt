@@ -16,22 +16,22 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -45,9 +45,9 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,12 +67,12 @@ import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.state.UiState
-import com.example.jetnews.utils.launchUiStateProducer
+import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful HomeScreen which manages state using [launchUiStateProducer]
+ * Stateful HomeScreen which manages state using [produceUiState]
  *
  * @param navigateTo (event) request navigation to [Screen]
  * @param postsRepository data source for this screen
@@ -84,7 +84,7 @@ fun HomeScreen(
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val (postUiState, refreshPost, clearError) = launchUiStateProducer(postsRepository) {
+    val (postUiState, refreshPost, clearError) = produceUiState(postsRepository) {
         getPosts()
     }
 
@@ -139,7 +139,7 @@ fun HomeScreen(
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
         // only start when posts.hasError is true (due to the above if-check).
-        launchInComposition(posts.hasError) {
+        LaunchedTask(posts.hasError) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
@@ -258,6 +258,9 @@ private fun HomeScreenErrorAndContent(
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
             Text("Tap to load content", textAlign = TextAlign.Center)
         }
+    } else {
+        // there's currently an error showing, don't show any content
+        Box(modifier.fillMaxSize()) { /* empty screen */ }
     }
 }
 
@@ -310,7 +313,7 @@ private fun FullScreenLoading() {
  */
 @Composable
 private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
-    ProvideEmphasis(EmphasisAmbient.current.high) {
+    ProvideEmphasis(AmbientEmphasisLevels.current.high) {
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = "Top stories for you",
@@ -362,7 +365,7 @@ private fun PostListPopularSection(
     navigateTo: (Screen) -> Unit
 ) {
     Column {
-        ProvideEmphasis(EmphasisAmbient.current.high) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = "Popular on Jetnews",

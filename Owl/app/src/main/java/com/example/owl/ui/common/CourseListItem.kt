@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -104,6 +105,7 @@ fun CourseListItem(
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .weight(1f)
+                            .wrapContentWidth(Alignment.Start)
                     )
                     NetworkImage(
                         url = course.instructor,
