@@ -16,8 +16,7 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
@@ -48,7 +47,7 @@ fun SwipeToRefreshLayout(
         true
     }
 
-    Stack(
+    Box(
         modifier = Modifier.swipeable(
             state = state,
             anchors = mapOf(

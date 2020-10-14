@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
@@ -54,7 +54,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         }
         Spacer(Modifier.preferredHeight(16.dp))
 
-        val emphasisLevels = EmphasisAmbient.current
+        val emphasisLevels = AmbientEmphasisLevels.current
         ProvideEmphasis(emphasisLevels.high) {
             Text(
                 text = post.title,
