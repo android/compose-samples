@@ -46,6 +46,7 @@ import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val DETAILS_NAME = "DETAILS_NAME"
 private const val DETAILS_DESCRIPTION = "DETAILS_DESCRIPTION"
@@ -73,6 +74,7 @@ data class DetailsActivityArg(
     val longitude: String
 )
 
+@AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

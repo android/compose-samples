@@ -30,18 +30,20 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneScaffold
-import androidx.compose.samples.crane.base.ServiceLocator
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DaySelected
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.viewinterop.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 fun launchCalendarActivity(context: Context) {
     val intent = Intent(context, CalendarActivity::class.java)
     context.startActivity(intent)
 }
 
+@AndroidEntryPoint
 class CalendarActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,27 +59,32 @@ class CalendarActivity : ComponentActivity() {
     }
 }
 
-// Extracted out to a separate variable. If this lambda is used as a trailing lambda in the
-// Calendar function, it recomposes the whole Calendar view when clicked on it.
-private val onDayClicked: (CalendarDay, CalendarMonth) -> Unit = { calendarDay, calendarMonth ->
-    ServiceLocator.datesSelected.daySelected(
-        DaySelected(
-            day = calendarDay.value.toInt(),
-            month = calendarMonth
-        )
+@Composable
+fun CalendarScreen(onBackPressed: () -> Unit) {
+    val calendarViewModel: CalendarViewModel = viewModel()
+
+    CalendarContent(
+        selectedDates = calendarViewModel.datesSelected.toString(),
+        onDayClicked = { calendarDay, calendarMonth ->
+            calendarViewModel.onDaySelected(DaySelected(calendarDay.value.toInt(), calendarMonth))
+        },
+        onBackPressed = onBackPressed
     )
 }
 
 @Composable
-fun CalendarScreen(onBackPressed: () -> Unit) {
+private fun CalendarContent(
+    selectedDates: String,
+    onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
+    onBackPressed: () -> Unit
+) {
     CraneScaffold {
         Column {
-            val selectedDatesText = ServiceLocator.datesSelected.toString()
             TopAppBar(
                 title = {
                     Text(
-                        text = if (selectedDatesText.isEmpty()) "Select Dates"
-                        else selectedDatesText
+                        text = if (selectedDates.isEmpty()) "Select Dates"
+                        else selectedDates
                     )
                 },
                 navigationIcon = {

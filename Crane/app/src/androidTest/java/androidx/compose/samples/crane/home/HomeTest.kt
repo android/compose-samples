@@ -17,18 +17,27 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.material.Surface
+import androidx.compose.samples.crane.di.DispatchersModule
 import androidx.compose.samples.crane.ui.CraneTheme
-import androidx.ui.test.createComposeRule
+import androidx.ui.test.createAndroidComposeRule
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UninstallModules(DispatchersModule::class)
+@HiltAndroidTest
 class HomeTest {
 
-    @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Before
     fun setUp() {

@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneEditableUserInput
 import androidx.compose.samples.crane.base.CraneUserInput
-import androidx.compose.samples.crane.base.ServiceLocator
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.ui.Modifier
@@ -112,12 +111,11 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
 }
 
 @Composable
-fun DatesUserInput(onDateSelectionClicked: () -> Unit) {
-    val datesSelectedText = ServiceLocator.datesSelected.toString()
+fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
     CraneUserInput(
         modifier = Modifier.clickable(onClick = onDateSelectionClicked),
-        caption = if (datesSelectedText.isEmpty()) "Select Dates" else null,
-        text = datesSelectedText,
+        caption = if (datesSelected.isEmpty()) "Select Dates" else null,
+        text = datesSelected,
         vectorImageId = R.drawable.ic_calendar
     )
 }
