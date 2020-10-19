@@ -95,9 +95,9 @@ private fun MainContent(
 
 enum class SplashState { Shown, Completed }
 
-private val splashAlphaKey = FloatPropKey()
-private val contentAlphaKey = FloatPropKey()
-private val contentTopPaddingKey = DpPropKey()
+private val splashAlphaKey = FloatPropKey("Splash alpha")
+private val contentAlphaKey = FloatPropKey("Content alpha")
+private val contentTopPaddingKey = DpPropKey("Top padding")
 
 private val splashTransitionDefinition = transitionDefinition<SplashState> {
     state(SplashState.Shown) {
