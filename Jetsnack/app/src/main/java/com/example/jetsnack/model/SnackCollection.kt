@@ -36,6 +36,7 @@ object SnackRepo {
     fun getSnack(snackId: Long) = snacks.find { it.id == snackId }!!
     fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
     fun getFilters() = filters
+    fun getCart() = cart
 }
 
 /**
@@ -87,3 +88,5 @@ val related = listOf(
     also,
     popular
 )
+
+val cart = snacks.subList(4,7)
