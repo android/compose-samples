@@ -40,8 +40,6 @@ class DatesSelectedState {
             setDates(newDate, DaySelectedEmpty)
         } else if (from != DaySelectedEmpty && to != DaySelectedEmpty) {
             clearDates()
-            from = DaySelectedEmpty
-            to = DaySelectedEmpty
             daySelected(newDate = newDate)
         } else if (from == DaySelectedEmpty) {
             if (newDate < to) setDates(newDate, to)
@@ -92,7 +90,7 @@ class DatesSelectedState {
 
     @VisibleForTesting
     fun clearDates() {
-        if (from != DaySelectedEmpty && to != DaySelectedEmpty) {
+        if (from != DaySelectedEmpty || to != DaySelectedEmpty) {
             // Unselect dates from the same month
             if (from.month == to.month) {
                 for (i in from.day..to.day)
@@ -115,5 +113,9 @@ class DatesSelectedState {
                 }
             }
         }
+        from.calendarDay.value.status = DaySelectedStatus.NoSelected
+        from = DaySelectedEmpty
+        to.calendarDay.value.status = DaySelectedStatus.NoSelected
+        to = DaySelectedEmpty
     }
 }
