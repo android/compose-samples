@@ -71,6 +71,8 @@ class CalendarTest {
     /**
      * The same instance of the Activity is used in all tests. Therefore, each test gets the same
      * Hilt components set. As DatesRepository is a singleton, we need to clear shared data.
+     *
+     * https://issuetracker.google.com/171287278
      */
     @After
     fun tearDown() {

@@ -32,6 +32,37 @@ implemented using a different Activity will be displayed. In there, you can see 
 embedded in Compose and Compose buttons updating the Android View. Notice how you can also
 interact with the `MapView` seamlessly.
 
+## Hilt
+
+Crane uses [Hilt][hilt] to manage its dependencies. The Hilt's ViewModel extension (with the
+`@ViewModelInject` annotation) works perfectly with Compose's ViewModel integration (`viewModel()`
+composable function) as you can see in the following snippet of code. `viewModel()` will
+automatically use the factory that Hilt creates for the ViewModel:
+
+```
+class MainViewModel @ViewModelInject constructor(
+    private val destinationsRepository: DestinationsRepository,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    datesRepository: DatesRepository
+) : ViewModel() { ... }
+
+@Composable
+fun CraneHomeContent(...) {
+    val viewModel: MainViewModel = viewModel()
+    ...
+}
+```
+
+Disclaimer: Passing dependencies that are not available at compile time to a ViewModel
+(as it's the case of the [DetailsViewModel](detailsViewModel) that takes as a dependency the name of
+a `City` in order to load all the information for the screen) doesn't work as you might expect
+using `viewModel()`. This is because the way the Compose's ViewModel integration works at the moment
+doesn't allow you to scope a ViewModel to a given composable, it's always scoped to an Activity or
+Fragment. Because of this, calling `viewModel()` with different factories in the same
+Activity/Fragment don't have any effect as the first factory will be always used. In Crane, we don't
+have this problem because it's a multi-activity application and every time, `DetailsScreen` is
+called from a different instance of `DetailsActivity`.
+
 ## Google Maps SDK
 
 To get the MapView working, you need to get an API key as
@@ -79,6 +110,8 @@ limitations under the License.
 [details]: app/src/main/java/androidx/compose/samples/crane/details/DetailsActivity.kt
 [data]: app/src/main/java/androidx/compose/samples/crane/data/CraneData.kt
 [mainViewModel]: app/src/main/java/androidx/compose/samples/crane/home/MainViewModel.kt
+[detailsViewModel]: app/src/main/java/androidx/compose/samples/crane/details/DetailsViewModel.kt
 [homeTest]: app/src/androidTest/java/androidx/compose/samples/crane/home/HomeTest.kt
 [detailsTest]: app/src/androidTest/java/androidx/compose/samples/crane/details/DetailsActivityTest.kt
 [coil-accompanist]: https://github.com/chrisbanes/accompanist
+[hilt]: https://d.android.com/hilt
