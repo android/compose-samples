@@ -21,6 +21,9 @@ import javax.inject.Singleton
 
 private const val DEFAULT_IMAGE_WIDTH = "250"
 
+/**
+ * Annotated with Singleton as the class created a lot of objects.
+ */
 @Singleton
 class DestinationsLocalDataSource @Inject constructor() {
 

@@ -16,12 +16,18 @@
 
 package androidx.compose.samples.crane.data
 
+import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DayOfWeek
 import javax.inject.Inject
+import javax.inject.Singleton
 
 typealias CalendarYear = List<CalendarMonth>
 
+/**
+ * Annotated with Singleton because [CalendarDay] contains mutable state.
+ */
+@Singleton
 class DatesLocalDataSource @Inject constructor() {
 
     private val january2020 = CalendarMonth(

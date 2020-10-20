@@ -24,7 +24,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Marked as Singleton as it contains mutable state
+/**
+ * Annotated with Singleton because [DatesSelectedState] contains mutable state.
+ */
 @Singleton
 class DatesRepository @Inject constructor(
     datesLocalDataSource: DatesLocalDataSource,
