@@ -19,9 +19,15 @@ package androidx.compose.samples.crane.data
 import javax.inject.Inject
 
 class DestinationsRepository @Inject constructor(
-    destinationsLocalDataSource: DestinationsLocalDataSource
+    private val destinationsLocalDataSource: DestinationsLocalDataSource
 ) {
     val destinations = destinationsLocalDataSource.craneDestinations
     val hotels = destinationsLocalDataSource.craneHotels
     val restaurants = destinationsLocalDataSource.craneRestaurants
+
+    fun getDestination(cityName: String): ExploreModel? {
+        return destinationsLocalDataSource.craneDestinations.firstOrNull {
+            it.city.name == cityName
+        }
+    }
 }

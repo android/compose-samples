@@ -17,6 +17,7 @@
 package androidx.compose.samples.crane.details
 
 import androidx.compose.samples.crane.R
+import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
 import androidx.compose.samples.crane.di.DispatchersModule
@@ -35,16 +36,22 @@ import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
+import javax.inject.Inject
 
 @UninstallModules(DispatchersModule::class)
 @HiltAndroidTest
 class DetailsActivityTest {
 
-    private val expectedDescription = "description"
-    private val testExploreModel = ExploreModel(MADRID, expectedDescription, "imageUrl")
+    @Inject
+    lateinit var destinationsRepository: DestinationsRepository
+    lateinit var cityDetails: ExploreModel
+
+    private val city = MADRID
+    private val testExploreModel = ExploreModel(city, "description", "imageUrl")
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -59,10 +66,16 @@ class DetailsActivityTest {
         )
     )
 
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+        cityDetails = destinationsRepository.getDestination(MADRID.name)!!
+    }
+
     @Test
     fun mapView_cameraPositioned() {
-        composeTestRule.onNodeWithText(MADRID.nameToDisplay).assertIsDisplayed()
-        composeTestRule.onNodeWithText(expectedDescription).assertIsDisplayed()
+        composeTestRule.onNodeWithText(cityDetails.city.nameToDisplay).assertIsDisplayed()
+        composeTestRule.onNodeWithText(cityDetails.description).assertIsDisplayed()
         onView(withId(R.id.map)).check(matches(isDisplayed()))
 
         var cameraPosition: CameraPosition? = null

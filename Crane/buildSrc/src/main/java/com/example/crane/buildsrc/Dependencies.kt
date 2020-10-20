@@ -98,6 +98,13 @@ object Libs {
         private const val version = "4.13"
         const val junit = "junit:junit:$version"
     }
+
+    object AssistedInjection {
+        private const val version = "0.5.2"
+
+        const val dagger = "com.squareup.inject:assisted-inject-annotations-dagger2:$version"
+        const val processor = "com.squareup.inject:assisted-inject-processor-dagger2:$version"
+    }
 }
 
 object Urls {

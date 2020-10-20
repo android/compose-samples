@@ -47,11 +47,9 @@ import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-private const val DETAILS_NAME = "DETAILS_NAME"
-private const val DETAILS_DESCRIPTION = "DETAILS_DESCRIPTION"
-private const val DETAILS_LATITUDE = "DETAILS_LATITUDE"
-private const val DETAILS_LONGITUDE = "DETAILS_LONGITUDE"
+private const val DETAILS_CITY_NAME = "DETAILS_CITY_NAME"
 
 fun launchDetailsActivity(context: Context, item: ExploreModel) {
     context.startActivity(createDetailsActivityIntent(context, item))
@@ -60,57 +58,62 @@ fun launchDetailsActivity(context: Context, item: ExploreModel) {
 @VisibleForTesting
 fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     val intent = Intent(context, DetailsActivity::class.java)
-    intent.putExtra(DETAILS_NAME, item.city.nameToDisplay)
-    intent.putExtra(DETAILS_DESCRIPTION, item.description)
-    intent.putExtra(DETAILS_LATITUDE, item.city.latitude)
-    intent.putExtra(DETAILS_LONGITUDE, item.city.longitude)
+    intent.putExtra(DETAILS_CITY_NAME, item.city.name)
     return intent
 }
 
 data class DetailsActivityArg(
-    val name: String,
-    val description: String,
-    val latitude: String,
-    val longitude: String
+    val cityName: String
 )
 
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var viewModelFactory: DetailsViewModel.AssistedFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val args = DetailsActivityArg(
-            name = intent.getStringExtra(DETAILS_NAME)!!,
-            description = intent.getStringExtra(DETAILS_DESCRIPTION)!!,
-            latitude = intent.getStringExtra(DETAILS_LATITUDE)!!,
-            longitude = intent.getStringExtra(DETAILS_LONGITUDE)!!
-        )
+        val args = DetailsActivityArg(intent.getStringExtra(DETAILS_CITY_NAME)!!)
 
         setContent {
             CraneScaffold {
-                DetailsScreen(args = args)
+                DetailsScreen(args, viewModelFactory, onErrorLoading = { finish() })
             }
         }
     }
 }
 
 @Composable
-fun DetailsScreen(args: DetailsActivityArg) {
+fun DetailsScreen(
+    args: DetailsActivityArg,
+    viewModelFactory: DetailsViewModel.AssistedFactory,
+    onErrorLoading: () -> Unit
+) {
+    val viewModel: DetailsViewModel = viewModelFactory.create(args.cityName)
+    if (viewModel.cityDetails != null) {
+        DetailsContent(viewModel.cityDetails)
+    } else {
+        onErrorLoading()
+    }
+}
+
+@Composable
+fun DetailsContent(exploreModel: ExploreModel) {
     Column(verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.preferredHeight(32.dp))
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = args.name,
+            text = exploreModel.city.nameToDisplay,
             style = MaterialTheme.typography.h4
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = args.description,
+            text = exploreModel.description,
             style = MaterialTheme.typography.h6
         )
         Spacer(Modifier.preferredHeight(16.dp))
-        CityMapView(args.latitude, args.longitude)
+        CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
     }
 }
 
