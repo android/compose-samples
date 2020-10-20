@@ -27,9 +27,12 @@ import javax.inject.Singleton
 // Marked as Singleton as it contains mutable state
 @Singleton
 class DatesRepository @Inject constructor(
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    datesLocalDataSource: DatesLocalDataSource,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+
 ) {
-    val datesSelected = DatesSelectedState()
+    val calendarYear = datesLocalDataSource.year2020
+    val datesSelected = DatesSelectedState(datesLocalDataSource.year2020)
 
     suspend fun onDaySelected(daySelected: DaySelected) = withContext(defaultDispatcher) {
         datesSelected.daySelected(daySelected)

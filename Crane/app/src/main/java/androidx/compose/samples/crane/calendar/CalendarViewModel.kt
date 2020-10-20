@@ -28,6 +28,7 @@ class CalendarViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     val datesSelected = datesRepository.datesSelected
+    val calendarYear = datesRepository.calendarYear
 
     fun onDaySelected(daySelected: DaySelected) {
         viewModelScope.launch {

@@ -33,6 +33,7 @@ import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DaySelected
+import androidx.compose.samples.crane.data.CalendarYear
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.viewinterop.viewModel
@@ -62,11 +63,15 @@ class CalendarActivity : ComponentActivity() {
 @Composable
 fun CalendarScreen(onBackPressed: () -> Unit) {
     val calendarViewModel: CalendarViewModel = viewModel()
+    val calendarYear = calendarViewModel.calendarYear
 
     CalendarContent(
         selectedDates = calendarViewModel.datesSelected.toString(),
+        calendarYear = calendarYear,
         onDayClicked = { calendarDay, calendarMonth ->
-            calendarViewModel.onDaySelected(DaySelected(calendarDay.value.toInt(), calendarMonth))
+            calendarViewModel.onDaySelected(
+                DaySelected(calendarDay.value.toInt(), calendarMonth, calendarYear)
+            )
         },
         onBackPressed = onBackPressed
     )
@@ -75,6 +80,7 @@ fun CalendarScreen(onBackPressed: () -> Unit) {
 @Composable
 private fun CalendarContent(
     selectedDates: String,
+    calendarYear: CalendarYear,
     onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
     onBackPressed: () -> Unit
 ) {
@@ -95,7 +101,7 @@ private fun CalendarContent(
                 backgroundColor = MaterialTheme.colors.primaryVariant
             )
             Surface {
-                Calendar(onDayClicked = onDayClicked)
+                Calendar(calendarYear, onDayClicked)
             }
         }
     }
