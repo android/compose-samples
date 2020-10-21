@@ -311,7 +311,11 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                     .then(HzPadding)
                     .preferredHeightIn(min = BottomBarHeight)
             ) {
-                QuantitySelector(count = count, updateCount = updateCount)
+                QuantitySelector(
+                    count = count,
+                    decreaseItemCount = { if (count > 0) updateCount(count - 1) },
+                    increaseItemCount = { updateCount(count + 1) }
+                )
                 Spacer(Modifier.preferredWidth(16.dp))
                 JetsnackButton(
                     onClick = { /* todo */ },

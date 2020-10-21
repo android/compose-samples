@@ -20,7 +20,9 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.preferredWidthIn
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.RemoveCircleOutline
@@ -37,42 +39,47 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 @Composable
 fun QuantitySelector(
     count: Int,
-    updateCount: (Int) -> Unit,
+    decreaseItemCount: () -> Unit,
+    increaseItemCount: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(modifier = modifier) {
         val (qty, minus, quantity, plus) = createRefs()
         createHorizontalChain(qty, minus, quantity, plus, chainStyle = ChainStyle.Packed)
-        Text(
-            text = stringResource(R.string.quantity),
-            style = MaterialTheme.typography.subtitle1,
-            color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(qty) {
-                start.linkTo(parent.start)
-                linkTo(top = parent.top, bottom = parent.bottom)
-            }
-        )
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Text(
+                text = stringResource(R.string.quantity),
+                style = MaterialTheme.typography.subtitle1,
+                color = JetsnackTheme.colors.textSecondary,
+                modifier = Modifier.constrainAs(qty) {
+                    start.linkTo(parent.start)
+                    linkTo(top = parent.top, bottom = parent.bottom)
+                }
+            )
+        }
         JetsnackGradientTintedIconButton(
             asset = Icons.Outlined.RemoveCircleOutline,
-            onClick = { if (count > 0) updateCount(count - 1) },
+            onClick = decreaseItemCount,
             modifier = Modifier.constrainAs(minus) {
                 centerVerticallyTo(quantity)
                 linkTo(top = parent.top, bottom = parent.bottom)
             }
         )
-        Text(
-            text = "$count",
-            style = MaterialTheme.typography.subtitle2,
-            fontSize = 18.sp,
-            color = JetsnackTheme.colors.textPrimary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.preferredWidthIn(min = 24.dp).constrainAs(quantity) {
-                baseline.linkTo(qty.baseline)
-            }
-        )
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+            Text(
+                text = "$count",
+                style = MaterialTheme.typography.subtitle2,
+                fontSize = 18.sp,
+                color = JetsnackTheme.colors.textPrimary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.preferredWidthIn(min = 24.dp).constrainAs(quantity) {
+                    baseline.linkTo(qty.baseline)
+                }
+            )
+        }
         JetsnackGradientTintedIconButton(
             asset = Icons.Outlined.AddCircleOutline,
-            onClick = { updateCount(count + 1) },
+            onClick = increaseItemCount,
             modifier = Modifier.constrainAs(plus) {
                 end.linkTo(parent.end)
                 centerVerticallyTo(quantity)
@@ -87,7 +94,7 @@ fun QuantitySelector(
 fun QuantitySelectorPreview() {
     JetsnackTheme {
         JetsnackSurface {
-            QuantitySelector(1, {})
+            QuantitySelector(1, {}, {})
         }
     }
 }

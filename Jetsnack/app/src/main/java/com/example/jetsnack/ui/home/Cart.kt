@@ -85,9 +85,14 @@ fun Cart(
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
-            CartContent(cartSnacks, inspiredByCart, onSnackClick)
-            DestinationBar()
-            CheckoutBar(Modifier.align(Alignment.BottomCenter))
+            CartContent(
+                cartSnacks = cartSnacks,
+                inspiredByCart = inspiredByCart,
+                onSnackClick = onSnackClick,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
+            DestinationBar(modifier = Modifier.align(Alignment.TopCenter))
+            CheckoutBar(modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 }
@@ -152,12 +157,8 @@ fun CartItem(
             modifier = Modifier
                 .preferredSize(100.dp)
                 .constrainAs(image) {
-                    linkTo(
-                        top = parent.top,
-                        topMargin = 16.dp,
-                        bottom = parent.bottom,
-                        bottomMargin = 16.dp
-                    )
+                    top.linkTo(parent.top, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
                     start.linkTo(parent.start)
                 }
         )
@@ -221,7 +222,8 @@ fun CartItem(
         )
         QuantitySelector(
             count = count,
-            updateCount = updateCount,
+            decreaseItemCount = { if (count > 0) updateCount(count - 1) },
+            increaseItemCount = { updateCount(count + 1) },
             modifier = Modifier.constrainAs(quantity) {
                 baseline.linkTo(price.baseline)
                 end.linkTo(parent.end)
@@ -302,7 +304,11 @@ fun SummaryItem(modifier: Modifier = Modifier) {
 
 @Composable
 private fun CheckoutBar(modifier: Modifier = Modifier) {
-    Column(modifier.background(JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque))) {
+    Column(
+        modifier.background(
+            JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)
+        )
+    ) {
         JetsnackDivider()
         Row {
             Spacer(Modifier.weight(1f))

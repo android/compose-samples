@@ -29,8 +29,8 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun JetsnackGradientTintedIconButton(
     asset: VectorAsset,
     onClick: () -> Unit,
-    colors: List<Color> = JetsnackTheme.colors.interactiveSecondary,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
     // This should use a layer + srcIn but needs investigation
     val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
