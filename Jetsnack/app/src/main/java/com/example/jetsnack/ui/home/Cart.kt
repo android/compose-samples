@@ -51,10 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
+import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
+import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.statusBarsHeight
@@ -65,18 +67,20 @@ fun Cart(
     modifier: Modifier = Modifier
 ) {
     val cartSnacks = remember { SnackRepo.getCart() }
-    Cart(cartSnacks, onSnackClick, modifier)
+    val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
+    Cart(cartSnacks, inspiredByCart, onSnackClick, modifier)
 }
 
 @Composable
 fun Cart(
     cartSnacks: List<Snack>,
+    inspiredByCart: SnackCollection,
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
-            CartContent(cartSnacks, onSnackClick)
+            CartContent(cartSnacks, inspiredByCart, onSnackClick)
             DestinationBar()
         }
     }
@@ -86,6 +90,7 @@ fun Cart(
 @Composable
 private fun CartContent(
     cartSnacks: List<Snack>,
+    inspiredByCart: SnackCollection,
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -109,6 +114,13 @@ private fun CartContent(
         }
         item {
             SummaryItem()
+        }
+        item {
+            SnackCollection(
+                snackCollection = inspiredByCart,
+                onSnackClick = onSnackClick,
+                highlight = false
+            )
         }
     }
 }

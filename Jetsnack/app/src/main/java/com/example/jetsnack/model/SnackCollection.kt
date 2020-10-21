@@ -35,6 +35,7 @@ object SnackRepo {
     fun getSnacks(): List<SnackCollection> = snackCollections
     fun getSnack(snackId: Long) = snacks.find { it.id == snackId }!!
     fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
+    fun getInspiredByCart() = inspiredByCart
     fun getFilters() = filters
     fun getCart() = cart
 }
@@ -74,6 +75,11 @@ val exclusive = tastyTreats.copy(
 val also = tastyTreats.copy(
     id = 6L,
     name = "Customers also bought"
+)
+
+val inspiredByCart = tastyTreats.copy(
+    id = 7L,
+    name = "Inspired by your cart"
 )
 
 val snackCollections = listOf(
