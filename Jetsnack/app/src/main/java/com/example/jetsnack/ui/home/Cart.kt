@@ -19,6 +19,7 @@ package com.example.jetsnack.ui.home
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
@@ -74,7 +75,10 @@ fun Cart(
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        CartContent(cartSnacks, onSnackClick)
+        Box {
+            CartContent(cartSnacks, onSnackClick)
+            DestinationBar()
+        }
     }
 }
 
@@ -87,7 +91,7 @@ private fun CartContent(
 ) {
     LazyColumn(modifier) {
         item {
-            Spacer(Modifier.statusBarsHeight())
+            Spacer(Modifier.statusBarsHeight(additional = 56.dp))
             Text(
                 text = stringResource(R.string.cart_order_header, cartSnacks.size),
                 style = MaterialTheme.typography.h6,
