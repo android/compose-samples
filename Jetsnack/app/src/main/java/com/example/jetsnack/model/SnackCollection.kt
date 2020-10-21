@@ -95,4 +95,4 @@ val related = listOf(
     popular
 )
 
-val cart = snacks.subList(4,7)
+val cart = snacks.subList(4, 7)
