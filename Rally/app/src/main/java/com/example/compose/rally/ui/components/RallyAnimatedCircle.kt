@@ -33,8 +33,8 @@ import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.dp
 
 private const val DividerLengthInDegrees = 1.8f
-private val AngleOffset = FloatPropKey()
-private val Shift = FloatPropKey()
+private val AngleOffset = FloatPropKey("angle")
+private val Shift = FloatPropKey("shift")
 
 /**
  * A donut chart that animates when loaded.
