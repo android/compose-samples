@@ -28,8 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
+val swipeTestTag = "SwipeToRefresh"
 private val RefreshDistance = 80.dp
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -48,7 +50,7 @@ fun SwipeToRefreshLayout(
     }
 
     Box(
-        modifier = Modifier.swipeable(
+        modifier = Modifier.testTag(swipeTestTag).swipeable(
             state = state,
             anchors = mapOf(
                 -refreshDistance to false,
