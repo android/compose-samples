@@ -31,13 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.test.filters.MediumTest
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.onNodeWithTag
-import androidx.ui.test.swipeUp
-import androidx.ui.test.swipeDown
 import androidx.ui.test.performGesture
+import androidx.ui.test.swipeDown
+import androidx.ui.test.swipeUp
 import junit.framework.TestCase.assertTrue
 import org.junit.Rule
 import org.junit.Test
-
 
 @MediumTest
 class SwipeToRefreshLayoutTest {
@@ -48,9 +47,11 @@ class SwipeToRefreshLayoutTest {
     @Test
     fun testSwipeToRefreshGestureWithScrollableColumn() {
         var refreshInvoked = false
-        renderScrollableColumnWithSwipeToRefreshLayout(onRefresh = {
-            refreshInvoked = true
-        })
+        renderScrollableColumnWithSwipeToRefreshLayout(
+            onRefresh = {
+                refreshInvoked = true
+            }
+        )
 
         swipeToRefresh()
 
@@ -60,9 +61,11 @@ class SwipeToRefreshLayoutTest {
     @Test
     fun testSwipeToRefreshGestureWithLazyColumnFor() {
         var refreshInvoked = false
-        renderLazyColumnForWithSwipeToRefreshLayout(onRefresh = {
-            refreshInvoked = true
-        })
+        renderLazyColumnForWithSwipeToRefreshLayout(
+            onRefresh = {
+                refreshInvoked = true
+            }
+        )
 
         swipeToRefresh()
 
@@ -72,9 +75,11 @@ class SwipeToRefreshLayoutTest {
     @Test
     fun testSwipeToRefreshGestureWithLazyColumnForIndexed() {
         var refreshInvoked = false
-        renderLazyColumnForIndexedWithSwipeToRefreshLayout(onRefresh = {
-            refreshInvoked = true
-        })
+        renderLazyColumnForIndexedWithSwipeToRefreshLayout(
+            onRefresh = {
+                refreshInvoked = true
+            }
+        )
 
         swipeToRefresh()
 
