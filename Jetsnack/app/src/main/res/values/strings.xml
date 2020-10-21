@@ -41,4 +41,5 @@
     <string name="cart_subtotal_label">Subtotal</string>
     <string name="cart_shipping_label">Shipping &amp; Handling</string>
     <string name="cart_total_label">Total</string>
+    <string name="cart_checkout">Checkout</string>
 </resources>

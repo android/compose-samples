@@ -18,6 +18,7 @@ package com.example.jetsnack.ui.home
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ChainStyle
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
@@ -45,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -53,11 +56,13 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.statusBarsHeight
 
@@ -82,6 +87,7 @@ fun Cart(
         Box {
             CartContent(cartSnacks, inspiredByCart, onSnackClick)
             DestinationBar()
+            CheckoutBar(Modifier.align(Alignment.BottomCenter))
         }
     }
 }
@@ -121,6 +127,7 @@ private fun CartContent(
                 onSnackClick = onSnackClick,
                 highlight = false
             )
+            Spacer(Modifier.height(56.dp))
         }
     }
 }
@@ -290,6 +297,27 @@ fun SummaryItem(modifier: Modifier = Modifier) {
             )
         }
         JetsnackDivider()
+    }
+}
+
+@Composable
+private fun CheckoutBar(modifier: Modifier = Modifier) {
+    Column(modifier.background(JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque))) {
+        JetsnackDivider()
+        Row {
+            Spacer(Modifier.weight(1f))
+            JetsnackButton(
+                onClick = { /* todo */ },
+                shape = RectangleShape,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.cart_checkout)
+                )
+            }
+        }
     }
 }
 
