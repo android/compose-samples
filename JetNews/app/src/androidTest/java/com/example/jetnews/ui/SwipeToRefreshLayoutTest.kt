@@ -25,13 +25,16 @@ import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.filters.MediumTest
-import androidx.ui.test.*
+import androidx.ui.test.createComposeRule
+import androidx.ui.test.onNodeWithTag
+import androidx.ui.test.swipeUp
+import androidx.ui.test.swipeDown
+import androidx.ui.test.performGesture
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.delay
 import org.junit.Rule
 import org.junit.Test
 
