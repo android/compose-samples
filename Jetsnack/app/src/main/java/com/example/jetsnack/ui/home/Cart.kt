@@ -238,6 +238,7 @@ fun CartItem(
     }
 }
 
+// TODO: Hoist state instead of using hard-coded total price
 @Composable
 fun SummaryItem(modifier: Modifier = Modifier) {
     Column(modifier) {
