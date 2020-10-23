@@ -18,14 +18,13 @@
 
 package androidx.compose.samples.crane.di
 
-import android.os.AsyncTask
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.asCoroutineDispatcher
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Module
@@ -34,6 +33,5 @@ class TestDispatchersModule {
 
     @Provides
     @DefaultDispatcher
-    fun provideDefaultDispatcher(): CoroutineDispatcher =
-        AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher()
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
 }
