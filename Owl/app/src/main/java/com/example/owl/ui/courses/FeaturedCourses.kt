@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.material.AmbientElevationOverlay
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -41,7 +42,6 @@ import com.example.owl.model.courses
 import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
-import com.example.owl.ui.theme.elevatedSurface
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.statusBarsPadding
 import kotlin.math.ceil
@@ -93,11 +93,13 @@ fun FeaturedCourse(
                         top.linkTo(parent.top)
                     }
             )
+            val outlineColor = AmbientElevationOverlay.current?.apply(
+                color = MaterialTheme.colors.surface,
+                elevation = OwlTheme.elevations.card
+            ) ?: MaterialTheme.colors.surface
             OutlinedAvatar(
                 url = course.instructor,
-                outlineColor = MaterialTheme.colors.elevatedSurface(
-                    OwlTheme.elevations.card
-                ),
+                outlineColor = outlineColor,
                 modifier = Modifier
                     .preferredSize(38.dp)
                     .constrainAs(avatar) {
