@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.samples.crane.calendar.model.DatesSelectedState
 import androidx.compose.samples.crane.data.DatesRepository
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
@@ -38,9 +39,9 @@ class MainViewModel @ViewModelInject constructor(
     datesRepository: DatesRepository
 ) : ViewModel() {
 
-    val hotels = destinationsRepository.hotels
-    val restaurants = destinationsRepository.restaurants
-    val datesSelected = datesRepository.datesSelected
+    val hotels: List<ExploreModel> = destinationsRepository.hotels
+    val restaurants: List<ExploreModel> = destinationsRepository.restaurants
+    val datesSelected: DatesSelectedState = datesRepository.datesSelected
 
     private val _suggestedDestinations = MutableLiveData<List<ExploreModel>>()
     val suggestedDestinations: LiveData<List<ExploreModel>>

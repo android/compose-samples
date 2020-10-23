@@ -53,15 +53,16 @@ fun CraneHomeContent(...) {
 }
 ```
 
-Disclaimer: Passing dependencies that are not available at compile time to a ViewModel
-(as it's the case of the [DetailsViewModel](detailsViewModel) that takes as a dependency the name of
-a `City` in order to load all the information for the screen) doesn't work as you might expect
-using `viewModel()`. This is because the way the Compose's ViewModel integration works at the moment
-doesn't allow you to scope a ViewModel to a given composable, it's always scoped to an Activity or
-Fragment. Because of this, calling `viewModel()` with different factories in the same
-Activity/Fragment don't have any effect as the first factory will be always used. In Crane, we don't
-have this problem because it's a multi-activity application and every time, `DetailsScreen` is
-called from a different instance of `DetailsActivity`.
+Disclaimer: Passing dependencies to a ViewModel which are not available at compile time (which is
+sometimes called _assisted injection_) doesn't work as you might expect using `viewModel()`.
+Compose's ViewModel integration cannot currently scope a ViewModel to a given composable. Instead
+it is always scoped to the host Activity or Fragment. This means that calling `viewModel()` with
+different factories in the same host Activity/Fragment don't have the desired effect; the _first_
+factory will be always used.
+
+This is the case of the [DetailsViewModel](detailsViewModel), which takes the name of
+a `City` as a parameter to load the required information for the screen. However, the above isn't a
+problem in this sample, since `DetailsScreen` is always used in it's own newly launched Activity.
 
 ## Google Maps SDK
 

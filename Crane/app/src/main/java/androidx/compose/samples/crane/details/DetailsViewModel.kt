@@ -16,7 +16,9 @@
 
 package androidx.compose.samples.crane.details
 
+import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.DestinationsRepository
+import androidx.compose.samples.crane.data.ExploreModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.inject.assisted.Assisted
@@ -25,13 +27,22 @@ import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
+import java.lang.IllegalArgumentException
 
 class DetailsViewModel @AssistedInject constructor(
-    destinationsRepository: DestinationsRepository,
-    @Assisted cityName: String
+    private val destinationsRepository: DestinationsRepository,
+    @Assisted private val cityName: String
 ) : ViewModel() {
 
-    val cityDetails = destinationsRepository.getDestination(cityName)
+    val cityDetails: Result<ExploreModel>
+        get() {
+            val destination = destinationsRepository.getDestination(cityName)
+            return if (destination != null) {
+                Result.Success(destination)
+            } else {
+                Result.Error(IllegalArgumentException("City doesn't exist"))
+            }
+        }
 
     @AssistedInject.Factory
     interface AssistedFactory {

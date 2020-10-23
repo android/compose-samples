@@ -33,9 +33,11 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.base.CraneScaffold
+import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,9 +49,10 @@ import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
-private const val DETAILS_CITY_NAME = "DETAILS_CITY_NAME"
+private const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
 fun launchDetailsActivity(context: Context, item: ExploreModel) {
     context.startActivity(createDetailsActivityIntent(context, item))
@@ -58,7 +61,7 @@ fun launchDetailsActivity(context: Context, item: ExploreModel) {
 @VisibleForTesting
 fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     val intent = Intent(context, DetailsActivity::class.java)
-    intent.putExtra(DETAILS_CITY_NAME, item.city.name)
+    intent.putExtra(KEY_ARG_DETAILS_CITY_NAME, item.city.name)
     return intent
 }
 
@@ -74,13 +77,21 @@ class DetailsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val args = DetailsActivityArg(intent.getStringExtra(DETAILS_CITY_NAME)!!)
+        val args = getDetailsArgs(intent)
 
         setContent {
             CraneScaffold {
                 DetailsScreen(args, viewModelFactory, onErrorLoading = { finish() })
             }
         }
+    }
+
+    private fun getDetailsArgs(intent: Intent): DetailsActivityArg {
+        val cityArg = intent.getStringExtra(KEY_ARG_DETAILS_CITY_NAME)
+        if (cityArg.isNullOrEmpty()) {
+            throw IllegalStateException("DETAILS_CITY_NAME arg cannot be null or empty")
+        }
+        return DetailsActivityArg(cityArg)
     }
 }
 
@@ -91,8 +102,10 @@ fun DetailsScreen(
     onErrorLoading: () -> Unit
 ) {
     val viewModel: DetailsViewModel = viewModelFactory.create(args.cityName)
-    if (viewModel.cityDetails != null) {
-        DetailsContent(viewModel.cityDetails)
+
+    val cityDetailsResult = remember(viewModel) { viewModel.cityDetails }
+    if (cityDetailsResult is Result.Success<ExploreModel>) {
+        DetailsContent(cityDetailsResult.data)
     } else {
         onErrorLoading()
     }

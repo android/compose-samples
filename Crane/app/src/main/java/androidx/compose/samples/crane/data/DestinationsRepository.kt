@@ -21,9 +21,9 @@ import javax.inject.Inject
 class DestinationsRepository @Inject constructor(
     private val destinationsLocalDataSource: DestinationsLocalDataSource
 ) {
-    val destinations = destinationsLocalDataSource.craneDestinations
-    val hotels = destinationsLocalDataSource.craneHotels
-    val restaurants = destinationsLocalDataSource.craneRestaurants
+    val destinations: List<ExploreModel> = destinationsLocalDataSource.craneDestinations
+    val hotels: List<ExploreModel> = destinationsLocalDataSource.craneHotels
+    val restaurants: List<ExploreModel> = destinationsLocalDataSource.craneRestaurants
 
     fun getDestination(cityName: String): ExploreModel? {
         return destinationsLocalDataSource.craneDestinations.firstOrNull {
