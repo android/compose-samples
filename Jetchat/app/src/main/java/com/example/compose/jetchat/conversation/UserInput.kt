@@ -320,7 +320,6 @@ private fun UserInputSelector(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .preferredHeight(36.dp),
-            elevation = ButtonConstants.defaultElevation(defaultElevation = 0.dp),
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
             colors = buttonColors,
