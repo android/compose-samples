@@ -40,7 +40,7 @@ import org.junit.Test
 class NavigationTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<NavActivity>(disableTransitions = true)
+    val composeTestRule = createAndroidComposeRule<NavActivity>()
 
     // Note that keeping these references is only safe if the activity is not recreated.
     // See: https://issuetracker.google.com/160862278
