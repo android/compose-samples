@@ -16,7 +16,6 @@
 
 package com.example.compose.rally.ui.components
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +28,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.icons.Icons
