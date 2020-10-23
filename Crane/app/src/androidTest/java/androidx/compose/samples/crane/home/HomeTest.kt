@@ -28,7 +28,7 @@ import org.junit.Test
 class HomeTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    val composeTestRule = createComposeRule()
 
     @Before
     fun setUp() {

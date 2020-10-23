@@ -43,7 +43,7 @@ import org.junit.Test
 class CalendarTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    val composeTestRule = createComposeRule()
 
     var dateSelected = ""
     private val onDayClicked: (CalendarDay, CalendarMonth) -> Unit = { day, month ->
