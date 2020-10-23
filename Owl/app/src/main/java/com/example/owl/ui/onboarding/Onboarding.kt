@@ -155,9 +155,9 @@ private fun TopicsGrid(modifier: Modifier = Modifier) {
 
 private enum class SelectionState { Unselected, Selected }
 
-private val CornerRadius = DpPropKey()
-private val SelectedAlpha = FloatPropKey()
-private val CheckScale = FloatPropKey()
+private val CornerRadius = DpPropKey("Corner Radius")
+private val SelectedAlpha = FloatPropKey("Selected Alpha")
+private val CheckScale = FloatPropKey("Check Scale")
 
 private val TopicSelect = transitionDefinition<SelectionState> {
     state(SelectionState.Selected) {

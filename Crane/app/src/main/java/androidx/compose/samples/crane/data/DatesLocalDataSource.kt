@@ -82,14 +82,14 @@ class DatesLocalDataSource @Inject constructor() {
     private val august2020 = CalendarMonth(
         name = "August",
         year = "2020",
-        numDays = 30,
+        numDays = 31,
         monthNumber = 8,
         startDayOfWeek = DayOfWeek.Saturday
     )
     private val september2020 = CalendarMonth(
-        name = "August",
+        name = "September",
         year = "2020",
-        numDays = 31,
+        numDays = 30,
         monthNumber = 9,
         startDayOfWeek = DayOfWeek.Tuesday
     )

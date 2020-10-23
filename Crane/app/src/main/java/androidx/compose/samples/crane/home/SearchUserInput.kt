@@ -34,8 +34,10 @@ import androidx.compose.samples.crane.base.CraneEditableUserInput
 import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
+import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.ui.tooling.preview.Preview
 
 class PeopleUserInputState {
     var people by mutableStateOf(1)
@@ -120,7 +122,15 @@ fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
     )
 }
 
-private val tintKey = ColorPropKey()
+@Preview
+@Composable
+fun PeopleUserInputPreview() {
+    CraneTheme {
+        PeopleUserInput(onPeopleChanged = {})
+    }
+}
+
+private val tintKey = ColorPropKey(label = "tint")
 
 enum class PeopleUserInputAnimationState { Valid, Invalid }
 

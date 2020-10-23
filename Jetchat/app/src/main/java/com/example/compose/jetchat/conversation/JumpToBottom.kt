@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 
-private val bottomOffset = DpPropKey()
+private val bottomOffset = DpPropKey("Bottom Offset")
 
 private val definition = transitionDefinition<Visibility> {
     state(Visibility.GONE) {
