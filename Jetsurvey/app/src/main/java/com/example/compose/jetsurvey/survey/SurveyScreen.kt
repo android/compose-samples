@@ -26,15 +26,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
@@ -70,7 +70,10 @@ fun SurveyQuestionsScreen(
                 Question(
                     question = questionState.question,
                     answer = questionState.answer,
-                    onAnswer = { questionState.answer = it },
+                    onAnswer = {
+                        questionState.answer = it
+                        questionState.enableNext = true
+                    },
                     onAction = onAction,
                     modifier = Modifier
                         .fillMaxSize()
@@ -178,28 +181,28 @@ private fun SurveyBottomBar(
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, bottom = 24.dp)
     ) {
-        TextButton(
-            modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.Start),
-            onClick = onPreviousPressed,
-            enabled = questionState.enablePrevious
-        ) {
-            Text(text = stringResource(id = R.string.previous))
+        if (questionState.showPrevious) {
+            OutlinedButton(
+                modifier = Modifier.weight(1f),
+                onClick = onPreviousPressed
+            ) {
+                Text(text = stringResource(id = R.string.previous))
+            }
+            Spacer(modifier = Modifier.width(16.dp))
         }
-        PageIndicator(
-            pagesCount = questionState.totalQuestionsCount,
-            currentPageIndex = questionState.questionIndex
-        )
         if (questionState.showDone) {
-            TextButton(
-                modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.End),
-                onClick = onDonePressed
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = onDonePressed,
+                enabled = questionState.enableNext
             ) {
                 Text(text = stringResource(id = R.string.done))
             }
         } else {
-            TextButton(
-                modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.End),
-                onClick = onNextPressed
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = onNextPressed,
+                enabled = questionState.enableNext
             ) {
                 Text(text = stringResource(id = R.string.next))
             }
