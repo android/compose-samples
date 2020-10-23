@@ -16,28 +16,31 @@
 
 package com.example.compose.jetsurvey.survey
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ConstraintLayout
+import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.outlined.FiberManualRecord
 import androidx.compose.runtime.Composable
@@ -48,9 +51,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 
 @Composable
 fun SurveyQuestionsScreen(
@@ -65,7 +69,13 @@ fun SurveyQuestionsScreen(
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            topBar = { SurveyTopAppBar(questions.surveyTitle, onBackPressed) },
+            topBar = {
+                SurveyTopAppBar(
+                    questionIndex = questionState.questionIndex,
+                    totalQuestionsCount = questionState.totalQuestionsCount,
+                    onBackPressed = onBackPressed
+                )
+            },
             bodyContent = { innerPadding ->
                 Question(
                     question = questionState.question,
@@ -100,7 +110,6 @@ fun SurveyResultScreen(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            topBar = { SurveyTopAppBar(result.surveyTitle, onBackPressed) },
             bodyContent = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
                 SurveyResult(result = result, modifier = modifier)
@@ -142,31 +151,54 @@ private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifi
     }
 }
 
+@Preview
+@Composable
+fun Progress() {
+    SurveyTopAppBar(questionIndex = 2, totalQuestionsCount = 6, onBackPressed = {})
+}
+
+@OptIn(ExperimentalLayout::class)
 @Composable
 private fun SurveyTopAppBar(
-    @StringRes surveyTitle: Int,
+    questionIndex: Int,
+    totalQuestionsCount: Int,
     onBackPressed: () -> Unit
 ) {
-    TopAppBar(
-        title = {
+    Column(modifier = Modifier.fillMaxWidth()) {
+
+        ConstraintLayout(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+            val (button, text) = createRefs()
+
             Text(
-                text = stringResource(id = surveyTitle),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                text = stringResource(
+                    R.string.question_count,
+                    questionIndex + 1,
+                    totalQuestionsCount
+                ),
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.constrainAs(text) {
+                    centerHorizontallyTo(parent)
+                    centerVerticallyTo(parent)
+                }
             )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(Icons.Filled.ChevronLeft)
+
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                IconButton(
+                    onClick = onBackPressed,
+                    modifier = Modifier.padding(horizontal = 12.dp).constrainAs(button) {
+                        end.linkTo(parent.end)
+                    }
+                ) {
+                    Icon(Icons.Filled.Close)
+                }
             }
-        },
-        // We need to balance the navigation icon, so we add a spacer.
-        actions = {
-            Spacer(modifier = Modifier.preferredWidth(68.dp))
-        },
-        backgroundColor = MaterialTheme.colors.surface,
-        elevation = 0.dp
-    )
+        }
+        LinearProgressIndicator(
+            progress = (questionIndex + 1) / totalQuestionsCount.toFloat(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            backgroundColor = MaterialTheme.colors.progressIndicatorBackground
+        )
+    }
 }
 
 @Composable

@@ -188,7 +188,7 @@ private fun MultipleChoiceQuestion(
                         onAnswerSelected(option.value, selected)
                     },
                     colors = CheckboxConstants.defaultColors(
-                        checkmarkColor = MaterialTheme.colors.primary
+                        checkedColor = MaterialTheme.colors.primary
                     )
                 )
                 Text(

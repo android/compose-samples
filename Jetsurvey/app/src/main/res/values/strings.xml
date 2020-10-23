@@ -31,12 +31,13 @@
         handle your data according to our Privacy Policy.</string>
     <string name="feature_not_available">Feature not available</string>
     <string name="dismiss">Dismiss</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="done">Done</string>
+    <string name="next">NEXT</string>
+    <string name="previous">PREVIOUS</string>
+    <string name="done">DONE</string>
 
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
+    <string name="question_count">%1$d of %2$d</string>
 
     <!-- question 1-->
     <string name="in_my_free_time">In my free time I like to …</string>
