@@ -37,12 +37,14 @@ import org.junit.Test
  * For assertions, a simple screenshot testing framework is used. It requires SDK 26+ and to
  * be run on a device with 420dpi, as that the density used to generate the golden images
  * present in androidTest/assets. It runs bitmap comparisons on device.
+ *
+ * Note that different systems can produce slightly different screenshots making the test fail.
  */
 @SdkSuppress(minSdkVersion = Build.VERSION_CODES.O)
 class AnimatingCircleTests {
 
     @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = false)
+    val composeTestRule = createComposeRule()
 
     @Test
     fun circleAnimation_idle_screenshot() {
