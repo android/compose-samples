@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.animate
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
@@ -28,6 +27,7 @@ import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
