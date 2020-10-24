@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
@@ -41,14 +40,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FiberManualRecord
-import androidx.compose.material.icons.outlined.FiberManualRecord
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -233,23 +229,6 @@ private fun SurveyBottomBar(
                     Text(text = stringResource(id = R.string.next))
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun PageIndicator(pagesCount: Int, currentPageIndex: Int, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.wrapContentSize(align = Alignment.Center)) {
-        for (pageIndex in 0 until pagesCount) {
-            val asset = if (currentPageIndex == pageIndex) {
-                Icons.Filled.FiberManualRecord
-            } else {
-                Icons.Outlined.FiberManualRecord
-            }
-            Icon(
-                asset = asset,
-                tint = MaterialTheme.colors.primary
-            )
         }
     }
 }
