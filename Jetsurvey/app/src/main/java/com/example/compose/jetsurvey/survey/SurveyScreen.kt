@@ -105,8 +105,7 @@ fun SurveyQuestionsScreen(
 @Composable
 fun SurveyResultScreen(
     result: SurveyState.Result,
-    onDonePressed: () -> Unit,
-    onBackPressed: () -> Unit
+    onDonePressed: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -208,35 +207,40 @@ private fun SurveyBottomBar(
     onNextPressed: () -> Unit,
     onDonePressed: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, bottom = 24.dp)
+    Surface(
+        elevation = 3.dp,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        if (questionState.showPrevious) {
-            OutlinedButton(
-                modifier = Modifier.weight(1f),
-                onClick = onPreviousPressed
-            ) {
-                Text(text = stringResource(id = R.string.previous))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            if (questionState.showPrevious) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onPreviousPressed
+                ) {
+                    Text(text = stringResource(id = R.string.previous))
+                }
+                Spacer(modifier = Modifier.width(16.dp))
             }
-            Spacer(modifier = Modifier.width(16.dp))
-        }
-        if (questionState.showDone) {
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = onDonePressed,
-                enabled = questionState.enableNext
-            ) {
-                Text(text = stringResource(id = R.string.done))
-            }
-        } else {
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = onNextPressed,
-                enabled = questionState.enableNext
-            ) {
-                Text(text = stringResource(id = R.string.next))
+            if (questionState.showDone) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDonePressed,
+                    enabled = questionState.enableNext
+                ) {
+                    Text(text = stringResource(id = R.string.done))
+                }
+            } else {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = onNextPressed,
+                    enabled = questionState.enableNext
+                ) {
+                    Text(text = stringResource(id = R.string.next))
+                }
             }
         }
     }
