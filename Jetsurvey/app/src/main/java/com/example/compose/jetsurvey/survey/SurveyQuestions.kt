@@ -18,6 +18,7 @@ package com.example.compose.jetsurvey.survey
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,10 +28,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxConstants
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
@@ -43,7 +47,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.questionBackground
+
+@Preview
+@Composable
+fun QuestionPreview() {
+    val question = Question(
+        id = 2,
+        questionText = R.string.pick_superhero,
+        answer = PossibleAnswer.SingleChoice(
+            optionsStringRes = listOf(
+                R.string.spiderman,
+                R.string.ironman,
+                R.string.unikitty,
+                R.string.captain_planet
+            )
+        )
+    )
+    JetsurveyTheme {
+        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
+    }
+}
 
 @Composable
 fun Question(
@@ -58,11 +85,20 @@ fun Question(
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
         Spacer(modifier = Modifier.preferredHeight(44.dp))
-        Text(
-            text = stringResource(id = question.questionText),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().background(
+                color = MaterialTheme.colors.questionBackground,
+                shape = RoundedCornerShape(12.dp)
+            )
+        ) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+                Text(
+                    text = stringResource(id = question.questionText),
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 16.dp)
+                )
+            }
+        }
         Spacer(modifier = Modifier.preferredHeight(24.dp))
         when (question.answer) {
             is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(

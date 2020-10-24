@@ -52,7 +52,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 
@@ -150,12 +149,6 @@ private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifi
     }
 }
 
-@Preview
-@Composable
-fun Progress() {
-    SurveyTopAppBar(questionIndex = 2, totalQuestionsCount = 6, onBackPressed = {})
-}
-
 @OptIn(ExperimentalLayout::class)
 @Composable
 private fun SurveyTopAppBar(
@@ -164,10 +157,8 @@ private fun SurveyTopAppBar(
     onBackPressed: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-
         ConstraintLayout(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             val (button, text) = createRefs()
-
             Text(
                 text = stringResource(
                     R.string.question_count,
