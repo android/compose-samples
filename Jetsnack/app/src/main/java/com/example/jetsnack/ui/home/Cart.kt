@@ -16,7 +16,6 @@
 
 package com.example.jetsnack.ui.home
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +37,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.LastBaseline
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -259,12 +259,12 @@ fun SummaryItem(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.weight(1f)
                     .wrapContentWidth(Alignment.Start)
-                    .alignWithSiblings(LastBaseline)
+                    .alignBy(LastBaseline)
             )
             Text(
                 text = "\$27.47",
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.alignWithSiblings(LastBaseline)
+                modifier = Modifier.alignBy(LastBaseline)
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
@@ -273,12 +273,12 @@ fun SummaryItem(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.weight(1f)
                     .wrapContentWidth(Alignment.Start)
-                    .alignWithSiblings(LastBaseline)
+                    .alignBy(LastBaseline)
             )
             Text(
                 text = "\$3.69",
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.alignWithSiblings(LastBaseline)
+                modifier = Modifier.alignBy(LastBaseline)
             )
         }
         Spacer(modifier = Modifier.preferredHeight(8.dp))
@@ -291,12 +291,12 @@ fun SummaryItem(modifier: Modifier = Modifier) {
                     .weight(1f)
                     .padding(end = 16.dp)
                     .wrapContentWidth(Alignment.End)
-                    .alignWithSiblings(LastBaseline)
+                    .alignBy(LastBaseline)
             )
             Text(
                 text = "\$31.16",
                 style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.alignWithSiblings(LastBaseline)
+                modifier = Modifier.alignBy(LastBaseline)
             )
         }
         JetsnackDivider()

@@ -177,8 +177,8 @@ private fun ChoiceChipContent(
     }
 }
 
-private val Alpha = FloatPropKey()
-private val Offset = FloatPropKey()
+private val Alpha = FloatPropKey("alpha")
+private val Offset = FloatPropKey("offset")
 
 @Composable
 private fun getChoiceChipTransitionDefinition(

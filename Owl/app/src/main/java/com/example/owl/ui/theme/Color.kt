@@ -17,12 +17,9 @@
 package com.example.owl.ui.theme
 
 import androidx.compose.material.Colors
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.unit.Dp
-import kotlin.math.ln
 
 val yellow200 = Color(0xffffeb46)
 val yellow400 = Color(0xffffc000)
@@ -46,18 +43,4 @@ val pinkDarkPrimary = Color(0xff24191c)
 @Composable
 fun Colors.compositedOnSurface(alpha: Float): Color {
     return onSurface.copy(alpha = alpha).compositeOver(surface)
-}
-
-/**
- * Elevation overlay logic copied from [Surface] — https://issuetracker.google.com/155181601
- */
-fun Colors.elevatedSurface(elevation: Dp): Color {
-    if (isLight) return surface
-    val foreground = calculateForeground(elevation)
-    return foreground.compositeOver(surface)
-}
-
-private fun calculateForeground(elevation: Dp): Color {
-    val alpha = ((4.5f * ln(elevation.value + 1)) + 2f) / 100f
-    return Color.White.copy(alpha = alpha)
 }

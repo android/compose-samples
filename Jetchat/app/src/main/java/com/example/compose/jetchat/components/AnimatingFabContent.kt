@@ -106,8 +106,8 @@ private fun IconAndTextRow(
     }
 }
 
-private val FabWidthFactor = FloatPropKey()
-private val TextOpacity = FloatPropKey()
+private val FabWidthFactor = FloatPropKey("Width")
+private val TextOpacity = FloatPropKey("Text Opacity")
 
 private enum class ExpandableFabStates { Collapsed, Extended }
 

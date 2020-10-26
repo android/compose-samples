@@ -19,11 +19,11 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.animation.DpPropKey
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.transition
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 
-private val bottomOffset = DpPropKey()
+private val bottomOffset = DpPropKey("Bottom Offset")
 
 private val definition = transitionDefinition<Visibility> {
     state(Visibility.GONE) {
