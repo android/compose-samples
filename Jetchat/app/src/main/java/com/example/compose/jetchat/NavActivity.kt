@@ -17,72 +17,129 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
-import android.view.Menu
+import android.util.Log
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.compose.foundation.Text
+import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.navigation.NavigationView
+import com.example.compose.jetchat.components.JetchatDrawer
+import com.example.compose.jetchat.profile.ProfileViewModel
 
 /**
- * Main activity for the app. Shows a drawer and a toolbar rendered with traditional Views, for now.
+ * Main activity for the app.
  */
 class NavActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var drawerLayout: DrawerLayout
+    private val viewModel: MainViewModel by viewModels()
+
+    private var drawerShouldBeOpen by mutableStateOf(false)
+    private var drawerShouldBeClosed by mutableStateOf(false)
+
+    private var isDrawerOpen by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContent {
 
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home,
-                R.id.nav_profile
-            ),
-            drawerLayout
-        )
-        navView.setupWithNavController(navController)
+            val state = rememberScaffoldState()
+
+            onCommit(drawerShouldBeOpen, drawerShouldBeClosed) {
+                if (drawerShouldBeOpen) {
+                    state.drawerState.open {
+                        drawerShouldBeOpen = false
+                    }
+                }
+                if (drawerShouldBeClosed) {
+                    state.drawerState.close {
+                        drawerShouldBeClosed = false
+                    }
+                }
+            }
+
+            onCommit(state.drawerState.isOpen) {
+                Log.d("jalc", state.drawerState.isOpen.toString())
+                isDrawerOpen = state.drawerState.isOpen
+            }
+
+            Scaffold(
+                drawerContent = {
+                    JetchatDrawer()
+                },
+                scaffoldState = state
+            ) {
+
+                val context = ContextAmbient.current
+
+                AndroidView( { LayoutInflater.from(context)
+                    .inflate(R.layout.content_main, FrameLayout(context), false) }
+                )
+
+            }
+        }
+
+        viewModel.openDrawerEvent.observe(this) {
+            drawerShouldBeOpen = true
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
 
+
+//
+//    private lateinit var appBarConfiguration: AppBarConfiguration
+//    private lateinit var drawerLayout: DrawerLayout
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_main)
+//
+//        drawerLayout = findViewById(R.id.drawer_layout)
+//        val navView: NavigationView = findViewById(R.id.nav_view)
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
+//        appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.nav_home,
+//                R.id.nav_profile
+//            ),
+//            drawerLayout
+//        )
+//        navView.setupWithNavController(navController)
+//    }
+//
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
+//
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
-
+//
     /**
      * Back closes drawer if open.
      */
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
+        Log.d("jalc", "jalc")
+        if (isDrawerOpen) {
+            drawerShouldBeClosed = true
         } else {
             super.onBackPressed()
         }
-    }
-
-    /**
-     * Opens the drawer if present.
-     *
-     * ]TODO: Replace with compose Scaffold.
-     */
-    fun openDrawer() {
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        drawer?.openDrawer(GravityCompat.START)
     }
 }

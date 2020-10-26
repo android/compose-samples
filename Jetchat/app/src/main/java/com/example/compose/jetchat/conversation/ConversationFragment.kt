@@ -24,13 +24,16 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import com.example.compose.jetchat.NavActivity
+import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
+
+    private val activityViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,8 +55,7 @@ class ConversationFragment : Fragment() {
                                 )
                             },
                             onNavIconPressed = {
-                                // TODO: Replace with Scaffold
-                                (activity as? NavActivity)?.openDrawer()
+                                activityViewModel.openDrawer()
                             }
                         )
                     }

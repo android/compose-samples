@@ -24,13 +24,16 @@ import android.view.ViewGroup
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
+    private val activityViewModel: MainViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -55,8 +58,7 @@ class ProfileFragment : Fragment() {
                             ProfileScreen(
                                 userData = userData,
                                 onNavIconPressed = {
-                                    // TODO: Replace with Scaffold
-                                    (activity as? NavActivity)?.openDrawer()
+                                    activityViewModel.openDrawer()
                                 }
                             )
                         }
