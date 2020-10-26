@@ -59,8 +59,7 @@ class SurveyFragment : Fragment() {
                             )
                             is SurveyState.Result -> SurveyResultScreen(
                                 result = surveyState,
-                                onDonePressed = { activity?.onBackPressedDispatcher?.onBackPressed() },
-                                onBackPressed = { activity?.onBackPressedDispatcher?.onBackPressed() }
+                                onDonePressed = { activity?.onBackPressedDispatcher?.onBackPressed() }
                             )
                         }
                     }

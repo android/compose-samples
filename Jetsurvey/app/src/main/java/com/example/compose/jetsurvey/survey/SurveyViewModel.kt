@@ -37,9 +37,15 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
 
             // Create the default questions state based on the survey questions
             val questions: List<QuestionState> = survey.questions.mapIndexed { index, question ->
-                val enablePrevious = index > 0
+                val showPrevious = index > 0
                 val showDone = index == survey.questions.size - 1
-                QuestionState(question, index, survey.questions.size, enablePrevious, showDone)
+                QuestionState(
+                    question = question,
+                    questionIndex = index,
+                    totalQuestionsCount = survey.questions.size,
+                    showPrevious = showPrevious,
+                    showDone = showDone
+                )
             }
             surveyInitialState = SurveyState.Questions(survey.title, questions)
             _uiState.value = surveyInitialState
@@ -64,6 +70,7 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
                     questionState.question.id == questionId
                 }
             question.answer = Answer.Action(result)
+            question.enableNext = true
         }
     }
 }
