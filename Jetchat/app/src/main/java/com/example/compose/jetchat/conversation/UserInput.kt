@@ -24,12 +24,10 @@ import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,12 +47,12 @@ import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonConstants
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
 import androidx.compose.material.TextButton
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AlternateEmail
 import androidx.compose.material.icons.outlined.Duo
@@ -309,27 +307,22 @@ private fun UserInputSelector(
         }
         Spacer(modifier = Modifier.weight(1f))
 
-        val backgroundColor = ButtonConstants.defaultButtonBackgroundColor(
-            enabled = sendMessageEnabled,
-            disabledColor = MaterialTheme.colors.surface
-        )
         val disabledContentColor =
             AmbientEmphasisLevels.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
-        val contentColor = ButtonConstants.defaultButtonContentColor(
-            enabled = sendMessageEnabled,
-            defaultColor = contentColorFor(backgroundColor),
-            disabledColor = disabledContentColor
+
+        val buttonColors = ButtonConstants.defaultButtonColors(
+            disabledBackgroundColor = MaterialTheme.colors.surface,
+            disabledContentColor = disabledContentColor
         )
+
         // Send button
         Button(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .preferredHeight(36.dp),
-            elevation = 0.dp,
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
-            contentColor = contentColor,
-            backgroundColor = backgroundColor,
+            colors = buttonColors,
             border = border,
             // TODO: Workaround for https://issuetracker.google.com/158830170
             contentPadding = PaddingValues(0.dp)
@@ -486,25 +479,20 @@ fun ExtendedSelectorInnerButton(
     selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (selected) {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
-    } else {
-        // Same as background
-        getSelectorExpandedColor()
-    }
-    val color = if (selected) {
-        MaterialTheme.colors.onSurface
-    } else {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.74f)
-    }
+    val colors = ButtonConstants.defaultButtonColors(
+        backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.08f),
+        disabledBackgroundColor = getSelectorExpandedColor(), // Same as background
+        contentColor = MaterialTheme.colors.onSurface,
+        disabledContentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.74f)
+    )
     TextButton(
         onClick = onClick,
         modifier = modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .preferredHeight(30.dp),
         shape = MaterialTheme.shapes.medium,
-        backgroundColor = backgroundColor,
-        contentColor = color,
+        enabled = selected,
+        colors = colors,
         // TODO: Workaround for https://issuetracker.google.com//158830170
         contentPadding = PaddingValues(0.dp)
     ) {

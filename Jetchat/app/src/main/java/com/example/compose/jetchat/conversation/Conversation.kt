@@ -17,7 +17,6 @@
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.foundation.ClickableText
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
@@ -43,6 +42,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.LastBaseline
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
@@ -316,7 +316,7 @@ private fun AuthorNameTimestamp(msg: Message) {
                 text = msg.author,
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier
-                    .alignWithSiblings(LastBaseline)
+                    .alignBy(LastBaseline)
                     .relativePaddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
             )
         }
@@ -325,7 +325,7 @@ private fun AuthorNameTimestamp(msg: Message) {
             Text(
                 text = msg.timestamp,
                 style = MaterialTheme.typography.caption,
-                modifier = Modifier.alignWithSiblings(LastBaseline)
+                modifier = Modifier.alignBy(LastBaseline)
             )
         }
     }
