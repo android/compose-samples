@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
@@ -88,7 +87,7 @@ fun Question(
         Row(
             modifier = Modifier.fillMaxWidth().background(
                 color = MaterialTheme.colors.questionBackground,
-                shape = RoundedCornerShape(12.dp)
+                shape = MaterialTheme.shapes.small
             )
         ) {
             ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {

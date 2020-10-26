@@ -18,7 +18,6 @@ package com.example.compose.jetsurvey.survey
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Row
@@ -152,36 +151,36 @@ private fun SurveyTopAppBar(
     totalQuestionsCount: Int,
     onBackPressed: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ConstraintLayout(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-            val (button, text) = createRefs()
-            Text(
-                text = stringResource(
-                    R.string.question_count,
-                    questionIndex + 1,
-                    totalQuestionsCount
-                ),
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier.constrainAs(text) {
-                    centerHorizontallyTo(parent)
-                    centerVerticallyTo(parent)
-                }
-            )
+    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+        val (button, text, progress) = createRefs()
+        Text(
+            text = stringResource(
+                R.string.question_count,
+                questionIndex + 1,
+                totalQuestionsCount
+            ),
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier.padding(vertical = 20.dp).constrainAs(text) {
+                centerHorizontallyTo(parent)
+            }
+        )
 
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
-                IconButton(
-                    onClick = onBackPressed,
-                    modifier = Modifier.padding(horizontal = 12.dp).constrainAs(button) {
-                        end.linkTo(parent.end)
-                    }
-                ) {
-                    Icon(Icons.Filled.Close)
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            IconButton(
+                onClick = onBackPressed,
+                modifier = Modifier.padding(horizontal = 12.dp).constrainAs(button) {
+                    end.linkTo(parent.end)
                 }
+            ) {
+                Icon(Icons.Filled.Close)
             }
         }
+
         LinearProgressIndicator(
             progress = (questionIndex + 1) / totalQuestionsCount.toFloat(),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).constrainAs(progress) {
+                bottom.linkTo(text.bottom)
+            },
             backgroundColor = MaterialTheme.colors.progressIndicatorBackground
         )
     }
