@@ -16,13 +16,12 @@
 
 package com.example.compose.jetchat.theme
 
+import androidx.compose.material.AmbientElevationOverlay
 import androidx.compose.material.Colors
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.Dp
-import kotlin.math.ln
 
 /**
  * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
@@ -34,15 +33,12 @@ fun Colors.compositedOnSurface(alpha: Float): Color {
 }
 
 /**
- * Elevation overlay logic copied from [Surface] — https://issuetracker.google.com/155181601
+ * Calculates the color of an elevated `surface` in dark mode. Returns `surface` in light mode.
  */
+@Composable
 fun Colors.elevatedSurface(elevation: Dp): Color {
-    if (isLight) return surface
-    val foreground = calculateForeground(elevation)
-    return foreground.compositeOver(surface)
-}
-
-private fun calculateForeground(elevation: Dp): Color {
-    val alpha = ((4.5f * ln(elevation.value + 1)) + 2f) / 100f
-    return Color.White.copy(alpha = alpha)
+    return AmbientElevationOverlay.current?.apply(
+        color = this.surface,
+        elevation = elevation
+    ) ?: this.surface
 }
