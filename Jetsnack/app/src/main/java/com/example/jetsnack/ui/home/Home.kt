@@ -94,7 +94,7 @@ fun Home(onSnackSelected: (Long) -> Unit) {
                     modifier = modifier
                 )
                 HomeSections.Search -> Search(onSnackSelected, modifier)
-                HomeSections.Cart -> Cart(modifier)
+                HomeSections.Cart -> Cart(onSnackSelected, modifier)
                 HomeSections.Profile -> Profile(modifier)
             }
         }

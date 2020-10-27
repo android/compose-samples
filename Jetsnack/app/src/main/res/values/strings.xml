@@ -34,4 +34,12 @@
     <string name="ingredients_list">Vanilla, Almond Flour, Eggs, Butter, Cream, Sugar</string>
     <string name="quantity">Qty</string>
     <string name="add_to_cart">ADD TO CART</string>
+
+    <!-- Cart -->
+    <string name="cart_order_header">Order (%1d items)</string>
+    <string name="cart_summary_header">Summary</string>
+    <string name="cart_subtotal_label">Subtotal</string>
+    <string name="cart_shipping_label">Shipping &amp; Handling</string>
+    <string name="cart_total_label">Total</string>
+    <string name="cart_checkout">Checkout</string>
 </resources>
