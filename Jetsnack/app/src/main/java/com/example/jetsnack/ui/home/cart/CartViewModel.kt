@@ -37,7 +37,7 @@ class CartViewModel : ViewModel() {
 
     fun decreaseSnackCount(snackId: Long) {
         val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
-        if(currentCount == 1) {
+        if (currentCount == 1) {
             // remove snack from cart
             removeSnack(snackId)
         } else {
