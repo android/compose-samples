@@ -36,11 +36,12 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.samples.crane.calendar.data.year2020
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DayOfWeek
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus
+import androidx.compose.samples.crane.data.CalendarYear
+import androidx.compose.samples.crane.data.DatesLocalDataSource
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.util.Circle
 import androidx.compose.samples.crane.util.SemiRect
@@ -58,12 +59,13 @@ typealias CalendarWeek = List<CalendarDay>
 
 @Composable
 fun Calendar(
+    calendarYear: CalendarYear,
     onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ScrollableColumn(modifier = modifier) {
         Spacer(Modifier.preferredHeight(32.dp))
-        for (month in year2020) {
+        for (month in calendarYear) {
             Month(month = month, onDayClicked = onDayClicked)
             Spacer(Modifier.preferredHeight(32.dp))
         }
@@ -280,6 +282,6 @@ var SemanticsPropertyReceiver.dayStatusProperty by DayStatusKey
 @Composable
 fun DayPreview() {
     CraneTheme {
-        Calendar(onDayClicked = { _, _ -> })
+        Calendar(DatesLocalDataSource().year2020, onDayClicked = { _, _ -> })
     }
 }

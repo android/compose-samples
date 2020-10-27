@@ -16,10 +16,9 @@
 
 package androidx.compose.samples.crane.calendar.model
 
-import androidx.compose.samples.crane.calendar.data.january2020
-import androidx.compose.samples.crane.calendar.data.year2020
+import androidx.compose.samples.crane.data.CalendarYear
 
-data class DaySelected(val day: Int, val month: CalendarMonth) {
+data class DaySelected(val day: Int, val month: CalendarMonth, val year: CalendarYear) {
     val calendarDay = lazy {
         month.getDay(day)
     }
@@ -31,8 +30,8 @@ data class DaySelected(val day: Int, val month: CalendarMonth) {
     operator fun compareTo(other: DaySelected): Int {
         if (day == other.day && month == other.month) return 0
         if (month == other.month) return day.compareTo(other.day)
-        return (year2020.indexOf(month)).compareTo(
-            year2020.indexOf(other.month)
+        return (year.indexOf(month)).compareTo(
+            year.indexOf(other.month)
         )
     }
 }
@@ -40,4 +39,4 @@ data class DaySelected(val day: Int, val month: CalendarMonth) {
 /**
  * Represents an empty value for [DaySelected]
  */
-val DaySelectedEmpty = DaySelected(-1, january2020)
+val DaySelectedEmpty = DaySelected(-1, CalendarMonth("", "", 0, 0, DayOfWeek.Sunday), emptyList())

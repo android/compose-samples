@@ -35,6 +35,12 @@ object Libs {
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
+
+        object Coroutines {
+            private const val version = "1.4.0-M1"
+            const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+            const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+        }
     }
 
     object AndroidX {
@@ -51,6 +57,11 @@ object Libs {
             const val uiTest = "androidx.ui:ui-test:$version"
         }
 
+        object Lifecycle {
+            private const val version = "2.3.0-beta01"
+            const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+        }
+
         object UI {
             const val tooling = "androidx.ui:ui-tooling:${Compose.version}"
         }
@@ -65,6 +76,34 @@ object Libs {
             }
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
         }
+    }
+
+    object Hilt {
+        private const val version = "2.29.1-alpha"
+
+        const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
+        const val android = "com.google.dagger:hilt-android:$version"
+        const val compiler = "com.google.dagger:hilt-compiler:$version"
+        const val testing = "com.google.dagger:hilt-android-testing:$version"
+
+        object AndroidX {
+            private const val version = "1.0.0-alpha02"
+
+            const val compiler = "androidx.hilt:hilt-compiler:$version"
+            const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
+        }
+    }
+
+    object JUnit {
+        private const val version = "4.13"
+        const val junit = "junit:junit:$version"
+    }
+
+    object AssistedInjection {
+        private const val version = "0.5.2"
+
+        const val dagger = "com.squareup.inject:assisted-inject-annotations-dagger2:$version"
+        const val processor = "com.squareup.inject:assisted-inject-processor-dagger2:$version"
     }
 }
 

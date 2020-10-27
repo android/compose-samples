@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-package androidx.compose.samples.crane.base
+package androidx.compose.samples.crane.di
 
-import androidx.compose.samples.crane.calendar.model.DatesSelectedState
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Qualifier
 
-object ServiceLocator {
-    val datesSelected = DatesSelectedState()
+@Module
+@InstallIn(ApplicationComponent::class)
+class DispatchersModule {
+
+    @Provides
+    @DefaultDispatcher
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class DefaultDispatcher

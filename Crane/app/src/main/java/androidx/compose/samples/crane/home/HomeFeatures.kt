@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FlySearchContent(searchUpdates: FlySearchContentUpdates) {
+fun FlySearchContent(datesSelected: String, searchUpdates: FlySearchContentUpdates) {
     CraneSearch {
         PeopleUserInput(
             titleSuffix = ", Economy",
@@ -38,27 +38,27 @@ fun FlySearchContent(searchUpdates: FlySearchContentUpdates) {
         Spacer(Modifier.preferredHeight(8.dp))
         ToDestinationUserInput(onToDestinationChanged = searchUpdates.onToDestinationChanged)
         Spacer(Modifier.preferredHeight(8.dp))
-        DatesUserInput(onDateSelectionClicked = searchUpdates.onDateSelectionClicked)
+        DatesUserInput(datesSelected, onDateSelectionClicked = searchUpdates.onDateSelectionClicked)
     }
 }
 
 @Composable
-fun SleepSearchContent(sleepUpdates: SleepSearchContentUpdates) {
+fun SleepSearchContent(datesSelected: String, sleepUpdates: SleepSearchContentUpdates) {
     CraneSearch {
         PeopleUserInput(onPeopleChanged = { sleepUpdates.onPeopleChanged })
         Spacer(Modifier.preferredHeight(8.dp))
-        DatesUserInput(onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
+        DatesUserInput(datesSelected, onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
         Spacer(Modifier.preferredHeight(8.dp))
         SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_hotel)
     }
 }
 
 @Composable
-fun EatSearchContent(eatUpdates: EatSearchContentUpdates) {
+fun EatSearchContent(datesSelected: String, eatUpdates: EatSearchContentUpdates) {
     CraneSearch {
         PeopleUserInput(onPeopleChanged = { eatUpdates.onPeopleChanged })
         Spacer(Modifier.preferredHeight(8.dp))
-        DatesUserInput(onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
+        DatesUserInput(datesSelected, onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
         Spacer(Modifier.preferredHeight(8.dp))
         SimpleUserInput(caption = "Select Time", vectorImageId = R.drawable.ic_time)
         Spacer(Modifier.preferredHeight(8.dp))

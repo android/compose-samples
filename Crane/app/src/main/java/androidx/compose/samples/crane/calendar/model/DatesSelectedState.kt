@@ -20,9 +20,9 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.samples.crane.calendar.data.year2020
+import androidx.compose.samples.crane.data.CalendarYear
 
-class DatesSelectedState {
+class DatesSelectedState(private val year: CalendarYear) {
     private var from by mutableStateOf(DaySelectedEmpty)
     private var to by mutableStateOf(DaySelectedEmpty)
 
@@ -40,8 +40,6 @@ class DatesSelectedState {
             setDates(newDate, DaySelectedEmpty)
         } else if (from != DaySelectedEmpty && to != DaySelectedEmpty) {
             clearDates()
-            from = DaySelectedEmpty
-            to = DaySelectedEmpty
             daySelected(newDate = newDate)
         } else if (from == DaySelectedEmpty) {
             if (newDate < to) setDates(newDate, to)
@@ -75,7 +73,7 @@ class DatesSelectedState {
             from.month.getDay(from.month.numDays).status = DaySelectedStatus.LastDay
             // Fill in-between months
             for (i in (from.month.monthNumber + 1) until to.month.monthNumber) {
-                val month = year2020[i - 1]
+                val month = year[i - 1]
                 month.getDay(1).status = DaySelectedStatus.FirstDay
                 for (j in 2 until month.numDays) {
                     month.getDay(j).status = DaySelectedStatus.Selected
@@ -92,7 +90,7 @@ class DatesSelectedState {
 
     @VisibleForTesting
     fun clearDates() {
-        if (from != DaySelectedEmpty && to != DaySelectedEmpty) {
+        if (from != DaySelectedEmpty || to != DaySelectedEmpty) {
             // Unselect dates from the same month
             if (from.month == to.month) {
                 for (i in from.day..to.day)
@@ -104,7 +102,7 @@ class DatesSelectedState {
                 }
                 // Fill in-between months
                 for (i in (from.month.monthNumber + 1) until to.month.monthNumber) {
-                    val month = year2020[i - 1]
+                    val month = year[i - 1]
                     for (j in 1..month.numDays) {
                         month.getDay(j).status = DaySelectedStatus.NoSelected
                     }
@@ -115,5 +113,9 @@ class DatesSelectedState {
                 }
             }
         }
+        from.calendarDay.value.status = DaySelectedStatus.NoSelected
+        from = DaySelectedEmpty
+        to.calendarDay.value.status = DaySelectedStatus.NoSelected
+        to = DaySelectedEmpty
     }
 }
