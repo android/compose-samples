@@ -16,11 +16,11 @@
 
 package com.example.jetnews.ui.interests
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface

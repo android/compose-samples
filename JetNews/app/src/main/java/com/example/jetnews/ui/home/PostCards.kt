@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
@@ -26,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
@@ -131,7 +131,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             )
         }
         ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
-            Icon(asset = Icons.Filled.MoreVert)
+            Icon(Icons.Filled.MoreVert)
         }
     }
 }
@@ -148,15 +148,9 @@ fun BookmarkButton(
     ) {
         modifier.fillMaxSize()
         if (isBookmarked) {
-            Icon(
-                asset = Icons.Filled.Bookmark,
-                modifier = modifier
-            )
+            Icon(asset = Icons.Filled.Bookmark)
         } else {
-            Icon(
-                asset = Icons.Filled.BookmarkBorder,
-                modifier = modifier
-            )
+            Icon(asset = Icons.Filled.BookmarkBorder)
         }
     }
 }

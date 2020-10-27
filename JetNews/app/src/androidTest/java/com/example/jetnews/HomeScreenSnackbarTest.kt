@@ -39,7 +39,7 @@ import org.junit.Test
 class HomeScreenSnackbarTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    val composeTestRule = createComposeRule()
 
     @OptIn(
         ExperimentalMaterialApi::class,

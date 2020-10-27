@@ -214,7 +214,7 @@ private fun BulletParagraph(
             Box(
                 modifier = Modifier
                     .preferredSize(8.sp.toDp(), 8.sp.toDp())
-                    .alignWithSiblings {
+                    .alignBy {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
                         9.sp.toIntPx()
                     }
@@ -224,7 +224,7 @@ private fun BulletParagraph(
         Text(
             modifier = Modifier
                 .weight(1f)
-                .alignWithSiblings(FirstBaseline),
+                .alignBy(FirstBaseline),
             text = text,
             style = textStyle.merge(paragraphStyle)
         )
