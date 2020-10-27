@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.ConstraintLayout
@@ -66,16 +67,20 @@ fun QuantitySelector(
             }
         )
         ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-            Text(
-                text = "$count",
-                style = MaterialTheme.typography.subtitle2,
-                fontSize = 18.sp,
-                color = JetsnackTheme.colors.textPrimary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.preferredWidthIn(min = 24.dp).constrainAs(quantity) {
-                    baseline.linkTo(qty.baseline)
-                }
-            )
+            Crossfade(
+                current = count,
+                modifier = Modifier
+                    .constrainAs(quantity) { baseline.linkTo(qty.baseline) }
+            ) {
+                Text(
+                    text = "$it",
+                    style = MaterialTheme.typography.subtitle2,
+                    fontSize = 18.sp,
+                    color = JetsnackTheme.colors.textPrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.preferredWidthIn(min = 24.dp)
+                )
+            }
         }
         JetsnackGradientTintedIconButton(
             asset = Icons.Outlined.AddCircleOutline,
