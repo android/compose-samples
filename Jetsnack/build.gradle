@@ -56,6 +56,9 @@ subprojects {
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+
+            // Enable experimental coroutines APIs
+            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
         }
     }
     apply plugin: 'com.diffplug.spotless'

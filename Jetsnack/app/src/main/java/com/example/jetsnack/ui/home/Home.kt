@@ -69,6 +69,7 @@ import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.navigationBarsPadding

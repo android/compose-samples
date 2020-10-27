@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2020 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -36,7 +35,11 @@
     <string name="add_to_cart">ADD TO CART</string>
 
     <!-- Cart -->
-    <string name="cart_order_header">Order (%1d items)</string>
+    <string name="cart_order_header">Order (%1s)</string>
+    <plurals name="cart_order_count">
+        <item quantity="one">%1d item</item>
+        <item quantity="other">%1d items</item>
+    </plurals>
     <string name="cart_summary_header">Summary</string>
     <string name="cart_subtotal_label">Subtotal</string>
     <string name="cart_shipping_label">Shipping &amp; Handling</string>
