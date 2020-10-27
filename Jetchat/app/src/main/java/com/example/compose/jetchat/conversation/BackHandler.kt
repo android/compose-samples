@@ -29,7 +29,7 @@ import androidx.compose.runtime.staticAmbientOf
  * [enabled]).
  */
 @Composable
-fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true) {
+fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true, highPriority: Boolean = false) {
     val dispatcher = BackPressedDispatcherAmbient.current.onBackPressedDispatcher
 
     // This callback is going to be remembered only if onBackPressed is referentially equal.
@@ -44,6 +44,10 @@ fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true) {
     // Using onCommit guarantees that failed transactions don't incorrectly toggle the
     // remembered callback.
     onCommit(enabled) {
+        if (enabled && highPriority) {
+            backCallback.remove()
+            dispatcher.addCallback(backCallback)
+        }
         backCallback.isEnabled = enabled
     }
 

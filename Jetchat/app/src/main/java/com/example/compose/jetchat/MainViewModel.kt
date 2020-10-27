@@ -19,13 +19,16 @@ package com.example.compose.jetchat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.compose.jetchat.util.Event
 
 class MainViewModel : ViewModel() {
-    private val _openDrawerEvent = MutableLiveData<Event<Unit>>()
-    val openDrawerEvent: LiveData<Event<Unit>> = _openDrawerEvent
+
+    private val _drawerShouldBeOpened = MutableLiveData(false)
+    val drawerShouldBeOpened: LiveData<Boolean> = _drawerShouldBeOpened
 
     fun openDrawer() {
-        _openDrawerEvent.value = Event(Unit)
+        _drawerShouldBeOpened.value = true
+    }
+    fun resetOpenDrawer() {
+        _drawerShouldBeOpened.value = false
     }
 }
