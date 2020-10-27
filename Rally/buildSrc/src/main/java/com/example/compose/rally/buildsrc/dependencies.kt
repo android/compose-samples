@@ -47,8 +47,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha02"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha05"
+            const val snapshot = "6922857"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -92,5 +92,5 @@ object Libs {
 
 object Urls {
     const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
-        "${Libs.AndroidX.Compose.snapshot}/artifacts/ui/repository/"
+        "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
 }

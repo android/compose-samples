@@ -34,7 +34,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.5.1'
+    id 'com.diffplug.spotless' version '5.7.0'
 }
 
 subprojects {

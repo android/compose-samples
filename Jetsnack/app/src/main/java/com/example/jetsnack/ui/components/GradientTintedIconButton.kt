@@ -16,7 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.Icon
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,11 +29,12 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun JetsnackGradientTintedIconButton(
     asset: VectorAsset,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
     // This should use a layer + srcIn but needs investigation
     val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
-    IconButton(onClick = onClick) {
+    IconButton(onClick = onClick, modifier) {
         Icon(
             asset = asset,
             modifier = Modifier.diagonalGradientTint(

@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -181,8 +182,10 @@ private fun ZoomControls(
 private fun ZoomButton(text: String, onClick: () -> Unit) {
     Button(
         modifier = Modifier.padding(8.dp),
-        backgroundColor = MaterialTheme.colors.onPrimary,
-        contentColor = MaterialTheme.colors.primary,
+        colors = ButtonConstants.defaultButtonColors(
+            backgroundColor = MaterialTheme.colors.onPrimary,
+            contentColor = MaterialTheme.colors.primary
+        ),
         onClick = onClick
     ) {
         Text(text = text, style = MaterialTheme.typography.h5)
