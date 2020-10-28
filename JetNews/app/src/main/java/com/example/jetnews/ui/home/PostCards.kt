@@ -21,7 +21,6 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.material.AmbientEmphasisLevels
@@ -144,9 +143,9 @@ fun BookmarkButton(
 ) {
     IconToggleButton(
         checked = isBookmarked,
-        onCheckedChange = { onClick() }
+        onCheckedChange = { onClick() },
+        modifier = modifier
     ) {
-        modifier.fillMaxSize()
         if (isBookmarked) {
             Icon(asset = Icons.Filled.Bookmark)
         } else {
