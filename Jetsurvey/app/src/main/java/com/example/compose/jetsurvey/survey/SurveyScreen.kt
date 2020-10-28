@@ -46,6 +46,9 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
@@ -144,6 +147,33 @@ private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifi
     }
 }
 
+@Composable
+private fun TopAppBarTitle(
+    questionIndex: Int,
+    totalQuestionsCount: Int,
+    modifier: Modifier = Modifier
+) {
+    val indexStyle = MaterialTheme.typography.caption.toSpanStyle().copy(
+        fontWeight = FontWeight.Bold
+    )
+    val totalStyle = MaterialTheme.typography.caption.toSpanStyle().copy(
+        fontWeight = FontWeight.SemiBold
+    )
+    val text = annotatedString {
+        withStyle(style = indexStyle) {
+            append("${questionIndex + 1}")
+        }
+        withStyle(style = totalStyle) {
+            append(stringResource(R.string.question_count, totalQuestionsCount))
+        }
+    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.caption,
+        modifier = modifier
+    )
+}
+
 @OptIn(ExperimentalLayout::class)
 @Composable
 private fun SurveyTopAppBar(
@@ -153,13 +183,9 @@ private fun SurveyTopAppBar(
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (button, text, progress) = createRefs()
-        Text(
-            text = stringResource(
-                R.string.question_count,
-                questionIndex + 1,
-                totalQuestionsCount
-            ),
-            style = MaterialTheme.typography.caption,
+        TopAppBarTitle(
+            questionIndex = questionIndex,
+            totalQuestionsCount = totalQuestionsCount,
             modifier = Modifier.padding(vertical = 20.dp).constrainAs(text) {
                 centerHorizontallyTo(parent)
             }

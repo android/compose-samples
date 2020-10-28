@@ -38,7 +38,7 @@
 
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
-    <string name="question_count">%1$d of %2$d</string>
+    <string name="question_count">\u00A0of %d</string>
 
     <!-- question 1-->
     <string name="in_my_free_time">In my free time I like to …</string>
