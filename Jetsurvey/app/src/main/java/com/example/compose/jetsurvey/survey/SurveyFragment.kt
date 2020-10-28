@@ -86,11 +86,13 @@ class SurveyFragment : Fragment() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun takeAPhoto(questionId: Int) {
-        // unsupported for now
+        // TODO: unsupported for now
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun selectContact(questionId: Int) {
-        // unsupported for now
+        // TODO: unsupported for now
     }
 }

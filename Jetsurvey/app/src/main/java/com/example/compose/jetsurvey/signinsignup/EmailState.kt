@@ -28,7 +28,7 @@ class EmailState :
  * Returns an error to be displayed or null if no error was found
  */
 private fun emailValidationError(email: String): String {
-    return "Invalid email"
+    return "Invalid email: $email"
 }
 
 private fun isEmailValid(email: String): Boolean {
