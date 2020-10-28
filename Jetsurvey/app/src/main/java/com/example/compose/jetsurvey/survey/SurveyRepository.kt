@@ -87,6 +87,7 @@ object SurveyRepository {
 
     suspend fun getSurvey() = jetpackSurvey
 
+    @Suppress("UNUSED_PARAMETER")
     fun getSurveyResult(answers: List<Answer<*>>): SurveyResult {
         return SurveyResult(
             library = "Compose",

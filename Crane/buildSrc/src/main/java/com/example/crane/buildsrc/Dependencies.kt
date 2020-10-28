@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha14"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha15"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
     const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
@@ -109,6 +109,6 @@ object Libs {
 
 object Urls {
     const val mavenCentralSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
-    const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
+    const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
         "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
 }

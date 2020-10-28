@@ -40,6 +40,7 @@ private fun isPasswordValid(password: String): Boolean {
     return password.length > 3
 }
 
+@Suppress("UNUSED_PARAMETER")
 private fun passwordValidationError(password: String): String {
     return "Invalid password"
 }

@@ -57,6 +57,9 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
+            // Treat all Kotlin warnings as errors
+            allWarningsAsErrors = true
+
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
 

@@ -37,10 +37,12 @@ object UserRepository {
     val user: User
         get() = _user
 
+    @Suppress("UNUSED_PARAMETER")
     fun signIn(email: String, password: String) {
         _user = User.LoggedInUser(email)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun signUp(email: String, password: String) {
         _user = User.LoggedInUser(email)
     }

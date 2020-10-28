@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha13"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha15"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
@@ -90,6 +90,6 @@ object Libs {
 }
 
 object Urls {
-    const val composeSnapshotRepo = "https://androidx-dev-prod.appspot.com/snapshots/builds/" +
+    const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
         "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
 }
