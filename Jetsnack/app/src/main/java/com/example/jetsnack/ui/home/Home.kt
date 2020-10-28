@@ -24,7 +24,6 @@ import androidx.compose.animation.animate
 import androidx.compose.animation.animatedFloat
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SpringSpec
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -35,6 +34,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -94,7 +94,7 @@ fun Home(onSnackSelected: (Long) -> Unit) {
                     modifier = modifier
                 )
                 HomeSections.Search -> Search(onSnackSelected, modifier)
-                HomeSections.Cart -> Cart(modifier)
+                HomeSections.Cart -> Cart(onSnackSelected, modifier)
                 HomeSections.Profile -> Profile(modifier)
             }
         }

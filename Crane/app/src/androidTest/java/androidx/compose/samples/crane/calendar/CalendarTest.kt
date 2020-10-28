@@ -17,66 +17,61 @@
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.material.Surface
-import androidx.compose.samples.crane.base.ServiceLocator
-import androidx.compose.samples.crane.calendar.model.CalendarDay
-import androidx.compose.samples.crane.calendar.model.CalendarMonth
-import androidx.compose.samples.crane.calendar.model.DaySelected
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.FirstDay
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.FirstLastDay
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.LastDay
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.NoSelected
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.Selected
+import androidx.compose.samples.crane.data.DatesRepository
+import androidx.compose.samples.crane.di.DispatchersModule
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.ui.test.ComposeTestRule
 import androidx.ui.test.SemanticsMatcher
 import androidx.ui.test.assertLabelEquals
-import androidx.ui.test.createComposeRule
+import androidx.ui.test.createAndroidComposeRule
 import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.performClick
 import androidx.ui.test.performScrollTo
-import org.junit.After
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
 
+@UninstallModules(DispatchersModule::class)
+@HiltAndroidTest
 class CalendarTest {
 
-    @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
 
-    var dateSelected = ""
-    private val onDayClicked: (CalendarDay, CalendarMonth) -> Unit = { day, month ->
-        dateSelected = "${month.name} ${day.value}"
-        ServiceLocator.datesSelected.daySelected(
-            DaySelected(
-                day = day.value.toInt(),
-                month = month
-            )
-        )
-    }
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<CalendarActivity>()
+
+    @Inject
+    lateinit var datesRepository: DatesRepository
 
     @Before
     fun setUp() {
+        hiltRule.inject()
+
         composeTestRule.setContent {
             CraneTheme {
                 Surface {
-                    Calendar(onDayClicked)
+                    CalendarScreen(onBackPressed = {})
                 }
             }
         }
-    }
-
-    @After
-    fun tearDown() {
-        ServiceLocator.datesSelected.clearDates()
     }
 
     @Test
     fun scrollsToTheBottom() {
         composeTestRule.onNodeWithLabel("January 1").assertExists()
         composeTestRule.onNodeWithLabel("December 31").performScrollTo().performClick()
-        assert(dateSelected == "December 31")
+        assert(datesRepository.datesSelected.toString() == "Dec 31")
     }
 
     @Test

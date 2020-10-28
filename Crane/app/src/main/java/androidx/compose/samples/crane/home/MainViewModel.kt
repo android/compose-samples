@@ -16,42 +16,62 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.samples.crane.calendar.model.DatesSelectedState
+import androidx.compose.samples.crane.data.DatesRepository
+import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
-import androidx.compose.samples.crane.data.craneDestinations
-import androidx.compose.samples.crane.data.craneHotels
-import androidx.compose.samples.crane.data.craneRestaurants
+import androidx.compose.samples.crane.di.DefaultDispatcher
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 const val MAX_PEOPLE = 4
 
-class MainViewModel : ViewModel() {
+class MainViewModel @ViewModelInject constructor(
+    private val destinationsRepository: DestinationsRepository,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    datesRepository: DatesRepository
+) : ViewModel() {
 
-    val hotels = craneHotels
-    val restaurants = craneRestaurants
+    val hotels: List<ExploreModel> = destinationsRepository.hotels
+    val restaurants: List<ExploreModel> = destinationsRepository.restaurants
+    val datesSelected: DatesSelectedState = datesRepository.datesSelected
 
     private val _suggestedDestinations = MutableLiveData<List<ExploreModel>>()
     val suggestedDestinations: LiveData<List<ExploreModel>>
         get() = _suggestedDestinations
 
     init {
-        _suggestedDestinations.value = craneDestinations
+        _suggestedDestinations.value = destinationsRepository.destinations
     }
 
     fun updatePeople(people: Int) {
-        if (people > MAX_PEOPLE) {
-            _suggestedDestinations.value = emptyList()
-        } else {
-            // Making Random more random
-            _suggestedDestinations.value =
-                craneDestinations.shuffled(Random(people * (1..100).shuffled().first()))
+        viewModelScope.launch {
+            if (people > MAX_PEOPLE) {
+                _suggestedDestinations.value = emptyList()
+            } else {
+                val newDestinations = withContext(defaultDispatcher) {
+                    destinationsRepository.destinations
+                        .shuffled(Random(people * (1..100).shuffled().first()))
+                }
+                _suggestedDestinations.value = newDestinations
+            }
         }
     }
 
     fun toDestinationChanged(newDestination: String) {
-        _suggestedDestinations.value =
-            craneDestinations.filter { it.city.nameToDisplay.contains(newDestination) }
+        viewModelScope.launch {
+            val newDestinations = withContext(defaultDispatcher) {
+                destinationsRepository.destinations
+                    .filter { it.city.nameToDisplay.contains(newDestination) }
+            }
+            _suggestedDestinations.value = newDestinations
+        }
     }
 }

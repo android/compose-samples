@@ -32,7 +32,7 @@ import org.junit.Test
 class JetnewsUiTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    val composeTestRule = createComposeRule()
 
     @Before
     fun setUp() {

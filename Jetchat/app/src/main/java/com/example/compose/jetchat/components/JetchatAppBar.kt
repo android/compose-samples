@@ -74,3 +74,11 @@ fun JetchatAppBarPreview() {
         JetchatAppBar(title = { Text("Preview!") })
     }
 }
+
+@Preview
+@Composable
+fun JetchatAppBarPreviewDark() {
+    JetchatTheme(isDarkTheme = true) {
+        JetchatAppBar(title = { Text("Preview!") })
+    }
+}

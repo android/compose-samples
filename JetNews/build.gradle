@@ -16,7 +16,7 @@
 
 buildscript {
     ext.kotlin_version = '1.4.10'
-    ext.compose_version = '1.0.0-alpha05'
+    ext.compose_version = '1.0.0-alpha06'
 
     repositories {
         google()
@@ -24,13 +24,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha13'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha15'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.1.1'
+    id 'com.diffplug.spotless' version '5.7.0'
 }
 
 subprojects {
@@ -46,7 +46,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.38.1")
+            ktlint("0.39.0")
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }

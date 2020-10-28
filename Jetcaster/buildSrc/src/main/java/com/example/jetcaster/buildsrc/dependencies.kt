@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha13"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha15"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.3.1"
+        private const val version = "0.3.2"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -57,16 +57,16 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
         const val palette = "androidx.palette:palette:1.0.0"
 
-        const val core = "androidx.core:core:1.5.0-alpha02"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha02"
+        const val core = "androidx.core:core:1.5.0-alpha04"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
 
         object Compose {
             private const val snapshot = ""
-            const val version = "1.0.0-alpha05"
+            const val version = "1.0.0-alpha06"
 
             @get:JvmStatic
             val snapshotUrl: String
-                get() = "https://androidx.dev/snapshots/builds/$snapshot/artifacts/ui/repository/"
+                get() = "https://androidx.dev/snapshots/builds/$snapshot/artifacts/repository/"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:${version}"

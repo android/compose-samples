@@ -59,8 +59,7 @@ class SurveyFragment : Fragment() {
                             )
                             is SurveyState.Result -> SurveyResultScreen(
                                 result = surveyState,
-                                onDonePressed = { activity?.onBackPressedDispatcher?.onBackPressed() },
-                                onBackPressed = { activity?.onBackPressedDispatcher?.onBackPressed() }
+                                onDonePressed = { activity?.onBackPressedDispatcher?.onBackPressed() }
                             )
                         }
                     }
@@ -87,11 +86,13 @@ class SurveyFragment : Fragment() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun takeAPhoto(questionId: Int) {
-        // unsupported for now
+        // TODO: unsupported for now
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun selectContact(questionId: Int) {
-        // unsupported for now
+        // TODO: unsupported for now
     }
 }

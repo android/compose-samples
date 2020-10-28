@@ -16,7 +16,6 @@
 
 package com.example.jetsnack.ui.snackdetail
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
@@ -33,15 +32,13 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.layout.preferredWidthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -52,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.drawLayer
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
@@ -65,8 +61,8 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackGradientTintedIconButton
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.horizontalGradientBackground
@@ -315,26 +311,10 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                     .then(HzPadding)
                     .preferredHeightIn(min = BottomBarHeight)
             ) {
-                Text(
-                    text = stringResource(R.string.quantity),
-                    style = MaterialTheme.typography.subtitle1,
-                    color = JetsnackTheme.colors.textSecondary
-                )
-                JetsnackGradientTintedIconButton(
-                    asset = Icons.Outlined.RemoveCircleOutline,
-                    onClick = { if (count > 0) updateCount(count - 1) }
-                )
-                Text(
-                    text = "$count",
-                    style = MaterialTheme.typography.subtitle2,
-                    fontSize = 18.sp,
-                    color = JetsnackTheme.colors.textPrimary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.preferredWidthIn(min = 24.dp)
-                )
-                JetsnackGradientTintedIconButton(
-                    asset = Icons.Outlined.AddCircleOutline,
-                    onClick = { updateCount(count + 1) }
+                QuantitySelector(
+                    count = count,
+                    decreaseItemCount = { if (count > 0) updateCount(count - 1) },
+                    increaseItemCount = { updateCount(count + 1) }
                 )
                 Spacer(Modifier.preferredWidth(16.dp))
                 JetsnackButton(

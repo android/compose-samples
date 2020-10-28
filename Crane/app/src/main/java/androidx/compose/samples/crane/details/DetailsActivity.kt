@@ -30,12 +30,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.base.CraneScaffold
+import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +49,11 @@ import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
+import java.lang.IllegalStateException
+import javax.inject.Inject
 
-private const val DETAILS_NAME = "DETAILS_NAME"
-private const val DETAILS_DESCRIPTION = "DETAILS_DESCRIPTION"
-private const val DETAILS_LATITUDE = "DETAILS_LATITUDE"
-private const val DETAILS_LONGITUDE = "DETAILS_LONGITUDE"
+private const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
 fun launchDetailsActivity(context: Context, item: ExploreModel) {
     context.startActivity(createDetailsActivityIntent(context, item))
@@ -59,56 +62,72 @@ fun launchDetailsActivity(context: Context, item: ExploreModel) {
 @VisibleForTesting
 fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     val intent = Intent(context, DetailsActivity::class.java)
-    intent.putExtra(DETAILS_NAME, item.city.nameToDisplay)
-    intent.putExtra(DETAILS_DESCRIPTION, item.description)
-    intent.putExtra(DETAILS_LATITUDE, item.city.latitude)
-    intent.putExtra(DETAILS_LONGITUDE, item.city.longitude)
+    intent.putExtra(KEY_ARG_DETAILS_CITY_NAME, item.city.name)
     return intent
 }
 
 data class DetailsActivityArg(
-    val name: String,
-    val description: String,
-    val latitude: String,
-    val longitude: String
+    val cityName: String
 )
 
+@AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: DetailsViewModel.AssistedFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val args = DetailsActivityArg(
-            name = intent.getStringExtra(DETAILS_NAME)!!,
-            description = intent.getStringExtra(DETAILS_DESCRIPTION)!!,
-            latitude = intent.getStringExtra(DETAILS_LATITUDE)!!,
-            longitude = intent.getStringExtra(DETAILS_LONGITUDE)!!
-        )
+        val args = getDetailsArgs(intent)
 
         setContent {
             CraneScaffold {
-                DetailsScreen(args = args)
+                DetailsScreen(args, viewModelFactory, onErrorLoading = { finish() })
             }
         }
+    }
+
+    private fun getDetailsArgs(intent: Intent): DetailsActivityArg {
+        val cityArg = intent.getStringExtra(KEY_ARG_DETAILS_CITY_NAME)
+        if (cityArg.isNullOrEmpty()) {
+            throw IllegalStateException("DETAILS_CITY_NAME arg cannot be null or empty")
+        }
+        return DetailsActivityArg(cityArg)
     }
 }
 
 @Composable
-fun DetailsScreen(args: DetailsActivityArg) {
+fun DetailsScreen(
+    args: DetailsActivityArg,
+    viewModelFactory: DetailsViewModel.AssistedFactory,
+    onErrorLoading: () -> Unit
+) {
+    val viewModel: DetailsViewModel = viewModelFactory.create(args.cityName)
+
+    val cityDetailsResult = remember(viewModel) { viewModel.cityDetails }
+    if (cityDetailsResult is Result.Success<ExploreModel>) {
+        DetailsContent(cityDetailsResult.data)
+    } else {
+        onErrorLoading()
+    }
+}
+
+@Composable
+fun DetailsContent(exploreModel: ExploreModel) {
     Column(verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.preferredHeight(32.dp))
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = args.name,
+            text = exploreModel.city.nameToDisplay,
             style = MaterialTheme.typography.h4
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = args.description,
+            text = exploreModel.description,
             style = MaterialTheme.typography.h6
         )
         Spacer(Modifier.preferredHeight(16.dp))
-        CityMapView(args.latitude, args.longitude)
+        CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
     }
 }
 
@@ -163,8 +182,10 @@ private fun ZoomControls(
 private fun ZoomButton(text: String, onClick: () -> Unit) {
     Button(
         modifier = Modifier.padding(8.dp),
-        backgroundColor = MaterialTheme.colors.onPrimary,
-        contentColor = MaterialTheme.colors.primary,
+        colors = ButtonConstants.defaultButtonColors(
+            backgroundColor = MaterialTheme.colors.onPrimary,
+            contentColor = MaterialTheme.colors.primary
+        ),
         onClick = onClick
     ) {
         Text(text = text, style = MaterialTheme.typography.h5)

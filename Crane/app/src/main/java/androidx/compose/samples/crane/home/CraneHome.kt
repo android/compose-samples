@@ -154,8 +154,13 @@ private fun SearchContent(
     onDateSelectionClicked: () -> Unit,
     onExploreItemClicked: OnExploreItemClicked
 ) {
+    // Reading datesSelected State from here instead of passing the String from the ViewModel
+    // to cause a recomposition when the dates change.
+    val datesSelected = viewModel.datesSelected.toString()
+
     when (tabSelected) {
         CraneScreen.Fly -> FlySearchContent(
+            datesSelected,
             searchUpdates = FlySearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onToDestinationChanged = { viewModel.toDestinationChanged(it) },
@@ -164,6 +169,7 @@ private fun SearchContent(
             )
         )
         CraneScreen.Sleep -> SleepSearchContent(
+            datesSelected,
             sleepUpdates = SleepSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,
@@ -171,6 +177,7 @@ private fun SearchContent(
             )
         )
         CraneScreen.Eat -> EatSearchContent(
+            datesSelected,
             eatUpdates = EatSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,
