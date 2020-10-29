@@ -19,7 +19,6 @@ package com.example.jetsnack.ui.home
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedFloatModel
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animate
 import androidx.compose.animation.animatedFloat
 import androidx.compose.animation.core.AnimationSpec
@@ -42,9 +41,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.TransformOrigin
@@ -66,6 +65,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
+import androidx.navigation.compose.KEY_ROUTE
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackScaffold
@@ -77,28 +82,34 @@ import com.example.jetsnack.ui.utils.navigationBarsPadding
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
-    val (currentSection, setCurrentSection) = savedInstanceState { HomeSections.Feed }
-    val navItems = HomeSections.values().toList()
+    val navController = rememberNavController()
     JetsnackScaffold(
         bottomBar = {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+                ?: HomeSections.Feed.route
+            val navItems = HomeSections.values().toList()
             JetsnackBottomNav(
-                currentSection = currentSection,
-                onSectionSelected = setCurrentSection,
+                currentSection = HomeSections.values().first { currentRoute == it.route },
+                onSectionSelected = {
+                    // This is the equivalent to popUpTo the start destination
+                    navController.popBackStack(navController.graph.startDestination, false)
+                    // This if check gives us a "singleTop" behavior where we do not create a
+                    // second instance of the composable if we are already on that destination
+                    if (currentRoute != it.route) {
+                        navController.navigate(it.route)
+                    }
+                },
                 items = navItems
             )
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
-        Crossfade(currentSection) { section ->
-            when (section) {
-                HomeSections.Feed -> Feed(
-                    onSnackClick = onSnackSelected,
-                    modifier = modifier
-                )
-                HomeSections.Search -> Search(onSnackSelected, modifier)
-                HomeSections.Cart -> Cart(onSnackSelected, modifier)
-                HomeSections.Profile -> Profile(modifier)
-            }
+        NavHost(navController, startDestination = HomeSections.Feed.route) {
+            composable(HomeSections.Feed.route) { Feed(onSnackSelected, modifier) }
+            composable(HomeSections.Search.route) { Search(onSnackSelected, modifier) }
+            composable(HomeSections.Cart.route) { Cart(onSnackSelected, modifier) }
+            composable(HomeSections.Profile.route) { Profile(modifier) }
         }
     }
 }
@@ -354,18 +365,19 @@ private val BottomNavIndicatorShape = RoundedCornerShape(percent = 50)
 private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
 
 private enum class HomeSections(
+    val route: String,
     @StringRes val title: Int,
     val icon: VectorAsset
 ) {
-    Feed(R.string.home_feed, Icons.Outlined.Home),
-    Search(R.string.home_search, Icons.Outlined.Search),
-    Cart(R.string.home_cart, Icons.Outlined.ShoppingCart),
-    Profile(R.string.home_profile, Icons.Outlined.AccountCircle)
+    Feed("feed", R.string.home_feed, Icons.Outlined.Home),
+    Search("search", R.string.home_search, Icons.Outlined.Search),
+    Cart("cart", R.string.home_cart, Icons.Outlined.ShoppingCart),
+    Profile("profile", R.string.home_profile, Icons.Outlined.AccountCircle)
 }
 
 @Preview
 @Composable
-private fun JsetsnackBottomNavPreview() {
+private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomNav(
             currentSection = HomeSections.Feed,

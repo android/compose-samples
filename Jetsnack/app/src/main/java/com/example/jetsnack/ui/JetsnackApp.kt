@@ -16,33 +16,35 @@
 
 package com.example.jetsnack.ui
 
-import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.ui.home.Home
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.Navigator
 import com.example.jetsnack.ui.utils.ProvideDisplayInsets
 
 @Composable
-fun JetsnackApp(backDispatcher: OnBackPressedDispatcher) {
-    val navigator: Navigator<Destination> = rememberSavedInstanceState(
-        saver = Navigator.saver<Destination>(backDispatcher)
-    ) {
-        Navigator(Destination.Home, backDispatcher)
-    }
-    val actions = remember(navigator) { Actions(navigator) }
+fun JetsnackApp() {
     ProvideDisplayInsets {
         JetsnackTheme {
-            Crossfade(navigator.current) { destination ->
-                when (destination) {
-                    Destination.Home -> Home(actions.selectSnack)
-                    is Destination.SnackDetail -> SnackDetail(
-                        snackId = destination.snackId,
-                        upPress = actions.upPress
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "home") {
+                composable("home") {
+                    Home(onSnackSelected = { navController.navigate("snackDetail/$it") })
+                }
+                composable(
+                    route = "snackDetail/{snackId}",
+                    arguments = listOf(navArgument("snackId") { type = NavType.LongType })
+                ) { backStackEntry ->
+                    SnackDetail(
+                        snackId = backStackEntry.arguments?.getLong("snackId")
+                            ?: throw IllegalArgumentException("Snack Detail screen needs a snack id"),
+                        { navController.popBackStack() }
                     )
                 }
             }

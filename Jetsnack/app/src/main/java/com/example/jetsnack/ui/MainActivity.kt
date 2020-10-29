@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemUiController = remember { SystemUiController(window) }
             Providers(SysUiController provides systemUiController) {
-                JetsnackApp(onBackPressedDispatcher)
+                JetsnackApp()
             }
         }
     }

@@ -83,6 +83,7 @@ dependencies {
     implementation Libs.Coroutines.core
 
     implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.navigation
 
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.foundation
