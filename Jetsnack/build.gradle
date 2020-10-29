@@ -56,8 +56,7 @@ subprojects {
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-
-            // Enable experimental coroutines APIs
+            // Enable experimental coroutines APIs, including collectAsState()
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
         }
     }

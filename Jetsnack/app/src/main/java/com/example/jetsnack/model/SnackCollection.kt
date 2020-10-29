@@ -101,6 +101,7 @@ private val cart = listOf(
     OrderLine(snacks[8], 1)
 )
 
+@Immutable
 data class OrderLine(
     val snack: Snack,
     val count: Int

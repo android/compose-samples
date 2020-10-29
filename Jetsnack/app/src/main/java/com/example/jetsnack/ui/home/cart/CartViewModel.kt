@@ -22,6 +22,11 @@ import com.example.jetsnack.model.SnackRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * Holds the contents of the cart and allows changes to it.
+ *
+ * TODO: Move data to Repository so it can be displayed and changed consistently throughout the app.
+ */
 class CartViewModel : ViewModel() {
     private val _orderLines: MutableStateFlow<List<OrderLine>> = MutableStateFlow(SnackRepo.getCart())
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines

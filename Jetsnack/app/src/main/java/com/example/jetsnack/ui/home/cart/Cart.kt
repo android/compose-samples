@@ -128,8 +128,13 @@ private fun CartContent(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val snackCountFormattedString = ContextAmbient.current.resources
-        .getQuantityString(R.plurals.cart_order_count, orderLines.size, orderLines.size)
+    val resources = ContextAmbient.current.resources
+    val snackCountFormattedString = remember(orderLines.size, resources) {
+        resources.getQuantityString(
+            R.plurals.cart_order_count,
+            orderLines.size, orderLines.size
+        )
+    }
     LazyColumn(modifier) {
         item {
             Spacer(Modifier.statusBarsHeight(additional = 56.dp))
@@ -220,7 +225,7 @@ fun CartItem(
                 end.linkTo(parent.end)
             }.padding(top = 12.dp)
         ) {
-            Icon(asset = Icons.Filled.Close, tint = JetsnackTheme.colors.brand)
+            Icon(asset = Icons.Filled.Close, tint = JetsnackTheme.colors.iconSecondary)
         }
         Text(
             text = snack.tagline,
@@ -275,7 +280,6 @@ fun CartItem(
     }
 }
 
-// TODO: Hoist state instead of using hard-coded total price
 @Composable
 fun SummaryItem(
     subtotal: Long,
@@ -373,7 +377,14 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
 @Composable
 fun CartPreview() {
     JetsnackTheme {
-        Cart(onSnackClick = { })
+        Cart(
+            orderLines = SnackRepo.getCart(),
+            removeSnack = {},
+            increaseItemCount = {},
+            decreaseItemCount = {},
+            inspiredByCart = SnackRepo.getInspiredByCart(),
+            onSnackClick = {}
+        )
     }
 }
 
@@ -381,6 +392,13 @@ fun CartPreview() {
 @Composable
 fun CartDarkPreview() {
     JetsnackTheme(darkTheme = true) {
-        Cart(onSnackClick = { })
+        Cart(
+            orderLines = SnackRepo.getCart(),
+            removeSnack = {},
+            increaseItemCount = {},
+            decreaseItemCount = {},
+            inspiredByCart = SnackRepo.getInspiredByCart(),
+            onSnackClick = { }
+        )
     }
 }
