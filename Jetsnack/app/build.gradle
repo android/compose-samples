@@ -80,6 +80,8 @@ dependencies {
 
     implementation Libs.Kotlin.stdlib
 
+    implementation Libs.Coroutines.core
+
     implementation Libs.AndroidX.coreKtx
 
     implementation Libs.AndroidX.Compose.runtime
