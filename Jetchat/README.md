@@ -81,6 +81,8 @@ Tracked in https://issuetracker.google.com/164859446
 
 2. There are only two profiles, clicking on anybody except "me" will show the same data.
 
+3. The app crashes if the text field is focused and the user navigates back.
+ https://issuetracker.google.com/165034731
 
 ## License
 ```
