@@ -53,11 +53,13 @@ class NavActivity : AppCompatActivity() {
 
                 val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
                 if (openDrawerEvent.value == true) {
+                    // Open drawer and reset state in VM.
                     scaffoldState.drawerState.open {
                         viewModel.resetOpenDrawer()
                     }
                 }
 
+                // Intercepts back navigation when the drawer is open
                 backPressHandler(
                     enabled = scaffoldState.drawerState.isOpen,
                     onBackPressed = { scaffoldState.drawerState.close() },
@@ -96,6 +98,7 @@ class NavActivity : AppCompatActivity() {
             ) {
                 val context = ContextAmbient.current
 
+                // Draw the
                 AndroidView({
                     LayoutInflater.from(context)
                         .inflate(R.layout.content_main, FrameLayout(context), false)

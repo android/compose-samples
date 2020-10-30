@@ -21,15 +21,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.compose.jetchat.MainViewModel
-import com.example.compose.jetchat.NavActivity
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ProfileFragment : Fragment() {

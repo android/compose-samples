@@ -20,6 +20,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
+/**
+ * Used to communicate between screens.
+ */
 class MainViewModel : ViewModel() {
 
     private val _drawerShouldBeOpened = MutableLiveData(false)
