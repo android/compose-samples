@@ -80,6 +80,7 @@ dependencies {
     implementation Libs.Kotlin.stdlib
 
     implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.navigation
 
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.foundation

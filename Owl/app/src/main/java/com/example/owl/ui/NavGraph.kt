@@ -16,37 +16,26 @@
 
 package com.example.owl.ui
 
-import android.os.Parcelable
-import androidx.compose.runtime.Immutable
-import com.example.owl.ui.utils.Navigator
-import kotlinx.android.parcel.Parcelize
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.navigate
 
-/**
- * Models the screens in the app and any arguments they require.
- */
-sealed class Destination : Parcelable {
-    @Parcelize
-    object Onboarding : Destination()
-
-    @Parcelize
-    object Courses : Destination()
-
-    @Immutable
-    @Parcelize
-    data class Course(val courseId: Long) : Destination()
+object Destinations {
+    const val Onboarding = "Onboarding_dest_key"
+    const val Courses = "Courses_dest_key"
+    const val CourseDetails = "Courses_dest_key"
 }
 
 /**
  * Models the navigation actions in the app.
  */
-class Actions(navigator: Navigator<Destination>) {
+class Actions(navController: NavHostController) {
     val onboardingComplete: () -> Unit = {
-        navigator.navigate(Destination.Courses)
+        navController.navigate(Destinations.Courses)
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
-        navigator.navigate(Destination.Course(courseId))
+        navController.navigate(Destinations.CourseDetails + "/$courseId")
     }
     val upPress: () -> Unit = {
-        navigator.back()
+        navController.popBackStack()
     }
 }
