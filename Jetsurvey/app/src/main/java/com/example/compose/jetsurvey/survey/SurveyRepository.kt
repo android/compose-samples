@@ -36,7 +36,8 @@ private val jetpackQuestions = listOf(
                 R.string.dance,
                 R.string.watch_movies
             )
-        )
+        ),
+        description = R.string.select_all
     ),
     Question(
         id = 2,
@@ -48,7 +49,8 @@ private val jetpackQuestions = listOf(
                 R.string.unikitty,
                 R.string.captain_planet
             )
-        )
+        ),
+        description = R.string.select_one
     ),
     Question(
         id = 7,
@@ -60,12 +62,14 @@ private val jetpackQuestions = listOf(
                 R.string.back_to_future,
                 R.string.outbreak
             )
-        )
+        ),
+        description = R.string.select_one
     ),
     Question(
         id = 3,
         questionText = R.string.takeaway,
-        answer = Action(label = R.string.pick_date, actionType = PICK_DATE)
+        answer = Action(label = R.string.pick_date, actionType = PICK_DATE),
+        description = R.string.select_date
     ),
     Question(
         id = 4,

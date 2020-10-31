@@ -39,6 +39,9 @@
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
     <string name="question_count">\u00A0of %d</string>
+    <string name="select_one">Select one.</string>
+    <string name="select_all">Select all that apply.</string>
+    <string name="select_date">Select date.</string>
 
     <!-- question 1-->
     <string name="in_my_free_time">In my free time I like to …</string>

@@ -54,26 +54,6 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.questionBackground
 
-@Preview
-@Composable
-fun QuestionPreview() {
-    val question = Question(
-        id = 2,
-        questionText = R.string.pick_superhero,
-        answer = PossibleAnswer.SingleChoice(
-            optionsStringRes = listOf(
-                R.string.spiderman,
-                R.string.ironman,
-                R.string.unikitty,
-                R.string.captain_planet
-            )
-        )
-    )
-    JetsurveyTheme {
-        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
-    }
-}
-
 @Composable
 fun Question(
     question: Question,
@@ -102,6 +82,15 @@ fun Question(
             }
         }
         Spacer(modifier = Modifier.preferredHeight(24.dp))
+        if (question.description != null) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                Text(
+                    text = stringResource(id = question.description),
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp, start = 8.dp)
+                )
+            }
+        }
         when (question.answer) {
             is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
                 possibleAnswer = question.answer,
@@ -173,7 +162,7 @@ private fun SingleChoiceQuestion(
                     width = 1.dp,
                     color = MaterialTheme.colors.surface.copy(alpha = 0.12f)
                 ),
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -197,7 +186,6 @@ private fun SingleChoiceQuestion(
                             selectedColor = MaterialTheme.colors.primary
                         )
                     )
-
                 }
             }
         }
@@ -315,5 +303,26 @@ private fun SliderQuestion(
             text = stringResource(id = possibleAnswer.endText),
             modifier = Modifier.align(Alignment.CenterVertically)
         )
+    }
+}
+
+@Preview
+@Composable
+fun QuestionPreview() {
+    val question = Question(
+        id = 2,
+        questionText = R.string.pick_superhero,
+        answer = PossibleAnswer.SingleChoice(
+            optionsStringRes = listOf(
+                R.string.spiderman,
+                R.string.ironman,
+                R.string.unikitty,
+                R.string.captain_planet
+            )
+        ),
+        description = R.string.select_one
+    )
+    JetsurveyTheme {
+        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
     }
 }
