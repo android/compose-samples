@@ -16,10 +16,12 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,6 +39,7 @@ import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -164,28 +167,38 @@ private fun SingleChoiceQuestion(
                 Unit
             }
             val optionSelected = text == selectedOption
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = optionSelected,
-                        onClick = onClickHandle
-                    )
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colors.surface.copy(alpha = 0.12f)
+                ),
+                modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                RadioButton(
-                    selected = optionSelected,
-                    onClick = onClickHandle,
-                    colors = RadioButtonConstants.defaultColors(
-                        selectedColor = MaterialTheme.colors.primary
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 24.dp)
+                        .selectable(
+                            selected = optionSelected,
+                            onClick = onClickHandle
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = text
                     )
-                )
 
-                Text(
-                    text = text,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                    RadioButton(
+                        selected = optionSelected,
+                        onClick = onClickHandle,
+                        colors = RadioButtonConstants.defaultColors(
+                            selectedColor = MaterialTheme.colors.primary
+                        )
+                    )
+
+                }
             }
         }
     }
@@ -205,31 +218,40 @@ private fun MultipleChoiceQuestion(
                 val selectedOption = answer?.answersStringRes?.contains(option.value)
                 mutableStateOf(selectedOption ?: false)
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-                    .clickable(
-                        onClick = {
-                            checkedState = !checkedState
-                            onAnswerSelected(option.value, checkedState)
-                        }
-                    )
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colors.surface.copy(alpha = 0.12f)
+                ),
+                modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                Checkbox(
-                    checked = checkedState,
-                    onCheckedChange = { selected ->
-                        checkedState = selected
-                        onAnswerSelected(option.value, selected)
-                    },
-                    colors = CheckboxConstants.defaultColors(
-                        checkedColor = MaterialTheme.colors.primary
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 24.dp)
+                        .clickable(
+                            onClick = {
+                                checkedState = !checkedState
+                                onAnswerSelected(option.value, checkedState)
+                            }
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = option.key)
+
+                    Checkbox(
+                        checked = checkedState,
+                        onCheckedChange = { selected ->
+                            checkedState = selected
+                            onAnswerSelected(option.value, selected)
+                        },
+                        colors = CheckboxConstants.defaultColors(
+                            checkedColor = MaterialTheme.colors.primary
+                        ),
                     )
-                )
-                Text(
-                    text = option.key,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                }
             }
         }
     }
