@@ -171,11 +171,11 @@ private fun SingleChoiceQuestion(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 24.dp)
                         .selectable(
                             selected = optionSelected,
                             onClick = onClickHandle
-                        ),
+                        )
+                        .padding(vertical = 16.dp, horizontal = 24.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -221,13 +221,13 @@ private fun MultipleChoiceQuestion(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 24.dp)
                         .clickable(
                             onClick = {
                                 checkedState = !checkedState
                                 onAnswerSelected(option.value, checkedState)
                             }
-                        ),
+                        )
+                        .padding(vertical = 16.dp, horizontal = 24.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
