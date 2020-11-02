@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.example.compose.jetsurvey.theme.questionBackground
 
 @Composable
 fun Question(
@@ -67,9 +66,14 @@ fun Question(
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
         Spacer(modifier = Modifier.preferredHeight(44.dp))
+        val backgroundColor = if (MaterialTheme.colors.isLight) {
+            MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
+        } else {
+            MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
+        }
         Row(
             modifier = Modifier.fillMaxWidth().background(
-                color = MaterialTheme.colors.questionBackground,
+                color = backgroundColor,
                 shape = MaterialTheme.shapes.small
             )
         ) {
@@ -160,7 +164,7 @@ private fun SingleChoiceQuestion(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.surface.copy(alpha = 0.12f)
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
@@ -210,7 +214,7 @@ private fun MultipleChoiceQuestion(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.surface.copy(alpha = 0.12f)
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
                 ),
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
