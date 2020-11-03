@@ -52,7 +52,7 @@ fun backPressHandler(
 
     // Using onCommit guarantees that failed transactions don't incorrectly toggle the
     // remembered callback.
-    onCommit(enabled) {
+    onCommit(enabled, highPriority) {
         if (enabled && highPriority) {
             // Since the Navigation Component is also intercepting the back event, make sure
             // that this is the first callback in the dispatcher.

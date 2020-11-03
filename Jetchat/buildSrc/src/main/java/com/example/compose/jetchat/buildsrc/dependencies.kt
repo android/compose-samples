@@ -59,6 +59,7 @@ object Libs {
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val test = "androidx.compose.test:test-core:$version"
             const val uiTest = "androidx.ui:ui-test:$version"
+            const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"
         }
 
         object Navigation {

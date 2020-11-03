@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -49,7 +49,7 @@ class ProfileFragment : Fragment() {
 
         return ComposeView(context = requireContext()).apply {
             setContent {
-                viewModel.userData.observeAsState().value.let { userData: ProfileScreenState? ->
+                viewModel.userData.collectAsState().value.let { userData: ProfileScreenState? ->
                     JetchatTheme {
                         if (userData == null) {
                             ProfileError()

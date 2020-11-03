@@ -87,8 +87,7 @@ private fun DrawerItemHeader(text: String) {
 @Composable
 private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
     val background = if (selected) {
-        Modifier
-            .background(MaterialTheme.colors.primary.copy(alpha = 0.08f))
+        Modifier.background(MaterialTheme.colors.primary.copy(alpha = 0.08f))
     } else {
         Modifier
     }
@@ -102,14 +101,14 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .clickable(onClick = onChatClicked),
         verticalAlignment = CenterVertically
     ) {
+        val mediumEmphasisOnSurface = AmbientEmphasisLevels.current.medium
+            .applyEmphasis(MaterialTheme.colors.onSurface)
+        Icon(
+            vectorResource(id = R.drawable.ic_jetchat),
+            tint = if (selected) MaterialTheme.colors.primary else mediumEmphasisOnSurface,
+            modifier = Modifier.padding(8.dp)
+        )
         ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
-            val mediumEmphasisOnSurface = AmbientEmphasisLevels.current.medium
-                .applyEmphasis(MaterialTheme.colors.onSurface)
-            Icon(
-                vectorResource(id = R.drawable.ic_jetchat),
-                tint = if (selected) MaterialTheme.colors.primary else mediumEmphasisOnSurface,
-                modifier = Modifier.padding(8.dp)
-            )
             Text(
                 text,
                 style = MaterialTheme.typography.body2,
@@ -132,17 +131,15 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
         verticalAlignment = CenterVertically
     ) {
         ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            val widthPaddingModifier = Modifier.preferredWidth(24.dp).padding(8.dp)
             if (profilePic != null) {
                 Image(
                     imageResource(id = profilePic),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .preferredSize(24.dp)
-                        .clip(CircleShape),
+                    modifier = widthPaddingModifier.then(Modifier.clip(CircleShape)),
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Spacer(modifier = Modifier.preferredWidth(24.dp).padding(8.dp))
+                Spacer(modifier = widthPaddingModifier)
             }
             Text(text, style = MaterialTheme.typography.body2, modifier = Modifier.padding(8.dp))
         }

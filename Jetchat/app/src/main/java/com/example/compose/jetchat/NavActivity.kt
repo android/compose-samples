@@ -17,25 +17,19 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.FrameLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.setContent
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import com.example.compose.jetchat.components.JetchatDrawer
+import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.backPressHandler
-import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.databinding.ContentMainBinding
 
 /**
  * Main activity for the app.
@@ -51,8 +45,8 @@ class NavActivity : AppCompatActivity() {
             Providers(BackPressedDispatcherAmbient provides this) {
                 val scaffoldState = rememberScaffoldState()
 
-                val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
-                if (openDrawerEvent.value == true) {
+                val openDrawerEvent = viewModel.drawerShouldBeOpened.collectAsState()
+                if (openDrawerEvent.value) {
                     // Open drawer and reset state in VM.
                     scaffoldState.drawerState.open {
                         viewModel.resetOpenDrawer()
@@ -66,43 +60,25 @@ class NavActivity : AppCompatActivity() {
                     highPriority = true
                 )
 
-                JetchatScaffold(scaffoldState)
-            }
-        }
-    }
-
-    @Composable
-    private fun JetchatScaffold(
-        scaffoldState: ScaffoldState,
-    ) {
-        JetchatTheme {
-            Scaffold(
-                scaffoldState = scaffoldState,
-                drawerContent = {
-                    JetchatDrawer(
-                        onChatClicked = {
-                            findNavController(R.id.nav_host_fragment)
-                                .popBackStack(R.id.nav_home, true)
-                            scaffoldState.drawerState.close()
-                        },
-                        onProfileClicked = {
-                            val bundle = bundleOf("userId" to it)
-                            findNavController(R.id.nav_host_fragment).navigate(
-                                R.id.nav_profile,
-                                bundle
-                            )
-                            scaffoldState.drawerState.close()
-                        }
-                    )
+                JetchatScaffold(
+                    scaffoldState,
+                    onChatClicked = {
+                        findNavController(R.id.nav_host_fragment)
+                            .popBackStack(R.id.nav_home, true)
+                        scaffoldState.drawerState.close()
+                    },
+                    onProfileClicked = {
+                        val bundle = bundleOf("userId" to it)
+                        findNavController(R.id.nav_host_fragment).navigate(
+                            R.id.nav_profile,
+                            bundle
+                        )
+                        scaffoldState.drawerState.close()
+                    }
+                ) {
+                    // Inflate the XML layout using View Binding:
+                    AndroidViewBinding(ContentMainBinding::inflate)
                 }
-            ) {
-                val context = ContextAmbient.current
-
-                // Draw the
-                AndroidView({
-                    LayoutInflater.from(context)
-                        .inflate(R.layout.content_main, FrameLayout(context), false)
-                })
             }
         }
     }

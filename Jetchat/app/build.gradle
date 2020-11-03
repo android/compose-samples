@@ -67,6 +67,7 @@ android {
 
     buildFeatures {
         compose true
+        viewBinding true
 
         // Disable unused AGP features
         buildConfig false
@@ -98,7 +99,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.materialIconsExtended
     implementation Libs.AndroidX.Compose.tooling
     implementation Libs.AndroidX.Compose.runtime
-    implementation Libs.AndroidX.Compose.runtimeLivedata
+    implementation Libs.AndroidX.Compose.viewBinding
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core
