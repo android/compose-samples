@@ -16,12 +16,25 @@
 
 package com.example.compose.jetsurvey.survey
 
+import android.content.Context
+import android.content.res.XmlResourceParser
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+
+private const val FILEPATH_XML_KEY = "files-path"
 
 class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewModel() {
 
@@ -73,7 +86,52 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
             question.enableNext = true
         }
     }
+
+
+    fun saveImageFromCamera(bitmap: Bitmap, imagesFolder: File) {
+        val imageFile = File(imagesFolder, generateFilename("CAMERA"))
+        val imageStream = FileOutputStream(imageFile)
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream)
+                    imageStream.flush()
+                    imageStream.close()
+
+                    Log.d("flo", "Camera image saved")
+
+                } catch (e: Exception) {
+                    Log.e(javaClass.simpleName, "Error writing bitmap", e)
+                }
+            }
+        }
+        updateStateWithActionResult(975, SurveyActionResult.Photo(bitmap))
+    }
 }
+
+fun getImagesFolder(context: Context): File {
+    return File(context.filesDir, "images/").also {
+        if (!it.exists()) {
+            it.mkdir()
+        }
+    }
+}
+
+fun generateFilename(source: String) = "$source-${System.currentTimeMillis()}.jpg"
+
+suspend fun applyGrayscaleFilter(original: Bitmap): Bitmap = withContext(Dispatchers.Default) {
+    val height = original.height
+    val width = original.width
+
+    val modifiedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+    val canvas = Canvas(modifiedBitmap)
+    val paint = Paint()
+    canvas.drawBitmap(original, null, Rect(0, 0, original.width, original.height), paint)
+
+    modifiedBitmap
+}
+
 
 class SurveyViewModelFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")

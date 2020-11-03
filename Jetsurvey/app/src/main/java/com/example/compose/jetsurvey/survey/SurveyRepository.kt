@@ -21,9 +21,15 @@ import com.example.compose.jetsurvey.survey.PossibleAnswer.Action
 import com.example.compose.jetsurvey.survey.PossibleAnswer.MultipleChoice
 import com.example.compose.jetsurvey.survey.PossibleAnswer.SingleChoice
 import com.example.compose.jetsurvey.survey.SurveyActionType.PICK_DATE
+import com.example.compose.jetsurvey.survey.SurveyActionType.TAKE_PHOTO
 
 // Static data of questions
 private val jetpackQuestions = listOf(
+    Question(
+        id = 975,
+        questionText = R.string.selfie_skills,
+        answer = Action(label = R.string.take_selfie, actionType = TAKE_PHOTO)
+    ),
     Question(
         id = 1,
         questionText = R.string.in_my_free_time,

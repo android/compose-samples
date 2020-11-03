@@ -20,6 +20,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.TakePicturePreview
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -27,10 +29,17 @@ import androidx.fragment.app.viewModels
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.io.File
 
 class SurveyFragment : Fragment() {
 
     private val viewModel: SurveyViewModel by viewModels { SurveyViewModelFactory() }
+
+    private val imagesFolder: File by lazy { getImagesFolder(requireContext()) }
+
+    private val takePicture = registerForActivityResult(TakePicturePreview()) { bitmap ->
+        viewModel.saveImageFromCamera(bitmap, imagesFolder)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,9 +95,10 @@ class SurveyFragment : Fragment() {
         }
     }
 
+
     @Suppress("UNUSED_PARAMETER")
     private fun takeAPhoto(questionId: Int) {
-        // TODO: unsupported for now
+        takePicture.launch(null)
     }
 
     @Suppress("UNUSED_PARAMETER")

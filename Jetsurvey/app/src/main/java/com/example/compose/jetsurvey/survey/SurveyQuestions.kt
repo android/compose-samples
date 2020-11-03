@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSizeConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
@@ -39,7 +41,6 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageAsset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -273,7 +275,12 @@ private fun ActionQuestion(
                     modifier = Modifier.padding(vertical = 20.dp)
                 )
             }
-            is SurveyActionResult.Photo -> TODO()
+            is SurveyActionResult.Photo -> {
+                Image(
+                    asset = answer.result.bitmap.asImageAsset(),
+                    modifier = Modifier.defaultMinSizeConstraints(minWidth = 500.dp, minHeight = 500.dp)
+                )
+            }
             is SurveyActionResult.Contact -> TODO()
         }
     }
