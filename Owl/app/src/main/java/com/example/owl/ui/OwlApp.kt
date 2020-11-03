@@ -46,9 +46,10 @@ fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
                     composable(Destinations.Courses) {
                         Courses(actions.selectCourse)
                     }
-                    composable(Destinations.CourseDetails + "/{courseId}") { backStackEntry ->
-                        val courseId = backStackEntry.arguments?.getLong("courseId")
-                            ?: throw IllegalArgumentException("No course ID provided")
+                    composable(Destinations.Courses + "/{${Destinations.CoursesArgs.CourseId}}") {
+                            backStackEntry ->
+                        val courseId = requireNotNull(backStackEntry.arguments)
+                            .getLong(Destinations.CoursesArgs.CourseId)
                         CourseDetails(
                             courseId,
                             actions.selectCourse,

@@ -20,9 +20,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
 
 object Destinations {
-    const val Onboarding = "Onboarding_dest_key"
-    const val Courses = "Courses_dest_key"
-    const val CourseDetails = "Courses_dest_key"
+    const val Onboarding = "onboarding"
+    const val Courses = "courses"
+
+    object CoursesArgs {
+        const val CourseId = "courseId"
+    }
 }
 
 /**
@@ -33,7 +36,7 @@ class Actions(navController: NavHostController) {
         navController.navigate(Destinations.Courses)
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
-        navController.navigate(Destinations.CourseDetails + "/$courseId")
+        navController.navigate(Destinations.Courses + "/$courseId")
     }
     val upPress: () -> Unit = {
         navController.popBackStack()
