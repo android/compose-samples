@@ -33,7 +33,8 @@ data class Survey(
 data class Question(
     val id: Int,
     @StringRes val questionText: Int,
-    val answer: PossibleAnswer
+    val answer: PossibleAnswer,
+    @StringRes val description: Int? = null
 )
 
 /**
