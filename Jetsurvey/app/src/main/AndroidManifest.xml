@@ -25,7 +25,7 @@
         android:theme="@style/Theme.Jetsurvey">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.graygallery.fileprovider"
+            android:authorities="com.example.compose.jetsurvey.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data

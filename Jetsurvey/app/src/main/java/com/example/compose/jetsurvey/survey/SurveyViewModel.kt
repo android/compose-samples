@@ -19,6 +19,7 @@ package com.example.compose.jetsurvey.survey
 import android.content.Context
 import android.content.res.XmlResourceParser
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
@@ -95,7 +96,11 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream)
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream)
+                    val grayscaleBitmap = withContext(Dispatchers.Default) {
+                        applyGrayscaleFilter(bitmap)
+                    }
+                    grayscaleBitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream)
                     imageStream.flush()
                     imageStream.close()
 
@@ -106,7 +111,10 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
                 }
             }
         }
-        updateStateWithActionResult(975, SurveyActionResult.Photo(bitmap))
+
+        Log.d("flo", "filename: ${imageFile.path}")
+        val newBitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+        updateStateWithActionResult(975, SurveyActionResult.Photo(newBitmap))
     }
 }
 

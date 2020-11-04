@@ -16,12 +16,14 @@
 
 package com.example.compose.jetsurvey.survey
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.TakePicturePreview
+import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -29,16 +31,34 @@ import androidx.fragment.app.viewModels
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.android.material.datepicker.MaterialDatePicker
-import java.io.File
 
 class SurveyFragment : Fragment() {
 
     private val viewModel: SurveyViewModel by viewModels { SurveyViewModelFactory() }
 
-    private val imagesFolder: File by lazy { getImagesFolder(requireContext()) }
+    // Add a specific media item.
+    val resolver by lazy { requireContext().contentResolver }
 
-    private val takePicture = registerForActivityResult(TakePicturePreview()) { bitmap ->
-        viewModel.saveImageFromCamera(bitmap, imagesFolder)
+    // Find all audio files on the primary external storage device.
+// On API <= 28, use VOLUME_EXTERNAL instead.
+    val photoCollection by lazy {
+        MediaStore.Images.Media.getContentUri(
+            MediaStore.VOLUME_EXTERNAL_PRIMARY
+        )
+    }
+
+    val newPhotoDetails by lazy {
+        ContentValues().apply {
+            put(MediaStore.Audio.Media.DISPLAY_NAME, "photo")
+        }
+    }
+    val uri by lazy { resolver.insert(photoCollection, newPhotoDetails) }
+
+    private val takePicture = registerForActivityResult(TakePicture()) { saved ->
+        if (saved) {
+            Log.d("flo", "saved: $saved")
+//            viewModel.saveImageFromCamera(bitmap, imagesFolder)
+        }
     }
 
     override fun onCreateView(
@@ -98,7 +118,7 @@ class SurveyFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun takeAPhoto(questionId: Int) {
-        takePicture.launch(null)
+        takePicture.launch(uri)
     }
 
     @Suppress("UNUSED_PARAMETER")
