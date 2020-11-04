@@ -91,7 +91,9 @@ fun Question(
                 Text(
                     text = stringResource(id = question.description),
                     style = MaterialTheme.typography.caption,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp, start = 8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp, start = 8.dp, end = 8.dp)
                 )
             }
         }
