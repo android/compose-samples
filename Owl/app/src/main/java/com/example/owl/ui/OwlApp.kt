@@ -38,23 +38,26 @@ fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
             ProvideImageLoader {
                 val navController = rememberNavController()
 
-                val actions = remember(navController) { Actions(navController) }
-                NavHost(navController = navController, startDestination = Destinations.Onboarding) {
-                    composable(Destinations.Onboarding) {
-                        Onboarding(actions.onboardingComplete)
+                val actions = remember(navController) { MainActions(navController) }
+                NavHost(
+                    navController = navController,
+                    startDestination = MainDestinations.Onboarding.route
+                ) {
+                    composable(MainDestinations.Onboarding.route) {
+                        Onboarding(onboardingComplete = actions.onboardingComplete)
                     }
-                    composable(Destinations.Courses) {
-                        Courses(actions.selectCourse)
+                    composable(MainDestinations.Courses.route) {
+                        Courses(selectCourse = actions.selectCourse)
                     }
                     composable(
-                        Destinations.Courses + "/{${Destinations.CoursesArgs.CourseId}}"
+                        MainDestinations.CourseDetail.route,
+                        arguments = MainDestinations.CourseDetail.args
                     ) { backStackEntry ->
-                        val courseId = requireNotNull(backStackEntry.arguments)
-                            .getLong(Destinations.CoursesArgs.CourseId)
+                        val arguments = requireNotNull(backStackEntry.arguments)
                         CourseDetails(
-                            courseId,
-                            actions.selectCourse,
-                            actions.upPress
+                            courseId = MainDestinations.CourseDetail.getArgFromBundle(arguments),
+                            selectCourse = actions.selectCourse,
+                            upPress = actions.upPress
                         )
                     }
                 }

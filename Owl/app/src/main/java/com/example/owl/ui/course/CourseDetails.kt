@@ -93,14 +93,25 @@ import com.example.owl.ui.utils.toPaddingValues
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CourseDetails(
     courseId: Long,
     selectCourse: (Long) -> Unit,
     upPress: () -> Unit
 ) {
+    // Simplified for the sample
     val course = remember(courseId) { CourseRepo.getCourse(courseId) }
+    // TODO: Show error if course not found.
+    CourseDetails(course, selectCourse, upPress)
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CourseDetails(
+    course: Course,
+    selectCourse: (Long) -> Unit,
+    upPress: () -> Unit
+) {
     PinkTheme {
         WithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)

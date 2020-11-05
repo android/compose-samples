@@ -16,27 +16,42 @@
 
 package com.example.owl.ui
 
+import android.os.Bundle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 
-object Destinations {
-    const val Onboarding = "onboarding"
-    const val Courses = "courses"
+open class Destination(open val route: String)
+open class DestinationSingleArg(
+    private val rootRoute: String,
+    private val argName: String,
+    argType: NavType<*>
+) {
+    val args = listOf(navArgument(argName) { type = argType })
+    val route = "$rootRoute/{$argName}"
+    fun getRouteWithArg(courseId: Long) = "$rootRoute/$courseId"
+    fun getArgFromBundle(args: Bundle) = args.getLong(argName)
+}
 
-    object CoursesArgs {
-        const val CourseId = "courseId"
-    }
+/**
+ * Destinations used in the main screen ([OwlApp]).
+ */
+object MainDestinations {
+    val Onboarding = Destination("onboarding")
+    val Courses = Destination("courses")
+    val CourseDetail = DestinationSingleArg("courses", "courseId", NavType.LongType)
 }
 
 /**
  * Models the navigation actions in the app.
  */
-class Actions(navController: NavHostController) {
+class MainActions(navController: NavHostController) {
     val onboardingComplete: () -> Unit = {
-        navController.navigate(Destinations.Courses)
+        navController.navigate(MainDestinations.Courses.route)
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
-        navController.navigate(Destinations.Courses + "/$courseId")
+        navController.navigate(MainDestinations.CourseDetail.getRouteWithArg(courseId))
     }
     val upPress: () -> Unit = {
         navController.popBackStack()
