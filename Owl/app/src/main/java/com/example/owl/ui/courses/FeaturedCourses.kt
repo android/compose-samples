@@ -79,9 +79,10 @@ fun FeaturedCourse(
         shape = MaterialTheme.shapes.medium
     ) {
         ConstraintLayout(
-            modifier = Modifier.clickable(
-                onClick = { selectCourse(course.id) }
-            )
+            modifier = Modifier
+                .clickable(
+                    onClick = { selectCourse(course.id) }
+                )
         ) {
             val (image, avatar, subject, name, steps, icon) = createRefs()
             NetworkImage(

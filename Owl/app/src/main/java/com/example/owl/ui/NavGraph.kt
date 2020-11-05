@@ -17,10 +17,18 @@
 package com.example.owl.ui
 
 import android.os.Bundle
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
+import com.example.owl.ui.course.CourseDetails
+import com.example.owl.ui.courses.Courses
+import com.example.owl.ui.onboarding.Onboarding
 
 open class Destination(open val route: String)
 open class DestinationSingleArg(
@@ -55,5 +63,34 @@ class MainActions(navController: NavHostController) {
     }
     val upPress: () -> Unit = {
         navController.popBackStack()
+    }
+}
+
+@Composable
+fun NavGraph(startDestination: String = MainDestinations.Onboarding.route) {
+    val navController = rememberNavController()
+
+    val actions = remember(navController) { MainActions(navController) }
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(MainDestinations.Onboarding.route) {
+            Onboarding(onboardingComplete = actions.onboardingComplete)
+        }
+        composable(MainDestinations.Courses.route) {
+            Courses(selectCourse = actions.selectCourse)
+        }
+        composable(
+            MainDestinations.CourseDetail.route,
+            arguments = MainDestinations.CourseDetail.args
+        ) { backStackEntry ->
+            val arguments = requireNotNull(backStackEntry.arguments)
+            CourseDetails(
+                courseId = MainDestinations.CourseDetail.getArgFromBundle(arguments),
+                selectCourse = actions.selectCourse,
+                upPress = actions.upPress
+            )
+        }
     }
 }

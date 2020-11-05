@@ -64,7 +64,7 @@ fun NetworkImage(
     )
 }
 
-private val AmbientImageLoader = staticAmbientOf<ImageLoader> {
+val AmbientImageLoader = staticAmbientOf<ImageLoader> {
     error("No loader provided")
 }
 
