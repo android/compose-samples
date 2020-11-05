@@ -17,11 +17,11 @@
 package com.example.jetsnack.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.ui.home.Home
 import com.example.jetsnack.ui.snackdetail.SnackDetail
@@ -33,18 +33,26 @@ fun JetsnackApp() {
     ProvideDisplayInsets {
         JetsnackTheme {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "home") {
-                composable("home") {
-                    Home(onSnackSelected = { navController.navigate("snackDetail/$it") })
+
+            val actions = remember(navController) { Actions(navController) }
+            NavHost(navController = navController, startDestination = Destinations.Home) {
+                composable(Destinations.Home) {
+                    Home(actions.selectSnack)
                 }
                 composable(
-                    route = "snackDetail/{snackId}",
-                    arguments = listOf(navArgument("snackId") { type = NavType.LongType })
+                    Destinations.SnackDetail + "/{${Destinations.SnackDetailArgs.SnackId}}",
+                    listOf(
+                        navArgument(Destinations.SnackDetailArgs.SnackId) {
+                            type = NavType.LongType
+                        }
+                    )
                 ) { backStackEntry ->
+                    val snackId = requireNotNull(
+                        backStackEntry.arguments?.getLong(Destinations.SnackDetailArgs.SnackId)
+                    )
                     SnackDetail(
-                        snackId = backStackEntry.arguments?.getLong("snackId")
-                            ?: throw IllegalArgumentException("Snack Detail screen needs a snack id"),
-                        { navController.popBackStack() }
+                        snackId,
+                        actions.upPress
                     )
                 }
             }
