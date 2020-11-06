@@ -16,12 +16,10 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.material.Surface
 import androidx.compose.samples.crane.di.DispatchersModule
-import androidx.compose.samples.crane.ui.CraneTheme
-import androidx.ui.test.createAndroidComposeRule
-import androidx.ui.test.onNodeWithText
-import androidx.ui.test.performClick
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -42,15 +40,7 @@ class HomeTest {
     @Before
     fun setUp() {
         composeTestRule.setContent {
-            CraneTheme {
-                Surface {
-                    CraneHomeContent(
-                        onExploreItemClicked = { },
-                        onDateSelectionClicked = { },
-                        openDrawer = { }
-                    )
-                }
-            }
+            MainScreen({ }, { })
         }
     }
 
