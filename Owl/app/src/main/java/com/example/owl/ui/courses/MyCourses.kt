@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -32,9 +31,8 @@ import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.CourseListItem
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
-@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun MyCourses(
     courses: List<Course>,

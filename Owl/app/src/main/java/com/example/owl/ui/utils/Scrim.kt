@@ -31,7 +31,8 @@ fun Modifier.scrim(colors: List<Color>): Modifier = drawWithCache {
         startY = 0f,
         endY = size.height
     )
-    onDraw {
+    onDrawWithContent {
+        drawContent()
         drawRect(brush = gradient)
     }
 }
