@@ -67,10 +67,7 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.FlowPreview'
             freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
-            freeCompilerArgs += [
-                    '-P',
-                    'plugin:androidx.compose.compiler.plugins.kotlin:intrinsicRemember=true'
-            ]
+
             // Set JVM target to 1.8
             jvmTarget = "1.8"
         }
