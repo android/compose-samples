@@ -78,13 +78,11 @@ fun Question(
                 shape = MaterialTheme.shapes.small
             )
         ) {
-            Providers(AmbientContentAlpha provides ContentAlpha.high) {
-                Text(
-                    text = stringResource(id = question.questionText),
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 16.dp)
-                )
-            }
+            Text(
+                text = stringResource(id = question.questionText),
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 16.dp)
+            )
         }
         Spacer(modifier = Modifier.preferredHeight(24.dp))
         if (question.description != null) {

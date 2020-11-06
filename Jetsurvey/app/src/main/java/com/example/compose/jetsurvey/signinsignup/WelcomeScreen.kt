@@ -114,14 +114,12 @@ private fun Branding(modifier: Modifier = Modifier) {
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
-        Providers(AmbientContentAlpha provides ContentAlpha.high) {
-            Text(
-                text = stringResource(id = R.string.app_tagline),
-                style = MaterialTheme.typography.subtitle1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.app_tagline),
+            style = MaterialTheme.typography.subtitle1,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
+        )
     }
 }
 
