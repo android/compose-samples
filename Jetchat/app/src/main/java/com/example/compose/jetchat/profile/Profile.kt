@@ -19,7 +19,6 @@ package com.example.compose.jetchat.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,7 +48,6 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.DensityAmbient
@@ -62,7 +60,7 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
-import com.example.compose.jetchat.data.colleagueProfile
+import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
@@ -181,24 +179,17 @@ private fun ProfileHeader(
 
     data.photo?.let {
         val asset = imageResource(id = it)
-        val ratioAsset = asset.width / asset.height.toFloat()
+        val ratioAsset = (asset.width / asset.height.toFloat()).coerceAtLeast(1f)
 
-        Box(
+        // TODO: Fix landscape
+        Image(
             modifier = Modifier
-                .fillMaxWidth()
-                // Allow for landscape and portrait ratios
-                .preferredHeightIn(max = 320.dp)
                 .aspectRatio(ratioAsset)
-                .background(Color.LightGray)
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = offsetDp),
-                asset = asset,
-                contentScale = ContentScale.Crop
-            )
-        }
+                .preferredHeightIn(max = 320.dp)
+                .padding(top = offsetDp),
+            asset = asset,
+            contentScale = ContentScale.FillWidth
+        )
     }
 }
 
@@ -267,7 +258,7 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
 @Composable
 fun ConvPreview480MeDefault() {
     JetchatTheme {
-        ProfileScreen(colleagueProfile)
+        ProfileScreen(meProfile)
     }
 }
 

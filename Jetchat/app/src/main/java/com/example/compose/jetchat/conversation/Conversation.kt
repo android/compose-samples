@@ -39,6 +39,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -397,7 +398,7 @@ fun ClickableMessage(message: Message) {
 
     ClickableText(
         text = styledMessage,
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.body1.copy(color = AmbientContentColor.current),
         modifier = Modifier.padding(8.dp),
         onClick = {
             styledMessage
