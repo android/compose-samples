@@ -397,41 +397,44 @@ private fun UserInputText(
             },
         horizontalArrangement = Arrangement.End
     ) {
-        Box(
-            modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
-        ) {
-            var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
-            BasicTextField(
-                value = textFieldValue,
-                onValueChange = { onTextChanged(textFieldValue) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterStart)
-                    .focusObserver { state ->
-                        if (lastFocusState != state) {
-                            onTextFieldFocused(state == FocusState.Active)
-                        }
-                        lastFocusState = state
-                    },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = keyboardType,
-                    imeAction = ImeAction.Send
-                ),
-                maxLines = 1,
-                cursorColor = AmbientContentColor.current
-            )
-
-            val disableContentColor =
-                MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-            if (textFieldValue.text.isEmpty() && !focusState) {
-                Text(
+        Surface {
+            Box(
+                modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
+            ) {
+                var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
+                BasicTextField(
+                    value = textFieldValue,
+                    onValueChange = { onTextChanged(it) },
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
                         .align(Alignment.CenterStart)
-                        .padding(start = 16.dp),
-                    text = stringResource(id = R.string.textfield_hint),
-                    style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                        .focusObserver { state ->
+                            if (lastFocusState != state) {
+                                onTextFieldFocused(state == FocusState.Active)
+                            }
+                            lastFocusState = state
+                        },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = keyboardType,
+                        imeAction = ImeAction.Send
+                    ),
+                    maxLines = 1,
+                    cursorColor = AmbientContentColor.current,
+                    textStyle = AmbientTextStyle.current.copy(color = AmbientContentColor.current)
                 )
+
+                val disableContentColor =
+                    MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                if (textFieldValue.text.isEmpty() && !focusState) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 16.dp),
+                        text = stringResource(id = R.string.textfield_hint),
+                        style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                    )
+                }
             }
         }
     }
