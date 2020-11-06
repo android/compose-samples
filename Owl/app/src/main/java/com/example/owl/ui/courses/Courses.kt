@@ -18,17 +18,17 @@ package com.example.owl.ui.courses
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -45,8 +45,8 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.navigationBarsHeightPlus
-import com.example.owl.ui.utils.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun Courses(selectCourse: (Long) -> Unit) {
@@ -57,7 +57,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
             backgroundColor = MaterialTheme.colors.primarySurface,
             bottomBar = {
                 BottomNavigation(
-                    Modifier.navigationBarsHeightPlus(56.dp)
+                    Modifier.navigationBarsHeight(additional = 56.dp)
                 ) {
                     tabs.forEach { tab ->
                         BottomNavigationItem(
