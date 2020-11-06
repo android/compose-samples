@@ -16,10 +16,7 @@
 
 package com.example.jetsnack.ui.home.search
 
-import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,15 +29,17 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,7 +51,6 @@ import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.isFocused
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -87,7 +85,7 @@ fun Search(
             )
             JetsnackDivider()
 
-            LaunchedTask(state.query.text) {
+            LaunchedEffect(state.query.text) {
                 state.searching = true
                 state.searchResults = SearchRepo.search(state.query.text)
                 state.searching = false
@@ -200,13 +198,10 @@ private fun SearchBar(
                         )
                     }
                 }
-                BaseTextField(
-                    value = query,
-                    onValueChange = onQueryChange,
-                    imeAction = ImeAction.Search,
-                    onImeActionPerformed = { /* todo */ },
-                    cursorColor = JetsnackTheme.colors.textPrimary,
-                    modifier = Modifier
+                BasicTextField(
+                    query,
+                    onQueryChange,
+                    Modifier
                         .weight(1f)
                         .focusObserver {
                             onSearchFocusChange(it.isFocused)

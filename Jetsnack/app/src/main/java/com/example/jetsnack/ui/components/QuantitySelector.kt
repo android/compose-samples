@@ -17,17 +17,18 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.preferredWidthIn
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -47,7 +48,7 @@ fun QuantitySelector(
     ConstraintLayout(modifier = modifier) {
         val (qty, minus, quantity, plus) = createRefs()
         createHorizontalChain(qty, minus, quantity, plus, chainStyle = ChainStyle.Packed)
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high) {
             Text(
                 text = stringResource(R.string.quantity),
                 style = MaterialTheme.typography.subtitle1,
@@ -66,7 +67,7 @@ fun QuantitySelector(
                 linkTo(top = parent.top, bottom = parent.bottom)
             }
         )
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high) {
             Crossfade(
                 current = count,
                 modifier = Modifier
