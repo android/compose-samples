@@ -20,9 +20,13 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.ui.test.createAndroidComposeRule
+import androidx.ui.test.hasLabel
+import androidx.ui.test.hasSubstring
 import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.onNodeWithSubstring
+import androidx.ui.test.onRoot
 import androidx.ui.test.performClick
+import androidx.ui.test.printToLog
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
@@ -83,8 +87,11 @@ class NavigationTest {
         // Given the app in the courses screen
         startActivity(MainDestinations.Courses.route)
 
+        composeTestRule.onRoot().printToLog("jalc")
         // Navigate to the first course
-        composeTestRule.onNodeWithSubstring(courses.first().name).performClick()
+        composeTestRule.onNode(
+            hasLabel(getFeaturedCourseLabel()).and(hasSubstring(courses.first().name))
+        ).performClick()
 
         // Assert navigated to the course details
         composeTestRule.onNodeWithSubstring(getCourseDesc().take(15)).assertExists()
@@ -105,6 +112,12 @@ class NavigationTest {
         return InstrumentationRegistry.getInstrumentation().targetContext.resources
             .getString(R.string.continue_to_courses)
     }
+
+    private fun getFeaturedCourseLabel(): String {
+        return InstrumentationRegistry.getInstrumentation().targetContext.resources
+            .getString(R.string.featured)
+    }
+
     private fun getCourseDesc(): String {
         return InstrumentationRegistry.getInstrumentation().targetContext.resources
             .getString(R.string.course_desc)
