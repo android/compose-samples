@@ -19,7 +19,6 @@ package com.example.compose.jetchat.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,24 +32,26 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -75,7 +76,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
-                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     // More icon
                     Icon(
                         asset = Icons.Outlined.MoreVert,
@@ -152,18 +153,16 @@ private fun NameAndPosition(
 
 @Composable
 private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-        Text(
-            text = userData.name,
-            modifier = modifier,
-            style = MaterialTheme.typography.h5
-        )
-    }
+    Text(
+        text = userData.name,
+        modifier = modifier,
+        style = MaterialTheme.typography.h5
+    )
 }
 
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
         Text(
             text = userData.position,
             modifier = modifier,
@@ -207,7 +206,7 @@ private fun ProfileHeader(
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
         Divider()
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = label,
                 modifier = Modifier.baselineHeight(24.dp),
@@ -219,13 +218,11 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         } else {
             MaterialTheme.typography.body1
         }
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-            Text(
-                text = value,
-                modifier = Modifier.baselineHeight(24.dp),
-                style = style
-            )
-        }
+        Text(
+            text = value,
+            modifier = Modifier.baselineHeight(24.dp),
+            style = style
+        )
     }
 }
 

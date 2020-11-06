@@ -20,7 +20,6 @@ import androidx.compose.foundation.ClickableText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,29 +31,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.layout.relativePaddingFrom
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.LastBaseline
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.UriHandlerAmbient
 import androidx.compose.ui.platform.testTag
@@ -137,8 +138,7 @@ fun ChannelNameBar(
                     style = MaterialTheme.typography.subtitle1
                 )
                 // Number of members
-                // TODO: Multiple emphasis layers - https://issuetracker.google.com/159017896
-                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
                         style = MaterialTheme.typography.caption,
@@ -148,7 +148,7 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 // Search icon
                 Icon(
                     asset = Icons.Outlined.Search,
@@ -311,17 +311,15 @@ fun AuthorAndTextMessage(
 private fun AuthorNameTimestamp(msg: Message) {
     // Combine author and timestamp for a11y.
     Row(modifier = Modifier.semantics(mergeAllDescendants = true) {}) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-            Text(
-                text = msg.author,
-                style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier
-                    .alignBy(LastBaseline)
-                    .relativePaddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
-            )
-        }
+        Text(
+            text = msg.author,
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier
+                .alignBy(LastBaseline)
+                .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
+        )
         Spacer(modifier = Modifier.preferredWidth(8.dp))
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = msg.timestamp,
                 style = MaterialTheme.typography.caption,
@@ -338,7 +336,7 @@ private val LastChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
 fun DayHeader(dayString: String) {
     Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).preferredHeight(16.dp)) {
         DayHeaderLine()
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = dayString,
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -373,11 +371,9 @@ fun ChatItemBubble(
     val bubbleShape = if (lastMessageByAuthor) LastChatBubbleShape else ChatBubbleShape
     Column {
         Surface(color = backgroundBubbleColor, shape = bubbleShape) {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-                ClickableMessage(
-                    message = message
-                )
-            }
+            ClickableMessage(
+                message = message
+            )
         }
 
         message.image?.let {
