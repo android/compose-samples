@@ -49,7 +49,8 @@ class SurveyFragment : Fragment() {
 
     val newPhotoDetails by lazy {
         ContentValues().apply {
-            put(MediaStore.Audio.Media.DISPLAY_NAME, "photo")
+            put(MediaStore.Images.Media.DISPLAY_NAME, "photo")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         }
     }
     val uri by lazy { resolver.insert(photoCollection, newPhotoDetails) }
