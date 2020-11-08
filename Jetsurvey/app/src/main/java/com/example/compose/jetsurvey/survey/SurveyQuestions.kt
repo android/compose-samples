@@ -16,6 +16,8 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
@@ -29,17 +31,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxConstants
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
@@ -49,12 +58,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.example.compose.jetsurvey.theme.questionBackground
 import dev.chrisbanes.accompanist.coil.CoilImage
+
+@Preview
+@Composable
+fun QuestionPreview() {
+    val question = Question(
+        id = 975,
+        questionText = R.string.selfie_skills,
+        answer = PossibleAnswer.Action(
+            label = R.string.add_photo,
+            actionType = SurveyActionType.TAKE_PHOTO
+        )
+    )
+    JetsurveyTheme {
+        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
+    }
+}
 
 @Composable
 fun Question(
@@ -260,30 +285,110 @@ private fun ActionQuestion(
     onAction: (Int, SurveyActionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = { onAction(questionId, possibleAnswer.actionType) },
-        modifier = modifier.padding(vertical = 20.dp)
-    ) {
-        Text(text = stringResource(id = possibleAnswer.label))
+    when (possibleAnswer.actionType) {
+        SurveyActionType.PICK_DATE -> {
+            DateQuestion(
+                questionId = questionId,
+                answerLabel = possibleAnswer.label,
+                answer = answer,
+                onAction = onAction,
+                modifier = modifier
+            )
+        }
+        SurveyActionType.TAKE_PHOTO -> {
+            PhotoQuestion(
+                questionId = questionId,
+                answer = answer,
+                onAction = onAction,
+                modifier = modifier
+            )
+        }
+        SurveyActionType.SELECT_CONTACT -> TODO()
     }
-    if (answer != null) {
-        when (answer.result) {
-            is SurveyActionResult.Date -> {
-                Text(
-                    text = stringResource(R.string.selected_date, answer.result.date),
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier.padding(vertical = 20.dp)
-                )
-            }
-            is SurveyActionResult.Photo -> {
+}
+
+@Composable
+private fun PhotoQuestion(
+    questionId: Int,
+    answer: Answer.Action?,
+    onAction: (Int, SurveyActionType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val resource = if (answer != null) {
+        Icons.Filled.SwapHoriz
+    } else {
+        Icons.Filled.AddAPhoto
+    }
+    val label = if (answer != null) {
+        R.string.retake_photo
+    } else {
+        R.string.add_photo
+    }
+    OutlinedButton(
+        onClick = { onAction(questionId, SurveyActionType.TAKE_PHOTO) },
+        modifier = modifier
+    ) {
+        Column {
+            if (answer != null && answer.result is SurveyActionResult.Photo) {
                 CoilImage(
                     data = answer.result.uri,
                     modifier = Modifier.fillMaxSize()
                 )
+            } else {
+                PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
             }
-            is SurveyActionResult.Contact -> TODO()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.BottomCenter)
+                    .padding(vertical = 26.dp)
+            ) {
+                Icon(resource)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = stringResource(id = label))
+            }
         }
     }
+}
+
+@Composable
+private fun DateQuestion(
+    questionId: Int,
+    @StringRes answerLabel: Int,
+    answer: Answer.Action?,
+    onAction: (Int, SurveyActionType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
+        modifier = modifier.padding(vertical = 20.dp)
+    ) {
+        Text(text = stringResource(id = answerLabel))
+    }
+
+    if (answer != null && answer.result is SurveyActionResult.Date) {
+        Text(
+            text = stringResource(R.string.selected_date, answer.result.date),
+            style = MaterialTheme.typography.h4,
+            modifier = Modifier.padding(vertical = 20.dp)
+        )
+    }
+}
+
+@Composable
+private fun PhotoDefaultImage(
+    lightTheme: Boolean = MaterialTheme.colors.isLight,
+    modifier: Modifier = Modifier
+) {
+    val assetId = if (lightTheme) {
+        R.drawable.ic_selfie_light
+    } else {
+        R.drawable.ic_selfie_dark
+    }
+    Image(
+        asset = vectorResource(id = assetId),
+        modifier = modifier
+    )
 }
 
 @Composable

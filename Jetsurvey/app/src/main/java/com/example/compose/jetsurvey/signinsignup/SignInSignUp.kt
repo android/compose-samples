@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientTextStyle
 import androidx.compose.material.ContentAlpha
@@ -54,6 +53,7 @@ import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardOptions
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign

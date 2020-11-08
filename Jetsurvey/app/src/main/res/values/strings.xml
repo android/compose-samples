@@ -70,8 +70,9 @@
     <string name="selfie_max">🤩️</string>
 
     <!-- question 5-->
-    <string name="selfie_skills">Show us your selfie skills!</string>
-    <string name="take_selfie">Take a selfie!</string>
+    <string name="selfie_skills">Show off your selfie skills!</string>
+    <string name="add_photo">ADD PHOTO</string>
+    <string name="retake_photo">RETAKE PHOTO</string>
 
     <!-- question 6-->
     <string name="best_friend">Who\'s your best friend?</string>

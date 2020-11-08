@@ -28,7 +28,7 @@ private val jetpackQuestions = listOf(
     Question(
         id = 975,
         questionText = R.string.selfie_skills,
-        answer = Action(label = R.string.take_selfie, actionType = TAKE_PHOTO)
+        answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO)
     ),
     Question(
         id = 1,
