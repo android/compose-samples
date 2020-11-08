@@ -16,7 +16,6 @@
 
 package com.example.compose.jetsurvey.survey
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
@@ -26,7 +25,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSizeConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
@@ -49,12 +48,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageAsset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.questionBackground
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun Question(
@@ -276,9 +276,9 @@ private fun ActionQuestion(
                 )
             }
             is SurveyActionResult.Photo -> {
-                Image(
-                    asset = answer.result.bitmap.asImageAsset(),
-                    modifier = Modifier.defaultMinSizeConstraints(minWidth = 500.dp, minHeight = 500.dp)
+                CoilImage(
+                    data = answer.result.uri,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             is SurveyActionResult.Contact -> TODO()

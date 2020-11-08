@@ -16,26 +16,13 @@
 
 package com.example.compose.jetsurvey.survey
 
-import android.content.Context
-import android.content.res.XmlResourceParser
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
-import android.util.Log
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
-
-private const val FILEPATH_XML_KEY = "files-path"
 
 class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewModel() {
 
@@ -76,6 +63,12 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
         updateStateWithActionResult(questionId, SurveyActionResult.Date(date))
     }
 
+    fun onImageSaved(uri: Uri) {
+        getLatestQuestionId()?.let { questionId ->
+            updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
+        }
+    }
+
     private fun updateStateWithActionResult(questionId: Int, result: SurveyActionResult) {
         val latestState = _uiState.value
         if (latestState != null && latestState is SurveyState.Questions) {
@@ -88,58 +81,14 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
         }
     }
 
-
-    fun saveImageFromCamera(bitmap: Bitmap, imagesFolder: File) {
-        val imageFile = File(imagesFolder, generateFilename("CAMERA"))
-        val imageStream = FileOutputStream(imageFile)
-
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream)
-                    val grayscaleBitmap = withContext(Dispatchers.Default) {
-                        applyGrayscaleFilter(bitmap)
-                    }
-                    grayscaleBitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream)
-                    imageStream.flush()
-                    imageStream.close()
-
-                    Log.d("flo", "Camera image saved")
-
-                } catch (e: Exception) {
-                    Log.e(javaClass.simpleName, "Error writing bitmap", e)
-                }
-            }
+    private fun getLatestQuestionId(): Int? {
+        val latestState = _uiState.value
+        if (latestState != null && latestState is SurveyState.Questions) {
+            return latestState.questionsState[0].question.id
         }
-
-        Log.d("flo", "filename: ${imageFile.path}")
-        val newBitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-        updateStateWithActionResult(975, SurveyActionResult.Photo(newBitmap))
+        return null
     }
 }
-
-fun getImagesFolder(context: Context): File {
-    return File(context.filesDir, "images/").also {
-        if (!it.exists()) {
-            it.mkdir()
-        }
-    }
-}
-
-fun generateFilename(source: String) = "$source-${System.currentTimeMillis()}.jpg"
-
-suspend fun applyGrayscaleFilter(original: Bitmap): Bitmap = withContext(Dispatchers.Default) {
-    val height = original.height
-    val width = original.width
-
-    val modifiedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-    val canvas = Canvas(modifiedBitmap)
-    val paint = Paint()
-    canvas.drawBitmap(original, null, Rect(0, 0, original.width, original.height), paint)
-
-    modifiedBitmap
-}
-
 
 class SurveyViewModelFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
