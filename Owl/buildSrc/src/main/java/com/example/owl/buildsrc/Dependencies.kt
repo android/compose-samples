@@ -21,12 +21,13 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha15"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha16"
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.3.2"
+        private const val version = "0.3.3.compose-6953474-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
@@ -37,7 +38,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.3.9"
+        private const val version = "1.4.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -47,8 +48,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha06"
+            const val snapshot = "6953474"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

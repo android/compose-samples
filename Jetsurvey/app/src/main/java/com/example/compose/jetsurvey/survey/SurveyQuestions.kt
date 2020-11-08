@@ -16,10 +16,11 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,16 +29,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxConstants
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,27 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.example.compose.jetsurvey.theme.questionBackground
-
-@Preview
-@Composable
-fun QuestionPreview() {
-    val question = Question(
-        id = 2,
-        questionText = R.string.pick_superhero,
-        answer = PossibleAnswer.SingleChoice(
-            optionsStringRes = listOf(
-                R.string.spiderman,
-                R.string.ironman,
-                R.string.unikitty,
-                R.string.captain_planet
-            )
-        )
-    )
-    JetsurveyTheme {
-        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
-    }
-}
 
 @Composable
 fun Question(
@@ -84,21 +67,35 @@ fun Question(
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
         Spacer(modifier = Modifier.preferredHeight(44.dp))
+        val backgroundColor = if (MaterialTheme.colors.isLight) {
+            MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
+        } else {
+            MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
+        }
         Row(
             modifier = Modifier.fillMaxWidth().background(
-                color = MaterialTheme.colors.questionBackground,
+                color = backgroundColor,
                 shape = MaterialTheme.shapes.small
             )
         ) {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+            Text(
+                text = stringResource(id = question.questionText),
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 16.dp)
+            )
+        }
+        Spacer(modifier = Modifier.preferredHeight(24.dp))
+        if (question.description != null) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = stringResource(id = question.questionText),
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 16.dp)
+                    text = stringResource(id = question.description),
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp, start = 8.dp, end = 8.dp)
                 )
             }
         }
-        Spacer(modifier = Modifier.preferredHeight(24.dp))
         when (question.answer) {
             is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
                 possibleAnswer = question.answer,
@@ -164,28 +161,37 @@ private fun SingleChoiceQuestion(
                 Unit
             }
             val optionSelected = text == selectedOption
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = optionSelected,
-                        onClick = onClickHandle
-                    )
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                ),
+                modifier = Modifier.padding(vertical = 8.dp)
             ) {
-                RadioButton(
-                    selected = optionSelected,
-                    onClick = onClickHandle,
-                    colors = RadioButtonConstants.defaultColors(
-                        selectedColor = MaterialTheme.colors.primary
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = optionSelected,
+                            onClick = onClickHandle
+                        )
+                        .padding(vertical = 16.dp, horizontal = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = text
                     )
-                )
 
-                Text(
-                    text = text,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                    RadioButton(
+                        selected = optionSelected,
+                        onClick = onClickHandle,
+                        colors = RadioButtonConstants.defaultColors(
+                            selectedColor = MaterialTheme.colors.primary
+                        )
+                    )
+                }
             }
         }
     }
@@ -205,31 +211,40 @@ private fun MultipleChoiceQuestion(
                 val selectedOption = answer?.answersStringRes?.contains(option.value)
                 mutableStateOf(selectedOption ?: false)
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-                    .clickable(
-                        onClick = {
-                            checkedState = !checkedState
-                            onAnswerSelected(option.value, checkedState)
-                        }
-                    )
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                ),
+                modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                Checkbox(
-                    checked = checkedState,
-                    onCheckedChange = { selected ->
-                        checkedState = selected
-                        onAnswerSelected(option.value, selected)
-                    },
-                    colors = CheckboxConstants.defaultColors(
-                        checkedColor = MaterialTheme.colors.primary
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = {
+                                checkedState = !checkedState
+                                onAnswerSelected(option.value, checkedState)
+                            }
+                        )
+                        .padding(vertical = 16.dp, horizontal = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = option.key)
+
+                    Checkbox(
+                        checked = checkedState,
+                        onCheckedChange = { selected ->
+                            checkedState = selected
+                            onAnswerSelected(option.value, selected)
+                        },
+                        colors = CheckboxConstants.defaultColors(
+                            checkedColor = MaterialTheme.colors.primary
+                        ),
                     )
-                )
-                Text(
-                    text = option.key,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                }
             }
         }
     }
@@ -293,5 +308,26 @@ private fun SliderQuestion(
             text = stringResource(id = possibleAnswer.endText),
             modifier = Modifier.align(Alignment.CenterVertically)
         )
+    }
+}
+
+@Preview
+@Composable
+fun QuestionPreview() {
+    val question = Question(
+        id = 2,
+        questionText = R.string.pick_superhero,
+        answer = PossibleAnswer.SingleChoice(
+            optionsStringRes = listOf(
+                R.string.spiderman,
+                R.string.ironman,
+                R.string.unikitty,
+                R.string.captain_planet
+            )
+        ),
+        description = R.string.select_one
+    )
+    JetsurveyTheme {
+        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
     }
 }

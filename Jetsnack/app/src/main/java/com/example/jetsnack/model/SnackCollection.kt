@@ -95,4 +95,14 @@ private val related = listOf(
     popular
 )
 
-private val cart = snacks.subList(4, 7)
+private val cart = listOf(
+    OrderLine(snacks[4], 2),
+    OrderLine(snacks[6], 3),
+    OrderLine(snacks[8], 1)
+)
+
+@Immutable
+data class OrderLine(
+    val snack: Snack,
+    val count: Int
+)

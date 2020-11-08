@@ -68,6 +68,7 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
+import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.navigationBarsPadding
 import com.example.jetsnack.ui.utils.statusBarsPadding
 import kotlin.math.max
@@ -236,7 +237,7 @@ private fun Title(snack: Snack, scroll: Float) {
         )
         Spacer(Modifier.preferredHeight(4.dp))
         Text(
-            text = "$12.99",
+            text = formatPrice(snack.price),
             style = MaterialTheme.typography.h6,
             color = JetsnackTheme.colors.textPrimary,
             modifier = HzPadding
