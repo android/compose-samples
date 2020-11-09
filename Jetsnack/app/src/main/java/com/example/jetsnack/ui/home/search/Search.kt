@@ -199,9 +199,9 @@ private fun SearchBar(
                     }
                 }
                 BasicTextField(
-                    query,
-                    onQueryChange,
-                    Modifier
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier
                         .weight(1f)
                         .focusObserver {
                             onSearchFocusChange(it.isFocused)
