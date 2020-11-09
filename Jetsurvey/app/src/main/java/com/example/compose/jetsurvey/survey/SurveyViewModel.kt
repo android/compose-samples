@@ -24,7 +24,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewModel() {
+class SurveyViewModel(
+    private val surveyRepository: SurveyRepository,
+    private val photoUriManager: PhotoUriManager
+) : ViewModel() {
 
     private val _uiState = MutableLiveData<SurveyState>()
     val uiState: LiveData<SurveyState>
@@ -63,9 +66,13 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
         updateStateWithActionResult(questionId, SurveyActionResult.Date(date))
     }
 
-    fun onImageSaved(uri: Uri) {
-        getLatestQuestionId()?.let { questionId ->
-            updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
+    fun getUriToSaveImage(): Uri? = photoUriManager.buildNewUri()
+
+    fun onImageSaved() {
+        photoUriManager.uri?.let { uri ->
+            getLatestQuestionId()?.let { questionId ->
+                updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
+            }
         }
     }
 
@@ -90,11 +97,13 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
     }
 }
 
-class SurveyViewModelFactory : ViewModelProvider.Factory {
+class SurveyViewModelFactory(
+    private val photoUriManager: PhotoUriManager
+) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveyViewModel::class.java)) {
-            return SurveyViewModel(SurveyRepository) as T
+            return SurveyViewModel(SurveyRepository, photoUriManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

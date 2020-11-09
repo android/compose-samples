@@ -17,13 +17,35 @@
 package com.example.compose.jetsurvey.survey
 
 import android.content.ContentValues
+import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
 
-val photoCollection by lazy {
-    MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+/**
+ * Manages the creation of photo Uris. The Uri is used to store the photos taken with camera.
+ */
+class PhotoUriManager(private val appContext: Context) {
+
+    private val photoCollection by lazy {
+        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+    }
+
+    private val resolver by lazy { appContext.contentResolver }
+
+    // Uri used to save photos taken with the camera
+    var uri: Uri? = null
+        get() = field
+        private set(value) {
+            field = value
+        }
+
+    fun buildNewUri(): Uri? {
+        uri = resolver.insert(photoCollection, getPhotoDetails())
+        return uri
+    }
 }
 
-fun getPhotoDetails() = ContentValues().apply {
+private fun getPhotoDetails() = ContentValues().apply {
     put(MediaStore.Images.Media.DISPLAY_NAME, generateFilename())
     put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
 }

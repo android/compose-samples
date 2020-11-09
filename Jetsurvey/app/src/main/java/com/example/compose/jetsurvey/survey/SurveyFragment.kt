@@ -16,7 +16,6 @@
 
 package com.example.compose.jetsurvey.survey
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,15 +31,13 @@ import com.google.android.material.datepicker.MaterialDatePicker
 
 class SurveyFragment : Fragment() {
 
-    private val viewModel: SurveyViewModel by viewModels { SurveyViewModelFactory() }
-
-    private val resolver by lazy { requireContext().contentResolver }
-    // Uri used to save photos taken with the camera
-    private var uri: Uri? = null
+    private val viewModel: SurveyViewModel by viewModels {
+        SurveyViewModelFactory(PhotoUriManager(requireContext().applicationContext))
+    }
 
     private val takePicture = registerForActivityResult(TakePicture()) { photoSaved ->
         if (photoSaved) {
-            uri?.let { viewModel.onImageSaved(it) }
+            viewModel.onImageSaved()
         }
     }
 
@@ -99,8 +96,7 @@ class SurveyFragment : Fragment() {
     }
 
     private fun takeAPhoto() {
-        uri = resolver.insert(photoCollection, getPhotoDetails())
-        takePicture.launch(uri)
+        takePicture.launch(viewModel.getUriToSaveImage())
     }
 
     @Suppress("UNUSED_PARAMETER")
