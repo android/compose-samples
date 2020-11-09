@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.3.2"
+        private const val version = "0.3.3.compose-6953474-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 

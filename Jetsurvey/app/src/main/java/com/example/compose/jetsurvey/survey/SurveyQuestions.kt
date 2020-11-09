@@ -17,8 +17,8 @@
 package com.example.compose.jetsurvey.survey
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +46,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonConstants
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -64,22 +65,6 @@ import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import dev.chrisbanes.accompanist.coil.CoilImage
-
-@Preview
-@Composable
-fun QuestionPreview() {
-    val question = Question(
-        id = 975,
-        questionText = R.string.selfie_skills,
-        answer = PossibleAnswer.Action(
-            label = R.string.add_photo,
-            actionType = SurveyActionType.TAKE_PHOTO
-        )
-    )
-    JetsurveyTheme {
-        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
-    }
-}
 
 @Composable
 fun Question(
