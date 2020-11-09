@@ -18,13 +18,13 @@ package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme

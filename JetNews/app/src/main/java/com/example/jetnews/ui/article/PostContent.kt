@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui.article
 
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
@@ -32,6 +31,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme

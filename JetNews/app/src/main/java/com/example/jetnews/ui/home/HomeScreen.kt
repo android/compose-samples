@@ -45,7 +45,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -140,7 +140,7 @@ fun HomeScreen(
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
         // only start when posts.hasError is true (due to the above if-check).
-        LaunchedTask(posts.hasError) {
+        LaunchedEffect(posts.hasError) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
