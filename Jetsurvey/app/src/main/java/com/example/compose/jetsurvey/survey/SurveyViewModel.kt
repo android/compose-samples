@@ -84,7 +84,7 @@ class SurveyViewModel(private val surveyRepository: SurveyRepository) : ViewMode
     private fun getLatestQuestionId(): Int? {
         val latestState = _uiState.value
         if (latestState != null && latestState is SurveyState.Questions) {
-            return latestState.questionsState[0].question.id
+            return latestState.questionsState[latestState.currentQuestionIndex].question.id
         }
         return null
     }

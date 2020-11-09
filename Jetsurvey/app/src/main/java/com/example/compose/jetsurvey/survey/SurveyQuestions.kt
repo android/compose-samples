@@ -311,7 +311,8 @@ private fun PhotoQuestion(
     }
     OutlinedButton(
         onClick = { onAction(questionId, SurveyActionType.TAKE_PHOTO) },
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = PaddingValues()
     ) {
         Column {
             if (answer != null && answer.result is SurveyActionResult.Photo) {
@@ -326,7 +327,8 @@ private fun PhotoQuestion(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentSize(Alignment.BottomCenter)
-                    .padding(vertical = 26.dp)
+                    .padding(vertical = 26.dp),
+                verticalAlignment = Alignment.Bottom
             ) {
                 Icon(resource)
                 Spacer(modifier = Modifier.width(8.dp))

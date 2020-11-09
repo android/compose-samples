@@ -26,11 +26,6 @@ import com.example.compose.jetsurvey.survey.SurveyActionType.TAKE_PHOTO
 // Static data of questions
 private val jetpackQuestions = listOf(
     Question(
-        id = 975,
-        questionText = R.string.selfie_skills,
-        answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO)
-    ),
-    Question(
         id = 1,
         questionText = R.string.in_my_free_time,
         answer = MultipleChoice(
@@ -86,6 +81,11 @@ private val jetpackQuestions = listOf(
             startText = R.string.selfie_min,
             endText = R.string.selfie_max
         )
+    ),
+    Question(
+        id = 975,
+        questionText = R.string.selfie_skills,
+        answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO)
     )
 )
 private val jetpackSurvey = Survey(

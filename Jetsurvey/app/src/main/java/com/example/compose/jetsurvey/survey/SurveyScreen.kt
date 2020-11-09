@@ -41,10 +41,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.annotatedString
@@ -61,9 +58,9 @@ fun SurveyQuestionsScreen(
     onDonePressed: () -> Unit,
     onBackPressed: () -> Unit
 ) {
-    var currentQuestionIndex by savedInstanceState { 0 }
-    val questionState =
-        remember(currentQuestionIndex) { questions.questionsState[currentQuestionIndex] }
+    val questionState = remember(questions.currentQuestionIndex) {
+        questions.questionsState[questions.currentQuestionIndex]
+    }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -91,8 +88,8 @@ fun SurveyQuestionsScreen(
             bottomBar = {
                 SurveyBottomBar(
                     questionState = questionState,
-                    onPreviousPressed = { currentQuestionIndex-- },
-                    onNextPressed = { currentQuestionIndex++ },
+                    onPreviousPressed = { questions.currentQuestionIndex-- },
+                    onNextPressed = { questions.currentQuestionIndex++ },
                     onDonePressed = onDonePressed
                 )
             }
@@ -158,7 +155,7 @@ private fun TopAppBarTitle(
         fontWeight = FontWeight.Bold
     )
     val totalStyle = MaterialTheme.typography.caption.toSpanStyle().copy(
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.Normal
     )
     val text = annotatedString {
         withStyle(style = indexStyle) {
