@@ -24,6 +24,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -44,6 +45,7 @@ class HomeTest {
         }
     }
 
+    @Ignore("Due to https://issuetracker.google.com/172660922 that will land on alpha08")
     @Test
     fun home_navigatesToAllScreens() {
         composeTestRule.onNodeWithText("Explore Flights by Destination").assertExists()
