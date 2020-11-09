@@ -29,8 +29,9 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.3.2"
+        private const val version = "0.3.3.compose-6953474-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
@@ -41,7 +42,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.3.9"
+        private const val version = "1.4.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -54,15 +55,15 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
+        const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val palette = "androidx.palette:palette:1.0.0"
 
         const val core = "androidx.core:core:1.5.0-alpha04"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
 
         object Compose {
-            private const val snapshot = ""
-            const val version = "1.0.0-alpha06"
+            private const val snapshot = "6953474"
+            const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -77,7 +78,6 @@ object Libs {
             const val materialIconsExtended = "androidx.compose.material:material-icons-extended:${version}"
 
             const val tooling = "androidx.ui:ui-tooling:${version}"
-            const val test = "androidx.ui:ui-test:${version}"
         }
 
         object Test {
