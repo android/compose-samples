@@ -18,7 +18,6 @@ package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,25 +26,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -313,7 +314,7 @@ private fun FullScreenLoading() {
  */
 @Composable
 private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
-    ProvideEmphasis(AmbientEmphasisLevels.current.high) {
+    Providers(AmbientContentAlpha provides ContentAlpha.high) {
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = "Top stories for you",
@@ -365,7 +366,7 @@ private fun PostListPopularSection(
     navigateTo: (Screen) -> Unit
 ) {
     Column {
-        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high) {
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = "Popular on Jetnews",
