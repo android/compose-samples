@@ -27,8 +27,8 @@ import com.example.owl.ui.courses.Courses
 import com.example.owl.ui.onboarding.Onboarding
 import com.example.owl.ui.utils.AmbientBackDispatcher
 import com.example.owl.ui.utils.Navigator
-import com.example.owl.ui.utils.ProvideDisplayInsets
 import com.example.owl.ui.utils.ProvideImageLoader
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 @Composable
 fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
@@ -41,7 +41,7 @@ fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
     val actions = remember(navigator) { Actions(navigator) }
 
     Providers(AmbientBackDispatcher provides backDispatcher) {
-        ProvideDisplayInsets {
+        ProvideWindowInsets {
             ProvideImageLoader {
                 Crossfade(navigator.current) { destination ->
                     when (destination) {

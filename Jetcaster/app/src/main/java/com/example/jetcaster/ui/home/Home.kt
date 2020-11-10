@@ -17,7 +17,6 @@
 package com.example.jetcaster.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,22 +32,24 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabConstants.defaultTabIndicatorOffset
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -76,9 +77,9 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
-import com.example.jetcaster.util.statusBarsHeight
 import com.example.jetcaster.util.verticalGradientScrim
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -119,7 +120,7 @@ fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 IconButton(
                     onClick = { /* TODO: Open search */ },
                     icon = { Icon(Icons.Filled.Search) }
@@ -170,7 +171,7 @@ fun HomeContent(
 
             // When the selected image url changes, call updateColorsFromImageUrl() or reset()
             if (selectedImageUrl != null) {
-                LaunchedTask(selectedImageUrl) {
+                LaunchedEffect(selectedImageUrl) {
                     dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
                 }
             } else {
@@ -338,17 +339,15 @@ private fun FollowedPodcastCarouselItem(
                 )
             }
 
-            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-                ToggleFollowPodcastIconButton(
-                    onClick = onUnfollowedClick,
-                    isFollowed = true, /* All podcasts are followed in this feed */
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                )
-            }
+            ToggleFollowPodcastIconButton(
+                onClick = onUnfollowedClick,
+                isFollowed = true, /* All podcasts are followed in this feed */
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
         }
 
         if (lastEpisodeDate != null) {
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = lastUpdated(lastEpisodeDate),
                     style = MaterialTheme.typography.caption,
