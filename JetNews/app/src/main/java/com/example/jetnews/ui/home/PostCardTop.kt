@@ -55,16 +55,15 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         }
         Spacer(Modifier.preferredHeight(16.dp))
 
-        Providers(AmbientContentAlpha provides ContentAlpha.high) {
-            Text(
-                text = post.title,
-                style = typography.h6
-            )
-            Text(
-                text = post.metadata.author.name,
-                style = typography.body2
-            )
-        }
+        Text(
+            text = post.title,
+            style = typography.h6
+        )
+        Text(
+            text = post.metadata.author.name,
+            style = typography.body2
+        )
+
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",

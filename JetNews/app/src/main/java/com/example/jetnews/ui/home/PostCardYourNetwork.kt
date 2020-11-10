@@ -23,13 +23,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
@@ -63,27 +60,24 @@ fun PostCardPopular(
                     .fillMaxWidth()
             )
             Column(modifier = Modifier.padding(16.dp)) {
-                Providers(AmbientContentAlpha provides ContentAlpha.high) {
-                    Text(
-                        text = post.title,
-                        style = MaterialTheme.typography.h6,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = post.metadata.author.name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-                Providers(AmbientContentAlpha provides ContentAlpha.high) {
-                    Text(
-                        text = "${post.metadata.date} - " +
-                            "${post.metadata.readTimeMinutes} min read",
-                        style = MaterialTheme.typography.body2
-                    )
-                }
+                Text(
+                    text = post.title,
+                    style = MaterialTheme.typography.h6,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = post.metadata.author.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.body2
+                )
+
+                Text(
+                    text = "${post.metadata.date} - " +
+                        "${post.metadata.readTimeMinutes} min read",
+                    style = MaterialTheme.typography.body2
+                )
             }
         }
     }

@@ -79,9 +79,7 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
 
 @Composable
 fun PostTitle(post: Post) {
-    Providers(AmbientContentAlpha provides ContentAlpha.high) {
-        Text(post.title, style = MaterialTheme.typography.subtitle1)
-    }
+    Text(post.title, style = MaterialTheme.typography.subtitle1)
 }
 
 @Composable
@@ -118,12 +116,10 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            Providers(AmbientContentAlpha provides ContentAlpha.high) {
-                Text(
-                    text = "BASED ON YOUR HISTORY",
-                    style = MaterialTheme.typography.overline
-                )
-            }
+            Text(
+                text = "BASED ON YOUR HISTORY",
+                style = MaterialTheme.typography.overline
+            )
             PostTitle(post = post)
             AuthorAndReadTime(
                 post = post,

@@ -26,9 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -46,7 +44,6 @@ import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -314,13 +311,11 @@ private fun FullScreenLoading() {
  */
 @Composable
 private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
-    Providers(AmbientContentAlpha provides ContentAlpha.high) {
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = "Top stories for you",
-            style = MaterialTheme.typography.subtitle1
-        )
-    }
+    Text(
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+        text = "Top stories for you",
+        style = MaterialTheme.typography.subtitle1
+    )
     PostCardTop(
         post = post,
         modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
@@ -366,13 +361,12 @@ private fun PostListPopularSection(
     navigateTo: (Screen) -> Unit
 ) {
     Column {
-        Providers(AmbientContentAlpha provides ContentAlpha.high) {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = "Popular on Jetnews",
-                style = MaterialTheme.typography.subtitle1
-            )
-        }
+        Text(
+            modifier = Modifier.padding(16.dp),
+            text = "Popular on Jetnews",
+            style = MaterialTheme.typography.subtitle1
+        )
+
         ScrollableRow(modifier = Modifier.padding(end = 16.dp)) {
             posts.forEach { post ->
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))

@@ -123,13 +123,12 @@ private fun PostMetadata(metadata: Metadata) {
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
-            Providers(AmbientContentAlpha provides ContentAlpha.high) {
-                Text(
-                    text = metadata.author.name,
-                    style = typography.caption,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+            Text(
+                text = metadata.author.name,
+                style = typography.caption,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
