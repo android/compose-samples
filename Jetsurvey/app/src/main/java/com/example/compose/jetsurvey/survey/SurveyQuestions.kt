@@ -304,11 +304,6 @@ private fun PhotoQuestion(
     } else {
         Icons.Filled.AddAPhoto
     }
-    val label = if (answer != null) {
-        R.string.retake_photo
-    } else {
-        R.string.add_photo
-    }
     OutlinedButton(
         onClick = { onAction(questionId, SurveyActionType.TAKE_PHOTO) },
         modifier = modifier,
@@ -318,7 +313,8 @@ private fun PhotoQuestion(
             if (answer != null && answer.result is SurveyActionResult.Photo) {
                 CoilImage(
                     data = answer.result.uri,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    fadeIn = true
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
@@ -328,11 +324,19 @@ private fun PhotoQuestion(
                     .fillMaxWidth()
                     .wrapContentSize(Alignment.BottomCenter)
                     .padding(vertical = 26.dp),
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(resource)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(id = label))
+                Text(
+                    text = stringResource(
+                        id = if (answer != null) {
+                            R.string.retake_photo
+                        } else {
+                            R.string.add_photo
+                        }
+                    )
+                )
             }
         }
     }

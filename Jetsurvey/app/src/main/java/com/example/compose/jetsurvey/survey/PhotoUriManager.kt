@@ -18,7 +18,6 @@ package com.example.compose.jetsurvey.survey
 
 import android.content.ContentValues
 import android.content.Context
-import android.net.Uri
 import android.provider.MediaStore
 
 /**
@@ -32,25 +31,15 @@ class PhotoUriManager(private val appContext: Context) {
 
     private val resolver by lazy { appContext.contentResolver }
 
-    // Uri used to save photos taken with the camera
-    var uri: Uri? = null
-        get() = field
-        private set(value) {
-            field = value
-        }
+    fun buildNewUri() = resolver.insert(photoCollection, buildPhotoDetails())
 
-    fun buildNewUri(): Uri? {
-        uri = resolver.insert(photoCollection, getPhotoDetails())
-        return uri
+    private fun buildPhotoDetails() = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, generateFilename())
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
     }
-}
 
-private fun getPhotoDetails() = ContentValues().apply {
-    put(MediaStore.Images.Media.DISPLAY_NAME, generateFilename())
-    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+    /**
+     * Create a unique file name based on the time the photo is taken
+     */
+    private fun generateFilename() = "selfie-${System.currentTimeMillis()}.jpg"
 }
-
-/**
- * Create a unique file name based on the time the photo is taken
- */
-private fun generateFilename() = "selfie-${System.currentTimeMillis()}.jpg"

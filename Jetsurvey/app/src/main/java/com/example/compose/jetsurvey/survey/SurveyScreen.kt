@@ -154,9 +154,7 @@ private fun TopAppBarTitle(
     val indexStyle = MaterialTheme.typography.caption.toSpanStyle().copy(
         fontWeight = FontWeight.Bold
     )
-    val totalStyle = MaterialTheme.typography.caption.toSpanStyle().copy(
-        fontWeight = FontWeight.Normal
-    )
+    val totalStyle = MaterialTheme.typography.caption.toSpanStyle()
     val text = annotatedString {
         withStyle(style = indexStyle) {
             append("${questionIndex + 1}")

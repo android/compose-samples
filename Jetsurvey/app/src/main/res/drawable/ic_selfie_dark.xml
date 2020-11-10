@@ -20,8 +20,6 @@
     android:viewportWidth="200"
     android:viewportHeight="162">
   <group>
-    <clip-path
-        android:pathData="M0,0h200v161.78h-200z"/>
     <path
         android:pathData="M77.957,160.547L200,99L150.073,0L23.608,57.867L77.957,160.547Z"
         android:strokeAlpha="0.9"

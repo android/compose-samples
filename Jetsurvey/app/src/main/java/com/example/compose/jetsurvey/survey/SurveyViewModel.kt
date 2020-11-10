@@ -35,6 +35,9 @@ class SurveyViewModel(
 
     private lateinit var surveyInitialState: SurveyState
 
+    // Uri used to save photos taken with the camera
+    private var uri: Uri? = null
+
     init {
         viewModelScope.launch {
             val survey = surveyRepository.getSurvey()
@@ -66,10 +69,13 @@ class SurveyViewModel(
         updateStateWithActionResult(questionId, SurveyActionResult.Date(date))
     }
 
-    fun getUriToSaveImage(): Uri? = photoUriManager.buildNewUri()
+    fun getUriToSaveImage(): Uri? {
+        uri = photoUriManager.buildNewUri()
+        return uri
+    }
 
     fun onImageSaved() {
-        photoUriManager.uri?.let { uri ->
+        uri?.let { uri ->
             getLatestQuestionId()?.let { questionId ->
                 updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
             }
