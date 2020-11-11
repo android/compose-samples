@@ -19,14 +19,10 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.AmbientTextStyle
-import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,22 +32,26 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.relativePaddingFrom
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.FirstBaseline
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientContentColor
+import androidx.compose.material.AmbientTextStyle
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonConstants
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AlternateEmail
@@ -60,6 +60,7 @@ import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onCommit
@@ -76,6 +77,7 @@ import androidx.compose.ui.focusObserver
 import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -225,16 +227,14 @@ fun FunctionalityNotAvailablePanel() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-                Text(
-                    text = stringResource(id = R.string.not_available),
-                    style = MaterialTheme.typography.subtitle1
-                )
-            }
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Text(
+                text = stringResource(id = R.string.not_available),
+                style = MaterialTheme.typography.subtitle1
+            )
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.not_available_subtitle),
-                    modifier = Modifier.relativePaddingFrom(FirstBaseline, before = 32.dp),
+                    modifier = Modifier.paddingFrom(FirstBaseline, before = 32.dp),
                     style = MaterialTheme.typography.body2
                 )
             }
@@ -308,7 +308,7 @@ private fun UserInputSelector(
         Spacer(modifier = Modifier.weight(1f))
 
         val disabledContentColor =
-            AmbientEmphasisLevels.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
+            MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
 
         val buttonColors = ButtonConstants.defaultButtonColors(
             disabledBackgroundColor = MaterialTheme.colors.surface,
@@ -346,7 +346,7 @@ private fun InputSelectorButton(
         onClick = onClick,
         modifier = Modifier.semantics { accessibilityLabel = description }
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             val tint = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current
             Icon(
                 icon,
@@ -397,38 +397,44 @@ private fun UserInputText(
             },
         horizontalArrangement = Arrangement.End
     ) {
-        Box(
-            modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
-        ) {
-            var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
-            BaseTextField(
-                value = textFieldValue,
-                onValueChange = { onTextChanged(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterStart)
-                    .focusObserver { state ->
-                        if (lastFocusState != state) {
-                            onTextFieldFocused(state == FocusState.Active)
-                        }
-                        lastFocusState = state
-                    },
-                keyboardType = keyboardType,
-                imeAction = ImeAction.Send,
-                onTextInputStarted = { controller -> keyboardController = controller }
-            )
-
-            val disableContentColor =
-                AmbientEmphasisLevels.current.disabled.applyEmphasis(MaterialTheme.colors.onSurface)
-            if (textFieldValue.text.isEmpty() && !focusState) {
-                Text(
+        Surface {
+            Box(
+                modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
+            ) {
+                var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
+                BasicTextField(
+                    value = textFieldValue,
+                    onValueChange = { onTextChanged(it) },
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
                         .align(Alignment.CenterStart)
-                        .padding(start = 16.dp),
-                    text = stringResource(id = R.string.textfield_hint),
-                    style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                        .focusObserver { state ->
+                            if (lastFocusState != state) {
+                                onTextFieldFocused(state == FocusState.Active)
+                            }
+                            lastFocusState = state
+                        },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = keyboardType,
+                        imeAction = ImeAction.Send
+                    ),
+                    maxLines = 1,
+                    cursorColor = AmbientContentColor.current,
+                    textStyle = AmbientTextStyle.current.copy(color = AmbientContentColor.current)
                 )
+
+                val disableContentColor =
+                    MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                if (textFieldValue.text.isEmpty() && !focusState) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 16.dp),
+                        text = stringResource(id = R.string.textfield_hint),
+                        style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                    )
+                }
             }
         }
     }

@@ -102,6 +102,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
 
+    implementation Libs.Accompanist.coil
+
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.espressoCore

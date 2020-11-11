@@ -20,9 +20,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.captureToImage
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.SemanticsNodeInteraction
-import androidx.ui.test.captureToBitmap
 import java.io.FileOutputStream
 
 /**
@@ -39,7 +40,7 @@ fun assertScreenshotMatchesGolden(
     goldenName: String,
     node: SemanticsNodeInteraction
 ) {
-    val bitmap = node.captureToBitmap()
+    val bitmap = node.captureToImage().asAndroidBitmap()
 
     // Save screenshot to file for debugging
     saveScreenshot(goldenName + System.currentTimeMillis().toString(), bitmap)

@@ -19,7 +19,6 @@ package com.example.jetsnack.ui.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -66,7 +65,6 @@ private fun Feed(
     }
 }
 
-@OptIn(ExperimentalLazyDsl::class)
 @Composable
 private fun SnackCollectionList(
     snackCollections: List<SnackCollection>,

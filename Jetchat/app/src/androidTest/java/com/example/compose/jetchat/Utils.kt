@@ -16,14 +16,12 @@
 
 package com.example.compose.jetchat
 
-import androidx.ui.test.ComposeTestRule
-import androidx.ui.test.onRoot
-import androidx.ui.test.printToLog
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.printToLog
 
 /**
  * Used to debug the semantic tree.
- *
- * TODO: Replace with aosp/1355659
  */
 fun ComposeTestRule.dumpSemanticNodes() {
     this.onRoot().printToLog(tag = "JetchatLog")
