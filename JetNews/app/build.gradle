@@ -68,6 +68,11 @@ android {
         kotlinCompilerVersion kotlin_version
         kotlinCompilerExtensionVersion compose_version
     }
+
+    packagingOptions {
+        excludes += "/META-INF/AL2.0"
+        excludes += "/META-INF/LGPL2.1"
+    }
 }
 
 dependencies {

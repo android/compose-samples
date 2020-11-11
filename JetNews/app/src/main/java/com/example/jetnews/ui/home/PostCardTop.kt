@@ -17,17 +17,18 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -54,18 +55,16 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         }
         Spacer(Modifier.preferredHeight(16.dp))
 
-        val emphasisLevels = AmbientEmphasisLevels.current
-        ProvideEmphasis(emphasisLevels.high) {
-            Text(
-                text = post.title,
-                style = typography.h6
-            )
-            Text(
-                text = post.metadata.author.name,
-                style = typography.body2
-            )
-        }
-        ProvideEmphasis(emphasisLevels.medium) {
+        Text(
+            text = post.title,
+            style = typography.h6
+        )
+        Text(
+            text = post.metadata.author.name,
+            style = typography.body2
+        )
+
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
                 style = typography.body2

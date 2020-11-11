@@ -16,13 +16,13 @@
 
 package com.example.jetnews
 
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasSubstring
-import androidx.ui.test.onNodeWithText
-import androidx.ui.test.performClick
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
