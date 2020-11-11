@@ -116,10 +116,12 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            Text(
-                text = "BASED ON YOUR HISTORY",
-                style = MaterialTheme.typography.overline
-            )
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = "BASED ON YOUR HISTORY",
+                    style = MaterialTheme.typography.overline
+                )
+            }
             PostTitle(post = post)
             AuthorAndReadTime(
                 post = post,
