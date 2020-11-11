@@ -28,6 +28,11 @@ object Libs {
 
     const val material = "com.google.android.material:material:1.1.0"
 
+    object Accompanist {
+        private const val version = "0.3.3.compose-6961312-SNAPSHOT"
+        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+    }
+
     object Kotlin {
         private const val version = "1.4.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
@@ -40,7 +45,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
         object Compose {
-            const val snapshot = "6953474"
+            const val snapshot = "6961312"
             const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
