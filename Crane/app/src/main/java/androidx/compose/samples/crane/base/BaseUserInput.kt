@@ -17,18 +17,18 @@
 package androidx.compose.samples.crane.base
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -93,13 +93,18 @@ fun CraneEditableUserInput(
         showCaption = { !isHint() },
         vectorImageId = vectorImageId
     ) {
-        BaseTextField(
+        BasicTextField(
             value = textFieldState,
             onValueChange = {
                 textFieldState = it
                 if (!isHint()) onInputChanged(textFieldState.text)
             },
-            textStyle = if (isHint()) captionTextStyle else MaterialTheme.typography.body1,
+            textStyle = if (isHint()) {
+                captionTextStyle.copy(color = AmbientContentColor.current)
+            } else {
+                MaterialTheme.typography.body1
+            },
+            cursorColor = AmbientContentColor.current
         )
     }
 }
