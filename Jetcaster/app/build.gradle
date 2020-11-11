@@ -109,6 +109,8 @@ dependencies {
 
     implementation Libs.Accompanist.coil
 
+    implementation Libs.Accompanist.insets
+
     implementation Libs.OkHttp.okhttp
     implementation Libs.OkHttp.logging
 

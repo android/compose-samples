@@ -16,14 +16,16 @@
 
 package com.example.compose.jetsurvey.survey
 
+import android.os.Build
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.PossibleAnswer.Action
 import com.example.compose.jetsurvey.survey.PossibleAnswer.MultipleChoice
 import com.example.compose.jetsurvey.survey.PossibleAnswer.SingleChoice
 import com.example.compose.jetsurvey.survey.SurveyActionType.PICK_DATE
+import com.example.compose.jetsurvey.survey.SurveyActionType.TAKE_PHOTO
 
 // Static data of questions
-private val jetpackQuestions = listOf(
+private val jetpackQuestions = mutableListOf(
     Question(
         id = 1,
         questionText = R.string.in_my_free_time,
@@ -81,7 +83,19 @@ private val jetpackQuestions = listOf(
             endText = R.string.selfie_max
         )
     )
-)
+).apply {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        // Add the camera feature only for devices 29+
+        add(
+            Question(
+                id = 975,
+                questionText = R.string.selfie_skills,
+                answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO)
+            )
+        )
+    }
+}.toList()
+
 private val jetpackSurvey = Survey(
     title = R.string.which_jetpack_library,
     questions = jetpackQuestions

@@ -23,7 +23,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -34,6 +33,7 @@ import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
 import com.example.owl.ui.theme.compositedOnSurface
+import dev.chrisbanes.accompanist.coil.AmbientImageLoader
 import dev.chrisbanes.accompanist.coil.CoilImage
 import okhttp3.HttpUrl
 
@@ -51,7 +51,6 @@ fun NetworkImage(
         data = url,
         modifier = modifier,
         contentScale = contentScale,
-        imageLoader = AmbientImageLoader.current,
         loading = {
             if (placeholderColor != null) {
                 Spacer(
@@ -62,10 +61,6 @@ fun NetworkImage(
             }
         }
     )
-}
-
-private val AmbientImageLoader = staticAmbientOf<ImageLoader> {
-    error("No loader provided")
 }
 
 @Composable
