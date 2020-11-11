@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.HorizontalGradient
 import androidx.compose.ui.graphics.LinearGradient
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.onSizeChanged
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -48,7 +48,7 @@ fun Modifier.horizontalGradientBackground(
         endX = size.width,
         colors = colors
     )
-    onDraw {
+    onDrawBehind {
         drawRect(brush = gradient)
     }
 }
