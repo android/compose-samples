@@ -40,6 +40,13 @@ object Libs {
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
+    object Coroutines {
+        private const val version = "1.4.1"
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+    }
+
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"

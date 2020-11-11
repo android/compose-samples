@@ -50,7 +50,7 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -77,8 +77,8 @@ android {
 }
 
 dependencies {
-
     implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.android
 
     implementation Libs.Coroutines.core
 
