@@ -23,9 +23,6 @@ buildscript {
         jcenter()
     }
     dependencies {
-        // Downgrade R8 due to b/169095082
-        // TODO remove this
-        classpath 'com.android.tools:r8:2.1.66'
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
     }
