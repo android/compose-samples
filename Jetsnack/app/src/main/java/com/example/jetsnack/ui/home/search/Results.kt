@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.home.search
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.Composable
@@ -54,6 +54,7 @@ import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
 fun SearchResults(
@@ -148,7 +149,7 @@ private fun SearchResult(
                 }
         )
         Text(
-            text = "$12.99",
+            text = formatPrice(snack.price),
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.constrainAs(price) {

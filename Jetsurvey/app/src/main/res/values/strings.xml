@@ -38,7 +38,10 @@
 
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
-    <string name="question_count">%1$d of %2$d</string>
+    <string name="question_count">\u00A0of %d</string>
+    <string name="select_one">Select one.</string>
+    <string name="select_all">Select all that apply.</string>
+    <string name="select_date">Select date.</string>
 
     <!-- question 1-->
     <string name="in_my_free_time">In my free time I like to …</string>
@@ -67,8 +70,9 @@
     <string name="selfie_max">🤩️</string>
 
     <!-- question 5-->
-    <string name="selfie_skills">Show us your selfie skills!</string>
-    <string name="take_selfie">Take a selfie!</string>
+    <string name="selfie_skills">Show off your selfie skills!</string>
+    <string name="add_photo">ADD PHOTO</string>
+    <string name="retake_photo">RETAKE PHOTO</string>
 
     <!-- question 6-->
     <string name="best_friend">Who\'s your best friend?</string>

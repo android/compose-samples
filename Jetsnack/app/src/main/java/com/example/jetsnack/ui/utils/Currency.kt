@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.owl.ui.utils
+package com.example.jetsnack.ui.utils
 
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.drawWithCache
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.VerticalGradient
+import java.math.BigDecimal
+import java.text.NumberFormat
 
-/**
- * A [Modifier] which draws a vertical gradient
- */
-fun Modifier.scrim(colors: List<Color>): Modifier = drawWithCache {
-    // Use drawWithCache modifier to create and cache the gradient when size is known or changes.
-    val gradient = VerticalGradient(
-        colors = colors,
-        startY = 0f,
-        endY = size.height
+fun formatPrice(price: Long): String {
+    return NumberFormat.getCurrencyInstance().format(
+        BigDecimal(price).movePointLeft(2)
     )
-    onDrawWithContent {
-        drawContent()
-        drawRect(brush = gradient)
-    }
 }

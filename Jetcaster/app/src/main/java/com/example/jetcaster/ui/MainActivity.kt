@@ -21,7 +21,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
 import com.example.jetcaster.ui.theme.JetcasterTheme
-import com.example.jetcaster.util.ProvideDisplayInsets
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             JetcasterTheme {
-                ProvideDisplayInsets {
+                ProvideWindowInsets {
                     JetcasterApp()
                 }
             }

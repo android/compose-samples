@@ -18,6 +18,7 @@ package androidx.compose.samples.crane.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.DpPropKey
 import androidx.compose.animation.core.FloatPropKey
 import androidx.compose.animation.core.Spring.StiffnessLow
@@ -51,29 +52,31 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CraneScaffold {
-                val onExploreItemClicked: OnExploreItemClicked = remember {
-                    { launchDetailsActivity(context = this, item = it) }
-                }
-                val onDateSelectionClicked = remember {
-                    { launchCalendarActivity(this) }
-                }
+            MainScreen(
+                onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
+                onDateSelectionClicked = { launchCalendarActivity(this) }
+            )
+        }
+    }
+}
 
-                var splashShown by remember { mutableStateOf(SplashState.Shown) }
-                val transition = transition(splashTransitionDefinition, splashShown)
-                Box {
-                    LandingScreen(
-                        modifier = Modifier.drawOpacity(transition[splashAlphaKey]),
-                        onTimeout = { splashShown = SplashState.Completed }
-                    )
-                    MainContent(
-                        modifier = Modifier.drawOpacity(transition[contentAlphaKey]),
-                        topPadding = transition[contentTopPaddingKey],
-                        onExploreItemClicked = onExploreItemClicked,
-                        onDateSelectionClicked = onDateSelectionClicked
-                    )
-                }
-            }
+@VisibleForTesting
+@Composable
+fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicked: () -> Unit) {
+    CraneScaffold {
+        var splashShown by remember { mutableStateOf(SplashState.Shown) }
+        val transition = transition(splashTransitionDefinition, splashShown)
+        Box {
+            LandingScreen(
+                modifier = Modifier.drawOpacity(transition[splashAlphaKey]),
+                onTimeout = { splashShown = SplashState.Completed }
+            )
+            MainContent(
+                modifier = Modifier.drawOpacity(transition[contentAlphaKey]),
+                topPadding = transition[contentTopPaddingKey],
+                onExploreItemClicked = onExploreItemClicked,
+                onDateSelectionClicked = onDateSelectionClicked
+            )
         }
     }
 }

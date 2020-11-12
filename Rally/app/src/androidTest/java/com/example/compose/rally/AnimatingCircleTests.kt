@@ -21,10 +21,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.filters.SdkSuppress
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.onRoot
 import com.example.compose.rally.ui.components.AnimatedCircle
 import com.example.compose.rally.ui.theme.RallyTheme
 import org.junit.Rule

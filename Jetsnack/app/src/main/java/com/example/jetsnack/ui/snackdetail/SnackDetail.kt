@@ -18,7 +18,6 @@ package com.example.jetsnack.ui.snackdetail
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +36,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
@@ -44,9 +44,9 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.drawLayer
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
@@ -68,6 +68,7 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
+import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.navigationBarsPadding
 import com.example.jetsnack.ui.utils.statusBarsPadding
 import kotlin.math.max
@@ -236,7 +237,7 @@ private fun Title(snack: Snack, scroll: Float) {
         )
         Spacer(Modifier.preferredHeight(4.dp))
         Text(
-            text = "$12.99",
+            text = formatPrice(snack.price),
             style = MaterialTheme.typography.h6,
             color = JetsnackTheme.colors.textPrimary,
             modifier = HzPadding

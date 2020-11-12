@@ -16,7 +16,7 @@
 
 package com.example.compose.jetsurvey.survey
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.annotation.StringRes
 
 data class SurveyResult(
@@ -33,7 +33,8 @@ data class Survey(
 data class Question(
     val id: Int,
     @StringRes val questionText: Int,
-    val answer: PossibleAnswer
+    val answer: PossibleAnswer,
+    @StringRes val description: Int? = null
 )
 
 /**
@@ -43,7 +44,7 @@ enum class SurveyActionType { PICK_DATE, TAKE_PHOTO, SELECT_CONTACT }
 
 sealed class SurveyActionResult {
     data class Date(val date: String) : SurveyActionResult()
-    data class Photo(val bitmap: Bitmap) : SurveyActionResult()
+    data class Photo(val uri: Uri) : SurveyActionResult()
     data class Contact(val contact: String) : SurveyActionResult()
 }
 

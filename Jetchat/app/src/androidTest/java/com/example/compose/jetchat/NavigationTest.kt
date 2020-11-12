@@ -19,12 +19,12 @@ package com.example.compose.jetchat
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
-import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.createAndroidComposeRule
-import androidx.ui.test.onNodeWithText
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState

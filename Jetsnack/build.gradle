@@ -23,9 +23,6 @@ buildscript {
         jcenter()
     }
     dependencies {
-        // Downgrade R8 due to b/169095082
-        // TODO remove this
-        classpath 'com.android.tools:r8:2.1.66'
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
     }
@@ -56,6 +53,8 @@ subprojects {
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            // Enable experimental coroutines APIs, including collectAsState()
+            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
         }
     }
     apply plugin: 'com.diffplug.spotless'
