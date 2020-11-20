@@ -21,10 +21,8 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.hasLabel
 import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithLabel
 import androidx.compose.ui.test.onNodeWithSubstring
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.owl.R
