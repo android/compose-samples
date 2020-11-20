@@ -31,7 +31,7 @@ import com.example.owl.ui.courses.Courses
 import com.example.owl.ui.onboarding.Onboarding
 
 /**
- * Destinations used in the main screen ([OwlApp]).
+ * Destinations used in the ([OwlApp]).
  */
 object MainDestinations {
     const val ONBOARDING_ROUTE = "onboarding"

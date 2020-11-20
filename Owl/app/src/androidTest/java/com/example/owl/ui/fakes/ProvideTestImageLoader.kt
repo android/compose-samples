@@ -33,7 +33,7 @@ import coil.request.SuccessResult
 import dev.chrisbanes.accompanist.coil.AmbientImageLoader
 
 /**
- * Replaces all images with a simple black drawable to make testing faster and hermetic.
+ * Replaces all remote images with a simple black drawable to make testing faster and hermetic.
  */
 @OptIn(ExperimentalCoilApi::class)
 @Composable

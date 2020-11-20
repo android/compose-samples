@@ -21,11 +21,11 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.hasLabel
 import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithLabel
 import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.printToLog
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.owl.R
 import com.example.owl.model.courses
@@ -40,6 +40,11 @@ import org.junit.Test
  */
 class NavigationTest {
 
+    /**
+     * Using an empty activity to have control of the content that is set.
+     *
+     * This activity must be declared in the manifest (see src/debug/AndroidManifest.xml)
+     */
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
     lateinit var activity: ComponentActivity
@@ -47,15 +52,15 @@ class NavigationTest {
     private fun startActivity(startDestination: String? = null) {
         composeTestRule.activityRule.scenario.onActivity {
             activity = it
-        }
-        composeTestRule.setContent {
-            Providers(AmbientBackDispatcher provides activity.onBackPressedDispatcher) {
-                ProvideWindowInsets {
-                    ProvideTestImageLoader {
-                        if (startDestination == null) {
-                            NavGraph()
-                        } else {
-                            NavGraph(startDestination)
+            composeTestRule.setContent {
+                Providers(AmbientBackDispatcher provides activity.onBackPressedDispatcher) {
+                    ProvideWindowInsets {
+                        ProvideTestImageLoader {
+                            if (startDestination == null) {
+                                NavGraph()
+                            } else {
+                                NavGraph(startDestination)
+                            }
                         }
                     }
                 }
@@ -90,7 +95,6 @@ class NavigationTest {
         // Given the app in the courses screen
         startActivity(MainDestinations.COURSES_ROUTE)
 
-        composeTestRule.onRoot().printToLog("jalc")
         // Navigate to the first course
         composeTestRule.onNode(
             hasLabel(getFeaturedCourseLabel()).and(hasSubstring(courses.first().name))
