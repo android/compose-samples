@@ -21,11 +21,11 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha15"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha16"
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.3.2"
+        private const val version = "0.3.3.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -37,7 +37,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.4.0"
+        private const val version = "1.4.1"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -48,12 +48,12 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-alpha06"
+            const val version = "1.0.0-alpha07"
 
-            const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
             const val ui = "androidx.compose.ui:ui:${version}"
+            const val runtime = "androidx.compose.runtime:runtime:${version}"
             const val material = "androidx.compose.material:material:${version}"
             const val animation = "androidx.compose.animation:animation:${version}"
             const val tooling = "androidx.ui:ui-tooling:${version}"

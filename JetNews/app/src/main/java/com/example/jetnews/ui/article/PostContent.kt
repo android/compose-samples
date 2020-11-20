@@ -16,10 +16,8 @@
 
 package com.example.jetnews.ui.article
 
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,21 +30,24 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.FirstBaseline
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Colors
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -82,7 +83,7 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         Text(text = post.title, style = MaterialTheme.typography.h4)
         Spacer(Modifier.preferredHeight(8.dp))
         post.subtitle?.let { subtitle ->
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.body2,
@@ -122,14 +123,13 @@ private fun PostMetadata(metadata: Metadata) {
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
-            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-                Text(
-                    text = metadata.author.name,
-                    style = typography.caption,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Text(
+                text = metadata.author.name,
+                style = typography.caption,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
                     style = typography.caption

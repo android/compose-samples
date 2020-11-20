@@ -21,7 +21,6 @@ import androidx.compose.animation.core.FloatPropKey
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.transition
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,26 +36,28 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.drawLayer
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.accessibilityLabel
@@ -71,8 +72,8 @@ import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.YellowTheme
 import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.navigationBarsPadding
-import com.example.owl.ui.utils.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 
 @Composable
@@ -101,17 +102,15 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                     .navigationBarsPadding()
                     .padding(innerPadding)
             ) {
-                ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-                    Text(
-                        text = stringResource(R.string.choose_topics_that_interest_you),
-                        style = MaterialTheme.typography.h4,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp,
-                            vertical = 32.dp
-                        )
+                Text(
+                    text = stringResource(R.string.choose_topics_that_interest_you),
+                    style = MaterialTheme.typography.h4,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = 32.dp
                     )
-                }
+                )
                 TopicsGrid(
                     modifier = Modifier
                         .weight(1f)
@@ -136,13 +135,11 @@ private fun AppBar() {
             asset = vectorResource(id = OwlTheme.images.lockupLogo),
             modifier = Modifier.padding(16.dp)
         )
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-            IconButton(
-                modifier = Modifier.padding(16.dp),
-                onClick = { /* todo */ }
-            ) {
-                Icon(Icons.Filled.Settings)
-            }
+        IconButton(
+            modifier = Modifier.padding(16.dp),
+            onClick = { /* todo */ }
+        ) {
+            Icon(Icons.Filled.Settings)
         }
     }
 }
@@ -228,7 +225,7 @@ private fun TopicChip(topic: Topic) {
                     )
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                         Icon(
                             asset = vectorResource(R.drawable.ic_grain),
                             modifier = Modifier

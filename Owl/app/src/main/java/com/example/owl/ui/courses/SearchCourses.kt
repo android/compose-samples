@@ -16,18 +16,19 @@
 
 package com.example.owl.ui.courses
 
-import androidx.compose.foundation.BaseTextField
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -44,7 +45,7 @@ import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
 fun SearchCourses(
@@ -102,10 +103,14 @@ private fun AppBar(
                 .align(Alignment.CenterVertically)
         )
         // TODO hint
-        BaseTextField(
+        BasicTextField(
             value = searchTerm,
             onValueChange = updateSearchTerm,
-            textStyle = MaterialTheme.typography.subtitle1,
+            textStyle = MaterialTheme.typography.subtitle1.copy(
+                color = AmbientContentColor.current
+            ),
+            maxLines = 1,
+            cursorColor = AmbientContentColor.current,
             modifier = Modifier
                 .weight(1f)
                 .align(Alignment.CenterVertically)

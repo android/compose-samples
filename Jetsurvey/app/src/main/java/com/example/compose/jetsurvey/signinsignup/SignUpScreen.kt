@@ -16,17 +16,18 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
@@ -103,7 +104,7 @@ fun SignUpContent(
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.terms_and_conditions),
                 style = MaterialTheme.typography.caption
@@ -117,9 +118,7 @@ fun SignUpContent(
             enabled = emailState.isValid &&
                 passwordState.isValid && confirmPasswordState.isValid
         ) {
-            Text(
-                text = stringResource(id = R.string.create_account)
-            )
+            Text(text = stringResource(id = R.string.create_account))
         }
     }
 }

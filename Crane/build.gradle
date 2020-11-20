@@ -67,6 +67,10 @@ subprojects {
             // Use experimental APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+            freeCompilerArgs += [
+                    '-P',
+                    'plugin:androidx.compose.compiler.plugins.kotlin:intrinsicRemember=true'
+            ]
         }
     }
 }

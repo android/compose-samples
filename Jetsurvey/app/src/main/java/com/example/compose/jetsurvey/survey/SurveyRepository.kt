@@ -16,14 +16,16 @@
 
 package com.example.compose.jetsurvey.survey
 
+import android.os.Build
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.PossibleAnswer.Action
 import com.example.compose.jetsurvey.survey.PossibleAnswer.MultipleChoice
 import com.example.compose.jetsurvey.survey.PossibleAnswer.SingleChoice
 import com.example.compose.jetsurvey.survey.SurveyActionType.PICK_DATE
+import com.example.compose.jetsurvey.survey.SurveyActionType.TAKE_PHOTO
 
 // Static data of questions
-private val jetpackQuestions = listOf(
+private val jetpackQuestions = mutableListOf(
     Question(
         id = 1,
         questionText = R.string.in_my_free_time,
@@ -36,7 +38,8 @@ private val jetpackQuestions = listOf(
                 R.string.dance,
                 R.string.watch_movies
             )
-        )
+        ),
+        description = R.string.select_all
     ),
     Question(
         id = 2,
@@ -48,7 +51,8 @@ private val jetpackQuestions = listOf(
                 R.string.unikitty,
                 R.string.captain_planet
             )
-        )
+        ),
+        description = R.string.select_one
     ),
     Question(
         id = 7,
@@ -60,12 +64,14 @@ private val jetpackQuestions = listOf(
                 R.string.back_to_future,
                 R.string.outbreak
             )
-        )
+        ),
+        description = R.string.select_one
     ),
     Question(
         id = 3,
         questionText = R.string.takeaway,
-        answer = Action(label = R.string.pick_date, actionType = PICK_DATE)
+        answer = Action(label = R.string.pick_date, actionType = PICK_DATE),
+        description = R.string.select_date
     ),
     Question(
         id = 4,
@@ -77,7 +83,19 @@ private val jetpackQuestions = listOf(
             endText = R.string.selfie_max
         )
     )
-)
+).apply {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        // Add the camera feature only for devices 29+
+        add(
+            Question(
+                id = 975,
+                questionText = R.string.selfie_skills,
+                answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO)
+            )
+        )
+    }
+}.toList()
+
 private val jetpackSurvey = Survey(
     title = R.string.which_jetpack_library,
     questions = jetpackQuestions

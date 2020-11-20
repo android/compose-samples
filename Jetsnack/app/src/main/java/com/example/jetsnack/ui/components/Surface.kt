@@ -16,11 +16,11 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier

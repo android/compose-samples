@@ -16,9 +16,7 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,20 +27,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientTextStyle
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -117,7 +119,7 @@ fun Email(
             emailState.text = it
         },
         label = {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
@@ -133,7 +135,7 @@ fun Email(
         },
         textStyle = MaterialTheme.typography.body2,
         isErrorValue = emailState.showErrors(),
-        imeAction = imeAction,
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         onImeActionPerformed = { action, softKeyboardController ->
             if (action == ImeAction.Done) {
                 softKeyboardController?.hideSoftwareKeyboard()
@@ -170,7 +172,7 @@ fun Password(
         },
         textStyle = MaterialTheme.typography.body2,
         label = {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2
@@ -194,7 +196,7 @@ fun Password(
             PasswordVisualTransformation()
         },
         isErrorValue = passwordState.showErrors(),
-        imeAction = imeAction,
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         onImeActionPerformed = { action, softKeyboardController ->
             if (action == ImeAction.Done) {
                 softKeyboardController?.hideSoftwareKeyboard()
@@ -231,7 +233,7 @@ fun OrSignInAsGuest(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.or),
                     style = MaterialTheme.typography.subtitle2
