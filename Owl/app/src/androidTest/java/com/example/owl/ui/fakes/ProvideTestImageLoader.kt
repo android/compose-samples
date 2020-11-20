@@ -30,8 +30,11 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
-import com.example.owl.ui.utils.AmbientImageLoader
+import dev.chrisbanes.accompanist.coil.AmbientImageLoader
 
+/**
+ * Replaces all images with a simple black drawable to make testing faster and hermetic.
+ */
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProvideTestImageLoader(content: @Composable () -> Unit) {

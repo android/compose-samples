@@ -16,7 +16,6 @@
 
 package com.example.owl.ui
 
-import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -26,48 +25,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import com.example.owl.ui.MainDestinations.COURSE_DETAIL_ID_KEY
 import com.example.owl.ui.course.CourseDetails
 import com.example.owl.ui.courses.Courses
 import com.example.owl.ui.onboarding.Onboarding
-
-open class Destination(open val route: String)
-open class DestinationSingleArg(
-    private val rootRoute: String,
-    private val argName: String,
-    argType: NavType<*>
-) {
-    val args = listOf(navArgument(argName) { type = argType })
-    val route = "$rootRoute/{$argName}"
-    fun getRouteWithArg(courseId: Long) = "$rootRoute/$courseId"
-    fun getArgFromBundle(args: Bundle) = args.getLong(argName)
-}
 
 /**
  * Destinations used in the main screen ([OwlApp]).
  */
 object MainDestinations {
-    val Onboarding = Destination("onboarding")
-    val Courses = Destination("courses")
-    val CourseDetail = DestinationSingleArg("courses", "courseId", NavType.LongType)
-}
-
-/**
- * Models the navigation actions in the app.
- */
-class MainActions(navController: NavHostController) {
-    val onboardingComplete: () -> Unit = {
-        navController.navigate(MainDestinations.Courses.route)
-    }
-    val selectCourse: (Long) -> Unit = { courseId: Long ->
-        navController.navigate(MainDestinations.CourseDetail.getRouteWithArg(courseId))
-    }
-    val upPress: () -> Unit = {
-        navController.popBackStack()
-    }
+    const val ONBOARDING_ROUTE = "onboarding"
+    const val COURSES_ROUTE = "courses"
+    const val COURSE_DETAIL_ROUTE = "course"
+    const val COURSE_DETAIL_ID_KEY = "courseId"
 }
 
 @Composable
-fun NavGraph(startDestination: String = MainDestinations.Onboarding.route) {
+fun NavGraph(startDestination: String = MainDestinations.ONBOARDING_ROUTE) {
     val navController = rememberNavController()
 
     val actions = remember(navController) { MainActions(navController) }
@@ -75,22 +49,37 @@ fun NavGraph(startDestination: String = MainDestinations.Onboarding.route) {
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(MainDestinations.Onboarding.route) {
+        composable(MainDestinations.ONBOARDING_ROUTE) {
             Onboarding(onboardingComplete = actions.onboardingComplete)
         }
-        composable(MainDestinations.Courses.route) {
+        composable(MainDestinations.COURSES_ROUTE) {
             Courses(selectCourse = actions.selectCourse)
         }
         composable(
-            MainDestinations.CourseDetail.route,
-            arguments = MainDestinations.CourseDetail.args
+            "${MainDestinations.COURSE_DETAIL_ROUTE}/{$COURSE_DETAIL_ID_KEY}",
+            arguments = listOf(navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType })
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             CourseDetails(
-                courseId = MainDestinations.CourseDetail.getArgFromBundle(arguments),
+                courseId = arguments.getLong(COURSE_DETAIL_ID_KEY),
                 selectCourse = actions.selectCourse,
                 upPress = actions.upPress
             )
         }
+    }
+}
+
+/**
+ * Models the navigation actions in the app.
+ */
+class MainActions(navController: NavHostController) {
+    val onboardingComplete: () -> Unit = {
+        navController.navigate(MainDestinations.COURSES_ROUTE)
+    }
+    val selectCourse: (Long) -> Unit = { courseId: Long ->
+        navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$courseId")
+    }
+    val upPress: () -> Unit = {
+        navController.popBackStack()
     }
 }

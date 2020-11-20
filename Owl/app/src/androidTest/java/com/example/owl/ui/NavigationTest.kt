@@ -18,19 +18,20 @@ package com.example.owl.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
+import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithSubstring
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.printToLog
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.createAndroidComposeRule
-import androidx.ui.test.hasLabel
-import androidx.ui.test.hasSubstring
-import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithSubstring
-import androidx.ui.test.onRoot
-import androidx.ui.test.performClick
-import androidx.ui.test.printToLog
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
 import com.example.owl.ui.utils.AmbientBackDispatcher
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,11 +50,13 @@ class NavigationTest {
         }
         composeTestRule.setContent {
             Providers(AmbientBackDispatcher provides activity.onBackPressedDispatcher) {
-                ProvideTestImageLoader {
-                    if (startDestination == null) {
-                        NavGraph()
-                    } else {
-                        NavGraph(startDestination)
+                ProvideWindowInsets {
+                    ProvideTestImageLoader {
+                        if (startDestination == null) {
+                            NavGraph()
+                        } else {
+                            NavGraph(startDestination)
+                        }
                     }
                 }
             }
@@ -85,7 +88,7 @@ class NavigationTest {
     @Test
     fun coursesToDetail() {
         // Given the app in the courses screen
-        startActivity(MainDestinations.Courses.route)
+        startActivity(MainDestinations.COURSES_ROUTE)
 
         composeTestRule.onRoot().printToLog("jalc")
         // Navigate to the first course
