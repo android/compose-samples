@@ -35,7 +35,9 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +45,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.AppContainer
@@ -54,13 +60,9 @@ import com.example.jetnews.ui.interests.InterestsScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun JetnewsApp(
-    appContainer: AppContainer,
-    navigationViewModel: NavigationViewModel
-) {
+fun JetnewsApp(appContainer: AppContainer) {
     JetnewsTheme {
         AppContent(
-            navigationViewModel = navigationViewModel,
             interestsRepository = appContainer.interestsRepository,
             postsRepository = appContainer.postsRepository
         )
@@ -69,26 +71,40 @@ fun JetnewsApp(
 
 @Composable
 private fun AppContent(
-    navigationViewModel: NavigationViewModel,
     postsRepository: PostsRepository,
     interestsRepository: InterestsRepository
 ) {
-    Crossfade(navigationViewModel.currentScreen) { screen ->
+    val navController = rememberNavController()
+    val actions = remember(navController) { Actions(navController) }
+    val scaffoldState = rememberScaffoldState()
+
+    Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            when (screen) {
-                is Screen.Home -> HomeScreen(
-                    navigateTo = navigationViewModel::navigateTo,
-                    postsRepository = postsRepository
-                )
-                is Screen.Interests -> InterestsScreen(
-                    navigateTo = navigationViewModel::navigateTo,
-                    interestsRepository = interestsRepository
-                )
-                is Screen.Article -> ArticleScreen(
-                    postId = screen.postId,
-                    postsRepository = postsRepository,
-                    onBack = { navigationViewModel.onBack() }
-                )
+            NavHost(navController, startDestination = ScreenName.HOME.name) {
+                composable(ScreenName.HOME.name) {
+                    HomeScreen(
+                        navigateTo = actions.select,
+                        postsRepository = postsRepository,
+                        scaffoldState = scaffoldState
+                    )
+                }
+                composable(ScreenName.INTERESTS.name) {
+                    InterestsScreen(
+                        navigateTo = actions.select,
+                        interestsRepository = interestsRepository,
+                        scaffoldState = scaffoldState
+                    )
+                }
+                composable(ScreenName.ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
+                    val postId =
+                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
+                    ArticleScreen(
+                        postId = postId,
+                        postsRepository = postsRepository,
+                        onBack = actions.upPress
+                    )
+
+                }
             }
         }
     }
@@ -109,7 +125,9 @@ fun AppDrawer(
             label = "Home",
             isSelected = currentScreen == Screen.Home,
             action = {
-                navigateTo(Screen.Home)
+                if (currentScreen != Screen.Home) {
+                    navigateTo(Screen.Home)
+                }
                 closeDrawer()
             }
         )
@@ -119,7 +137,9 @@ fun AppDrawer(
             label = "Interests",
             isSelected = currentScreen == Screen.Interests,
             action = {
-                navigateTo(Screen.Interests)
+                if (currentScreen != Screen.Interests) {
+                    navigateTo(Screen.Interests)
+                }
                 closeDrawer()
             }
         )
