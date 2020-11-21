@@ -26,7 +26,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
@@ -79,7 +78,6 @@ private fun AppContent(
                         postsRepository = postsRepository,
                         onBack = actions.upPress
                     )
-
                 }
             }
         }
