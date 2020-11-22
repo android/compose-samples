@@ -26,7 +26,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            JetnewsApp((application as JetnewsApplication).container)
+            JetnewsApp(
+                (application as JetnewsApplication).container
+            )
         }
     }
 }

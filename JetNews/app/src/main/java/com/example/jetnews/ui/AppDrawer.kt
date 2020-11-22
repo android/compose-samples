@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -56,6 +57,7 @@ fun AppDrawer(
         JetNewsLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
+            modifier = Modifier.testTag("appDrawerButtonHome"),
             icon = Icons.Filled.Home,
             label = "Home",
             isSelected = currentScreen == Screen.Home,
@@ -68,6 +70,7 @@ fun AppDrawer(
         )
 
         DrawerButton(
+            modifier = Modifier.testTag("appDrawerButtonInterests"),
             icon = Icons.Filled.ListAlt,
             label = "Interests",
             isSelected = currentScreen == Screen.Interests,

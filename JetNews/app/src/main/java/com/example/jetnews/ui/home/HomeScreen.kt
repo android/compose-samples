@@ -50,6 +50,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -161,9 +162,13 @@ fun HomeScreen(
         topBar = {
             val title = stringResource(id = R.string.app_name)
             TopAppBar(
+                modifier = Modifier.testTag("topAppBarHome"),
                 title = { Text(text = title) },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
+                    IconButton(
+                        modifier = Modifier.testTag("appDrawer"),
+                        onClick = { scaffoldState.drawerState.open() },
+                    ) {
                         Icon(vectorResource(R.drawable.ic_jetnews_logo))
                     }
                 }

@@ -47,6 +47,7 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -130,7 +131,8 @@ fun InterestsScreen(
         val (publications) = produceUiState(interestsRepository) {
             getPublications()
         }
-        val selectedPublications by interestsRepository.observePublicationSelected().collectAsState(setOf())
+        val selectedPublications by interestsRepository.observePublicationSelected()
+            .collectAsState(setOf())
         val onPublicationSelect: (String) -> Unit = {
             coroutineScope.launch { interestsRepository.togglePublicationSelected(it) }
         }
@@ -178,9 +180,13 @@ fun InterestsScreen(
         },
         topBar = {
             TopAppBar(
+                modifier = Modifier.testTag("topAppBarInterests"),
                 title = { Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
+                    IconButton(
+                        modifier = Modifier.testTag("appDrawer"),
+                        onClick = { scaffoldState.drawerState.open() },
+                    ) {
                         Icon(vectorResource(R.drawable.ic_jetnews_logo))
                     }
                 }
