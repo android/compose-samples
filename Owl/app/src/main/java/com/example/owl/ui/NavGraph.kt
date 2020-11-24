@@ -80,6 +80,6 @@ class MainActions(navController: NavHostController) {
         navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$courseId")
     }
     val upPress: () -> Unit = {
-        navController.popBackStack()
+        navController.navigateUp()
     }
 }
