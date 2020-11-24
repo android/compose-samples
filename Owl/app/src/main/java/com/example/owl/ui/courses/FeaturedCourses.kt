@@ -33,10 +33,14 @@ import androidx.compose.material.icons.rounded.OndemandVideo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.OutlinedAvatar
@@ -78,10 +82,15 @@ fun FeaturedCourse(
         elevation = OwlTheme.elevations.card,
         shape = MaterialTheme.shapes.medium
     ) {
+        val featuredString = stringResource(id = R.string.featured)
         ConstraintLayout(
-            modifier = Modifier.clickable(
-                onClick = { selectCourse(course.id) }
-            )
+            modifier = Modifier
+                .clickable(
+                    onClick = { selectCourse(course.id) }
+                )
+                .semantics {
+                    accessibilityLabel = featuredString
+                }
         ) {
             val (image, avatar, subject, name, steps, icon) = createRefs()
             NetworkImage(
