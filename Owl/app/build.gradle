@@ -74,6 +74,12 @@ android {
         kotlinCompilerVersion Libs.Kotlin.version
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
+
+    packagingOptions {
+        exclude "META-INF/licenses/**"
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }
 }
 
 dependencies {
@@ -81,6 +87,7 @@ dependencies {
     implementation Libs.Coroutines.android
 
     implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.navigation
 
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.foundation
@@ -93,4 +100,11 @@ dependencies {
 
     implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
+
+    androidTestImplementation Libs.junit
+    androidTestImplementation Libs.AndroidX.Test.core
+    androidTestImplementation Libs.AndroidX.Test.espressoCore
+    androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Test.Ext.junit
+    androidTestImplementation Libs.AndroidX.Compose.uiTest
 }
