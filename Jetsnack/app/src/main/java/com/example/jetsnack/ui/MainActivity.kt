@@ -22,8 +22,8 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
-import com.example.jetsnack.ui.utils.AmbientSysUiController
-import com.example.jetsnack.ui.utils.SystemUiController
+import com.example.jetsnack.ui.utils.AmbientSystemBarsController
+import com.example.jetsnack.ui.utils.SystemBarsController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +33,8 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            val systemUiController = remember { SystemUiController(window) }
-            Providers(AmbientSysUiController provides systemUiController) {
+            val systemUiController = remember { SystemBarsController(window) }
+            Providers(AmbientSystemBarsController provides systemUiController) {
                 JetsnackApp(onBackPressedDispatcher)
             }
         }

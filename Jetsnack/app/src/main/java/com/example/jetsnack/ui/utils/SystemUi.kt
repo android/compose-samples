@@ -41,12 +41,16 @@ fun StatusBar(
     transformColorForLightContent: (Color) -> Color = BlackScrimmed,
     content: @Composable () -> Unit
 ) {
-    val statusBar = SystemBar(color, darkIcons, transformColorForLightContent)
-    val controller = AmbientSysUiController.current
+    val statusBar = remember(color, darkIcons, transformColorForLightContent) {
+        SystemBar(color, darkIcons, transformColorForLightContent)
+    }
+    val controller = AmbientSystemBarsController.current
     val status = AmbientStatusBar.current
     val prevStatus = remember { status }
-    DisposableEffect(statusBar, prevStatus) {
+    DisposableEffect(statusBar) {
         controller.setStatusBarColor(color, darkIcons, transformColorForLightContent)
+
+        // When this leaves composition, restore the previous status bar
         onDispose {
             controller.setStatusBarColor(
                 prevStatus.color,
@@ -65,12 +69,16 @@ fun NavigationBar(
     transformColorForLightContent: (Color) -> Color = BlackScrimmed,
     content: @Composable () -> Unit
 ) {
-    val navBar = SystemBar(color, darkIcons, transformColorForLightContent)
-    val controller = AmbientSysUiController.current
+    val navBar = remember(color, darkIcons, transformColorForLightContent) {
+        SystemBar(color, darkIcons, transformColorForLightContent)
+    }
+    val controller = AmbientSystemBarsController.current
     val nav = AmbientNavigationBar.current
     val prevNav = remember { nav }
-    DisposableEffect(navBar, prevNav) {
+    DisposableEffect(navBar) {
         controller.setNavigationBarColor(color, darkIcons, transformColorForLightContent)
+
+        // When this leaves composition, restore the previous nav bar
         onDispose {
             controller.setStatusBarColor(
                 prevNav.color,
@@ -103,7 +111,7 @@ fun SystemBars(
     }
 }
 
-interface SystemUiController {
+interface SystemBarsController {
     fun setStatusBarColor(
         color: Color,
         darkIcons: Boolean = color.luminance() > 0.5f,
@@ -123,15 +131,15 @@ interface SystemUiController {
     )
 }
 
-fun SystemUiController(window: Window): SystemUiController {
-    return SystemUiControllerImpl(window)
+fun SystemBarsController(window: Window): SystemBarsController {
+    return SystemBarsControllerImpl(window)
 }
 
 /**
  * A helper class for setting the navigation and status bar colors for a [Window], gracefully
  * degrading behavior based upon API level.
  */
-private class SystemUiControllerImpl(private val window: Window) : SystemUiController {
+private class SystemBarsControllerImpl(private val window: Window) : SystemBarsController {
 
     /**
      * Set the status bar color.
@@ -148,6 +156,7 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
         darkIcons: Boolean,
         transformColorForLightContent: (Color) -> Color
     ) {
+        if (color == Color.Unspecified) return
         val statusBarColor = when {
             darkIcons && Build.VERSION.SDK_INT < 23 -> transformColorForLightContent(color)
             else -> color
@@ -183,6 +192,7 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
         darkIcons: Boolean,
         transformColorForLightContent: (Color) -> Color
     ) {
+        if (color == Color.Unspecified) return
         val navBarColor = when {
             Build.VERSION.SDK_INT >= 29 -> Color.Transparent // For gesture nav
             darkIcons && Build.VERSION.SDK_INT < 26 -> transformColorForLightContent(color)
@@ -219,11 +229,11 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
 }
 
 /**
- * An [androidx.compose.runtime.Ambient] holding the current [AmbientSysUiController]. Defaults to a
- * no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
+ * An [androidx.compose.runtime.Ambient] holding the current [AmbientSystemBarsController]. Defaults
+ * to a no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
  */
-val AmbientSysUiController = staticAmbientOf<SystemUiController> {
-    FakeSystemUiController
+val AmbientSystemBarsController = staticAmbientOf<SystemBarsController> {
+    FakeSystemBarsController
 }
 
 private val BlackScrim = Color(0f, 0f, 0f, 0.2f) // 20% opaque black
@@ -234,7 +244,7 @@ private val BlackScrimmed: (Color) -> Color = { original ->
 /**
  * A fake implementation, useful as a default or used in Previews.
  */
-private object FakeSystemUiController : SystemUiController {
+private object FakeSystemBarsController : SystemBarsController {
     override fun setStatusBarColor(
         color: Color,
         darkIcons: Boolean,
