@@ -95,4 +95,5 @@ dependencies {
     implementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.Accompanist.coil
+    implementation Libs.Accompanist.insets
 }

@@ -69,8 +69,8 @@ import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
-import com.example.jetsnack.ui.utils.navigationBarsPadding
-import com.example.jetsnack.ui.utils.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 import kotlin.math.min
 
@@ -271,11 +271,11 @@ private fun Image(
 private fun CollapsingImageLayout(
     collapseFraction: Float,
     modifier: Modifier = Modifier,
-    image: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     Layout(
         modifier = modifier,
-        content = image
+        content = content
     ) { measurables, constraints ->
         check(measurables.size == 1)
 

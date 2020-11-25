@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {

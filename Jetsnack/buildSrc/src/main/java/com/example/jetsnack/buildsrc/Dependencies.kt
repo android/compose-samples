@@ -27,6 +27,7 @@ object Libs {
     object Accompanist {
         private const val version = "0.3.4.compose-6994167-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
