@@ -80,7 +80,7 @@ fun NavigationBar(
 
         // When this leaves composition, restore the previous nav bar
         onDispose {
-            controller.setStatusBarColor(
+            controller.setNavigationBarColor(
                 prevNav.color,
                 prevNav.darkIcons,
                 prevNav.transformColorForLightContent
