@@ -45,16 +45,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.drawLayer
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -128,7 +128,7 @@ private fun Up(upPress: () -> Unit) {
             )
     ) {
         Icon(
-            asset = Icons.Outlined.ArrowBack,
+            imageVector = Icons.Outlined.ArrowBack,
             tint = JetsnackTheme.colors.iconInteractive
         )
     }
@@ -210,15 +210,15 @@ private fun Body(
 
 @Composable
 private fun Title(snack: Snack, scroll: Float) {
-    val maxOffset = with(DensityAmbient.current) { MaxTitleOffset.toPx() }
-    val minOffset = with(DensityAmbient.current) { MinTitleOffset.toPx() }
+    val maxOffset = with(AmbientDensity.current) { MaxTitleOffset.toPx() }
+    val minOffset = with(AmbientDensity.current) { MinTitleOffset.toPx() }
     val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
     Column(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .preferredHeightIn(min = TitleHeight)
             .statusBarsPadding()
-            .drawLayer(translationY = offset)
+            .graphicsLayer(translationY = offset)
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
         Spacer(Modifier.preferredHeight(16.dp))
@@ -253,7 +253,7 @@ private fun Image(
     imageUrl: String,
     scroll: Float
 ) {
-    val collapseRange = with(DensityAmbient.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
+    val collapseRange = with(AmbientDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
     val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
 
     CollapsingImageLayout(
@@ -275,7 +275,7 @@ private fun CollapsingImageLayout(
 ) {
     Layout(
         modifier = modifier,
-        children = image
+        content = image
     ) { measurables, constraints ->
         check(measurables.size == 1)
 

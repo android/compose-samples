@@ -59,7 +59,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
-                    asset = Icons.Outlined.ExpandMore,
+                    imageVector = Icons.Outlined.ExpandMore,
                     tint = JetsnackTheme.colors.brand
                 )
             }
