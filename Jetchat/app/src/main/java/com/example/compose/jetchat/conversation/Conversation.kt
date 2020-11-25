@@ -142,8 +142,7 @@ fun ChannelNameBar(
                 Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onSurface
+                        style = MaterialTheme.typography.caption
                     )
                 }
             }
