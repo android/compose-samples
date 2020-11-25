@@ -68,7 +68,7 @@ import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
-import com.example.jetsnack.ui.utils.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun Cart(

@@ -72,7 +72,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
