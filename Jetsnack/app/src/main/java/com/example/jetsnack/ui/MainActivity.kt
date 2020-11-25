@@ -22,7 +22,7 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
-import com.example.jetsnack.ui.utils.SysUiController
+import com.example.jetsnack.ui.utils.AmbientSysUiController
 import com.example.jetsnack.ui.utils.SystemUiController
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val systemUiController = remember { SystemUiController(window) }
-            Providers(SysUiController provides systemUiController) {
+            Providers(AmbientSysUiController provides systemUiController) {
                 JetsnackApp(onBackPressedDispatcher)
             }
         }

@@ -23,8 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import com.example.jetsnack.ui.home.Home
 import com.example.jetsnack.ui.snackdetail.SnackDetail
+import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.Navigator
+import com.example.jetsnack.ui.utils.SystemBars
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 @Composable
@@ -37,13 +39,15 @@ fun JetsnackApp(backDispatcher: OnBackPressedDispatcher) {
     val actions = remember(navigator) { Actions(navigator) }
     ProvideWindowInsets {
         JetsnackTheme {
-            Crossfade(navigator.current) { destination ->
-                when (destination) {
-                    Destination.Home -> Home(actions.selectSnack)
-                    is Destination.SnackDetail -> SnackDetail(
-                        snackId = destination.snackId,
-                        upPress = actions.upPress
-                    )
+            SystemBars(color = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)) {
+                Crossfade(navigator.current) { destination ->
+                    when (destination) {
+                        Destination.Home -> Home(actions.selectSnack)
+                        is Destination.SnackDetail -> SnackDetail(
+                            snackId = destination.snackId,
+                            upPress = actions.upPress
+                        )
+                    }
                 }
             }
         }

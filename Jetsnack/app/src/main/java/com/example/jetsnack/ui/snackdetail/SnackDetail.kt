@@ -45,6 +45,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.AmbientDensity
@@ -68,6 +69,7 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
+import com.example.jetsnack.ui.utils.StatusBar
 import com.example.jetsnack.ui.utils.formatPrice
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
@@ -93,14 +95,16 @@ fun SnackDetail(
     val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
     val related = remember(snackId) { SnackRepo.getRelated(snackId) }
 
-    Box(Modifier.fillMaxSize()) {
-        val scroll = rememberScrollState(0f)
-        Header()
-        Body(related, scroll)
-        Title(snack, scroll.value)
-        Image(snack.imageUrl, scroll.value)
-        Up(upPress)
-        CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
+    StatusBar(color = Color.Transparent) {
+        Box(Modifier.fillMaxSize()) {
+            val scroll = rememberScrollState(0f)
+            Header()
+            Body(related, scroll)
+            Title(snack, scroll.value)
+            Image(snack.imageUrl, scroll.value)
+            Up(upPress)
+            CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
+        }
     }
 }
 

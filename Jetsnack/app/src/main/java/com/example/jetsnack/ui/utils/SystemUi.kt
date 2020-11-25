@@ -19,11 +19,76 @@ package com.example.jetsnack.ui.utils
 import android.os.Build
 import android.view.View
 import android.view.Window
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
+
+private val AmbientStatusBarColor = staticAmbientOf { Color.Unspecified }
+
+private val AmbientNavigationBarColor = staticAmbientOf { Color.Unspecified }
+
+@Composable
+fun StatusBar(
+    color: Color,
+    darkIcons: Boolean = color.luminance() > 0.5f,
+    transformColorForLightContent: (Color) -> Color = BlackScrimmed,
+    content: @Composable () -> Unit
+) {
+    val controller = AmbientSysUiController.current
+    val status = AmbientStatusBarColor.current
+    DisposableEffect(color, status) {
+        controller.setStatusBarColor(color, darkIcons, transformColorForLightContent)
+        onDispose {
+            controller.setStatusBarColor(status)
+        }
+    }
+    Providers(AmbientStatusBarColor provides color, content = content)
+}
+
+@Composable
+fun NavigationBar(
+    color: Color,
+    darkIcons: Boolean = color.luminance() > 0.5f,
+    transformColorForLightContent: (Color) -> Color = BlackScrimmed,
+    content: @Composable () -> Unit
+) {
+    val controller = AmbientSysUiController.current
+    val nav = AmbientNavigationBarColor.current
+    DisposableEffect(color, nav) {
+        controller.setNavigationBarColor(color, darkIcons, transformColorForLightContent)
+        onDispose {
+            controller.setNavigationBarColor(nav)
+        }
+    }
+    Providers(AmbientNavigationBarColor provides color, content = content)
+}
+
+@Composable
+fun SystemBars(
+    color: Color,
+    darkIcons: Boolean = color.luminance() > 0.5f,
+    transformColorForLightContent: (Color) -> Color = BlackScrimmed,
+    content: @Composable () -> Unit
+) {
+    StatusBar(
+        color = color,
+        darkIcons = darkIcons,
+        transformColorForLightContent = transformColorForLightContent
+    ) {
+        NavigationBar(
+            color = color,
+            darkIcons = darkIcons,
+            transformColorForLightContent = transformColorForLightContent,
+            content = content
+        )
+    }
+}
 
 interface SystemUiController {
     fun setStatusBarColor(
@@ -141,10 +206,10 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
 }
 
 /**
- * An [androidx.compose.runtime.Ambient] holding the current [SysUiController]. Defaults to a
+ * An [androidx.compose.runtime.Ambient] holding the current [AmbientSysUiController]. Defaults to a
  * no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
  */
-val SysUiController = staticAmbientOf<SystemUiController> {
+val AmbientSysUiController = staticAmbientOf<SystemUiController> {
     FakeSystemUiController
 }
 
