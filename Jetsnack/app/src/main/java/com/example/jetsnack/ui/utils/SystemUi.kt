@@ -21,6 +21,7 @@ import android.view.View
 import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticAmbientOf
@@ -29,9 +30,9 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 
-private val AmbientStatusBarColor = staticAmbientOf { Color.Unspecified }
+private val AmbientStatusBar = staticAmbientOf { UnspecifiedSystemBar }
 
-private val AmbientNavigationBarColor = staticAmbientOf { Color.Unspecified }
+private val AmbientNavigationBar = staticAmbientOf { UnspecifiedSystemBar }
 
 @Composable
 fun StatusBar(
@@ -40,15 +41,21 @@ fun StatusBar(
     transformColorForLightContent: (Color) -> Color = BlackScrimmed,
     content: @Composable () -> Unit
 ) {
+    val statusBar = SystemBar(color, darkIcons, transformColorForLightContent)
     val controller = AmbientSysUiController.current
-    val status = AmbientStatusBarColor.current
-    DisposableEffect(color, status) {
+    val status = AmbientStatusBar.current
+    val prevStatus = remember { status }
+    DisposableEffect(statusBar, prevStatus) {
         controller.setStatusBarColor(color, darkIcons, transformColorForLightContent)
         onDispose {
-            controller.setStatusBarColor(status)
+            controller.setStatusBarColor(
+                prevStatus.color,
+                prevStatus.darkIcons,
+                prevStatus.transformColorForLightContent
+            )
         }
     }
-    Providers(AmbientStatusBarColor provides color, content = content)
+    Providers(AmbientStatusBar provides statusBar, content = content)
 }
 
 @Composable
@@ -58,15 +65,21 @@ fun NavigationBar(
     transformColorForLightContent: (Color) -> Color = BlackScrimmed,
     content: @Composable () -> Unit
 ) {
+    val navBar = SystemBar(color, darkIcons, transformColorForLightContent)
     val controller = AmbientSysUiController.current
-    val nav = AmbientNavigationBarColor.current
-    DisposableEffect(color, nav) {
+    val nav = AmbientNavigationBar.current
+    val prevNav = remember { nav }
+    DisposableEffect(navBar, prevNav) {
         controller.setNavigationBarColor(color, darkIcons, transformColorForLightContent)
         onDispose {
-            controller.setNavigationBarColor(nav)
+            controller.setStatusBarColor(
+                prevNav.color,
+                prevNav.darkIcons,
+                prevNav.transformColorForLightContent
+            )
         }
     }
-    Providers(AmbientNavigationBarColor provides color, content = content)
+    Providers(AmbientNavigationBar provides navBar, content = content)
 }
 
 @Composable
@@ -240,3 +253,16 @@ private object FakeSystemUiController : SystemUiController {
         transformColorForLightContent: (Color) -> Color
     ) = Unit
 }
+
+@Immutable
+private data class SystemBar(
+    val color: Color,
+    val darkIcons: Boolean,
+    val transformColorForLightContent: (Color) -> Color
+)
+
+private val UnspecifiedSystemBar = SystemBar(
+    color = Color.Unspecified,
+    darkIcons = false,
+    transformColorForLightContent = { it }
+)
