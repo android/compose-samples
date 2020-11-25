@@ -48,7 +48,11 @@ fun StatusBar(
     val status = AmbientStatusBar.current
     val prevStatus = remember { status }
     DisposableEffect(statusBar) {
-        controller.setStatusBarColor(color, darkIcons, transformColorForLightContent)
+        controller.setStatusBarColor(
+            statusBar.color,
+            statusBar.darkIcons,
+            statusBar.transformColorForLightContent
+        )
 
         // When this leaves composition, restore the previous status bar
         onDispose {
@@ -76,7 +80,11 @@ fun NavigationBar(
     val nav = AmbientNavigationBar.current
     val prevNav = remember { nav }
     DisposableEffect(navBar) {
-        controller.setNavigationBarColor(color, darkIcons, transformColorForLightContent)
+        controller.setNavigationBarColor(
+            navBar.color,
+            navBar.darkIcons,
+            navBar.transformColorForLightContent
+        )
 
         // When this leaves composition, restore the previous nav bar
         onDispose {
