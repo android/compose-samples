@@ -23,11 +23,11 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 @Composable
 internal fun ThemedPreview(
     darkTheme: Boolean = false,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     JetnewsTheme(darkTheme = darkTheme) {
         Surface {
-            children()
+            content()
         }
     }
 }

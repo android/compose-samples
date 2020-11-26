@@ -23,12 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.jetnews.ui.Screen.Article
-import com.example.jetnews.ui.Screen.Home
-import com.example.jetnews.ui.Screen.Interests
-import com.example.jetnews.ui.ScreenName.ARTICLE
-import com.example.jetnews.ui.ScreenName.HOME
-import com.example.jetnews.ui.ScreenName.INTERESTS
+import com.example.jetnews.ui.Screen.*
+import com.example.jetnews.ui.ScreenName.*
 import com.example.jetnews.utils.getMutableStateOf
 
 /**
@@ -104,7 +100,7 @@ private fun Bundle.getStringOrThrow(key: String) =
  * levels are not allowed. To use a similar pattern with a longer back stack, use a [StateList] to
  * hold the back stack state.
  */
-class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class NavigationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     /**
      * Hold the current screen in an observable, restored from savedStateHandle after process
      * death.

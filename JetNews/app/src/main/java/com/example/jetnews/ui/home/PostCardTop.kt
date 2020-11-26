@@ -17,12 +17,7 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -32,9 +27,9 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.data.posts.impl.getPostsWithImagesLoaded
 import com.example.jetnews.data.posts.impl.post2
 import com.example.jetnews.data.posts.impl.posts
@@ -98,7 +93,7 @@ fun TutorialPreviewFontscale() {
 fun TutorialPreviewTemplate(
     darkTheme: Boolean = false
 ) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
 
