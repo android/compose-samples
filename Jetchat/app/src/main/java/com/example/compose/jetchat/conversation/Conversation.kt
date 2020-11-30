@@ -59,8 +59,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.platform.AmbientUriHandler
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.platform.UriHandlerAmbient
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource

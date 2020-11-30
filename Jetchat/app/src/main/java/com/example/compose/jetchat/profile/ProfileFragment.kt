@@ -43,10 +43,10 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         return ComposeView(context = requireContext()).apply {
-            setContent {
+            ComposeView(requireContext()).setContent {
                 viewModel.userData.observeAsState().value.let { userData: ProfileScreenState? ->
                     JetchatTheme {
                         if (userData == null) {
