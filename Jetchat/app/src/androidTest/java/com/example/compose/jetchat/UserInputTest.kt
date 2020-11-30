@@ -26,6 +26,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasInputMethodsSupport
 import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithLabel
 import androidx.compose.ui.test.onNodeWithText
@@ -148,7 +149,7 @@ class UserInputTest {
 
     private fun findTextInputField(): SemanticsNodeInteraction {
         return composeTestRule.onNode(
-            hasInputMethodsSupport() and
+            hasSetTextAction() and
                 hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
         )
     }

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawOpacity
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.util.lerp
@@ -68,9 +69,9 @@ private fun IconAndTextRow(
 ) {
     Layout(
         modifier = modifier,
-        children = {
+        content = {
             icon()
-            Box(modifier = Modifier.drawOpacity(opacityProgress())) {
+            Box(modifier = Modifier.alpha(opacityProgress())) {
                 text()
             }
         }
