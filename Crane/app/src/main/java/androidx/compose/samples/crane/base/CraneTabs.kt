@@ -36,7 +36,7 @@ import androidx.compose.samples.crane.home.CraneScreen
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ConfigurationAmbient
+import androidx.compose.ui.platform.AmbientConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
@@ -52,10 +52,10 @@ fun CraneTabBar(
         Row(Modifier.padding(top = 8.dp)) {
             Image(
                 modifier = Modifier.padding(top = 8.dp).clickable(onClick = onMenuClicked),
-                asset = vectorResource(id = R.drawable.ic_menu)
+                imageVector = vectorResource(id = R.drawable.ic_menu)
             )
             Spacer(Modifier.preferredWidth(8.dp))
-            Image(asset = vectorResource(id = R.drawable.ic_crane_logo))
+            Image(imageVector = vectorResource(id = R.drawable.ic_crane_logo))
         }
         children(Modifier.weight(1f).align(Alignment.CenterVertically))
     }
@@ -93,7 +93,7 @@ fun CraneTabs(
                 Text(
                     modifier = textModifier,
                     text = title.toUpperCase(
-                        ConfigurationCompat.getLocales(ConfigurationAmbient.current)[0]
+                        ConfigurationCompat.getLocales(AmbientConfiguration.current)[0]
                     )
                 )
             }

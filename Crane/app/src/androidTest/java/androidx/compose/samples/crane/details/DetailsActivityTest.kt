@@ -58,12 +58,20 @@ class DetailsActivityTest {
 
     @get:Rule(order = 1)
     val composeTestRule = AndroidComposeTestRule(
-        ActivityScenarioRule<DetailsActivity>(
+        activityRule = ActivityScenarioRule<DetailsActivity>(
             createDetailsActivityIntent(
                 InstrumentationRegistry.getInstrumentation().targetContext,
                 testExploreModel
             )
-        )
+        ),
+        activityProvider = { rule ->
+            var activity: DetailsActivity? = null
+            rule.scenario.onActivity { activity = it }
+            if (activity == null) {
+                throw IllegalStateException("Activity was not set in the ActivityScenarioRule!")
+            }
+            activity!!
+        }
     )
 
     @Before

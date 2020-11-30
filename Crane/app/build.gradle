@@ -114,7 +114,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.animation
-    implementation Libs.AndroidX.UI.tooling
+    implementation Libs.AndroidX.Compose.tooling
     implementation Libs.Accompanist.coil
 
     implementation Libs.AndroidX.Lifecycle.viewModelKtx
@@ -131,6 +131,7 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.Kotlin.Coroutines.test
+    androidTestImplementation Libs.AndroidX.Compose.test
     androidTestImplementation Libs.AndroidX.Compose.uiTest
     androidTestImplementation Libs.Hilt.android
     androidTestImplementation Libs.Hilt.AndroidX.viewModel

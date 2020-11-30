@@ -26,18 +26,18 @@ object Libs {
     const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
 
     object Accompanist {
-        private const val version = "0.3.3.1"
+        private const val version = "0.3.4.compose-6995125-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.10"
+        private const val version = "1.4.20"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
 
         object Coroutines {
-            private const val version = "1.4.1"
+            private const val version = "1.4.2"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
             const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
@@ -45,25 +45,23 @@ object Libs {
 
     object AndroidX {
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha07"
+            const val snapshot = "6995125"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
+            const val tooling = "androidx.compose.ui:ui-tooling:${Compose.version}"
             const val animation = "androidx.compose.animation:animation:$version"
-            const val uiTest = "androidx.ui:ui-test:$version"
+            const val test = "androidx.compose.ui:ui-test:$version"
+            const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
         }
 
         object Lifecycle {
             private const val version = "2.3.0-beta01"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
-        }
-
-        object UI {
-            const val tooling = "androidx.ui:ui-tooling:${Compose.version}"
         }
 
         object Test {
@@ -79,7 +77,7 @@ object Libs {
     }
 
     object Hilt {
-        private const val version = "2.29.1-alpha"
+        private const val version = "2.30.1-alpha"
 
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
         const val android = "com.google.dagger:hilt-android:$version"

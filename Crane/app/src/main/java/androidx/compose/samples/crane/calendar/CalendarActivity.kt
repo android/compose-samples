@@ -95,7 +95,7 @@ private fun CalendarContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = { onBackPressed() }) {
-                        Image(asset = vectorResource(id = R.drawable.ic_back))
+                        Image(imageVector = vectorResource(id = R.drawable.ic_back))
                     }
                 },
                 backgroundColor = MaterialTheme.colors.primaryVariant
