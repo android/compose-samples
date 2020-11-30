@@ -30,7 +30,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performGesture
 import androidx.compose.ui.test.swipe
 import androidx.compose.ui.unit.milliseconds
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.data.exampleUiState
@@ -60,7 +60,7 @@ class ConversationTest {
             activity = newActivity
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(BackPressedDispatcherAmbient provides newActivity) {
+                Providers(AmbientBackPressedDispatcher provides newActivity) {
                     JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                         ConversationContent(
                             uiState = exampleUiState,
