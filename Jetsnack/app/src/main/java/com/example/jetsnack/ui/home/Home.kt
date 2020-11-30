@@ -287,12 +287,12 @@ private fun JetsnackBottomNavItemLayout(
                 modifier = Modifier
                     .layoutId("text")
                     .padding(start = TextIconSpacing)
-                    .graphicsLayer(
-                        alpha = animationProgress,
-                        scaleX = scale,
-                        scaleY = scale,
+                    .graphicsLayer {
+                        alpha = animationProgress
+                        scaleX = scale
+                        scaleY = scale
                         transformOrigin = BottomNavLabelTransformOrigin
-                    ),
+                    },
                 content = text
             )
         }

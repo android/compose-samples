@@ -218,7 +218,7 @@ private fun Title(snack: Snack, scroll: Float) {
         modifier = Modifier
             .preferredHeightIn(min = TitleHeight)
             .statusBarsPadding()
-            .graphicsLayer(translationY = offset)
+            .graphicsLayer { translationY = offset }
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
         Spacer(Modifier.preferredHeight(16.dp))
