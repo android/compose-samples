@@ -18,11 +18,11 @@ package com.example.jetnews
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.createComposeRule
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -40,13 +40,13 @@ class JetnewsUiTest {
         composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
-    @Ignore("TODO Investigate why this passes locally but fail on CI")
+//    @Ignore("TODO Investigate why this passes locally but fail on CI")
     @Test
     fun app_launches() {
         composeTestRule.onNodeWithText("Jetnews").assertIsDisplayed()
     }
 
-    @Ignore("TODO Investigate why this passes locally but fail on CI")
+//    @Ignore("TODO Investigate why this passes locally but fail on CI")
     @Test
     fun app_opensArticle() {
         composeTestRule.onAllNodes(hasSubstring("Manuel Vivo"))[0].performClick()

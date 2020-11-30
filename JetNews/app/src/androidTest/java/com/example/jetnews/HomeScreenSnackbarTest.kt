@@ -22,9 +22,9 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.snapshots.snapshotFlow
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.ui.test.createComposeRule
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.state.UiState
 import kotlinx.coroutines.flow.filterNotNull
