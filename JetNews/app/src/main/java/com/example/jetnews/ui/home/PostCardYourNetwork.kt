@@ -57,8 +57,8 @@ fun PostCardPopular(
                 bitmap = image,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                        .preferredHeight(100.dp)
-                        .fillMaxWidth()
+                    .preferredHeight(100.dp)
+                    .fillMaxWidth()
             )
 
             Column(modifier = Modifier.padding(16.dp)) {

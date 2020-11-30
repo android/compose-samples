@@ -24,7 +24,6 @@ import androidx.compose.ui.test.performClick
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
