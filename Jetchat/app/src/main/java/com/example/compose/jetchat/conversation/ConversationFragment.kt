@@ -38,7 +38,7 @@ class ConversationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(context = requireContext()).apply {
-            ComposeView(requireContext()).setContent {
+            setContent {
                 Providers(BackPressedDispatcherAmbient provides requireActivity()) {
                     JetchatTheme {
                         ConversationContent(

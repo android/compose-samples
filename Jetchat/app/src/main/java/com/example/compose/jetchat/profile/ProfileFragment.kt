@@ -46,7 +46,7 @@ class ProfileFragment : Fragment() {
     ): View {
 
         return ComposeView(context = requireContext()).apply {
-            ComposeView(requireContext()).setContent {
+            setContent {
                 viewModel.userData.observeAsState().value.let { userData: ProfileScreenState? ->
                     JetchatTheme {
                         if (userData == null) {
