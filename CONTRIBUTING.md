@@ -2,7 +2,7 @@
 
 ## Contributor License Agreements
 
-We'd love to accept your sample apps and patches! Before we can take them, we
+We'd love to accept your patches! Before we can take them, we
 have to jump a couple of legal hurdles.
 
 Please fill out either the individual or corporate Contributor License Agreement (CLA).

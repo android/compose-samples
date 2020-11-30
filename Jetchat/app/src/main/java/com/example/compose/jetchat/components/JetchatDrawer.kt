@@ -17,9 +17,7 @@
 package com.example.compose.jetchat.components
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,21 +30,24 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientContentColor
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
@@ -79,7 +80,7 @@ private fun DrawerHeader() {
 }
 @Composable
 private fun DrawerItemHeader(text: String) {
-    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
         Text(text, style = MaterialTheme.typography.caption, modifier = Modifier.padding(16.dp))
     }
 }
@@ -101,14 +102,14 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .clickable(onClick = onChatClicked),
         verticalAlignment = CenterVertically
     ) {
-        val mediumEmphasisOnSurface = AmbientEmphasisLevels.current.medium
-            .applyEmphasis(MaterialTheme.colors.onSurface)
+        val mediumEmphasisOnSurface =
+            MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)
         Icon(
             vectorResource(id = R.drawable.ic_jetchat),
             tint = if (selected) MaterialTheme.colors.primary else mediumEmphasisOnSurface,
             modifier = Modifier.padding(8.dp)
         )
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text,
                 style = MaterialTheme.typography.body2,
@@ -130,7 +131,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
             .clickable(onClick = onProfileClicked),
         verticalAlignment = CenterVertically
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             val widthPaddingModifier = Modifier.preferredWidth(24.dp).padding(8.dp)
             if (profilePic != null) {
                 Image(

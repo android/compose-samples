@@ -49,7 +49,7 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -87,6 +87,7 @@ android {
 
 dependencies {
     implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.android
 
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
@@ -101,6 +102,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.tooling
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
+
+    implementation Libs.Accompanist.coil
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core

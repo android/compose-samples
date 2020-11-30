@@ -16,9 +16,7 @@
 
 package com.example.jetcaster.ui.home.category
 
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,21 +30,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRowForIndexed
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.AmbientContentColor
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -73,7 +73,6 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun PodcastCategory(
     categoryId: Long,
@@ -166,29 +165,27 @@ fun EpisodeListItem(
             )
         }
 
-        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-            Text(
-                text = episode.title,
-                maxLines = 2,
-                style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.constrainAs(episodeTitle) {
-                    linkTo(
-                        start = parent.start,
-                        end = image.start,
-                        startMargin = Keyline1,
-                        endMargin = 16.dp,
-                        bias = 0f
-                    )
-                    top.linkTo(parent.top, 16.dp)
+        Text(
+            text = episode.title,
+            maxLines = 2,
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.constrainAs(episodeTitle) {
+                linkTo(
+                    start = parent.start,
+                    end = image.start,
+                    startMargin = Keyline1,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+                top.linkTo(parent.top, 16.dp)
 
-                    width = Dimension.preferredWrapContent
-                }
-            )
-        }
+                width = Dimension.preferredWrapContent
+            }
+        )
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
                 maxLines = 2,
@@ -208,25 +205,23 @@ fun EpisodeListItem(
             )
         }
 
-        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-            Image(
-                asset = Icons.Rounded.PlayCircleFilled,
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(AmbientContentColor.current),
-                modifier = Modifier
-                    .clickable(indication = RippleIndication(bounded = false, radius = 24.dp)) {
-                        /* TODO */
-                    }
-                    .preferredSize(36.dp)
-                    .constrainAs(playIcon) {
-                        start.linkTo(parent.start, Keyline1)
-                        top.linkTo(titleImageBarrier, margin = 16.dp)
-                        bottom.linkTo(parent.bottom, 16.dp)
-                    }
-            )
-        }
+        Image(
+            asset = Icons.Rounded.PlayCircleFilled,
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(AmbientContentColor.current),
+            modifier = Modifier
+                .clickable(indication = RippleIndication(bounded = false, radius = 24.dp)) {
+                    /* TODO */
+                }
+                .preferredSize(36.dp)
+                .constrainAs(playIcon) {
+                    start.linkTo(parent.start, Keyline1)
+                    top.linkTo(titleImageBarrier, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, 16.dp)
+                }
+        )
 
-        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = when {
                     episode.duration != null -> {
@@ -326,24 +321,20 @@ private fun TopPodcastRowItem(
                 )
             }
 
-            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-                ToggleFollowPodcastIconButton(
-                    onClick = onToggleFollowClicked,
-                    isFollowed = isFollowed,
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                )
-            }
-        }
-
-        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-            Text(
-                text = podcastTitle,
-                style = MaterialTheme.typography.body2,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
+            ToggleFollowPodcastIconButton(
+                onClick = onToggleFollowClicked,
+                isFollowed = isFollowed,
+                modifier = Modifier.align(Alignment.BottomEnd)
             )
         }
+
+        Text(
+            text = podcastTitle,
+            style = MaterialTheme.typography.body2,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
+        )
     }
 }
 

@@ -20,7 +20,6 @@ import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,15 +35,16 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
@@ -56,13 +56,14 @@ import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.drawLayer
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -81,26 +82,37 @@ import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.PinkTheme
 import com.example.owl.ui.theme.pink500
-import com.example.owl.ui.utils.AmbientInsets
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
-import com.example.owl.ui.utils.navigationBarsPadding
 import com.example.owl.ui.utils.scrim
-import com.example.owl.ui.utils.statusBarsPadding
-import com.example.owl.ui.utils.toPaddingValues
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.toPaddingValues
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CourseDetails(
     courseId: Long,
     selectCourse: (Long) -> Unit,
     upPress: () -> Unit
 ) {
+    // Simplified for the sample
     val course = remember(courseId) { CourseRepo.getCourse(courseId) }
+    // TODO: Show error if course not found.
+    CourseDetails(course, selectCourse, upPress)
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CourseDetails(
+    course: Course,
+    selectCourse: (Long) -> Unit,
+    upPress: () -> Unit
+) {
     PinkTheme {
         WithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)
@@ -227,7 +239,7 @@ private fun CourseDescriptionBody(course: Course) {
             .padding(horizontal = 16.dp)
     )
     Spacer(modifier = Modifier.preferredHeight(16.dp))
-    ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.course_desc),
             style = MaterialTheme.typography.body1,
@@ -246,7 +258,7 @@ private fun CourseDescriptionBody(course: Course) {
             .fillMaxWidth()
             .padding(16.dp)
     )
-    ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.needs),
             style = MaterialTheme.typography.body1,
@@ -320,7 +332,7 @@ private fun LessonsSheet(
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
     val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
-    val fabSheetHeight = fabSize + AmbientInsets.current.systemBars.bottom
+    val fabSheetHeight = fabSize + AmbientWindowInsets.current.systemBars.bottom
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
     val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
     val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
@@ -388,7 +400,7 @@ private fun Lessons(
             }
             ScrollableColumn(
                 scrollState = scroll,
-                contentPadding = AmbientInsets.current.systemBars.toPaddingValues(
+                contentPadding = AmbientWindowInsets.current.systemBars.toPaddingValues(
                     top = false
                 )
             ) {
@@ -442,7 +454,7 @@ private fun Lesson(lesson: Lesson) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically

@@ -18,20 +18,20 @@ package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
-import androidx.ui.test.SemanticsMatcher
-import androidx.ui.test.SemanticsNodeInteraction
-import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.assertIsEnabled
-import androidx.ui.test.assertIsNotEnabled
-import androidx.ui.test.createAndroidComposeRule
-import androidx.ui.test.hasAnyAncestor
-import androidx.ui.test.hasInputMethodsSupport
-import androidx.ui.test.hasLabel
-import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithText
-import androidx.ui.test.performClick
-import androidx.ui.test.performTextInput
 import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
@@ -148,7 +148,7 @@ class UserInputTest {
 
     private fun findTextInputField(): SemanticsNodeInteraction {
         return composeTestRule.onNode(
-            hasInputMethodsSupport() and
+            hasSetTextAction() and
                 hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
         )
     }

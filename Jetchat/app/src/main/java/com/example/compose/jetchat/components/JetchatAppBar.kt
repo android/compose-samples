@@ -17,7 +17,6 @@
 package com.example.compose.jetchat.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +24,13 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
@@ -56,7 +56,7 @@ fun JetchatAppBar(
             title = { Row { title() } }, // https://issuetracker.google.com/168793068
             navigationIcon = {
                 Image(
-                    asset = vectorResource(id = R.drawable.ic_jetchat),
+                    imageVector = vectorResource(id = R.drawable.ic_jetchat),
                     modifier = Modifier
                         .clickable(onClick = onNavIconPressed)
                         .padding(horizontal = 16.dp)

@@ -17,7 +17,6 @@
 package com.example.owl.ui.courses
 
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.ExperimentalLayout
@@ -28,22 +27,27 @@ import androidx.compose.material.AmbientElevationOverlay
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.OndemandVideo
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlin.math.ceil
 
 @Composable
@@ -78,10 +82,15 @@ fun FeaturedCourse(
         elevation = OwlTheme.elevations.card,
         shape = MaterialTheme.shapes.medium
     ) {
+        val featuredString = stringResource(id = R.string.featured)
         ConstraintLayout(
-            modifier = Modifier.clickable(
-                onClick = { selectCourse(course.id) }
-            )
+            modifier = Modifier
+                .clickable(
+                    onClick = { selectCourse(course.id) }
+                )
+                .semantics {
+                    accessibilityLabel = featuredString
+                }
         ) {
             val (image, avatar, subject, name, steps, icon) = createRefs()
             NetworkImage(

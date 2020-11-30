@@ -19,19 +19,19 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.animation.DpPropKey
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.transition
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 
 private val bottomOffset = DpPropKey("Bottom Offset")
@@ -68,7 +68,7 @@ fun JumpToBottom(
         ExtendedFloatingActionButton(
             icon = {
                 Icon(
-                    asset = Icons.Filled.ArrowDownward,
+                    imageVector = Icons.Filled.ArrowDownward,
                     modifier = Modifier.preferredHeight(18.dp)
                 )
             },

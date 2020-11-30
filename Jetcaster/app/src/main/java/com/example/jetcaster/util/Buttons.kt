@@ -17,10 +17,10 @@
 package com.example.jetcaster.util
 
 import androidx.compose.animation.animate
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentColor
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -52,7 +52,7 @@ fun ToggleFollowPodcastIconButton(
             tint = animate(
                 when {
                     isFollowed -> AmbientContentColor.current
-                    else -> AmbientEmphasisLevels.current.high.applyEmphasis(Color.Black)
+                    else -> Color.Black.copy(alpha = ContentAlpha.high)
                 }
             ),
             modifier = Modifier

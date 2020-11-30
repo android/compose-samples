@@ -17,7 +17,6 @@
 package com.example.compose.rally.ui.overview
 
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,12 +26,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
@@ -102,13 +100,11 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
         modifier = Modifier.padding(RallyDefaultPadding).fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-            Text(
-                text = "Alerts",
-                style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-        }
+        Text(
+            text = "Alerts",
+            style = MaterialTheme.typography.subtitle2,
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
         TextButton(
             onClick = onClickSeeAll,
             contentPadding = PaddingValues(0.dp),
@@ -128,18 +124,16 @@ private fun AlertItem(message: String) {
         modifier = Modifier.padding(RallyDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-            Text(
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.weight(1f),
-                text = message
-            )
-            IconButton(
-                onClick = {},
-                modifier = Modifier.align(Alignment.Top)
-            ) {
-                Icon(Icons.Filled.Sort)
-            }
+        Text(
+            style = MaterialTheme.typography.body2,
+            modifier = Modifier.weight(1f),
+            text = message
+        )
+        IconButton(
+            onClick = {},
+            modifier = Modifier.align(Alignment.Top)
+        ) {
+            Icon(Icons.Filled.Sort)
         }
     }
 }

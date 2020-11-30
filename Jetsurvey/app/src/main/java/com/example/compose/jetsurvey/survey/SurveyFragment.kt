@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -30,7 +31,15 @@ import com.google.android.material.datepicker.MaterialDatePicker
 
 class SurveyFragment : Fragment() {
 
-    private val viewModel: SurveyViewModel by viewModels { SurveyViewModelFactory() }
+    private val viewModel: SurveyViewModel by viewModels {
+        SurveyViewModelFactory(PhotoUriManager(requireContext().applicationContext))
+    }
+
+    private val takePicture = registerForActivityResult(TakePicture()) { photoSaved ->
+        if (photoSaved) {
+            viewModel.onImageSaved()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +80,7 @@ class SurveyFragment : Fragment() {
     private fun handleSurveyAction(questionId: Int, actionType: SurveyActionType) {
         when (actionType) {
             SurveyActionType.PICK_DATE -> showDatePicker(questionId)
-            SurveyActionType.TAKE_PHOTO -> takeAPhoto(questionId)
+            SurveyActionType.TAKE_PHOTO -> takeAPhoto()
             SurveyActionType.SELECT_CONTACT -> selectContact(questionId)
         }
     }
@@ -86,9 +95,8 @@ class SurveyFragment : Fragment() {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun takeAPhoto(questionId: Int) {
-        // TODO: unsupported for now
+    private fun takeAPhoto() {
+        takePicture.launch(viewModel.getUriToSaveImage())
     }
 
     @Suppress("UNUSED_PARAMETER")
