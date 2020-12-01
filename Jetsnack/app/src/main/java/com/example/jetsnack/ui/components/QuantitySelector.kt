@@ -32,9 +32,9 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
@@ -60,7 +60,7 @@ fun QuantitySelector(
             )
         }
         JetsnackGradientTintedIconButton(
-            asset = Icons.Outlined.RemoveCircleOutline,
+            imageVector = Icons.Outlined.RemoveCircleOutline,
             onClick = decreaseItemCount,
             modifier = Modifier.constrainAs(minus) {
                 centerVerticallyTo(quantity)
@@ -82,7 +82,7 @@ fun QuantitySelector(
             )
         }
         JetsnackGradientTintedIconButton(
-            asset = Icons.Outlined.AddCircleOutline,
+            imageVector = Icons.Outlined.AddCircleOutline,
             onClick = increaseItemCount,
             modifier = Modifier.constrainAs(plus) {
                 end.linkTo(parent.end)

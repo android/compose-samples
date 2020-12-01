@@ -48,12 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackCollection
@@ -68,7 +68,7 @@ import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
-import com.example.jetsnack.ui.utils.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun Cart(
@@ -126,7 +126,7 @@ private fun CartContent(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources = ContextAmbient.current.resources
+    val resources = AmbientContext.current.resources
     val snackCountFormattedString = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
@@ -218,12 +218,17 @@ fun CartItem(
         )
         IconButton(
             onClick = { removeSnack(snack.id) },
-            modifier = Modifier.constrainAs(remove) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-            }.padding(top = 12.dp)
+            modifier = Modifier
+                .constrainAs(remove) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+                .padding(top = 12.dp)
         ) {
-            Icon(asset = Icons.Filled.Close, tint = JetsnackTheme.colors.iconSecondary)
+            Icon(
+                imageVector = Icons.Filled.Close,
+                tint = JetsnackTheme.colors.iconSecondary
+            )
         }
         Text(
             text = snack.tagline,
