@@ -261,12 +261,12 @@ fun Message(
             // Avatar
             Image(
                 modifier = Modifier
-                    .clickable(onClick = onAuthorClick)
                     .padding(horizontal = 16.dp)
                     .preferredSize(42.dp)
                     .border(1.5.dp, borderColor, CircleShape)
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
+                    .clickable(onClick = onAuthorClick)
                     .align(Alignment.Top),
                 asset = image,
                 contentScale = ContentScale.Crop
