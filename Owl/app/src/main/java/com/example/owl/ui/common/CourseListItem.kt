@@ -41,9 +41,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
@@ -90,7 +90,7 @@ fun CourseListItem(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        asset = Icons.Rounded.OndemandVideo,
+                        imageVector = Icons.Rounded.OndemandVideo,
                         tint = MaterialTheme.colors.primary,
                         modifier = Modifier.preferredSize(iconSize)
                     )
