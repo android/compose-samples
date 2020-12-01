@@ -87,16 +87,14 @@ fun Home(onSnackSelected: (Long) -> Unit) {
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-                ?: HomeSections.Feed.route
+                ?: HomeSections.startDestination.route
             val navItems = HomeSections.values().toList()
             JetsnackBottomNav(
                 currentSection = HomeSections.values().first { currentRoute == it.route },
                 onSectionSelected = {
-                    // This is the equivalent to popUpTo the start destination
+                    if (currentRoute == it.route) return@JetsnackBottomNav
                     navController.popBackStack(navController.graph.startDestination, false)
-                    // This if check gives us a "singleTop" behavior where we do not create a
-                    // second instance of the composable if we are already on that destination
-                    if (currentRoute != it.route) {
+                    if (it.route != HomeSections.startDestination.route) {
                         navController.navigate(it.route)
                     }
                 },
@@ -105,7 +103,7 @@ fun Home(onSnackSelected: (Long) -> Unit) {
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
-        NavHost(navController, startDestination = HomeSections.Feed.route) {
+        NavHost(navController, startDestination = HomeSections.startDestination.route) {
             composable(HomeSections.Feed.route) { Feed(onSnackSelected, modifier) }
             composable(HomeSections.Search.route) { Search(onSnackSelected, modifier) }
             composable(HomeSections.Cart.route) { Cart(onSnackSelected, modifier) }
@@ -372,7 +370,11 @@ private enum class HomeSections(
     Feed("feed", R.string.home_feed, Icons.Outlined.Home),
     Search("search", R.string.home_search, Icons.Outlined.Search),
     Cart("cart", R.string.home_cart, Icons.Outlined.ShoppingCart),
-    Profile("profile", R.string.home_profile, Icons.Outlined.AccountCircle)
+    Profile("profile", R.string.home_profile, Icons.Outlined.AccountCircle);
+
+    companion object {
+        val startDestination = Feed
+    }
 }
 
 @Preview
@@ -380,7 +382,7 @@ private enum class HomeSections(
 private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomNav(
-            currentSection = HomeSections.Feed,
+            currentSection = HomeSections.startDestination,
             onSectionSelected = { },
             items = HomeSections.values().toList()
         )
