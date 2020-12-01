@@ -25,12 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticAmbientOf
 
 /**
- * This [Composable] can be used with a [BackPressedDispatcherAmbient] to intercept a back press (if
+ * This [Composable] can be used with a [AmbientBackPressedDispatcher] to intercept a back press (if
  * [enabled]).
  */
 @Composable
 fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true) {
-    val dispatcher = BackPressedDispatcherAmbient.current.onBackPressedDispatcher
+    val dispatcher = AmbientBackPressedDispatcher.current.onBackPressedDispatcher
 
     // This callback is going to be remembered only if onBackPressed is referentially equal.
     val backCallback = remember(onBackPressed) {
@@ -60,10 +60,10 @@ fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true) {
  * This [Ambient] is used to provide an [OnBackPressedDispatcherOwner]:
  *
  * ```
- * Providers(BackPressedDispatcherAmbient provides requireActivity()) { }
+ * Providers(AmbientBackPressedDispatcher provides requireActivity()) { }
  * ```
  *
  * and setting up the callbacks with [backPressHandler].
  */
-val BackPressedDispatcherAmbient =
+val AmbientBackPressedDispatcher =
     staticAmbientOf<OnBackPressedDispatcherOwner> { error("Ambient used without Provider") }

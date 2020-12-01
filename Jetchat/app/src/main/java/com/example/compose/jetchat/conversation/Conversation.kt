@@ -57,14 +57,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.platform.UriHandlerAmbient
+import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.AmbientUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
@@ -151,7 +151,7 @@ fun ChannelNameBar(
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 // Search icon
                 Icon(
-                    asset = Icons.Outlined.Search,
+                    imageVector = Icons.Outlined.Search,
                     modifier = Modifier
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
@@ -159,7 +159,7 @@ fun ChannelNameBar(
                 )
                 // Info icon
                 Icon(
-                    asset = Icons.Outlined.Info,
+                    imageVector = Icons.Outlined.Info,
                     modifier = Modifier
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
@@ -216,7 +216,7 @@ fun Messages(
         }
         // Jump to bottom button shows up when user scrolls past a threshold.
         // Convert to pixels:
-        val jumpThreshold = with(DensityAmbient.current) {
+        val jumpThreshold = with(AmbientDensity.current) {
             JumpToBottomThreshold.toPx()
         }
 
@@ -267,7 +267,7 @@ fun Message(
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
-                asset = image,
+                bitmap = image,
                 contentScale = ContentScale.Crop
             )
         } else {
@@ -310,7 +310,7 @@ fun AuthorAndTextMessage(
 @Composable
 private fun AuthorNameTimestamp(msg: Message) {
     // Combine author and timestamp for a11y.
-    Row(modifier = Modifier.semantics(mergeAllDescendants = true) {}) {
+    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
         Text(
             text = msg.author,
             style = MaterialTheme.typography.subtitle1,
@@ -380,7 +380,7 @@ fun ChatItemBubble(
             Spacer(modifier = Modifier.height(4.dp))
             Surface(color = backgroundBubbleColor, shape = bubbleShape) {
                 Image(
-                    asset = imageResource(it),
+                    bitmap = imageResource(it),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.preferredSize(160.dp)
                 )
@@ -391,7 +391,7 @@ fun ChatItemBubble(
 
 @Composable
 fun ClickableMessage(message: Message) {
-    val uriHandler = UriHandlerAmbient.current
+    val uriHandler = AmbientUriHandler.current
 
     val styledMessage = messageFormatter(text = message.content)
 
