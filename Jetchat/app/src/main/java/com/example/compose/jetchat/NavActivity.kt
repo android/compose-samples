@@ -27,7 +27,7 @@ import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.components.JetchatScaffold
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.backPressHandler
 import com.example.compose.jetchat.databinding.ContentMainBinding
 
@@ -42,7 +42,7 @@ class NavActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Providers(BackPressedDispatcherAmbient provides this) {
+            Providers(AmbientBackPressedDispatcher provides this) {
                 val scaffoldState = rememberScaffoldState()
 
                 val openDrawerEvent = viewModel.drawerShouldBeOpened.collectAsState()

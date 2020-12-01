@@ -419,6 +419,7 @@ private fun UserInputText(
                         keyboardType = keyboardType,
                         imeAction = ImeAction.Send
                     ),
+                    onTextInputStarted = { keyboardController = it },
                     maxLines = 1,
                     cursorColor = AmbientContentColor.current,
                     textStyle = AmbientTextStyle.current.copy(color = AmbientContentColor.current)

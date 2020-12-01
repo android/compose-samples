@@ -32,7 +32,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
 import com.example.compose.jetchat.data.exampleUiState
@@ -59,7 +59,7 @@ class UserInputTest {
             activity = newActivity
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(BackPressedDispatcherAmbient provides activity) {
+                Providers(AmbientBackPressedDispatcher provides activity) {
                     JetchatTheme {
                         ConversationContent(
                             uiState = exampleUiState,
