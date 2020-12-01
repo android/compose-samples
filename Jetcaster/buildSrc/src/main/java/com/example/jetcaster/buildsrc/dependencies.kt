@@ -42,14 +42,14 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.4.0"
+        private const val version = "1.4.1"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
     object OkHttp {
-        private const val version = "4.7.2"
+        private const val version = "4.9.0"
         const val okhttp = "com.squareup.okhttp3:okhttp:$version"
         const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
     }

@@ -16,37 +16,70 @@
 
 package com.example.owl.ui
 
-import android.os.Parcelable
-import androidx.compose.runtime.Immutable
-import com.example.owl.ui.utils.Navigator
-import kotlinx.android.parcel.Parcelize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
+import com.example.owl.ui.MainDestinations.COURSE_DETAIL_ID_KEY
+import com.example.owl.ui.course.CourseDetails
+import com.example.owl.ui.courses.Courses
+import com.example.owl.ui.onboarding.Onboarding
 
 /**
- * Models the screens in the app and any arguments they require.
+ * Destinations used in the ([OwlApp]).
  */
-sealed class Destination : Parcelable {
-    @Parcelize
-    object Onboarding : Destination()
+object MainDestinations {
+    const val ONBOARDING_ROUTE = "onboarding"
+    const val COURSES_ROUTE = "courses"
+    const val COURSE_DETAIL_ROUTE = "course"
+    const val COURSE_DETAIL_ID_KEY = "courseId"
+}
 
-    @Parcelize
-    object Courses : Destination()
+@Composable
+fun NavGraph(startDestination: String = MainDestinations.ONBOARDING_ROUTE) {
+    val navController = rememberNavController()
 
-    @Immutable
-    @Parcelize
-    data class Course(val courseId: Long) : Destination()
+    val actions = remember(navController) { MainActions(navController) }
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(MainDestinations.ONBOARDING_ROUTE) {
+            Onboarding(onboardingComplete = actions.onboardingComplete)
+        }
+        composable(MainDestinations.COURSES_ROUTE) {
+            Courses(selectCourse = actions.selectCourse)
+        }
+        composable(
+            "${MainDestinations.COURSE_DETAIL_ROUTE}/{$COURSE_DETAIL_ID_KEY}",
+            arguments = listOf(navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType })
+        ) { backStackEntry ->
+            val arguments = requireNotNull(backStackEntry.arguments)
+            CourseDetails(
+                courseId = arguments.getLong(COURSE_DETAIL_ID_KEY),
+                selectCourse = actions.selectCourse,
+                upPress = actions.upPress
+            )
+        }
+    }
 }
 
 /**
  * Models the navigation actions in the app.
  */
-class Actions(navigator: Navigator<Destination>) {
+class MainActions(navController: NavHostController) {
     val onboardingComplete: () -> Unit = {
-        navigator.navigate(Destination.Courses)
+        navController.navigate(MainDestinations.COURSES_ROUTE)
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
-        navigator.navigate(Destination.Course(courseId))
+        navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$courseId")
     }
     val upPress: () -> Unit = {
-        navigator.back()
+        navController.navigateUp()
     }
 }
