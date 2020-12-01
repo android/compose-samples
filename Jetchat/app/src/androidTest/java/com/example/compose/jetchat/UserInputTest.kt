@@ -24,15 +24,15 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasInputMethodsSupport
 import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithLabel
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
 import com.example.compose.jetchat.data.exampleUiState
@@ -59,7 +59,7 @@ class UserInputTest {
             activity = newActivity
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(BackPressedDispatcherAmbient provides activity) {
+                Providers(AmbientBackPressedDispatcher provides activity) {
                     JetchatTheme {
                         ConversationContent(
                             uiState = exampleUiState,
@@ -148,7 +148,7 @@ class UserInputTest {
 
     private fun findTextInputField(): SemanticsNodeInteraction {
         return composeTestRule.onNode(
-            hasInputMethodsSupport() and
+            hasSetTextAction() and
                 hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
         )
     }

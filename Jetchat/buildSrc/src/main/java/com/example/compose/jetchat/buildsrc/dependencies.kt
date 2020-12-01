@@ -29,14 +29,14 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.4.10"
+        private const val version = "1.4.20"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
     object Coroutines {
-        private const val version = "1.4.1"
+        private const val version = "1.4.2"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -44,11 +44,11 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha07"
+            const val snapshot = "6995125"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -56,9 +56,10 @@ object Libs {
             const val materialIconsExtended = "androidx.compose.material:material-icons-extended:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
-            const val tooling = "androidx.ui:ui-tooling:$version"
-            const val test = "androidx.compose.test:test-core:$version"
-            const val uiTest = "androidx.ui:ui-test:$version"
+            const val tooling = "androidx.compose.ui:ui-tooling:$version"
+            const val test = "androidx.compose.ui:ui-test:$version"
+            const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+            const val uiUtil = "androidx.compose.ui:ui-util:${version}"
         }
 
         object Navigation {
