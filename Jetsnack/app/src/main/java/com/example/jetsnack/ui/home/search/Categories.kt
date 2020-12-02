@@ -32,12 +32,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawShadow
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
 import com.example.jetsnack.ui.components.SnackImage
@@ -102,11 +102,11 @@ private fun SearchCategory(
     Layout(
         modifier = modifier
             .aspectRatio(1.45f)
-            .drawShadow(elevation = 3.dp, shape = CategoryShape)
+            .shadow(elevation = 3.dp, shape = CategoryShape)
             .clip(CategoryShape)
             .horizontalGradientBackground(gradient)
             .clickable { /* todo */ },
-        children = {
+        content = {
             Text(
                 text = category.name,
                 style = MaterialTheme.typography.subtitle1,

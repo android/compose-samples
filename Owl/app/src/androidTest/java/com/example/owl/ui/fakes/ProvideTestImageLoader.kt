@@ -77,5 +77,5 @@ fun ProvideTestImageLoader(content: @Composable () -> Unit) {
 
         override fun shutdown() { }
     }
-    Providers(AmbientImageLoader provides loader, children = content)
+    Providers(AmbientImageLoader provides loader, content = content)
 }
