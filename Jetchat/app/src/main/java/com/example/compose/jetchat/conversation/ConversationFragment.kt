@@ -36,10 +36,10 @@ class ConversationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(context = requireContext()).apply {
             setContent {
-                Providers(BackPressedDispatcherAmbient provides requireActivity()) {
+                Providers(AmbientBackPressedDispatcher provides requireActivity()) {
                     JetchatTheme {
                         ConversationContent(
                             uiState = exampleUiState,

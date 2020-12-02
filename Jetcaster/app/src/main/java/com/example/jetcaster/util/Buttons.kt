@@ -29,7 +29,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawShadow
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
@@ -45,7 +45,7 @@ fun ToggleFollowPodcastIconButton(
     ) {
         Icon(
             // TODO: think about animating these icons
-            asset = when {
+            imageVector = when {
                 isFollowed -> Icons.Default.Check
                 else -> Icons.Default.Add
             },
@@ -56,7 +56,7 @@ fun ToggleFollowPodcastIconButton(
                 }
             ),
             modifier = Modifier
-                .drawShadow(
+                .shadow(
                     elevation = animate(if (isFollowed) 0.dp else 1.dp),
                     shape = MaterialTheme.shapes.small
                 )

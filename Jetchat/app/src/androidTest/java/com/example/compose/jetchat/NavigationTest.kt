@@ -25,7 +25,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
@@ -59,7 +59,7 @@ class NavigationTest {
 
         // Start the app
         composeTestRule.setContent {
-            Providers(BackPressedDispatcherAmbient provides activity) {
+            Providers(AmbientBackPressedDispatcher provides activity) {
                 JetchatTheme {
                     ConversationContent(
                         uiState = exampleUiState,
