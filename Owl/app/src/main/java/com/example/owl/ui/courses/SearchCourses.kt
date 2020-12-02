@@ -39,8 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
@@ -97,7 +97,7 @@ private fun AppBar(
 ) {
     TopAppBar(elevation = 0.dp) {
         Image(
-            asset = vectorResource(id = R.drawable.ic_search),
+            imageVector = vectorResource(id = R.drawable.ic_search),
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically)

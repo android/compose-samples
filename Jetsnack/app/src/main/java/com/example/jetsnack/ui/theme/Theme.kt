@@ -225,7 +225,7 @@ fun ProvideJetsnackColors(
 ) {
     val colorPalette = remember { colors }
     colorPalette.update(colors)
-    Providers(AmbientJetsnackColors provides colorPalette, children = content)
+    Providers(AmbientJetsnackColors provides colorPalette, content = content)
 }
 
 private val AmbientJetsnackColors = staticAmbientOf<JetsnackColors> {

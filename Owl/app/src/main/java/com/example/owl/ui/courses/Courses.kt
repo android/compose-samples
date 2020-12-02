@@ -94,7 +94,7 @@ fun CoursesAppBar() {
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically),
-            asset = vectorResource(id = R.drawable.ic_lockup_white)
+            imageVector = vectorResource(id = R.drawable.ic_lockup_white)
         )
         IconButton(
             modifier = Modifier.align(Alignment.CenterVertically),
