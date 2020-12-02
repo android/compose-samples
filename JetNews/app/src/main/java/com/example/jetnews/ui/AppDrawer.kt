@@ -39,10 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 
 @Composable
@@ -81,12 +81,12 @@ fun AppDrawer(
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
-            asset = vectorResource(R.drawable.ic_jetnews_logo),
+            imageVector = vectorResource(R.drawable.ic_jetnews_logo),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Image(
-            asset = vectorResource(R.drawable.ic_jetnews_wordmark),
+            imageVector = vectorResource(R.drawable.ic_jetnews_wordmark),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
         )
     }
@@ -94,7 +94,7 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
 
 @Composable
 private fun DrawerButton(
-    icon: VectorAsset,
+    icon: ImageVector,
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
@@ -135,7 +135,7 @@ private fun DrawerButton(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
-                    asset = icon,
+                    imageVector = icon,
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )

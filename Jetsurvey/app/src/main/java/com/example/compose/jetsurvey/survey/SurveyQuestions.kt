@@ -60,8 +60,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -368,8 +368,8 @@ private fun DateQuestion(
 
 @Composable
 private fun PhotoDefaultImage(
-    lightTheme: Boolean = MaterialTheme.colors.isLight,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lightTheme: Boolean = MaterialTheme.colors.isLight
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_selfie_light
@@ -377,7 +377,7 @@ private fun PhotoDefaultImage(
         R.drawable.ic_selfie_dark
     }
     Image(
-        asset = vectorResource(id = assetId),
+        imageVector = vectorResource(id = assetId),
         modifier = modifier
     )
 }
