@@ -25,13 +25,13 @@ object Libs {
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.3.3.1"
+        private const val version = "0.3.4.compose-7001724-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.10"
+        private const val version = "1.4.20"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -46,11 +46,11 @@ object Libs {
 
     object AndroidX {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
-        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha02"
+        const val navigation = "androidx.navigation:navigation-compose:1.0.0-SNAPSHOT"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha07"
+            const val snapshot = "7001724"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -58,9 +58,10 @@ object Libs {
             const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
             const val material = "androidx.compose.material:material:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
-            const val tooling = "androidx.ui:ui-tooling:$version"
+            const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val ui = "androidx.compose.ui:ui:$version"
-            const val uiTest = "androidx.ui:ui-test:$version"
+            const val uiUtil = "androidx.compose.ui:ui-util:$version"
+            const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
         }
 
         object Test {

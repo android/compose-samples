@@ -19,7 +19,6 @@ import com.example.owl.buildsrc.Libs
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
 }
 
 android {
@@ -93,6 +92,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.ui
+    implementation Libs.AndroidX.Compose.uiUtil
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.animation
     implementation Libs.AndroidX.Compose.iconsExtended
