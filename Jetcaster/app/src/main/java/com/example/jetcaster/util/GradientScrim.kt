@@ -17,14 +17,13 @@
 package com.example.jetcaster.util
 
 import androidx.annotation.FloatRange
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.drawBehind
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.VerticalGradient
 import kotlin.math.pow
@@ -40,7 +39,6 @@ import kotlin.math.pow
  * @param numStops The number of color stops to draw in the gradient. Higher numbers result in
  * the higher visual quality at the cost of draw performance. Defaults to `16`.
  */
-@Composable
 fun Modifier.verticalGradientScrim(
     color: Color,
     @FloatRange(from = 0.0, to = 1.0) startYPercentage: Float = 0f,
