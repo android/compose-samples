@@ -19,7 +19,6 @@ package com.example.owl.ui.course
 import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.lazy.LazyRowFor
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientContentAlpha
@@ -280,7 +280,7 @@ private fun RelatedCourses(
     courseId: Long,
     selectCourse: (Long) -> Unit
 ) {
-    val relatedCourses = CourseRepo.getRelated(courseId)
+    val relatedCourses = remember(courseId) { CourseRepo.getRelated(courseId) }
     BlueTheme {
         Surface(
             color = MaterialTheme.colors.primarySurface,
@@ -298,24 +298,23 @@ private fun RelatedCourses(
                             vertical = 24.dp
                         )
                 )
-                ScrollableRow(
+                LazyRowFor(
+                    items = relatedCourses,
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         bottom = 32.dp,
                         end = FabSize + 8.dp
                     )
-                ) {
-                    relatedCourses.forEach { related ->
-                        CourseListItem(
-                            course = related,
-                            onClick = { selectCourse(related.id) },
-                            titleStyle = MaterialTheme.typography.body2,
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .preferredSize(288.dp, 80.dp),
-                            iconSize = 14.dp
-                        )
-                    }
+                ) { related ->
+                    CourseListItem(
+                        course = related,
+                        onClick = { selectCourse(related.id) },
+                        titleStyle = MaterialTheme.typography.body2,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .preferredSize(288.dp, 80.dp),
+                        iconSize = 14.dp
+                    )
                 }
             }
         }
