@@ -58,13 +58,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AnimationClockAmbient
+import androidx.compose.ui.platform.AmbientAnimationClock
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
@@ -111,9 +111,11 @@ fun HomeAppBar(
     TopAppBar(
         title = {
             Row {
-                Image(asset = vectorResource(R.drawable.ic_logo))
+                Image(
+                    imageVector = vectorResource(R.drawable.ic_logo)
+                )
                 Icon(
-                    asset = vectorResource(R.drawable.ic_text_logo),
+                    imageVector = vectorResource(R.drawable.ic_text_logo),
                     modifier = Modifier.padding(start = 4.dp).preferredHeightIn(max = 24.dp)
                 )
             }
@@ -122,13 +124,15 @@ fun HomeAppBar(
         actions = {
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 IconButton(
-                    onClick = { /* TODO: Open search */ },
-                    icon = { Icon(Icons.Filled.Search) }
-                )
+                    onClick = { /* TODO: Open search */ }
+                ) {
+                    Icon(Icons.Filled.Search)
+                }
                 IconButton(
-                    onClick = { /* TODO: Open account? */ },
-                    icon = { Icon(Icons.Default.AccountCircle) }
-                )
+                    onClick = { /* TODO: Open account? */ }
+                ) {
+                    Icon(Icons.Default.AccountCircle)
+                }
             }
         },
         modifier = modifier
@@ -163,7 +167,7 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val clock = AnimationClockAmbient.current
+            val clock = AmbientAnimationClock.current
             val pagerState = remember(clock) { PagerState(clock) }
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
@@ -289,12 +293,12 @@ fun HomeCategoryTabIndicator(
 @Composable
 fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
+    modifier: Modifier = Modifier,
     pagerState: PagerState = run {
-        val clock = AnimationClockAmbient.current
+        val clock = AmbientAnimationClock.current
         remember(clock) { PagerState(clock) }
     },
     onPodcastUnfollowed: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
 
@@ -314,10 +318,10 @@ fun FollowedPodcasts(
 
 @Composable
 private fun FollowedPodcastCarouselItem(
+    modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Column(
         modifier.padding(horizontal = 12.dp, vertical = 8.dp)
