@@ -52,8 +52,8 @@ import androidx.compose.ui.focus.isFocused
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SearchCategoryCollection
@@ -64,7 +64,7 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
 fun Search(
@@ -193,7 +193,7 @@ private fun SearchBar(
                 if (searchFocused) {
                     IconButton(onClick = onClearQuery) {
                         Icon(
-                            asset = Icons.Outlined.ArrowBack,
+                            imageVector = Icons.Outlined.ArrowBack,
                             tint = JetsnackTheme.colors.iconPrimary
                         )
                     }
@@ -231,7 +231,7 @@ private fun SearchHint() {
         modifier = Modifier.fillMaxSize().wrapContentSize()
     ) {
         Icon(
-            asset = Icons.Outlined.Search,
+            imageVector = Icons.Outlined.Search,
             tint = JetsnackTheme.colors.textHelp
         )
         Spacer(Modifier.preferredWidth(8.dp))

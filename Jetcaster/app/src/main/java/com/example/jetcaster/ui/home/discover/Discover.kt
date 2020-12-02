@@ -43,8 +43,8 @@ import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.drawLayer
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.jetcaster.data.Category
@@ -84,7 +84,7 @@ fun Discover(
             val reverseTransition = previousSelectedCategory?.let { p ->
                 viewState.categories.indexOf(selectedCategory) < viewState.categories.indexOf(p)
             } ?: false
-            val transitionOffset = with(DensityAmbient.current) { 16.dp.toPx() }
+            val transitionOffset = with(AmbientDensity.current) { 16.dp.toPx() }
 
             ItemSwitcher(
                 current = selectedCategory,
@@ -101,10 +101,10 @@ fun Discover(
                 PodcastCategory(
                     categoryId = category.id,
                     modifier = Modifier.fillMaxSize()
-                        .drawLayer(
-                            translationX = transitionState[Offset],
+                        .graphicsLayer {
+                            translationX = transitionState[Offset]
                             alpha = transitionState[Alpha]
-                        )
+                        }
                 )
             }
 

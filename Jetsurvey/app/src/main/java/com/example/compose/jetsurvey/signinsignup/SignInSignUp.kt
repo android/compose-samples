@@ -57,8 +57,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 
 @Composable
@@ -182,11 +182,11 @@ fun Password(
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
-                    Icon(asset = Icons.Filled.Visibility)
+                    Icon(imageVector = Icons.Filled.Visibility)
                 }
             } else {
                 IconButton(onClick = { showPassword.value = true }) {
-                    Icon(asset = Icons.Filled.VisibilityOff)
+                    Icon(imageVector = Icons.Filled.VisibilityOff)
                 }
             }
         },
