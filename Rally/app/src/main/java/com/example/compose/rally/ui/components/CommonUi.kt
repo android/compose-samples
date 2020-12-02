@@ -116,7 +116,7 @@ private fun BaseRow(
 
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Icon(
-                asset = Icons.Filled.ChevronRight,
+                imageVector = Icons.Filled.ChevronRight,
                 modifier = Modifier
                     .padding(end = 12.dp)
                     .preferredSize(24.dp)

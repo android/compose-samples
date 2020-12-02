@@ -31,12 +31,12 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.ripple.rememberRippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyScreen
 
@@ -63,7 +63,7 @@ fun RallyTopAppBar(
 @Composable
 private fun RallyTab(
     text: String,
-    icon: VectorAsset,
+    icon: ImageVector,
     onSelected: () -> Unit,
     selected: Boolean
 ) {
@@ -88,10 +88,10 @@ private fun RallyTab(
             .selectable(
                 selected = selected,
                 onClick = onSelected,
-                indication = RippleIndication(bounded = false)
+                indication = rememberRippleIndication(bounded = false)
             )
     ) {
-        Icon(asset = icon, tint = tabTintColor)
+        Icon(imageVector = icon, tint = tabTintColor)
         if (selected) {
             Spacer(Modifier.preferredWidth(12.dp))
             Text(text, color = tabTintColor)
