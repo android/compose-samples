@@ -18,7 +18,7 @@ package com.example.jetcaster.util
 
 import androidx.annotation.PluralsRes
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 
 /**
  * Load a quantity string resource.
@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.ContextAmbient
  */
 @Composable
 fun quantityStringResource(@PluralsRes id: Int, quantity: Int): String {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     return context.resources.getQuantityString(id, quantity)
 }
 
@@ -43,6 +43,6 @@ fun quantityStringResource(@PluralsRes id: Int, quantity: Int): String {
  */
 @Composable
 fun quantityStringResource(@PluralsRes id: Int, quantity: Int, vararg formatArgs: Any): String {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     return context.resources.getQuantityString(id, quantity, *formatArgs)
 }

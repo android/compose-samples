@@ -27,7 +27,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AnimationClockAmbient
+import androidx.compose.ui.platform.AmbientAnimationClock
 
 /**
  * [ItemSwitcher] allows to switch between two layouts with a transition defined by
@@ -59,7 +59,7 @@ fun <T> ItemSwitcher(
 
         keys.mapTo(state.items) { key ->
             ItemTransitionItem(key) { children ->
-                val clock = AnimationClockAmbient.current.asDisposableClock()
+                val clock = AmbientAnimationClock.current.asDisposableClock()
                 val visible = key == current
 
                 val anim = remember(clock, transitionDefinition) {
