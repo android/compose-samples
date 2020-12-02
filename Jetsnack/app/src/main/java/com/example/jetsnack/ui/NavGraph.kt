@@ -18,19 +18,21 @@ package com.example.jetsnack.ui
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
+import androidx.navigation.navDeepLink
 
-object Destinations {
+object Routes {
     const val Home = "home"
-    const val SnackDetail = "snackDetail"
+    const val SnackDetail = "snackDetail/{${Args.SnackId}}"
+    fun deeplink(route: String) = navDeepLink { uriPattern = "jetsnack://$route" }
+}
 
-    object SnackDetailArgs {
-        const val SnackId = "snackId"
-    }
+object Args {
+    const val SnackId = "snackId"
 }
 
 class Actions(navController: NavHostController) {
     val selectSnack: (Long) -> Unit = { snackId: Long ->
-        navController.navigate(Destinations.SnackDetail + "/$snackId")
+        navController.navigate(Routes.SnackDetail.replace("{${Args.SnackId}}", snackId.toString()))
     }
     val upPress: () -> Unit = {
         navController.popBackStack()

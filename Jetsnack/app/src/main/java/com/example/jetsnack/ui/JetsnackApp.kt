@@ -18,10 +18,8 @@ package com.example.jetsnack.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.ui.home.Home
 import com.example.jetsnack.ui.snackdetail.SnackDetail
@@ -33,26 +31,24 @@ fun JetsnackApp() {
     ProvideDisplayInsets {
         JetsnackTheme {
             val navController = rememberNavController()
-
             val actions = remember(navController) { Actions(navController) }
-            NavHost(navController = navController, startDestination = Destinations.Home) {
-                composable(Destinations.Home) {
+            NavHost(navController = navController, startDestination = Routes.Home) {
+                composable(
+                    route = Routes.Home,
+                    deepLinks = listOf(Routes.deeplink(Routes.Home))
+                ) {
                     Home(actions.selectSnack)
                 }
                 composable(
-                    Destinations.SnackDetail + "/{${Destinations.SnackDetailArgs.SnackId}}",
-                    listOf(
-                        navArgument(Destinations.SnackDetailArgs.SnackId) {
-                            type = NavType.LongType
-                        }
-                    )
+                    route = Routes.SnackDetail,
+                    deepLinks = listOf(Routes.deeplink(Routes.SnackDetail))
                 ) { backStackEntry ->
                     val snackId = requireNotNull(
-                        backStackEntry.arguments?.getLong(Destinations.SnackDetailArgs.SnackId)
+                        backStackEntry.arguments?.getString(Args.SnackId)
                     )
                     SnackDetail(
-                        snackId,
-                        actions.upPress
+                        snackId = snackId.toLong(),
+                        upPress = actions.upPress
                     )
                 }
             }

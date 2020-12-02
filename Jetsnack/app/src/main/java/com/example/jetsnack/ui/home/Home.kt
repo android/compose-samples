@@ -71,6 +71,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackScaffold
