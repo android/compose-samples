@@ -31,8 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.model.Post
@@ -52,13 +52,15 @@ fun PostCardPopular(
     ) {
         Column(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })) {
             val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
+
             Image(
-                asset = image,
+                bitmap = image,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .preferredHeight(100.dp)
                     .fillMaxWidth()
             )
+
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = post.title,

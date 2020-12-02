@@ -104,7 +104,7 @@ private fun Bundle.getStringOrThrow(key: String) =
  * levels are not allowed. To use a similar pattern with a longer back stack, use a [StateList] to
  * hold the back stack state.
  */
-class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class NavigationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     /**
      * Hold the current screen in an observable, restored from savedStateHandle after process
      * death.
