@@ -47,33 +47,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.TransformOrigin
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.drawLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.layout.id
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.AnimationClockAmbient
-import androidx.compose.ui.platform.ConfigurationAmbient
+import androidx.compose.ui.platform.AmbientAnimationClock
+import androidx.compose.ui.platform.AmbientConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
@@ -142,7 +141,7 @@ private fun JetsnackBottomNav(
                 JetsnackBottomNavigationItem(
                     icon = {
                         Icon(
-                            asset = section.icon,
+                            imageVector = section.icon,
                             tint = tint
                         )
                     },
@@ -150,7 +149,7 @@ private fun JetsnackBottomNav(
                         Text(
                             text = stringResource(section.title).toUpperCase(
                                 ConfigurationCompat.getLocales(
-                                    ConfigurationAmbient.current
+                                    AmbientConfiguration.current
                                 ).get(0)
                             ),
                             color = tint,
@@ -179,7 +178,7 @@ private fun JetsnackBottomNavLayout(
     content: @Composable () -> Unit
 ) {
     // Track how "selected" each item is [0, 1]
-    val clock = AnimationClockAmbient.current
+    val clock = AmbientAnimationClock.current
     val selectionFractions = remember(itemCount) {
         List(itemCount) { i ->
             AnimatedFloatModel(if (i == selectedIndex) 1f else 0f, clock)
@@ -200,9 +199,9 @@ private fun JetsnackBottomNavLayout(
 
     Layout(
         modifier = modifier.preferredHeight(BottomNavHeight),
-        children = {
+        content = {
             content()
-            Box(Modifier.layoutId("indicator"), children = indicator)
+            Box(Modifier.layoutId("indicator"), content = indicator)
         }
     ) { measurables, constraints ->
         check(itemCount == (measurables.size - 1)) // account for indicator
@@ -210,7 +209,7 @@ private fun JetsnackBottomNavLayout(
         // Divide the width into n+1 slots and give the selected item 2 slots
         val unselectedWidth = constraints.maxWidth / (itemCount + 1)
         val selectedWidth = constraints.maxWidth - (itemCount - 1) * unselectedWidth
-        val indicatorMeasurable = measurables.first { it.id == "indicator" }
+        val indicatorMeasurable = measurables.first { it.layoutId == "indicator" }
 
         val itemPlaceables = measurables
             .filterNot { it == indicatorMeasurable }
@@ -262,7 +261,7 @@ fun JetsnackBottomNavigationItem(
 ) {
     Box(
         modifier = modifier.selectable(selected = selected, onClick = onSelected),
-        alignment = Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
         // Animate the icon/text positions within the item based on selection
         val animationProgress = animate(if (selected) 1f else 0f, animSpec)
@@ -281,25 +280,25 @@ private fun JetsnackBottomNavItemLayout(
     @FloatRange(from = 0.0, to = 1.0) animationProgress: Float
 ) {
     Layout(
-        children = {
-            Box(Modifier.layoutId("icon"), children = icon)
+        content = {
+            Box(Modifier.layoutId("icon"), content = icon)
             val scale = lerp(0.6f, 1f, animationProgress)
             Box(
                 modifier = Modifier
                     .layoutId("text")
                     .padding(start = TextIconSpacing)
-                    .drawLayer(
-                        alpha = animationProgress,
-                        scaleX = scale,
-                        scaleY = scale,
+                    .graphicsLayer {
+                        alpha = animationProgress
+                        scaleX = scale
+                        scaleY = scale
                         transformOrigin = BottomNavLabelTransformOrigin
-                    ),
-                children = text
+                    },
+                content = text
             )
         }
     ) { measurables, constraints ->
-        val iconPlaceable = measurables.first { it.id == "icon" }.measure(constraints)
-        val textPlaceable = measurables.first { it.id == "text" }.measure(constraints)
+        val iconPlaceable = measurables.first { it.layoutId == "icon" }.measure(constraints)
+        val textPlaceable = measurables.first { it.layoutId == "text" }.measure(constraints)
 
         placeTextAndIcon(
             textPlaceable,
@@ -355,7 +354,7 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 
 private enum class HomeSections(
     @StringRes val title: Int,
-    val icon: VectorAsset
+    val icon: ImageVector
 ) {
     Feed(R.string.home_feed, Icons.Outlined.Home),
     Search(R.string.home_search, Icons.Outlined.Search),
