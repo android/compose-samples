@@ -56,15 +56,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.drawLayer
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
@@ -132,7 +132,7 @@ private fun AppBar() {
             .statusBarsPadding()
     ) {
         Image(
-            asset = vectorResource(id = OwlTheme.images.lockupLogo),
+            imageVector = vectorResource(id = OwlTheme.images.lockupLogo),
             modifier = Modifier.padding(16.dp)
         )
         IconButton(
@@ -203,12 +203,9 @@ private fun TopicChip(topic: Topic) {
                         modifier = Modifier.matchParentSize()
                     ) {
                         Icon(
-                            asset = Icons.Filled.Done,
+                            imageVector = Icons.Filled.Done,
                             tint = MaterialTheme.colors.onPrimary.copy(alpha = selectedAlpha),
-                            modifier = Modifier.drawLayer(
-                                scaleX = selectionState[CheckScale],
-                                scaleY = selectionState[CheckScale]
-                            )
+                            modifier = Modifier.scale(selectionState[CheckScale])
                         )
                     }
                 }
@@ -227,7 +224,7 @@ private fun TopicChip(topic: Topic) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                         Icon(
-                            asset = vectorResource(R.drawable.ic_grain),
+                            imageVector = vectorResource(R.drawable.ic_grain),
                             modifier = Modifier
                                 .padding(start = 16.dp)
                                 .preferredSize(12.dp)
@@ -248,10 +245,10 @@ private fun TopicChip(topic: Topic) {
 private fun StaggeredGrid(
     modifier: Modifier = Modifier,
     rows: Int = 3,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     Layout(
-        children = children,
+        content = content,
         modifier = modifier
     ) { measurables, constraints ->
         val rowWidths = IntArray(rows) { 0 } // Keep track of the width of each row

@@ -37,9 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
@@ -140,7 +140,7 @@ fun FeaturedCourse(
             )
             val center = createGuidelineFromStart(0.5f)
             Icon(
-                asset = Icons.Rounded.OndemandVideo,
+                imageVector = Icons.Rounded.OndemandVideo,
                 tint = MaterialTheme.colors.primary,
                 modifier = Modifier
                     .preferredSize(16.dp)
@@ -172,10 +172,10 @@ fun FeaturedCourse(
 fun StaggeredVerticalGrid(
     modifier: Modifier = Modifier,
     maxColumnWidth: Dp,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     Layout(
-        children = children,
+        content = content,
         modifier = modifier
     ) { measurables, constraints ->
         check(constraints.hasBoundedWidth) {

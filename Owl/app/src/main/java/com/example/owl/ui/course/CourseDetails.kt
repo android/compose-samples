@@ -19,7 +19,6 @@ package com.example.owl.ui.course
 import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.lazy.LazyRowFor
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientContentAlpha
@@ -60,17 +60,17 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.drawLayer
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.WithConstraints
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.CourseRepo
@@ -116,7 +116,7 @@ fun CourseDetails(
     PinkTheme {
         WithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)
-            val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
+            val fabSize = with(AmbientDensity.current) { FabSize.toPx() }
             val dragRange = constraints.maxHeight - fabSize
 
             backHandler(
@@ -192,11 +192,11 @@ private fun CourseDescriptionHeader(
         ) {
             IconButton(onClick = upPress) {
                 Icon(
-                    asset = Icons.Rounded.ArrowBack
+                    imageVector = Icons.Rounded.ArrowBack
                 )
             }
             Image(
-                asset = vectorResource(id = R.drawable.ic_logo),
+                imageVector = vectorResource(id = R.drawable.ic_logo),
                 modifier = Modifier
                     .padding(bottom = 4.dp)
                     .preferredSize(24.dp)
@@ -280,7 +280,7 @@ private fun RelatedCourses(
     courseId: Long,
     selectCourse: (Long) -> Unit
 ) {
-    val relatedCourses = CourseRepo.getRelated(courseId)
+    val relatedCourses = remember(courseId) { CourseRepo.getRelated(courseId) }
     BlueTheme {
         Surface(
             color = MaterialTheme.colors.primarySurface,
@@ -298,24 +298,23 @@ private fun RelatedCourses(
                             vertical = 24.dp
                         )
                 )
-                ScrollableRow(
+                LazyRowFor(
+                    items = relatedCourses,
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         bottom = 32.dp,
                         end = FabSize + 8.dp
                     )
-                ) {
-                    relatedCourses.forEach { related ->
-                        CourseListItem(
-                            course = related,
-                            onClick = { selectCourse(related.id) },
-                            titleStyle = MaterialTheme.typography.body2,
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .preferredSize(288.dp, 80.dp),
-                            iconSize = 14.dp
-                        )
-                    }
+                ) { related ->
+                    CourseListItem(
+                        course = related,
+                        onClick = { selectCourse(related.id) },
+                        titleStyle = MaterialTheme.typography.body2,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .preferredSize(288.dp, 80.dp),
+                        iconSize = 14.dp
+                    )
                 }
             }
         }
@@ -331,7 +330,7 @@ private fun LessonsSheet(
     updateSheet: (SheetState) -> Unit
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
-    val fabSize = with(DensityAmbient.current) { FabSize.toPx() }
+    val fabSize = with(AmbientDensity.current) { FabSize.toPx() }
     val fabSheetHeight = fabSize + AmbientWindowInsets.current.systemBars.bottom
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
     val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
@@ -347,10 +346,10 @@ private fun LessonsSheet(
         color = surfaceColor,
         contentColor = contentColorFor(color = MaterialTheme.colors.primarySurface),
         shape = RoundedCornerShape(topLeft = tlCorner),
-        modifier = Modifier.drawLayer(
-            translationX = offsetX,
+        modifier = Modifier.graphicsLayer {
+            translationX = offsetX
             translationY = offsetY
-        )
+        }
     ) {
         Lessons(course, openFraction, surfaceColor, updateSheet)
     }
@@ -371,7 +370,7 @@ private fun Lessons(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .drawLayer(alpha = lessonsAlpha)
+                .graphicsLayer { alpha = lessonsAlpha }
                 .statusBarsPadding()
         ) {
             val scroll = rememberScrollState()
@@ -395,7 +394,7 @@ private fun Lessons(
                     onClick = { updateSheet(SheetState.Closed) },
                     modifier = Modifier.align(Alignment.CenterVertically)
                 ) {
-                    Icon(asset = Icons.Rounded.ExpandMore)
+                    Icon(imageVector = Icons.Rounded.ExpandMore)
                 }
             }
             ScrollableColumn(
@@ -417,14 +416,14 @@ private fun Lessons(
             modifier = Modifier
                 .preferredSize(FabSize)
                 .padding(start = 16.dp, top = 8.dp) // visually center contents
-                .drawLayer(alpha = fabAlpha)
+                .graphicsLayer { alpha = fabAlpha }
         ) {
             IconButton(
                 modifier = Modifier.align(Alignment.Center),
                 onClick = { updateSheet(SheetState.Open) }
             ) {
                 Icon(
-                    asset = Icons.Rounded.PlaylistPlay,
+                    imageVector = Icons.Rounded.PlaylistPlay,
                     tint = MaterialTheme.colors.onPrimary
                 )
             }
@@ -460,7 +459,7 @@ private fun Lesson(lesson: Lesson) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        asset = Icons.Rounded.PlayCircleOutline,
+                        imageVector = Icons.Rounded.PlayCircleOutline,
                         modifier = Modifier.preferredSize(16.dp)
                     )
                     Text(

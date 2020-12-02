@@ -19,7 +19,7 @@ package com.example.jetsnack.ui
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import com.example.jetsnack.ui.utils.Navigator
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Models the screens in the app and any arguments they require.

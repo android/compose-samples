@@ -44,7 +44,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
-import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.ripple.rememberRippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
@@ -56,9 +56,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
@@ -206,11 +206,11 @@ fun EpisodeListItem(
         }
 
         Image(
-            asset = Icons.Rounded.PlayCircleFilled,
+            imageVector = Icons.Rounded.PlayCircleFilled,
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(AmbientContentColor.current),
             modifier = Modifier
-                .clickable(indication = RippleIndication(bounded = false, radius = 24.dp)) {
+                .clickable(indication = rememberRippleIndication(bounded = false, radius = 24.dp)) {
                     /* TODO */
                 }
                 .preferredSize(36.dp)
@@ -253,21 +253,23 @@ fun EpisodeListItem(
 
             IconButton(
                 onClick = { /* TODO */ },
-                icon = { Icon(Icons.Default.PlaylistAdd) },
                 modifier = Modifier.constrainAs(addPlaylist) {
                     end.linkTo(overflow.start)
                     centerVerticallyTo(playIcon)
                 }
-            )
+            ) {
+                Icon(Icons.Default.PlaylistAdd)
+            }
 
             IconButton(
                 onClick = { /* TODO */ },
-                icon = { Icon(Icons.Default.MoreVert) },
                 modifier = Modifier.constrainAs(overflow) {
                     end.linkTo(parent.end, 8.dp)
                     centerVerticallyTo(playIcon)
                 }
-            )
+            ) {
+                Icon(Icons.Default.MoreVert)
+            }
         }
     }
 }
@@ -300,9 +302,9 @@ private fun CategoryPodcastRow(
 private fun TopPodcastRowItem(
     podcastTitle: String,
     isFollowed: Boolean,
+    modifier: Modifier = Modifier,
     onToggleFollowClicked: () -> Unit,
     podcastImageUrl: String? = null,
-    modifier: Modifier = Modifier
 ) {
     Column(modifier) {
         Box(
