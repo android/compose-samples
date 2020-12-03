@@ -25,6 +25,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
+import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
@@ -39,6 +40,11 @@ class NavActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Turn off the decor fitting system windows, which allows us to handle insets,
+        // including IME animations
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             Providers(AmbientBackPressedDispatcher provides this) {
                 val scaffoldState = rememberScaffoldState()
