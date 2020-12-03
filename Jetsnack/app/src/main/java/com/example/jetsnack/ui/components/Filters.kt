@@ -49,7 +49,7 @@ fun FilterBar(filters: List<Filter>) {
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Icon(
-                asset = Icons.Rounded.FilterList,
+                imageVector = Icons.Rounded.FilterList,
                 tint = JetsnackTheme.colors.brand,
                 modifier = Modifier.diagonalGradientBorder(
                     colors = JetsnackTheme.colors.interactiveSecondary,

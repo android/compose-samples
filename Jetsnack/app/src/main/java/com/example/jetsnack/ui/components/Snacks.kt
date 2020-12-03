@@ -45,11 +45,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -63,7 +63,7 @@ private val HighlightCardPadding = 16.dp
 // The Cards show a gradient which spans 3 cards and scrolls with parallax.
 @Composable
 private val gradientWidth
-    get() = with(DensityAmbient.current) {
+    get() = with(AmbientDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
 
@@ -97,7 +97,7 @@ fun SnackCollection(
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
-                    asset = Icons.Outlined.ArrowForward,
+                    imageVector = Icons.Outlined.ArrowForward,
                     tint = JetsnackTheme.colors.brand
                 )
             }
@@ -123,7 +123,7 @@ private fun HighlightedSnacks(
         else -> JetsnackTheme.colors.gradient6_2
     }
     // The Cards show a gradient which spans 3 cards and scrolls with parallax.
-    val gradientWidth = with(DensityAmbient.current) {
+    val gradientWidth = with(AmbientDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
     ScrollableRow(
@@ -198,7 +198,7 @@ private fun HighlightSnackItem(
     scroll: Float,
     modifier: Modifier = Modifier
 ) {
-    val left = index * with(DensityAmbient.current) {
+    val left = index * with(AmbientDensity.current) {
         (HighlightCardWidth + HighlightCardPadding).toPx()
     }
     JetsnackCard(

@@ -21,7 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offsetPx
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -42,14 +42,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
@@ -68,12 +68,12 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
     currentOffsetHolder.value = animate(
         if (showBranding) 0f else -brandingBottom
     )
-    val heightDp = with(DensityAmbient.current) { heightWithBranding.toDp() }
+    val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
-                .offsetPx(y = currentOffsetHolder)
+                .offset(y = { currentOffsetHolder.value })
                 .onSizeChanged {
                     if (showBranding) {
                         heightWithBranding = it.height
@@ -125,8 +125,8 @@ private fun Branding(modifier: Modifier = Modifier) {
 
 @Composable
 private fun Logo(
-    lightTheme: Boolean = MaterialTheme.colors.isLight,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lightTheme: Boolean = MaterialTheme.colors.isLight
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_logo_light
@@ -134,7 +134,7 @@ private fun Logo(
         R.drawable.ic_logo_dark
     }
     Image(
-        asset = vectorResource(id = assetId),
+        imageVector = vectorResource(id = assetId),
         modifier = modifier
     )
 }

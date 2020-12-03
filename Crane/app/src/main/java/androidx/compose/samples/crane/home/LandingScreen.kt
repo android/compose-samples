@@ -33,7 +33,7 @@ private const val SplashWaitTime: Long = 2000
 
 @Composable
 fun LandingScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
-    Box(modifier = modifier.fillMaxSize(), alignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         // Adds composition consistency. Use the value when LaunchedEffect is first called
         val currentOnTimeout by rememberUpdatedState(onTimeout)
 
@@ -41,6 +41,6 @@ fun LandingScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
             delay(SplashWaitTime)
             currentOnTimeout()
         }
-        Image(asset = vectorResource(id = R.drawable.ic_crane_drawer))
+        Image(imageVector = vectorResource(id = R.drawable.ic_crane_drawer))
     }
 }

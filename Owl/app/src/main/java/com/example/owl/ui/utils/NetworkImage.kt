@@ -26,7 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
@@ -65,14 +65,14 @@ fun NetworkImage(
 
 @Composable
 fun ProvideImageLoader(content: @Composable () -> Unit) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val loader = remember(context) {
         ImageLoader.Builder(context)
             .componentRegistry {
                 add(UnsplashSizingInterceptor)
             }.build()
     }
-    Providers(AmbientImageLoader provides loader, children = content)
+    Providers(AmbientImageLoader provides loader, content = content)
 }
 
 /**
