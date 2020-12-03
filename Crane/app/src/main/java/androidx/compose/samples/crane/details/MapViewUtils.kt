@@ -22,8 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.R
-import androidx.compose.ui.platform.ContextAmbient
-import androidx.compose.ui.platform.LifecycleOwnerAmbient
+import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.AmbientLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.android.libraries.maps.GoogleMap
@@ -34,7 +34,7 @@ import com.google.android.libraries.maps.MapView
  */
 @Composable
 fun rememberMapViewWithLifecycle(): MapView {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val mapView = remember {
         MapView(context).apply {
             id = R.id.map
@@ -43,7 +43,7 @@ fun rememberMapViewWithLifecycle(): MapView {
 
     // Makes MapView follow the lifecycle of this composable
     val lifecycleObserver = rememberMapLifecycleObserver(mapView)
-    val lifecycle = LifecycleOwnerAmbient.current.lifecycle
+    val lifecycle = AmbientLifecycleOwner.current.lifecycle
     onCommit(lifecycle) {
         lifecycle.addObserver(lifecycleObserver)
         onDispose {

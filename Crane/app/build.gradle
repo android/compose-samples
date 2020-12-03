@@ -114,7 +114,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.animation
-    implementation Libs.AndroidX.UI.tooling
+    implementation Libs.AndroidX.Compose.tooling
     implementation Libs.Accompanist.coil
 
     implementation Libs.AndroidX.Lifecycle.viewModelKtx

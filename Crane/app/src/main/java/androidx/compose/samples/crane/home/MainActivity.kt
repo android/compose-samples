@@ -39,7 +39,7 @@ import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawOpacity
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -68,11 +68,11 @@ fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicke
         val transition = transition(splashTransitionDefinition, splashShown)
         Box {
             LandingScreen(
-                modifier = Modifier.drawOpacity(transition[splashAlphaKey]),
+                modifier = Modifier.alpha(transition[splashAlphaKey]),
                 onTimeout = { splashShown = SplashState.Completed }
             )
             MainContent(
-                modifier = Modifier.drawOpacity(transition[contentAlphaKey]),
+                modifier = Modifier.alpha(transition[contentAlphaKey]),
                 topPadding = transition[contentTopPaddingKey],
                 onExploreItemClicked = onExploreItemClicked,
                 onDateSelectionClicked = onDateSelectionClicked
