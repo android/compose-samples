@@ -131,7 +131,6 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.Kotlin.Coroutines.test
-    androidTestImplementation Libs.AndroidX.Compose.test
     androidTestImplementation Libs.AndroidX.Compose.uiTest
     androidTestImplementation Libs.Hilt.android
     androidTestImplementation Libs.Hilt.AndroidX.viewModel

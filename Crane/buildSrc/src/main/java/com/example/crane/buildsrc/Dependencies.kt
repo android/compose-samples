@@ -55,7 +55,6 @@ object Libs {
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:${Compose.version}"
             const val animation = "androidx.compose.animation:animation:$version"
-            const val test = "androidx.compose.ui:ui-test:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
         }
 

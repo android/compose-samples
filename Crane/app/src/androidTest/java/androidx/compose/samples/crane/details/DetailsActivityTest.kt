@@ -64,6 +64,7 @@ class DetailsActivityTest {
                 testExploreModel
             )
         ),
+        // Needed for now, discussed in https://issuetracker.google.com/issues/174472899
         activityProvider = { rule ->
             var activity: DetailsActivity? = null
             rule.scenario.onActivity { activity = it }
