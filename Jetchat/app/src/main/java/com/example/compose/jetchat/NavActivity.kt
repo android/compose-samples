@@ -36,8 +36,6 @@ import com.example.compose.jetchat.databinding.ContentMainBinding
  * Main activity for the app.
  */
 class NavActivity : AppCompatActivity() {
-
-    // Used for navigation events between fragments.
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
