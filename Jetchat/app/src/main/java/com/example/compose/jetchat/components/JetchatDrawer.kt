@@ -56,6 +56,8 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
+    // Use statusBarsHeight() to add a spacer which pushes the drawer content
+    // below the status bar (y-axis)
     Spacer(Modifier.statusBarsHeight())
     DrawerHeader()
     Divider()
