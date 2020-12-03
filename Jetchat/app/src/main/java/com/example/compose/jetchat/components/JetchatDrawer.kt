@@ -52,9 +52,11 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
+    Spacer(Modifier.statusBarsHeight())
     DrawerHeader()
     Divider()
     DrawerItemHeader("Chats")

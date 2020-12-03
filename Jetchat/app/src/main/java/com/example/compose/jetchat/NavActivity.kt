@@ -31,6 +31,7 @@ import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.backPressHandler
 import com.example.compose.jetchat.databinding.ContentMainBinding
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 /**
  * Main activity for the app.
@@ -46,42 +47,46 @@ class NavActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            Providers(AmbientBackPressedDispatcher provides this) {
-                val scaffoldState = rememberScaffoldState()
+            // Provide WindowInsets to our content. We don't want to consume them, so that
+            // they keep being pass down the view hierarchy (since we're using fragments).
+            ProvideWindowInsets(consumeWindowInsets = false) {
+                Providers(AmbientBackPressedDispatcher provides this) {
+                    val scaffoldState = rememberScaffoldState()
 
-                val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
-                if (openDrawerEvent.value == true) {
-                    // Open drawer and reset state in VM.
-                    scaffoldState.drawerState.open {
-                        viewModel.resetOpenDrawerAction()
-                    }
-                }
+                    val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
+                    if (openDrawerEvent.value == true) {
+                        // Open drawer and reset state in VM.
+                        scaffoldState.drawerState.open {
+                            viewModel.resetOpenDrawerAction()
+                        }
 
-                // Intercepts back navigation when the drawer is open
-                backPressHandler(
-                    enabled = scaffoldState.drawerState.isOpen,
-                    onBackPressed = { scaffoldState.drawerState.close() },
-                    highPriority = true
-                )
-
-                JetchatScaffold(
-                    scaffoldState,
-                    onChatClicked = {
-                        findNavController(R.id.nav_host_fragment)
-                            .popBackStack(R.id.nav_home, true)
-                        scaffoldState.drawerState.close()
-                    },
-                    onProfileClicked = {
-                        val bundle = bundleOf("userId" to it)
-                        findNavController(R.id.nav_host_fragment).navigate(
-                            R.id.nav_profile,
-                            bundle
+                        // Intercepts back navigation when the drawer is open
+                        backPressHandler(
+                            enabled = scaffoldState.drawerState.isOpen,
+                            onBackPressed = { scaffoldState.drawerState.close() },
+                            highPriority = true
                         )
-                        scaffoldState.drawerState.close()
+
+                        JetchatScaffold(
+                            scaffoldState,
+                            onChatClicked = {
+                                findNavController(R.id.nav_host_fragment)
+                                    .popBackStack(R.id.nav_home, true)
+                                scaffoldState.drawerState.close()
+                            },
+                            onProfileClicked = {
+                                val bundle = bundleOf("userId" to it)
+                                findNavController(R.id.nav_host_fragment).navigate(
+                                    R.id.nav_profile,
+                                    bundle
+                                )
+                                scaffoldState.drawerState.close()
+                            }
+                        ) {
+                            // Inflate the XML layout using View Binding:
+                            AndroidViewBinding(ContentMainBinding::inflate)
+                        }
                     }
-                ) {
-                    // Inflate the XML layout using View Binding:
-                    AndroidViewBinding(ContentMainBinding::inflate)
                 }
             }
         }
