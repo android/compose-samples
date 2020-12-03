@@ -55,8 +55,8 @@ class ProfileFragment : Fragment() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        // Create an ViewWindowInsetObserver using this view, and call start() to
-        // start listening now. The WindowInsets instance is returned to us, allowing us to
+        // Create a ViewWindowInsetObserver using this view, and call start() to
+        // start listening now. The WindowInsets instance is returned, allowing us to
         // provide it to AmbientWindowInsets in our content below.
         val windowInsets = ViewWindowInsetObserver(this).start()
 

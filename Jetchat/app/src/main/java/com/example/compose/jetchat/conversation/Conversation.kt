@@ -108,6 +108,8 @@ fun ConversationContent(
                         )
                     },
                     scrollState = scrollState,
+                    // Use navigationBarsWithImePadding(), to move the input panel above both the
+                    // navigation bar, and on-screen keyboard (IME)
                     modifier = Modifier.navigationBarsWithImePadding(),
                 )
             }

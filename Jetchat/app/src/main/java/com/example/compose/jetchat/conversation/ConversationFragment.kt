@@ -48,10 +48,13 @@ class ConversationFragment : Fragment() {
     ): View = ComposeView(inflater.context).apply {
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
-        // Create an ViewWindowInsetObserver using this view, and call start() to
-        // start listening now. The WindowInsets instance is returned to us, allowing us to
+        // Create a ViewWindowInsetObserver using this view, and call start() to
+        // start listening now. The WindowInsets instance is returned, allowing us to
         // provide it to AmbientWindowInsets in our content below.
         val windowInsets = ViewWindowInsetObserver(this)
+            // We use the `windowInsetsAnimationsEnabled` parameter to enable animated
+            // insets support. This allows our `ConversationContent` to animate with the
+            // on-screen keyboard (IME) as it enters/exits the screen.
             .start(windowInsetsAnimationsEnabled = true)
 
         setContent {

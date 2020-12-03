@@ -71,6 +71,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
 
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
+            // Use statusBarsPadding() to move the app bar content below the status bar
             modifier = Modifier.fillMaxWidth().statusBarsPadding(),
             onNavIconPressed = onNavIconPressed,
             title = { },
