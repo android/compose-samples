@@ -20,6 +20,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -30,6 +32,8 @@ import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.ViewWindowInsetObserver
 
 class ConversationFragment : Fragment() {
 
@@ -39,26 +43,34 @@ class ConversationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(context = requireContext()).apply {
-            setContent {
-                Providers(AmbientBackPressedDispatcher provides requireActivity()) {
-                    JetchatTheme {
-                        ConversationContent(
-                            uiState = exampleUiState,
-                            navigateToProfile = { user ->
-                                // Click callback
-                                val bundle = bundleOf("userId" to user)
-                                findNavController().navigate(
-                                    R.id.nav_profile,
-                                    bundle
-                                )
-                            },
-                            onNavIconPressed = {
-                                activityViewModel.openDrawer()
-                            }
-                        )
-                    }
+    ): View = ComposeView(inflater.context).apply {
+        layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+
+        // Create an ViewWindowInsetObserver using this view, and call start() to
+        // start listening now. The WindowInsets instance is returned to us, allowing us to
+        // provide it to AmbientWindowInsets in our content below.
+        val windowInsets = ViewWindowInsetObserver(this).start()
+
+        setContent {
+            Providers(
+                AmbientBackPressedDispatcher provides requireActivity(),
+                AmbientWindowInsets provides windowInsets,
+            ) {
+                JetchatTheme {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { user ->
+                            // Click callback
+                            val bundle = bundleOf("userId" to user)
+                            findNavController().navigate(
+                                R.id.nav_profile,
+                                bundle
+                            )
+                        },
+                        onNavIconPressed = {
+                            activityViewModel.openDrawer()
+                        }
+                    )
                 }
             }
         }

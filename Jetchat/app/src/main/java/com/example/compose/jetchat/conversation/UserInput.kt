@@ -121,7 +121,8 @@ fun UserInputPreview() {
 @Composable
 fun UserInput(
     onMessageSent: (String) -> Unit,
-    scrollState: ScrollState
+    scrollState: ScrollState,
+    modifier: Modifier = Modifier,
 ) {
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
@@ -135,7 +136,7 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    Column {
+    Column(modifier) {
         Divider()
         UserInputText(
             textFieldValue = textState,
