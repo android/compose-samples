@@ -33,12 +33,14 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
 import dev.chrisbanes.accompanist.insets.ViewWindowInsetObserver
 
 class ConversationFragment : Fragment() {
 
     private val activityViewModel: MainViewModel by activityViewModels()
 
+    @OptIn(ExperimentalAnimatedInsets::class) // Opt-in to experiment animated insets support
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +51,8 @@ class ConversationFragment : Fragment() {
         // Create an ViewWindowInsetObserver using this view, and call start() to
         // start listening now. The WindowInsets instance is returned to us, allowing us to
         // provide it to AmbientWindowInsets in our content below.
-        val windowInsets = ViewWindowInsetObserver(this).start()
+        val windowInsets = ViewWindowInsetObserver(this)
+            .start(windowInsetsAnimationsEnabled = true)
 
         setContent {
             Providers(
