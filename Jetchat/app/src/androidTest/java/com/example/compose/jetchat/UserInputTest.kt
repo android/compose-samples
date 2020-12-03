@@ -37,6 +37,8 @@ import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,9 +59,15 @@ class UserInputTest {
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
             activity = newActivity
+            // Provide empty insets. We can modify this value as necessary
+            val windowInsets = WindowInsets()
+
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(AmbientBackPressedDispatcher provides activity) {
+                Providers(
+                    AmbientBackPressedDispatcher provides activity,
+                    AmbientWindowInsets provides windowInsets,
+                ) {
                     JetchatTheme {
                         ConversationContent(
                             uiState = exampleUiState,

@@ -29,6 +29,8 @@ import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -57,9 +59,15 @@ class NavigationTest {
             navController = Navigation.findNavController(navHostFragment)
         }
 
+        // Provide empty insets. We can modify this value as necessary
+        val windowInsets = WindowInsets()
+
         // Start the app
         composeTestRule.setContent {
-            Providers(AmbientBackPressedDispatcher provides activity) {
+            Providers(
+                AmbientBackPressedDispatcher provides activity,
+                AmbientWindowInsets provides windowInsets,
+            ) {
                 JetchatTheme {
                     ConversationContent(
                         uiState = exampleUiState,

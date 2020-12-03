@@ -14,17 +14,11 @@
   ~ limitations under the License.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/blue500</item>
-        <item name="colorPrimaryDark">@color/blue800</item>
-        <item name="colorAccent">@color/yellow700</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
+    <style name="Platform.Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-        <!-- TODO: Fix navigation bar color in API <26 -->
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">?attr/isLightTheme</item>
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
-        <item name="android:navigationMode">?attr/colorSurface</item>
     </style>
+
 </resources>

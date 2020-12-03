@@ -44,6 +44,16 @@ When the Emoji panel is shown the keyboard must be hidden and vice versa. This i
 ### Multiple types of animations and transitions
 This sample uses animations ranging from simple `AnimatedVisibility` in [FunctionalityNotAvailablePanel](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt) to choreographed transitions found in the [FloatingActionButton](https://material.io/develop/android/components/floating-action-button) of the Profile screen and implemented in [AnimatingFabContent](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt)
 
+### Edge-to-edge UI with synchronized IME transitions
+This sample is laid out [edge-to-edge](https://medium.com/androiddevelopers/gesture-navigation-going-edge-to-edge-812f62e4e83e), drawing its content behind the system bars for a more immersive look.
+
+The sample also supports synchronized IME transitions when running on API 30+ devices. See the use of `Modifier.navigationBarsWithImePadding()` in [ConversationContent](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
+
+<img src="screenshots/ime-transition.gif" />
+
+The sample uses the
+[Accompanist Insets library](https://chrisbanes.github.io/accompanist/insets/) for WindowInsets support.
+
 ### Saved state across configuration changes
 Some composable state survives activity or process recreation, like `currentInputSelector` in [UserInput](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
 

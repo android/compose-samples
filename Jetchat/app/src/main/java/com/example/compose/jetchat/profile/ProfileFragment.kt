@@ -21,6 +21,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -28,6 +30,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.ViewWindowInsetObserver
 
 class ProfileFragment : Fragment() {
 
@@ -45,22 +49,31 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View = ComposeView(inflater.context).apply {
+        layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
 
-        return ComposeView(context = requireContext()).apply {
-            setContent {
-                viewModel.userData.observeAsState().value.let { userData ->
-                    JetchatTheme {
-                        if (userData == null) {
-                            ProfileError()
-                        } else {
-                            ProfileScreen(
-                                userData = userData,
-                                onNavIconPressed = {
-                                    activityViewModel.openDrawer()
-                                }
-                            )
-                        }
+        // Create a ViewWindowInsetObserver using this view, and call start() to
+        // start listening now. The WindowInsets instance is returned, allowing us to
+        // provide it to AmbientWindowInsets in our content below.
+        val windowInsets = ViewWindowInsetObserver(this).start()
+
+        setContent {
+            val userData by viewModel.userData.observeAsState()
+
+            Providers(AmbientWindowInsets provides windowInsets) {
+                JetchatTheme {
+                    if (userData == null) {
+                        ProfileError()
+                    } else {
+                        ProfileScreen(
+                            userData = userData!!,
+                            onNavIconPressed = {
+                                activityViewModel.openDrawer()
+                            }
+                        )
                     }
                 }
             }

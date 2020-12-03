@@ -70,6 +70,8 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
+import dev.chrisbanes.accompanist.insets.navigationBarsWithImePadding
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 /**
  * Entry point for a conversation screen.
@@ -105,14 +107,19 @@ fun ConversationContent(
                             Message(authorMe, content, timeNow)
                         )
                     },
-                    scrollState
+                    scrollState = scrollState,
+                    // Use navigationBarsWithImePadding(), to move the input panel above both the
+                    // navigation bar, and on-screen keyboard (IME)
+                    modifier = Modifier.navigationBarsWithImePadding(),
                 )
             }
             // Channel name bar floats above the messages
             ChannelNameBar(
                 channelName = uiState.channelName,
                 channelMembers = uiState.channelMembers,
-                onNavIconPressed = onNavIconPressed
+                onNavIconPressed = onNavIconPressed,
+                // Use statusBarsPadding() to move the app bar content below the status bar
+                modifier = Modifier.statusBarsPadding(),
             )
         }
     }

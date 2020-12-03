@@ -62,6 +62,7 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
@@ -70,7 +71,8 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
 
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
-            modifier = Modifier.fillMaxWidth(),
+            // Use statusBarsPadding() to move the app bar content below the status bar
+            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {

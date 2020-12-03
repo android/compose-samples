@@ -42,6 +42,11 @@ object Libs {
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
+    object Accompanist {
+        private const val version = "0.4.0"
+        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
+    }
+
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"

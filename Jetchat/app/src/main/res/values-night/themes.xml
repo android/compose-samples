@@ -16,11 +16,11 @@
 
 <resources>
 
-    <style name="Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar" >
+    <!-- Our dark theme -->
+    <style name="Theme.Jetchat" parent="Platform.Theme.Jetchat" >
         <item name="colorPrimary">@color/blue300</item>
         <item name="colorPrimaryDark">@color/blue400</item>
         <item name="colorAccent">@color/yellow400</item>
-        <item name="android:statusBarColor">@color/black30</item>
     </style>
 
 </resources>
