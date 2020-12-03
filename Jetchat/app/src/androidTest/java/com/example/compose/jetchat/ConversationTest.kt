@@ -35,6 +35,8 @@ import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.WindowInsets
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -58,9 +60,15 @@ class ConversationTest {
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
             activity = newActivity
+            // Provide empty insets. We can modify this value as necessary
+            val windowInsets = WindowInsets()
+
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(AmbientBackPressedDispatcher provides newActivity) {
+                Providers(
+                    AmbientBackPressedDispatcher provides newActivity,
+                    AmbientWindowInsets provides windowInsets
+                ) {
                     JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                         ConversationContent(
                             uiState = exampleUiState,

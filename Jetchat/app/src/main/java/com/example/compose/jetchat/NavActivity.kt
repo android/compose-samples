@@ -59,33 +59,33 @@ class NavActivity : AppCompatActivity() {
                         scaffoldState.drawerState.open {
                             viewModel.resetOpenDrawerAction()
                         }
+                    }
 
-                        // Intercepts back navigation when the drawer is open
-                        backPressHandler(
-                            enabled = scaffoldState.drawerState.isOpen,
-                            onBackPressed = { scaffoldState.drawerState.close() },
-                            highPriority = true
-                        )
+                    // Intercepts back navigation when the drawer is open
+                    backPressHandler(
+                        enabled = scaffoldState.drawerState.isOpen,
+                        onBackPressed = { scaffoldState.drawerState.close() },
+                        highPriority = true
+                    )
 
-                        JetchatScaffold(
-                            scaffoldState,
-                            onChatClicked = {
-                                findNavController(R.id.nav_host_fragment)
-                                    .popBackStack(R.id.nav_home, true)
-                                scaffoldState.drawerState.close()
-                            },
-                            onProfileClicked = {
-                                val bundle = bundleOf("userId" to it)
-                                findNavController(R.id.nav_host_fragment).navigate(
-                                    R.id.nav_profile,
-                                    bundle
-                                )
-                                scaffoldState.drawerState.close()
-                            }
-                        ) {
-                            // Inflate the XML layout using View Binding:
-                            AndroidViewBinding(ContentMainBinding::inflate)
+                    JetchatScaffold(
+                        scaffoldState,
+                        onChatClicked = {
+                            findNavController(R.id.nav_host_fragment)
+                                .popBackStack(R.id.nav_home, true)
+                            scaffoldState.drawerState.close()
+                        },
+                        onProfileClicked = {
+                            val bundle = bundleOf("userId" to it)
+                            findNavController(R.id.nav_host_fragment).navigate(
+                                R.id.nav_profile,
+                                bundle
+                            )
+                            scaffoldState.drawerState.close()
                         }
+                    ) {
+                        // Inflate the XML layout using View Binding:
+                        AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
             }
