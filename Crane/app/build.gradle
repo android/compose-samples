@@ -106,7 +106,8 @@ android {
 dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Kotlin.Coroutines.android
-    implementation Libs.googleMaps
+    implementation Libs.GoogleMaps.maps
+    implementation Libs.GoogleMaps.mapsKtx
 
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata

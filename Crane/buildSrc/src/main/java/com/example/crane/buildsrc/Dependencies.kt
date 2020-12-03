@@ -23,7 +23,11 @@ object Versions {
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha16"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
-    const val googleMaps = "com.google.android.libraries.maps:maps:3.1.0-beta"
+
+    object GoogleMaps {
+        const val maps = "com.google.android.libraries.maps:maps:3.1.0-beta"
+        const val mapsKtx = "com.google.maps.android:maps-v3-ktx:2.2.0"
+    }
 
     object Accompanist {
         private const val version = "0.3.4.compose-6995125-SNAPSHOT"
