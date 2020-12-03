@@ -12,7 +12,7 @@ project from Android Studio following the steps
 This sample showcases:
 
 * UI state management
-* Integration with Architecture Components: Navigation, Fragments, LiveData, ViewModel
+* Integration with Architecture Components: Navigation, Fragments, ViewModel
 * Back button handling
 * Text Input and focus management
 * Multiple types of animations and transitions
@@ -80,7 +80,6 @@ Checks that the user input composable, including extended controls, behave as ex
 Tracked in https://issuetracker.google.com/164859446
 
 2. There are only two profiles, clicking on anybody except "me" will show the same data.
-
 
 ## License
 ```

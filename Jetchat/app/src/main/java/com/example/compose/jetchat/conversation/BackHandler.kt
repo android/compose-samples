@@ -27,9 +27,18 @@ import androidx.compose.runtime.staticAmbientOf
 /**
  * This [Composable] can be used with a [AmbientBackPressedDispatcher] to intercept a back press (if
  * [enabled]).
+ *
+ * @param onBackPressed (Event) What to do when back is intercepted
+ * @param enabled (state) When to intercept the back navigation
+ * @param highPriority (config) Used to make sure this is the first handler in the dispatcher
+ *
  */
 @Composable
-fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true) {
+fun backPressHandler(
+    onBackPressed: () -> Unit,
+    enabled: Boolean = true,
+    highPriority: Boolean = false
+) {
     val dispatcher = AmbientBackPressedDispatcher.current.onBackPressedDispatcher
 
     // This callback is going to be remembered only if onBackPressed is referentially equal.
@@ -43,7 +52,13 @@ fun backPressHandler(onBackPressed: () -> Unit, enabled: Boolean = true) {
 
     // Using onCommit guarantees that failed transactions don't incorrectly toggle the
     // remembered callback.
-    onCommit(enabled) {
+    onCommit(enabled, highPriority) {
+        if (enabled && highPriority) {
+            // Since the Navigation Component is also intercepting the back event, make sure
+            // that this is the first callback in the dispatcher.
+            backCallback.remove()
+            dispatcher.addCallback(backCallback)
+        }
         backCallback.isEnabled = enabled
     }
 
