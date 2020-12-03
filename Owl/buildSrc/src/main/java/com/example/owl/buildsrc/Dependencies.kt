@@ -21,11 +21,11 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha16"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha01"
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.3.4.compose-7001724-SNAPSHOT"
+        private const val version = "0.4.0"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
@@ -46,11 +46,11 @@ object Libs {
 
     object AndroidX {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
-        const val navigation = "androidx.navigation:navigation-compose:1.0.0-SNAPSHOT"
+        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha03"
 
         object Compose {
-            const val snapshot = "7001724"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-alpha08"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
