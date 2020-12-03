@@ -36,8 +36,7 @@ fun JetchatScaffold(
             drawerContent = {
                 JetchatDrawer(
                     onProfileClicked = onProfileClicked,
-                    onChatClicked = onChatClicked,
-
+                    onChatClicked = onChatClicked
                 )
             },
             bodyContent = content

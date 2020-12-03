@@ -102,11 +102,14 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .clickable(onClick = onChatClicked),
         verticalAlignment = CenterVertically
     ) {
-        val mediumEmphasisOnSurface =
+        val iconTint = if (selected) {
+            MaterialTheme.colors.primary
+        } else {
             MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)
+        }
         Icon(
             vectorResource(id = R.drawable.ic_jetchat),
-            tint = if (selected) MaterialTheme.colors.primary else mediumEmphasisOnSurface,
+            tint = iconTint,
             modifier = Modifier.padding(8.dp)
         )
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {

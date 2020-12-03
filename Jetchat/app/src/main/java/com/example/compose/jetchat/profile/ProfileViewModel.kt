@@ -18,11 +18,11 @@ package com.example.compose.jetchat.profile
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 class ProfileViewModel : ViewModel() {
 
@@ -35,8 +35,8 @@ class ProfileViewModel : ViewModel() {
         _userData.value = if (userId == meProfile.userId) meProfile else colleagueProfile
     }
 
-    private val _userData = MutableStateFlow<ProfileScreenState?>(null)
-    val userData: StateFlow<ProfileScreenState?> = _userData
+    private val _userData = MutableLiveData<ProfileScreenState>()
+    val userData: LiveData<ProfileScreenState> = _userData
 }
 
 @Immutable
