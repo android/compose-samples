@@ -50,18 +50,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.WithConstraints
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
@@ -70,14 +71,15 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
 
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
-            modifier = Modifier.fillMaxWidth(),
+            // Use statusBarsPadding() to move the app bar content below the status bar
+            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
                 Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     // More icon
                     Icon(
-                        asset = Icons.Outlined.MoreVert,
+                        imageVector = Icons.Outlined.MoreVert,
                         modifier = Modifier
                             .clickable(onClick = {}) // TODO: Show not implemented dialog.
                             .padding(horizontal = 12.dp, vertical = 16.dp)
@@ -175,7 +177,7 @@ private fun ProfileHeader(
     data: ProfileScreenState
 ) {
     val offset = (scrollState.value / 2)
-    val offsetDp = with(DensityAmbient.current) { offset.toDp() }
+    val offsetDp = with(AmbientDensity.current) { offset.toDp() }
 
     data.photo?.let {
         val asset = imageResource(id = it)
@@ -187,7 +189,7 @@ private fun ProfileHeader(
                 .aspectRatio(ratioAsset)
                 .preferredHeightIn(max = 320.dp)
                 .padding(top = offsetDp),
-            asset = asset,
+            bitmap = asset,
             contentScale = ContentScale.FillWidth
         )
     }
@@ -237,7 +239,7 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             AnimatingFabContent(
                 icon = {
                     Icon(
-                        asset = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat
+                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat
                     )
                 },
                 text = {

@@ -24,19 +24,21 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasInputMethodsSupport
 import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithLabel
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,9 +59,15 @@ class UserInputTest {
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
             activity = newActivity
+            // Provide empty insets. We can modify this value as necessary
+            val windowInsets = WindowInsets()
+
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(BackPressedDispatcherAmbient provides activity) {
+                Providers(
+                    AmbientBackPressedDispatcher provides activity,
+                    AmbientWindowInsets provides windowInsets,
+                ) {
                     JetchatTheme {
                         ConversationContent(
                             uiState = exampleUiState,
@@ -148,7 +156,7 @@ class UserInputTest {
 
     private fun findTextInputField(): SemanticsNodeInteraction {
         return composeTestRule.onNode(
-            hasInputMethodsSupport() and
+            hasSetTextAction() and
                 hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
         )
     }

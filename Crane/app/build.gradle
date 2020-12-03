@@ -65,7 +65,7 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -106,7 +106,8 @@ android {
 dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Kotlin.Coroutines.android
-    implementation Libs.googleMaps
+    implementation Libs.GoogleMaps.maps
+    implementation Libs.GoogleMaps.mapsKtx
 
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
@@ -114,7 +115,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.animation
-    implementation Libs.AndroidX.UI.tooling
+    implementation Libs.AndroidX.Compose.tooling
     implementation Libs.Accompanist.coil
 
     implementation Libs.AndroidX.Lifecycle.viewModelKtx

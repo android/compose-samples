@@ -49,12 +49,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
@@ -423,7 +423,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -441,7 +441,7 @@ fun PreviewHomeScreenBodyDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val posts = runBlocking {
         BlockingFakePostsRepository(context).getPosts()
     }
@@ -456,7 +456,7 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

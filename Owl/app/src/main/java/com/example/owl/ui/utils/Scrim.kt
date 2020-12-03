@@ -17,7 +17,7 @@
 package com.example.owl.ui.utils
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.drawWithCache
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.VerticalGradient
 

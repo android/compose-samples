@@ -37,7 +37,7 @@ import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 class PeopleUserInputState {
     var people by mutableStateOf(1)

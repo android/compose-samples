@@ -51,7 +51,7 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -67,6 +67,7 @@ android {
 
     buildFeatures {
         compose true
+        viewBinding true
 
         // Disable unused AGP features
         buildConfig false
@@ -94,6 +95,7 @@ dependencies {
 
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.Lifecycle.livedata
     implementation Libs.AndroidX.Navigation.fragment
     implementation Libs.AndroidX.Navigation.uiKtx
     implementation Libs.material
@@ -102,8 +104,12 @@ dependencies {
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended
     implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.uiUtil
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
+    implementation Libs.AndroidX.Compose.viewBinding
+
+    implementation Libs.Accompanist.insets
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core

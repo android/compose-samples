@@ -30,11 +30,13 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performGesture
 import androidx.compose.ui.test.swipe
 import androidx.compose.ui.unit.milliseconds
-import com.example.compose.jetchat.conversation.BackPressedDispatcherAmbient
+import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.WindowInsets
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -58,9 +60,15 @@ class ConversationTest {
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
             activity = newActivity
+            // Provide empty insets. We can modify this value as necessary
+            val windowInsets = WindowInsets()
+
             // Launch the conversation screen
             composeTestRule.setContent {
-                Providers(BackPressedDispatcherAmbient provides newActivity) {
+                Providers(
+                    AmbientBackPressedDispatcher provides newActivity,
+                    AmbientWindowInsets provides windowInsets
+                ) {
                     JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                         ConversationContent(
                             uiState = exampleUiState,

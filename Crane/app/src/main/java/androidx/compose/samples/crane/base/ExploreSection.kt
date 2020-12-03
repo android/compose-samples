@@ -97,7 +97,7 @@ private fun ExploreItem(
                     Box(Modifier.fillMaxSize()) {
                         Image(
                             modifier = Modifier.preferredSize(36.dp).align(Alignment.Center),
-                            asset = vectorResource(id = R.drawable.ic_crane_logo)
+                            imageVector = vectorResource(id = R.drawable.ic_crane_logo)
                         )
                     }
                 }

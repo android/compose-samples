@@ -20,43 +20,63 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import com.example.compose.jetchat.NavActivity
+import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
+import dev.chrisbanes.accompanist.insets.ViewWindowInsetObserver
 
 class ConversationFragment : Fragment() {
 
+    private val activityViewModel: MainViewModel by activityViewModels()
+
+    @OptIn(ExperimentalAnimatedInsets::class) // Opt-in to experiment animated insets support
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return ComposeView(context = requireContext()).apply {
-            setContent {
-                Providers(BackPressedDispatcherAmbient provides requireActivity()) {
-                    JetchatTheme {
-                        ConversationContent(
-                            uiState = exampleUiState,
-                            navigateToProfile = { user ->
-                                // Click callback
-                                val bundle = bundleOf("userId" to user)
-                                findNavController().navigate(
-                                    R.id.nav_profile,
-                                    bundle
-                                )
-                            },
-                            onNavIconPressed = {
-                                // TODO: Replace with Scaffold
-                                (activity as? NavActivity)?.openDrawer()
-                            }
-                        )
-                    }
+    ): View = ComposeView(inflater.context).apply {
+        layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+
+        // Create a ViewWindowInsetObserver using this view, and call start() to
+        // start listening now. The WindowInsets instance is returned, allowing us to
+        // provide it to AmbientWindowInsets in our content below.
+        val windowInsets = ViewWindowInsetObserver(this)
+            // We use the `windowInsetsAnimationsEnabled` parameter to enable animated
+            // insets support. This allows our `ConversationContent` to animate with the
+            // on-screen keyboard (IME) as it enters/exits the screen.
+            .start(windowInsetsAnimationsEnabled = true)
+
+        setContent {
+            Providers(
+                AmbientBackPressedDispatcher provides requireActivity(),
+                AmbientWindowInsets provides windowInsets,
+            ) {
+                JetchatTheme {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { user ->
+                            // Click callback
+                            val bundle = bundleOf("userId" to user)
+                            findNavController().navigate(
+                                R.id.nav_profile,
+                                bundle
+                            )
+                        },
+                        onNavIconPressed = {
+                            activityViewModel.openDrawer()
+                        }
+                    )
                 }
             }
         }
