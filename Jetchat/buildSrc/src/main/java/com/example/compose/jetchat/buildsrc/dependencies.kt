@@ -29,17 +29,19 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
+        private const val prefix = "org.jetbrains.kotlin:kotlin"
         private const val version = "1.4.20"
-        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
-        const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
-        const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
+        const val stdlib = "$prefix-stdlib-jdk8:$version"
+        const val gradlePlugin = "$prefix-gradle-plugin:$version"
+        const val extensions = "$prefix-android-extensions:$version"
     }
 
     object Coroutines {
+        private const val prefix = "org.jetbrains.kotlinx:kotlinx-coroutines"
         private const val version = "1.4.2"
-        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
-        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
-        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+        const val core = "$prefix-core:$version"
+        const val android = "$prefix-android:$version"
+        const val test = "$prefix-test:$version"
     }
 
     object Accompanist {
@@ -48,50 +50,55 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
+        private const val prefix = "androidx"
+        const val appcompat = "$prefix.appcompat:appcompat:1.2.0-rc01"
+        const val coreKtx = "$prefix.core:core-ktx:1.5.0-alpha04"
 
         object Compose {
+            private const val prefix = AndroidX.prefix + ".compose"
             const val snapshot = ""
             const val version = "1.0.0-alpha08"
 
-            const val foundation = "androidx.compose.foundation:foundation:$version"
-            const val layout = "androidx.compose.foundation:foundation-layout:$version"
-            const val material = "androidx.compose.material:material:$version"
-            const val materialIconsExtended = "androidx.compose.material:material-icons-extended:$version"
-            const val runtime = "androidx.compose.runtime:runtime:$version"
-            const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
-            const val tooling = "androidx.compose.ui:ui-tooling:$version"
-            const val test = "androidx.compose.ui:ui-test:$version"
-            const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
-            const val uiUtil = "androidx.compose.ui:ui-util:${version}"
-            const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"
+            const val foundation = "$prefix.foundation:foundation:$version"
+            const val layout = "$prefix.foundation:foundation-layout:$version"
+            const val material = "$prefix.material:material:$version"
+            const val materialIconsExtended = "$prefix.material:material-icons-extended:$version"
+            const val runtime = "$prefix.runtime:runtime:$version"
+            const val runtimeLivedata = "$prefix.runtime:runtime-livedata:$version"
+            const val tooling = "$prefix.ui:ui-tooling:$version"
+            const val test = "$prefix.ui:ui-test:$version"
+            const val uiTest = "$prefix.ui:ui-test-junit4:$version"
+            const val uiUtil = "$prefix.ui:ui-util:${version}"
+            const val viewBinding = "$prefix.ui:ui-viewbinding:$version"
         }
 
         object Navigation {
+            private const val prefix = AndroidX.prefix + ".navigation:navigation"
             private const val version = "2.3.0"
-            const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
-            const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
+            const val fragment = "$prefix-fragment-ktx:$version"
+            const val uiKtx = "$prefix-ui-ktx:$version"
         }
 
         object Test {
+            private const val prefix = AndroidX.prefix + ".test"
             private const val version = "1.2.0"
-            const val core = "androidx.test:core:$version"
-            const val rules = "androidx.test:rules:$version"
+            const val core = "$prefix:core:$version"
+            const val rules = "$prefix:rules:$version"
 
             object Ext {
                 private const val version = "1.1.2-rc01"
-                const val junit = "androidx.test.ext:junit-ktx:$version"
+                const val junit = "$prefix.ext:junit-ktx:$version"
             }
 
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+            const val espressoCore = "$prefix.espresso:espresso-core:3.2.0"
         }
 
         object Lifecycle {
+            private const val prefix = AndroidX.prefix + ".lifecycle:lifecycle"
             private const val version = "2.2.0"
-            const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
-            const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
-            const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+            const val extensions = "$prefix-extensions:$version"
+            const val livedata = "$prefix-livedata-ktx:$version"
+            const val viewmodel = "$prefix-viewmodel-ktx:$version"
         }
     }
 }
