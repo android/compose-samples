@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 private val RefreshDistance = 80.dp
 
@@ -59,7 +61,10 @@ fun SwipeToRefreshLayout(
         )
     ) {
         content()
-        Box(Modifier.align(Alignment.TopCenter).offset(y = { state.offset.value })) {
+        Box(Modifier
+            .align(Alignment.TopCenter)
+            .offset { IntOffset(0, state.offset.value.roundToInt()) }
+        ) {
             if (state.offset.value != -refreshDistance) {
                 refreshIndicator()
             }
