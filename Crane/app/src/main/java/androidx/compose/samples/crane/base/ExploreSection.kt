@@ -119,8 +119,8 @@ private fun ExploreItem(
 }
 
 @Composable
-private fun ExploreImageContainer(children: @Composable () -> Unit) {
+private fun ExploreImageContainer(content: @Composable () -> Unit) {
     Surface(Modifier.preferredSize(width = 60.dp, height = 60.dp), RoundedCornerShape(4.dp)) {
-        children()
+        content()
     }
 }

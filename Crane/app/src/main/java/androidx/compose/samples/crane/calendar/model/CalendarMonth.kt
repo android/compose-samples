@@ -23,7 +23,7 @@ data class CalendarMonth(
     val monthNumber: Int,
     val startDayOfWeek: DayOfWeek
 ) {
-    val days = mutableListOf<CalendarDay>().apply {
+    private val days = mutableListOf<CalendarDay>().apply {
         // Add offset of the start of the month
         for (i in 1..startDayOfWeek.ordinal) {
             add(
