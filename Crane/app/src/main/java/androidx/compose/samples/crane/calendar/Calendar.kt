@@ -50,7 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -137,7 +137,7 @@ private fun Week(
                 day,
                 onDayClicked,
                 Modifier.semantics {
-                    accessibilityLabel = "${month.name} ${day.value}"
+                    contentDescription = "${month.name} ${day.value}"
                     dayStatusProperty = day.status
                 }
             )
