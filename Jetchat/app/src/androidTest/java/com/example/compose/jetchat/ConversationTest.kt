@@ -23,7 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.center
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -164,5 +164,5 @@ class ConversationTest {
         composeTestRule.onNodeWithText(activity.getString(R.string.jumpBottom))
 
     private fun openEmojiSelector() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
+        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
 }

@@ -24,10 +24,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -137,19 +137,19 @@ class UserInputTest {
     }
 
     private fun clickOnTextField() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.textfield_desc))
+        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.textfield_desc))
             .performClick()
 
     private fun openEmojiSelector() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_bt_desc))
+        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc))
             .performClick()
 
     private fun assertEmojiSelectorIsDisplayed() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc))
+        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_desc))
             .assertIsDisplayed()
 
     private fun assertEmojiSelectorDoesNotExist() =
-        composeTestRule.onNodeWithLabel(activity.getString(R.string.emoji_selector_desc))
+        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_desc))
             .assertDoesNotExist()
 
     private fun findSendButton() = composeTestRule.onNodeWithText(activity.getString(R.string.send))
@@ -157,7 +157,7 @@ class UserInputTest {
     private fun findTextInputField(): SemanticsNodeInteraction {
         return composeTestRule.onNode(
             hasSetTextAction() and
-                hasAnyAncestor(hasLabel(activity.getString(R.string.textfield_desc)))
+                hasAnyAncestor(hasContentDescription(activity.getString(R.string.textfield_desc)))
         )
     }
 }
