@@ -89,7 +89,8 @@ fun SwipeToRefreshLayout(
 }
 
 /**
- * Temporary workaround for nested scrolling behavior. See b/174756744
+ * Temporary workaround for nested scrolling behavior. There is no default implementation for
+ * pull to refresh yet, this nested scroll connection mimics the behavior.
  */
 @ExperimentalMaterialApi
 private val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
