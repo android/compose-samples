@@ -16,7 +16,6 @@
 
 package com.example.jetsnack.ui.home.search
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,9 +46,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.isFocused
-import androidx.compose.ui.focusObserver
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -160,7 +158,6 @@ class SearchState(
         }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalFocus::class)
 @Composable
 private fun SearchBar(
     query: TextFieldValue,
@@ -203,7 +200,7 @@ private fun SearchBar(
                     onValueChange = onQueryChange,
                     modifier = Modifier
                         .weight(1f)
-                        .focusObserver {
+                        .onFocusChanged {
                             onSearchFocusChange(it.isFocused)
                         }
                 )

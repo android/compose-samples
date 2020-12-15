@@ -45,6 +45,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.AmbientDensity
@@ -65,7 +66,6 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
-import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
@@ -110,7 +110,7 @@ private fun Header() {
         modifier = Modifier
             .preferredHeight(280.dp)
             .fillMaxWidth()
-            .horizontalGradientBackground(JetsnackTheme.colors.interactivePrimary)
+            .background(Brush.horizontalGradient(JetsnackTheme.colors.interactivePrimary))
     )
 }
 
