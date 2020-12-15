@@ -64,9 +64,10 @@ fun Modifier.verticalGradientScrim(
 
     var height by remember { mutableStateOf(0f) }
     val brush = remember(color, numStops, startYPercentage, endYPercentage, height) {
-        Brush.verticalGradient(colors = colors,
-                startY = height * startYPercentage,
-                endY = height * endYPercentage
+        Brush.verticalGradient(
+            colors = colors,
+            startY = height * startYPercentage,
+            endY = height * endYPercentage
         )
     }
 

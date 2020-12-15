@@ -39,7 +39,7 @@ import java.io.File
  * For a real app, you would use something like Hilt/Dagger instead.
  */
 object Graph {
-    private lateinit var okHttpClient: OkHttpClient
+    lateinit var okHttpClient: OkHttpClient
 
     lateinit var database: JetcasterDatabase
         private set
