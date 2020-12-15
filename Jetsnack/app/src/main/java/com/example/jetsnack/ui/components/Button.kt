@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,13 +27,14 @@ import androidx.compose.foundation.layout.defaultMinSizeConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonConstants
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -48,7 +50,7 @@ fun JetsnackButton(
     disabledBackgroundGradient: List<Color> = JetsnackTheme.colors.interactiveSecondary,
     contentColor: Color = JetsnackTheme.colors.textInteractive,
     disabledContentColor: Color = JetsnackTheme.colors.textHelp,
-    contentPadding: PaddingValues = ButtonConstants.DefaultContentPadding,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit
 ) {
     JetsnackSurface(
@@ -58,8 +60,10 @@ fun JetsnackButton(
         border = border,
         modifier = modifier
             .clip(shape)
-            .horizontalGradientBackground(
-                colors = if (enabled) backgroundGradient else disabledBackgroundGradient
+            .background(
+                Brush.horizontalGradient(
+                    colors = if (enabled) backgroundGradient else disabledBackgroundGradient
+                )
             )
             .clickable(
                 onClick = onClick,
@@ -72,8 +76,8 @@ fun JetsnackButton(
             Row(
                 Modifier
                     .defaultMinSizeConstraints(
-                        minWidth = ButtonConstants.DefaultMinWidth,
-                        minHeight = ButtonConstants.DefaultMinHeight
+                        minWidth = ButtonDefaults.MinWidth,
+                        minHeight = ButtonDefaults.MinHeight
                     )
                     .fillMaxWidth()
                     .padding(contentPadding),
