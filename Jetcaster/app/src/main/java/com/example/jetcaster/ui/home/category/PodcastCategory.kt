@@ -285,20 +285,17 @@ private fun CategoryPodcastRow(
         modifier = modifier,
         contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 24.dp)
     ) {
-        itemsIndexed(
-            items = podcasts,
-            itemContent = { index: Int, (podcast, _, isFollowed): PodcastWithExtraInfo ->
-                TopPodcastRowItem(
-                    podcastTitle = podcast.title,
-                    podcastImageUrl = podcast.imageUrl,
-                    isFollowed = isFollowed,
-                    onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
-                    modifier = Modifier.preferredWidth(128.dp)
-                )
+        itemsIndexed(items = podcasts) { index: Int, (podcast, _, isFollowed): PodcastWithExtraInfo ->
+            TopPodcastRowItem(
+                podcastTitle = podcast.title,
+                podcastImageUrl = podcast.imageUrl,
+                isFollowed = isFollowed,
+                onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
+                modifier = Modifier.preferredWidth(128.dp)
+            )
 
-                if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
-            }
-        )
+            if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
+        }
     }
 }
 
