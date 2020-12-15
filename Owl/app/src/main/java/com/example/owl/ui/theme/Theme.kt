@@ -148,35 +148,35 @@ object OwlTheme {
     /**
      * Proxy to [MaterialTheme]
      */
-    @Composable
     val colors: Colors
+        @Composable
         get() = MaterialTheme.colors
 
     /**
      * Proxy to [MaterialTheme]
      */
-    @Composable
     val typography: Typography
+        @Composable
         get() = MaterialTheme.typography
 
     /**
      * Proxy to [MaterialTheme]
      */
-    @Composable
     val shapes: Shapes
+        @Composable
         get() = MaterialTheme.shapes
 
     /**
      * Retrieves the current [Elevations] at the call site's position in the hierarchy.
      */
-    @Composable
     val elevations: Elevations
+        @Composable
         get() = AmbientElevations.current
 
     /**
      * Retrieves the current [Images] at the call site's position in the hierarchy.
      */
-    @Composable
     val images: Images
+        @Composable
         get() = AmbientImages.current
 }

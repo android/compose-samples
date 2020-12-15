@@ -32,7 +32,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.lazy.LazyRowFor
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientContentAlpha
@@ -298,23 +298,24 @@ private fun RelatedCourses(
                             vertical = 24.dp
                         )
                 )
-                LazyRowFor(
-                    items = relatedCourses,
+                LazyRow(
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         bottom = 32.dp,
                         end = FabSize + 8.dp
                     )
-                ) { related ->
-                    CourseListItem(
-                        course = related,
-                        onClick = { selectCourse(related.id) },
-                        titleStyle = MaterialTheme.typography.body2,
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .preferredSize(288.dp, 80.dp),
-                        iconSize = 14.dp
-                    )
+                ) {
+                    items(relatedCourses) { related ->
+                        CourseListItem(
+                            course = related,
+                            onClick = { selectCourse(related.id) },
+                            titleStyle = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .preferredSize(288.dp, 80.dp),
+                            iconSize = 14.dp
+                        )
+                    }
                 }
             }
         }

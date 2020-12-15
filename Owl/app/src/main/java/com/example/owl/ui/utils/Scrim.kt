@@ -17,22 +17,14 @@
 package com.example.owl.ui.utils
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.VerticalGradient
 
 /**
  * A [Modifier] which draws a vertical gradient
  */
-fun Modifier.scrim(colors: List<Color>): Modifier = drawWithCache {
-    // Use drawWithCache modifier to create and cache the gradient when size is known or changes.
-    val gradient = VerticalGradient(
-        colors = colors,
-        startY = 0f,
-        endY = size.height
-    )
-    onDrawWithContent {
-        drawContent()
-        drawRect(brush = gradient)
-    }
+fun Modifier.scrim(colors: List<Color>): Modifier = drawWithContent {
+    drawContent()
+    drawRect(Brush.verticalGradient(colors))
 }
