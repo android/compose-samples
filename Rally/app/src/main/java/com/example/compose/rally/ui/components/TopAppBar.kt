@@ -89,7 +89,11 @@ private fun RallyTab(
             .selectable(
                 selected = selected,
                 onClick = onSelected,
-                indication = rememberRipple(false, Dp.Unspecified, Color.Unspecified)
+                indication = rememberRipple(
+                    bounded = false,
+                    radius = Dp.Unspecified,
+                    color = Color.Unspecified
+                )
             )
     ) {
         Icon(imageVector = icon, tint = tabTintColor)
