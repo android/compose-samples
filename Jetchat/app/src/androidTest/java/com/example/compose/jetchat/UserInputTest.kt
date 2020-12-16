@@ -138,19 +138,23 @@ class UserInputTest {
     }
 
     private fun clickOnTextField() =
-        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.textfield_desc))
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.textfield_desc))
             .performClick()
 
     private fun openEmojiSelector() =
-        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc))
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc))
             .performClick()
 
     private fun assertEmojiSelectorIsDisplayed() =
-        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_desc))
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.emoji_selector_desc))
             .assertIsDisplayed()
 
     private fun assertEmojiSelectorDoesNotExist() =
-        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_desc))
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.emoji_selector_desc))
             .assertDoesNotExist()
 
     private fun findSendButton() = composeTestRule.onNodeWithText(activity.getString(R.string.send))
