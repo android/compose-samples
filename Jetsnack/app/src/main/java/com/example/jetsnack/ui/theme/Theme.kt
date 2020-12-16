@@ -102,8 +102,8 @@ fun JetsnackTheme(
 }
 
 object JetsnackTheme {
-    @Composable
     val colors: JetsnackColors
+        @Composable
         get() = AmbientJetsnackColors.current
 }
 

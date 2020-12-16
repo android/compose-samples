@@ -32,7 +32,7 @@ class PodcastsRepository(
     private val episodeStore: EpisodeStore,
     private val categoryStore: CategoryStore,
     private val transactionRunner: TransactionRunner,
-    private val mainDispatcher: CoroutineDispatcher
+    mainDispatcher: CoroutineDispatcher
 ) {
     private var refreshingJob: Job? = null
 

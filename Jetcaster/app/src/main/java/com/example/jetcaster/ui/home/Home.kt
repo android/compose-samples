@@ -39,7 +39,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
-import androidx.compose.material.TabConstants.defaultTabIndicatorOffset
+import androidx.compose.material.TabDefaults.tabIndicatorOffset
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -251,7 +251,7 @@ private fun HomeCategoryTabs(
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         HomeCategoryTabIndicator(
-            Modifier.defaultTabIndicatorOffset(tabPositions[selectedIndex])
+            Modifier.tabIndicatorOffset(tabPositions[selectedIndex])
         )
     }
 

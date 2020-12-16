@@ -56,7 +56,7 @@ class PodcastStore(
         return podcastDao.followedPodcastsSortedByLastEpisode(limit)
     }
 
-    suspend fun followPodcast(podcastUri: String) {
+    private suspend fun followPodcast(podcastUri: String) {
         podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
     }
 

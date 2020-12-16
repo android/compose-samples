@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +44,6 @@ import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.VerticalGrid
-import com.example.jetsnack.ui.components.horizontalGradientBackground
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
@@ -50,8 +51,10 @@ import kotlin.math.max
 fun SearchCategories(
     categories: List<SearchCategoryCollection>
 ) {
-    LazyColumnForIndexed(categories) { index, collection ->
-        SearchCategoryCollection(collection, index)
+    LazyColumn {
+        itemsIndexed(categories) { index, collection ->
+            SearchCategoryCollection(collection, index)
+        }
     }
     Spacer(Modifier.preferredHeight(8.dp))
 }
@@ -104,7 +107,7 @@ private fun SearchCategory(
             .aspectRatio(1.45f)
             .shadow(elevation = 3.dp, shape = CategoryShape)
             .clip(CategoryShape)
-            .horizontalGradientBackground(gradient)
+            .background(Brush.horizontalGradient(gradient))
             .clickable { /* todo */ },
         content = {
             Text(

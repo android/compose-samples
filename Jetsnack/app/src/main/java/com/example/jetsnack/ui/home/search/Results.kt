@@ -29,7 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -70,8 +70,10 @@ fun SearchResults(
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
         )
-        LazyColumnForIndexed(searchResults) { index, snack ->
-            SearchResult(snack, onSnackClick, index != 0)
+        LazyColumn {
+            itemsIndexed(searchResults) { index, snack ->
+                SearchResult(snack, onSnackClick, index != 0)
+            }
         }
     }
 }
