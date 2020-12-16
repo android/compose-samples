@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.4.20"
+        private const val version = "1.4.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -43,7 +43,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.0"
+        private const val version = "0.4.1.compose-7033025-SNAPSHOT"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
@@ -52,8 +52,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha08"
+            const val snapshot = "7033025"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -99,4 +99,5 @@ object Libs {
 object Urls {
     const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
         "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
+    const val accompanistSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots"
 }

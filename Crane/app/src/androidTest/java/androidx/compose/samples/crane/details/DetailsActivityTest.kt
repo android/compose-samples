@@ -41,6 +41,8 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
+import kotlin.math.pow
+import kotlin.math.round
 
 @UninstallModules(DispatchersModule::class)
 @HiltAndroidTest
@@ -118,4 +120,5 @@ class DetailsActivityTest {
     }
 }
 
-private fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()
+private fun Double.round(decimals: Int = 2): Double =
+    round(this * 10f.pow(decimals)) / 10f.pow(decimals)
