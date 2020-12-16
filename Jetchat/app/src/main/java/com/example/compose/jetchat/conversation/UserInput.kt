@@ -44,7 +44,7 @@ import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.AmbientTextStyle
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonConstants
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -70,10 +70,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focusObserver
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -81,7 +80,7 @@ import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
@@ -188,7 +187,6 @@ private fun TextFieldValue.addText(newString: String): TextFieldValue {
     return this.copy(text = newText, selection = newSelection)
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 private fun SelectorExpanded(
     currentSelector: InputSelector,
@@ -311,7 +309,7 @@ private fun UserInputSelector(
         val disabledContentColor =
             MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
 
-        val buttonColors = ButtonConstants.defaultButtonColors(
+        val buttonColors = ButtonDefaults.buttonColors(
             disabledBackgroundColor = MaterialTheme.colors.surface,
             disabledContentColor = disabledContentColor
         )
@@ -345,7 +343,7 @@ private fun InputSelectorButton(
 ) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.semantics { accessibilityLabel = description }
+        modifier = Modifier.semantics { contentDescription = description }
     ) {
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             val tint = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current
@@ -366,7 +364,6 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
 var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
-@OptIn(ExperimentalFocus::class)
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
@@ -393,7 +390,7 @@ private fun UserInputText(
             .fillMaxWidth()
             .preferredHeight(48.dp)
             .semantics {
-                accessibilityLabel = a11ylabel
+                contentDescription = a11ylabel
                 keyboardShownProperty = keyboardShown
             },
         horizontalArrangement = Arrangement.End
@@ -410,7 +407,7 @@ private fun UserInputText(
                         .fillMaxWidth()
                         .padding(start = 16.dp)
                         .align(Alignment.CenterStart)
-                        .focusObserver { state ->
+                        .onFocusChanged { state ->
                             if (lastFocusState != state) {
                                 onTextFieldFocused(state == FocusState.Active)
                             }
@@ -442,7 +439,6 @@ private fun UserInputText(
     }
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun EmojiSelector(
     onTextAdded: (String) -> Unit,
@@ -455,7 +451,7 @@ fun EmojiSelector(
         modifier = Modifier
             .focusRequester(focusRequester) // Requests focus when the Emoji selector is displayed
             .focus() // Make the emoji selector focusable so it can steal focus from TextField
-            .semantics { accessibilityLabel = a11yLabel }
+            .semantics { contentDescription = a11yLabel }
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
             ExtendedSelectorInnerButton(
@@ -487,7 +483,7 @@ fun ExtendedSelectorInnerButton(
     selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val colors = ButtonConstants.defaultButtonColors(
+    val colors = ButtonDefaults.buttonColors(
         backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.08f),
         disabledBackgroundColor = getSelectorExpandedColor(), // Same as background
         contentColor = MaterialTheme.colors.onSurface,
