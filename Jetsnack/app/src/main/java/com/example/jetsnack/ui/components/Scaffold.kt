@@ -18,7 +18,7 @@ package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.DrawerConstants
+import androidx.compose.material.DrawerDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FabPosition
 import androidx.compose.material.MaterialTheme
@@ -51,7 +51,7 @@ fun JetsnackScaffold(
     isFloatingActionButtonDocked: Boolean = false,
     drawerContent: @Composable (ColumnScope.() -> Unit)? = null,
     drawerShape: Shape = MaterialTheme.shapes.large,
-    drawerElevation: Dp = DrawerConstants.DefaultElevation,
+    drawerElevation: Dp = DrawerDefaults.Elevation,
     drawerBackgroundColor: Color = JetsnackTheme.colors.uiBackground,
     drawerContentColor: Color = JetsnackTheme.colors.textSecondary,
     drawerScrimColor: Color = JetsnackTheme.colors.uiBorder,
