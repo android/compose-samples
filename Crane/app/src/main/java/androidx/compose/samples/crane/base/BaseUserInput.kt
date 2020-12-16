@@ -117,7 +117,7 @@ private fun CraneBaseUserInput(
     showCaption: () -> Boolean = { true },
     tintIcon: () -> Boolean,
     tint: Color = AmbientContentColor.current,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     Surface(modifier = modifier, color = MaterialTheme.colors.primaryVariant) {
         Row(Modifier.padding(all = 12.dp)) {
@@ -138,7 +138,7 @@ private fun CraneBaseUserInput(
                 Spacer(Modifier.preferredWidth(8.dp))
             }
             Row(Modifier.weight(1f).align(Alignment.CenterVertically)) {
-                children()
+                content()
             }
         }
     }
@@ -146,7 +146,7 @@ private fun CraneBaseUserInput(
 
 @Preview
 @Composable
-fun previewInput() {
+fun PreviewInput() {
     CraneScaffold {
         CraneBaseUserInput(
             tintIcon = { true },
