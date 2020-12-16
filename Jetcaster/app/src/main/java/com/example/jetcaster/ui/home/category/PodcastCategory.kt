@@ -31,7 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRowForIndexed
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
@@ -44,7 +44,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
-import androidx.compose.material.ripple.rememberRippleIndication
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
@@ -210,7 +210,7 @@ fun EpisodeListItem(
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(AmbientContentColor.current),
             modifier = Modifier
-                .clickable(indication = rememberRippleIndication(bounded = false, radius = 24.dp)) {
+                .clickable(indication = rememberRipple(bounded = false, radius = 24.dp)) {
                     /* TODO */
                 }
                 .preferredSize(36.dp)
@@ -281,20 +281,21 @@ private fun CategoryPodcastRow(
     modifier: Modifier = Modifier
 ) {
     val lastIndex = podcasts.size - 1
-    LazyRowForIndexed(
-        items = podcasts,
+    LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 24.dp)
-    ) { index, (podcast, _, isFollowed) ->
-        TopPodcastRowItem(
-            podcastTitle = podcast.title,
-            podcastImageUrl = podcast.imageUrl,
-            isFollowed = isFollowed,
-            onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
-            modifier = Modifier.preferredWidth(128.dp)
-        )
+    ) {
+        itemsIndexed(items = podcasts) { index: Int, (podcast, _, isFollowed): PodcastWithExtraInfo ->
+            TopPodcastRowItem(
+                podcastTitle = podcast.title,
+                podcastImageUrl = podcast.imageUrl,
+                isFollowed = isFollowed,
+                onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
+                modifier = Modifier.preferredWidth(128.dp)
+            )
 
-        if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
+            if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
+        }
     }
 }
 
