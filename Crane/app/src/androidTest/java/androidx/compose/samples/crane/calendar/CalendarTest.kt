@@ -30,7 +30,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertLabelEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -69,16 +69,16 @@ class CalendarTest {
 
     @Test
     fun scrollsToTheBottom() {
-        composeTestRule.onNodeWithText("January 1").assertExists()
-        composeTestRule.onNodeWithText("December 31").performScrollTo().performClick()
+        composeTestRule.onNodeWithContentDescription("January 1").assertExists()
+        composeTestRule.onNodeWithContentDescription("December 31").performScrollTo().performClick()
         assert(datesRepository.datesSelected.toString() == "Dec 31")
     }
 
     @Test
     fun onDaySelected() {
-        composeTestRule.onNodeWithText("January 1").assertExists()
-        composeTestRule.onNodeWithText("January 2").assertExists().performClick()
-        composeTestRule.onNodeWithText("January 3").assertExists()
+        composeTestRule.onNodeWithContentDescription("January 1").assertExists()
+        composeTestRule.onNodeWithContentDescription("January 2").assertExists().performClick()
+        composeTestRule.onNodeWithContentDescription("January 3").assertExists()
 
         val datesNoSelected = composeTestRule.onDateNodes(NoSelected)
         datesNoSelected[0].assertLabelEquals("January 1")
@@ -89,13 +89,13 @@ class CalendarTest {
 
     @Test
     fun twoDaysSelected() {
-        composeTestRule.onNodeWithText("January 2").assertExists().performClick()
+        composeTestRule.onNodeWithContentDescription("January 2").assertExists().performClick()
 
         val datesNoSelectedOneClick = composeTestRule.onDateNodes(NoSelected)
         datesNoSelectedOneClick[0].assertLabelEquals("January 1")
         datesNoSelectedOneClick[1].assertLabelEquals("January 3")
 
-        composeTestRule.onNodeWithText("January 4").assertExists().performClick()
+        composeTestRule.onNodeWithContentDescription("January 4").assertExists().performClick()
 
         composeTestRule.onDateNode(FirstDay).assertLabelEquals("January 2")
         composeTestRule.onDateNode(Selected).assertLabelEquals("January 3")
