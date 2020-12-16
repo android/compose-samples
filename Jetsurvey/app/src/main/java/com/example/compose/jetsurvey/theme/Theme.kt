@@ -52,12 +52,12 @@ val DarkThemeColors = darkColors(
     onError = Color.Black
 )
 
-@Composable
 val Colors.snackbarAction: Color
+    @Composable
     get() = if (isLight) Purple300 else Purple700
 
-@Composable
 val Colors.progressIndicatorBackground: Color
+    @Composable
     get() = if (isLight) Color.Black.copy(alpha = 0.12f) else Color.Black.copy(alpha = 0.24f)
 
 @Composable

@@ -69,11 +69,12 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
         if (showBranding) 0f else -brandingBottom
     )
     val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
+    val currentOffsetHolderDp = with(AmbientDensity.current) { currentOffsetHolder.value.toDp() }
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
-                .offset(y = { currentOffsetHolder.value })
+                .offset(y = currentOffsetHolderDp)
                 .onSizeChanged {
                     if (showBranding) {
                         heightWithBranding = it.height
