@@ -22,10 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.ui.CraneTheme
 
 @Composable
-fun CraneScaffold(children: @Composable () -> Unit) {
+fun CraneScaffold(content: @Composable () -> Unit) {
     CraneTheme {
         Surface(color = MaterialTheme.colors.primary) {
-            children()
+            content()
         }
     }
 }

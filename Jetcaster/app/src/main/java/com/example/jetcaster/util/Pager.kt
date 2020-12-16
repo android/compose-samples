@@ -120,7 +120,7 @@ class PagerState(
 
 @Immutable
 private data class PageData(val page: Int) : ParentDataModifier {
-    override fun Density.modifyParentData(parentData: Any?): Any? = this@PageData
+    override fun Density.modifyParentData(parentData: Any?): Any = this@PageData
 }
 
 private val Measurable.page: Int

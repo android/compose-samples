@@ -50,7 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -137,7 +137,7 @@ private fun Week(
                 day,
                 onDayClicked,
                 Modifier.semantics {
-                    accessibilityLabel = "${month.name} ${day.value}"
+                    contentDescription = "${month.name} ${day.value}"
                     dayStatusProperty = day.status
                 }
             )
@@ -195,21 +195,21 @@ private fun Day(name: String) {
 private fun DayContainer(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.Transparent,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
     Surface(
         modifier = modifier.preferredSize(width = CELL_SIZE, height = CELL_SIZE),
         color = backgroundColor
     ) {
-        children()
+        content()
     }
 }
 
 @Composable
 private fun DayStatusContainer(
     status: DaySelectedStatus,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     if (status.isMarked()) {
         Box {
@@ -220,10 +220,10 @@ private fun DayStatusContainer(
             } else if (status == DaySelectedStatus.LastDay) {
                 SemiRect(color = color, lookingLeft = true)
             }
-            children()
+            content()
         }
     } else {
-        children()
+        content()
     }
 }
 
