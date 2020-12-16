@@ -34,4 +34,9 @@ class ConversationUiState(
 }
 
 @Immutable
-data class Message(val author: String, val content: String, val timestamp: String, val image: Int? = null)
+data class Message(
+    val author: String,
+    val content: String,
+    val timestamp: String,
+    val image: Int? = null
+)

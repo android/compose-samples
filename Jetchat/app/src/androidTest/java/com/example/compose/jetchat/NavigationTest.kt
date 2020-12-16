@@ -94,7 +94,9 @@ class NavigationTest {
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check
-        composeTestRule.onNodeWithText(activity.getString(R.string.textfield_hint)).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.textfield_hint))
+            .assertIsDisplayed()
 
         // Press back
         Espresso.pressBack()

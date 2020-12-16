@@ -66,7 +66,9 @@ fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked:
     ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
     DrawerItemHeader("Recent Profiles")
     ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-    ProfileItem("Taylor Brooks", colleagueProfile.photo) { onProfileClicked(colleagueProfile.userId) }
+    ProfileItem("Taylor Brooks", colleagueProfile.photo) {
+        onProfileClicked(colleagueProfile.userId)
+    }
 }
 
 @Composable
