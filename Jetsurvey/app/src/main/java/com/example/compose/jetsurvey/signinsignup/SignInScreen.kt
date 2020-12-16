@@ -38,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focusRequester
 import androidx.compose.ui.res.stringResource
@@ -112,7 +111,6 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun SignInContent(
     onSignInSubmitted: (email: String, password: String) -> Unit,

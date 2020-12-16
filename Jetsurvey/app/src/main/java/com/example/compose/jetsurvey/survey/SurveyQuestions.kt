@@ -37,13 +37,13 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxConstants
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonConstants
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -199,7 +199,7 @@ private fun SingleChoiceQuestion(
                     RadioButton(
                         selected = optionSelected,
                         onClick = onClickHandle,
-                        colors = RadioButtonConstants.defaultColors(
+                        colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.colors.primary
                         )
                     )
@@ -252,7 +252,7 @@ private fun MultipleChoiceQuestion(
                             checkedState = selected
                             onAnswerSelected(option.value, selected)
                         },
-                        colors = CheckboxConstants.defaultColors(
+                        colors = CheckboxDefaults.colors(
                             checkedColor = MaterialTheme.colors.primary
                         ),
                     )

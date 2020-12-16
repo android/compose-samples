@@ -44,7 +44,7 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -155,7 +155,7 @@ private fun TopAppBarTitle(
         fontWeight = FontWeight.Bold
     )
     val totalStyle = MaterialTheme.typography.caption.toSpanStyle()
-    val text = annotatedString {
+    val text = buildAnnotatedString {
         withStyle(style = indexStyle) {
             append("${questionIndex + 1}")
         }
