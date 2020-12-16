@@ -111,7 +111,8 @@ class UserInputTest {
         // Click on text field to open the soft keyboard
         clickOnTextField()
 
-        // TODO: Soft keyboard is not correctly synchronized https://issuetracker.google.com/169235317
+        // TODO: Soft keyboard is not correctly synchronized
+        //  https://issuetracker.google.com/169235317
         Thread.sleep(200)
 
         composeTestRule.onNode(SemanticsMatcher.expectValue(KeyboardShownKey, true)).assertExists()

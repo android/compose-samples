@@ -164,5 +164,7 @@ class ConversationTest {
         composeTestRule.onNodeWithText(activity.getString(R.string.jumpBottom))
 
     private fun openEmojiSelector() =
-        composeTestRule.onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc)).performClick()
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc))
+            .performClick()
 }
