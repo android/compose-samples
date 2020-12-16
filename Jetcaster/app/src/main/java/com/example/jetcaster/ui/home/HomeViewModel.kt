@@ -74,7 +74,7 @@ class HomeViewModel(
         refresh(force = false)
     }
 
-    fun refresh(force: Boolean) {
+    private fun refresh(force: Boolean) {
         viewModelScope.launch {
             runCatching {
                 refreshing.value = true

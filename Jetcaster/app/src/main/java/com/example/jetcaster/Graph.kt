@@ -40,15 +40,14 @@ import java.io.File
  */
 object Graph {
     lateinit var okHttpClient: OkHttpClient
-        private set
 
     lateinit var database: JetcasterDatabase
         private set
 
-    val transactionRunner: TransactionRunner
+    private val transactionRunner: TransactionRunner
         get() = database.transactionRunnerDao()
 
-    val syndFeedInput by lazy { SyndFeedInput() }
+    private val syndFeedInput by lazy { SyndFeedInput() }
 
     val podcastRepository by lazy {
         PodcastsRepository(
@@ -61,7 +60,7 @@ object Graph {
         )
     }
 
-    val podcastFetcher by lazy {
+    private val podcastFetcher by lazy {
         PodcastsFetcher(
             okHttpClient = okHttpClient,
             syndFeedInput = syndFeedInput,
@@ -77,7 +76,7 @@ object Graph {
         )
     }
 
-    val episodeStore by lazy {
+    private val episodeStore by lazy {
         EpisodeStore(
             episodesDao = database.episodesDao()
         )
@@ -92,10 +91,10 @@ object Graph {
         )
     }
 
-    val mainDispatcher: CoroutineDispatcher
+    private val mainDispatcher: CoroutineDispatcher
         get() = Dispatchers.Main
 
-    val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher
         get() = Dispatchers.IO
 
     fun provide(context: Context) {
