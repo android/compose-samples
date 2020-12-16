@@ -18,10 +18,10 @@ package com.example.owl.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
-import androidx.compose.ui.test.hasLabel
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
@@ -72,7 +72,7 @@ class NavigationTest {
         startActivity()
         // The first screen should be the onboarding screen.
         // Assert that the FAB label for the onboarding screen exists:
-        composeTestRule.onNodeWithLabel(getOnboardingFabLabel()).assertExists()
+        composeTestRule.onNodeWithContentDescription(getOnboardingFabLabel()).assertExists()
     }
 
     @Test
@@ -82,7 +82,7 @@ class NavigationTest {
 
         // Navigate to the next screen by clicking on the FAB
         val fabLabel = getOnboardingFabLabel()
-        composeTestRule.onNodeWithLabel(fabLabel).performClick()
+        composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
 
         // The first course should be shown
         composeTestRule.onNodeWithSubstring(courses.first().name).assertExists()
@@ -95,7 +95,7 @@ class NavigationTest {
 
         // Navigate to the first course
         composeTestRule.onNode(
-            hasLabel(getFeaturedCourseLabel()).and(hasSubstring(courses.first().name))
+            hasContentDescription(getFeaturedCourseLabel()).and(hasSubstring(courses.first().name))
         ).performClick()
 
         // Assert navigated to the course details
