@@ -36,10 +36,6 @@ plugins {
 
 subprojects {
     repositories {
-        maven {
-            def snapshot = ""
-            url  "https://androidx.dev/snapshots/builds/$snapshot/artifacts/repository/"
-        }
         google()
         jcenter()
     }
