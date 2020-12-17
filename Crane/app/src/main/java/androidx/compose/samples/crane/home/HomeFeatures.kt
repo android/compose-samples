@@ -67,8 +67,8 @@ fun EatSearchContent(datesSelected: String, eatUpdates: EatSearchContentUpdates)
 }
 
 @Composable
-private fun CraneSearch(searchItems: @Composable () -> Unit) {
+private fun CraneSearch(content: @Composable () -> Unit) {
     Column(Modifier.padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 12.dp)) {
-        searchItems()
+        content()
     }
 }

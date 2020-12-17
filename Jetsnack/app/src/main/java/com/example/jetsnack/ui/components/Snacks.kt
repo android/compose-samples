@@ -31,7 +31,7 @@ import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRowFor
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -61,8 +61,8 @@ private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
 
 // The Cards show a gradient which spans 3 cards and scrolls with parallax.
-@Composable
 private val gradientWidth
+    @Composable
     get() = with(AmbientDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
@@ -144,12 +144,13 @@ private fun Snacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyRowFor(
-        items = snacks,
+    LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
-    ) { snack ->
-        SnackItem(snack, onSnackClick)
+    ) {
+        items(snacks) { snack ->
+            SnackItem(snack, onSnackClick)
+        }
     }
 }
 
