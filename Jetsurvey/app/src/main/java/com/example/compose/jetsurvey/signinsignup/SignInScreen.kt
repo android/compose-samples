@@ -132,7 +132,9 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = { onSignInSubmitted(emailState.text, passwordState.text) },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             enabled = emailState.isValid && passwordState.isValid
         ) {
             Text(
