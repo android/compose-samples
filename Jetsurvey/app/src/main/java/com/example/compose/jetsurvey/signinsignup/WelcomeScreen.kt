@@ -16,7 +16,7 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.core.animateAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,16 +65,16 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
     var heightWithBranding by remember { mutableStateOf(0) }
 
     val currentOffsetHolder = remember { mutableStateOf(0f) }
-    currentOffsetHolder.value = animate(
-        if (showBranding) 0f else -brandingBottom
-    )
+    currentOffsetHolder.value = if (showBranding) 0f else -brandingBottom
+    val currentOffsetHolderDp =
+        with(AmbientDensity.current) { currentOffsetHolder.value.toDp() }
     val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
-    val currentOffsetHolderDp = with(AmbientDensity.current) { currentOffsetHolder.value.toDp() }
     Surface(modifier = Modifier.fillMaxSize()) {
+        val offset by animateAsState(targetValue = currentOffsetHolderDp)
         Column(
             modifier = Modifier.fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
-                .offset(y = currentOffsetHolderDp)
+                .offset(y = offset)
                 .onSizeChanged {
                     if (showBranding) {
                         heightWithBranding = it.height
