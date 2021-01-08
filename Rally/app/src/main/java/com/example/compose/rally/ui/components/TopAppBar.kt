@@ -51,7 +51,8 @@ fun RallyTopAppBar(
     Surface(
         Modifier
             .preferredHeight(TabHeight)
-            .fillMaxWidth()) {
+            .fillMaxWidth()
+    ) {
         Row {
             allScreens.forEach { screen ->
                 RallyTab(
