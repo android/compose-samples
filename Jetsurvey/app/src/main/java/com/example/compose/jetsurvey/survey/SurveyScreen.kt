@@ -111,7 +111,9 @@ fun SurveyResultScreen(
             bottomBar = {
                 OutlinedButton(
                     onClick = { onDonePressed() },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 24.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 24.dp)
                 ) {
                     Text(text = stringResource(id = R.string.done))
                 }
@@ -182,17 +184,17 @@ private fun SurveyTopAppBar(
         TopAppBarTitle(
             questionIndex = questionIndex,
             totalQuestionsCount = totalQuestionsCount,
-            modifier = Modifier.padding(vertical = 20.dp).constrainAs(text) {
-                centerHorizontallyTo(parent)
-            }
+            modifier = Modifier
+                .padding(vertical = 20.dp)
+                .constrainAs(text) { centerHorizontallyTo(parent) }
         )
 
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             IconButton(
                 onClick = onBackPressed,
-                modifier = Modifier.padding(horizontal = 12.dp).constrainAs(button) {
-                    end.linkTo(parent.end)
-                }
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .constrainAs(button) { end.linkTo(parent.end) }
             ) {
                 Icon(Icons.Filled.Close)
             }
@@ -200,9 +202,12 @@ private fun SurveyTopAppBar(
 
         LinearProgressIndicator(
             progress = (questionIndex + 1) / totalQuestionsCount.toFloat(),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).constrainAs(progress) {
-                bottom.linkTo(text.bottom)
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .constrainAs(progress) {
+                    bottom.linkTo(text.bottom)
+                },
             backgroundColor = MaterialTheme.colors.progressIndicatorBackground
         )
     }
