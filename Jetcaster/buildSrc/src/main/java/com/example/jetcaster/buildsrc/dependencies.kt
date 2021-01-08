@@ -58,8 +58,8 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val palette = "androidx.palette:palette:1.0.0"
 
-        const val core = "androidx.core:core:1.5.0-alpha04"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha04"
+        const val core = "androidx.core:core:1.5.0-SNAPSHOT"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0-SNAPSHOT"
 
         object Compose {
             private const val snapshot = "7067732"
