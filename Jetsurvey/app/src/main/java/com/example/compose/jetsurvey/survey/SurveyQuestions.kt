@@ -85,15 +85,19 @@ fun Question(
             MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
         }
         Row(
-            modifier = Modifier.fillMaxWidth().background(
-                color = backgroundColor,
-                shape = MaterialTheme.shapes.small
-            )
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = backgroundColor,
+                    shape = MaterialTheme.shapes.small
+                )
         ) {
             Text(
                 text = stringResource(id = question.questionText),
                 style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp, horizontal = 16.dp)
             )
         }
         Spacer(modifier = Modifier.preferredHeight(24.dp))
@@ -405,7 +409,9 @@ private fun SliderQuestion(
             },
             valueRange = possibleAnswer.range,
             steps = possibleAnswer.steps,
-            modifier = Modifier.weight(1f).padding(horizontal = 16.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp)
         )
         Text(
             text = stringResource(id = possibleAnswer.endText),
