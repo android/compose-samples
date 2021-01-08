@@ -17,11 +17,11 @@
 package com.example.compose.rally.buildsrc
 
 object Versions {
-    const val ktlint = "0.39.0"
+    const val ktlint = "0.40.0"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha02"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha04"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
@@ -47,8 +47,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha02"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha09"
+            const val snapshot = "7067732"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
