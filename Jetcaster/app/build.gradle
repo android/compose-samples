@@ -49,7 +49,7 @@ android {
     }
 
     packagingOptions {
-        // The Rome library JARs embed some internal utils libraries in nested JARs.
+        // The Room library JARs embed some internal utils libraries in nested JARs.
         // We don't need them so we exclude them in the final package.
         exclude "/*.jar"
     }
