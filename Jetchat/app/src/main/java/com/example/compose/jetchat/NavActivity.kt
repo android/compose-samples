@@ -50,7 +50,7 @@ class NavActivity : AppCompatActivity() {
             // Provide WindowInsets to our content. We don't want to consume them, so that
             // they keep being pass down the view hierarchy (since we're using fragments).
             ProvideWindowInsets(consumeWindowInsets = false) {
-                Providers(AmbientBackPressedDispatcher provides this) {
+                Providers(AmbientBackPressedDispatcher provides this.onBackPressedDispatcher) {
                     val scaffoldState = rememberScaffoldState()
 
                     val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
