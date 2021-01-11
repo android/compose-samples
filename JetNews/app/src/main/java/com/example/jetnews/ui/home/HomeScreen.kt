@@ -47,6 +47,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AmbientContext
@@ -134,17 +135,23 @@ fun HomeScreen(
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
+
+        // If onRefreshPosts or onErrorDismiss change while the LaunchedEffect is running,
+        // don't restart the effect and use the latest lambda values.
+        val onRefreshPostsState by rememberUpdatedState(onRefreshPosts)
+        val onErrorDismissState by rememberUpdatedState(onErrorDismiss)
+
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
-        // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
-        // only start when posts.hasError is true (due to the above if-check).
-        LaunchedEffect(posts.hasError) {
+        // automatically dismiss. This coroutine will cancel whenever posts.hasError is false
+        // (thanks to the surrounding if statement) or if scaffoldState changes.
+        LaunchedEffect(scaffoldState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
             )
             when (snackbarResult) {
-                SnackbarResult.ActionPerformed -> onRefreshPosts()
-                SnackbarResult.Dismissed -> onErrorDismiss()
+                SnackbarResult.ActionPerformed -> onRefreshPostsState()
+                SnackbarResult.Dismissed -> onErrorDismissState()
             }
         }
     }
