@@ -16,7 +16,7 @@
 
 package com.example.owl.ui.course
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.core.animateAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
@@ -57,6 +57,7 @@ import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -375,7 +376,7 @@ private fun Lessons(
                 .statusBarsPadding()
         ) {
             val scroll = rememberScrollState()
-            val appBarElevation = animate(if (scroll.value > 0f) 4.dp else 0.dp)
+            val appBarElevation by animateAsState(if (scroll.value > 0f) 4.dp else 0.dp)
             val appBarColor = if (appBarElevation > 0.dp) surfaceColor else Color.Transparent
             TopAppBar(
                 backgroundColor = appBarColor,
