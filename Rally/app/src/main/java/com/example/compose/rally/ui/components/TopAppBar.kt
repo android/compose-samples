@@ -16,7 +16,7 @@
 
 package com.example.compose.rally.ui.components
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.animateAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -33,6 +33,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +48,11 @@ fun RallyTopAppBar(
     onTabSelected: (RallyScreen) -> Unit,
     currentScreen: RallyScreen
 ) {
-    Surface(Modifier.preferredHeight(TabHeight).fillMaxWidth()) {
+    Surface(
+        Modifier
+            .preferredHeight(TabHeight)
+            .fillMaxWidth()
+    ) {
         Row {
             allScreens.forEach { screen ->
                 RallyTab(
@@ -77,9 +82,9 @@ private fun RallyTab(
             delayMillis = TabFadeInAnimationDelay
         )
     }
-    val tabTintColor = animate(
-        target = if (selected) color else color.copy(alpha = InactiveTabOpacity),
-        animSpec = animSpec
+    val tabTintColor by animateAsState(
+        targetValue = if (selected) color else color.copy(alpha = InactiveTabOpacity),
+        animationSpec = animSpec
     )
     Row(
         modifier = Modifier

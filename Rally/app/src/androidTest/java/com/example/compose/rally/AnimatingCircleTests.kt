@@ -21,7 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.ExperimentalTesting
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
@@ -41,7 +41,7 @@ import org.junit.Test
  *
  * Note that different systems can produce slightly different screenshots making the test fail.
  */
-@ExperimentalTesting
+@ExperimentalTestApi
 @SdkSuppress(minSdkVersion = Build.VERSION_CODES.O)
 class AnimatingCircleTests {
 
