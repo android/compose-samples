@@ -17,11 +17,14 @@
 package com.example.compose.jetchat.conversation
 
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Ambient
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.staticAmbientOf
 
 /**
@@ -39,32 +42,35 @@ fun backPressHandler(
     enabled: Boolean = true,
     highPriority: Boolean = false
 ) {
-    val dispatcher = AmbientBackPressedDispatcher.current.onBackPressedDispatcher
+    // Safely update the current `onBack` lambda when a new one is provided
+    val currentOnBackPressed by rememberUpdatedState(onBackPressed)
 
-    // This callback is going to be remembered only if onBackPressed is referentially equal.
-    val backCallback = remember(onBackPressed) {
+    // Remember in Composition a back callback that calls the `onBackPressed` lambda
+    val backCallback = remember {
         object : OnBackPressedCallback(enabled) {
             override fun handleOnBackPressed() {
-                onBackPressed()
+                currentOnBackPressed()
             }
         }
     }
 
-    // Using onCommit guarantees that failed transactions don't incorrectly toggle the
-    // remembered callback.
-    onCommit(enabled, highPriority) {
+    val backDispatcher = AmbientBackPressedDispatcher.current
+
+    // On every successful composition, update the callback with the `enabled` value
+    SideEffect {
         if (enabled && highPriority) {
             // Since the Navigation Component is also intercepting the back event, make sure
             // that this is the first callback in the dispatcher.
             backCallback.remove()
-            dispatcher.addCallback(backCallback)
+            backDispatcher.addCallback(backCallback)
         }
         backCallback.isEnabled = enabled
     }
 
-    onCommit(dispatcher, onBackPressed) {
+    DisposableEffect(backDispatcher) {
         // Whenever there's a new dispatcher set up the callback
-        dispatcher.addCallback(backCallback)
+        backDispatcher.addCallback(backCallback)
+        // When the effect leaves the Composition, remove the callback
         onDispose {
             backCallback.remove()
         }
@@ -72,7 +78,7 @@ fun backPressHandler(
 }
 
 /**
- * This [Ambient] is used to provide an [OnBackPressedDispatcherOwner]:
+ * This [Ambient] is used to provide an [OnBackPressedDispatcher]:
  *
  * ```
  * Providers(AmbientBackPressedDispatcher provides requireActivity()) { }
@@ -81,4 +87,4 @@ fun backPressHandler(
  * and setting up the callbacks with [backPressHandler].
  */
 val AmbientBackPressedDispatcher =
-    staticAmbientOf<OnBackPressedDispatcherOwner> { error("Ambient used without Provider") }
+    staticAmbientOf<OnBackPressedDispatcher> { error("No Back Dispatcher provided") }

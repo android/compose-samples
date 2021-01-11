@@ -65,7 +65,7 @@ class UserInputTest {
             // Launch the conversation screen
             composeTestRule.setContent {
                 Providers(
-                    AmbientBackPressedDispatcher provides activity,
+                    AmbientBackPressedDispatcher provides activity.onBackPressedDispatcher,
                     AmbientWindowInsets provides windowInsets,
                 ) {
                     JetchatTheme {
