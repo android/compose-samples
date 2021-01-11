@@ -450,7 +450,8 @@ fun EmojiSelector(
     Column(
         modifier = Modifier
             .focusRequester(focusRequester) // Requests focus when the Emoji selector is displayed
-            .focusModifier() // Make the selector focusable so it can steal focus from TextField
+            // Make the emoji selector focusable so it can steal focus from TextField
+            .focusModifier()
             .semantics { contentDescription = a11yLabel }
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
