@@ -21,6 +21,7 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Ambient
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -55,22 +56,30 @@ fun backPressHandler(
 
     val backDispatcher = AmbientBackPressedDispatcher.current
 
-    // On every successful composition, update the callback with the `enabled` value
-    DisposableEffect(enabled, highPriority) {
-        if (enabled && highPriority) {
-            // Since the Navigation Component is also intercepting the back event, make sure
-            // that this is the first callback in the dispatcher.
-            backCallback.remove()
-            backDispatcher.addCallback(backCallback)
-        }
+    // Run only on successful commits.
+    SideEffect {
         backCallback.isEnabled = enabled
-        onDispose { /* backCallback will be removed below. */ }
     }
 
+    // The Navigation Component can intercept the back event, so make sure that this is the first
+    // callback in the dispatcher if it's high priority (like in the drawer case).
+    DisposableEffect(enabled, highPriority) {
+        if (enabled && highPriority) {
+            backDispatcher.addCallback(backCallback)
+        }
+
+        // Before the parameters change, remove the callback so it can be added again
+        onDispose {
+            if (highPriority) {
+                backCallback.remove()
+            }
+        }
+    }
+
+    // Whenever there's a new dispatcher set up the callback
     DisposableEffect(backDispatcher) {
-        // Whenever there's a new dispatcher set up the callback
         backDispatcher.addCallback(backCallback)
-        // When the effect leaves the Composition, remove the callback
+        // When the effect leaves the Composition, or there's a new dispatcher, remove the callback
         onDispose {
             backCallback.remove()
         }
