@@ -16,27 +16,31 @@
 
 package com.example.jetsnack.ui.components
 
+import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSizeConstraints
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
@@ -44,6 +48,7 @@ fun JetsnackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    interactionState: InteractionState = remember { InteractionState() },
     shape: Shape = ButtonShape,
     border: BorderStroke? = null,
     backgroundGradient: List<Color> = JetsnackTheme.colors.interactivePrimary,
@@ -68,6 +73,9 @@ fun JetsnackButton(
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
+                role = Role.Button,
+                interactionState = interactionState,
+                indication = null
             )
     ) {
         ProvideTextStyle(
@@ -79,7 +87,7 @@ fun JetsnackButton(
                         minWidth = ButtonDefaults.MinWidth,
                         minHeight = ButtonDefaults.MinHeight
                     )
-                    .fillMaxWidth()
+                    .indication(interactionState, AmbientIndication.current())
                     .padding(contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
