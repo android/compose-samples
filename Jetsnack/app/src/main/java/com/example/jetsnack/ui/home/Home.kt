@@ -20,10 +20,11 @@ import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedFloatModel
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animate
+import androidx.compose.animation.animateAsState
 import androidx.compose.animation.animatedFloat
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.animateAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -42,6 +43,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
@@ -130,7 +132,7 @@ private fun JetsnackBottomNav(
         ) {
             items.forEach { section ->
                 val selected = section == currentSection
-                val tint = animate(
+                val tint by animateAsState(
                     if (selected) {
                         JetsnackTheme.colors.iconInteractive
                     } else {
@@ -264,7 +266,7 @@ fun JetsnackBottomNavigationItem(
         contentAlignment = Alignment.Center
     ) {
         // Animate the icon/text positions within the item based on selection
-        val animationProgress = animate(if (selected) 1f else 0f, animSpec)
+        val animationProgress by animateAsState(if (selected) 1f else 0f, animSpec)
         JetsnackBottomNavItemLayout(
             icon = icon,
             text = text,
