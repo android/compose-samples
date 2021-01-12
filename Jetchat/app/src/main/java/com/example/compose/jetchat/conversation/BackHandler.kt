@@ -57,7 +57,7 @@ fun backPressHandler(
     val backDispatcher = AmbientBackPressedDispatcher.current
 
     // On every successful composition, update the callback with the `enabled` value
-    SideEffect {
+    DisposableEffect(enabled, highPriority) {
         if (enabled && highPriority) {
             // Since the Navigation Component is also intercepting the back event, make sure
             // that this is the first callback in the dispatcher.
@@ -65,6 +65,7 @@ fun backPressHandler(
             backDispatcher.addCallback(backCallback)
         }
         backCallback.isEnabled = enabled
+        onDispose { /* backCallback will be removed below. */ }
     }
 
     DisposableEffect(backDispatcher) {
