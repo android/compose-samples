@@ -93,9 +93,7 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.android
 
-    // Accompanist.insets must depend on the SNAPSHOT version of core:1.5.0
-    implementation(Libs.AndroidX.core) { force true }
-    implementation(Libs.AndroidX.coreKtx) { force true }
+    implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Lifecycle.livedata
     implementation Libs.AndroidX.Navigation.fragment

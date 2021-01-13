@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.4.1.compose-7067732-SNAPSHOT"
+        private const val version = "0.4.2"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
@@ -58,12 +58,11 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val palette = "androidx.palette:palette:1.0.0"
 
-        const val core = "androidx.core:core:1.5.0-SNAPSHOT"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-SNAPSHOT"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
 
         object Compose {
-            private const val snapshot = "7067732"
-            private const val version = "1.0.0-SNAPSHOT"
+            private const val snapshot = ""
+            private const val version = "1.0.0-alpha10"
 
             @get:JvmStatic
             val snapshotUrl: String

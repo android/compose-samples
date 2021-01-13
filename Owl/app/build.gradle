@@ -84,10 +84,8 @@ android {
 dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.android
-
-    // Accompanist.insets currently requires SNAPSHOT version of AndroidX.core
-    implementation(Libs.AndroidX.core) { force true }
-    implementation(Libs.AndroidX.coreKtx) { force true }
+    
+    implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.navigation
 
     implementation Libs.AndroidX.Compose.runtime
