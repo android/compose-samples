@@ -66,7 +66,7 @@ class ConversationTest {
             // Launch the conversation screen
             composeTestRule.setContent {
                 Providers(
-                    AmbientBackPressedDispatcher provides newActivity,
+                    AmbientBackPressedDispatcher provides newActivity.onBackPressedDispatcher,
                     AmbientWindowInsets provides windowInsets
                 ) {
                     JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {

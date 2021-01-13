@@ -125,10 +125,11 @@ fun UserInput(
 ) {
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
-    backPressHandler(
-        enabled = currentInputSelector != InputSelector.NONE,
-        onBackPressed = dismissKeyboard
-    )
+
+    // Intercept back navigation if there's a InputSelector visible
+    if (currentInputSelector != InputSelector.NONE) {
+        BackPressHandler(onBackPressed = dismissKeyboard)
+    }
 
     var textState by remember { mutableStateOf(TextFieldValue()) }
 
