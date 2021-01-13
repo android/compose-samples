@@ -29,7 +29,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
-import com.example.compose.jetchat.conversation.backPressHandler
+import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
@@ -50,7 +50,7 @@ class NavActivity : AppCompatActivity() {
             // Provide WindowInsets to our content. We don't want to consume them, so that
             // they keep being pass down the view hierarchy (since we're using fragments).
             ProvideWindowInsets(consumeWindowInsets = false) {
-                Providers(AmbientBackPressedDispatcher provides this) {
+                Providers(AmbientBackPressedDispatcher provides this.onBackPressedDispatcher) {
                     val scaffoldState = rememberScaffoldState()
 
                     val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
@@ -62,11 +62,9 @@ class NavActivity : AppCompatActivity() {
                     }
 
                     // Intercepts back navigation when the drawer is open
-                    backPressHandler(
-                        enabled = scaffoldState.drawerState.isOpen,
-                        onBackPressed = { scaffoldState.drawerState.close() },
-                        highPriority = true
-                    )
+                    if (scaffoldState.drawerState.isOpen) {
+                        BackPressHandler { scaffoldState.drawerState.close() }
+                    }
 
                     JetchatScaffold(
                         scaffoldState,

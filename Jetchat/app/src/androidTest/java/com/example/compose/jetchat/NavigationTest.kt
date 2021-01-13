@@ -65,7 +65,7 @@ class NavigationTest {
         // Start the app
         composeTestRule.setContent {
             Providers(
-                AmbientBackPressedDispatcher provides activity,
+                AmbientBackPressedDispatcher provides activity.onBackPressedDispatcher,
                 AmbientWindowInsets provides windowInsets,
             ) {
                 JetchatTheme {
