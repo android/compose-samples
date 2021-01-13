@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.data
 
+import android.util.Log
 import com.example.jetcaster.data.room.TransactionRunner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -44,25 +45,25 @@ class PodcastsRepository(
         } else if (force || podcastStore.isEmpty()) {
             refreshingJob = scope.launch {
                 try {
-                // Now fetch the podcasts, and add each to each store
-                podcastsFetcher(SampleFeeds).collect{  (podcast, episodes, categories) ->
-                    transactionRunner {
-                        podcastStore.addPodcast(podcast)
-                        episodeStore.addEpisodes(episodes)
+                    // Now fetch the podcasts, and add each to each store
+                    podcastsFetcher(SampleFeeds).collect { (podcast, episodes, categories) ->
+                        transactionRunner {
+                            podcastStore.addPodcast(podcast)
+                            episodeStore.addEpisodes(episodes)
 
-                        categories.forEach { category ->
-                            // First insert the category
-                            val categoryId = categoryStore.addCategory(category)
-                            // Now we can add the podcast to the category
-                            categoryStore.addPodcastToCategory(
-                                podcastUri = podcast.uri,
-                                categoryId = categoryId
-                            )
+                            categories.forEach { category ->
+                                // First insert the category
+                                val categoryId = categoryStore.addCategory(category)
+                                // Now we can add the podcast to the category
+                                categoryStore.addPodcastToCategory(
+                                    podcastUri = podcast.uri,
+                                    categoryId = categoryId
+                                )
+                            }
                         }
                     }
-                }
                 } catch (e: Throwable) {
-                    println("podcastsFetcher(SampleFeeds).collect error: $e")
+                    Log.d("PodcastsRepository", "podcastsFetcher(SampleFeeds).collect error: $e")
                 }
             }
         }
