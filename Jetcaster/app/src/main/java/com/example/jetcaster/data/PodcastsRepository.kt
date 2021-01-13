@@ -43,8 +43,9 @@ class PodcastsRepository(
             refreshingJob?.join()
         } else if (force || podcastStore.isEmpty()) {
             refreshingJob = scope.launch {
+                try {
                 // Now fetch the podcasts, and add each to each store
-                podcastsFetcher(SampleFeeds).collect { (podcast, episodes, categories) ->
+                podcastsFetcher(SampleFeeds).collect{  (podcast, episodes, categories) ->
                     transactionRunner {
                         podcastStore.addPodcast(podcast)
                         episodeStore.addEpisodes(episodes)
@@ -59,6 +60,9 @@ class PodcastsRepository(
                             )
                         }
                     }
+                }
+                } catch (e: Throwable) {
+                    println("podcastsFetcher(SampleFeeds).collect error: $e")
                 }
             }
         }
