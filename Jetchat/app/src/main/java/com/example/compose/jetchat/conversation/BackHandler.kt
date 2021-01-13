@@ -21,33 +21,25 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Ambient
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.staticAmbientOf
 
 /**
- * This [Composable] can be used with a [AmbientBackPressedDispatcher] to intercept a back press (if
- * [enabled]).
+ * This [Composable] can be used with a [AmbientBackPressedDispatcher] to intercept a back press.
  *
  * @param onBackPressed (Event) What to do when back is intercepted
- * @param enabled (state) When to intercept the back navigation
- * @param highPriority (config) Used to make sure this is the first handler in the dispatcher
  *
  */
 @Composable
-fun backPressHandler(
-    onBackPressed: () -> Unit,
-    enabled: Boolean = true,
-    highPriority: Boolean = false
-) {
+fun BackPressHandler(onBackPressed: () -> Unit) {
     // Safely update the current `onBack` lambda when a new one is provided
     val currentOnBackPressed by rememberUpdatedState(onBackPressed)
 
     // Remember in Composition a back callback that calls the `onBackPressed` lambda
     val backCallback = remember {
-        object : OnBackPressedCallback(enabled) {
+        object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 currentOnBackPressed()
             }
@@ -55,26 +47,6 @@ fun backPressHandler(
     }
 
     val backDispatcher = AmbientBackPressedDispatcher.current
-
-    // Run only on successful commits.
-    SideEffect {
-        backCallback.isEnabled = enabled
-    }
-
-    // The Navigation Component can intercept the back event, so make sure that this is the first
-    // callback in the dispatcher if it's high priority (like in the drawer case).
-    DisposableEffect(enabled, highPriority) {
-        if (enabled && highPriority) {
-            backDispatcher.addCallback(backCallback)
-        }
-
-        // Before the parameters change, remove the callback so it can be added again
-        onDispose {
-            if (highPriority) {
-                backCallback.remove()
-            }
-        }
-    }
 
     // Whenever there's a new dispatcher set up the callback
     DisposableEffect(backDispatcher) {
@@ -90,10 +62,10 @@ fun backPressHandler(
  * This [Ambient] is used to provide an [OnBackPressedDispatcher]:
  *
  * ```
- * Providers(AmbientBackPressedDispatcher provides requireActivity()) { }
+ * Providers(AmbientBackPressedDispatcher provides requireActivity().onBackPressedDispatcher) { }
  * ```
  *
- * and setting up the callbacks with [backPressHandler].
+ * and setting up the callbacks with [BackPressHandler].
  */
 val AmbientBackPressedDispatcher =
     staticAmbientOf<OnBackPressedDispatcher> { error("No Back Dispatcher provided") }
