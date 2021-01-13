@@ -16,7 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.animateAsState
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +33,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -75,18 +76,21 @@ fun FilterChip(
     shape: Shape = MaterialTheme.shapes.small
 ) {
     val (selected, setSelected) = filter.enabled
-    val backgroundColor =
-        animate(if (selected) JetsnackTheme.colors.brand else JetsnackTheme.colors.uiBackground)
+    val backgroundColor by animateAsState(
+        if (selected) JetsnackTheme.colors.brand else JetsnackTheme.colors.uiBackground
+    )
     val border = Modifier.fadeInDiagonalGradientBorder(
         showBorder = !selected,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = shape
     )
-    val textColor = animate(
+    val textColor by animateAsState(
         if (selected) JetsnackTheme.colors.textInteractive else JetsnackTheme.colors.textSecondary
     )
     JetsnackSurface(
-        modifier = modifier.preferredHeight(28.dp).then(border),
+        modifier = modifier
+            .preferredHeight(28.dp)
+            .then(border),
         color = backgroundColor,
         contentColor = textColor,
         shape = shape,

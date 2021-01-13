@@ -28,7 +28,8 @@ import kotlinx.coroutines.flow.StateFlow
  * TODO: Move data to Repository so it can be displayed and changed consistently throughout the app.
  */
 class CartViewModel : ViewModel() {
-    private val _orderLines: MutableStateFlow<List<OrderLine>> = MutableStateFlow(SnackRepo.getCart())
+    private val _orderLines: MutableStateFlow<List<OrderLine>> =
+        MutableStateFlow(SnackRepo.getCart())
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
     fun removeSnack(snackId: Long) {
