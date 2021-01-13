@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha03"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha04"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
@@ -30,7 +30,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.1"
+        private const val version = "0.4.2"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -50,7 +50,7 @@ object Libs {
     object AndroidX {
         object Compose {
             const val snapshot = ""
-            private const val version = "1.0.0-alpha09"
+            private const val version = "1.0.0-alpha10"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"

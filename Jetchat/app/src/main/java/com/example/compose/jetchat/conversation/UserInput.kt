@@ -69,11 +69,11 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.FirstBaseline
@@ -125,10 +125,11 @@ fun UserInput(
 ) {
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
-    backPressHandler(
-        enabled = currentInputSelector != InputSelector.NONE,
-        onBackPressed = dismissKeyboard
-    )
+
+    // Intercept back navigation if there's a InputSelector visible
+    if (currentInputSelector != InputSelector.NONE) {
+        BackPressHandler(onBackPressed = dismissKeyboard)
+    }
 
     var textState by remember { mutableStateOf(TextFieldValue()) }
 
@@ -450,7 +451,8 @@ fun EmojiSelector(
     Column(
         modifier = Modifier
             .focusRequester(focusRequester) // Requests focus when the Emoji selector is displayed
-            .focus() // Make the emoji selector focusable so it can steal focus from TextField
+            // Make the emoji selector focusable so it can steal focus from TextField
+            .focusModifier()
             .semantics { contentDescription = a11yLabel }
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {

@@ -16,7 +16,7 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.core.animateAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,16 +65,17 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
     var heightWithBranding by remember { mutableStateOf(0) }
 
     val currentOffsetHolder = remember { mutableStateOf(0f) }
-    currentOffsetHolder.value = animate(
-        if (showBranding) 0f else -brandingBottom
-    )
+    currentOffsetHolder.value = if (showBranding) 0f else -brandingBottom
+    val currentOffsetHolderDp =
+        with(AmbientDensity.current) { currentOffsetHolder.value.toDp() }
     val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
-    val currentOffsetHolderDp = with(AmbientDensity.current) { currentOffsetHolder.value.toDp() }
     Surface(modifier = Modifier.fillMaxSize()) {
+        val offset by animateAsState(targetValue = currentOffsetHolderDp)
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
-                .offset(y = currentOffsetHolderDp)
+                .offset(y = offset)
                 .onSizeChanged {
                     if (showBranding) {
                         heightWithBranding = it.height
@@ -82,16 +83,21 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
                 }
         ) {
             Branding(
-                modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
-                    if (brandingBottom == 0f) {
-                        brandingBottom = it.boundsInParent.bottom
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .onGloballyPositioned {
+                        if (brandingBottom == 0f) {
+                            brandingBottom = it.boundsInParent.bottom
+                        }
                     }
-                }
             )
             SignInCreateAccount(
                 onEvent = onEvent,
                 onFocusChange = { focused -> showBranding = !focused },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             )
         }
     }
@@ -102,7 +108,8 @@ private fun Modifier.brandingPreferredHeight(
     heightDp: Dp
 ): Modifier {
     return if (!showBranding) {
-        this.wrapContentHeight(unbounded = true)
+        this
+            .wrapContentHeight(unbounded = true)
             .preferredHeight(heightDp)
     } else {
         this
@@ -114,12 +121,18 @@ private fun Branding(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
-        Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
+        Logo(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 76.dp)
+        )
         Text(
             text = stringResource(id = R.string.app_tagline),
             style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .fillMaxWidth()
         )
     }
 }
@@ -167,7 +180,9 @@ private fun SignInCreateAccount(
         Email(emailState = emailState, imeAction = ImeAction.Done, onImeAction = onSubmit)
         Button(
             onClick = onSubmit,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 28.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.user_continue),

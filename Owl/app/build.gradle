@@ -84,7 +84,7 @@ android {
 dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.android
-
+    
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.navigation
 

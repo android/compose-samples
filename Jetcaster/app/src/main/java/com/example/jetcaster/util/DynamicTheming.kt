@@ -18,7 +18,7 @@ package com.example.jetcaster.util
 
 import android.content.Context
 import androidx.collection.LruCache
-import androidx.compose.animation.animate
+import androidx.compose.animation.animateAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.material.MaterialTheme
@@ -61,8 +61,14 @@ fun DynamicThemePrimaryColorsFromImage(
     content: @Composable () -> Unit
 ) {
     val colors = MaterialTheme.colors.copy(
-        primary = animate(dominantColorState.color, spring(stiffness = Spring.StiffnessLow)),
-        onPrimary = animate(dominantColorState.onColor, spring(stiffness = Spring.StiffnessLow))
+        primary = animateAsState(
+            dominantColorState.color,
+            spring(stiffness = Spring.StiffnessLow)
+        ).value,
+        onPrimary = animateAsState(
+            dominantColorState.onColor,
+            spring(stiffness = Spring.StiffnessLow)
+        ).value
     )
     MaterialTheme(colors = colors, content = content)
 }
