@@ -16,6 +16,11 @@
   -->
 <resources>
     <string name="app_name">Jetcaster</string>
+
+    <string name="connection_error_title">Connection error</string>
+    <string name="connection_error_message">Unable to fetch podcasts feeds.\nCheck your internet connection and try again.</string>
+    <string name="retry_label">Retry</string>
+    
     <string name="your_podcasts">Your podcasts</string>
     <string name="latest_episodes">Latest episodes</string>
 
