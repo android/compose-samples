@@ -17,13 +17,13 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -287,8 +287,8 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    ScrollableColumn(modifier = Modifier.padding(top = 16.dp)) {
-        topics.forEach { topic ->
+    LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
+        items(topics) { topic ->
             TopicItem(
                 topic,
                 selected = selectedTopics.contains(topic)
@@ -311,14 +311,16 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    ScrollableColumn {
+    LazyColumn {
         sections.forEach { (section, topics) ->
-            Text(
-                text = section,
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.subtitle1
-            )
-            topics.forEach { topic ->
+            item {
+                Text(
+                    text = section,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.subtitle1
+                )
+            }
+            items(topics) { topic ->
                 TopicItem(
                     itemTitle = topic,
                     selected = selectedTopics.contains(TopicSelection(section, topic))

@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.article
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
@@ -75,27 +75,39 @@ private val defaultSpacerSize = 16.dp
 
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
-    ScrollableColumn(
+    LazyColumn(
         modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
-        Spacer(Modifier.preferredHeight(defaultSpacerSize))
-        PostHeaderImage(post)
-        Text(text = post.title, style = MaterialTheme.typography.h4)
-        Spacer(Modifier.preferredHeight(8.dp))
-        post.subtitle?.let { subtitle ->
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.body2,
-                    lineHeight = 20.sp
-                )
-            }
+        item {
             Spacer(Modifier.preferredHeight(defaultSpacerSize))
+            PostHeaderImage(post)
         }
-        PostMetadata(post.metadata)
-        Spacer(Modifier.preferredHeight(24.dp))
-        PostContents(post.paragraphs)
-        Spacer(Modifier.preferredHeight(48.dp))
+        item {
+            Text(text = post.title, style = MaterialTheme.typography.h4)
+            Spacer(Modifier.preferredHeight(8.dp))
+        }
+        post.subtitle?.let { subtitle ->
+            item {
+                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.body2,
+                        lineHeight = 20.sp
+                    )
+                }
+                Spacer(Modifier.preferredHeight(defaultSpacerSize))
+            }
+        }
+        item {
+            PostMetadata(post.metadata)
+            Spacer(Modifier.preferredHeight(24.dp))
+        }
+        items(post.paragraphs) {
+            Paragraph(paragraph = it)
+        }
+        item {
+            Spacer(Modifier.preferredHeight(48.dp))
+        }
     }
 }
 
