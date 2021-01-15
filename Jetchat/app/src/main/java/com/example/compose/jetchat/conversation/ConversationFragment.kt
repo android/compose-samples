@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,7 +56,9 @@ class ConversationFragment : Fragment() {
             // We use the `windowInsetsAnimationsEnabled` parameter to enable animated
             // insets support. This allows our `ConversationContent` to animate with the
             // on-screen keyboard (IME) as it enters/exits the screen.
-            .start(windowInsetsAnimationsEnabled = true)
+            // We only enable this on API 30+ (for now), due to
+            // https://issuetracker.google.com/175391720. Hopefully fixed in Core 1.5.0-beta02
+            .start(windowInsetsAnimationsEnabled = Build.VERSION.SDK_INT >= 30)
 
         setContent {
             Providers(
