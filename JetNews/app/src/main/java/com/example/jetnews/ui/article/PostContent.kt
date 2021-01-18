@@ -152,13 +152,6 @@ private fun PostMetadata(metadata: Metadata) {
 }
 
 @Composable
-private fun PostContents(paragraphs: List<Paragraph>) {
-    paragraphs.forEach {
-        Paragraph(paragraph = it)
-    }
-}
-
-@Composable
 private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
