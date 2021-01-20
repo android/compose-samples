@@ -17,6 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jetcaster">
 
+    <!-- Uses ACCESS_NETWORK_STATE to check if the device is connected to internet or not -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Uses INTERNET to fetch RSS feed + images -->
     <uses-permission android:name="android.permission.INTERNET" />
 

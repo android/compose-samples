@@ -43,18 +43,17 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.1.compose-7067732-SNAPSHOT"
+        private const val version = "0.4.2"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
-        const val core = "androidx.core:core:1.5.0-SNAPSHOT"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-SNAPSHOT"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
 
         object Compose {
-            const val snapshot = "7067732"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-alpha10"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"

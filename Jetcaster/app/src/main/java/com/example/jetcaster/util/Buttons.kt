@@ -16,7 +16,8 @@
 
 package com.example.jetcaster.util
 
-import androidx.compose.animation.animate
+import androidx.compose.animation.animateAsState
+import androidx.compose.animation.core.animateAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AmbientContentColor
@@ -49,24 +50,24 @@ fun ToggleFollowPodcastIconButton(
                 isFollowed -> Icons.Default.Check
                 else -> Icons.Default.Add
             },
-            tint = animate(
+            tint = animateAsState(
                 when {
                     isFollowed -> AmbientContentColor.current
                     else -> Color.Black.copy(alpha = ContentAlpha.high)
                 }
-            ),
+            ).value,
             modifier = Modifier
                 .shadow(
-                    elevation = animate(if (isFollowed) 0.dp else 1.dp),
+                    elevation = animateAsState(if (isFollowed) 0.dp else 1.dp).value,
                     shape = MaterialTheme.shapes.small
                 )
                 .background(
-                    color = animate(
+                    color = animateAsState(
                         when {
                             isFollowed -> MaterialTheme.colors.surface.copy(0.38f)
                             else -> Color.White
                         }
-                    ),
+                    ).value,
                     shape = MaterialTheme.shapes.small
                 )
                 .padding(4.dp)
