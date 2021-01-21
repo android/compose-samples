@@ -55,6 +55,7 @@ fun PostCardPopular(
 
             Image(
                 bitmap = image,
+                contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .preferredHeight(100.dp)

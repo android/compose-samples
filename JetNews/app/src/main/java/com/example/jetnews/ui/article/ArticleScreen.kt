@@ -46,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -134,7 +135,10 @@ fun ArticleScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack)
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_navigate_up)
+                        )
                     }
                 }
             )
@@ -177,7 +181,10 @@ private fun BottomBar(
                 .fillMaxWidth()
         ) {
             IconButton(onClick = onUnimplementedAction) {
-                Icon(Icons.Filled.FavoriteBorder)
+                Icon(
+                    imageVector = Icons.Filled.FavoriteBorder,
+                    contentDescription = stringResource(R.string.cd_add_to_favorites)
+                )
             }
             BookmarkButton(
                 isBookmarked = isFavorite,
@@ -185,11 +192,17 @@ private fun BottomBar(
             )
             val context = AmbientContext.current
             IconButton(onClick = { sharePost(post, context) }) {
-                Icon(Icons.Filled.Share)
+                Icon(
+                    imageVector = Icons.Filled.Share,
+                    contentDescription = stringResource(R.string.cd_share)
+                )
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onUnimplementedAction) {
-                Icon(vectorResource(R.drawable.ic_text_settings))
+                Icon(
+                    imageVector = vectorResource(R.drawable.ic_text_settings),
+                    contentDescription = stringResource(R.string.cd_text_settings)
+                )
             }
         }
     }

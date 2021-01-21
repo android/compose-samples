@@ -16,4 +16,12 @@
     <string name="app_name">Jetnews</string>
     <string name="load_error">Can\'t update latest news</string>
     <string name="retry">Retry</string>
+    <string name="cd_navigate_up">Navigate up</string>
+    <string name="cd_add_to_favorites">Add to favorites</string>
+    <string name="cd_share">Share</string>
+    <string name="cd_text_settings">Text settings</string>
+    <string name="cd_open_navigation_drawer">Open navigation drawer</string>
+    <string name="cd_remove_from_bookmarks">Remove from bookmarks</string>
+    <string name="cd_add_to_bookmarks">Add to bookmarks</string>
+    <string name="cd_more_actions">More actions</string>
 </resources>

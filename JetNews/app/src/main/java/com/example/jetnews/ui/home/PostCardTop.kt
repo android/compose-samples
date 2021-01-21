@@ -51,7 +51,12 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
                 .heightIn(min = 180.dp)
                 .fillMaxWidth()
                 .clip(shape = MaterialTheme.shapes.medium)
-            Image(image, modifier = imageModifier, contentScale = ContentScale.Crop)
+            Image(
+                bitmap = image,
+                contentDescription = null, // decorative
+                modifier = imageModifier,
+                contentScale = ContentScale.Crop
+            )
         }
         Spacer(Modifier.preferredHeight(16.dp))
 

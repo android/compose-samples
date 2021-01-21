@@ -27,8 +27,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.jetnews.R
 import com.example.jetnews.ui.ThemedPreview
 
 @Composable
@@ -47,7 +49,10 @@ fun SelectTopicButton(
         shape = CircleShape,
         modifier = modifier.preferredSize(36.dp, 36.dp)
     ) {
-        Icon(icon)
+        Icon(
+            imageVector = icon,
+            contentDescription = null // toggleable at higher level
+        )
     }
 }
 
