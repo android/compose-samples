@@ -309,9 +309,11 @@ private fun PostList(
  */
 @Composable
 private fun FullScreenLoading() {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .wrapContentSize(Alignment.Center)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
         CircularProgressIndicator()
     }
 }
