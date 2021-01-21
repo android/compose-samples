@@ -18,7 +18,7 @@ package com.example.jetnews
 
 import android.content.Context
 import androidx.compose.runtime.remember
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.lifecycle.SavedStateHandle
 import com.example.jetnews.ui.JetnewsApp
 import com.example.jetnews.ui.NavigationViewModel
@@ -26,7 +26,7 @@ import com.example.jetnews.ui.NavigationViewModel
 /**
  * Launches the app from a test context
  */
-fun ComposeTestRule.launchJetNewsApp(context: Context) {
+fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(
             TestAppContainer(context),
