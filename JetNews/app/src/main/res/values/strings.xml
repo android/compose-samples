@@ -21,7 +21,6 @@
     <string name="cd_share">Share</string>
     <string name="cd_text_settings">Text settings</string>
     <string name="cd_open_navigation_drawer">Open navigation drawer</string>
-    <string name="cd_remove_from_bookmarks">Remove from bookmarks</string>
-    <string name="cd_add_to_bookmarks">Add to bookmarks</string>
     <string name="cd_more_actions">More actions</string>
+    <string name="cd_bookmark">Bookmark</string>
 </resources>

@@ -156,12 +156,12 @@ fun BookmarkButton(
         if (isBookmarked) {
             Icon(
                 imageVector = Icons.Filled.Bookmark,
-                contentDescription = stringResource(R.string.cd_remove_from_bookmarks)
+                contentDescription = stringResource(R.string.cd_bookmark)
             )
         } else {
             Icon(
                 imageVector = Icons.Filled.BookmarkBorder,
-                contentDescription = stringResource(R.string.cd_add_to_bookmarks)
+                contentDescription = stringResource(R.string.cd_bookmark)
             )
         }
     }
