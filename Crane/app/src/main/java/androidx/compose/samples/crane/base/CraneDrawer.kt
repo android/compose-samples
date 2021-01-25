@@ -37,7 +37,10 @@ private val screens = listOf("Find Trips", "My Trips", "Saved Trips", "Price Ale
 @Composable
 fun CraneDrawer(modifier: Modifier = Modifier) {
     Column(modifier.fillMaxSize().padding(start = 24.dp, top = 48.dp)) {
-        Image(imageVector = vectorResource(id = R.drawable.ic_crane_drawer))
+        Image(
+            imageVector = vectorResource(id = R.drawable.ic_crane_drawer),
+            contentDescription = null
+        )
         for (screen in screens) {
             Spacer(Modifier.preferredHeight(24.dp))
             Text(text = screen, style = MaterialTheme.typography.h4)

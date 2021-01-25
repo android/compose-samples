@@ -16,4 +16,8 @@
   -->
 <resources>
     <string name="app_name">Crane</string>
+
+    <string name="cd_menu">Menu</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_loading">Loading</string>
 </resources>

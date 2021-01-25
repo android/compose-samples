@@ -19,22 +19,20 @@ package androidx.compose.samples.crane.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
-import androidx.compose.animation.DpPropKey
-import androidx.compose.animation.core.FloatPropKey
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring.StiffnessLow
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.transition
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
@@ -64,16 +62,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicked: () -> Unit) {
     CraneScaffold {
-        var splashShown by remember { mutableStateOf(SplashState.Shown) }
-        val transition = transition(splashTransitionDefinition, splashShown)
+        val transitionState = remember { MutableTransitionState(SplashState.Shown) }
+        val (splashAlpha, contentAlpha, contentTopPadding) = getSplashTransition(transitionState)
+
         Box {
             LandingScreen(
-                modifier = Modifier.alpha(transition[splashAlphaKey]),
-                onTimeout = { splashShown = SplashState.Completed }
+                modifier = Modifier.alpha(splashAlpha.value),
+                onTimeout = { transitionState.targetState = SplashState.Completed }
             )
             MainContent(
-                modifier = Modifier.alpha(transition[contentAlphaKey]),
-                topPadding = transition[contentTopPaddingKey],
+                modifier = Modifier.alpha(contentAlpha.value),
+                topPadding = contentTopPadding.value,
                 onExploreItemClicked = onExploreItemClicked,
                 onDateSelectionClicked = onDateSelectionClicked
             )
@@ -100,30 +99,25 @@ private fun MainContent(
 
 enum class SplashState { Shown, Completed }
 
-private val splashAlphaKey = FloatPropKey("Splash alpha")
-private val contentAlphaKey = FloatPropKey("Content alpha")
-private val contentTopPaddingKey = DpPropKey("Top padding")
-
-private val splashTransitionDefinition = transitionDefinition<SplashState> {
-    state(SplashState.Shown) {
-        this[splashAlphaKey] = 1f
-        this[contentAlphaKey] = 0f
-        this[contentTopPaddingKey] = 100.dp
+@Composable
+private fun getSplashTransition(
+    transitionState: MutableTransitionState<SplashState>
+): Triple<State<Float>, State<Float>, State<Dp>> {
+    val transition = updateTransition(transitionState)
+    val splashAlpha = transition.animateFloat(
+        transitionSpec = { tween(durationMillis = 100) }
+    ) {
+        if (it == SplashState.Shown) 1f else 0f
     }
-    state(SplashState.Completed) {
-        this[splashAlphaKey] = 0f
-        this[contentAlphaKey] = 1f
-        this[contentTopPaddingKey] = 0.dp
+    val contentAlpha = transition.animateFloat(
+        transitionSpec = { tween(durationMillis = 300) }
+    ) {
+        if (it == SplashState.Shown) 0f else 1f
     }
-    transition {
-        splashAlphaKey using tween(
-            durationMillis = 100
-        )
-        contentAlphaKey using tween(
-            durationMillis = 300
-        )
-        contentTopPaddingKey using spring(
-            stiffness = StiffnessLow
-        )
+    val contentTopPadding = transition.animateDp(
+        transitionSpec = { spring(stiffness = StiffnessLow) }
+    ) {
+        if (it == SplashState.Shown) 100.dp else 0.dp
     }
+    return Triple(splashAlpha, contentAlpha, contentTopPadding)
 }

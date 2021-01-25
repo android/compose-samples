@@ -125,7 +125,8 @@ private fun CraneBaseUserInput(
                 Icon(
                     modifier = Modifier.preferredSize(24.dp, 24.dp),
                     imageVector = vectorResource(id = vectorImageId),
-                    tint = if (tintIcon()) tint else Color(0x80FFFFFF)
+                    tint = if (tintIcon()) tint else Color(0x80FFFFFF),
+                    contentDescription = null
                 )
                 Spacer(Modifier.preferredWidth(8.dp))
             }

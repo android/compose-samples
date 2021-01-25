@@ -18,12 +18,14 @@ package androidx.compose.samples.crane.calendar
 
 import androidx.compose.samples.crane.calendar.model.DaySelected
 import androidx.compose.samples.crane.data.DatesRepository
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CalendarViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CalendarViewModel @Inject constructor(
     private val datesRepository: DatesRepository
 ) : ViewModel() {
 

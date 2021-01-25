@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -96,11 +97,13 @@ private fun ExploreItem(
                 data = item.imageUrl,
                 fadeIn = true,
                 contentScale = ContentScale.Crop,
+                contentDescription = null,
                 loading = {
                     Box(Modifier.fillMaxSize()) {
                         Image(
                             modifier = Modifier.preferredSize(36.dp).align(Alignment.Center),
-                            imageVector = vectorResource(id = R.drawable.ic_crane_logo)
+                            imageVector = vectorResource(id = R.drawable.ic_crane_logo),
+                            contentDescription = null
                         )
                     }
                 }
