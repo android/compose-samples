@@ -18,7 +18,6 @@ package androidx.compose.samples.crane.calendar
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +30,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -66,42 +66,10 @@ fun Calendar(
     LazyColumn(modifier) {
         item { Spacer(Modifier.preferredHeight(32.dp)) }
         for (month in calendarYear) {
+            itemsCalendarMonth(month = month, onDayClicked = onDayClicked)
             item {
-                Month(month = month, onDayClicked = onDayClicked)
                 Spacer(Modifier.preferredHeight(32.dp))
             }
-        }
-    }
-}
-
-@Composable
-private fun Month(
-    modifier: Modifier = Modifier,
-    month: CalendarMonth,
-    onDayClicked: (CalendarDay, CalendarMonth) -> Unit
-) {
-    Column(modifier = modifier) {
-        MonthHeader(
-            modifier = Modifier.padding(horizontal = 30.dp),
-            month = month.name,
-            year = month.year
-        )
-
-        // Expanding width and centering horizontally
-        val contentModifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-        DaysOfWeek(modifier = contentModifier)
-        for (week in month.weeks.value) {
-            Week(
-                modifier = contentModifier,
-                week = week,
-                month = month,
-                onDayClicked = { day ->
-                    onDayClicked(day, month)
-                }
-            )
-            Spacer(Modifier.preferredHeight(8.dp))
         }
     }
 }
@@ -232,6 +200,42 @@ private fun DayStatusContainer(
         }
     } else {
         content()
+    }
+}
+
+private fun LazyListScope.itemsCalendarMonth(
+    month: CalendarMonth,
+    onDayClicked: (CalendarDay, CalendarMonth) -> Unit
+) {
+    item {
+        MonthHeader(
+            modifier = Modifier.padding(horizontal = 30.dp),
+            month = month.name,
+            year = month.year
+        )
+    }
+
+    // Expanding width and centering horizontally
+    val contentModifier = Modifier
+        .fillMaxWidth()
+        .wrapContentWidth(Alignment.CenterHorizontally)
+    item {
+        DaysOfWeek(modifier = contentModifier)
+    }
+    for (week in month.weeks.value) {
+        item {
+            Week(
+                modifier = contentModifier,
+                week = week,
+                month = month,
+                onDayClicked = { day ->
+                    onDayClicked(day, month)
+                }
+            )
+        }
+        item {
+            Spacer(Modifier.preferredHeight(8.dp))
+        }
     }
 }
 
