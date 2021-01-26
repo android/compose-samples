@@ -65,7 +65,7 @@ class CalendarTest {
         }
     }
 
-    @Ignore("performScrollTo doesn't seem to work well in this release")
+    @Ignore("performScrollTo doesn't work with LazyLists: issuetracker.google.com/178483889")
     @Test
     fun scrollsToTheBottom() {
         composeTestRule.onNodeWithContentDescription("January 1").assertExists()
