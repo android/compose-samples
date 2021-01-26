@@ -76,13 +76,13 @@ class AnimatingCircleTests {
 
     private fun compareTimeScreenshot(timeMs: Long, goldenName: String) {
         // Start with a paused clock
-        composeTestRule.clockTestRule.pauseClock()
+        composeTestRule.mainClock.autoAdvance = false
 
         // Start the unit under test
         showAnimatedCircle()
 
         // Advance clock (keeping it paused)
-        composeTestRule.clockTestRule.advanceClock(timeMs)
+        composeTestRule.mainClock.advanceTimeBy(timeMs)
 
         // Take screenshot and compare with golden image in androidTest/assets
         assertScreenshotMatchesGolden(goldenName, composeTestRule.onRoot())
