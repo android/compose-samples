@@ -69,7 +69,8 @@ fun JumpToBottom(
             icon = {
                 Icon(
                     imageVector = Icons.Filled.ArrowDownward,
-                    modifier = Modifier.preferredHeight(18.dp)
+                    modifier = Modifier.preferredHeight(18.dp),
+                    contentDescription = null
                 )
             },
             text = {

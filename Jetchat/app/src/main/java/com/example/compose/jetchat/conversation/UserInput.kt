@@ -59,14 +59,8 @@ import androidx.compose.material.icons.outlined.Duo
 import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onCommit
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -95,6 +89,7 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.compositedOnSurface
 import com.example.compose.jetchat.theme.elevatedSurface
+import kotlinx.coroutines.launch
 
 enum class InputSelector {
     NONE,
@@ -123,6 +118,7 @@ fun UserInput(
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
 ) {
+    val scope = rememberCoroutineScope()
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
 
@@ -147,7 +143,9 @@ fun UserInput(
             onTextFieldFocused = { focused ->
                 if (focused) {
                     currentInputSelector = InputSelector.NONE
-                    scrollState.smoothScrollTo(0f)
+                    scope.launch {
+                        scrollState.smoothScrollTo(0f)
+                    }
                 }
                 textFieldFocusState = focused
             },
@@ -161,7 +159,9 @@ fun UserInput(
                 // Reset text field and close keyboard
                 textState = TextFieldValue()
                 // Move scroll to bottom
-                scrollState.smoothScrollTo(0f)
+                scope.launch {
+                    scrollState.smoothScrollTo(0f)
+                }
                 dismissKeyboard()
             },
             currentInputSelector = currentInputSelector
@@ -223,7 +223,9 @@ private fun SelectorExpanded(
 fun FunctionalityNotAvailablePanel() {
     AnimatedVisibility(visible = true, initiallyVisible = false, enter = fadeIn()) {
         Column(
-            modifier = Modifier.preferredHeight(320.dp).fillMaxWidth(),
+            modifier = Modifier
+                .preferredHeight(320.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -351,7 +353,10 @@ private fun InputSelectorButton(
             Icon(
                 icon,
                 tint = tint,
-                modifier = Modifier.padding(12.dp).preferredSize(20.dp)
+                modifier = Modifier
+                    .padding(12.dp)
+                    .preferredSize(20.dp),
+                contentDescription = null
             )
         }
     }
@@ -398,7 +403,10 @@ private fun UserInputText(
     ) {
         Surface {
             Box(
-                modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
+                modifier = Modifier
+                    .preferredHeight(48.dp)
+                    .weight(1f)
+                    .align(Alignment.Bottom)
             ) {
                 var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
                 BasicTextField(
@@ -455,7 +463,9 @@ fun EmojiSelector(
             .focusModifier()
             .semantics { contentDescription = a11yLabel }
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)) {
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.emojis_label),
                 onClick = { selected = EmojiStickerSelector.EMOJI },

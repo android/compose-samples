@@ -84,7 +84,8 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                         modifier = Modifier
                             .clickable(onClick = {}) // TODO: Show not implemented dialog.
                             .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .preferredHeight(24.dp)
+                            .preferredHeight(24.dp),
+                        contentDescription = null
                     )
                 }
             }
@@ -191,7 +192,8 @@ private fun ProfileHeader(
                 .preferredHeightIn(max = 320.dp)
                 .padding(top = offsetDp),
             bitmap = asset,
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
+            contentDescription = null
         )
     }
 }
@@ -242,7 +244,8 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             AnimatingFabContent(
                 icon = {
                     Icon(
-                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat
+                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
+                        contentDescription = null
                     )
                 },
                 text = {

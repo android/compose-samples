@@ -95,7 +95,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                duration = 200.milliseconds
+                durationMillis = 200
             )
         }
         // Check that the jump to bottom button is shown
@@ -109,7 +109,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                duration = 200.milliseconds
+                durationMillis = 200
             )
         }
         // Snap scroll to the bottom
@@ -126,7 +126,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                duration = 200.milliseconds
+                durationMillis = 200
             )
         }
         // Second, snap to bottom
@@ -146,7 +146,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                duration = 200.milliseconds
+                durationMillis = 200
             )
         }
 
