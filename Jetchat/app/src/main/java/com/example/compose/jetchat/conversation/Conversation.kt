@@ -16,7 +16,11 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ClickableText
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,8 +34,10 @@ import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
@@ -67,7 +73,6 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
 import dev.chrisbanes.accompanist.insets.navigationBarsWithImePadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -344,9 +349,11 @@ private val LastChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
 
 @Composable
 fun DayHeader(dayString: String) {
-    Row(modifier = Modifier
-        .padding(vertical = 8.dp, horizontal = 16.dp)
-        .preferredHeight(16.dp)) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .preferredHeight(16.dp)
+    ) {
         DayHeaderLine()
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(

@@ -18,9 +18,8 @@ package com.example.compose.jetchat.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -31,6 +30,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
@@ -49,7 +49,6 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -73,7 +72,9 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
             // Use statusBarsPadding() to move the app bar content below the status bar
-            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding(),
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
@@ -90,26 +91,25 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 }
             }
         )
-        WithConstraints {
-            Box(modifier = Modifier.weight(1f)) {
-                Surface {
-                    ScrollableColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        scrollState = scrollState
-                    ) {
-                        ProfileHeader(
-                            scrollState,
-                            userData
-                        )
-                        UserInfoFields(userData, maxHeight)
-                    }
+        BoxWithConstraints(modifier = Modifier.weight(1f)) {
+            Surface {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                ) {
+                    ProfileHeader(
+                        scrollState,
+                        userData
+                    )
+                    UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
                 }
-                ProfileFab(
-                    extended = scrollState.value == 0f,
-                    userIsMe = userData.isMe(),
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                )
             }
+            ProfileFab(
+                extended = scrollState.value == 0f,
+                userIsMe = userData.isMe(),
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
         }
     }
 }
@@ -148,7 +148,9 @@ private fun NameAndPosition(
         )
         Position(
             userData,
-            modifier = Modifier.padding(bottom = 20.dp).baselineHeight(24.dp)
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .baselineHeight(24.dp)
         )
     }
 }

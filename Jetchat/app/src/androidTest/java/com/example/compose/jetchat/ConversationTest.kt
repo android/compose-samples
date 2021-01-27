@@ -16,7 +16,6 @@
 
 package com.example.compose.jetchat
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
@@ -29,7 +28,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performGesture
 import androidx.compose.ui.test.swipe
-import androidx.compose.ui.unit.milliseconds
 import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
@@ -50,32 +48,26 @@ class ConversationTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<NavActivity>()
 
-    // Note that keeping these references is only safe if the activity is not recreated.
-    // See: https://issuetracker.google.com/160862278
-    private lateinit var activity: ComponentActivity
-
     private val themeIsDark = MutableStateFlow(false)
 
     @Before
     fun setUp() {
-        composeTestRule.activityRule.scenario.onActivity { newActivity ->
-            activity = newActivity
-            // Provide empty insets. We can modify this value as necessary
-            val windowInsets = WindowInsets()
+        // Provide empty insets. We can modify this value as necessary
+        val windowInsets = WindowInsets()
 
-            // Launch the conversation screen
-            composeTestRule.setContent {
-                Providers(
-                    AmbientBackPressedDispatcher provides newActivity.onBackPressedDispatcher,
-                    AmbientWindowInsets provides windowInsets
-                ) {
-                    JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
-                        ConversationContent(
-                            uiState = exampleUiState,
-                            navigateToProfile = { },
-                            onNavIconPressed = { }
-                        )
-                    }
+        // Launch the conversation screen
+        composeTestRule.setContent {
+            val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
+            Providers(
+                AmbientBackPressedDispatcher provides onBackPressedDispatcher,
+                AmbientWindowInsets provides windowInsets
+            ) {
+                JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { },
+                        onNavIconPressed = { }
+                    )
                 }
             }
         }
@@ -161,10 +153,12 @@ class ConversationTest {
     }
 
     private fun findJumpToBottom() =
-        composeTestRule.onNodeWithText(activity.getString(R.string.jumpBottom))
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.jumpBottom))
 
     private fun openEmojiSelector() =
         composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc))
+            .onNodeWithContentDescription(
+                composeTestRule.activity.getString(R.string.emoji_selector_bt_desc)
+            )
             .performClick()
 }

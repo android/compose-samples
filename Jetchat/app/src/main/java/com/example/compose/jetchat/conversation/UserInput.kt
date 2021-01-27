@@ -22,7 +22,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +39,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.AmbientTextStyle
@@ -59,8 +59,16 @@ import androidx.compose.material.icons.outlined.Duo
 import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -199,7 +207,7 @@ private fun SelectorExpanded(
     // Request focus to force the TextField to lose it
     val focusRequester = FocusRequester()
     // If the selector is shown, always request focus to trigger a TextField.onFocusChange.
-    onCommit {
+    SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
             focusRequester.requestFocus()
         }
@@ -384,10 +392,14 @@ private fun UserInputText(
     var keyboardController by remember { mutableStateOf<SoftwareKeyboardController?>(null) }
 
     // Show or hide the keyboard
-    onCommit(keyboardController, keyboardShown) { // Guard side-effects against failed commits
+    DisposableEffect(
+        keyboardController,
+        keyboardShown
+    ) { // Guard side-effects against failed commits
         keyboardController?.let {
             if (keyboardShown) it.showSoftwareKeyboard() else it.hideSoftwareKeyboard()
         }
+        onDispose { /* no-op */ }
     }
 
     val a11ylabel = stringResource(id = R.string.textfield_desc)
@@ -463,9 +475,11 @@ fun EmojiSelector(
             .focusModifier()
             .semantics { contentDescription = a11yLabel }
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        ) {
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.emojis_label),
                 onClick = { selected = EmojiStickerSelector.EMOJI },
@@ -479,7 +493,7 @@ fun EmojiSelector(
                 modifier = Modifier.weight(1f)
             )
         }
-        ScrollableRow {
+        Row(modifier = Modifier.verticalScroll(rememberScrollState())) {
             EmojiTable(onTextAdded, modifier = Modifier.padding(8.dp))
         }
     }

@@ -16,7 +16,6 @@
 
 package com.example.compose.jetchat
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
@@ -40,6 +39,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -51,30 +51,27 @@ class UserInputTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<NavActivity>()
 
-    // Note that keeping these references is only safe if the activity is not recreated.
-    // See: https://issuetracker.google.com/160862278
-    private lateinit var activity: ComponentActivity
+    private val activity by lazy { composeTestRule.activity }
 
     @Before
     fun setUp() {
-        composeTestRule.activityRule.scenario.onActivity { newActivity ->
-            activity = newActivity
-            // Provide empty insets. We can modify this value as necessary
-            val windowInsets = WindowInsets()
 
-            // Launch the conversation screen
-            composeTestRule.setContent {
-                Providers(
-                    AmbientBackPressedDispatcher provides activity.onBackPressedDispatcher,
-                    AmbientWindowInsets provides windowInsets,
-                ) {
-                    JetchatTheme {
-                        ConversationContent(
-                            uiState = exampleUiState,
-                            navigateToProfile = { },
-                            onNavIconPressed = { }
-                        )
-                    }
+        // Provide empty insets. We can modify this value as necessary
+        val windowInsets = WindowInsets()
+
+        // Launch the conversation screen
+        val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
+        composeTestRule.setContent {
+            Providers(
+                AmbientBackPressedDispatcher provides onBackPressedDispatcher,
+                AmbientWindowInsets provides windowInsets,
+            ) {
+                JetchatTheme {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { },
+                        onNavIconPressed = { }
+                    )
                 }
             }
         }
@@ -125,14 +122,17 @@ class UserInputTest {
     }
 
     @Test
+    @Ignore("Bug: https://issuetracker.google.com/178589589")
     fun sendButton_enableToggles() {
         // Given an initial state where there's no text in the textfield,
         // check that the send button is disabled.
         findSendButton().assertIsNotEnabled()
 
+        composeTestRule.waitForIdle()
         // Add some text to the input field
         findTextInputField().performTextInput("Some text")
 
+        composeTestRule.waitForIdle()
         // The send button should be enabled
         findSendButton().assertIsEnabled()
     }
