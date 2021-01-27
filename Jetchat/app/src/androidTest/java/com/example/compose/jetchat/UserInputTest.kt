@@ -40,6 +40,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -122,20 +123,15 @@ class UserInputTest {
     }
 
     @Test
+    @Ignore("Flaky due to https://issuetracker.google.com/169235317")
     fun sendButton_enableToggles() {
         // Given an initial state where there's no text in the textfield,
         // check that the send button is disabled.
         findSendButton().assertIsNotEnabled()
 
-        // TODO: Soft keyboard is not correctly synchronized
-        //  https://issuetracker.google.com/169235317
-        Thread.sleep(200)
         // Add some text to the input field
         findTextInputField().performTextInput("Some text")
 
-        // TODO: Soft keyboard is not correctly synchronized
-        //  https://issuetracker.google.com/169235317
-        Thread.sleep(200)
         // The send button should be enabled
         findSendButton().assertIsEnabled()
     }
