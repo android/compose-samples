@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
@@ -39,7 +40,6 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,7 +49,7 @@ import org.junit.Test
 class UserInputTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<NavActivity>()
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private val activity by lazy { composeTestRule.activity }
 
@@ -122,17 +122,20 @@ class UserInputTest {
     }
 
     @Test
-    @Ignore("Bug: https://issuetracker.google.com/178589589")
     fun sendButton_enableToggles() {
         // Given an initial state where there's no text in the textfield,
         // check that the send button is disabled.
         findSendButton().assertIsNotEnabled()
 
-        composeTestRule.waitForIdle()
+        // TODO: Soft keyboard is not correctly synchronized
+        //  https://issuetracker.google.com/169235317
+        Thread.sleep(200)
         // Add some text to the input field
         findTextInputField().performTextInput("Some text")
 
-        composeTestRule.waitForIdle()
+        // TODO: Soft keyboard is not correctly synchronized
+        //  https://issuetracker.google.com/169235317
+        Thread.sleep(200)
         // The send button should be enabled
         findSendButton().assertIsEnabled()
     }
