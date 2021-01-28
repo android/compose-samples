@@ -18,7 +18,6 @@ package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
-import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
