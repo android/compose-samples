@@ -43,7 +43,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.3.compose-7094152-SNAPSHOT"
+        private const val version = "0.4.3.compose-7107201-SNAPSHOT"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
