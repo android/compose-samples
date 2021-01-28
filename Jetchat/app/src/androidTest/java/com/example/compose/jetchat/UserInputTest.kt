@@ -18,6 +18,7 @@ package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
+import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -27,6 +28,7 @@ import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -89,6 +91,15 @@ class UserInputTest {
             .assertExists()
         // Press back button
         Espresso.pressBack()
+
+        // TODO: Workaround for synchronization issue with "back"
+        // https://issuetracker.google.com/nnnnnnnnnnn
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithContentDescription(activity.getString(R.string.emoji_selector_desc))
+                .fetchSemanticsNodes().isEmpty()
+        }
+
         // Check the emoji selector is not displayed
         assertEmojiSelectorDoesNotExist()
     }
