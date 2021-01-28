@@ -102,7 +102,7 @@ fun CraneEditableUserInput(
             textStyle = if (isHint()) {
                 captionTextStyle.copy(color = AmbientContentColor.current)
             } else {
-                MaterialTheme.typography.body1
+                MaterialTheme.typography.body1.copy(color = AmbientContentColor.current)
             },
             cursorColor = AmbientContentColor.current
         )

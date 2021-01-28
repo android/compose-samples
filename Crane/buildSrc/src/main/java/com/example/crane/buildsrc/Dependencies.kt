@@ -30,7 +30,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.3.compose-7094152-SNAPSHOT"
+        private const val version = "0.4.3.compose-7107201-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -49,7 +49,7 @@ object Libs {
 
     object AndroidX {
         object Compose {
-            const val snapshot = "7094445"
+            const val snapshot = "7107201"
             private const val version = "1.0.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
