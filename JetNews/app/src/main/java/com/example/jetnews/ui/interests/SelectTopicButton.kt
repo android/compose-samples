@@ -47,7 +47,10 @@ fun SelectTopicButton(
         shape = CircleShape,
         modifier = modifier.preferredSize(36.dp, 36.dp)
     ) {
-        Icon(icon)
+        Icon(
+            imageVector = icon,
+            contentDescription = null // toggleable at higher level
+        )
     }
 }
 

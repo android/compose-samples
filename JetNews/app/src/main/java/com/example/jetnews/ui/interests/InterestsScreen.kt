@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -48,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -181,7 +183,10 @@ fun InterestsScreen(
                 title = { Text("Interests") },
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
-                        Icon(vectorResource(R.drawable.ic_jetnews_logo))
+                        Icon(
+                            imageVector = vectorResource(R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                        )
                     }
                 }
             )
@@ -350,8 +355,9 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             .padding(horizontal = 16.dp)
     ) {
         Image(
-            image,
-            Modifier
+            bitmap = image,
+            contentDescription = null, // decorative
+            modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .preferredSize(56.dp, 56.dp)
                 .clip(RoundedCornerShape(4.dp))
