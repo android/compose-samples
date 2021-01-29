@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
@@ -63,16 +64,31 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicked: () -> Unit) {
     CraneScaffold {
         val transitionState = remember { MutableTransitionState(SplashState.Shown) }
-        val (splashAlpha, contentAlpha, contentTopPadding) = getSplashTransition(transitionState)
+        val transition = updateTransition(transitionState)
+        val splashAlpha by transition.animateFloat(
+            transitionSpec = { tween(durationMillis = 100) }
+        ) {
+            if (it == SplashState.Shown) 1f else 0f
+        }
+        val contentAlpha by transition.animateFloat(
+            transitionSpec = { tween(durationMillis = 300) }
+        ) {
+            if (it == SplashState.Shown) 0f else 1f
+        }
+        val contentTopPadding by transition.animateDp(
+            transitionSpec = { spring(stiffness = StiffnessLow) }
+        ) {
+            if (it == SplashState.Shown) 100.dp else 0.dp
+        }
 
         Box {
             LandingScreen(
-                modifier = Modifier.alpha(splashAlpha.value),
+                modifier = Modifier.alpha(splashAlpha),
                 onTimeout = { transitionState.targetState = SplashState.Completed }
             )
             MainContent(
-                modifier = Modifier.alpha(contentAlpha.value),
-                topPadding = contentTopPadding.value,
+                modifier = Modifier.alpha(contentAlpha),
+                topPadding = contentTopPadding,
                 onExploreItemClicked = onExploreItemClicked,
                 onDateSelectionClicked = onDateSelectionClicked
             )
@@ -98,26 +114,3 @@ private fun MainContent(
 }
 
 enum class SplashState { Shown, Completed }
-
-@Composable
-private fun getSplashTransition(
-    transitionState: MutableTransitionState<SplashState>
-): Triple<State<Float>, State<Float>, State<Dp>> {
-    val transition = updateTransition(transitionState)
-    val splashAlpha = transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 100) }
-    ) {
-        if (it == SplashState.Shown) 1f else 0f
-    }
-    val contentAlpha = transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) }
-    ) {
-        if (it == SplashState.Shown) 0f else 1f
-    }
-    val contentTopPadding = transition.animateDp(
-        transitionSpec = { spring(stiffness = StiffnessLow) }
-    ) {
-        if (it == SplashState.Shown) 100.dp else 0.dp
-    }
-    return Triple(splashAlpha, contentAlpha, contentTopPadding)
-}

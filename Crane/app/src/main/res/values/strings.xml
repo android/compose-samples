@@ -20,4 +20,5 @@
     <string name="cd_menu">Menu</string>
     <string name="cd_back">Back</string>
     <string name="cd_loading">Loading</string>
+    <string name="cd_drawer">Open drawer</string>
 </resources>

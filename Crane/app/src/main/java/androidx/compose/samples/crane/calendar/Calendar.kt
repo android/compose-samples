@@ -209,7 +209,7 @@ private fun LazyListScope.itemsCalendarMonth(
 ) {
     item {
         MonthHeader(
-            modifier = Modifier.padding(horizontal = 30.dp),
+            modifier = Modifier.padding(horizontal = 32.dp),
             month = month.name,
             year = month.year
         )
