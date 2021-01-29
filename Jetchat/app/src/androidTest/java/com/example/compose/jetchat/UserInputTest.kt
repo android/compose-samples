@@ -80,6 +80,7 @@ class UserInputTest {
     }
 
     @Test
+    @Ignore("Issue with keyboard sync")
     fun emojiSelector_isClosedWithBack() {
         // Open emoji selector
         openEmojiSelector()
