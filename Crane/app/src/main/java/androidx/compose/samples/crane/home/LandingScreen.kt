@@ -41,6 +41,6 @@ fun LandingScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
             delay(SplashWaitTime)
             currentOnTimeout()
         }
-        Image(imageVector = vectorResource(id = R.drawable.ic_crane_drawer))
+        Image(vectorResource(id = R.drawable.ic_crane_drawer), contentDescription = null)
     }
 }

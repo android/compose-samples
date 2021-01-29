@@ -21,13 +21,9 @@ import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
-import com.squareup.inject.assisted.dagger2.AssistedModule
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
-import java.lang.IllegalArgumentException
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 class DetailsViewModel @AssistedInject constructor(
     private val destinationsRepository: DestinationsRepository,
@@ -44,15 +40,10 @@ class DetailsViewModel @AssistedInject constructor(
             }
         }
 
-    @AssistedInject.Factory
-    interface AssistedFactory {
-        fun create(cityName: String): DetailsViewModel
-    }
-
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
-            assistedFactory: AssistedFactory,
+            assistedFactory: DetailsViewModelFactory,
             cityName: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -62,7 +53,7 @@ class DetailsViewModel @AssistedInject constructor(
     }
 }
 
-@InstallIn(ActivityRetainedComponent::class)
-@AssistedModule
-@Module(includes = [AssistedInject_AssistedInjectModule::class])
-interface AssistedInjectModule
+@AssistedFactory
+interface DetailsViewModelFactory {
+    fun create(cityName: String): DetailsViewModel
+}

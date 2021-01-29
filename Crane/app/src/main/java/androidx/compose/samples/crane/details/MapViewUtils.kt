@@ -19,7 +19,7 @@ package androidx.compose.samples.crane.details
 import android.os.Bundle
 import androidx.annotation.FloatRange
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.R
 import androidx.compose.ui.platform.AmbientContext
@@ -44,7 +44,7 @@ fun rememberMapViewWithLifecycle(): MapView {
     // Makes MapView follow the lifecycle of this composable
     val lifecycleObserver = rememberMapLifecycleObserver(mapView)
     val lifecycle = AmbientLifecycleOwner.current.lifecycle
-    onCommit(lifecycle) {
+    DisposableEffect(lifecycle) {
         lifecycle.addObserver(lifecycleObserver)
         onDispose {
             lifecycle.removeObserver(lifecycleObserver)

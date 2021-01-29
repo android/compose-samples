@@ -34,13 +34,14 @@ interact with the `MapView` seamlessly.
 
 ## Hilt
 
-Crane uses [Hilt][hilt] to manage its dependencies. The Hilt's ViewModel extension (with the
-`@ViewModelInject` annotation) works perfectly with Compose's ViewModel integration (`viewModel()`
+Crane uses [Hilt][hilt] to manage its dependencies. Hilt's ViewModel (with the
+`@HiltViewModel` annotation) works perfectly with Compose's ViewModel integration (`viewModel()`
 composable function) as you can see in the following snippet of code. `viewModel()` will
 automatically use the factory that Hilt creates for the ViewModel:
 
 ```
-class MainViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val destinationsRepository: DestinationsRepository,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     datesRepository: DatesRepository
