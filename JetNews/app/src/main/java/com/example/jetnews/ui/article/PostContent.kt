@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
@@ -118,7 +119,12 @@ private fun PostHeaderImage(post: Post) {
             .heightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
-        Image(image, imageModifier, contentScale = ContentScale.Crop)
+        Image(
+            bitmap = image,
+            contentDescription = null, // decorative
+            modifier = imageModifier,
+            contentScale = ContentScale.Crop
+        )
         Spacer(Modifier.preferredHeight(defaultSpacerSize))
     }
 }
@@ -129,6 +135,7 @@ private fun PostMetadata(metadata: Metadata) {
     Row {
         Image(
             imageVector = Icons.Filled.AccountCircle,
+            contentDescription = null, // decorative
             modifier = Modifier.preferredSize(40.dp),
             colorFilter = ColorFilter.tint(AmbientContentColor.current),
             contentScale = ContentScale.Fit
