@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -41,6 +42,7 @@ class NavigationTest {
     }
 
     @Test
+    @Ignore("Issue with keyboard sync https://issuetracker.google.com/169235317")
     fun profileScreen_back_conversationScreen() {
         val navController = getNavController()
         // Navigate to profile

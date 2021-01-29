@@ -80,7 +80,7 @@ class UserInputTest {
     }
 
     @Test
-    @Ignore("Issue with keyboard sync")
+    @Ignore("Issue with keyboard sync https://issuetracker.google.com/169235317")
     fun emojiSelector_isClosedWithBack() {
         // Open emoji selector
         openEmojiSelector()
@@ -93,7 +93,7 @@ class UserInputTest {
         Espresso.pressBack()
 
         // TODO: Workaround for synchronization issue with "back"
-        // https://issuetracker.google.com/nnnnnnnnnnn
+        // https://issuetracker.google.com/169235317
         composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule
                 .onAllNodesWithContentDescription(activity.getString(R.string.emoji_selector_desc))
