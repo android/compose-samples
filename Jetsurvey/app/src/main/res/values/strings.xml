@@ -36,6 +36,7 @@
     <string name="previous">PREVIOUS</string>
     <string name="done">DONE</string>
     <string name="back">Back</string>
+    <string name="close">Close</string>
     <string name="show_password">Show password</string>
     <string name="hide_password">Hide password</string>
 

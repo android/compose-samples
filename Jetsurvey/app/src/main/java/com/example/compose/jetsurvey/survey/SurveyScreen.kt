@@ -198,7 +198,7 @@ private fun SurveyTopAppBar(
                     .padding(horizontal = 12.dp)
                     .constrainAs(button) { end.linkTo(parent.end) }
             ) {
-                Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.back))
+                Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.close))
             }
         }
 

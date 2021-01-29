@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.4.3.compose-7107201-SNAPSHOT"
+        private const val version = "0.5.0"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -52,8 +52,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha01"
 
         object Compose {
-            const val snapshot = "7107201"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-alpha11"
 
             @get:JvmStatic
             val snapshotUrl: String
