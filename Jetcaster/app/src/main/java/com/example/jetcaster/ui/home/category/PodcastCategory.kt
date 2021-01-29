@@ -17,6 +17,7 @@
 package com.example.jetcaster.ui.home.category
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,8 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
@@ -49,6 +52,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -146,7 +150,8 @@ fun EpisodeListItem(
                 fadeIn = true,
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
-                modifier = Modifier.preferredSize(56.dp)
+                modifier = Modifier
+                    .preferredSize(56.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
@@ -207,12 +212,14 @@ fun EpisodeListItem(
 
         Image(
             imageVector = Icons.Rounded.PlayCircleFilled,
+            contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(AmbientContentColor.current),
             modifier = Modifier
-                .clickable(indication = rememberRipple(bounded = false, radius = 24.dp)) {
-                    /* TODO */
-                }
+                .clickable(
+                    interactionState = remember { InteractionState() },
+                    indication = rememberRipple(bounded = false, radius = 24.dp)
+                ) { /* TODO */ }
                 .preferredSize(36.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
@@ -258,7 +265,10 @@ fun EpisodeListItem(
                     centerVerticallyTo(playIcon)
                 }
             ) {
-                Icon(Icons.Default.PlaylistAdd)
+                Icon(
+                    imageVector = Icons.Default.PlaylistAdd,
+                    contentDescription = stringResource(R.string.cd_add)
+                )
             }
 
             IconButton(
@@ -268,7 +278,10 @@ fun EpisodeListItem(
                     centerVerticallyTo(playIcon)
                 }
             ) {
-                Icon(Icons.Default.MoreVert)
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.cd_more)
+                )
             }
         }
     }
@@ -320,7 +333,9 @@ private fun TopPodcastRowItem(
                     fadeIn = true,
                     contentScale = ContentScale.Crop,
                     loading = { /* TODO do something better here */ },
-                    modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(MaterialTheme.shapes.medium)
                 )
             }
 
@@ -336,7 +351,9 @@ private fun TopPodcastRowItem(
             style = MaterialTheme.typography.body2,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
         )
     }
 }

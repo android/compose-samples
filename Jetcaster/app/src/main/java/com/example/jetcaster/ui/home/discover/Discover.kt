@@ -22,6 +22,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TransitionDefinition
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -92,7 +93,8 @@ fun Discover(
                     reverse = reverseTransition,
                     offsetPx = transitionOffset
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .weight(1f)
             ) { category, transitionState ->
                 /**
@@ -100,7 +102,8 @@ fun Discover(
                  */
                 PodcastCategory(
                     categoryId = category.id,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .graphicsLayer {
                             translationX = transitionState[Offset]
                             alpha = transitionState[Alpha]
@@ -185,6 +188,7 @@ private fun getChoiceChipTransitionDefinition(
     offsetPx: Float,
     reverse: Boolean = false
 ): TransitionDefinition<ItemTransitionState> = remember(reverse, offsetPx, duration) {
+
     transitionDefinition {
         state(ItemTransitionState.Visible) {
             this[Alpha] = 1f

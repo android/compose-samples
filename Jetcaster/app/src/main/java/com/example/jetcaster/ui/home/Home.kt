@@ -112,11 +112,15 @@ fun HomeAppBar(
         title = {
             Row {
                 Image(
-                    imageVector = vectorResource(R.drawable.ic_logo)
+                    imageVector = vectorResource(R.drawable.ic_logo),
+                    contentDescription = null
                 )
                 Icon(
                     imageVector = vectorResource(R.drawable.ic_text_logo),
-                    modifier = Modifier.padding(start = 4.dp).preferredHeightIn(max = 24.dp)
+                    contentDescription = stringResource(R.string.app_name),
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .preferredHeightIn(max = 24.dp)
                 )
             }
         },
@@ -126,12 +130,18 @@ fun HomeAppBar(
                 IconButton(
                     onClick = { /* TODO: Open search */ }
                 ) {
-                    Icon(Icons.Filled.Search)
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.cd_search)
+                    )
                 }
                 IconButton(
                     onClick = { /* TODO: Open account? */ }
                 ) {
-                    Icon(Icons.Default.AccountCircle)
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = stringResource(R.string.cd_account)
+                    )
                 }
             }
         },
@@ -183,7 +193,8 @@ fun HomeContent(
             }
 
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .verticalGradientScrim(
                         color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
                         startYPercentage = 1f,
@@ -193,7 +204,12 @@ fun HomeContent(
                 val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
 
                 // Draw a scrim over the status bar which matches the app bar
-                Spacer(Modifier.background(appBarColor).fillMaxWidth().statusBarsHeight())
+                Spacer(
+                    Modifier
+                        .background(appBarColor)
+                        .fillMaxWidth()
+                        .statusBarsHeight()
+                )
 
                 HomeAppBar(
                     backgroundColor = appBarColor,
@@ -235,7 +251,11 @@ fun HomeContent(
                 // TODO
             }
             HomeCategory.Discover -> {
-                Discover(Modifier.fillMaxWidth().weight(1f))
+                Discover(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
             }
         }
     }
@@ -284,7 +304,8 @@ fun HomeCategoryTabIndicator(
     color: Color = MaterialTheme.colors.onSurface
 ) {
     Spacer(
-        modifier.padding(horizontal = 24.dp)
+        modifier
+            .padding(horizontal = 24.dp)
             .preferredHeight(4.dp)
             .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
     )
@@ -311,7 +332,9 @@ fun FollowedPodcasts(
             podcastImageUrl = podcast.imageUrl,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
-            modifier = Modifier.padding(4.dp).fillMaxHeight()
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxHeight()
         )
     }
 }
@@ -357,7 +380,8 @@ private fun FollowedPodcastCarouselItem(
                     style = MaterialTheme.typography.caption,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .padding(top = 8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
             }

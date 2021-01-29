@@ -32,7 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.jetcaster.R
 
 @Composable
 fun ToggleFollowPodcastIconButton(
@@ -49,6 +51,10 @@ fun ToggleFollowPodcastIconButton(
             imageVector = when {
                 isFollowed -> Icons.Default.Check
                 else -> Icons.Default.Add
+            },
+            contentDescription = when {
+                isFollowed -> stringResource(R.string.cd_unfollow)
+                else -> stringResource(R.string.cd_follow)
             },
             tint = animateAsState(
                 when {
