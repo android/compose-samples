@@ -50,6 +50,7 @@ class AnimatingCircleTests {
 
     @Test
     fun circleAnimation_idle_screenshot() {
+        composeTestRule.mainClock.autoAdvance = true
         showAnimatedCircle()
         assertScreenshotMatchesGolden("circle_done", composeTestRule.onRoot())
     }
@@ -71,7 +72,7 @@ class AnimatingCircleTests {
 
     @Test
     fun circleAnimation_animationDone_screenshot() {
-        compareTimeScreenshot(1400, "circle_done")
+        compareTimeScreenshot(1500, "circle_done")
     }
 
     private fun compareTimeScreenshot(timeMs: Long, goldenName: String) {
