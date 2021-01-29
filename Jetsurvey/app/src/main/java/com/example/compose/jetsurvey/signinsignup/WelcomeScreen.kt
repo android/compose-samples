@@ -16,7 +16,7 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.animation.core.animateAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -70,7 +70,7 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
         with(AmbientDensity.current) { currentOffsetHolder.value.toDp() }
     val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
     Surface(modifier = Modifier.fillMaxSize()) {
-        val offset by animateAsState(targetValue = currentOffsetHolderDp)
+        val offset by animateDpAsState(targetValue = currentOffsetHolderDp)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,7 +149,8 @@ private fun Logo(
     }
     Image(
         imageVector = vectorResource(id = assetId),
-        modifier = modifier
+        modifier = modifier,
+        contentDescription = null
     )
 }
 

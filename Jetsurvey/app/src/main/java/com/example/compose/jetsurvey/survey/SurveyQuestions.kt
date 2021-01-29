@@ -19,7 +19,6 @@ package com.example.compose.jetsurvey.survey
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
@@ -74,78 +74,80 @@ fun Question(
     onAction: (Int, SurveyActionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScrollableColumn(
+    LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
-        Spacer(modifier = Modifier.preferredHeight(44.dp))
-        val backgroundColor = if (MaterialTheme.colors.isLight) {
-            MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
-        } else {
-            MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = backgroundColor,
-                    shape = MaterialTheme.shapes.small
-                )
-        ) {
-            Text(
-                text = stringResource(id = question.questionText),
-                style = MaterialTheme.typography.subtitle1,
+        item {
+            Spacer(modifier = Modifier.preferredHeight(44.dp))
+            val backgroundColor = if (MaterialTheme.colors.isLight) {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
+            }
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp, horizontal = 16.dp)
-            )
-        }
-        Spacer(modifier = Modifier.preferredHeight(24.dp))
-        if (question.description != null) {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                    .background(
+                        color = backgroundColor,
+                        shape = MaterialTheme.shapes.small
+                    )
+            ) {
                 Text(
-                    text = stringResource(id = question.description),
-                    style = MaterialTheme.typography.caption,
+                    text = stringResource(id = question.questionText),
+                    style = MaterialTheme.typography.subtitle1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 24.dp, start = 8.dp, end = 8.dp)
+                        .padding(vertical = 24.dp, horizontal = 16.dp)
                 )
             }
-        }
-        when (question.answer) {
-            is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
-                possibleAnswer = question.answer,
-                answer = answer as Answer.SingleChoice?,
-                onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
-                modifier = Modifier.fillMaxWidth()
-            )
-            is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
-                possibleAnswer = question.answer,
-                answer = answer as Answer.MultipleChoice?,
-                onAnswerSelected = { newAnswer, selected ->
-                    // create the answer if it doesn't exist or
-                    // update it based on the user's selection
-                    if (answer == null) {
-                        onAnswer(Answer.MultipleChoice(setOf(newAnswer)))
-                    } else {
-                        onAnswer(answer.withAnswerSelected(newAnswer, selected))
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            is PossibleAnswer.Action -> ActionQuestion(
-                questionId = question.id,
-                possibleAnswer = question.answer,
-                answer = answer as Answer.Action?,
-                onAction = onAction,
-                modifier = Modifier.fillMaxWidth()
-            )
-            is PossibleAnswer.Slider -> SliderQuestion(
-                possibleAnswer = question.answer,
-                answer = answer as Answer.Slider?,
-                onAnswerSelected = { onAnswer(Answer.Slider(it)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Spacer(modifier = Modifier.preferredHeight(24.dp))
+            if (question.description != null) {
+                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = stringResource(id = question.description),
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp, start = 8.dp, end = 8.dp)
+                    )
+                }
+            }
+            when (question.answer) {
+                is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.SingleChoice?,
+                    onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.MultipleChoice?,
+                    onAnswerSelected = { newAnswer, selected ->
+                        // create the answer if it doesn't exist or
+                        // update it based on the user's selection
+                        if (answer == null) {
+                            onAnswer(Answer.MultipleChoice(setOf(newAnswer)))
+                        } else {
+                            onAnswer(answer.withAnswerSelected(newAnswer, selected))
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                is PossibleAnswer.Action -> ActionQuestion(
+                    questionId = question.id,
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.Action?,
+                    onAction = onAction,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                is PossibleAnswer.Slider -> SliderQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.Slider?,
+                    onAnswerSelected = { onAnswer(Answer.Slider(it)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -318,7 +320,8 @@ private fun PhotoQuestion(
                 CoilImage(
                     data = answer.result.uri,
                     modifier = Modifier.fillMaxSize(),
-                    fadeIn = true
+                    fadeIn = true,
+                    contentDescription = null
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
@@ -330,7 +333,7 @@ private fun PhotoQuestion(
                     .padding(vertical = 26.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(resource)
+                Icon(imageVector = resource, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(
@@ -382,7 +385,8 @@ private fun PhotoDefaultImage(
     }
     Image(
         imageVector = vectorResource(id = assetId),
-        modifier = modifier
+        modifier = modifier,
+        contentDescription = null
     )
 }
 
