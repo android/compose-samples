@@ -17,13 +17,14 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -48,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -181,7 +183,10 @@ fun InterestsScreen(
                 title = { Text("Interests") },
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
-                        Icon(vectorResource(R.drawable.ic_jetnews_logo))
+                        Icon(
+                            imageVector = vectorResource(R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                        )
                     }
                 }
             )
@@ -287,8 +292,8 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    ScrollableColumn(modifier = Modifier.padding(top = 16.dp)) {
-        topics.forEach { topic ->
+    LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
+        items(topics) { topic ->
             TopicItem(
                 topic,
                 selected = selectedTopics.contains(topic)
@@ -311,14 +316,16 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    ScrollableColumn {
+    LazyColumn {
         sections.forEach { (section, topics) ->
-            Text(
-                text = section,
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.subtitle1
-            )
-            topics.forEach { topic ->
+            item {
+                Text(
+                    text = section,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.subtitle1
+                )
+            }
+            items(topics) { topic ->
                 TopicItem(
                     itemTitle = topic,
                     selected = selectedTopics.contains(TopicSelection(section, topic))
@@ -348,8 +355,9 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             .padding(horizontal = 16.dp)
     ) {
         Image(
-            image,
-            Modifier
+            bitmap = image,
+            contentDescription = null, // decorative
+            modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .preferredSize(56.dp, 56.dp)
                 .clip(RoundedCornerShape(4.dp))

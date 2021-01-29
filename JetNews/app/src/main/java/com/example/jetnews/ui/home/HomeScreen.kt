@@ -16,8 +16,6 @@
 
 package com.example.jetnews.ui.home
 
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +23,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
@@ -171,7 +172,10 @@ fun HomeScreen(
                 title = { Text(text = title) },
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
-                        Icon(vectorResource(R.drawable.ic_jetnews_logo))
+                        Icon(
+                            imageVector = vectorResource(R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                        )
                     }
                 }
             )
@@ -292,11 +296,11 @@ private fun PostList(
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    ScrollableColumn(modifier = modifier) {
-        PostListTopSection(postTop, navigateTo)
-        PostListSimpleSection(postsSimple, navigateTo, favorites, onToggleFavorite)
-        PostListPopularSection(postsPopular, navigateTo)
-        PostListHistorySection(postsHistory, navigateTo)
+    LazyColumn(modifier = modifier) {
+        item { PostListTopSection(postTop, navigateTo) }
+        item { PostListSimpleSection(postsSimple, navigateTo, favorites, onToggleFavorite) }
+        item { PostListPopularSection(postsPopular, navigateTo) }
+        item { PostListHistorySection(postsHistory, navigateTo) }
     }
 }
 
@@ -305,7 +309,11 @@ private fun PostList(
  */
 @Composable
 private fun FullScreenLoading() {
-    Box(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
         CircularProgressIndicator()
     }
 }
@@ -374,8 +382,8 @@ private fun PostListPopularSection(
             style = MaterialTheme.typography.subtitle1
         )
 
-        ScrollableRow(modifier = Modifier.padding(end = 16.dp)) {
-            posts.forEach { post ->
+        LazyRow(modifier = Modifier.padding(end = 16.dp)) {
+            items(posts) { post ->
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }
         }

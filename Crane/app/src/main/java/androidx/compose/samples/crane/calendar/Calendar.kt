@@ -16,10 +16,8 @@
 
 package androidx.compose.samples.crane.calendar
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +29,8 @@ import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -63,41 +63,13 @@ fun Calendar(
     onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScrollableColumn(modifier = modifier) {
-        Spacer(Modifier.preferredHeight(32.dp))
+    LazyColumn(modifier) {
+        item { Spacer(Modifier.preferredHeight(32.dp)) }
         for (month in calendarYear) {
-            Month(month = month, onDayClicked = onDayClicked)
-            Spacer(Modifier.preferredHeight(32.dp))
-        }
-    }
-}
-
-@Composable
-private fun Month(
-    modifier: Modifier = Modifier,
-    month: CalendarMonth,
-    onDayClicked: (CalendarDay, CalendarMonth) -> Unit
-) {
-    Column(modifier = modifier) {
-        MonthHeader(
-            modifier = Modifier.padding(horizontal = 30.dp),
-            month = month.name,
-            year = month.year
-        )
-
-        // Expanding width and centering horizontally
-        val contentModifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)
-        DaysOfWeek(modifier = contentModifier)
-        for (week in month.weeks.value) {
-            Week(
-                modifier = contentModifier,
-                week = week,
-                month = month,
-                onDayClicked = { day ->
-                    onDayClicked(day, month)
-                }
-            )
-            Spacer(Modifier.preferredHeight(8.dp))
+            itemsCalendarMonth(month = month, onDayClicked = onDayClicked)
+            item {
+                Spacer(Modifier.preferredHeight(32.dp))
+            }
         }
     }
 }
@@ -128,7 +100,9 @@ private fun Week(
     val (leftFillColor, rightFillColor) = getLeftRightWeekColors(week, month)
 
     Row(modifier = modifier) {
-        val spaceModifiers = Modifier.weight(1f).preferredHeightIn(max = CELL_SIZE)
+        val spaceModifiers = Modifier
+            .weight(1f)
+            .preferredHeightIn(max = CELL_SIZE)
         Surface(modifier = spaceModifiers, color = leftFillColor) {
             Spacer(Modifier.fillMaxHeight())
         }
@@ -172,7 +146,9 @@ private fun Day(
     ) {
         DayStatusContainer(status = day.status) {
             Text(
-                modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center),
                 text = day.value,
                 style = MaterialTheme.typography.body1.copy(color = Color.White)
             )
@@ -224,6 +200,42 @@ private fun DayStatusContainer(
         }
     } else {
         content()
+    }
+}
+
+private fun LazyListScope.itemsCalendarMonth(
+    month: CalendarMonth,
+    onDayClicked: (CalendarDay, CalendarMonth) -> Unit
+) {
+    item {
+        MonthHeader(
+            modifier = Modifier.padding(horizontal = 32.dp),
+            month = month.name,
+            year = month.year
+        )
+    }
+
+    // Expanding width and centering horizontally
+    val contentModifier = Modifier
+        .fillMaxWidth()
+        .wrapContentWidth(Alignment.CenterHorizontally)
+    item {
+        DaysOfWeek(modifier = contentModifier)
+    }
+    for (week in month.weeks.value) {
+        item {
+            Week(
+                modifier = contentModifier,
+                week = week,
+                month = month,
+                onDayClicked = { day ->
+                    onDayClicked(day, month)
+                }
+            )
+        }
+        item {
+            Spacer(Modifier.preferredHeight(8.dp))
+        }
     }
 }
 

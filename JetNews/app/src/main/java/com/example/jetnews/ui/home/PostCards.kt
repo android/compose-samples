@@ -38,6 +38,7 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -72,6 +73,7 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
 
     Image(
         bitmap = image,
+        contentDescription = null, // decorative
         modifier = modifier
             .preferredSize(40.dp, 40.dp)
             .clip(MaterialTheme.shapes.small)
@@ -91,7 +93,8 @@ fun PostCardSimple(
     onToggleFavorite: () -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        modifier = Modifier
+            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
     ) {
         PostImage(post, Modifier.padding(end = 16.dp))
@@ -109,7 +112,8 @@ fun PostCardSimple(
 @Composable
 fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
     Row(
-        Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        Modifier
+            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
     ) {
         PostImage(
@@ -130,7 +134,10 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             )
         }
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
-            Icon(Icons.Filled.MoreVert)
+            Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = stringResource(R.string.cd_more_actions)
+            )
         }
     }
 }
@@ -147,9 +154,15 @@ fun BookmarkButton(
         modifier = modifier
     ) {
         if (isBookmarked) {
-            Icon(imageVector = Icons.Filled.Bookmark)
+            Icon(
+                imageVector = Icons.Filled.Bookmark,
+                contentDescription = stringResource(R.string.cd_bookmark)
+            )
         } else {
-            Icon(imageVector = Icons.Filled.BookmarkBorder)
+            Icon(
+                imageVector = Icons.Filled.BookmarkBorder,
+                contentDescription = stringResource(R.string.cd_bookmark)
+            )
         }
     }
 }
