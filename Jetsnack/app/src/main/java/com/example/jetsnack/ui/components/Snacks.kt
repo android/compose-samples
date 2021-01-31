@@ -16,8 +16,8 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,9 +29,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -98,7 +99,8 @@ fun SnackCollection(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowForward,
-                    tint = JetsnackTheme.colors.brand
+                    tint = JetsnackTheme.colors.brand,
+                    contentDescription = null
                 )
             }
         }
@@ -126,14 +128,20 @@ private fun HighlightedSnacks(
     val gradientWidth = with(AmbientDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
-    ScrollableRow(
-        scrollState = scroll,
-        modifier = modifier
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp)
     ) {
-        Spacer(modifier = Modifier.preferredWidth(24.dp))
-        snacks.forEachIndexed { index, snack ->
-            HighlightSnackItem(snack, onSnackClick, index, gradient, gradientWidth, scroll.value)
-            Spacer(modifier = Modifier.preferredWidth(16.dp))
+        itemsIndexed(snacks) { index, snack ->
+            HighlightSnackItem(
+                snack,
+                onSnackClick,
+                index,
+                gradient,
+                gradientWidth,
+                scroll.value
+            )
         }
     }
 }
@@ -177,6 +185,7 @@ fun SnackItem(
             SnackImage(
                 imageUrl = snack.imageUrl,
                 elevation = 4.dp,
+                contentDescription = null,
                 modifier = Modifier.preferredSize(120.dp)
             )
             Text(
@@ -230,6 +239,7 @@ private fun HighlightSnackItem(
                 )
                 SnackImage(
                     imageUrl = snack.imageUrl,
+                    contentDescription = null,
                     modifier = Modifier
                         .preferredSize(120.dp)
                         .align(Alignment.BottomCenter)
@@ -258,6 +268,7 @@ private fun HighlightSnackItem(
 @Composable
 fun SnackImage(
     imageUrl: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     elevation: Dp = 0.dp
 ) {
@@ -269,6 +280,7 @@ fun SnackImage(
     ) {
         CoilImage(
             data = imageUrl,
+            contentDescription = contentDescription,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )

@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -120,6 +121,7 @@ private fun SearchCategory(
             )
             SnackImage(
                 imageUrl = category.imageUrl,
+                contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
         }

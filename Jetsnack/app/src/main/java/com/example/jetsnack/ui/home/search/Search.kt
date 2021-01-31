@@ -191,7 +191,8 @@ private fun SearchBar(
                     IconButton(onClick = onClearQuery) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
-                            tint = JetsnackTheme.colors.iconPrimary
+                            tint = JetsnackTheme.colors.iconPrimary,
+                            contentDescription = stringResource(R.string.label_back)
                         )
                     }
                 }
@@ -225,11 +226,14 @@ private val IconSize = 48.dp
 private fun SearchHint() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxSize().wrapContentSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize()
     ) {
         Icon(
             imageVector = Icons.Outlined.Search,
-            tint = JetsnackTheme.colors.textHelp
+            tint = JetsnackTheme.colors.textHelp,
+            contentDescription = stringResource(R.string.label_search)
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Text(

@@ -18,13 +18,12 @@ package com.example.jetsnack.ui.home
 
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedFloatModel
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateAsState
-import androidx.compose.animation.animatedFloat
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SpringSpec
-import androidx.compose.animation.core.animateAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -43,9 +42,10 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +60,6 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.AmbientAnimationClock
 import androidx.compose.ui.platform.AmbientConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,6 +74,7 @@ import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import kotlinx.coroutines.launch
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
@@ -132,7 +132,7 @@ private fun JetsnackBottomNav(
         ) {
             items.forEach { section ->
                 val selected = section == currentSection
-                val tint by animateAsState(
+                val tint by animateColorAsState(
                     if (selected) {
                         JetsnackTheme.colors.iconInteractive
                     } else {
@@ -144,7 +144,8 @@ private fun JetsnackBottomNav(
                     icon = {
                         Icon(
                             imageVector = section.icon,
-                            tint = tint
+                            tint = tint,
+                            contentDescription = null
                         )
                     },
                     text = {
@@ -180,24 +181,27 @@ private fun JetsnackBottomNavLayout(
     content: @Composable () -> Unit
 ) {
     // Track how "selected" each item is [0, 1]
-    val clock = AmbientAnimationClock.current
     val selectionFractions = remember(itemCount) {
         List(itemCount) { i ->
-            AnimatedFloatModel(if (i == selectedIndex) 1f else 0f, clock)
+            Animatable(if (i == selectedIndex) 1f else 0f)
         }
     }
-
-    // When selection changes, animate the selection fractions
-    onCommit(selectedIndex) {
-        selectionFractions.forEachIndexed { index, selectionFraction ->
-            val target = if (index == selectedIndex) 1f else 0f
-            if (selectionFraction.targetValue != target) {
+    val scope = rememberCoroutineScope()
+    selectionFractions.forEachIndexed { index, selectionFraction ->
+        val target = if (index == selectedIndex) 1f else 0f
+        if (selectionFraction.targetValue != target) {
+            scope.launch {
                 selectionFraction.animateTo(target, animSpec)
             }
         }
     }
+
     // Animate the position of the indicator
-    val indicatorLeft = animatedFloat(0f)
+    val indicatorIndex = remember { Animatable(0f) }
+    val targetIndicatorIndex = selectedIndex.toFloat()
+    LaunchedEffect(targetIndicatorIndex) {
+        indicatorIndex.animateTo(targetIndicatorIndex, animSpec)
+    }
 
     Layout(
         modifier = modifier.preferredHeight(BottomNavHeight),
@@ -210,7 +214,7 @@ private fun JetsnackBottomNavLayout(
 
         // Divide the width into n+1 slots and give the selected item 2 slots
         val unselectedWidth = constraints.maxWidth / (itemCount + 1)
-        val selectedWidth = constraints.maxWidth - (itemCount - 1) * unselectedWidth
+        val selectedWidth = 2 * unselectedWidth
         val indicatorMeasurable = measurables.first { it.layoutId == "indicator" }
 
         val itemPlaceables = measurables
@@ -232,17 +236,12 @@ private fun JetsnackBottomNavLayout(
             )
         )
 
-        // Animate the indicator position
-        val targetIndicatorLeft = selectedIndex * unselectedWidth.toFloat()
-        if (indicatorLeft.targetValue != targetIndicatorLeft) {
-            indicatorLeft.animateTo(targetIndicatorLeft, animSpec)
-        }
-
         layout(
             width = constraints.maxWidth,
             height = itemPlaceables.maxByOrNull { it.height }?.height ?: 0
         ) {
-            indicatorPlaceable.place(x = indicatorLeft.value.toInt(), y = 0)
+            val indicatorLeft = indicatorIndex.value * unselectedWidth
+            indicatorPlaceable.place(x = indicatorLeft.toInt(), y = 0)
             var x = 0
             itemPlaceables.forEach { placeable ->
                 placeable.place(x = x, y = 0)
@@ -266,7 +265,7 @@ fun JetsnackBottomNavigationItem(
         contentAlignment = Alignment.Center
     ) {
         // Animate the icon/text positions within the item based on selection
-        val animationProgress by animateAsState(if (selected) 1f else 0f, animSpec)
+        val animationProgress by animateFloatAsState(if (selected) 1f else 0f, animSpec)
         JetsnackBottomNavItemLayout(
             icon = icon,
             text = text,

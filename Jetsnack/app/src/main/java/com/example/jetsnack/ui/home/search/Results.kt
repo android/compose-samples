@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -39,8 +40,8 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -103,6 +104,7 @@ private fun SearchResult(
         }
         SnackImage(
             imageUrl = snack.imageUrl,
+            contentDescription = null,
             modifier = Modifier
                 .preferredSize(100.dp)
                 .constrainAs(image) {
@@ -175,7 +177,10 @@ private fun SearchResult(
                     end.linkTo(parent.end)
                 }
         ) {
-            Icon(Icons.Outlined.Add)
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = stringResource(R.string.label_add)
+            )
         }
     }
 }
@@ -192,7 +197,10 @@ fun NoResults(
             .wrapContentSize()
             .padding(24.dp)
     ) {
-        Image(vectorResource(R.drawable.empty_state_search))
+        Image(
+            painterResource(R.drawable.empty_state_search),
+            contentDescription = null
+        )
         Spacer(Modifier.preferredHeight(24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),

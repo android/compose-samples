@@ -29,6 +29,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun JetsnackGradientTintedIconButton(
     imageVector: ImageVector,
     onClick: () -> Unit,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
@@ -37,6 +38,7 @@ fun JetsnackGradientTintedIconButton(
     IconButton(onClick = onClick, modifier) {
         Icon(
             imageVector = imageVector,
+            contentDescription = contentDescription,
             modifier = Modifier.diagonalGradientTint(
                 colors = colors,
                 blendMode = blendMode
