@@ -67,6 +67,7 @@ fun CourseListItem(
         Row(modifier = Modifier.clickable(onClick = onClick)) {
             NetworkImage(
                 url = course.thumbUrl,
+                contentDescription = null,
                 modifier = Modifier.aspectRatio(1f)
             )
             Column(
@@ -90,6 +91,7 @@ fun CourseListItem(
                     Icon(
                         imageVector = Icons.Rounded.OndemandVideo,
                         tint = MaterialTheme.colors.primary,
+                        contentDescription = null,
                         modifier = Modifier.preferredSize(iconSize)
                     )
                     Text(
@@ -107,6 +109,7 @@ fun CourseListItem(
                     )
                     NetworkImage(
                         url = course.instructor,
+                        contentDescription = null,
                         modifier = Modifier
                             .preferredSize(28.dp)
                             .clip(CircleShape)

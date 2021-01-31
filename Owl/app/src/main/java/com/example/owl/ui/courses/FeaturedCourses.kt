@@ -16,13 +16,15 @@
 
 package com.example.owl.ui.courses
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientElevationOverlay
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -56,7 +58,11 @@ fun FeaturedCourses(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScrollableColumn(modifier = modifier.statusBarsPadding()) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+    ) {
         CoursesAppBar()
         StaggeredVerticalGrid(
             maxColumnWidth = 220.dp,
@@ -95,6 +101,7 @@ fun FeaturedCourse(
             val (image, avatar, subject, name, steps, icon) = createRefs()
             NetworkImage(
                 url = course.thumbUrl,
+                contentDescription = null,
                 modifier = Modifier
                     .aspectRatio(4f / 3f)
                     .constrainAs(image) {
@@ -142,6 +149,7 @@ fun FeaturedCourse(
             Icon(
                 imageVector = Icons.Rounded.OndemandVideo,
                 tint = MaterialTheme.colors.primary,
+                contentDescription = null,
                 modifier = Modifier
                     .preferredSize(16.dp)
                     .constrainAs(icon) {

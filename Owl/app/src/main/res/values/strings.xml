@@ -14,16 +14,21 @@
   -->
 <resources>
     <string name="app_name">Owl</string>
+    <string name="label_back">Back</string>
 
     <!-- Onboarding -->
     <string name="choose_topics_that_interest_you">Choose topics that interest you</string>
-    <string name="continue_to_courses">Continue to courses</string>
+    <string name="label_continue_to_courses">Continue to courses</string>
+    <string name="label_profile">Profile</string>
+    <string name="label_settings">Settings</string>
 
     <!-- Courses -->
     <string name="my_courses">My Courses</string>
     <string name="featured">Featured</string>
     <string name="search">Search</string>
     <string name="course_step_steps">%1$d / %2$d</string>
+    <string name="label_expand_lessons">Expand lessons sheet</string>
+    <string name="label_collapse_lessons">Collapse lessons sheet</string>
 
     <!--sample data-->
     <string name="course_desc">This video course introduces the photography of structures, including urban and rural buildings, monuments, and less traditional structures. Instruction includes the handling of equipment and methods used to capture building interiors and exteriors. The discussion will be about the handling of distortion, varied light sources, and perspective.</string>
