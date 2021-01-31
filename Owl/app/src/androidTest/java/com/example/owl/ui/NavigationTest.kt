@@ -115,7 +115,7 @@ class NavigationTest {
 
     private fun getOnboardingFabLabel(): String {
         return InstrumentationRegistry.getInstrumentation().targetContext.resources
-            .getString(R.string.continue_to_courses)
+            .getString(R.string.label_continue_to_courses)
     }
 
     private fun getFeaturedCourseLabel(): String {
