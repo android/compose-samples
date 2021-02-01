@@ -16,7 +16,6 @@
 
 package com.example.compose.rally.ui.overview
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -55,7 +56,11 @@ import com.example.compose.rally.ui.components.formatAmount
 
 @Composable
 fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
-    ScrollableColumn(contentPadding = PaddingValues(16.dp)) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         AlertCard()
         Spacer(Modifier.preferredHeight(RallyDefaultPadding))
         AccountsCard(onScreenChange)
@@ -97,7 +102,9 @@ private fun AlertCard() {
 @Composable
 private fun AlertHeader(onClickSeeAll: () -> Unit) {
     Row(
-        modifier = Modifier.padding(RallyDefaultPadding).fillMaxWidth(),
+        modifier = Modifier
+            .padding(RallyDefaultPadding)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -133,7 +140,7 @@ private fun AlertItem(message: String) {
             onClick = {},
             modifier = Modifier.align(Alignment.Top)
         ) {
-            Icon(Icons.Filled.Sort)
+            Icon(Icons.Filled.Sort, contentDescription = stringResource(id = R.string.sort))
         }
     }
 }
@@ -239,7 +246,9 @@ private fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
 private fun SeeAllButton(onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
-        modifier = Modifier.preferredHeight(44.dp).fillMaxWidth()
+        modifier = Modifier
+            .preferredHeight(44.dp)
+            .fillMaxWidth()
     ) {
         Text(stringResource(R.string.see_all))
     }
