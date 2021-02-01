@@ -16,7 +16,6 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientTextStyle
@@ -66,16 +66,24 @@ fun SignInSignUpScreen(
     modifier: Modifier = Modifier,
     content: @Composable() () -> Unit
 ) {
-    ScrollableColumn(modifier = modifier) {
-        Spacer(modifier = Modifier.preferredHeight(44.dp))
-        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-            content()
+    LazyColumn(modifier = modifier) {
+        item {
+            Spacer(modifier = Modifier.preferredHeight(44.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            ) {
+                content()
+            }
+            Spacer(modifier = Modifier.preferredHeight(16.dp))
+            OrSignInAsGuest(
+                onSignedInAsGuest = onSignedInAsGuest,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            )
         }
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
-        OrSignInAsGuest(
-            onSignedInAsGuest = onSignedInAsGuest,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-        )
     }
 }
 
@@ -93,7 +101,10 @@ fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
         },
         navigationIcon = {
             IconButton(onClick = onBackPressed) {
-                Icon(Icons.Filled.ChevronLeft)
+                Icon(
+                    imageVector = Icons.Filled.ChevronLeft,
+                    contentDescription = stringResource(id = R.string.back)
+                )
             }
         },
         // We need to balance the navigation icon, so we add a spacer.
@@ -124,13 +135,15 @@ fun Email(
                 )
             }
         },
-        modifier = Modifier.fillMaxWidth().onFocusChanged { focusState ->
-            val focused = focusState == FocusState.Active
-            emailState.onFocusChange(focused)
-            if (!focused) {
-                emailState.enableShowErrors()
-            }
-        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged { focusState ->
+                val focused = focusState == FocusState.Active
+                emailState.onFocusChange(focused)
+                if (!focused) {
+                    emailState.enableShowErrors()
+                }
+            },
         textStyle = MaterialTheme.typography.body2,
         isErrorValue = emailState.showErrors(),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
@@ -160,13 +173,15 @@ fun Password(
             passwordState.text = it
             passwordState.enableShowErrors()
         },
-        modifier = modifier.fillMaxWidth().onFocusChanged { focusState ->
-            val focused = focusState == FocusState.Active
-            passwordState.onFocusChange(focused)
-            if (!focused) {
-                passwordState.enableShowErrors()
-            }
-        },
+        modifier = modifier
+            .fillMaxWidth()
+            .onFocusChanged { focusState ->
+                val focused = focusState == FocusState.Active
+                passwordState.onFocusChange(focused)
+                if (!focused) {
+                    passwordState.enableShowErrors()
+                }
+            },
         textStyle = MaterialTheme.typography.body2,
         label = {
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
@@ -179,11 +194,17 @@ fun Password(
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
-                    Icon(imageVector = Icons.Filled.Visibility)
+                    Icon(
+                        imageVector = Icons.Filled.Visibility,
+                        contentDescription = stringResource(id = R.string.hide_password)
+                    )
                 }
             } else {
                 IconButton(onClick = { showPassword.value = true }) {
-                    Icon(imageVector = Icons.Filled.VisibilityOff)
+                    Icon(
+                        imageVector = Icons.Filled.VisibilityOff,
+                        contentDescription = stringResource(id = R.string.show_password)
+                    )
                 }
             }
         },
@@ -239,7 +260,9 @@ fun OrSignInAsGuest(
         }
         OutlinedButton(
             onClick = onSignedInAsGuest,
-            modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 24.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, bottom = 24.dp)
         ) {
             Text(text = stringResource(id = R.string.sign_in_guest))
         }
