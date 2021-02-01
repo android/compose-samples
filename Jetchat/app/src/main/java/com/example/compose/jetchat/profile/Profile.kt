@@ -22,8 +22,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -190,7 +188,6 @@ private fun ProfileHeader(
 
     data.photo?.let {
         val asset = imageResource(id = it)
-        //val ratioAsset = (asset.width / asset.height.toFloat()).coerceAtLeast(1f)
 
         Image(
             modifier = Modifier
