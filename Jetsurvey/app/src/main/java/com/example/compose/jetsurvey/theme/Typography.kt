@@ -18,16 +18,19 @@ package com.example.compose.jetsurvey.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.font
-import androidx.compose.ui.text.font.fontFamily
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetsurvey.R
 
-val MontserratFontFamily = fontFamily(
-    font(R.font.montserrat_regular),
-    font(R.font.montserrat_medium, FontWeight.Medium),
-    font(R.font.montserrat_semibold, FontWeight.SemiBold)
+val MontserratFontFamily = FontFamily(
+    listOf(
+        Font(R.font.montserrat_regular),
+        Font(R.font.montserrat_medium, FontWeight.Medium),
+        Font(R.font.montserrat_semibold, FontWeight.SemiBold)
+    )
 )
 
 val Typography = Typography(

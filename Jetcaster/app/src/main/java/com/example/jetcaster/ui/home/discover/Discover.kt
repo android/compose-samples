@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.example.jetcaster.ui.home.discover
 
 import androidx.compose.animation.core.FloatPropKey
@@ -35,11 +37,11 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabPosition
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.emptyContent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -92,7 +94,8 @@ fun Discover(
                     reverse = reverseTransition,
                     offsetPx = transitionOffset
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .weight(1f)
             ) { category, transitionState ->
                 /**
@@ -100,7 +103,8 @@ fun Discover(
                  */
                 PodcastCategory(
                     categoryId = category.id,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .graphicsLayer {
                             translationX = transitionState[Offset]
                             alpha = transitionState[Alpha]
@@ -108,9 +112,10 @@ fun Discover(
                 )
             }
 
-            onCommit(selectedCategory) {
+            DisposableEffect(selectedCategory) {
                 // Update our tracking of the previously selected category
                 previousSelectedCategory = selectedCategory
+                onDispose {}
             }
         }
     } else {
@@ -185,6 +190,7 @@ private fun getChoiceChipTransitionDefinition(
     offsetPx: Float,
     reverse: Boolean = false
 ): TransitionDefinition<ItemTransitionState> = remember(reverse, offsetPx, duration) {
+
     transitionDefinition {
         state(ItemTransitionState.Visible) {
             this[Alpha] = 1f

@@ -20,7 +20,6 @@ import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
-import androidx.compose.samples.crane.di.DispatchersModule
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
@@ -35,7 +34,6 @@ import com.google.android.libraries.maps.model.CameraPosition
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,7 +42,6 @@ import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.math.round
 
-@UninstallModules(DispatchersModule::class)
 @HiltAndroidTest
 class DetailsActivityTest {
 

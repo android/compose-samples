@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
@@ -51,13 +52,23 @@ fun CraneTabBar(
         // Separate Row as the children shouldn't have the padding
         Row(Modifier.padding(top = 8.dp)) {
             Image(
-                modifier = Modifier.padding(top = 8.dp).clickable(onClick = onMenuClicked),
-                imageVector = vectorResource(id = R.drawable.ic_menu)
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .clickable(onClick = onMenuClicked),
+                imageVector = vectorResource(id = R.drawable.ic_menu),
+                contentDescription = stringResource(id = R.string.cd_menu)
             )
             Spacer(Modifier.preferredWidth(8.dp))
-            Image(imageVector = vectorResource(id = R.drawable.ic_crane_logo))
+            Image(
+                imageVector = vectorResource(id = R.drawable.ic_crane_logo),
+                contentDescription = null
+            )
         }
-        children(Modifier.weight(1f).align(Alignment.CenterVertically))
+        children(
+            Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
     }
 }
 
@@ -82,7 +93,8 @@ fun CraneTabs(
             var textModifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
             if (selected) {
                 textModifier =
-                    Modifier.border(BorderStroke(2.dp, Color.White), RoundedCornerShape(16.dp))
+                    Modifier
+                        .border(BorderStroke(2.dp, Color.White), RoundedCornerShape(16.dp))
                         .then(textModifier)
             }
 

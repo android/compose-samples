@@ -16,18 +16,15 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.samples.crane.di.DispatchersModule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UninstallModules(DispatchersModule::class)
 @HiltAndroidTest
 class HomeTest {
 

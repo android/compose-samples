@@ -16,13 +16,14 @@
 
 package com.example.compose.rally.ui.components
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -44,14 +45,17 @@ fun <T> StatementBody(
     circleLabel: String,
     rows: @Composable (T) -> Unit
 ) {
-    ScrollableColumn {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Box(Modifier.padding(16.dp)) {
             val accountsProportion = items.extractProportions { amounts(it) }
             val circleColors = items.map { colors(it) }
             AnimatedCircle(
                 accountsProportion,
                 circleColors,
-                Modifier.preferredHeight(300.dp).align(Alignment.Center).fillMaxWidth()
+                Modifier
+                    .preferredHeight(300.dp)
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
             )
             Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(

@@ -16,10 +16,11 @@
 
 package com.example.compose.rally.ui.components
 
-import androidx.compose.animation.animateAsState
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -82,7 +83,7 @@ private fun RallyTab(
             delayMillis = TabFadeInAnimationDelay
         )
     }
-    val tabTintColor by animateAsState(
+    val tabTintColor by animateColorAsState(
         targetValue = if (selected) color else color.copy(alpha = InactiveTabOpacity),
         animationSpec = animSpec
     )
@@ -94,6 +95,7 @@ private fun RallyTab(
             .selectable(
                 selected = selected,
                 onClick = onSelected,
+                interactionState = remember { InteractionState() },
                 indication = rememberRipple(
                     bounded = false,
                     radius = Dp.Unspecified,
@@ -101,7 +103,7 @@ private fun RallyTab(
                 )
             )
     ) {
-        Icon(imageVector = icon, tint = tabTintColor)
+        Icon(imageVector = icon, contentDescription = null, tint = tabTintColor)
         if (selected) {
             Spacer(Modifier.preferredWidth(12.dp))
             Text(text, color = tabTintColor)

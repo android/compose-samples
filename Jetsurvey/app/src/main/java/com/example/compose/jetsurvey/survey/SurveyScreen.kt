@@ -16,7 +16,6 @@
 
 package com.example.compose.jetsurvey.survey
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Row
@@ -26,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
@@ -124,26 +124,28 @@ fun SurveyResultScreen(
 
 @Composable
 private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifier) {
-    ScrollableColumn(modifier = modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.preferredHeight(44.dp))
-        Text(
-            text = result.surveyResult.library,
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
-        Text(
-            text = stringResource(
-                result.surveyResult.result,
-                result.surveyResult.library
-            ),
-            style = MaterialTheme.typography.subtitle1,
-            modifier = Modifier.padding(20.dp)
-        )
-        Text(
-            text = stringResource(result.surveyResult.description),
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
+    LazyColumn(modifier = modifier.fillMaxSize()) {
+        item {
+            Spacer(modifier = Modifier.preferredHeight(44.dp))
+            Text(
+                text = result.surveyResult.library,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+            Text(
+                text = stringResource(
+                    result.surveyResult.result,
+                    result.surveyResult.library
+                ),
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.padding(20.dp)
+            )
+            Text(
+                text = stringResource(result.surveyResult.description),
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
     }
 }
 
@@ -196,7 +198,7 @@ private fun SurveyTopAppBar(
                     .padding(horizontal = 12.dp)
                     .constrainAs(button) { end.linkTo(parent.end) }
             ) {
-                Icon(Icons.Filled.Close)
+                Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.close))
             }
         }
 

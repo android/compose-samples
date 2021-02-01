@@ -18,17 +18,17 @@ package com.example.owl.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.font
-import androidx.compose.ui.text.font.fontFamily
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.owl.R
 
-private val fonts = fontFamily(
-    font(R.font.rubik_regular),
-    font(R.font.rubik_medium, FontWeight.W500),
-    font(R.font.rubik_bold, FontWeight.Bold)
+private val fonts = FontFamily(
+    Font(R.font.rubik_regular),
+    Font(R.font.rubik_medium, FontWeight.W500),
+    Font(R.font.rubik_bold, FontWeight.Bold)
 )
 
 val typography = typographyFromDefaults(

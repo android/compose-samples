@@ -43,6 +43,7 @@ import okhttp3.HttpUrl
 @Composable
 fun NetworkImage(
     url: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     placeholderColor: Color? = MaterialTheme.colors.compositedOnSurface(0.2f)
@@ -50,6 +51,7 @@ fun NetworkImage(
     CoilImage(
         data = url,
         modifier = modifier,
+        contentDescription = contentDescription,
         contentScale = contentScale,
         loading = {
             if (placeholderColor != null) {

@@ -27,6 +27,7 @@ import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -40,6 +41,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,38 +51,36 @@ import org.junit.Test
 class UserInputTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<NavActivity>()
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-    // Note that keeping these references is only safe if the activity is not recreated.
-    // See: https://issuetracker.google.com/160862278
-    private lateinit var activity: ComponentActivity
+    private val activity by lazy { composeTestRule.activity }
 
     @Before
     fun setUp() {
-        composeTestRule.activityRule.scenario.onActivity { newActivity ->
-            activity = newActivity
-            // Provide empty insets. We can modify this value as necessary
-            val windowInsets = WindowInsets()
 
-            // Launch the conversation screen
-            composeTestRule.setContent {
-                Providers(
-                    AmbientBackPressedDispatcher provides activity.onBackPressedDispatcher,
-                    AmbientWindowInsets provides windowInsets,
-                ) {
-                    JetchatTheme {
-                        ConversationContent(
-                            uiState = exampleUiState,
-                            navigateToProfile = { },
-                            onNavIconPressed = { }
-                        )
-                    }
+        // Provide empty insets. We can modify this value as necessary
+        val windowInsets = WindowInsets()
+
+        // Launch the conversation screen
+        val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
+        composeTestRule.setContent {
+            Providers(
+                AmbientBackPressedDispatcher provides onBackPressedDispatcher,
+                AmbientWindowInsets provides windowInsets,
+            ) {
+                JetchatTheme {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { },
+                        onNavIconPressed = { }
+                    )
                 }
             }
         }
     }
 
     @Test
+    @Ignore("Issue with keyboard sync https://issuetracker.google.com/169235317")
     fun emojiSelector_isClosedWithBack() {
         // Open emoji selector
         openEmojiSelector()
@@ -91,6 +91,15 @@ class UserInputTest {
             .assertExists()
         // Press back button
         Espresso.pressBack()
+
+        // TODO: Workaround for synchronization issue with "back"
+        // https://issuetracker.google.com/169235317
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithContentDescription(activity.getString(R.string.emoji_selector_desc))
+                .fetchSemanticsNodes().isEmpty()
+        }
+
         // Check the emoji selector is not displayed
         assertEmojiSelectorDoesNotExist()
     }
@@ -125,6 +134,7 @@ class UserInputTest {
     }
 
     @Test
+    @Ignore("Flaky due to https://issuetracker.google.com/169235317")
     fun sendButton_enableToggles() {
         // Given an initial state where there's no text in the textfield,
         // check that the send button is disabled.

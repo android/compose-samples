@@ -24,7 +24,6 @@ import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.LastDay
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.NoSelected
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.Selected
 import androidx.compose.samples.crane.data.DatesRepository
-import androidx.compose.samples.crane.di.DispatchersModule
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertLabelEquals
@@ -35,13 +34,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
-@UninstallModules(DispatchersModule::class)
 @HiltAndroidTest
 class CalendarTest {
 
@@ -67,6 +65,7 @@ class CalendarTest {
         }
     }
 
+    @Ignore("performScrollTo doesn't work with LazyLists: issuetracker.google.com/178483889")
     @Test
     fun scrollsToTheBottom() {
         composeTestRule.onNodeWithContentDescription("January 1").assertExists()

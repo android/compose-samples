@@ -18,11 +18,12 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Icon
@@ -37,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,10 +55,10 @@ fun SearchCourses(
     modifier: Modifier = Modifier
 ) {
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
-    ScrollableColumn(modifier = modifier.statusBarsPadding()) {
-        AppBar(searchTerm, updateSearchTerm)
+    LazyColumn(modifier = modifier.statusBarsPadding()) {
+        item { AppBar(searchTerm, updateSearchTerm) }
         val filteredTopics = getTopics(searchTerm.text, topics)
-        filteredTopics.forEach { topic ->
+        items(filteredTopics) { topic ->
             Text(
                 text = topic.name,
                 style = MaterialTheme.typography.h5,
@@ -98,6 +100,7 @@ private fun AppBar(
     TopAppBar(elevation = 0.dp) {
         Image(
             imageVector = vectorResource(id = R.drawable.ic_search),
+            contentDescription = null,
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically)
@@ -119,7 +122,10 @@ private fun AppBar(
             modifier = Modifier.align(Alignment.CenterVertically),
             onClick = { /* todo */ }
         ) {
-            Icon(Icons.Filled.AccountCircle)
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = stringResource(R.string.label_profile)
+            )
         }
     }
 }

@@ -16,11 +16,11 @@
 
 package com.example.owl.ui.course
 
-import androidx.compose.animation.core.animateAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,8 +32,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
@@ -64,7 +67,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -115,7 +117,7 @@ fun CourseDetails(
     upPress: () -> Unit
 ) {
     PinkTheme {
-        WithConstraints {
+        BoxWithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)
             val fabSize = with(AmbientDensity.current) { FabSize.toPx() }
             val dragRange = constraints.maxHeight - fabSize
@@ -147,8 +149,8 @@ fun CourseDetails(
                 LessonsSheet(
                     course,
                     openFraction,
-                    constraints.maxWidth.toFloat(),
-                    constraints.maxHeight.toFloat()
+                    this@BoxWithConstraints.constraints.maxWidth.toFloat(),
+                    this@BoxWithConstraints.constraints.maxHeight.toFloat()
                 ) { state ->
                     sheetState.animateTo(state)
                 }
@@ -164,10 +166,10 @@ private fun CourseDescription(
     upPress: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
-        ScrollableColumn {
-            CourseDescriptionHeader(course, upPress)
-            CourseDescriptionBody(course)
-            RelatedCourses(course.id, selectCourse)
+        LazyColumn {
+            item { CourseDescriptionHeader(course, upPress) }
+            item { CourseDescriptionBody(course) }
+            item { RelatedCourses(course.id, selectCourse) }
         }
     }
 }
@@ -180,6 +182,7 @@ private fun CourseDescriptionHeader(
     Box {
         NetworkImage(
             url = course.thumbUrl,
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .scrim(colors = listOf(Color(0x80000000), Color(0x33000000)))
@@ -193,11 +196,13 @@ private fun CourseDescriptionHeader(
         ) {
             IconButton(onClick = upPress) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack
+                    imageVector = Icons.Rounded.ArrowBack,
+                    contentDescription = stringResource(R.string.label_back)
                 )
             }
             Image(
                 imageVector = vectorResource(id = R.drawable.ic_logo),
+                contentDescription = null,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
                     .preferredSize(24.dp)
@@ -375,8 +380,8 @@ private fun Lessons(
                 .graphicsLayer { alpha = lessonsAlpha }
                 .statusBarsPadding()
         ) {
-            val scroll = rememberScrollState()
-            val appBarElevation by animateAsState(if (scroll.value > 0f) 4.dp else 0.dp)
+            val scroll = rememberLazyListState()
+            val appBarElevation by animateDpAsState(if (scroll.isScrolled) 4.dp else 0.dp)
             val appBarColor = if (appBarElevation > 0.dp) surfaceColor else Color.Transparent
             TopAppBar(
                 backgroundColor = appBarColor,
@@ -396,16 +401,19 @@ private fun Lessons(
                     onClick = { updateSheet(SheetState.Closed) },
                     modifier = Modifier.align(Alignment.CenterVertically)
                 ) {
-                    Icon(imageVector = Icons.Rounded.ExpandMore)
+                    Icon(
+                        imageVector = Icons.Rounded.ExpandMore,
+                        contentDescription = stringResource(R.string.label_collapse_lessons)
+                    )
                 }
             }
-            ScrollableColumn(
-                scrollState = scroll,
+            LazyColumn(
+                state = scroll,
                 contentPadding = AmbientWindowInsets.current.systemBars.toPaddingValues(
                     top = false
                 )
             ) {
-                lessons.forEach { lesson ->
+                items(lessons) { lesson ->
                     Lesson(lesson)
                     Divider(startIndent = 128.dp)
                 }
@@ -426,7 +434,8 @@ private fun Lessons(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.PlaylistPlay,
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colors.onPrimary,
+                    contentDescription = stringResource(R.string.label_expand_lessons)
                 )
             }
         }
@@ -442,6 +451,7 @@ private fun Lesson(lesson: Lesson) {
     ) {
         NetworkImage(
             url = lesson.imageUrl,
+            contentDescription = null,
             modifier = Modifier.preferredSize(112.dp, 64.dp)
         )
         Column(
@@ -462,6 +472,7 @@ private fun Lesson(lesson: Lesson) {
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.PlayCircleOutline,
+                        contentDescription = null,
                         modifier = Modifier.preferredSize(16.dp)
                     )
                     Text(
@@ -481,6 +492,9 @@ private fun Lesson(lesson: Lesson) {
 }
 
 private enum class SheetState { Open, Closed }
+
+private val LazyListState.isScrolled: Boolean
+    get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0
 
 @Preview(name = "Course Details")
 @Composable

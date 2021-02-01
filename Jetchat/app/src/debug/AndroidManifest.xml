@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2020 The Android Open Source Project
+  ~ Copyright 2021 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,13 +15,8 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <string name="app_name">Rally</string>
-    <string name="total">Total</string>
-    <string name="due">Due</string>
-    <string name="account_redacted">• • • • • </string>
-    <string name="accounts">Accounts</string>
-    <string name="bills">Bills</string>
-    <string name="sort">Sort</string>
-    <string name="see_all">SEE ALL</string>
-</resources>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity android:name="androidx.activity.ComponentActivity" />
+    </application>
+</manifest>

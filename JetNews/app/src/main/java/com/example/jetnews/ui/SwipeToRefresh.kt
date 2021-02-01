@@ -24,7 +24,7 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -82,8 +82,9 @@ fun SwipeToRefreshLayout(
         // TODO (https://issuetracker.google.com/issues/164113834): This state->event trampoline is a
         //  workaround for a bug in the SwipableState API. Currently, state.value is a duplicated
         //  source of truth of refreshingState.
-        onCommit(refreshingState) {
+        DisposableEffect(refreshingState) {
             state.animateTo(refreshingState)
+            onDispose {}
         }
     }
 }

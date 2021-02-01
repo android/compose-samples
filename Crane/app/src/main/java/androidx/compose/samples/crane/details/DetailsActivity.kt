@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.viewinterop.viewModel
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
@@ -76,7 +77,7 @@ data class DetailsActivityArg(
 class DetailsActivity : ComponentActivity() {
 
     @Inject
-    lateinit var viewModelFactory: DetailsViewModel.AssistedFactory
+    lateinit var viewModelFactory: DetailsViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,10 +102,12 @@ class DetailsActivity : ComponentActivity() {
 @Composable
 fun DetailsScreen(
     args: DetailsActivityArg,
-    viewModelFactory: DetailsViewModel.AssistedFactory,
+    viewModelFactory: DetailsViewModelFactory,
     onErrorLoading: () -> Unit
 ) {
-    val viewModel: DetailsViewModel = viewModelFactory.create(args.cityName)
+    val viewModel: DetailsViewModel = viewModel(
+        factory = DetailsViewModel.provideFactory(viewModelFactory, args.cityName)
+    )
 
     val cityDetailsResult = remember(viewModel) { viewModel.cityDetails }
     if (cityDetailsResult is Result.Success<ExploreModel>) {

@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.snackdetail
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -129,7 +129,8 @@ private fun Up(upPress: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Outlined.ArrowBack,
-            tint = JetsnackTheme.colors.iconInteractive
+            tint = JetsnackTheme.colors.iconInteractive,
+            contentDescription = stringResource(R.string.label_back)
         )
     }
 }
@@ -146,7 +147,9 @@ private fun Body(
                 .statusBarsPadding()
                 .preferredHeight(MinTitleOffset)
         )
-        ScrollableColumn(scrollState = scroll) {
+        Column(
+            modifier = Modifier.verticalScroll(scroll)
+        ) {
             Spacer(Modifier.preferredHeight(GradientScroll))
             JetsnackSurface(Modifier.fillMaxWidth()) {
                 Column {
@@ -262,6 +265,7 @@ private fun Image(
     ) {
         SnackImage(
             imageUrl = imageUrl,
+            contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )
     }
