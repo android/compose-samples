@@ -16,7 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.animation.animateAsState
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
@@ -71,7 +71,7 @@ fun Modifier.fadeInDiagonalGradientBorder(
     shape: Shape
 ) = composed {
     val animatedColors = List(colors.size) { i ->
-        animateAsState(if (showBorder) colors[i] else colors[i].copy(alpha = 0f)).value
+        animateColorAsState(if (showBorder) colors[i] else colors[i].copy(alpha = 0f)).value
     }
     diagonalGradientBorder(
         colors = animatedColors,

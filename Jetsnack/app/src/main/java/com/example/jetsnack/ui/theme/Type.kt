@@ -18,22 +18,22 @@ package com.example.jetsnack.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.font
-import androidx.compose.ui.text.font.fontFamily
 import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 
-private val Montserrat = fontFamily(
-    font(R.font.montserrat_light, FontWeight.Light),
-    font(R.font.montserrat_regular, FontWeight.Normal),
-    font(R.font.montserrat_medium, FontWeight.Medium),
-    font(R.font.montserrat_semibold, FontWeight.SemiBold)
+private val Montserrat = FontFamily(
+    Font(R.font.montserrat_light, FontWeight.Light),
+    Font(R.font.montserrat_regular, FontWeight.Normal),
+    Font(R.font.montserrat_medium, FontWeight.Medium),
+    Font(R.font.montserrat_semibold, FontWeight.SemiBold)
 )
 
-private val Karla = fontFamily(
-    font(R.font.karla_regular, FontWeight.Normal),
-    font(R.font.karla_bold, FontWeight.Bold)
+private val Karla = FontFamily(
+    Font(R.font.karla_regular, FontWeight.Normal),
+    Font(R.font.karla_bold, FontWeight.Bold)
 )
 
 val Typography = Typography(

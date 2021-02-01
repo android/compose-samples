@@ -62,6 +62,7 @@ fun QuantitySelector(
         JetsnackGradientTintedIconButton(
             imageVector = Icons.Outlined.RemoveCircleOutline,
             onClick = decreaseItemCount,
+            contentDescription = stringResource(R.string.label_decrease),
             modifier = Modifier.constrainAs(minus) {
                 centerVerticallyTo(quantity)
                 linkTo(top = parent.top, bottom = parent.bottom)
@@ -84,6 +85,7 @@ fun QuantitySelector(
         JetsnackGradientTintedIconButton(
             imageVector = Icons.Outlined.AddCircleOutline,
             onClick = increaseItemCount,
+            contentDescription = stringResource(R.string.label_increase),
             modifier = Modifier.constrainAs(plus) {
                 end.linkTo(parent.end)
                 centerVerticallyTo(quantity)

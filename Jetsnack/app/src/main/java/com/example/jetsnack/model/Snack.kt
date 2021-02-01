@@ -79,7 +79,7 @@ val snacks = listOf(
         id = 7L,
         name = "Ice Cream Sandwich",
         tagline = "A tag line",
-        imageUrl = "https://source.unsplash.com/AqorcpZIKnU",
+        imageUrl = "https://source.unsplash.com/YgYJsFDd4AU",
         price = 1299
     ),
     Snack(

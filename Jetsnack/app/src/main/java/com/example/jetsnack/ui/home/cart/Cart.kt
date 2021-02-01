@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -194,6 +195,7 @@ fun CartItem(
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         SnackImage(
             imageUrl = snack.imageUrl,
+            contentDescription = null,
             modifier = Modifier
                 .preferredSize(100.dp)
                 .constrainAs(image) {
@@ -227,7 +229,8 @@ fun CartItem(
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                tint = JetsnackTheme.colors.iconSecondary
+                tint = JetsnackTheme.colors.iconSecondary,
+                contentDescription = stringResource(R.string.label_remove)
             )
         }
         Text(
@@ -305,7 +308,8 @@ fun SummaryItem(
             Text(
                 text = stringResource(R.string.cart_subtotal_label),
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
                     .wrapContentWidth(Alignment.Start)
                     .alignBy(LastBaseline)
             )
@@ -319,7 +323,8 @@ fun SummaryItem(
             Text(
                 text = stringResource(R.string.cart_shipping_label),
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
                     .wrapContentWidth(Alignment.Start)
                     .alignBy(LastBaseline)
             )
