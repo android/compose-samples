@@ -61,7 +61,7 @@ fun Courses(selectCourse: (Long) -> Unit) {
                 ) {
                     tabs.forEach { tab ->
                         BottomNavigationItem(
-                            icon = { Icon(vectorResource(tab.icon)) },
+                            icon = { Icon(vectorResource(tab.icon), contentDescription = null) },
                             label = { Text(stringResource(tab.title).toUpperCase()) },
                             selected = tab == selectedTab,
                             onClick = { setSelectedTab(tab) },
@@ -94,13 +94,17 @@ fun CoursesAppBar() {
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically),
-            imageVector = vectorResource(id = R.drawable.ic_lockup_white)
+            imageVector = vectorResource(id = R.drawable.ic_lockup_white),
+            contentDescription = null
         )
         IconButton(
             modifier = Modifier.align(Alignment.CenterVertically),
             onClick = { /* todo */ }
         ) {
-            Icon(Icons.Filled.AccountCircle)
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = stringResource(R.string.label_profile)
+            )
         }
     }
 }

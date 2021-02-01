@@ -24,7 +24,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.performClick
-import androidx.test.platform.app.InstrumentationRegistry
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
@@ -45,20 +44,17 @@ class NavigationTest {
      */
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-    lateinit var activity: ComponentActivity
 
     private fun startActivity(startDestination: String? = null) {
-        composeTestRule.activityRule.scenario.onActivity {
-            activity = it
-            composeTestRule.setContent {
-                Providers(AmbientBackDispatcher provides activity.onBackPressedDispatcher) {
-                    ProvideWindowInsets {
-                        ProvideTestImageLoader {
-                            if (startDestination == null) {
-                                NavGraph()
-                            } else {
-                                NavGraph(startDestination)
-                            }
+        composeTestRule.setContent {
+            val backDispatcher = composeTestRule.activity.onBackPressedDispatcher
+            Providers(AmbientBackDispatcher provides backDispatcher) {
+                ProvideWindowInsets {
+                    ProvideTestImageLoader {
+                        if (startDestination == null) {
+                            NavGraph()
+                        } else {
+                            NavGraph(startDestination)
                         }
                     }
                 }
@@ -106,7 +102,7 @@ class NavigationTest {
     fun coursesToDetailAndBack() {
         coursesToDetail()
         composeTestRule.runOnUiThread {
-            activity.onBackPressed()
+            composeTestRule.activity.onBackPressed()
         }
 
         // The first course should be shown
@@ -114,17 +110,14 @@ class NavigationTest {
     }
 
     private fun getOnboardingFabLabel(): String {
-        return InstrumentationRegistry.getInstrumentation().targetContext.resources
-            .getString(R.string.continue_to_courses)
+        return composeTestRule.activity.resources.getString(R.string.label_continue_to_courses)
     }
 
     private fun getFeaturedCourseLabel(): String {
-        return InstrumentationRegistry.getInstrumentation().targetContext.resources
-            .getString(R.string.featured)
+        return composeTestRule.activity.resources.getString(R.string.featured)
     }
 
     private fun getCourseDesc(): String {
-        return InstrumentationRegistry.getInstrumentation().targetContext.resources
-            .getString(R.string.course_desc)
+        return composeTestRule.activity.resources.getString(R.string.course_desc)
     }
 }
