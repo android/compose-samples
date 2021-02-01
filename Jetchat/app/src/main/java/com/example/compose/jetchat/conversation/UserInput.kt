@@ -352,10 +352,7 @@ private fun InputSelectorButton(
     description: String,
     selected: Boolean
 ) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.semantics { contentDescription = description }
-    ) {
+    IconButton(onClick = onClick) {
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             val tint = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current
             Icon(
@@ -364,7 +361,7 @@ private fun InputSelectorButton(
                 modifier = Modifier
                     .padding(12.dp)
                     .preferredSize(20.dp),
-                contentDescription = null
+                contentDescription = description
             )
         }
     }

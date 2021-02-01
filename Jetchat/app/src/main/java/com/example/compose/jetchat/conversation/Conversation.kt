@@ -165,7 +165,7 @@ fun ChannelNameBar(
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .preferredHeight(24.dp),
-                    contentDescription = null
+                    contentDescription = stringResource(id = R.string.search)
                 )
                 // Info icon
                 Icon(
@@ -174,7 +174,7 @@ fun ChannelNameBar(
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .preferredHeight(24.dp),
-                    contentDescription = null
+                    contentDescription = stringResource(id = R.string.info)
                 )
             }
         }

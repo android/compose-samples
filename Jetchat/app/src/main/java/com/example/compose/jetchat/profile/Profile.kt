@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -59,8 +60,10 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
+import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
@@ -86,7 +89,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                             .clickable(onClick = {}) // TODO: Show not implemented dialog.
                             .padding(horizontal = 12.dp, vertical = 16.dp)
                             .preferredHeight(24.dp),
-                        contentDescription = null
+                        contentDescription = stringResource(id = R.string.more_options)
                     )
                 }
             }
@@ -100,7 +103,8 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 ) {
                     ProfileHeader(
                         scrollState,
-                        userData
+                        userData,
+                        this@BoxWithConstraints.maxHeight
                     )
                     UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
                 }
@@ -178,23 +182,23 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 @Composable
 private fun ProfileHeader(
     scrollState: ScrollState,
-    data: ProfileScreenState
+    data: ProfileScreenState,
+    containerHeight: Dp
 ) {
     val offset = (scrollState.value / 2)
     val offsetDp = with(AmbientDensity.current) { offset.toDp() }
 
     data.photo?.let {
         val asset = imageResource(id = it)
-        val ratioAsset = (asset.width / asset.height.toFloat()).coerceAtLeast(1f)
+        //val ratioAsset = (asset.width / asset.height.toFloat()).coerceAtLeast(1f)
 
-        // TODO: Fix landscape
         Image(
             modifier = Modifier
-                .aspectRatio(ratioAsset)
-                .preferredHeightIn(max = 320.dp)
+                .preferredHeightIn(max = containerHeight / 2)
+                .fillMaxWidth()
                 .padding(top = offsetDp),
             bitmap = asset,
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
             contentDescription = null
         )
     }
@@ -247,7 +251,9 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
                 icon = {
                     Icon(
                         imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
-                        contentDescription = null
+                        contentDescription = stringResource(
+                            if (userIsMe) R.string.edit_profile else R.string.message
+                        )
                     )
                 },
                 text = {
@@ -264,18 +270,42 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
     }
 }
 
-@Preview
+@Preview(widthDp = 640, heightDp = 360)
 @Composable
-fun ConvPreview480MeDefault() {
-    JetchatTheme {
-        ProfileScreen(meProfile)
+fun ConvPreviewLandscapeMeDefault() {
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileScreen(meProfile)
+        }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 480)
+@Composable
+fun ConvPreviewPortraitMeDefault() {
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileScreen(meProfile)
+        }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 480)
+@Composable
+fun ConvPreviewPortraitOtherDefault() {
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileScreen(colleagueProfile)
+        }
     }
 }
 
 @Preview
 @Composable
 fun ProfileFabPreview() {
-    JetchatTheme {
-        ProfileFab(extended = true, userIsMe = false)
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileFab(extended = true, userIsMe = false)
+        }
     }
 }
