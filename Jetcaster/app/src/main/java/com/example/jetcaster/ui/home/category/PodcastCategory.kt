@@ -147,6 +147,7 @@ fun EpisodeListItem(
             // If we have an image Url, we can show it using [CoilImage]
             CoilImage(
                 data = podcast.imageUrl,
+                contentDescription = null,
                 fadeIn = true,
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
@@ -330,6 +331,7 @@ private fun TopPodcastRowItem(
             if (podcastImageUrl != null) {
                 CoilImage(
                     data = podcastImageUrl,
+                    contentDescription = null,
                     fadeIn = true,
                     contentScale = ContentScale.Crop,
                     loading = { /* TODO do something better here */ },

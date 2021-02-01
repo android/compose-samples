@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.example.jetcaster.util
 
 import androidx.compose.animation.asDisposableClock
@@ -22,9 +24,9 @@ import androidx.compose.animation.core.TransitionState
 import androidx.compose.animation.core.createAnimation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.invalidate
 import androidx.compose.runtime.key
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AmbientAnimationClock
@@ -72,7 +74,7 @@ fun <T> ItemSwitcher(
                     )
                 }
 
-                onCommit(visible) {
+                DisposableEffect(visible) {
                     anim.onStateChangeFinished = { _ ->
                         if (key == state.current) {
                             // leave only the current in the list
@@ -87,6 +89,8 @@ fun <T> ItemSwitcher(
                         else -> ItemTransitionState.BecomingNotVisible
                     }
                     anim.toState(targetState)
+
+                    onDispose { }
                 }
 
                 children(anim)
@@ -118,7 +122,7 @@ private class ItemTransitionInnerState<T> {
 
 private data class ItemTransitionItem<T>(
     val key: T,
-    val content: ItemTransitionContent
+    @Suppress("TYPEALIAS_EXPANSION_DEPRECATION") val content: ItemTransitionContent
 )
 
 private typealias ItemTransitionContent = @Composable (children: @Composable (TransitionState) -> Unit) -> Unit

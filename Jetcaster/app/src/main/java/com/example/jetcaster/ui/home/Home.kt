@@ -358,6 +358,7 @@ private fun FollowedPodcastCarouselItem(
             if (podcastImageUrl != null) {
                 CoilImage(
                     data = podcastImageUrl,
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     loading = { /* TODO do something better here */ },
                     modifier = Modifier
