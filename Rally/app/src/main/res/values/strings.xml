@@ -21,5 +21,6 @@
     <string name="account_redacted">• • • • • </string>
     <string name="accounts">Accounts</string>
     <string name="bills">Bills</string>
+    <string name="sort">Sort</string>
     <string name="see_all">SEE ALL</string>
 </resources>

@@ -63,6 +63,7 @@ fun OutlinedAvatar(
     ) {
         NetworkImage(
             url = url,
+            contentDescription = null,
             modifier = Modifier
                 .padding(outlineSize)
                 .fillMaxSize()
