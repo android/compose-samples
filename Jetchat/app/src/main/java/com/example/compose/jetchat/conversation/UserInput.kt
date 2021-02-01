@@ -22,7 +22,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +39,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.AmbientTextStyle
@@ -60,11 +60,13 @@ import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Providers
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -95,6 +97,7 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.compositedOnSurface
 import com.example.compose.jetchat.theme.elevatedSurface
+import kotlinx.coroutines.launch
 
 enum class InputSelector {
     NONE,
@@ -123,6 +126,7 @@ fun UserInput(
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
 ) {
+    val scope = rememberCoroutineScope()
     var currentInputSelector by savedInstanceState { InputSelector.NONE }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
 
@@ -147,7 +151,9 @@ fun UserInput(
             onTextFieldFocused = { focused ->
                 if (focused) {
                     currentInputSelector = InputSelector.NONE
-                    scrollState.smoothScrollTo(0f)
+                    scope.launch {
+                        scrollState.smoothScrollTo(0f)
+                    }
                 }
                 textFieldFocusState = focused
             },
@@ -161,7 +167,9 @@ fun UserInput(
                 // Reset text field and close keyboard
                 textState = TextFieldValue()
                 // Move scroll to bottom
-                scrollState.smoothScrollTo(0f)
+                scope.launch {
+                    scrollState.smoothScrollTo(0f)
+                }
                 dismissKeyboard()
             },
             currentInputSelector = currentInputSelector
@@ -199,7 +207,7 @@ private fun SelectorExpanded(
     // Request focus to force the TextField to lose it
     val focusRequester = FocusRequester()
     // If the selector is shown, always request focus to trigger a TextField.onFocusChange.
-    onCommit {
+    SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
             focusRequester.requestFocus()
         }
@@ -223,7 +231,9 @@ private fun SelectorExpanded(
 fun FunctionalityNotAvailablePanel() {
     AnimatedVisibility(visible = true, initiallyVisible = false, enter = fadeIn()) {
         Column(
-            modifier = Modifier.preferredHeight(320.dp).fillMaxWidth(),
+            modifier = Modifier
+                .preferredHeight(320.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -342,16 +352,16 @@ private fun InputSelectorButton(
     description: String,
     selected: Boolean
 ) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.semantics { contentDescription = description }
-    ) {
+    IconButton(onClick = onClick) {
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             val tint = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current
             Icon(
                 icon,
                 tint = tint,
-                modifier = Modifier.padding(12.dp).preferredSize(20.dp)
+                modifier = Modifier
+                    .padding(12.dp)
+                    .preferredSize(20.dp),
+                contentDescription = description
             )
         }
     }
@@ -379,10 +389,14 @@ private fun UserInputText(
     var keyboardController by remember { mutableStateOf<SoftwareKeyboardController?>(null) }
 
     // Show or hide the keyboard
-    onCommit(keyboardController, keyboardShown) { // Guard side-effects against failed commits
+    DisposableEffect(
+        keyboardController,
+        keyboardShown
+    ) { // Guard side-effects against failed commits
         keyboardController?.let {
             if (keyboardShown) it.showSoftwareKeyboard() else it.hideSoftwareKeyboard()
         }
+        onDispose { /* no-op */ }
     }
 
     val a11ylabel = stringResource(id = R.string.textfield_desc)
@@ -398,7 +412,10 @@ private fun UserInputText(
     ) {
         Surface {
             Box(
-                modifier = Modifier.preferredHeight(48.dp).weight(1f).align(Alignment.Bottom)
+                modifier = Modifier
+                    .preferredHeight(48.dp)
+                    .weight(1f)
+                    .align(Alignment.Bottom)
             ) {
                 var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
                 BasicTextField(
@@ -455,7 +472,11 @@ fun EmojiSelector(
             .focusModifier()
             .semantics { contentDescription = a11yLabel }
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        ) {
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.emojis_label),
                 onClick = { selected = EmojiStickerSelector.EMOJI },
@@ -469,7 +490,7 @@ fun EmojiSelector(
                 modifier = Modifier.weight(1f)
             )
         }
-        ScrollableRow {
+        Row(modifier = Modifier.verticalScroll(rememberScrollState())) {
             EmojiTable(onTextAdded, modifier = Modifier.padding(8.dp))
         }
     }

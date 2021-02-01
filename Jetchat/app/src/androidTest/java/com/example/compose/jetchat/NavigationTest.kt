@@ -16,23 +16,14 @@
 
 package com.example.compose.jetchat
 
-import android.view.View
-import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
-import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
-import com.example.compose.jetchat.conversation.ConversationContent
-import com.example.compose.jetchat.data.exampleUiState
-import com.example.compose.jetchat.theme.JetchatTheme
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
-import dev.chrisbanes.accompanist.insets.WindowInsets
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -44,49 +35,16 @@ class NavigationTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<NavActivity>()
 
-    // Note that keeping these references is only safe if the activity is not recreated.
-    // See: https://issuetracker.google.com/160862278
-    private lateinit var navController: NavController
-    private lateinit var activity: ComponentActivity
-
-    @Before
-    fun setUp() {
-        composeTestRule.activityRule.scenario.onActivity { newActivity: NavActivity ->
-            // Store a reference to the activity. Don't do this if the activity is recreated!
-            activity = newActivity
-            val navHostFragment: View = newActivity.findViewById(R.id.nav_host_fragment)
-            // Store a reference to the navigation controller.
-            navController = Navigation.findNavController(navHostFragment)
-        }
-
-        // Provide empty insets. We can modify this value as necessary
-        val windowInsets = WindowInsets()
-
-        // Start the app
-        composeTestRule.setContent {
-            Providers(
-                AmbientBackPressedDispatcher provides activity.onBackPressedDispatcher,
-                AmbientWindowInsets provides windowInsets,
-            ) {
-                JetchatTheme {
-                    ConversationContent(
-                        uiState = exampleUiState,
-                        navigateToProfile = { },
-                        onNavIconPressed = { }
-                    )
-                }
-            }
-        }
-    }
-
     @Test
     fun app_launches() {
         // Check app launches at the correct destination
-        assertEquals(navController.currentDestination?.id, R.id.nav_home)
+        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
     }
 
     @Test
+    @Ignore("Issue with keyboard sync https://issuetracker.google.com/169235317")
     fun profileScreen_back_conversationScreen() {
+        val navController = getNavController()
         // Navigate to profile
         composeTestRule.runOnUiThread {
             navController.navigate(R.id.nav_profile)
@@ -95,7 +53,7 @@ class NavigationTest {
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check
         composeTestRule
-            .onNodeWithText(activity.getString(R.string.textfield_hint))
+            .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
             .assertIsDisplayed()
 
         // Press back
@@ -103,5 +61,9 @@ class NavigationTest {
 
         // Check that we're home
         assertEquals(navController.currentDestination?.id, R.id.nav_home)
+    }
+
+    private fun getNavController(): NavController {
+        return composeTestRule.activity.findNavController(R.id.nav_host_fragment)
     }
 }

@@ -18,21 +18,21 @@ package com.example.compose.jetchat.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.font
-import androidx.compose.ui.text.font.fontFamily
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.R
 
-private val MontserratFontFamily = fontFamily(
-    font(R.font.montserrat_regular),
-    font(R.font.montserrat_light, FontWeight.Light),
-    font(R.font.montserrat_semibold, FontWeight.SemiBold)
+private val MontserratFontFamily = FontFamily(
+    Font(R.font.montserrat_regular),
+    Font(R.font.montserrat_light, FontWeight.Light),
+    Font(R.font.montserrat_semibold, FontWeight.SemiBold)
 )
 
-private val KarlaFontFamily = fontFamily(
-    font(R.font.karla_regular),
-    font(R.font.karla_bold, FontWeight.Bold)
+private val KarlaFontFamily = FontFamily(
+    Font(R.font.karla_regular),
+    Font(R.font.karla_bold, FontWeight.Bold)
 )
 
 val JetchatTypography = Typography(

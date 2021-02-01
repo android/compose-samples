@@ -60,5 +60,10 @@
     <string name="textfield_desc">Text input</string>
     <string name="not_available">Functionality currently not available</string>
     <string name="not_available_subtitle">Grab a beverage and check back later!</string>
+    <string name="back">Navigate up</string>
+    <string name="attached_image">Attached image</string>
+    <string name="search">Search</string>
+    <string name="info">Information</string>
+    <string name="more_options">More options</string>
 
 </resources>

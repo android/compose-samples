@@ -18,12 +18,10 @@ package com.example.compose.jetchat.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +29,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
@@ -49,7 +48,6 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -60,8 +58,10 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
+import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
@@ -73,7 +73,9 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
     Column(modifier = Modifier.fillMaxSize()) {
         JetchatAppBar(
             // Use statusBarsPadding() to move the app bar content below the status bar
-            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding(),
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
@@ -84,31 +86,32 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                         modifier = Modifier
                             .clickable(onClick = {}) // TODO: Show not implemented dialog.
                             .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .preferredHeight(24.dp)
+                            .preferredHeight(24.dp),
+                        contentDescription = stringResource(id = R.string.more_options)
                     )
                 }
             }
         )
-        WithConstraints {
-            Box(modifier = Modifier.weight(1f)) {
-                Surface {
-                    ScrollableColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        scrollState = scrollState
-                    ) {
-                        ProfileHeader(
-                            scrollState,
-                            userData
-                        )
-                        UserInfoFields(userData, maxHeight)
-                    }
+        BoxWithConstraints(modifier = Modifier.weight(1f)) {
+            Surface {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                ) {
+                    ProfileHeader(
+                        scrollState,
+                        userData,
+                        this@BoxWithConstraints.maxHeight
+                    )
+                    UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
                 }
-                ProfileFab(
-                    extended = scrollState.value == 0f,
-                    userIsMe = userData.isMe(),
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                )
             }
+            ProfileFab(
+                extended = scrollState.value == 0f,
+                userIsMe = userData.isMe(),
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
         }
     }
 }
@@ -147,7 +150,9 @@ private fun NameAndPosition(
         )
         Position(
             userData,
-            modifier = Modifier.padding(bottom = 20.dp).baselineHeight(24.dp)
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .baselineHeight(24.dp)
         )
     }
 }
@@ -175,23 +180,23 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 @Composable
 private fun ProfileHeader(
     scrollState: ScrollState,
-    data: ProfileScreenState
+    data: ProfileScreenState,
+    containerHeight: Dp
 ) {
     val offset = (scrollState.value / 2)
     val offsetDp = with(AmbientDensity.current) { offset.toDp() }
 
     data.photo?.let {
         val asset = imageResource(id = it)
-        val ratioAsset = (asset.width / asset.height.toFloat()).coerceAtLeast(1f)
 
-        // TODO: Fix landscape
         Image(
             modifier = Modifier
-                .aspectRatio(ratioAsset)
-                .preferredHeightIn(max = 320.dp)
+                .preferredHeightIn(max = containerHeight / 2)
+                .fillMaxWidth()
                 .padding(top = offsetDp),
             bitmap = asset,
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.Crop,
+            contentDescription = null
         )
     }
 }
@@ -242,7 +247,10 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             AnimatingFabContent(
                 icon = {
                     Icon(
-                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat
+                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
+                        contentDescription = stringResource(
+                            if (userIsMe) R.string.edit_profile else R.string.message
+                        )
                     )
                 },
                 text = {
@@ -259,18 +267,42 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
     }
 }
 
-@Preview
+@Preview(widthDp = 640, heightDp = 360)
 @Composable
-fun ConvPreview480MeDefault() {
-    JetchatTheme {
-        ProfileScreen(meProfile)
+fun ConvPreviewLandscapeMeDefault() {
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileScreen(meProfile)
+        }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 480)
+@Composable
+fun ConvPreviewPortraitMeDefault() {
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileScreen(meProfile)
+        }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 480)
+@Composable
+fun ConvPreviewPortraitOtherDefault() {
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileScreen(colleagueProfile)
+        }
     }
 }
 
 @Preview
 @Composable
 fun ProfileFabPreview() {
-    JetchatTheme {
-        ProfileFab(extended = true, userIsMe = false)
+    ProvideWindowInsets(consumeWindowInsets = false) {
+        JetchatTheme {
+            ProfileFab(extended = true, userIsMe = false)
+        }
     }
 }

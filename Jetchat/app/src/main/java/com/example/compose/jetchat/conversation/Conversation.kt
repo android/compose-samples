@@ -19,7 +19,6 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.foundation.ClickableText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,6 +37,7 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
@@ -51,6 +51,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,6 +73,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
 import dev.chrisbanes.accompanist.insets.navigationBarsWithImePadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.launch
 
 /**
  * Entry point for a conversation screen.
@@ -162,7 +164,8 @@ fun ChannelNameBar(
                     modifier = Modifier
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .preferredHeight(24.dp)
+                        .preferredHeight(24.dp),
+                    contentDescription = stringResource(id = R.string.search)
                 )
                 // Info icon
                 Icon(
@@ -170,7 +173,8 @@ fun ChannelNameBar(
                     modifier = Modifier
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .preferredHeight(24.dp)
+                        .preferredHeight(24.dp),
+                    contentDescription = stringResource(id = R.string.info)
                 )
             }
         }
@@ -186,14 +190,15 @@ fun Messages(
     scrollState: ScrollState,
     modifier: Modifier = Modifier
 ) {
+
+    val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
 
-        ScrollableColumn(
-            scrollState = scrollState,
-            reverseScrollDirection = true,
+        Column(
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxWidth()
+                .verticalScroll(scrollState, reverseScrolling = true)
         ) {
             val authorMe = stringResource(id = R.string.author_me)
             Spacer(modifier = Modifier.preferredHeight(64.dp))
@@ -234,7 +239,9 @@ fun Messages(
             // Only show if the scroller is not at the bottom
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
-                scrollState.smoothScrollTo(BottomScrollState)
+                scope.launch {
+                    scrollState.smoothScrollTo(BottomScrollState)
+                }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -275,7 +282,8 @@ fun Message(
                     .clip(CircleShape)
                     .align(Alignment.Top),
                 bitmap = image,
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
             )
         } else {
             // Space under avatar
@@ -341,7 +349,11 @@ private val LastChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
 
 @Composable
 fun DayHeader(dayString: String) {
-    Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).preferredHeight(16.dp)) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .preferredHeight(16.dp)
+    ) {
         DayHeaderLine()
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
@@ -357,7 +369,9 @@ fun DayHeader(dayString: String) {
 @Composable
 private fun RowScope.DayHeaderLine() {
     Divider(
-        modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
+        modifier = Modifier
+            .weight(1f)
+            .align(Alignment.CenterVertically),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
     )
 }
@@ -389,7 +403,8 @@ fun ChatItemBubble(
                 Image(
                     bitmap = imageResource(it),
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.preferredSize(160.dp)
+                    modifier = Modifier.preferredSize(160.dp),
+                    contentDescription = stringResource(id = R.string.attached_image)
                 )
             }
         }

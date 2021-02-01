@@ -76,10 +76,12 @@ private fun DrawerHeader() {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
         Image(
             vectorResource(id = R.drawable.ic_jetchat),
+            contentDescription = null,
             modifier = Modifier.preferredSize(24.dp)
         )
         Image(
             vectorResource(id = R.drawable.jetchat_logo),
+            contentDescription = null,
             modifier = Modifier.padding(start = 8.dp)
         )
     }
@@ -116,7 +118,8 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
         Icon(
             vectorResource(id = R.drawable.ic_jetchat),
             tint = iconTint,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp),
+            contentDescription = null
         )
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
@@ -146,7 +149,8 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
                 Image(
                     imageResource(id = profilePic),
                     modifier = widthPaddingModifier.then(Modifier.clip(CircleShape)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null
                 )
             } else {
                 Spacer(modifier = widthPaddingModifier)
