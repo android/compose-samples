@@ -43,14 +43,14 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -132,7 +132,8 @@ fun InterestsScreen(
         val (publications) = produceUiState(interestsRepository) {
             getPublications()
         }
-        val selectedPublications by interestsRepository.observePublicationSelected().collectAsState(setOf())
+        val selectedPublications by interestsRepository.observePublicationSelected()
+            .collectAsState(setOf())
         val onPublicationSelect: (String) -> Unit = {
             coroutineScope.launch { interestsRepository.togglePublicationSelected(it) }
         }
@@ -141,7 +142,7 @@ fun InterestsScreen(
     }
 
     val tabContent = listOf(topicsSection, peopleSection, publicationSection)
-    val (currentSection, updateSection) = savedInstanceState { tabContent.first().section }
+    val (currentSection, updateSection) = rememberSaveable { mutableStateOf(tabContent.first().section) }
     InterestsScreen(
         tabContent = tabContent,
         tab = currentSection,
@@ -184,7 +185,7 @@ fun InterestsScreen(
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
                         Icon(
-                            imageVector = vectorResource(R.drawable.ic_jetnews_logo),
+                            painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)
                         )
                     }
@@ -345,7 +346,7 @@ private fun TabWithSections(
  */
 @Composable
 private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
-    val image = imageResource(R.drawable.placeholder_1_1)
+    val image = painterResource(R.drawable.placeholder_1_1)
     Row(
         modifier = Modifier
             .toggleable(
@@ -355,7 +356,7 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             .padding(horizontal = 16.dp)
     ) {
         Image(
-            bitmap = image,
+            painter = image,
             contentDescription = null, // decorative
             modifier = Modifier
                 .align(Alignment.CenterVertically)

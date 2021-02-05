@@ -31,10 +31,10 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -49,7 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
@@ -89,7 +90,7 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         }
         post.subtitle?.let { subtitle ->
             item {
-                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Providers(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.body2,
@@ -114,19 +115,17 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
 
 @Composable
 private fun PostHeaderImage(post: Post) {
-    post.image?.let { image ->
-        val imageModifier = Modifier
-            .heightIn(min = 180.dp)
-            .fillMaxWidth()
-            .clip(shape = MaterialTheme.shapes.medium)
-        Image(
-            bitmap = image,
-            contentDescription = null, // decorative
-            modifier = imageModifier,
-            contentScale = ContentScale.Crop
-        )
-        Spacer(Modifier.preferredHeight(defaultSpacerSize))
-    }
+    val imageModifier = Modifier
+        .heightIn(min = 180.dp)
+        .fillMaxWidth()
+        .clip(shape = MaterialTheme.shapes.medium)
+    Image(
+        painter = painterResource(post.imageId),
+        contentDescription = null, // decorative
+        modifier = imageModifier,
+        contentScale = ContentScale.Crop
+    )
+    Spacer(Modifier.preferredHeight(defaultSpacerSize))
 }
 
 @Composable
@@ -137,7 +136,7 @@ private fun PostMetadata(metadata: Metadata) {
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = null, // decorative
             modifier = Modifier.preferredSize(40.dp),
-            colorFilter = ColorFilter.tint(AmbientContentColor.current),
+            colorFilter = ColorFilter.tint(LocalContentColor.current),
             contentScale = ContentScale.Fit
         )
         Spacer(Modifier.preferredWidth(8.dp))
@@ -148,7 +147,7 @@ private fun PostMetadata(metadata: Metadata) {
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
                     style = typography.caption
@@ -221,16 +220,16 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        with(AmbientDensity.current) {
+        with(LocalDensity.current) {
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
                     .preferredSize(8.sp.toDp(), 8.sp.toDp())
                     .alignBy {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
-                        9.sp.toIntPx()
+                        9.sp.roundToPx()
                     }
-                    .background(AmbientContentColor.current, CircleShape),
+                    .background(LocalContentColor.current, CircleShape),
             ) { /* no content */ }
         }
         Text(

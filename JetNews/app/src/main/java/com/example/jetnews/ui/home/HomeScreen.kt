@@ -51,9 +51,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -173,7 +173,7 @@ fun HomeScreen(
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
                         Icon(
-                            imageVector = vectorResource(R.drawable.ic_jetnews_logo),
+                            painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)
                         )
                     }
@@ -438,7 +438,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
+            postsRepository = BlockingFakePostsRepository(LocalContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -456,7 +456,7 @@ fun PreviewHomeScreenBodyDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val posts = runBlocking {
         BlockingFakePostsRepository(context).getPosts()
     }
@@ -471,7 +471,7 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
+            postsRepository = BlockingFakePostsRepository(LocalContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
