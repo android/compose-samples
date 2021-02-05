@@ -17,7 +17,6 @@
 package com.example.jetnews.data.posts.impl
 
 import android.content.res.Resources
-import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
@@ -40,21 +39,6 @@ class FakePostsRepository(
     private val resources: Resources
 ) : PostsRepository {
 
-    /**
-     * Simulates preparing the data for each post.
-     *
-     * DISCLAIMER: Loading resources with the ApplicationContext isn't ideal as it isn't themed.
-     * This should be done from the UI layer.
-     */
-    private val postsWithResources: List<Post> by lazy {
-        posts.map {
-            it.copy(
-                image = imageFromResource(resources, it.imageId),
-                imageThumb = imageFromResource(resources, it.imageThumbId)
-            )
-        }
-    }
-
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
@@ -63,7 +47,7 @@ class FakePostsRepository(
 
     override suspend fun getPost(postId: String): Result<Post> {
         return withContext(Dispatchers.IO) {
-            val post = postsWithResources.find { it.id == postId }
+            val post = posts.find { it.id == postId }
             if (post == null) {
                 Result.Error(IllegalArgumentException("Post not found"))
             } else {
@@ -78,7 +62,7 @@ class FakePostsRepository(
             if (shouldRandomlyFail()) {
                 Result.Error(IllegalStateException())
             } else {
-                Result.Success(postsWithResources)
+                Result.Success(posts)
             }
         }
     }
