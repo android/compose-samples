@@ -39,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -146,22 +148,18 @@ fun BookmarkButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val clickLabel = stringResource(
+        if (isBookmarked) R.string.unbookmark else R.string.bookmark
+    )
     IconToggleButton(
         checked = isBookmarked,
         onCheckedChange = { onClick() },
-        modifier = modifier
+        modifier = modifier.semantics { this.onClick(label = clickLabel, action = null) }
     ) {
-        if (isBookmarked) {
-            Icon(
-                imageVector = Icons.Filled.Bookmark,
-                contentDescription = stringResource(R.string.cd_bookmark)
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Filled.BookmarkBorder,
-                contentDescription = stringResource(R.string.cd_bookmark)
-            )
-        }
+        Icon(
+            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+            contentDescription = null // handled by click label of parent
+        )
     }
 }
 
