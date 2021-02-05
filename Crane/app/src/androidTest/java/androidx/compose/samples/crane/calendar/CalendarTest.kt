@@ -26,7 +26,7 @@ import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.Selected
 import androidx.compose.samples.crane.data.DatesRepository
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assertLabelEquals
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -80,10 +80,10 @@ class CalendarTest {
         composeTestRule.onNodeWithContentDescription("January 3").assertExists()
 
         val datesNoSelected = composeTestRule.onDateNodes(NoSelected)
-        datesNoSelected[0].assertLabelEquals("January 1")
-        datesNoSelected[1].assertLabelEquals("January 3")
+        datesNoSelected[0].assertContentDescriptionEquals("January 1")
+        datesNoSelected[1].assertContentDescriptionEquals("January 3")
 
-        composeTestRule.onDateNode(FirstLastDay).assertLabelEquals("January 2")
+        composeTestRule.onDateNode(FirstLastDay).assertContentDescriptionEquals("January 2")
     }
 
     @Test
@@ -91,18 +91,18 @@ class CalendarTest {
         composeTestRule.onNodeWithContentDescription("January 2").assertExists().performClick()
 
         val datesNoSelectedOneClick = composeTestRule.onDateNodes(NoSelected)
-        datesNoSelectedOneClick[0].assertLabelEquals("January 1")
-        datesNoSelectedOneClick[1].assertLabelEquals("January 3")
+        datesNoSelectedOneClick[0].assertContentDescriptionEquals("January 1")
+        datesNoSelectedOneClick[1].assertContentDescriptionEquals("January 3")
 
         composeTestRule.onNodeWithContentDescription("January 4").assertExists().performClick()
 
-        composeTestRule.onDateNode(FirstDay).assertLabelEquals("January 2")
-        composeTestRule.onDateNode(Selected).assertLabelEquals("January 3")
-        composeTestRule.onDateNode(LastDay).assertLabelEquals("January 4")
+        composeTestRule.onDateNode(FirstDay).assertContentDescriptionEquals("January 2")
+        composeTestRule.onDateNode(Selected).assertContentDescriptionEquals("January 3")
+        composeTestRule.onDateNode(LastDay).assertContentDescriptionEquals("January 4")
 
         val datesNoSelected = composeTestRule.onDateNodes(NoSelected)
-        datesNoSelected[0].assertLabelEquals("January 1")
-        datesNoSelected[1].assertLabelEquals("January 5")
+        datesNoSelected[0].assertContentDescriptionEquals("January 1")
+        datesNoSelected[1].assertContentDescriptionEquals("January 5")
     }
 }
 

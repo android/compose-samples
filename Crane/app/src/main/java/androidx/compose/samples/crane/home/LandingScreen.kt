@@ -26,7 +26,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.samples.crane.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.delay
 
 private const val SplashWaitTime: Long = 2000
@@ -41,6 +41,6 @@ fun LandingScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
             delay(SplashWaitTime)
             currentOnTimeout()
         }
-        Image(vectorResource(id = R.drawable.ic_crane_drawer), contentDescription = null)
+        Image(painterResource(id = R.drawable.ic_crane_drawer), contentDescription = null)
     }
 }
