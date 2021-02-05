@@ -18,7 +18,7 @@ package com.example.owl.ui.theme
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
  * Images that can vary by theme.
@@ -26,4 +26,4 @@ import androidx.compose.runtime.staticAmbientOf
 @Immutable
 data class Images(@DrawableRes val lockupLogo: Int)
 
-internal val AmbientImages = staticAmbientOf<Images>()
+internal val AmbientImages = staticCompositionLocalOf<Images>(null)

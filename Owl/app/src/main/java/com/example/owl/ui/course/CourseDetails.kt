@@ -38,13 +38,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -67,9 +67,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -89,7 +89,7 @@ import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import dev.chrisbanes.accompanist.insets.toPaddingValues
@@ -119,7 +119,7 @@ fun CourseDetails(
     PinkTheme {
         BoxWithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)
-            val fabSize = with(AmbientDensity.current) { FabSize.toPx() }
+            val fabSize = with(LocalDensity.current) { FabSize.toPx() }
             val dragRange = constraints.maxHeight - fabSize
 
             backHandler(
@@ -201,7 +201,7 @@ private fun CourseDescriptionHeader(
                 )
             }
             Image(
-                imageVector = vectorResource(id = R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
@@ -245,7 +245,7 @@ private fun CourseDescriptionBody(course: Course) {
             .padding(horizontal = 16.dp)
     )
     Spacer(modifier = Modifier.preferredHeight(16.dp))
-    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+    Providers(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.course_desc),
             style = MaterialTheme.typography.body1,
@@ -264,7 +264,7 @@ private fun CourseDescriptionBody(course: Course) {
             .fillMaxWidth()
             .padding(16.dp)
     )
-    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+    Providers(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.needs),
             style = MaterialTheme.typography.body1,
@@ -337,8 +337,8 @@ private fun LessonsSheet(
     updateSheet: (SheetState) -> Unit
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
-    val fabSize = with(AmbientDensity.current) { FabSize.toPx() }
-    val fabSheetHeight = fabSize + AmbientWindowInsets.current.systemBars.bottom
+    val fabSize = with(LocalDensity.current) { FabSize.toPx() }
+    val fabSheetHeight = fabSize + LocalWindowInsets.current.systemBars.bottom
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
     val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
     val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
@@ -351,8 +351,8 @@ private fun LessonsSheet(
     )
     Surface(
         color = surfaceColor,
-        contentColor = contentColorFor(color = MaterialTheme.colors.primarySurface),
-        shape = RoundedCornerShape(topLeft = tlCorner),
+        contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.primarySurface),
+        shape = RoundedCornerShape(topStart = tlCorner),
         modifier = Modifier.graphicsLayer {
             translationX = offsetX
             translationY = offsetY
@@ -409,7 +409,7 @@ private fun Lessons(
             }
             LazyColumn(
                 state = scroll,
-                contentPadding = AmbientWindowInsets.current.systemBars.toPaddingValues(
+                contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
                     top = false
                 )
             ) {
@@ -465,7 +465,7 @@ private fun Lesson(lesson: Lesson) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically

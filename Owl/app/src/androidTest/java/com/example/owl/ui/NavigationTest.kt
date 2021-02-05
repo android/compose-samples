@@ -27,7 +27,7 @@ import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
-import com.example.owl.ui.utils.AmbientBackDispatcher
+import com.example.owl.ui.utils.LocalBackDispatcher
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
@@ -48,7 +48,7 @@ class NavigationTest {
     private fun startActivity(startDestination: String? = null) {
         composeTestRule.setContent {
             val backDispatcher = composeTestRule.activity.onBackPressedDispatcher
-            Providers(AmbientBackDispatcher provides backDispatcher) {
+            Providers(LocalBackDispatcher provides backDispatcher) {
                 ProvideWindowInsets {
                     ProvideTestImageLoader {
                         if (startDestination == null) {

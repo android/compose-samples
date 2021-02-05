@@ -34,15 +34,9 @@ plugins {
 
 subprojects {
     repositories {
+        maven { url 'https://storage.googleapis.com/temp-androidx-snapshot.appspot.com/7123292/' }
         google()
         jcenter()
-
-        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
-            maven {
-                url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
-            }
-        }
-
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
@@ -52,7 +46,19 @@ subprojects {
             allWarningsAsErrors = true
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+        }
+    }
+
+    // FIXME: Only needed for Compose 1.0.0-alpha12 snapshots
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'androidx.lifecycle' &&
+                    details.requested.name != 'lifecycle-viewmodel-compose') {
+                details.useVersion('2.3.0-rc01')
+            }
+            if (details.requested.group == 'androidx.savedstate') {
+                details.useVersion('1.1.0-rc01')
+            }
         }
     }
 

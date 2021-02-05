@@ -127,7 +127,7 @@ private fun OwlTheme(
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val images = if (darkTheme) DarkImages else LightImages
     Providers(
-        AmbientElevations provides elevation,
+        LocalElevations provides elevation,
         AmbientImages provides images
     ) {
         MaterialTheme(
@@ -171,7 +171,7 @@ object OwlTheme {
      */
     val elevations: Elevations
         @Composable
-        get() = AmbientElevations.current
+        get() = LocalElevations.current
 
     /**
      * Retrieves the current [Images] at the call site's position in the hierarchy.
