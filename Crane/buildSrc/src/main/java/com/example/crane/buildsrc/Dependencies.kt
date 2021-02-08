@@ -48,6 +48,10 @@ object Libs {
     }
 
     object AndroidX {
+        object Activity {
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+        }
+
         object Compose {
             const val snapshot = "7123292"
             private const val version = "1.0.0-SNAPSHOT"
@@ -60,10 +64,6 @@ object Libs {
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val animation = "androidx.compose.animation:animation:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
-        }
-
-        object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Lifecycle {
