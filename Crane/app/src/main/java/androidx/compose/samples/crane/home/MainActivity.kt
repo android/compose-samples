@@ -18,6 +18,7 @@ package androidx.compose.samples.crane.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring.StiffnessLow
@@ -38,7 +39,6 @@ import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dagger.hilt.android.AndroidEntryPoint

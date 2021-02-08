@@ -45,7 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.accompanist.coil.CoilImage
 
@@ -102,7 +102,7 @@ private fun ExploreItem(
                     Box(Modifier.fillMaxSize()) {
                         Image(
                             modifier = Modifier.preferredSize(36.dp).align(Alignment.Center),
-                            imageVector = vectorResource(id = R.drawable.ic_crane_logo),
+                            painter = painterResource(id = R.drawable.ic_crane_logo),
                             contentDescription = null
                         )
                     }

@@ -28,8 +28,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -43,7 +43,7 @@ fun CraneDrawer(modifier: Modifier = Modifier) {
             .padding(start = 24.dp, top = 48.dp)
     ) {
         Image(
-            imageVector = vectorResource(R.drawable.ic_crane_drawer),
+            painter = painterResource(R.drawable.ic_crane_drawer),
             contentDescription = stringResource(R.string.cd_drawer)
         )
         for (screen in screens) {
