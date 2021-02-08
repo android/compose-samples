@@ -16,8 +16,6 @@
 
 package com.example.jetnews.data.posts.impl
 
-import android.content.res.Resources
-import androidx.compose.ui.graphics.imageFromResource
 import com.example.jetnews.R
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -1027,12 +1025,3 @@ val posts: List<Post> =
         post4.copy(id = "post9"),
         post5.copy(id = "post10")
     )
-
-fun getPostsWithImagesLoaded(posts: List<Post>, resources: Resources): List<Post> {
-    return posts.map {
-        it.copy(
-            image = imageFromResource(resources, it.imageId),
-            imageThumb = imageFromResource(resources, it.imageThumbId)
-        )
-    }
-}
