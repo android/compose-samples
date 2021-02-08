@@ -101,6 +101,9 @@ fun PostCardSimple(
             .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
             .semantics {
+                // By defining a custom action, we tell accessibility services that this whole
+                // composable has an action attached to it. The accessibility service can choose
+                // how to best communicate this action to the user.
                 customActions = listOf(
                     CustomAccessibilityAction(
                         label = bookmarkAction,
@@ -168,7 +171,11 @@ fun BookmarkButton(
     IconToggleButton(
         checked = isBookmarked,
         onCheckedChange = { onClick() },
-        modifier = modifier.semantics { this.onClick(label = clickLabel, action = null) }
+        modifier = modifier.semantics {
+            // Use a custom click label that accessibility services can communicate to the user.
+            // We only want to override the label, not the actual action, so for the action we pass null.
+            this.onClick(label = clickLabel, action = null)
+        }
     ) {
         Icon(
             imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
