@@ -22,11 +22,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.node.Ref
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.compose.ui.viewinterop.databinding.TestLayoutBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
+import androidx.viewbinding.ViewBinding
 import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.BackPressHandler
@@ -82,8 +86,17 @@ class NavActivity : AppCompatActivity() {
                             scaffoldState.drawerState.close()
                         }
                     ) {
+                        // Workaround for b/178174718
                         // Inflate the XML layout using View Binding:
-                        AndroidViewBinding(ContentMainBinding::inflate)
+                        val bindingRef = remember { Ref<ViewBinding>() }
+                        AndroidViewBinding({ inflater, parent, attachToParent ->
+                            if (bindingRef.value == null) {
+                                bindingRef.value = ContentMainBinding.inflate(inflater, parent, attachToParent)
+                            }
+                            bindingRef.value as ViewBinding
+                        })
+                        // End of workaround for b/178174718
+                        //AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
             }

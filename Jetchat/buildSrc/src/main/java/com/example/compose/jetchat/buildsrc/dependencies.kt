@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.4.21-2"
+        private const val version = "1.4.30"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -43,7 +43,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.5.0"
+        private const val version = "0.5.1.compose-7123292-SNAPSHOT"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
@@ -51,9 +51,13 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
 
+        object Activity {
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+        }
+
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-alpha11"
+            const val snapshot = "7123292"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -69,7 +73,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.0"
+            private const val version = "2.3.3"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }
@@ -88,10 +92,11 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.2.0"
+            private const val version = "2.3.0-beta01"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
         }
     }
 }

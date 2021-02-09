@@ -30,6 +30,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,7 +65,7 @@ fun JetchatAppBar(
             title = { Row { title() } }, // https://issuetracker.google.com/168793068
             navigationIcon = {
                 Image(
-                    imageVector = vectorResource(id = R.drawable.ic_jetchat),
+                    painter = painterResource(id = R.drawable.ic_jetchat),
                     contentDescription = stringResource(id = R.string.back),
                     modifier = Modifier
                         .clickable(onClick = onNavIconPressed)

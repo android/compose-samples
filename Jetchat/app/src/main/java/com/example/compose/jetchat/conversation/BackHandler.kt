@@ -18,13 +18,12 @@ package com.example.compose.jetchat.conversation
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.runtime.Ambient
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
  * This [Composable] can be used with a [AmbientBackPressedDispatcher] to intercept a back press.
@@ -68,4 +67,4 @@ fun BackPressHandler(onBackPressed: () -> Unit) {
  * and setting up the callbacks with [BackPressHandler].
  */
 val AmbientBackPressedDispatcher =
-    staticAmbientOf<OnBackPressedDispatcher> { error("No Back Dispatcher provided") }
+    staticCompositionLocalOf<OnBackPressedDispatcher> { error("No Back Dispatcher provided") }
