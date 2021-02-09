@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.example.jetcaster.ui.home.category
 
 import androidx.compose.foundation.Image
@@ -35,12 +37,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -191,7 +193,7 @@ fun EpisodeListItem(
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
                 maxLines = 2,
@@ -215,7 +217,7 @@ fun EpisodeListItem(
             imageVector = Icons.Rounded.PlayCircleFilled,
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(AmbientContentColor.current),
+            colorFilter = ColorFilter.tint(LocalContentColor.current),
             modifier = Modifier
                 .clickable(
                     interactionState = remember { InteractionState() },
@@ -229,7 +231,7 @@ fun EpisodeListItem(
                 }
         )
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = when {
                     episode.duration != null -> {

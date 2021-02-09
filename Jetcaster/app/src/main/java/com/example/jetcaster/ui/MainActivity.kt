@@ -18,7 +18,7 @@ package com.example.jetcaster.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.platform.setContent
+import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets

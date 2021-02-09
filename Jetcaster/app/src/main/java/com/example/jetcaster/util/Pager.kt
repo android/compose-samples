@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.example.jetcaster.util
 
 import androidx.compose.animation.AnimatedFloatModel
