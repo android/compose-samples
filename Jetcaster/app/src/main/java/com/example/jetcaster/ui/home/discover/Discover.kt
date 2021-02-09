@@ -18,8 +18,10 @@
 
 package com.example.jetcaster.ui.home.discover
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
@@ -37,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.jetcaster.data.Category
+import com.example.jetcaster.ui.home.category.PodcastCategory
 import com.example.jetcaster.ui.theme.Keyline1
 
 @Composable
@@ -52,10 +55,6 @@ fun Discover(
         Column(modifier) {
             Spacer(Modifier.preferredHeight(8.dp))
 
-            // // We need to keep track of the previously selected category, to determine the
-            // // change direction below for the transition
-            // var previousSelectedCategory by remember { mutableStateOf<Category?>(null) }
-
             PodcastCategoryTabs(
                 categories = viewState.categories,
                 selectedCategory = selectedCategory,
@@ -64,47 +63,25 @@ fun Discover(
             )
 
             Spacer(Modifier.preferredHeight(8.dp))
-            //
-            // // We need to reverse the transition if the new category is to the left/start
-            // // of the previous category
-            // val reverseTransition = previousSelectedCategory?.let { p ->
-            //     viewState.categories.indexOf(selectedCategory) < viewState.categories.indexOf(p)
-            // } ?: false
-            // val transitionOffset = with(AmbientDensity.current) { 16.dp.toPx() }
-            //
-            // ItemSwitcher(
-            //     current = selectedCategory,
-            //     transitionDefinition = getChoiceChipTransitionDefinition(
-            //         reverse = reverseTransition,
-            //         offsetPx = transitionOffset
-            //     ),
-            //     modifier = Modifier
-            //         .fillMaxWidth()
-            //         .weight(1f)
-            // ) { category, transitionState ->
-            //     /**
-            //      * TODO, need to think about how this will scroll within the outer VerticalScroller
-            //      */
-            //     PodcastCategory(
-            //         categoryId = category.id,
-            //         modifier = Modifier
-            //             .fillMaxSize()
-            //             .graphicsLayer {
-            //                 translationX = transitionState[Offset]
-            //                 alpha = transitionState[Alpha]
-            //             }
-            //     )
-            // }
-            //
-            // DisposableEffect(selectedCategory) {
-            //     // Update our tracking of the previously selected category
-            //     previousSelectedCategory = selectedCategory
-            //     onDispose {}
-            // }
+
+            Crossfade(
+                targetState = selectedCategory,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) { category ->
+                /**
+                 * TODO, need to think about how this will scroll within the outer VerticalScroller
+                 */
+                PodcastCategory(
+                    categoryId = category.id,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
         }
-    } else {
-        // TODO: empty state
     }
+    // TODO: empty state
 }
 
 private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
@@ -164,72 +141,3 @@ private fun ChoiceChipContent(
         )
     }
 }
-
-// private val Alpha = FloatPropKey("alpha")
-// private val Offset = FloatPropKey("offset")
-//
-// @Composable
-// private fun getChoiceChipTransitionDefinition(
-//     duration: Int = 183,
-//     offsetPx: Float,
-//     reverse: Boolean = false
-// ): TransitionDefinition<ItemTransitionState> = remember(reverse, offsetPx, duration) {
-//
-//     transitionDefinition {
-//         state(ItemTransitionState.Visible) {
-//             this[Alpha] = 1f
-//             this[Offset] = 0f
-//         }
-//         state(ItemTransitionState.BecomingVisible) {
-//             this[Alpha] = 0f
-//             this[Offset] = if (reverse) -offsetPx else offsetPx
-//         }
-//         state(ItemTransitionState.BecomingNotVisible) {
-//             this[Alpha] = 0f
-//             this[Offset] = if (reverse) offsetPx else -offsetPx
-//         }
-//
-//         val halfDuration = duration / 2
-//
-//         transition(
-//             fromState = ItemTransitionState.BecomingVisible,
-//             toState = ItemTransitionState.Visible
-//         ) {
-//             // TODO: look at whether this can be implemented using `spring` to enable
-//             //  interruptions, etc
-//             Alpha using tween(
-//                 durationMillis = halfDuration,
-//                 delayMillis = halfDuration,
-//                 easing = LinearEasing
-//             )
-//             Offset using tween(
-//                 durationMillis = halfDuration,
-//                 delayMillis = halfDuration,
-//                 easing = LinearOutSlowInEasing
-//             )
-//         }
-//
-//         transition(
-//             fromState = ItemTransitionState.Visible,
-//             toState = ItemTransitionState.BecomingNotVisible
-//         ) {
-//             Alpha using tween(
-//                 durationMillis = halfDuration,
-//                 easing = LinearEasing,
-//                 delayMillis = DelayForContentToLoad
-//             )
-//             Offset using tween(
-//                 durationMillis = halfDuration,
-//                 easing = LinearOutSlowInEasing,
-//                 delayMillis = DelayForContentToLoad
-//             )
-//         }
-//     }
-// }
-
-/**
- * This is a hack. Compose currently has no concept of delayed transitions, something akin to
- * Fragment postponing of transitions while content loads. To workaround that for now, we
- * introduce an initial hardcoded delay of 24ms.
- */
-private const val DelayForContentToLoad = 24
