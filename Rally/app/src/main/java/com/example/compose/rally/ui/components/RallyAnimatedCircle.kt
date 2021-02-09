@@ -31,7 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
 private const val DividerLengthInDegrees = 1.8f
@@ -49,7 +49,7 @@ fun AnimatedCircle(
         MutableTransitionState(AnimatedCircleProgress.START)
             .apply { targetState = AnimatedCircleProgress.END }
     }
-    val stroke = with(AmbientDensity.current) { Stroke(5.dp.toPx()) }
+    val stroke = with(LocalDensity.current) { Stroke(5.dp.toPx()) }
     val transition = updateTransition(currentState)
     val angleOffset by transition.animateFloat(
         transitionSpec = {
