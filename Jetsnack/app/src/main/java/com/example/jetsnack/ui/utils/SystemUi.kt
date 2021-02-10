@@ -19,7 +19,7 @@ package com.example.jetsnack.ui.utils
 import android.os.Build
 import android.view.View
 import android.view.Window
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
@@ -141,10 +141,10 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
 }
 
 /**
- * An [androidx.compose.runtime.Ambient] holding the current [SysUiController]. Defaults to a
+ * An [androidx.compose.runtime.Ambient] holding the current [LocalSysUiController]. Defaults to a
  * no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
  */
-val SysUiController = staticAmbientOf<SystemUiController> {
+val LocalSysUiController = staticCompositionLocalOf<SystemUiController> {
     FakeSystemUiController
 }
 

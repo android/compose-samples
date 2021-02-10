@@ -48,7 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -213,8 +213,8 @@ private fun Body(
 
 @Composable
 private fun Title(snack: Snack, scroll: Float) {
-    val maxOffset = with(AmbientDensity.current) { MaxTitleOffset.toPx() }
-    val minOffset = with(AmbientDensity.current) { MinTitleOffset.toPx() }
+    val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
+    val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
     val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
     Column(
         verticalArrangement = Arrangement.Bottom,
@@ -256,7 +256,7 @@ private fun Image(
     imageUrl: String,
     scroll: Float
 ) {
-    val collapseRange = with(AmbientDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
+    val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
     val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
 
     CollapsingImageLayout(
@@ -283,12 +283,12 @@ private fun CollapsingImageLayout(
     ) { measurables, constraints ->
         check(measurables.size == 1)
 
-        val imageMaxSize = min(ExpandedImageSize.toIntPx(), constraints.maxWidth)
-        val imageMinSize = max(CollapsedImageSize.toIntPx(), constraints.minWidth)
+        val imageMaxSize = min(ExpandedImageSize.roundToPx(), constraints.maxWidth)
+        val imageMinSize = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
         val imageWidth = lerp(imageMaxSize, imageMinSize, collapseFraction)
         val imagePlaceable = measurables[0].measure(Constraints.fixed(imageWidth, imageWidth))
 
-        val imageY = lerp(MinTitleOffset, MinImageOffset, collapseFraction).toIntPx()
+        val imageY = lerp(MinTitleOffset, MinImageOffset, collapseFraction).roundToPx()
         val imageX = lerp(
             (constraints.maxWidth - imageWidth) / 2, // centered when expanded
             constraints.maxWidth - imageWidth, // right aligned when collapsed
