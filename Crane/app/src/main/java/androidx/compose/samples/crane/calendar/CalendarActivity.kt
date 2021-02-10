@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.IconButton
@@ -34,10 +35,9 @@ import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DaySelected
 import androidx.compose.samples.crane.data.CalendarYear
-import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 fun launchCalendarActivity(context: Context) {
@@ -97,7 +97,7 @@ private fun CalendarContent(
                 navigationIcon = {
                     IconButton(onClick = { onBackPressed() }) {
                         Image(
-                            imageVector = vectorResource(R.drawable.ic_back),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = stringResource(R.string.cd_back)
                         )
                     }

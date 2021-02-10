@@ -108,6 +108,8 @@ dependencies {
     implementation Libs.GoogleMaps.maps
     implementation Libs.GoogleMaps.mapsKtx
 
+    implementation Libs.Accompanist.coil
+    implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.foundation
@@ -115,7 +117,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.animation
     implementation Libs.AndroidX.Compose.tooling
-    implementation Libs.Accompanist.coil
+    implementation Libs.AndroidX.Lifecycle.viewModelCompose
 
     implementation Libs.AndroidX.Lifecycle.viewModelKtx
     implementation Libs.Hilt.android
