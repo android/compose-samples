@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package com.example.jetcaster.ui.home.discover
 
 import androidx.compose.animation.Crossfade
@@ -33,11 +31,10 @@ import androidx.compose.material.TabPosition
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.emptyContent
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.ui.home.category.PodcastCategory
 import com.example.jetcaster.ui.theme.Keyline1
@@ -96,7 +93,7 @@ private fun PodcastCategoryTabs(
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
-        divider = emptyContent(), /* Disable the built-in divider */
+        divider = {}, /* Disable the built-in divider */
         edgePadding = Keyline1,
         indicator = emptyTabIndicator,
         modifier = modifier
