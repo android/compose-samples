@@ -30,7 +30,7 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
-import dev.chrisbanes.accompanist.coil.AmbientImageLoader
+import dev.chrisbanes.accompanist.coil.LocalImageLoader
 
 /**
  * Replaces all remote images with a simple black drawable to make testing faster and hermetic.
@@ -75,7 +75,7 @@ fun ProvideTestImageLoader(content: @Composable () -> Unit) {
             )
         }
 
-        override fun shutdown() { }
+        override fun shutdown() {}
     }
-    Providers(AmbientImageLoader provides loader, content = content)
+    Providers(LocalImageLoader provides loader, content = content)
 }

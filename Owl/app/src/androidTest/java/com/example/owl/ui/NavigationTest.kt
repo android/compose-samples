@@ -19,10 +19,10 @@ package com.example.owl.ui
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithSubstring
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
@@ -81,7 +81,7 @@ class NavigationTest {
         composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
 
         // The first course should be shown
-        composeTestRule.onNodeWithSubstring(courses.first().name).assertExists()
+        composeTestRule.onNodeWithText(courses.first().name).assertExists()
     }
 
     @Test
@@ -91,11 +91,11 @@ class NavigationTest {
 
         // Navigate to the first course
         composeTestRule.onNode(
-            hasContentDescription(getFeaturedCourseLabel()).and(hasSubstring(courses.first().name))
+            hasContentDescription(getFeaturedCourseLabel()).and(hasText(courses.first().name))
         ).performClick()
 
         // Assert navigated to the course details
-        composeTestRule.onNodeWithSubstring(getCourseDesc().take(15)).assertExists()
+        composeTestRule.onNodeWithText(getCourseDesc().take(15)).assertExists()
     }
 
     @Test
@@ -106,7 +106,7 @@ class NavigationTest {
         }
 
         // The first course should be shown
-        composeTestRule.onNodeWithSubstring(courses.first().name).assertExists()
+        composeTestRule.onNodeWithText(courses.first().name).assertExists()
     }
 
     private fun getOnboardingFabLabel(): String {
