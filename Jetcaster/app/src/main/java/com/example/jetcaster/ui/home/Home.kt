@@ -58,7 +58,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalAnimationClock
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -177,8 +176,8 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val clock = LocalAnimationClock.current
-            val pagerState = remember(clock) { PagerState(clock) }
+
+            val pagerState = remember { PagerState() }
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -315,10 +314,7 @@ fun HomeCategoryTabIndicator(
 fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
     modifier: Modifier = Modifier,
-    pagerState: PagerState = run {
-        val clock = LocalAnimationClock.current
-        remember(clock) { PagerState(clock) }
-    },
+    pagerState: PagerState = remember { PagerState() },
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
