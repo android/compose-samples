@@ -21,7 +21,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import com.example.jetsnack.ui.home.Home
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme

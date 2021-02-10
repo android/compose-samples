@@ -16,7 +16,6 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.LocalIndication
