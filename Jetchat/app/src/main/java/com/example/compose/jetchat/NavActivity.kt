@@ -17,6 +17,7 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
@@ -24,9 +25,10 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.node.Ref
-import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.compositionContext
+import androidx.compose.ui.platform.findViewTreeCompositionContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.compose.ui.viewinterop.databinding.TestLayoutBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
@@ -86,17 +88,23 @@ class NavActivity : AppCompatActivity() {
                             scaffoldState.drawerState.close()
                         }
                     ) {
-                        // Workaround for b/178174718
+                        // Workaround for b/178174718 and b/179181757
                         // Inflate the XML layout using View Binding:
                         val bindingRef = remember { Ref<ViewBinding>() }
+                        val currentView = LocalView.current
+
                         AndroidViewBinding({ inflater, parent, attachToParent ->
                             if (bindingRef.value == null) {
-                                bindingRef.value = ContentMainBinding.inflate(inflater, parent, attachToParent)
+                                val binding: ViewBinding =
+                                    ContentMainBinding.inflate(inflater, parent, attachToParent)
+                                bindingRef.value = binding
+                                binding.root.compositionContext =
+                                    currentView.findViewTreeCompositionContext()
                             }
                             bindingRef.value as ViewBinding
                         })
                         // End of workaround for b/178174718
-                        //AndroidViewBinding(ContentMainBinding::inflate)
+                        // AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
             }
