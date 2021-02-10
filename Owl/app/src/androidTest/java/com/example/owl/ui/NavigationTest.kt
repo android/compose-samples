@@ -81,7 +81,10 @@ class NavigationTest {
         composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
 
         // The first course should be shown
-        composeTestRule.onNodeWithText(courses.first().name).assertExists()
+        composeTestRule.onNodeWithText(
+            text = courses.first().name,
+            substring = true
+        ).assertExists()
     }
 
     @Test
@@ -91,11 +94,19 @@ class NavigationTest {
 
         // Navigate to the first course
         composeTestRule.onNode(
-            hasContentDescription(getFeaturedCourseLabel()).and(hasText(courses.first().name))
+            hasContentDescription(getFeaturedCourseLabel()).and(
+                hasText(
+                    text = courses.first().name,
+                    substring = true
+                )
+            )
         ).performClick()
 
         // Assert navigated to the course details
-        composeTestRule.onNodeWithText(getCourseDesc().take(15)).assertExists()
+        composeTestRule.onNodeWithText(
+            text = getCourseDesc().take(15),
+            substring = true
+        ).assertExists()
     }
 
     @Test
@@ -106,7 +117,10 @@ class NavigationTest {
         }
 
         // The first course should be shown
-        composeTestRule.onNodeWithText(courses.first().name).assertExists()
+        composeTestRule.onNodeWithText(
+            text = courses.first().name,
+            substring = true
+        ).assertExists()
     }
 
     private fun getOnboardingFabLabel(): String {
