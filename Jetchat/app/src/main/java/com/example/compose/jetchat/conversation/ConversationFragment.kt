@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.runtime.Providers
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
 import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.ViewWindowInsetObserver
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 class ConversationFragment : Fragment() {
 
@@ -75,7 +77,10 @@ class ConversationFragment : Fragment() {
                         },
                         onNavIconPressed = {
                             activityViewModel.openDrawer()
-                        }
+                        },
+                        // Add padding so that we are inset from any left/right navigation bars
+                        // (usually shown when in landscape orientation)
+                        modifier = Modifier.navigationBarsPadding(bottom = false)
                     )
                 }
             }

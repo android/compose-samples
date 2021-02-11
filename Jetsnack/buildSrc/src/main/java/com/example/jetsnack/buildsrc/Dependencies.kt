@@ -70,6 +70,10 @@ object Libs {
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
         }
 
+        object ConstraintLayout {
+            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha02"
+        }
+
         object Test {
             private const val version = "1.2.0"
             const val core = "androidx.test:core:$version"

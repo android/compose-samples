@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION") // FIXME move to new ConstraintLayout dep once released
-
 package com.example.jetsnack.ui.home.cart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ChainStyle
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,12 +47,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackCollection
@@ -129,7 +127,7 @@ private fun CartContent(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources = AmbientContext.current.resources
+    val resources = LocalContext.current.resources
     val snackCountFormattedString = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
