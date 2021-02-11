@@ -15,8 +15,8 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4.21-2'
-    ext.compose_version = '1.0.0-alpha11'
+    ext.kotlin_version = '1.4.30'
+    ext.compose_version = '1.0.0-alpha12'
     ext.coroutines_version = '1.4.2'
 
     repositories {
@@ -31,7 +31,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.7.0'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
@@ -47,7 +47,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.39.0")
+            ktlint("0.40.0")
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }

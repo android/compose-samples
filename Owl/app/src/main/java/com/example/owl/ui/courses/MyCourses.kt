@@ -65,7 +65,7 @@ fun MyCourse(
         CourseListItem(
             course = course,
             onClick = { selectCourse(course.id) },
-            shape = RoundedCornerShape(topLeft = 24.dp),
+            shape = RoundedCornerShape(topStart = 24.dp),
             modifier = Modifier.preferredHeight(96.dp)
         )
     }

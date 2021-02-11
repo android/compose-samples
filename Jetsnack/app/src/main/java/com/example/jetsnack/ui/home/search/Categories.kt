@@ -132,7 +132,7 @@ private fun SearchCategory(
 
         // Image is sized to the larger of height of item, or a minimum value
         // i.e. may appear larger than item (but clipped to the item bounds)
-        val imageSize = max(MinImageSize.toIntPx(), constraints.maxHeight)
+        val imageSize = max(MinImageSize.roundToPx(), constraints.maxHeight)
         val imagePlaceable = measurables[1].measure(Constraints.fixed(imageSize, imageSize))
         layout(
             width = constraints.maxWidth,

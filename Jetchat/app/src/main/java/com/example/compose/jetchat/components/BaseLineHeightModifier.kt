@@ -52,9 +52,9 @@ data class BaselineHeightModifier(
         val firstBaseline = textPlaceable[FirstBaseline]
         val lastBaseline = textPlaceable[LastBaseline]
 
-        val height = heightFromBaseline.toIntPx() + lastBaseline - firstBaseline
+        val height = heightFromBaseline.roundToPx() + lastBaseline - firstBaseline
         return layout(constraints.maxWidth, height) {
-            val topY = heightFromBaseline.toIntPx() - firstBaseline
+            val topY = heightFromBaseline.roundToPx() - firstBaseline
             textPlaceable.place(0, topY)
         }
     }

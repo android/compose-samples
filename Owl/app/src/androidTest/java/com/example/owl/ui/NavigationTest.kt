@@ -19,15 +19,15 @@ package com.example.owl.ui
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithSubstring
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
-import com.example.owl.ui.utils.AmbientBackDispatcher
+import com.example.owl.ui.utils.LocalBackDispatcher
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
@@ -48,7 +48,7 @@ class NavigationTest {
     private fun startActivity(startDestination: String? = null) {
         composeTestRule.setContent {
             val backDispatcher = composeTestRule.activity.onBackPressedDispatcher
-            Providers(AmbientBackDispatcher provides backDispatcher) {
+            Providers(LocalBackDispatcher provides backDispatcher) {
                 ProvideWindowInsets {
                     ProvideTestImageLoader {
                         if (startDestination == null) {
@@ -81,7 +81,10 @@ class NavigationTest {
         composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
 
         // The first course should be shown
-        composeTestRule.onNodeWithSubstring(courses.first().name).assertExists()
+        composeTestRule.onNodeWithText(
+            text = courses.first().name,
+            substring = true
+        ).assertExists()
     }
 
     @Test
@@ -91,11 +94,19 @@ class NavigationTest {
 
         // Navigate to the first course
         composeTestRule.onNode(
-            hasContentDescription(getFeaturedCourseLabel()).and(hasSubstring(courses.first().name))
+            hasContentDescription(getFeaturedCourseLabel()).and(
+                hasText(
+                    text = courses.first().name,
+                    substring = true
+                )
+            )
         ).performClick()
 
         // Assert navigated to the course details
-        composeTestRule.onNodeWithSubstring(getCourseDesc().take(15)).assertExists()
+        composeTestRule.onNodeWithText(
+            text = getCourseDesc().take(15),
+            substring = true
+        ).assertExists()
     }
 
     @Test
@@ -106,7 +117,10 @@ class NavigationTest {
         }
 
         // The first course should be shown
-        composeTestRule.onNodeWithSubstring(courses.first().name).assertExists()
+        composeTestRule.onNodeWithText(
+            text = courses.first().name,
+            substring = true
+        ).assertExists()
     }
 
     private fun getOnboardingFabLabel(): String {

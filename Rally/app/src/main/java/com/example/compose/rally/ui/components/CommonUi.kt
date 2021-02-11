@@ -25,10 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -91,7 +91,7 @@ private fun BaseRow(
         Spacer(Modifier.preferredWidth(12.dp))
         Column(Modifier) {
             Text(text = title, style = typography.body1)
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(text = subtitle, style = typography.subtitle1)
             }
         }
@@ -114,7 +114,7 @@ private fun BaseRow(
         }
         Spacer(Modifier.preferredWidth(16.dp))
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
                 contentDescription = null,

@@ -22,10 +22,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -37,8 +37,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -53,7 +58,7 @@ fun AuthorAndReadTime(
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             val textStyle = MaterialTheme.typography.body2
             Text(
                 text = post.metadata.author.name,
@@ -69,10 +74,8 @@ fun AuthorAndReadTime(
 
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
-    val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
-
     Image(
-        bitmap = image,
+        painter = painterResource(post.imageThumbId),
         contentDescription = null, // decorative
         modifier = modifier
             .preferredSize(40.dp, 40.dp)
@@ -92,10 +95,22 @@ fun PostCardSimple(
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {
+    val bookmarkAction = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
     Row(
         modifier = Modifier
             .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
+            .semantics {
+                // By defining a custom action, we tell accessibility services that this whole
+                // composable has an action attached to it. The accessibility service can choose
+                // how to best communicate this action to the user.
+                customActions = listOf(
+                    CustomAccessibilityAction(
+                        label = bookmarkAction,
+                        action = { onToggleFavorite(); true }
+                    )
+                )
+            }
     ) {
         PostImage(post, Modifier.padding(end = 16.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -104,7 +119,9 @@ fun PostCardSimple(
         }
         BookmarkButton(
             isBookmarked = isFavorite,
-            onClick = onToggleFavorite
+            onClick = onToggleFavorite,
+            // Remove button semantics so action can be handled at row level
+            modifier = Modifier.clearAndSetSemantics {}
         )
     }
 }
@@ -121,7 +138,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "BASED ON YOUR HISTORY",
                     style = MaterialTheme.typography.overline
@@ -133,7 +150,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
                 contentDescription = stringResource(R.string.cd_more_actions)
@@ -148,22 +165,22 @@ fun BookmarkButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val clickLabel = stringResource(
+        if (isBookmarked) R.string.unbookmark else R.string.bookmark
+    )
     IconToggleButton(
         checked = isBookmarked,
         onCheckedChange = { onClick() },
-        modifier = modifier
-    ) {
-        if (isBookmarked) {
-            Icon(
-                imageVector = Icons.Filled.Bookmark,
-                contentDescription = stringResource(R.string.cd_bookmark)
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Filled.BookmarkBorder,
-                contentDescription = stringResource(R.string.cd_bookmark)
-            )
+        modifier = modifier.semantics {
+            // Use a custom click label that accessibility services can communicate to the user.
+            // We only want to override the label, not the actual action, so for the action we pass null.
+            this.onClick(label = clickLabel, action = null)
         }
+    ) {
+        Icon(
+            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+            contentDescription = null // handled by click label of parent
+        )
     }
 }
 

@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.4.21-2"
+        private const val version = "1.4.30"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -46,9 +46,13 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-alpha02"
 
+        object Activity {
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha02"
+        }
+
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-alpha11"
+            const val version = "1.0.0-alpha12"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -60,6 +64,13 @@ object Libs {
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val test = "androidx.compose.ui:ui-test:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+        }
+
+        object Lifecycle {
+            private const val version = "2.2.0"
+            const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
+            const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
+            const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
         object Navigation {
@@ -79,13 +90,6 @@ object Libs {
             }
 
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
-        }
-
-        object Lifecycle {
-            private const val version = "2.2.0"
-            const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
-            const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
-            const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
     }
 }

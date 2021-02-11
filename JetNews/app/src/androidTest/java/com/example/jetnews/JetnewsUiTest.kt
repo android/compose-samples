@@ -17,7 +17,6 @@
 package com.example.jetnews
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -49,7 +48,7 @@ class JetnewsUiTest {
     @Ignore("TODO Investigate why this passes locally but fail on CI")
     @Test
     fun app_opensArticle() {
-        composeTestRule.onAllNodes(hasSubstring("Manuel Vivo"))[0].performClick()
-        composeTestRule.onAllNodes(hasSubstring("3 min read"))[0].assertIsDisplayed()
+        composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
+        composeTestRule.onNodeWithText("3 min read", substring = true).assertIsDisplayed()
     }
 }

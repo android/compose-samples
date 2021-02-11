@@ -24,8 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -39,7 +39,7 @@ import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,7 +63,7 @@ fun CraneUserInput(
     modifier: Modifier = Modifier,
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null,
-    tint: Color = AmbientContentColor.current
+    tint: Color = LocalContentColor.current
 ) {
     CraneBaseUserInput(
         modifier = modifier,
@@ -100,11 +100,11 @@ fun CraneEditableUserInput(
                 if (!isHint()) onInputChanged(textFieldState.text)
             },
             textStyle = if (isHint()) {
-                captionTextStyle.copy(color = AmbientContentColor.current)
+                captionTextStyle.copy(color = LocalContentColor.current)
             } else {
-                MaterialTheme.typography.body1.copy(color = AmbientContentColor.current)
+                MaterialTheme.typography.body1.copy(color = LocalContentColor.current)
             },
-            cursorColor = AmbientContentColor.current
+            cursorColor = LocalContentColor.current
         )
     }
 }
@@ -116,7 +116,7 @@ private fun CraneBaseUserInput(
     @DrawableRes vectorImageId: Int? = null,
     showCaption: () -> Boolean = { true },
     tintIcon: () -> Boolean,
-    tint: Color = AmbientContentColor.current,
+    tint: Color = LocalContentColor.current,
     content: @Composable () -> Unit
 ) {
     Surface(modifier = modifier, color = MaterialTheme.colors.primaryVariant) {
@@ -124,7 +124,7 @@ private fun CraneBaseUserInput(
             if (vectorImageId != null) {
                 Icon(
                     modifier = Modifier.preferredSize(24.dp, 24.dp),
-                    imageVector = vectorResource(id = vectorImageId),
+                    painter = painterResource(id = vectorImageId),
                     tint = if (tintIcon()) tint else Color(0x80FFFFFF),
                     contentDescription = null
                 )

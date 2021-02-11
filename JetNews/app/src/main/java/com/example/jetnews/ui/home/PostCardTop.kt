@@ -23,8 +23,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,10 +32,9 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.jetnews.data.posts.impl.getPostsWithImagesLoaded
 import com.example.jetnews.data.posts.impl.post2
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
@@ -46,18 +45,16 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     // TUTORIAL CONTENT STARTS HERE
     val typography = MaterialTheme.typography
     Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
-        post.image?.let { image ->
-            val imageModifier = Modifier
-                .heightIn(min = 180.dp)
-                .fillMaxWidth()
-                .clip(shape = MaterialTheme.shapes.medium)
-            Image(
-                bitmap = image,
-                contentDescription = null, // decorative
-                modifier = imageModifier,
-                contentScale = ContentScale.Crop
-            )
-        }
+        val imageModifier = Modifier
+            .heightIn(min = 180.dp)
+            .fillMaxWidth()
+            .clip(shape = MaterialTheme.shapes.medium)
+        Image(
+            painter = painterResource(post.imageId),
+            contentDescription = null, // decorative
+            modifier = imageModifier,
+            contentScale = ContentScale.Crop
+        )
         Spacer(Modifier.preferredHeight(16.dp))
 
         Text(
@@ -69,7 +66,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             style = typography.body2
         )
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
                 style = typography.body2
@@ -103,8 +100,7 @@ fun TutorialPreviewFontscale() {
 fun TutorialPreviewTemplate(
     darkTheme: Boolean = false
 ) {
-    val context = AmbientContext.current
-    val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
+    val previewPosts = posts.subList(1, 2)
     val post = previewPosts[0]
 
     ThemedPreview(darkTheme) {

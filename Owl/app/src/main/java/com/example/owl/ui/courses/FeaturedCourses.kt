@@ -18,15 +18,14 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AmbientElevationOverlay
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -42,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
@@ -109,7 +109,7 @@ fun FeaturedCourse(
                         top.linkTo(parent.top)
                     }
             )
-            val outlineColor = AmbientElevationOverlay.current?.apply(
+            val outlineColor = LocalElevationOverlay.current?.apply(
                 color = MaterialTheme.colors.surface,
                 elevation = OwlTheme.elevations.card
             ) ?: MaterialTheme.colors.surface

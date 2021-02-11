@@ -23,4 +23,6 @@
     <string name="cd_open_navigation_drawer">Open navigation drawer</string>
     <string name="cd_more_actions">More actions</string>
     <string name="cd_bookmark">Bookmark</string>
+    <string name="unbookmark">unbookmark</string>
+    <string name="bookmark">bookmark</string>
 </resources>

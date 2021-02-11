@@ -32,14 +32,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -58,8 +59,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -129,7 +130,7 @@ private fun AppBar() {
             .statusBarsPadding()
     ) {
         Image(
-            imageVector = vectorResource(id = OwlTheme.images.lockupLogo),
+            painter = painterResource(id = OwlTheme.images.lockupLogo),
             contentDescription = null,
             modifier = Modifier.padding(16.dp)
         )
@@ -187,7 +188,7 @@ private fun TopicChip(topic: Topic) {
     Surface(
         modifier = Modifier.padding(4.dp),
         elevation = OwlTheme.elevations.card,
-        shape = MaterialTheme.shapes.medium.copy(topLeft = CornerSize(corerRadius))
+        shape = MaterialTheme.shapes.medium.copy(topStart = CornerSize(corerRadius))
     ) {
         Row(modifier = Modifier.toggleable(value = selected, onValueChange = onSelected)) {
             Box {
@@ -207,7 +208,9 @@ private fun TopicChip(topic: Topic) {
                             imageVector = Icons.Filled.Done,
                             contentDescription = null,
                             tint = MaterialTheme.colors.onPrimary.copy(alpha = selectedAlpha),
-                            modifier = Modifier.scale(checkScale)
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .scale(checkScale)
                         )
                     }
                 }
@@ -224,9 +227,9 @@ private fun TopicChip(topic: Topic) {
                     )
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                    Providers(LocalContentAlpha provides ContentAlpha.medium) {
                         Icon(
-                            imageVector = vectorResource(R.drawable.ic_grain),
+                            painter = painterResource(R.drawable.ic_grain),
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(start = 16.dp)

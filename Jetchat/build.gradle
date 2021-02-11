@@ -32,7 +32,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.7.0'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
@@ -69,7 +69,6 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.FlowPreview'
             freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
-            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"

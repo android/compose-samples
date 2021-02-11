@@ -25,13 +25,13 @@ object Libs {
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        private const val version = "0.5.0"
+        private const val version = "0.5.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.21-2"
+        private const val version = "1.4.30"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -49,7 +49,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-alpha11"
+            const val version = "1.0.0-alpha12"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -60,6 +60,18 @@ object Libs {
             const val animation = "androidx.compose.animation:animation:${version}"
             const val tooling = "androidx.compose.ui:ui-tooling:${version}"
             const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
+        }
+
+        object Activity {
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha02"
+        }
+
+        object Lifecycle {
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
+        }
+
+        object ConstraintLayout {
+            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha02"
         }
 
         object Test {

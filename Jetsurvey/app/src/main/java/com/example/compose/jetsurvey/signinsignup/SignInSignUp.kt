@@ -27,12 +27,13 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientTextStyle
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
@@ -52,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -122,13 +124,14 @@ fun Email(
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: () -> Unit = {}
 ) {
+    lateinit var softwareKeyboardController: SoftwareKeyboardController
     OutlinedTextField(
         value = emailState.text,
         onValueChange = {
             emailState.text = it
         },
         label = {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
@@ -146,13 +149,14 @@ fun Email(
             },
         textStyle = MaterialTheme.typography.body2,
         isErrorValue = emailState.showErrors(),
+        onTextInputStarted = { softwareKeyboardController = it },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-        onImeActionPerformed = { action, softKeyboardController ->
-            if (action == ImeAction.Done) {
-                softKeyboardController?.hideSoftwareKeyboard()
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onImeAction()
+                softwareKeyboardController.hideSoftwareKeyboard()
             }
-            onImeAction()
-        }
+        )
     )
 
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -166,6 +170,7 @@ fun Password(
     imeAction: ImeAction = ImeAction.Done,
     onImeAction: () -> Unit = {}
 ) {
+    lateinit var softwareKeyboardController: SoftwareKeyboardController
     val showPassword = remember { mutableStateOf(false) }
     OutlinedTextField(
         value = passwordState.text,
@@ -184,7 +189,7 @@ fun Password(
             },
         textStyle = MaterialTheme.typography.body2,
         label = {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2
@@ -214,13 +219,14 @@ fun Password(
             PasswordVisualTransformation()
         },
         isErrorValue = passwordState.showErrors(),
+        onTextInputStarted = { softwareKeyboardController = it },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-        onImeActionPerformed = { action, softKeyboardController ->
-            if (action == ImeAction.Done) {
-                softKeyboardController?.hideSoftwareKeyboard()
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onImeAction()
+                softwareKeyboardController.hideSoftwareKeyboard()
             }
-            onImeAction()
-        }
+        )
     )
 
     passwordState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -236,7 +242,7 @@ fun TextFieldError(textError: String) {
         Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
-            style = AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
+            style = LocalTextStyle.current.copy(color = MaterialTheme.colors.error)
         )
     }
 }
@@ -251,7 +257,7 @@ fun OrSignInAsGuest(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.or),
                     style = MaterialTheme.typography.subtitle2

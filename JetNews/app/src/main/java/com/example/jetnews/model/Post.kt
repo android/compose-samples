@@ -16,7 +16,7 @@
 
 package com.example.jetnews.model
 
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.annotation.DrawableRes
 
 data class Post(
     val id: String,
@@ -26,10 +26,8 @@ data class Post(
     val publication: Publication? = null,
     val metadata: Metadata,
     val paragraphs: List<Paragraph> = emptyList(),
-    val imageId: Int,
-    val imageThumbId: Int,
-    val image: ImageBitmap? = null,
-    val imageThumb: ImageBitmap? = null
+    @DrawableRes val imageId: Int,
+    @DrawableRes val imageThumbId: Int
 )
 
 data class Metadata(

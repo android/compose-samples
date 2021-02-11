@@ -32,16 +32,16 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
-import androidx.compose.material.TabDefaults.tabIndicatorOffset
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -58,13 +58,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientAnimationClock
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
@@ -112,11 +111,11 @@ fun HomeAppBar(
         title = {
             Row {
                 Image(
-                    imageVector = vectorResource(R.drawable.ic_logo),
+                    painter = painterResource(R.drawable.ic_logo),
                     contentDescription = null
                 )
                 Icon(
-                    imageVector = vectorResource(R.drawable.ic_text_logo),
+                    painter = painterResource(R.drawable.ic_text_logo),
                     contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .padding(start = 4.dp)
@@ -126,7 +125,7 @@ fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(
                     onClick = { /* TODO: Open search */ }
                 ) {
@@ -177,8 +176,8 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val clock = AmbientAnimationClock.current
-            val pagerState = remember(clock) { PagerState(clock) }
+
+            val pagerState = remember { PagerState() }
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -307,7 +306,7 @@ fun HomeCategoryTabIndicator(
         modifier
             .padding(horizontal = 24.dp)
             .preferredHeight(4.dp)
-            .background(color, RoundedCornerShape(topLeftPercent = 100, topRightPercent = 100))
+            .background(color, RoundedCornerShape(topStartPercent = 100, topEndPercent = 100))
     )
 }
 
@@ -315,10 +314,7 @@ fun HomeCategoryTabIndicator(
 fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
     modifier: Modifier = Modifier,
-    pagerState: PagerState = run {
-        val clock = AmbientAnimationClock.current
-        remember(clock) { PagerState(clock) }
-    },
+    pagerState: PagerState = remember { PagerState() },
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
@@ -375,7 +371,7 @@ private fun FollowedPodcastCarouselItem(
         }
 
         if (lastEpisodeDate != null) {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = lastUpdated(lastEpisodeDate),
                     style = MaterialTheme.typography.caption,

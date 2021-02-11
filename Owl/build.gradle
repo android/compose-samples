@@ -29,7 +29,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.8.2'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
@@ -52,7 +52,6 @@ subprojects {
             allWarningsAsErrors = true
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
         }
     }
 
