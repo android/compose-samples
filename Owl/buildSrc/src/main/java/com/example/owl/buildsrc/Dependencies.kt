@@ -68,6 +68,10 @@ object Libs {
             const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha02"
         }
 
+        object ConstraintLayout {
+            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha02"
+        }
+
         object Test {
             private const val version = "1.3.0"
             const val core = "androidx.test:core:$version"
