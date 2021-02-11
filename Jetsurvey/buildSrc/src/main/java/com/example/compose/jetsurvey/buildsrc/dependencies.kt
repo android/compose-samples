@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.buildsrc
 
 object Versions {
-    const val ktlint = "0.39.0"
+    const val ktlint = "0.40.0"
 }
 
 object Libs {
