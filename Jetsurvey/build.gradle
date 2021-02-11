@@ -39,7 +39,7 @@ subprojects {
         jcenter()
 
         if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
-            maven { url Libs.AndroidX.Compose.snapshotUrl }
+            maven { url 'https://storage.googleapis.com/temp-androidx-snapshot.appspot.com/7123292/' }
         }
 
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
@@ -72,6 +72,19 @@ subprojects {
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
+        }
+    }
+
+    // FIXME: Only needed for Compose 1.0.0-alpha12 snapshots
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'androidx.lifecycle' &&
+                    details.requested.name != 'lifecycle-viewmodel-compose') {
+                details.useVersion('2.3.0-rc01')
+            }
+            if (details.requested.group == 'androidx.savedstate') {
+                details.useVersion('1.1.0-rc01')
+            }
         }
     }
 }
