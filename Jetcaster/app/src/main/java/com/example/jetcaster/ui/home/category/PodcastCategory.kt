@@ -22,7 +22,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
-import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -35,12 +34,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -62,7 +61,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
@@ -126,6 +125,7 @@ fun EpisodeListItem(
     podcast: Podcast,
     modifier: Modifier = Modifier
 ) {
+    @Suppress("DEPRECATION") // ConstraintLayout
     ConstraintLayout(
         modifier = Modifier.clickable { /* TODO */ } then modifier
     ) {
@@ -139,7 +139,7 @@ fun EpisodeListItem(
                 top.linkTo(parent.top)
                 centerHorizontallyTo(parent)
 
-                width = Dimension.fillToConstraints
+                width = androidx.compose.foundation.layout.Dimension.fillToConstraints
             }
         )
 
@@ -185,13 +185,13 @@ fun EpisodeListItem(
                 )
                 top.linkTo(parent.top, 16.dp)
 
-                width = Dimension.preferredWrapContent
+                width = androidx.compose.foundation.layout.Dimension.preferredWrapContent
             }
         )
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
                 maxLines = 2,
@@ -206,7 +206,7 @@ fun EpisodeListItem(
                     )
                     top.linkTo(episodeTitle.bottom, 6.dp)
 
-                    width = Dimension.preferredWrapContent
+                    width = androidx.compose.foundation.layout.Dimension.preferredWrapContent
                 }
             )
         }
@@ -215,7 +215,7 @@ fun EpisodeListItem(
             imageVector = Icons.Rounded.PlayCircleFilled,
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(AmbientContentColor.current),
+            colorFilter = ColorFilter.tint(LocalContentColor.current),
             modifier = Modifier
                 .clickable(
                     interactionState = remember { InteractionState() },
@@ -229,7 +229,7 @@ fun EpisodeListItem(
                 }
         )
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = when {
                     episode.duration != null -> {
