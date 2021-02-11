@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION") // FIXME move to new ConstraintLayout dep once released
+
 package com.example.jetsnack.ui.home.search
 
 import androidx.compose.foundation.Image

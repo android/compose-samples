@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION") // FIXME move to new ConstraintLayout dep once released
+
 package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.Crossfade
@@ -69,7 +71,7 @@ fun QuantitySelector(
             }
         )
         Crossfade(
-            current = count,
+            targetState = count,
             modifier = Modifier
                 .constrainAs(quantity) { baseline.linkTo(qty.baseline) }
         ) {
