@@ -17,19 +17,25 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.setContent
+import androidx.compose.runtime.remember
+import androidx.compose.ui.node.Ref
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.compositionContext
+import androidx.compose.ui.platform.findViewTreeCompositionContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
+import androidx.viewbinding.ViewBinding
 import com.example.compose.jetchat.components.JetchatScaffold
-import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.BackPressHandler
+import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
@@ -50,7 +56,7 @@ class NavActivity : AppCompatActivity() {
             // Provide WindowInsets to our content. We don't want to consume them, so that
             // they keep being pass down the view hierarchy (since we're using fragments).
             ProvideWindowInsets(consumeWindowInsets = false) {
-                Providers(AmbientBackPressedDispatcher provides this.onBackPressedDispatcher) {
+                Providers(LocalBackPressedDispatcher provides this.onBackPressedDispatcher) {
                     val scaffoldState = rememberScaffoldState()
 
                     val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
@@ -82,8 +88,23 @@ class NavActivity : AppCompatActivity() {
                             scaffoldState.drawerState.close()
                         }
                     ) {
+                        // Workaround for b/178174718 and b/179181757
                         // Inflate the XML layout using View Binding:
-                        AndroidViewBinding(ContentMainBinding::inflate)
+                        val bindingRef = remember { Ref<ViewBinding>() }
+                        val currentView = LocalView.current
+
+                        AndroidViewBinding({ inflater, parent, attachToParent ->
+                            if (bindingRef.value == null) {
+                                val binding: ViewBinding =
+                                    ContentMainBinding.inflate(inflater, parent, attachToParent)
+                                bindingRef.value = binding
+                                binding.root.compositionContext =
+                                    currentView.findViewTreeCompositionContext()
+                            }
+                            bindingRef.value as ViewBinding
+                        })
+                        // End of workaround for b/178174718
+                        // AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
             }

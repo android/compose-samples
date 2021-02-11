@@ -30,11 +30,11 @@ import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -48,8 +48,8 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientDensity
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -79,7 +79,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
-                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Providers(LocalContentAlpha provides ContentAlpha.medium) {
                     // More icon
                     Icon(
                         imageVector = Icons.Outlined.MoreVert,
@@ -168,7 +168,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
 
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+    Providers(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = userData.position,
             modifier = modifier,
@@ -184,17 +184,15 @@ private fun ProfileHeader(
     containerHeight: Dp
 ) {
     val offset = (scrollState.value / 2)
-    val offsetDp = with(AmbientDensity.current) { offset.toDp() }
+    val offsetDp = with(LocalDensity.current) { offset.toDp() }
 
     data.photo?.let {
-        val asset = imageResource(id = it)
-
         Image(
             modifier = Modifier
                 .preferredHeightIn(max = containerHeight / 2)
                 .fillMaxWidth()
                 .padding(top = offsetDp),
-            bitmap = asset,
+            painter = painterResource(id = it),
             contentScale = ContentScale.Crop,
             contentDescription = null
         )
@@ -205,7 +203,7 @@ private fun ProfileHeader(
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
         Divider()
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = label,
                 modifier = Modifier.baselineHeight(24.dp),

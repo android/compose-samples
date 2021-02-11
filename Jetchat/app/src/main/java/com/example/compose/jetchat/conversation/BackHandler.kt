@@ -18,16 +18,16 @@ package com.example.compose.jetchat.conversation
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.runtime.Ambient
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
- * This [Composable] can be used with a [AmbientBackPressedDispatcher] to intercept a back press.
+ * This [Composable] can be used with a [LocalBackPressedDispatcher] to intercept a back press.
  *
  * @param onBackPressed (Event) What to do when back is intercepted
  *
@@ -46,7 +46,7 @@ fun BackPressHandler(onBackPressed: () -> Unit) {
         }
     }
 
-    val backDispatcher = AmbientBackPressedDispatcher.current
+    val backDispatcher = LocalBackPressedDispatcher.current
 
     // Whenever there's a new dispatcher set up the callback
     DisposableEffect(backDispatcher) {
@@ -59,13 +59,13 @@ fun BackPressHandler(onBackPressed: () -> Unit) {
 }
 
 /**
- * This [Ambient] is used to provide an [OnBackPressedDispatcher]:
+ * This [CompositionLocal] is used to provide an [OnBackPressedDispatcher]:
  *
  * ```
- * Providers(AmbientBackPressedDispatcher provides requireActivity().onBackPressedDispatcher) { }
+ * Providers(LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher) { }
  * ```
  *
  * and setting up the callbacks with [BackPressHandler].
  */
-val AmbientBackPressedDispatcher =
-    staticAmbientOf<OnBackPressedDispatcher> { error("No Back Dispatcher provided") }
+val LocalBackPressedDispatcher =
+    staticCompositionLocalOf<OnBackPressedDispatcher> { error("No Back Dispatcher provided") }
