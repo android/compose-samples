@@ -88,7 +88,9 @@ class NavActivity : AppCompatActivity() {
                             scaffoldState.drawerState.close()
                         }
                     ) {
-                        // Workaround for b/178174718 and b/179181757
+                        // Workaround for https://issuetracker.google.com/178174718
+                        // and https://issuetracker.google.com/179181757
+
                         // Inflate the XML layout using View Binding:
                         val bindingRef = remember { Ref<ViewBinding>() }
                         val currentView = LocalView.current
@@ -103,7 +105,8 @@ class NavActivity : AppCompatActivity() {
                             }
                             bindingRef.value as ViewBinding
                         })
-                        // End of workaround for b/178174718
+                        // End of workaround
+
                         // AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
