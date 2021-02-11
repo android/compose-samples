@@ -26,14 +26,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
 
 @Composable
 fun JetcasterApp() {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
 
     // TODO: add some navigation
