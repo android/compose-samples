@@ -32,7 +32,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.7.0'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
@@ -72,21 +72,6 @@ subprojects {
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
-        }
-    }
-}
-
-subprojects {
-    // FIXME: Only needed for Compose 1.0.0-alpha12 snapshots
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'androidx.lifecycle' &&
-                    details.requested.name != 'lifecycle-viewmodel-compose') {
-                details.useVersion('2.3.0-rc01')
-            }
-            if (details.requested.group == 'androidx.savedstate') {
-                details.useVersion('1.1.0-rc01')
-            }
         }
     }
 }
