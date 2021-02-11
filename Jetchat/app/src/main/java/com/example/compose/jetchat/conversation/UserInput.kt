@@ -40,15 +40,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientContentColor
-import androidx.compose.material.AmbientTextStyle
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -67,7 +67,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -127,7 +127,7 @@ fun UserInput(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
-    var currentInputSelector by savedInstanceState { InputSelector.NONE }
+    var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
 
     // Intercept back navigation if there's a InputSelector visible
@@ -241,7 +241,7 @@ fun FunctionalityNotAvailablePanel() {
                 text = stringResource(id = R.string.not_available),
                 style = MaterialTheme.typography.subtitle1
             )
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.not_available_subtitle),
                     modifier = Modifier.paddingFrom(FirstBaseline, before = 32.dp),
@@ -353,8 +353,8 @@ private fun InputSelectorButton(
     selected: Boolean
 ) {
     IconButton(onClick = onClick) {
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
-            val tint = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            val tint = if (selected) MaterialTheme.colors.primary else LocalContentColor.current
             Icon(
                 icon,
                 tint = tint,
@@ -437,8 +437,8 @@ private fun UserInputText(
                     ),
                     onTextInputStarted = { keyboardController = it },
                     maxLines = 1,
-                    cursorColor = AmbientContentColor.current,
-                    textStyle = AmbientTextStyle.current.copy(color = AmbientContentColor.current)
+                    cursorColor = LocalContentColor.current,
+                    textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
                 )
 
                 val disableContentColor =
@@ -549,7 +549,7 @@ fun EmojiTable(
                             .sizeIn(minWidth = 42.dp, minHeight = 42.dp)
                             .padding(8.dp),
                         text = emoji,
-                        style = AmbientTextStyle.current.copy(
+                        style = LocalTextStyle.current.copy(
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center
                         )

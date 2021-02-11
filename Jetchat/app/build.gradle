@@ -92,9 +92,12 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.android
 
+
+    implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Lifecycle.livedata
+    implementation Libs.AndroidX.Lifecycle.viewModelCompose
     implementation Libs.AndroidX.Navigation.fragment
     implementation Libs.AndroidX.Navigation.uiKtx
     implementation Libs.material
@@ -116,4 +119,8 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.AndroidX.Compose.uiTest
+
+    // FIXME: Temporary for alpha12
+    androidTestImplementation Libs.AndroidX.Activity.activityCompose
+
 }

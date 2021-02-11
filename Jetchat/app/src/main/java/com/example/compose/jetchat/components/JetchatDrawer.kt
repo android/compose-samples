@@ -30,11 +30,11 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -44,8 +44,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
@@ -75,12 +74,12 @@ fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked:
 private fun DrawerHeader() {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
         Image(
-            vectorResource(id = R.drawable.ic_jetchat),
+            painter = painterResource(id = R.drawable.ic_jetchat),
             contentDescription = null,
             modifier = Modifier.preferredSize(24.dp)
         )
         Image(
-            vectorResource(id = R.drawable.jetchat_logo),
+            painter = painterResource(id = R.drawable.jetchat_logo),
             contentDescription = null,
             modifier = Modifier.padding(start = 8.dp)
         )
@@ -88,7 +87,7 @@ private fun DrawerHeader() {
 }
 @Composable
 private fun DrawerItemHeader(text: String) {
-    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+    Providers(LocalContentAlpha provides ContentAlpha.medium) {
         Text(text, style = MaterialTheme.typography.caption, modifier = Modifier.padding(16.dp))
     }
 }
@@ -116,16 +115,16 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)
         }
         Icon(
-            vectorResource(id = R.drawable.ic_jetchat),
+            painter = painterResource(id = R.drawable.ic_jetchat),
             tint = iconTint,
             modifier = Modifier.padding(8.dp),
             contentDescription = null
         )
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text,
                 style = MaterialTheme.typography.body2,
-                color = if (selected) MaterialTheme.colors.primary else AmbientContentColor.current,
+                color = if (selected) MaterialTheme.colors.primary else LocalContentColor.current,
                 modifier = Modifier.padding(8.dp)
             )
         }
@@ -143,11 +142,11 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
             .clickable(onClick = onProfileClicked),
         verticalAlignment = CenterVertically
     ) {
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             val widthPaddingModifier = Modifier.preferredWidth(24.dp).padding(8.dp)
             if (profilePic != null) {
                 Image(
-                    imageResource(id = profilePic),
+                    painter = painterResource(id = profilePic),
                     modifier = widthPaddingModifier.then(Modifier.clip(CircleShape)),
                     contentScale = ContentScale.Crop,
                     contentDescription = null

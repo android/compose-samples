@@ -32,8 +32,8 @@ import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
 import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.ViewWindowInsetObserver
 
 class ConversationFragment : Fragment() {
@@ -59,8 +59,8 @@ class ConversationFragment : Fragment() {
 
         setContent {
             Providers(
-                AmbientBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
-                AmbientWindowInsets provides windowInsets,
+                LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
+                LocalWindowInsets provides windowInsets,
             ) {
                 JetchatTheme {
                     ConversationContent(

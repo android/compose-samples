@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
@@ -28,12 +29,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performGesture
 import androidx.compose.ui.test.swipe
-import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
+import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
@@ -46,7 +47,7 @@ import org.junit.Test
 class ConversationTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<NavActivity>()
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private val themeIsDark = MutableStateFlow(false)
 
@@ -59,8 +60,8 @@ class ConversationTest {
         composeTestRule.setContent {
             val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
             Providers(
-                AmbientBackPressedDispatcher provides onBackPressedDispatcher,
-                AmbientWindowInsets provides windowInsets
+                LocalBackPressedDispatcher provides onBackPressedDispatcher,
+                LocalWindowInsets provides windowInsets
             ) {
                 JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                     ConversationContent(
