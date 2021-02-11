@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION") // FIXME move to new ConstraintLayout dep once released
-
 package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.ChainStyle
-import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.preferredWidthIn
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -37,6 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
@@ -50,7 +48,7 @@ fun QuantitySelector(
     ConstraintLayout(modifier = modifier) {
         val (qty, minus, quantity, plus) = createRefs()
         createHorizontalChain(qty, minus, quantity, plus, chainStyle = ChainStyle.Packed)
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(R.string.quantity),
                 style = MaterialTheme.typography.subtitle1,
