@@ -20,9 +20,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -102,7 +102,7 @@ fun SignUpContent(
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.terms_and_conditions),
                 style = MaterialTheme.typography.caption

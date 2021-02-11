@@ -46,7 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -64,7 +64,7 @@ private val HighlightCardPadding = 16.dp
 // The Cards show a gradient which spans 3 cards and scrolls with parallax.
 private val gradientWidth
     @Composable
-    get() = with(AmbientDensity.current) {
+    get() = with(LocalDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
 
@@ -125,7 +125,7 @@ private fun HighlightedSnacks(
         else -> JetsnackTheme.colors.gradient6_2
     }
     // The Cards show a gradient which spans 3 cards and scrolls with parallax.
-    val gradientWidth = with(AmbientDensity.current) {
+    val gradientWidth = with(LocalDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
     LazyRow(
@@ -208,7 +208,7 @@ private fun HighlightSnackItem(
     scroll: Float,
     modifier: Modifier = Modifier
 ) {
-    val left = index * with(AmbientDensity.current) {
+    val left = index * with(LocalDensity.current) {
         (HighlightCardWidth + HighlightCardPadding).toPx()
     }
     JetsnackCard(
