@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION") // FIXME move to new ConstraintLayout dep once released
+
 package com.example.owl.ui.courses
 
 import androidx.compose.foundation.clickable

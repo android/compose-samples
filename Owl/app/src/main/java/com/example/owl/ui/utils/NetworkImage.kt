@@ -26,15 +26,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
 import com.example.owl.ui.theme.compositedOnSurface
-import dev.chrisbanes.accompanist.coil.AmbientImageLoader
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.coil.LocalImageLoader
 import okhttp3.HttpUrl
 
 /**
@@ -67,14 +67,14 @@ fun NetworkImage(
 
 @Composable
 fun ProvideImageLoader(content: @Composable () -> Unit) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val loader = remember(context) {
         ImageLoader.Builder(context)
             .componentRegistry {
                 add(UnsplashSizingInterceptor)
             }.build()
     }
-    Providers(AmbientImageLoader provides loader, content = content)
+    Providers(LocalImageLoader provides loader, content = content)
 }
 
 /**

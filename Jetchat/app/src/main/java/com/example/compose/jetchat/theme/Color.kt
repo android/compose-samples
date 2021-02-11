@@ -16,8 +16,8 @@
 
 package com.example.compose.jetchat.theme
 
-import androidx.compose.material.AmbientElevationOverlay
 import androidx.compose.material.Colors
+import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
@@ -37,7 +37,7 @@ fun Colors.compositedOnSurface(alpha: Float): Color {
  */
 @Composable
 fun Colors.elevatedSurface(elevation: Dp): Color {
-    return AmbientElevationOverlay.current?.apply(
+    return LocalElevationOverlay.current?.apply(
         color = this.surface,
         elevation = elevation
     ) ?: this.surface

@@ -44,9 +44,10 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,7 +61,7 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -78,7 +79,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
-    val (currentSection, setCurrentSection) = savedInstanceState { HomeSections.Feed }
+    val (currentSection, setCurrentSection) = rememberSaveable {
+        mutableStateOf(HomeSections.Feed)
+    }
     val navItems = HomeSections.values().toList()
     JetsnackScaffold(
         bottomBar = {
@@ -152,7 +155,7 @@ private fun JetsnackBottomNav(
                         Text(
                             text = stringResource(section.title).toUpperCase(
                                 ConfigurationCompat.getLocales(
-                                    AmbientConfiguration.current
+                                    LocalConfiguration.current
                                 ).get(0)
                             ),
                             color = tint,

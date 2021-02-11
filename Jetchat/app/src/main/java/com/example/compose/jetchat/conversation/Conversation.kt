@@ -38,11 +38,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -58,10 +58,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.platform.AmbientDensity
-import androidx.compose.ui.platform.AmbientUriHandler
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -148,7 +148,7 @@ fun ChannelNameBar(
                     style = MaterialTheme.typography.subtitle1
                 )
                 // Number of members
-                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Providers(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
                         style = MaterialTheme.typography.caption
@@ -157,7 +157,7 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            Providers(LocalContentAlpha provides ContentAlpha.medium) {
                 // Search icon
                 Icon(
                     imageVector = Icons.Outlined.Search,
@@ -228,7 +228,7 @@ fun Messages(
         }
         // Jump to bottom button shows up when user scrolls past a threshold.
         // Convert to pixels:
-        val jumpThreshold = with(AmbientDensity.current) {
+        val jumpThreshold = with(LocalDensity.current) {
             JumpToBottomThreshold.toPx()
         }
 
@@ -257,10 +257,10 @@ fun Message(
     isLastMessageByAuthor: Boolean
 ) {
     // TODO: get image from msg.author
-    val image = if (isUserMe) {
-        imageResource(id = R.drawable.ali)
+    val painter = if (isUserMe) {
+        painterResource(id = R.drawable.ali)
     } else {
-        imageResource(id = R.drawable.someone_else)
+        painterResource(id = R.drawable.someone_else)
     }
     val borderColor = if (isUserMe) {
         MaterialTheme.colors.primary
@@ -281,7 +281,7 @@ fun Message(
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
-                bitmap = image,
+                painter = painter,
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
@@ -334,7 +334,7 @@ private fun AuthorNameTimestamp(msg: Message) {
                 .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
         )
         Spacer(modifier = Modifier.preferredWidth(8.dp))
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = msg.timestamp,
                 style = MaterialTheme.typography.caption,
@@ -355,7 +355,7 @@ fun DayHeader(dayString: String) {
             .preferredHeight(16.dp)
     ) {
         DayHeaderLine()
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = dayString,
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -401,7 +401,7 @@ fun ChatItemBubble(
             Spacer(modifier = Modifier.height(4.dp))
             Surface(color = backgroundBubbleColor, shape = bubbleShape) {
                 Image(
-                    bitmap = imageResource(it),
+                    painter = painterResource(it),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.preferredSize(160.dp),
                     contentDescription = stringResource(id = R.string.attached_image)
@@ -413,13 +413,13 @@ fun ChatItemBubble(
 
 @Composable
 fun ClickableMessage(message: Message) {
-    val uriHandler = AmbientUriHandler.current
+    val uriHandler = LocalUriHandler.current
 
     val styledMessage = messageFormatter(text = message.content)
 
     ClickableText(
         text = styledMessage,
-        style = MaterialTheme.typography.body1.copy(color = AmbientContentColor.current),
+        style = MaterialTheme.typography.body1.copy(color = LocalContentColor.current),
         modifier = Modifier.padding(8.dp),
         onClick = {
             styledMessage

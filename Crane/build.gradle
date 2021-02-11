@@ -31,7 +31,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.8.2'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
@@ -66,21 +66,6 @@ subprojects {
 
             // Use experimental APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-        }
-    }
-}
-
-subprojects {
-    // FIXME: Only needed for Compose 1.0.0-alpha12 snapshots
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'androidx.lifecycle' &&
-                    details.requested.name != 'lifecycle-viewmodel-compose') {
-                details.useVersion('2.3.0-rc01')
-            }
-            if (details.requested.group == 'androidx.savedstate') {
-                details.useVersion('1.1.0-rc01')
-            }
         }
     }
 }
