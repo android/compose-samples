@@ -24,7 +24,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
  * An effect for handling presses of the device back button.
@@ -48,7 +48,7 @@ fun backHandler(
     SideEffect {
         backCallback.isEnabled = enabled
     }
-    val backDispatcher = AmbientBackDispatcher.current
+    val backDispatcher = LocalBackDispatcher.current
     // If `backDispatcher` changes, dispose and reset the effect
     DisposableEffect(backDispatcher) {
         // Add callback to the backDispatcher
@@ -64,6 +64,6 @@ fun backHandler(
  * An [androidx.compose.runtime.Ambient] providing the current [OnBackPressedDispatcher]. You must
  * [provide][androidx.compose.runtime.Providers] a value before use.
  */
-internal val AmbientBackDispatcher = staticAmbientOf<OnBackPressedDispatcher> {
+internal val LocalBackDispatcher = staticCompositionLocalOf<OnBackPressedDispatcher> {
     error("No Back Dispatcher provided")
 }
