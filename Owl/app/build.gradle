@@ -96,7 +96,6 @@ dependencies {
     implementation Libs.AndroidX.Compose.animation
     implementation Libs.AndroidX.Compose.iconsExtended
     implementation Libs.AndroidX.Compose.tooling
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.30"
 
     implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets

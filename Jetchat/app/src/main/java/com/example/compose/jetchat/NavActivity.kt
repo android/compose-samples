@@ -34,8 +34,8 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.compose.jetchat.components.JetchatScaffold
-import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.BackPressHandler
+import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
@@ -56,7 +56,7 @@ class NavActivity : AppCompatActivity() {
             // Provide WindowInsets to our content. We don't want to consume them, so that
             // they keep being pass down the view hierarchy (since we're using fragments).
             ProvideWindowInsets(consumeWindowInsets = false) {
-                Providers(AmbientBackPressedDispatcher provides this.onBackPressedDispatcher) {
+                Providers(LocalBackPressedDispatcher provides this.onBackPressedDispatcher) {
                     val scaffoldState = rememberScaffoldState()
 
                     val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()

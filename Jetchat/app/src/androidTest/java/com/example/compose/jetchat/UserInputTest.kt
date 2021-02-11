@@ -33,9 +33,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
-import com.example.compose.jetchat.conversation.AmbientBackPressedDispatcher
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
+import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import dev.chrisbanes.accompanist.insets.LocalWindowInsets
@@ -65,7 +65,7 @@ class UserInputTest {
         val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
         composeTestRule.setContent {
             Providers(
-                AmbientBackPressedDispatcher provides onBackPressedDispatcher,
+                LocalBackPressedDispatcher provides onBackPressedDispatcher,
                 LocalWindowInsets provides windowInsets,
             ) {
                 JetchatTheme {

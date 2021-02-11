@@ -17,7 +17,7 @@
 package com.example.compose.jetchat.buildsrc
 
 object Versions {
-    const val ktlint = "0.39.0"
+    const val ktlint = "0.40.0"
 }
 
 object Libs {
@@ -43,7 +43,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.5.1.compose-7123292-SNAPSHOT"
+        private const val version = "0.5.1"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 
@@ -52,12 +52,12 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha02"
         }
 
         object Compose {
-            const val snapshot = "7123292"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-alpha12"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -79,16 +79,16 @@ object Libs {
         }
 
         object Test {
-            private const val version = "1.2.0"
+            private const val version = "1.3.0"
             const val core = "androidx.test:core:$version"
             const val rules = "androidx.test:rules:$version"
 
             object Ext {
-                private const val version = "1.1.2-rc01"
+                private const val version = "1.1.2"
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
 
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0"
         }
 
         object Lifecycle {
@@ -96,12 +96,13 @@ object Libs {
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
         }
     }
 }
 
 object Urls {
-    const val composeSnapshotRepo = "https://storage.googleapis.com/temp-androidx-snapshot.appspot.com/7123292/"
+    const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
+        "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
     const val accompanistSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots"
 }

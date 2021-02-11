@@ -119,4 +119,8 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.AndroidX.Compose.uiTest
+
+    // FIXME: Temporary for alpha12
+    androidTestImplementation Libs.AndroidX.Activity.activityCompose
+
 }

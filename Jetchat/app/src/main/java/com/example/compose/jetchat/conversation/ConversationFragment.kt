@@ -59,7 +59,7 @@ class ConversationFragment : Fragment() {
 
         setContent {
             Providers(
-                AmbientBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
+                LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
                 LocalWindowInsets provides windowInsets,
             ) {
                 JetchatTheme {
