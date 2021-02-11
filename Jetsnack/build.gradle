@@ -29,15 +29,17 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.8.2'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
     repositories {
-        maven { url 'https://storage.googleapis.com/temp-androidx-snapshot.appspot.com/7123292/' }
         google()
         jcenter()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+
+        if (Libs.AndroidX.Compose.version.endsWith('SNAPSHOT')) {
+            maven { url Libs.AndroidX.Compose.snapshotUrl }
+        }
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
@@ -48,19 +50,6 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             // Enable experimental coroutines APIs, including collectAsState()
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
-        }
-    }
-
-    // FIXME: Only needed for Compose 1.0.0-alpha12 snapshots
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'androidx.lifecycle' &&
-                    details.requested.name != 'lifecycle-viewmodel-compose') {
-                details.useVersion('2.3.0-rc01')
-            }
-            if (details.requested.group == 'androidx.savedstate') {
-                details.useVersion('1.1.0-rc01')
-            }
         }
     }
 

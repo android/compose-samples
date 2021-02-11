@@ -92,12 +92,15 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.3.0-beta01'
     implementation 'androidx.activity:activity-ktx:1.1.0'
-    implementation 'androidx.core:core-ktx:1.5.0-SNAPSHOT'
-    implementation "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+    implementation 'androidx.core:core-ktx:1.5.0-beta01'
+    implementation "androidx.activity:activity-compose:1.3.0-alpha02"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-rc01"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-rc01"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
+
+    // FIXME: only needed for Compose alpha12
+    androidTestImplementation "androidx.activity:activity-compose:1.3.0-alpha02"
 
     androidTestImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test:rules:1.3.0'

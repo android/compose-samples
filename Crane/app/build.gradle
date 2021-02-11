@@ -123,6 +123,9 @@ dependencies {
     implementation Libs.Hilt.android
     kapt Libs.Hilt.compiler
 
+    // FIXME: only needed for Compose alpha12
+    androidTestImplementation Libs.AndroidX.Activity.activityCompose
+
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore

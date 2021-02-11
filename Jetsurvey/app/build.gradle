@@ -78,6 +78,11 @@ android {
         kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
     }
 
+    packagingOptions {
+        excludes += "/META-INF/AL2.0"
+        excludes += "/META-INF/LGPL2.1"
+    }
+
     // TODO: Fix lint errors and remove
     lintOptions {
         abortOnError false
@@ -98,6 +103,8 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.viewmodel
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
 
+    implementation Libs.AndroidX.Activity.activityCompose
+
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended
@@ -106,6 +113,9 @@ dependencies {
     implementation Libs.AndroidX.Compose.runtimeLivedata
 
     implementation Libs.Accompanist.coil
+
+    // FIXME: only needed for Compose alpha12
+    androidTestImplementation Libs.AndroidX.Activity.activityCompose
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core

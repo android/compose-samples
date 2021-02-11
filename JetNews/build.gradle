@@ -16,7 +16,7 @@
 
 buildscript {
     ext.kotlin_version = '1.4.30'
-    ext.compose_version = '1.0.0-SNAPSHOT'
+    ext.compose_version = '1.0.0-alpha12'
     ext.coroutines_version = '1.4.2'
 
     repositories {
@@ -31,15 +31,11 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.7.0'
+    id 'com.diffplug.spotless' version '5.10.0'
 }
 
 subprojects {
     repositories {
-        maven {
-            def snapshot = "7123292"
-            url  "https://androidx.dev/snapshots/builds/$snapshot/artifacts/repository/"
-        }
         google()
         jcenter()
     }
@@ -51,21 +47,8 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.39.0")
+            ktlint("0.40.0")
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
-        }
-    }
-
-    // FIXME: Only needed for Compose 1.0.0-alpha12 snapshots
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'androidx.lifecycle' &&
-                    details.requested.name != 'lifecycle-viewmodel-compose') {
-                details.useVersion('2.3.0-rc01')
-            }
-            if (details.requested.group == 'androidx.savedstate') {
-                details.useVersion('1.1.0-rc01')
-            }
         }
     }
 }

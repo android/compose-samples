@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.buildsrc
 
 object Versions {
-    const val ktlint = "0.39.0"
+    const val ktlint = "0.40.0"
 }
 
 object Libs {
@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.5.1.compose-7123292-SNAPSHOT"
+        private const val version = "0.5.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
     }
 
@@ -53,13 +53,17 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.3.0-beta01"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
+        object Activity {
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha02"
+        }
+
         object Compose {
-            const val snapshot = "7123292"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-alpha12"
 
             @get:JvmStatic
             val snapshotUrl: String
