@@ -38,16 +38,17 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import javax.inject.Inject
 
 @HiltAndroidTest
 class CalendarTest {
 
-    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<CalendarActivity>()
+
+    @get:Rule
+    val rules = RuleChain.outerRule(hiltRule).around(composeTestRule)
 
     @Inject
     lateinit var datesRepository: DatesRepository
