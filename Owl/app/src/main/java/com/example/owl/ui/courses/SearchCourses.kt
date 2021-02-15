@@ -38,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -113,7 +114,7 @@ private fun AppBar(
                 color = LocalContentColor.current
             ),
             maxLines = 1,
-            cursorColor = LocalContentColor.current,
+            cursorBrush = SolidColor(LocalContentColor.current),
             modifier = Modifier
                 .weight(1f)
                 .align(Alignment.CenterVertically)

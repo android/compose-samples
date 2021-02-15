@@ -28,9 +28,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -51,7 +51,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -114,7 +114,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                         .weight(1f)
                         .wrapContentHeight()
                 )
-                Spacer(Modifier.preferredHeight(56.dp)) // center grid accounting for FAB
+                Spacer(Modifier.height(56.dp)) // center grid accounting for FAB
             }
         }
     }
@@ -196,7 +196,7 @@ private fun TopicChip(topic: Topic) {
                     url = topic.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .preferredSize(width = 72.dp, height = 72.dp)
+                        .size(width = 72.dp, height = 72.dp)
                         .aspectRatio(1f)
                 )
                 if (selectedAlpha > 0f) {
@@ -227,13 +227,13 @@ private fun TopicChip(topic: Topic) {
                     )
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Icon(
                             painter = painterResource(R.drawable.ic_grain),
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(start = 16.dp)
-                                .preferredSize(12.dp)
+                                .size(12.dp)
                         )
                         Text(
                             text = topic.courses.toString(),

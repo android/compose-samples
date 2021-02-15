@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -92,7 +92,7 @@ fun CourseListItem(
                         imageVector = Icons.Rounded.OndemandVideo,
                         tint = MaterialTheme.colors.primary,
                         contentDescription = null,
-                        modifier = Modifier.preferredSize(iconSize)
+                        modifier = Modifier.size(iconSize)
                     )
                     Text(
                         text = stringResource(
@@ -111,7 +111,7 @@ fun CourseListItem(
                         url = course.instructor,
                         contentDescription = null,
                         modifier = Modifier
-                            .preferredSize(28.dp)
+                            .size(28.dp)
                             .clip(CircleShape)
                     )
                 }
