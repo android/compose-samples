@@ -94,7 +94,7 @@ object Libs {
     }
 
     object JUnit {
-        private const val version = "4.12"
+        private const val version = "4.13"
         const val junit = "junit:junit:$version"
     }
 }

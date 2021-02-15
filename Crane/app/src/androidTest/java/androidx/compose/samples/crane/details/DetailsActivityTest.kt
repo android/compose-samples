@@ -37,7 +37,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 import kotlin.math.pow
@@ -53,8 +52,10 @@ class DetailsActivityTest {
     private val city = MADRID
     private val testExploreModel = ExploreModel(city, "description", "imageUrl")
 
+    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
+    @get:Rule(order = 1)
     val composeTestRule = AndroidComposeTestRule(
         activityRule = ActivityScenarioRule<DetailsActivity>(
             createDetailsActivityIntent(
@@ -72,9 +73,6 @@ class DetailsActivityTest {
             activity!!
         }
     )
-
-    @get:Rule
-    val rules = RuleChain.outerRule(hiltRule).around(composeTestRule)
 
     @Before
     fun setUp() {

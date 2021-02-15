@@ -25,17 +25,15 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 
 @HiltAndroidTest
 class HomeTest {
 
+    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
-
-    @get:Rule
-    val rules = RuleChain.outerRule(hiltRule).around(composeTestRule)
 
     @Before
     fun setUp() {
