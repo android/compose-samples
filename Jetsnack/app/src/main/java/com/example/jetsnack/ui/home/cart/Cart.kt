@@ -25,10 +25,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -144,7 +143,7 @@ private fun CartContent(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .preferredHeightIn(min = 56.dp)
+                    .heightIn(min = 56.dp)
                     .padding(horizontal = 24.dp, vertical = 4.dp)
                     .wrapContentHeight()
             )
@@ -197,7 +196,7 @@ fun CartItem(
             imageUrl = snack.imageUrl,
             contentDescription = null,
             modifier = Modifier
-                .preferredSize(100.dp)
+                .size(100.dp)
                 .constrainAs(image) {
                     top.linkTo(parent.top, margin = 16.dp)
                     bottom.linkTo(parent.bottom, margin = 16.dp)
@@ -249,7 +248,7 @@ fun CartItem(
         )
         Spacer(
             Modifier
-                .preferredHeight(8.dp)
+                .height(8.dp)
                 .constrainAs(priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
                 }
@@ -301,7 +300,7 @@ fun SummaryItem(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .padding(horizontal = 24.dp)
-                .preferredHeightIn(min = 56.dp)
+                .heightIn(min = 56.dp)
                 .wrapContentHeight()
         )
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
@@ -334,7 +333,7 @@ fun SummaryItem(
                 modifier = Modifier.alignBy(LastBaseline)
             )
         }
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         JetsnackDivider()
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(

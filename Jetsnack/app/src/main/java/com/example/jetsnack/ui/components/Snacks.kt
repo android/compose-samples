@@ -25,10 +25,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -80,7 +80,7 @@ fun SnackCollection(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .preferredHeightIn(min = 56.dp)
+                .heightIn(min = 56.dp)
                 .padding(start = 24.dp)
         ) {
             Text(
@@ -119,7 +119,7 @@ private fun HighlightedSnacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scroll = rememberScrollState(0f)
+    val scroll = rememberScrollState(0)
     val gradient = when (index % 2) {
         0 -> JetsnackTheme.colors.gradient6_1
         else -> JetsnackTheme.colors.gradient6_2
@@ -186,7 +186,7 @@ fun SnackItem(
                 imageUrl = snack.imageUrl,
                 elevation = 4.dp,
                 contentDescription = null,
-                modifier = Modifier.preferredSize(120.dp)
+                modifier = Modifier.size(120.dp)
             )
             Text(
                 text = snack.name,
@@ -205,7 +205,7 @@ private fun HighlightSnackItem(
     index: Int,
     gradient: List<Color>,
     gradientWidth: Float,
-    scroll: Float,
+    scroll: Int,
     modifier: Modifier = Modifier
 ) {
     val left = index * with(LocalDensity.current) {
@@ -214,7 +214,7 @@ private fun HighlightSnackItem(
     JetsnackCard(
         elevation = 4.dp,
         modifier = modifier
-            .preferredSize(
+            .size(
                 width = 170.dp,
                 height = 250.dp
             )
@@ -227,13 +227,13 @@ private fun HighlightSnackItem(
         ) {
             Box(
                 modifier = Modifier
-                    .preferredHeight(160.dp)
+                    .height(160.dp)
                     .fillMaxWidth()
             ) {
                 val gradientOffset = left - (scroll / 3f)
                 Box(
                     modifier = Modifier
-                        .preferredHeight(100.dp)
+                        .height(100.dp)
                         .fillMaxWidth()
                         .offsetGradientBackground(gradient, gradientWidth, gradientOffset)
                 )
@@ -241,11 +241,11 @@ private fun HighlightSnackItem(
                     imageUrl = snack.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .preferredSize(120.dp)
+                        .size(120.dp)
                         .align(Alignment.BottomCenter)
                 )
             }
-            Spacer(modifier = Modifier.preferredHeight(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = snack.name,
                 maxLines = 1,
@@ -254,7 +254,7 @@ private fun HighlightSnackItem(
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = snack.tagline,
                 style = MaterialTheme.typography.body1,
@@ -298,7 +298,7 @@ fun SnackCardPreview() {
             index = 0,
             gradient = JetsnackTheme.colors.gradient6_1,
             gradientWidth = gradientWidth,
-            scroll = 0f
+            scroll = 0
         )
     }
 }
@@ -314,7 +314,7 @@ fun SnackCardDarkPreview() {
             index = 0,
             gradient = JetsnackTheme.colors.gradient6_1,
             gradientWidth = gradientWidth,
-            scroll = 0f
+            scroll = 0
         )
     }
 }

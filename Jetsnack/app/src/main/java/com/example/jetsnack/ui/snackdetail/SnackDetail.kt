@@ -25,11 +25,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -94,7 +94,7 @@ fun SnackDetail(
     val related = remember(snackId) { SnackRepo.getRelated(snackId) }
 
     Box(Modifier.fillMaxSize()) {
-        val scroll = rememberScrollState(0f)
+        val scroll = rememberScrollState(0)
         Header()
         Body(related, scroll)
         Title(snack, scroll.value)
@@ -108,7 +108,7 @@ fun SnackDetail(
 private fun Header() {
     Spacer(
         modifier = Modifier
-            .preferredHeight(280.dp)
+            .height(280.dp)
             .fillMaxWidth()
             .background(Brush.horizontalGradient(JetsnackTheme.colors.interactivePrimary))
     )
@@ -121,7 +121,7 @@ private fun Up(upPress: () -> Unit) {
         modifier = Modifier
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 10.dp)
-            .preferredSize(36.dp)
+            .size(36.dp)
             .background(
                 color = Neutral8.copy(alpha = 0.32f),
                 shape = CircleShape
@@ -145,25 +145,25 @@ private fun Body(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .preferredHeight(MinTitleOffset)
+                .height(MinTitleOffset)
         )
         Column(
             modifier = Modifier.verticalScroll(scroll)
         ) {
-            Spacer(Modifier.preferredHeight(GradientScroll))
+            Spacer(Modifier.height(GradientScroll))
             JetsnackSurface(Modifier.fillMaxWidth()) {
                 Column {
-                    Spacer(Modifier.preferredHeight(ImageOverlap))
-                    Spacer(Modifier.preferredHeight(TitleHeight))
+                    Spacer(Modifier.height(ImageOverlap))
+                    Spacer(Modifier.height(TitleHeight))
 
-                    Spacer(Modifier.preferredHeight(16.dp))
+                    Spacer(Modifier.height(16.dp))
                     Text(
                         text = stringResource(R.string.detail_header),
                         style = MaterialTheme.typography.overline,
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
-                    Spacer(Modifier.preferredHeight(4.dp))
+                    Spacer(Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.detail_placeholder),
                         style = MaterialTheme.typography.body1,
@@ -171,14 +171,14 @@ private fun Body(
                         modifier = HzPadding
                     )
 
-                    Spacer(Modifier.preferredHeight(40.dp))
+                    Spacer(Modifier.height(40.dp))
                     Text(
                         text = stringResource(R.string.ingredients),
                         style = MaterialTheme.typography.overline,
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
-                    Spacer(Modifier.preferredHeight(4.dp))
+                    Spacer(Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.ingredients_list),
                         style = MaterialTheme.typography.body1,
@@ -186,7 +186,7 @@ private fun Body(
                         modifier = HzPadding
                     )
 
-                    Spacer(Modifier.preferredHeight(16.dp))
+                    Spacer(Modifier.height(16.dp))
                     JetsnackDivider()
 
                     related.forEach { snackCollection ->
@@ -203,7 +203,7 @@ private fun Body(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
                             .navigationBarsPadding(left = false, right = false)
-                            .preferredHeight(8.dp)
+                            .height(8.dp)
                     )
                 }
             }
@@ -212,19 +212,19 @@ private fun Body(
 }
 
 @Composable
-private fun Title(snack: Snack, scroll: Float) {
+private fun Title(snack: Snack, scroll: Int) {
     val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
     val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
     Column(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
-            .preferredHeightIn(min = TitleHeight)
+            .heightIn(min = TitleHeight)
             .statusBarsPadding()
             .graphicsLayer { translationY = offset }
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
-        Spacer(Modifier.preferredHeight(16.dp))
+        Spacer(Modifier.height(16.dp))
         Text(
             text = snack.name,
             style = MaterialTheme.typography.h4,
@@ -238,7 +238,7 @@ private fun Title(snack: Snack, scroll: Float) {
             color = JetsnackTheme.colors.textHelp,
             modifier = HzPadding
         )
-        Spacer(Modifier.preferredHeight(4.dp))
+        Spacer(Modifier.height(4.dp))
         Text(
             text = formatPrice(snack.price),
             style = MaterialTheme.typography.h6,
@@ -246,7 +246,7 @@ private fun Title(snack: Snack, scroll: Float) {
             modifier = HzPadding
         )
 
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         JetsnackDivider()
     }
 }
@@ -254,7 +254,7 @@ private fun Title(snack: Snack, scroll: Float) {
 @Composable
 private fun Image(
     imageUrl: String,
-    scroll: Float
+    scroll: Int
 ) {
     val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
     val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
@@ -314,14 +314,14 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .navigationBarsPadding(left = false, right = false)
                     .then(HzPadding)
-                    .preferredHeightIn(min = BottomBarHeight)
+                    .heightIn(min = BottomBarHeight)
             ) {
                 QuantitySelector(
                     count = count,
                     decreaseItemCount = { if (count > 0) updateCount(count - 1) },
                     increaseItemCount = { updateCount(count + 1) }
                 )
-                Spacer(Modifier.preferredWidth(16.dp))
+                Spacer(Modifier.width(16.dp))
                 JetsnackButton(
                     onClick = { /* todo */ },
                     modifier = Modifier.weight(1f)

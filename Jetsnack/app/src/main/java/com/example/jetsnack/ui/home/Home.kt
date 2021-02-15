@@ -29,8 +29,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -207,7 +207,7 @@ private fun JetsnackBottomNavLayout(
     }
 
     Layout(
-        modifier = modifier.preferredHeight(BottomNavHeight),
+        modifier = modifier.height(BottomNavHeight),
         content = {
             content()
             Box(Modifier.layoutId("indicator"), content = indicator)
