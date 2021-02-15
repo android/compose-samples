@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
@@ -170,12 +170,13 @@ fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState,
 ) {
+    val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = { scope.launch { scaffoldState.drawerState.close() } },
                 navigateTo = navigateTo
             )
         },
@@ -183,7 +184,7 @@ fun InterestsScreen(
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
+                    IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)
@@ -192,7 +193,7 @@ fun InterestsScreen(
                 }
             )
         },
-        bodyContent = {
+        content = {
             TabContent(tab, onTabChange, tabContent)
         }
     )
@@ -360,7 +361,7 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             contentDescription = null, // decorative
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .preferredSize(56.dp, 56.dp)
+                .size(56.dp, 56.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
         Text(
