@@ -18,9 +18,9 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,12 +61,12 @@ fun MyCourse(
 ) {
     Row(modifier = Modifier.padding(bottom = 8.dp)) {
         val stagger = if (index % 2 == 0) 72.dp else 16.dp
-        Spacer(modifier = Modifier.preferredWidth(stagger))
+        Spacer(modifier = Modifier.width(stagger))
         CourseListItem(
             course = course,
             onClick = { selectCourse(course.id) },
             shape = RoundedCornerShape(topStart = 24.dp),
-            modifier = Modifier.preferredHeight(96.dp)
+            modifier = Modifier.height(96.dp)
         )
     }
 }

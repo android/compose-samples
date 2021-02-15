@@ -17,7 +17,7 @@
 package com.example.owl.ui
 
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -48,7 +48,7 @@ class NavigationTest {
     private fun startActivity(startDestination: String? = null) {
         composeTestRule.setContent {
             val backDispatcher = composeTestRule.activity.onBackPressedDispatcher
-            Providers(LocalBackDispatcher provides backDispatcher) {
+            CompositionLocalProvider(LocalBackDispatcher provides backDispatcher) {
                 ProvideWindowInsets {
                     ProvideTestImageLoader {
                         if (startDestination == null) {

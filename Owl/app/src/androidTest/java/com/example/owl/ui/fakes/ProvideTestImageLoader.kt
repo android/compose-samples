@@ -19,7 +19,7 @@ package com.example.owl.ui.fakes
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.bitmap.BitmapPool
@@ -77,5 +77,5 @@ fun ProvideTestImageLoader(content: @Composable () -> Unit) {
 
         override fun shutdown() {}
     }
-    Providers(LocalImageLoader provides loader, content = content)
+    CompositionLocalProvider(LocalImageLoader provides loader, content = content)
 }
