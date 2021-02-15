@@ -56,7 +56,7 @@ fun JetsnackScaffold(
     drawerScrimColor: Color = JetsnackTheme.colors.uiBorder,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textSecondary,
-    bodyContent: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         modifier = modifier,
@@ -75,6 +75,6 @@ fun JetsnackScaffold(
         drawerScrimColor = drawerScrimColor,
         backgroundColor = backgroundColor,
         contentColor = contentColor,
-        bodyContent = bodyContent
+        content = content
     )
 }
