@@ -42,7 +42,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.fragment.app.findFragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.viewbinding.ViewBinding
 import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.BackPressHandler
@@ -95,42 +97,21 @@ class NavActivity : AppCompatActivity() {
                     JetchatScaffold(
                         scaffoldState,
                         onChatClicked = {
-                            findNavController(R.id.nav_host_fragment)
-                                .popBackStack(R.id.nav_home, true)
+                            findNavController().popBackStack(R.id.nav_home, true)
                             scope.launch {
                                 scaffoldState.drawerState.close()
                             }
                         },
                         onProfileClicked = {
                             val bundle = bundleOf("userId" to it)
-                            findNavController(R.id.nav_host_fragment).navigate(
-                                R.id.nav_profile,
-                                bundle
-                            )
+                            findNavController().navigate(R.id.nav_profile, bundle)
                             scope.launch {
                                 scaffoldState.drawerState.close()
                             }
                         }
                     ) {
-//                        // Workaround for https://issuetracker.google.com/178174718
-//                        // and https://issuetracker.google.com/179181757
-//
-//                        // Inflate the XML layout using View Binding:
-//                        val bindingRef = remember { Ref<ViewBinding>() }
-//                        val currentView = LocalView.current
-//
-//                        AndroidViewBinding({ inflater, parent, attachToParent ->
-//                            if (bindingRef.value == null) {
-//                                val binding: ViewBinding =
-//                                    ContentMainBinding.inflate(inflater, parent, attachToParent)
-//                                bindingRef.value = binding
-//                                binding.root.compositionContext =
-//                                    currentView.findViewTreeCompositionContext()
-//                            }
-//                            bindingRef.value as ViewBinding
-//                        })
-//                        // End of workaround
-
+                        // TODO: Fragments inflated via AndroidViewBinding don't work as expected
+                        //  https://issuetracker.google.com/179915946
                         // AndroidViewBinding(ContentMainBinding::inflate)
                         FragmentAwareAndroidViewBinding(ContentMainBinding::inflate)
                     }
@@ -140,8 +121,16 @@ class NavActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return findNavController().navigateUp() || super.onSupportNavigateUp()
+    }
+
+    /**
+     * See https://issuetracker.google.com/142847973
+     */
+    private fun findNavController(): NavController {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
     }
 }
 

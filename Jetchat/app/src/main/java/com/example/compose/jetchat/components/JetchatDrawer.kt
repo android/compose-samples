@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
@@ -143,7 +142,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
         verticalAlignment = CenterVertically
     ) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            val widthPaddingModifier = Modifier.width(24.dp).padding(8.dp)
+            val widthPaddingModifier = Modifier.padding(8.dp).size(24.dp)
             if (profilePic != null) {
                 Image(
                     painter = painterResource(id = profilePic),

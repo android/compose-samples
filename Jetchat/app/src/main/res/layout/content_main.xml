@@ -23,8 +23,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--// TODO: Move to FragmentContainerView-->
-    <!--// https://github.com/android/compose-samples/issues/321-->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
