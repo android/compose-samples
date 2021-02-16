@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -42,7 +43,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyScreen
-import java.util.Locale
 
 @Composable
 fun RallyTopAppBar(
@@ -55,10 +55,10 @@ fun RallyTopAppBar(
             .height(TabHeight)
             .fillMaxWidth()
     ) {
-        Row() {
+        Row(Modifier.selectableGroup()) {
             allScreens.forEach { screen ->
                 RallyTab(
-                    text = screen.name.toUpperCase(Locale.getDefault()),
+                    text = screen.name.toUpperCase(),
                     icon = screen.icon,
                     onSelected = { onTabSelected(screen) },
                     selected = currentScreen == screen
