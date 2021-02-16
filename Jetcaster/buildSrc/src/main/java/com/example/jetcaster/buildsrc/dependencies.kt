@@ -24,8 +24,6 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha06"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
-    const val junit = "junit:junit:4.13"
-
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
@@ -52,6 +50,11 @@ object Libs {
         private const val version = "4.9.0"
         const val okhttp = "com.squareup.okhttp3:okhttp:$version"
         const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
+    }
+
+    object JUnit {
+        private const val version = "4.13"
+        const val junit = "junit:junit:$version"
     }
 
     object AndroidX {

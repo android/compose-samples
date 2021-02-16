@@ -101,7 +101,7 @@ dependencies {
 
     implementation Libs.AndroidX.Activity.activityCompose
 
-//    implementation Libs.AndroidX.Constraint.constraintLayoutCompose
+    implementation Libs.AndroidX.Constraint.constraintLayoutCompose
 
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material

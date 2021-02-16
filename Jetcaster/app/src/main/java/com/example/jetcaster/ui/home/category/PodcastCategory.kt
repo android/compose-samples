@@ -48,7 +48,7 @@ import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -191,7 +191,7 @@ fun EpisodeListItem(
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
                 maxLines = 2,
@@ -221,7 +221,7 @@ fun EpisodeListItem(
                     interactionState = remember { InteractionState() },
                     indication = rememberRipple(bounded = false, radius = 24.dp)
                 ) { /* TODO */ }
-                .preferredSize(36.dp)
+                .size(36.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
                     top.linkTo(titleImageBarrier, margin = 16.dp)
@@ -229,7 +229,7 @@ fun EpisodeListItem(
                 }
         )
 
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = when {
                     episode.duration != null -> {

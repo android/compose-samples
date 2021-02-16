@@ -19,8 +19,7 @@
 package com.example.jetcaster.util
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationEndReason
-import androidx.compose.animation.core.exponentialDecay
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -34,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.ParentDataModifier
@@ -108,12 +106,8 @@ class PagerState(
         if (velocity < 0 && currentPage == maxPage) return
         if (velocity > 0 && currentPage == minPage) return
 
-        val result = _currentPageOffset.animateDecay(velocity, exponentialDecay())
-
-        if (result.endReason != AnimationEndReason.Interrupted) {
-            _currentPageOffset.animateTo(currentPageOffset.roundToInt().toFloat())
+        _currentPageOffset.animateTo(currentPageOffset.roundToInt().toFloat())
             selectPage()
-        }
     }
 
     override fun toString(): String = "PagerState{minPage=$minPage, maxPage=$maxPage, " +
