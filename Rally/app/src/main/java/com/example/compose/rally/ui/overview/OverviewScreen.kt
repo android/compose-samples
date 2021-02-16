@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -62,9 +62,9 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
             .verticalScroll(rememberScrollState())
     ) {
         AlertCard()
-        Spacer(Modifier.preferredHeight(RallyDefaultPadding))
+        Spacer(Modifier.height(RallyDefaultPadding))
         AccountsCard(onScreenChange)
-        Spacer(Modifier.preferredHeight(RallyDefaultPadding))
+        Spacer(Modifier.height(RallyDefaultPadding))
         BillsCard(onScreenChange)
     }
 }
@@ -187,7 +187,7 @@ private fun <T> OverViewDivider(
             Spacer(
                 modifier = Modifier
                     .weight(values(item))
-                    .preferredHeight(1.dp)
+                    .height(1.dp)
                     .background(colors(item))
             )
         }
@@ -247,7 +247,7 @@ private fun SeeAllButton(onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
         modifier = Modifier
-            .preferredHeight(44.dp)
+            .height(44.dp)
             .fillMaxWidth()
     ) {
         Text(stringResource(R.string.see_all))
