@@ -17,7 +17,7 @@
 package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -64,7 +64,7 @@ class UserInputTest {
         // Launch the conversation screen
         val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
         composeTestRule.setContent {
-            Providers(
+            CompositionLocalProvider(
                 LocalBackPressedDispatcher provides onBackPressedDispatcher,
                 LocalWindowInsets provides windowInsets,
             ) {

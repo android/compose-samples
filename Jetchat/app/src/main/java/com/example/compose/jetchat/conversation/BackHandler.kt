@@ -62,7 +62,7 @@ fun BackPressHandler(onBackPressed: () -> Unit) {
  * This [CompositionLocal] is used to provide an [OnBackPressedDispatcher]:
  *
  * ```
- * Providers(LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher) { }
+ * CompositionLocalProvider(LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher) { }
  * ```
  *
  * and setting up the callbacks with [BackPressHandler].

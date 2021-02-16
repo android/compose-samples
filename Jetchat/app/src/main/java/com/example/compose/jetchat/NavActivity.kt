@@ -17,20 +17,31 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.node.Ref
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.compositionContext
-import androidx.compose.ui.platform.findViewTreeCompositionContext
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import androidx.core.view.forEach
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.commit
+import androidx.fragment.app.findFragment
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.compose.jetchat.components.JetchatScaffold
@@ -38,6 +49,7 @@ import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import kotlinx.coroutines.launch
 
 /**
  * Main activity for the app.
@@ -56,20 +68,28 @@ class NavActivity : AppCompatActivity() {
             // Provide WindowInsets to our content. We don't want to consume them, so that
             // they keep being pass down the view hierarchy (since we're using fragments).
             ProvideWindowInsets(consumeWindowInsets = false) {
-                Providers(LocalBackPressedDispatcher provides this.onBackPressedDispatcher) {
+                CompositionLocalProvider(
+                    LocalBackPressedDispatcher provides this.onBackPressedDispatcher
+                ) {
                     val scaffoldState = rememberScaffoldState()
 
+                    val scope = rememberCoroutineScope()
                     val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
                     if (openDrawerEvent.value == true) {
                         // Open drawer and reset state in VM.
-                        scaffoldState.drawerState.open {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
                             viewModel.resetOpenDrawerAction()
                         }
                     }
 
                     // Intercepts back navigation when the drawer is open
                     if (scaffoldState.drawerState.isOpen) {
-                        BackPressHandler { scaffoldState.drawerState.close() }
+                        BackPressHandler {
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                        }
                     }
 
                     JetchatScaffold(
@@ -77,7 +97,9 @@ class NavActivity : AppCompatActivity() {
                         onChatClicked = {
                             findNavController(R.id.nav_host_fragment)
                                 .popBackStack(R.id.nav_home, true)
-                            scaffoldState.drawerState.close()
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
                         },
                         onProfileClicked = {
                             val bundle = bundleOf("userId" to it)
@@ -85,29 +107,32 @@ class NavActivity : AppCompatActivity() {
                                 R.id.nav_profile,
                                 bundle
                             )
-                            scaffoldState.drawerState.close()
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
                         }
                     ) {
-                        // Workaround for https://issuetracker.google.com/178174718
-                        // and https://issuetracker.google.com/179181757
-
-                        // Inflate the XML layout using View Binding:
-                        val bindingRef = remember { Ref<ViewBinding>() }
-                        val currentView = LocalView.current
-
-                        AndroidViewBinding({ inflater, parent, attachToParent ->
-                            if (bindingRef.value == null) {
-                                val binding: ViewBinding =
-                                    ContentMainBinding.inflate(inflater, parent, attachToParent)
-                                bindingRef.value = binding
-                                binding.root.compositionContext =
-                                    currentView.findViewTreeCompositionContext()
-                            }
-                            bindingRef.value as ViewBinding
-                        })
-                        // End of workaround
+//                        // Workaround for https://issuetracker.google.com/178174718
+//                        // and https://issuetracker.google.com/179181757
+//
+//                        // Inflate the XML layout using View Binding:
+//                        val bindingRef = remember { Ref<ViewBinding>() }
+//                        val currentView = LocalView.current
+//
+//                        AndroidViewBinding({ inflater, parent, attachToParent ->
+//                            if (bindingRef.value == null) {
+//                                val binding: ViewBinding =
+//                                    ContentMainBinding.inflate(inflater, parent, attachToParent)
+//                                bindingRef.value = binding
+//                                binding.root.compositionContext =
+//                                    currentView.findViewTreeCompositionContext()
+//                            }
+//                            bindingRef.value as ViewBinding
+//                        })
+//                        // End of workaround
 
                         // AndroidViewBinding(ContentMainBinding::inflate)
+                        FragmentAwareAndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
             }
@@ -117,5 +142,69 @@ class NavActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+}
+
+@Composable
+fun <T : ViewBinding> FragmentAwareAndroidViewBinding(
+    bindingBlock: (LayoutInflater, ViewGroup, Boolean) -> T,
+    modifier: Modifier = Modifier,
+    update: T.() -> Unit = {}
+) {
+    val fragmentContainerViews = remember { mutableStateListOf<FragmentContainerView>() }
+    AndroidViewBinding(bindingBlock, modifier = modifier) {
+        fragmentContainerViews.clear()
+        val rootGroup = root as? ViewGroup
+        if (rootGroup != null) {
+            findFragmentContainerViews(rootGroup, fragmentContainerViews)
+        }
+        update()
+    }
+    val activity = LocalContext.current as FragmentActivity
+    fragmentContainerViews.forEach { container ->
+        DisposableEffect(container) {
+            // Find the right FragmentManager
+            val fragmentManager = try {
+                val parentFragment = container.findFragment<Fragment>()
+                parentFragment.childFragmentManager
+            } catch (e: Exception) {
+                activity.supportFragmentManager
+            }
+            // Now find the fragment inflated via the FragmentContainerView
+            val existingFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment)
+            if (existingFragment != null) {
+                val fragmentView = existingFragment.requireView()
+                // Remove the Fragment from whatever old parent it had
+                // (this is most likely an old binding if it is non-null)
+                (fragmentView.parent as? ViewGroup)?.run {
+                    removeView(fragmentView)
+                }
+                // Re-add it to the layout if it was moved to RESUMED before
+                // this Composable ran
+                container.addView(existingFragment.requireView())
+            }
+            onDispose {
+                if (existingFragment != null && !fragmentManager.isStateSaved) {
+                    // If the state isn't saved, that means that some state change
+                    // has removed this Composable from the hierarchy
+                    fragmentManager.commit {
+                        remove(existingFragment)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun findFragmentContainerViews(
+    viewGroup: ViewGroup,
+    list: SnapshotStateList<FragmentContainerView>
+) {
+    viewGroup.forEach {
+        if (it is FragmentContainerView) {
+            list += it
+        } else if (it is ViewGroup) {
+            findFragmentContainerViews(it, list)
+        }
     }
 }
