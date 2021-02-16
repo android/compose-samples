@@ -27,9 +27,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
@@ -119,7 +118,7 @@ fun HomeAppBar(
                     contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .padding(start = 4.dp)
-                        .preferredHeightIn(max = 24.dp)
+                        .heightIn(max = 24.dp)
                 )
             }
         },
@@ -225,7 +224,7 @@ fun HomeContent(
                         modifier = Modifier
                             .padding(start = Keyline1, top = 16.dp, end = Keyline1)
                             .fillMaxWidth()
-                            .preferredHeight(200.dp)
+                            .height(200.dp)
                     )
 
                     Spacer(Modifier.height(16.dp))
@@ -305,7 +304,7 @@ fun HomeCategoryTabIndicator(
     Spacer(
         modifier
             .padding(horizontal = 24.dp)
-            .preferredHeight(4.dp)
+            .height(4.dp)
             .background(color, RoundedCornerShape(topStartPercent = 100, topEndPercent = 100))
     )
 }

@@ -28,8 +28,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -152,7 +152,7 @@ fun EpisodeListItem(
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
                 modifier = Modifier
-                    .preferredSize(56.dp)
+                    .size(56.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
@@ -305,10 +305,10 @@ private fun CategoryPodcastRow(
                 podcastImageUrl = podcast.imageUrl,
                 isFollowed = isFollowed,
                 onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
-                modifier = Modifier.preferredWidth(128.dp)
+                modifier = Modifier.width(128.dp)
             )
 
-            if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
+            if (index < lastIndex) Spacer(Modifier.width(24.dp))
         }
     }
 }

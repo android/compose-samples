@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha06"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.5.1"
+        private const val version = "0.5.2.compose-7141639-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
@@ -61,7 +61,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha02"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Constraint {
@@ -69,8 +69,8 @@ object Libs {
         }
 
         object Compose {
-            private const val snapshot = ""
-            private const val version = "1.0.0-alpha12"
+            private const val snapshot = "7141639"
+            private const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
             val snapshotUrl: String
