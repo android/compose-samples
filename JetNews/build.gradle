@@ -16,7 +16,7 @@
 
 buildscript {
     ext.kotlin_version = '1.4.30'
-    ext.compose_version = '1.0.0-alpha12'
+    ext.compose_version = '1.0.0-SNAPSHOT'
     ext.coroutines_version = '1.4.2'
 
     repositories {
@@ -25,7 +25,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha05'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha06'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -36,6 +36,10 @@ plugins {
 
 subprojects {
     repositories {
+        maven {
+            def snapshot = "7141639"
+            url  "https://androidx.dev/snapshots/builds/$snapshot/artifacts/repository/"
+        }
         google()
         jcenter()
     }
