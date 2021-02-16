@@ -18,7 +18,7 @@ package com.example.compose.rally
 
 import android.os.Build
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -93,7 +93,7 @@ class AnimatingCircleTests {
         composeTestRule.setContent {
             RallyTheme {
                 AnimatedCircle(
-                    modifier = Modifier.background(Color.White).preferredSize(320.dp),
+                    modifier = Modifier.background(Color.White).size(320.dp),
                     proportions = listOf(0.25f, 0.5f, 0.25f),
                     colors = listOf(Color.Red, Color.DarkGray, Color.Black)
                 )
