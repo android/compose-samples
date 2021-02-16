@@ -44,6 +44,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.RallyScreen
@@ -128,7 +130,9 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
 @Composable
 private fun AlertItem(message: String) {
     Row(
-        modifier = Modifier.padding(RallyDefaultPadding),
+        modifier = Modifier
+            .padding(RallyDefaultPadding)
+            .semantics(mergeDescendants = true) {},
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -138,9 +142,11 @@ private fun AlertItem(message: String) {
         )
         IconButton(
             onClick = {},
-            modifier = Modifier.align(Alignment.Top)
+            modifier = Modifier
+                .align(Alignment.Top)
+                .clearAndSetSemantics {}
         ) {
-            Icon(Icons.Filled.Sort, contentDescription = stringResource(id = R.string.sort))
+            Icon(Icons.Filled.Sort, contentDescription = null)
         }
     }
 }
@@ -193,6 +199,7 @@ private fun <T> OverViewDivider(
         }
     }
 }
+
 /**
  * The Accounts card within the Rally Overview screen.
  */
@@ -217,6 +224,7 @@ private fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
         )
     }
 }
+
 /**
  * The Bills card within the Rally Overview screen.
  */
