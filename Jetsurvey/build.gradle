@@ -41,6 +41,7 @@ subprojects {
         if (Libs.AndroidX.Compose.version.endsWith('SNAPSHOT')) {
             maven { url Libs.AndroidX.Compose.snapshotUrl }
         }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
     apply plugin: 'com.diffplug.spotless'
@@ -69,6 +70,13 @@ subprojects {
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
+        }
+    }
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group.startsWith('androidx.compose')) {
+                details.useVersion Libs.AndroidX.Compose.version
+            }
         }
     }
 }
