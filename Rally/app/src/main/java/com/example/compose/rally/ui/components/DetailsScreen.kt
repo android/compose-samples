@@ -20,8 +20,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -53,7 +53,7 @@ fun <T> StatementBody(
                 accountsProportion,
                 circleColors,
                 Modifier
-                    .preferredHeight(300.dp)
+                    .height(300.dp)
                     .align(Alignment.Center)
                     .fillMaxWidth()
             )
@@ -70,7 +70,7 @@ fun <T> StatementBody(
                 )
             }
         }
-        Spacer(Modifier.preferredHeight(10.dp))
+        Spacer(Modifier.height(10.dp))
         Card {
             Column(modifier = Modifier.padding(12.dp)) {
                 items.forEach { item ->
