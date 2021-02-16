@@ -23,9 +23,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -53,7 +53,7 @@ fun AppDrawer(
     closeDrawer: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(Modifier.preferredHeight(24.dp))
+        Spacer(Modifier.height(24.dp))
         JetNewsLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
@@ -86,7 +86,7 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
             contentDescription = null, // decorative
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
-        Spacer(Modifier.preferredWidth(8.dp))
+        Spacer(Modifier.width(8.dp))
         Image(
             painter = painterResource(R.drawable.ic_jetnews_wordmark),
             contentDescription = stringResource(R.string.app_name),
@@ -143,7 +143,7 @@ private fun DrawerButton(
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
-                Spacer(Modifier.preferredWidth(16.dp))
+                Spacer(Modifier.width(16.dp))
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,

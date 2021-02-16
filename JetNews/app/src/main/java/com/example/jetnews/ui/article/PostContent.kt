@@ -23,11 +23,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -42,7 +42,7 @@ import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -82,34 +82,34 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
         item {
-            Spacer(Modifier.preferredHeight(defaultSpacerSize))
+            Spacer(Modifier.height(defaultSpacerSize))
             PostHeaderImage(post)
         }
         item {
             Text(text = post.title, style = MaterialTheme.typography.h4)
-            Spacer(Modifier.preferredHeight(8.dp))
+            Spacer(Modifier.height(8.dp))
         }
         post.subtitle?.let { subtitle ->
             item {
-                Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.body2,
                         lineHeight = 20.sp
                     )
                 }
-                Spacer(Modifier.preferredHeight(defaultSpacerSize))
+                Spacer(Modifier.height(defaultSpacerSize))
             }
         }
         item {
             PostMetadata(post.metadata)
-            Spacer(Modifier.preferredHeight(24.dp))
+            Spacer(Modifier.height(24.dp))
         }
         items(post.paragraphs) {
             Paragraph(paragraph = it)
         }
         item {
-            Spacer(Modifier.preferredHeight(48.dp))
+            Spacer(Modifier.height(48.dp))
         }
     }
 }
@@ -126,7 +126,7 @@ private fun PostHeaderImage(post: Post) {
         modifier = imageModifier,
         contentScale = ContentScale.Crop
     )
-    Spacer(Modifier.preferredHeight(defaultSpacerSize))
+    Spacer(Modifier.height(defaultSpacerSize))
 }
 
 @Composable
@@ -139,11 +139,11 @@ private fun PostMetadata(metadata: Metadata) {
         Image(
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = null, // decorative
-            modifier = Modifier.preferredSize(40.dp),
+            modifier = Modifier.size(40.dp),
             colorFilter = ColorFilter.tint(LocalContentColor.current),
             contentScale = ContentScale.Fit
         )
-        Spacer(Modifier.preferredWidth(8.dp))
+        Spacer(Modifier.width(8.dp))
         Column {
             Text(
                 text = metadata.author.name,
@@ -151,7 +151,7 @@ private fun PostMetadata(metadata: Metadata) {
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
                     style = typography.caption
@@ -228,7 +228,7 @@ private fun BulletParagraph(
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
-                    .preferredSize(8.sp.toDp(), 8.sp.toDp())
+                    .size(8.sp.toDp(), 8.sp.toDp())
                     .alignBy {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
                         9.sp.roundToPx()

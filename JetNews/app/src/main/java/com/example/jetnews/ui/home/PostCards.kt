@@ -21,7 +21,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
@@ -34,7 +34,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -58,7 +58,7 @@ fun AuthorAndReadTime(
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             val textStyle = MaterialTheme.typography.body2
             Text(
                 text = post.metadata.author.name,
@@ -78,7 +78,7 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
         painter = painterResource(post.imageThumbId),
         contentDescription = null, // decorative
         modifier = modifier
-            .preferredSize(40.dp, 40.dp)
+            .size(40.dp, 40.dp)
             .clip(MaterialTheme.shapes.small)
     )
 }
@@ -138,7 +138,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "BASED ON YOUR HISTORY",
                     style = MaterialTheme.typography.overline
@@ -150,7 +150,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
                 contentDescription = stringResource(R.string.cd_more_actions)

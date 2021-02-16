@@ -20,9 +20,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -47,7 +47,7 @@ fun PostCardPopular(
 ) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier.preferredSize(280.dp, 240.dp)
+        modifier = modifier.size(280.dp, 240.dp)
     ) {
         Column(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })) {
 
@@ -56,7 +56,7 @@ fun PostCardPopular(
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .preferredHeight(100.dp)
+                    .height(100.dp)
                     .fillMaxWidth()
             )
 
