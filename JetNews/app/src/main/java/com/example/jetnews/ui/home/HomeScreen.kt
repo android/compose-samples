@@ -133,8 +133,6 @@ fun HomeScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState
 ) {
-    val scope = rememberCoroutineScope()
-
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
@@ -159,12 +157,13 @@ fun HomeScreen(
         }
     }
 
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Home,
-                closeDrawer = { scope.launch { scaffoldState.drawerState.close() } },
+                closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } },
                 navigateTo = navigateTo
             )
         },
@@ -173,7 +172,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(text = title) },
                 navigationIcon = {
-                    IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
+                    IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)

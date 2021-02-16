@@ -170,13 +170,13 @@ fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState,
 ) {
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
-                closeDrawer = { scope.launch { scaffoldState.drawerState.close() } },
+                closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } },
                 navigateTo = navigateTo
             )
         },
@@ -184,7 +184,7 @@ fun InterestsScreen(
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
+                    IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)

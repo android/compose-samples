@@ -25,8 +25,7 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -37,7 +36,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private val RefreshDistance = 80.dp
@@ -70,7 +68,6 @@ fun SwipeToRefreshLayout(
                 orientation = Orientation.Vertical
             )
     ) {
-        val scope = rememberCoroutineScope()
         content()
         Box(
             Modifier
@@ -85,10 +82,7 @@ fun SwipeToRefreshLayout(
         // TODO (https://issuetracker.google.com/issues/164113834): This state->event trampoline is a
         //  workaround for a bug in the SwipableState API. Currently, state.value is a duplicated
         //  source of truth of refreshingState.
-        DisposableEffect(refreshingState) {
-            scope.launch { state.animateTo(refreshingState) }
-            onDispose {}
-        }
+        LaunchedEffect(refreshingState) { state.animateTo(refreshingState) }
     }
 }
 
