@@ -108,7 +108,7 @@ class PagerState(
         if (velocity > 0 && currentPage == minPage) return
 
         _currentPageOffset.animateTo(currentPageOffset.roundToInt().toFloat())
-            selectPage()
+        selectPage()
     }
 
     override fun toString(): String = "PagerState{minPage=$minPage, maxPage=$maxPage, " +
