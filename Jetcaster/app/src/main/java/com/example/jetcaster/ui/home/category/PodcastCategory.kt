@@ -44,12 +44,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,6 +58,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
+import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
@@ -138,7 +138,7 @@ fun EpisodeListItem(
                 top.linkTo(parent.top)
                 centerHorizontallyTo(parent)
 
-                width = androidx.compose.foundation.layout.Dimension.fillToConstraints
+                width = fillToConstraints
             }
         )
 
@@ -184,7 +184,7 @@ fun EpisodeListItem(
                 )
                 top.linkTo(parent.top, 16.dp)
 
-                width = androidx.compose.foundation.layout.Dimension.preferredWrapContent
+                width = preferredWrapContent
             }
         )
 
@@ -205,7 +205,7 @@ fun EpisodeListItem(
                     )
                     top.linkTo(episodeTitle.bottom, 6.dp)
 
-                    width = androidx.compose.foundation.layout.Dimension.preferredWrapContent
+                    width = preferredWrapContent
                 }
             )
         }
@@ -216,10 +216,9 @@ fun EpisodeListItem(
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(LocalContentColor.current),
             modifier = Modifier
-                .clickable(
-                    interactionState = remember { InteractionState() },
-                    indication = rememberRipple(bounded = false, radius = 24.dp)
-                ) { /* TODO */ }
+                // TODO: Bring back clickable logic
+                // https://github.com/android/compose-samples/blob/89b5cf0482a52d58119b1f46bc977d2ec4fadfad/Jetcaster/app/src/main/java/com/example/jetcaster/ui/home/category/PodcastCategory.kt#L220-L223
+                .clickable{ /* TODO */ }
                 .size(36.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
