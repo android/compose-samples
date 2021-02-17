@@ -123,6 +123,7 @@ dependencies {
 
     implementation Libs.AndroidX.Room.runtime
     implementation Libs.AndroidX.Room.ktx
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     kapt Libs.AndroidX.Room.compiler
 
     coreLibraryDesugaring Libs.jdkDesugar

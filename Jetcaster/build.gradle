@@ -35,6 +35,8 @@ plugins {
 
 subprojects {
     repositories {
+        maven { url "http://androidx.dev/storage/repository/androidx/constraintlayout" }
+
         google()
         mavenCentral()
         jcenter()

@@ -68,7 +68,7 @@ object Libs {
         }
 
         object Constraint {
-            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha01"
+            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-SNAPSHOT"
         }
 
         object Compose {

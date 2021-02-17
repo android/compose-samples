@@ -48,7 +48,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -124,7 +124,7 @@ fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(
                     onClick = { /* TODO: Open search */ }
                 ) {
@@ -370,7 +370,7 @@ private fun FollowedPodcastCarouselItem(
         }
 
         if (lastEpisodeDate != null) {
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = lastUpdated(lastEpisodeDate),
                     style = MaterialTheme.typography.caption,
