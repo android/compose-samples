@@ -210,15 +210,16 @@ fun EpisodeListItem(
             )
         }
 
+
+        // TODO: Bring back clickable logic
+        // https://github.com/android/compose-samples/blob/89b5cf0482a52d58119b1f46bc977d2ec4fadfad/Jetcaster/app/src/main/java/com/example/jetcaster/ui/home/category/PodcastCategory.kt#L220-L223
+
         Image(
             imageVector = Icons.Rounded.PlayCircleFilled,
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(LocalContentColor.current),
-            modifier = Modifier
-                // TODO: Bring back clickable logic
-                // https://github.com/android/compose-samples/blob/89b5cf0482a52d58119b1f46bc977d2ec4fadfad/Jetcaster/app/src/main/java/com/example/jetcaster/ui/home/category/PodcastCategory.kt#L220-L223
-                .clickable{ /* TODO */ }
+            modifier = Modifier.clickable{ /* TODO */ }
                 .size(36.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
