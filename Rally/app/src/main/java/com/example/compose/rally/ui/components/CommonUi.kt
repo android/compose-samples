@@ -39,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import java.text.DecimalFormat
@@ -79,8 +81,15 @@ private fun BaseRow(
     amount: Float,
     negative: Boolean
 ) {
+    val dollarSign = if (negative) "–$ " else "$ "
+    val formattedAmount = formatAmount(amount)
     Row(
-        modifier = Modifier.height(68.dp),
+        modifier = Modifier
+            .height(68.dp)
+            .clearAndSetSemantics {
+                contentDescription =
+                    "$title account ending in ${subtitle.takeLast(4)}, current balance $dollarSign$formattedAmount"
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         val typography = MaterialTheme.typography
@@ -100,14 +109,12 @@ private fun BaseRow(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = if (negative) "–$ " else "$ ",
+                text = dollarSign,
                 style = typography.h6,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
             Text(
-                text = formatAmount(
-                    amount
-                ),
+                text = formattedAmount,
                 style = typography.h6,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
