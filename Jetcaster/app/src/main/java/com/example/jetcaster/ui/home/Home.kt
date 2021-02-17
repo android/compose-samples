@@ -62,7 +62,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
@@ -76,6 +75,7 @@ import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
+import com.example.jetcaster.util.viewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.time.Duration
@@ -84,7 +84,7 @@ import java.time.OffsetDateTime
 
 @Composable
 fun Home() {
-    val viewModel: HomeViewModel = viewModel()
+    val viewModel = viewModel(HomeViewModel::class.java)
 
     val viewState by viewModel.state.collectAsState()
 
