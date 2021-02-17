@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
@@ -69,7 +70,6 @@ import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
-import com.example.jetcaster.util.viewModel
 import com.example.jetcaster.util.viewModelProviderFactoryOf
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.format.DateTimeFormatter
