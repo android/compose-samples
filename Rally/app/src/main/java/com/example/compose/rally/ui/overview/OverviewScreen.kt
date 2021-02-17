@@ -132,6 +132,10 @@ private fun AlertItem(message: String) {
     Row(
         modifier = Modifier
             .padding(RallyDefaultPadding)
+            // Regard the whole row as one semantics node. This way each row will receive focus as
+            // a whole and the focus bounds will be around the whole row content. The semantics
+            // properties of the descendants will be merged. If we'd use clearAndSetSemantics instead,
+            // we'd have to define the semantics properties explicitly.
             .semantics(mergeDescendants = true) {},
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
