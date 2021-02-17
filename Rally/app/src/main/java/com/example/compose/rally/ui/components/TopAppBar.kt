@@ -40,6 +40,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyScreen
@@ -96,6 +98,7 @@ private fun RallyTab(
             .selectable(
                 selected = selected,
                 onClick = onSelected,
+                role = Role.Tab,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(
                     bounded = false,
@@ -104,10 +107,10 @@ private fun RallyTab(
                 )
             )
     ) {
-        Icon(imageVector = icon, contentDescription = null, tint = tabTintColor)
+        Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
         if (selected) {
             Spacer(Modifier.width(12.dp))
-            Text(text, color = tabTintColor)
+            Text(text, color = tabTintColor, modifier = Modifier.clearAndSetSemantics {})
         }
     }
 }
