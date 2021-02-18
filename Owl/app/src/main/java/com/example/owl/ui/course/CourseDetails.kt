@@ -19,6 +19,7 @@ package com.example.owl.ui.course
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation.Vertical
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -28,10 +29,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -59,12 +60,12 @@ import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -93,6 +94,7 @@ import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import dev.chrisbanes.accompanist.insets.toPaddingValues
+import kotlinx.coroutines.launch
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
@@ -121,10 +123,15 @@ fun CourseDetails(
             val sheetState = rememberSwipeableState(SheetState.Closed)
             val fabSize = with(LocalDensity.current) { FabSize.toPx() }
             val dragRange = constraints.maxHeight - fabSize
+            val scope = rememberCoroutineScope()
 
             backHandler(
-                enabled = sheetState.value == SheetState.Open,
-                onBack = { sheetState.animateTo(SheetState.Closed) }
+                enabled = sheetState.currentValue == SheetState.Open,
+                onBack = {
+                    scope.launch {
+                        sheetState.animateTo(SheetState.Closed)
+                    }
+                }
             )
 
             Box(
@@ -137,7 +144,7 @@ fun CourseDetails(
                         -dragRange to SheetState.Open
                     ),
                     thresholds = { _, _ -> FractionalThreshold(0.5f) },
-                    orientation = Orientation.Vertical
+                    orientation = Vertical
                 )
             ) {
                 val openFraction = if (sheetState.offset.value.isNaN()) {
@@ -152,7 +159,9 @@ fun CourseDetails(
                     this@BoxWithConstraints.constraints.maxWidth.toFloat(),
                     this@BoxWithConstraints.constraints.maxHeight.toFloat()
                 ) { state ->
-                    sheetState.animateTo(state)
+                    scope.launch {
+                        sheetState.animateTo(state)
+                    }
                 }
             }
         }
@@ -205,7 +214,7 @@ private fun CourseDescriptionHeader(
                 contentDescription = null,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
-                    .preferredSize(24.dp)
+                    .size(24.dp)
                     .align(Alignment.CenterVertically)
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -213,7 +222,7 @@ private fun CourseDescriptionHeader(
         OutlinedAvatar(
             url = course.instructor,
             modifier = Modifier
-                .preferredSize(40.dp)
+                .size(40.dp)
                 .align(Alignment.BottomCenter)
                 .offset(y = 20.dp) // overlap bottom of image
         )
@@ -244,8 +253,8 @@ private fun CourseDescriptionBody(course: Course) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     )
-    Spacer(modifier = Modifier.preferredHeight(16.dp))
-    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+    Spacer(modifier = Modifier.height(16.dp))
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.course_desc),
             style = MaterialTheme.typography.body1,
@@ -264,7 +273,7 @@ private fun CourseDescriptionBody(course: Course) {
             .fillMaxWidth()
             .padding(16.dp)
     )
-    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.needs),
             style = MaterialTheme.typography.body1,
@@ -318,7 +327,7 @@ private fun RelatedCourses(
                             titleStyle = MaterialTheme.typography.body2,
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .preferredSize(288.dp, 80.dp),
+                                .size(288.dp, 80.dp),
                             iconSize = 14.dp
                         )
                     }
@@ -424,7 +433,7 @@ private fun Lessons(
         val fabAlpha = lerp(1f, 0f, 0f, 0.15f, openFraction)
         Box(
             modifier = Modifier
-                .preferredSize(FabSize)
+                .size(FabSize)
                 .padding(start = 16.dp, top = 8.dp) // visually center contents
                 .graphicsLayer { alpha = fabAlpha }
         ) {
@@ -452,7 +461,7 @@ private fun Lesson(lesson: Lesson) {
         NetworkImage(
             url = lesson.imageUrl,
             contentDescription = null,
-            modifier = Modifier.preferredSize(112.dp, 64.dp)
+            modifier = Modifier.size(112.dp, 64.dp)
         )
         Column(
             modifier = Modifier
@@ -465,7 +474,7 @@ private fun Lesson(lesson: Lesson) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -473,7 +482,7 @@ private fun Lesson(lesson: Lesson) {
                     Icon(
                         imageVector = Icons.Rounded.PlayCircleOutline,
                         contentDescription = null,
-                        modifier = Modifier.preferredSize(16.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                     Text(
                         modifier = Modifier.padding(start = 4.dp),

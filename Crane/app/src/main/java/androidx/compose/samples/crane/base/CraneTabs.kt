@@ -20,11 +20,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -58,7 +57,7 @@ fun CraneTabBar(
                 painter = painterResource(id = R.drawable.ic_menu),
                 contentDescription = stringResource(id = R.string.cd_menu)
             )
-            Spacer(Modifier.preferredWidth(8.dp))
+            Spacer(Modifier.width(8.dp))
             Image(
                 painter = painterResource(id = R.drawable.ic_crane_logo),
                 contentDescription = null
@@ -72,7 +71,6 @@ fun CraneTabBar(
     }
 }
 
-@OptIn(ExperimentalLayout::class)
 @Composable
 fun CraneTabs(
     modifier: Modifier = Modifier,

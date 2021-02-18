@@ -16,12 +16,14 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -41,14 +43,15 @@ class HomeTest {
         }
     }
 
+    @Ignore("Swipeable bug makes the app crash: https://issuetracker.google.com/180488877")
     @Test
     fun home_navigatesToAllScreens() {
-        composeTestRule.onNodeWithText("Explore Flights by Destination").assertExists()
+        composeTestRule.onNodeWithText("Explore Flights by Destination").assertIsDisplayed()
         composeTestRule.onNodeWithText("SLEEP").performClick()
-        composeTestRule.onNodeWithText("Explore Properties by Destination").assertExists()
+        composeTestRule.onNodeWithText("Explore Properties by Destination").assertIsDisplayed()
         composeTestRule.onNodeWithText("EAT").performClick()
-        composeTestRule.onNodeWithText("Explore Restaurants by Destination").assertExists()
+        composeTestRule.onNodeWithText("Explore Restaurants by Destination").assertIsDisplayed()
         composeTestRule.onNodeWithText("FLY").performClick()
-        composeTestRule.onNodeWithText("Explore Flights by Destination").assertExists()
+        composeTestRule.onNodeWithText("Explore Flights by Destination").assertIsDisplayed()
     }
 }

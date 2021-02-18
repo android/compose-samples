@@ -102,10 +102,9 @@ dependencies {
     implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
 
-    // FIXME: Only needed for Compose alpha12
     androidTestImplementation Libs.AndroidX.Activity.activityCompose
 
-    androidTestImplementation Libs.junit    
+    androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.espressoCore
     androidTestImplementation Libs.AndroidX.Test.rules
