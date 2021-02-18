@@ -189,7 +189,7 @@ private fun JetsnackBottomNavLayout(
     }
     selectionFractions.forEachIndexed { index, selectionFraction ->
         val target = if (index == selectedIndex) 1f else 0f
-        LaunchedEffect(target) {
+        LaunchedEffect(target, animSpec) {
             selectionFraction.animateTo(target, animSpec)
         }
     }
