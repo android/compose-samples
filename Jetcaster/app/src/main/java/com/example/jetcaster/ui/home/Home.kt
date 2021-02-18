@@ -27,9 +27,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
@@ -48,8 +47,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -85,7 +84,7 @@ import java.time.OffsetDateTime
 
 @Composable
 fun Home() {
-    val viewModel: HomeViewModel = viewModel()
+    val viewModel = viewModel(HomeViewModel::class.java)
 
     val viewState by viewModel.state.collectAsState()
 
@@ -119,13 +118,13 @@ fun HomeAppBar(
                     contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .padding(start = 4.dp)
-                        .preferredHeightIn(max = 24.dp)
+                        .heightIn(max = 24.dp)
                 )
             }
         },
         backgroundColor = backgroundColor,
         actions = {
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(
                     onClick = { /* TODO: Open search */ }
                 ) {
@@ -225,7 +224,7 @@ fun HomeContent(
                         modifier = Modifier
                             .padding(start = Keyline1, top = 16.dp, end = Keyline1)
                             .fillMaxWidth()
-                            .preferredHeight(200.dp)
+                            .height(200.dp)
                     )
 
                     Spacer(Modifier.height(16.dp))
@@ -305,7 +304,7 @@ fun HomeCategoryTabIndicator(
     Spacer(
         modifier
             .padding(horizontal = 24.dp)
-            .preferredHeight(4.dp)
+            .height(4.dp)
             .background(color, RoundedCornerShape(topStartPercent = 100, topEndPercent = 100))
     )
 }
@@ -371,7 +370,7 @@ private fun FollowedPodcastCarouselItem(
         }
 
         if (lastEpisodeDate != null) {
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = lastUpdated(lastEpisodeDate),
                     style = MaterialTheme.typography.caption,

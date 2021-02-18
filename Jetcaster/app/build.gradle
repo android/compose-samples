@@ -101,7 +101,7 @@ dependencies {
 
     implementation Libs.AndroidX.Activity.activityCompose
 
-//    implementation Libs.AndroidX.Constraint.constraintLayoutCompose
+    implementation Libs.AndroidX.Constraint.constraintLayoutCompose
 
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
@@ -123,6 +123,7 @@ dependencies {
 
     implementation Libs.AndroidX.Room.runtime
     implementation Libs.AndroidX.Room.ktx
+
     kapt Libs.AndroidX.Room.compiler
 
     coreLibraryDesugaring Libs.jdkDesugar

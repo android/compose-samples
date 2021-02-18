@@ -40,8 +40,9 @@ subprojects {
         jcenter()
 
         // Jetpack Compose SNAPSHOTs
-        if (Libs.AndroidX.Compose.version.endsWith("SNAPSHOT")) {
-            maven { url Libs.AndroidX.Compose.snapshotUrl }
+        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
+            maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
+            maven { url "http://androidx.dev/storage/repository/androidx/constraintlayout" }
         }
 
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }

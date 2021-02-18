@@ -17,19 +17,18 @@
 package com.example.jetcaster.ui.home.category
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -48,7 +47,7 @@ import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -61,6 +60,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
+import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
@@ -125,7 +127,6 @@ fun EpisodeListItem(
     podcast: Podcast,
     modifier: Modifier = Modifier
 ) {
-    @Suppress("DEPRECATION") // ConstraintLayout
     ConstraintLayout(
         modifier = Modifier.clickable { /* TODO */ } then modifier
     ) {
@@ -139,7 +140,7 @@ fun EpisodeListItem(
                 top.linkTo(parent.top)
                 centerHorizontallyTo(parent)
 
-                width = androidx.compose.foundation.layout.Dimension.fillToConstraints
+                width = fillToConstraints
             }
         )
 
@@ -152,7 +153,7 @@ fun EpisodeListItem(
                 contentScale = ContentScale.Crop,
                 loading = { /* TODO do something better here */ },
                 modifier = Modifier
-                    .preferredSize(56.dp)
+                    .size(56.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
@@ -185,13 +186,13 @@ fun EpisodeListItem(
                 )
                 top.linkTo(parent.top, 16.dp)
 
-                width = androidx.compose.foundation.layout.Dimension.preferredWrapContent
+                width = preferredWrapContent
             }
         )
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
                 maxLines = 2,
@@ -206,7 +207,7 @@ fun EpisodeListItem(
                     )
                     top.linkTo(episodeTitle.bottom, 6.dp)
 
-                    width = androidx.compose.foundation.layout.Dimension.preferredWrapContent
+                    width = preferredWrapContent
                 }
             )
         }
@@ -216,12 +217,11 @@ fun EpisodeListItem(
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(LocalContentColor.current),
-            modifier = Modifier
-                .clickable(
-                    interactionState = remember { InteractionState() },
-                    indication = rememberRipple(bounded = false, radius = 24.dp)
-                ) { /* TODO */ }
-                .preferredSize(36.dp)
+            modifier = Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(bounded = false, radius = 24.dp)
+            ) { /* TODO */ }
+                .size(36.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
                     top.linkTo(titleImageBarrier, margin = 16.dp)
@@ -229,7 +229,7 @@ fun EpisodeListItem(
                 }
         )
 
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = when {
                     episode.duration != null -> {
@@ -305,10 +305,10 @@ private fun CategoryPodcastRow(
                 podcastImageUrl = podcast.imageUrl,
                 isFollowed = isFollowed,
                 onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
-                modifier = Modifier.preferredWidth(128.dp)
+                modifier = Modifier.width(128.dp)
             )
 
-            if (index < lastIndex) Spacer(Modifier.preferredWidth(24.dp))
+            if (index < lastIndex) Spacer(Modifier.width(24.dp))
         }
     }
 }
