@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -74,7 +74,7 @@ fun ProvideImageLoader(content: @Composable () -> Unit) {
                 add(UnsplashSizingInterceptor)
             }.build()
     }
-    Providers(LocalImageLoader provides loader, content = content)
+    CompositionLocalProvider(LocalImageLoader provides loader, content = content)
 }
 
 /**
