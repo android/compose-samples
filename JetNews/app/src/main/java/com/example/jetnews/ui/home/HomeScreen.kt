@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -157,12 +157,13 @@ fun HomeScreen(
         }
     }
 
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Home,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } },
                 navigateTo = navigateTo
             )
         },
@@ -171,7 +172,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(text = title) },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
+                    IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)
@@ -180,7 +181,7 @@ fun HomeScreen(
                 }
             )
         },
-        bodyContent = { innerPadding ->
+        content = { innerPadding ->
             val modifier = Modifier.padding(innerPadding)
             LoadingContent(
                 empty = posts.initialLoad,
@@ -231,7 +232,7 @@ private fun LoadingContent(
                 Surface(elevation = 10.dp, shape = CircleShape) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .preferredSize(36.dp)
+                            .size(36.dp)
                             .padding(4.dp)
                     )
                 }

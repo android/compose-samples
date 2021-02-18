@@ -17,7 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -45,7 +45,7 @@ fun SelectTopicButton(
     Surface(
         color = backgroundColor,
         shape = CircleShape,
-        modifier = modifier.preferredSize(36.dp, 36.dp)
+        modifier = modifier.size(36.dp, 36.dp)
     ) {
         Icon(
             imageVector = icon,

@@ -21,8 +21,8 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -144,7 +144,7 @@ fun ArticleScreen(
                 }
             )
         },
-        bodyContent = { innerPadding ->
+        content = { innerPadding ->
             val modifier = Modifier.padding(innerPadding)
             PostContent(post, modifier)
         },
@@ -178,7 +178,7 @@ private fun BottomBar(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .preferredHeight(56.dp)
+                .height(56.dp)
                 .fillMaxWidth()
         ) {
             IconButton(onClick = onUnimplementedAction) {
