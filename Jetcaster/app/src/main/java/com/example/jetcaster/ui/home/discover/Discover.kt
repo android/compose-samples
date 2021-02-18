@@ -43,7 +43,7 @@ import com.example.jetcaster.ui.theme.Keyline1
 fun Discover(
     modifier: Modifier = Modifier
 ) {
-    val viewModel = viewModel(DiscoverViewModel::class.java)
+    val viewModel: DiscoverViewModel = viewModel()
     val viewState by viewModel.state.collectAsState()
 
     val selectedCategory = viewState.selectedCategory
