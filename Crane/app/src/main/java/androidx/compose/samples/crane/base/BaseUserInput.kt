@@ -21,8 +21,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
@@ -39,6 +39,7 @@ import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -104,7 +105,7 @@ fun CraneEditableUserInput(
             } else {
                 MaterialTheme.typography.body1.copy(color = LocalContentColor.current)
             },
-            cursorColor = LocalContentColor.current
+            cursorBrush = SolidColor(LocalContentColor.current)
         )
     }
 }
@@ -123,12 +124,12 @@ private fun CraneBaseUserInput(
         Row(Modifier.padding(all = 12.dp)) {
             if (vectorImageId != null) {
                 Icon(
-                    modifier = Modifier.preferredSize(24.dp, 24.dp),
+                    modifier = Modifier.size(24.dp, 24.dp),
                     painter = painterResource(id = vectorImageId),
                     tint = if (tintIcon()) tint else Color(0x80FFFFFF),
                     contentDescription = null
                 )
-                Spacer(Modifier.preferredWidth(8.dp))
+                Spacer(Modifier.width(8.dp))
             }
             if (caption != null && showCaption()) {
                 Text(
@@ -136,7 +137,7 @@ private fun CraneBaseUserInput(
                     text = caption,
                     style = (captionTextStyle).copy(color = tint)
                 )
-                Spacer(Modifier.preferredWidth(8.dp))
+                Spacer(Modifier.width(8.dp))
             }
             Row(Modifier.weight(1f).align(Alignment.CenterVertically)) {
                 content()
