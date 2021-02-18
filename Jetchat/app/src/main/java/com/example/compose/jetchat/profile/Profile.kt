@@ -24,9 +24,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -43,7 +43,7 @@ import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,14 +79,14 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
-                Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     // More icon
                     Icon(
                         imageVector = Icons.Outlined.MoreVert,
                         modifier = Modifier
                             .clickable(onClick = {}) // TODO: Show not implemented dialog.
                             .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .preferredHeight(24.dp),
+                            .height(24.dp),
                         contentDescription = stringResource(id = R.string.more_options)
                     )
                 }
@@ -108,7 +108,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
                 }
             }
             ProfileFab(
-                extended = scrollState.value == 0f,
+                extended = scrollState.value == 0,
                 userIsMe = userData.isMe(),
                 modifier = Modifier.align(Alignment.BottomEnd)
             )
@@ -119,7 +119,7 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
 @Composable
 private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
     Column {
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         NameAndPosition(userData)
 
@@ -135,7 +135,7 @@ private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
 
         // Add a spacer that always shows part (320.dp) of the fields list regardless of the device,
         // in order to always leave some content at the top.
-        Spacer(Modifier.preferredHeight((containerHeight - 320.dp).coerceAtLeast(0.dp)))
+        Spacer(Modifier.height((containerHeight - 320.dp).coerceAtLeast(0.dp)))
     }
 }
 
@@ -168,7 +168,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
 
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = userData.position,
             modifier = modifier,
@@ -189,7 +189,7 @@ private fun ProfileHeader(
     data.photo?.let {
         Image(
             modifier = Modifier
-                .preferredHeightIn(max = containerHeight / 2)
+                .heightIn(max = containerHeight / 2)
                 .fillMaxWidth()
                 .padding(top = offsetDp),
             painter = painterResource(id = it),
@@ -203,7 +203,7 @@ private fun ProfileHeader(
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
         Divider()
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = label,
                 modifier = Modifier.baselineHeight(24.dp),
@@ -237,7 +237,7 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             modifier = modifier
                 .padding(16.dp)
                 .navigationBarsPadding()
-                .preferredHeight(48.dp)
+                .height(48.dp)
                 .widthIn(min = 48.dp),
             backgroundColor = MaterialTheme.colors.primary,
             contentColor = MaterialTheme.colors.onPrimary

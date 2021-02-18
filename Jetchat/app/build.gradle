@@ -120,7 +120,10 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.AndroidX.Compose.uiTest
 
-    // FIXME: Temporary for alpha12
-    androidTestImplementation Libs.AndroidX.Activity.activityCompose
-
+    // androidx.test is forcing JUnit, 4.12. This forces it to use 4.13
+    configurations.configureEach {
+        resolutionStrategy {
+            force Libs.junit
+        }
+    }
 }

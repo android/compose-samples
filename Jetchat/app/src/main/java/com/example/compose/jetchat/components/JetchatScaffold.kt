@@ -39,7 +39,7 @@ fun JetchatScaffold(
                     onChatClicked = onChatClicked
                 )
             },
-            bodyContent = content
+            content = content
         )
     }
 }

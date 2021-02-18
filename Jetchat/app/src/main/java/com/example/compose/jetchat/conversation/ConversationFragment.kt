@@ -22,7 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -60,7 +60,7 @@ class ConversationFragment : Fragment() {
             .start(windowInsetsAnimationsEnabled = true)
 
         setContent {
-            Providers(
+            CompositionLocalProvider(
                 LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
                 LocalWindowInsets provides windowInsets,
             ) {

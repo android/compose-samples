@@ -30,10 +30,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -60,8 +60,7 @@ import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,6 +76,7 @@ import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.res.stringResource
@@ -84,7 +84,6 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -152,7 +151,7 @@ fun UserInput(
                 if (focused) {
                     currentInputSelector = InputSelector.NONE
                     scope.launch {
-                        scrollState.smoothScrollTo(0f)
+                        scrollState.animateScrollTo(0)
                     }
                 }
                 textFieldFocusState = focused
@@ -168,7 +167,7 @@ fun UserInput(
                 textState = TextFieldValue()
                 // Move scroll to bottom
                 scope.launch {
-                    scrollState.smoothScrollTo(0f)
+                    scrollState.animateScrollTo(0)
                 }
                 dismissKeyboard()
             },
@@ -232,7 +231,7 @@ fun FunctionalityNotAvailablePanel() {
     AnimatedVisibility(visible = true, initiallyVisible = false, enter = fadeIn()) {
         Column(
             modifier = Modifier
-                .preferredHeight(320.dp)
+                .height(320.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -241,7 +240,7 @@ fun FunctionalityNotAvailablePanel() {
                 text = stringResource(id = R.string.not_available),
                 style = MaterialTheme.typography.subtitle1
             )
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.not_available_subtitle),
                     modifier = Modifier.paddingFrom(FirstBaseline, before = 32.dp),
@@ -271,7 +270,7 @@ private fun UserInputSelector(
 ) {
     Row(
         modifier = modifier
-            .preferredHeight(56.dp)
+            .height(56.dp)
             .wrapContentHeight()
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -329,7 +328,7 @@ private fun UserInputSelector(
         Button(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .preferredHeight(36.dp),
+                .height(36.dp),
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
             colors = buttonColors,
@@ -353,14 +352,14 @@ private fun InputSelectorButton(
     selected: Boolean
 ) {
     IconButton(onClick = onClick) {
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             val tint = if (selected) MaterialTheme.colors.primary else LocalContentColor.current
             Icon(
                 icon,
                 tint = tint,
                 modifier = Modifier
                     .padding(12.dp)
-                    .preferredSize(20.dp),
+                    .size(20.dp),
                 contentDescription = description
             )
         }
@@ -385,25 +384,11 @@ private fun UserInputText(
     onTextFieldFocused: (Boolean) -> Unit,
     focusState: Boolean
 ) {
-    // Grab a reference to the keyboard controller whenever text input starts
-    var keyboardController by remember { mutableStateOf<SoftwareKeyboardController?>(null) }
-
-    // Show or hide the keyboard
-    DisposableEffect(
-        keyboardController,
-        keyboardShown
-    ) { // Guard side-effects against failed commits
-        keyboardController?.let {
-            if (keyboardShown) it.showSoftwareKeyboard() else it.hideSoftwareKeyboard()
-        }
-        onDispose { /* no-op */ }
-    }
-
     val a11ylabel = stringResource(id = R.string.textfield_desc)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .preferredHeight(48.dp)
+            .height(48.dp)
             .semantics {
                 contentDescription = a11ylabel
                 keyboardShownProperty = keyboardShown
@@ -413,7 +398,7 @@ private fun UserInputText(
         Surface {
             Box(
                 modifier = Modifier
-                    .preferredHeight(48.dp)
+                    .height(48.dp)
                     .weight(1f)
                     .align(Alignment.Bottom)
             ) {
@@ -435,9 +420,8 @@ private fun UserInputText(
                         keyboardType = keyboardType,
                         imeAction = ImeAction.Send
                     ),
-                    onTextInputStarted = { keyboardController = it },
                     maxLines = 1,
-                    cursorColor = LocalContentColor.current,
+                    cursorBrush = SolidColor(LocalContentColor.current),
                     textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
                 )
 
@@ -516,7 +500,7 @@ fun ExtendedSelectorInnerButton(
         onClick = onClick,
         modifier = modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
-            .preferredHeight(30.dp),
+            .height(30.dp),
         shape = MaterialTheme.shapes.medium,
         enabled = selected,
         colors = colors,

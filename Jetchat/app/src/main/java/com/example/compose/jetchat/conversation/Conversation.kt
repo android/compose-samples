@@ -16,7 +16,6 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.compose.foundation.ClickableText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
@@ -31,12 +30,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
@@ -50,7 +49,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -148,7 +147,7 @@ fun ChannelNameBar(
                     style = MaterialTheme.typography.subtitle1
                 )
                 // Number of members
-                Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = stringResource(R.string.members, channelMembers),
                         style = MaterialTheme.typography.caption
@@ -157,14 +156,14 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            Providers(LocalContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 // Search icon
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     modifier = Modifier
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .preferredHeight(24.dp),
+                        .height(24.dp),
                     contentDescription = stringResource(id = R.string.search)
                 )
                 // Info icon
@@ -173,7 +172,7 @@ fun ChannelNameBar(
                     modifier = Modifier
                         .clickable(onClick = {}) // TODO: Show not implemented dialog.
                         .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .preferredHeight(24.dp),
+                        .height(24.dp),
                     contentDescription = stringResource(id = R.string.info)
                 )
             }
@@ -201,7 +200,7 @@ fun Messages(
                 .verticalScroll(scrollState, reverseScrolling = true)
         ) {
             val authorMe = stringResource(id = R.string.author_me)
-            Spacer(modifier = Modifier.preferredHeight(64.dp))
+            Spacer(modifier = Modifier.height(64.dp))
             messages.forEachIndexed { index, content ->
                 val prevAuthor = messages.getOrNull(index - 1)?.author
                 val nextAuthor = messages.getOrNull(index + 1)?.author
@@ -240,7 +239,7 @@ fun Messages(
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
                 scope.launch {
-                    scrollState.smoothScrollTo(BottomScrollState)
+                    scrollState.animateScrollTo(0)
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -276,7 +275,7 @@ fun Message(
                 modifier = Modifier
                     .clickable(onClick = onAuthorClick)
                     .padding(horizontal = 16.dp)
-                    .preferredSize(42.dp)
+                    .size(42.dp)
                     .border(1.5.dp, borderColor, CircleShape)
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
@@ -287,7 +286,7 @@ fun Message(
             )
         } else {
             // Space under avatar
-            Spacer(modifier = Modifier.preferredWidth(74.dp))
+            Spacer(modifier = Modifier.width(74.dp))
         }
         AuthorAndTextMessage(
             msg = msg,
@@ -314,10 +313,10 @@ fun AuthorAndTextMessage(
         ChatItemBubble(msg, isLastMessageByAuthor)
         if (isLastMessageByAuthor) {
             // Last bubble before next author
-            Spacer(modifier = Modifier.preferredHeight(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         } else {
             // Between bubbles
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
@@ -333,8 +332,8 @@ private fun AuthorNameTimestamp(msg: Message) {
                 .alignBy(LastBaseline)
                 .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
         )
-        Spacer(modifier = Modifier.preferredWidth(8.dp))
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        Spacer(modifier = Modifier.width(8.dp))
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = msg.timestamp,
                 style = MaterialTheme.typography.caption,
@@ -352,10 +351,10 @@ fun DayHeader(dayString: String) {
     Row(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
-            .preferredHeight(16.dp)
+            .height(16.dp)
     ) {
         DayHeaderLine()
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = dayString,
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -403,7 +402,7 @@ fun ChatItemBubble(
                 Image(
                     painter = painterResource(it),
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.preferredSize(160.dp),
+                    modifier = Modifier.size(160.dp),
                     contentDescription = stringResource(id = R.string.attached_image)
                 )
             }
@@ -463,6 +462,5 @@ fun DayHeaderPrev() {
 }
 
 private val JumpToBottomThreshold = 56.dp
-private val BottomScrollState = 0f
 
-private fun ScrollState.atBottom(): Boolean = value == BottomScrollState
+private fun ScrollState.atBottom(): Boolean = value == 0

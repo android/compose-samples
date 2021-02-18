@@ -18,8 +18,8 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -62,7 +62,7 @@ fun JumpToBottom(
             icon = {
                 Icon(
                     imageVector = Icons.Filled.ArrowDownward,
-                    modifier = Modifier.preferredHeight(18.dp),
+                    modifier = Modifier.height(18.dp),
                     contentDescription = null
                 )
             },
@@ -74,7 +74,7 @@ fun JumpToBottom(
             contentColor = MaterialTheme.colors.primary,
             modifier = modifier
                 .offset(x = 0.dp, y = -bottomOffset)
-                .preferredHeight(36.dp)
+                .height(36.dp)
         )
     }
 }
