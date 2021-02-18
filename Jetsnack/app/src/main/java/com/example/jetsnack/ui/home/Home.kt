@@ -46,7 +46,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +74,6 @@ import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import kotlinx.coroutines.launch
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
@@ -189,13 +187,10 @@ private fun JetsnackBottomNavLayout(
             Animatable(if (i == selectedIndex) 1f else 0f)
         }
     }
-    val scope = rememberCoroutineScope()
     selectionFractions.forEachIndexed { index, selectionFraction ->
         val target = if (index == selectedIndex) 1f else 0f
-        if (selectionFraction.targetValue != target) {
-            scope.launch {
-                selectionFraction.animateTo(target, animSpec)
-            }
+        LaunchedEffect(target) {
+            selectionFraction.animateTo(target, animSpec)
         }
     }
 
