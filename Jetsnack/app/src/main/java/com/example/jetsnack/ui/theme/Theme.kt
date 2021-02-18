@@ -20,7 +20,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -225,7 +225,7 @@ fun ProvideJetsnackColors(
 ) {
     val colorPalette = remember { colors }
     colorPalette.update(colors)
-    Providers(LocalJetsnackColors provides colorPalette, content = content)
+    CompositionLocalProvider(LocalJetsnackColors provides colorPalette, content = content)
 }
 
 private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
