@@ -127,7 +127,6 @@ fun EpisodeListItem(
     podcast: Podcast,
     modifier: Modifier = Modifier
 ) {
-    @Suppress("DEPRECATION") // ConstraintLayout
     ConstraintLayout(
         modifier = Modifier.clickable { /* TODO */ } then modifier
     ) {
