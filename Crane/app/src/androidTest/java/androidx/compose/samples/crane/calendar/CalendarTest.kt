@@ -27,6 +27,7 @@ import androidx.compose.samples.crane.data.DatesRepository
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertContentDescriptionEquals
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -68,16 +69,17 @@ class CalendarTest {
     @Ignore("performScrollTo doesn't work with LazyLists: issuetracker.google.com/178483889")
     @Test
     fun scrollsToTheBottom() {
-        composeTestRule.onNodeWithContentDescription("January 1").assertExists()
+        composeTestRule.onNodeWithContentDescription("January 1").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("December 31").performScrollTo().performClick()
         assert(datesRepository.datesSelected.toString() == "Dec 31")
     }
 
     @Test
     fun onDaySelected() {
-        composeTestRule.onNodeWithContentDescription("January 1").assertExists()
-        composeTestRule.onNodeWithContentDescription("January 2").assertExists().performClick()
-        composeTestRule.onNodeWithContentDescription("January 3").assertExists()
+        composeTestRule.onNodeWithContentDescription("January 1").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("January 2")
+            .assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithContentDescription("January 3").assertIsDisplayed()
 
         val datesNoSelected = composeTestRule.onDateNodes(NoSelected)
         datesNoSelected[0].assertContentDescriptionEquals("January 1")
@@ -88,13 +90,15 @@ class CalendarTest {
 
     @Test
     fun twoDaysSelected() {
-        composeTestRule.onNodeWithContentDescription("January 2").assertExists().performClick()
+        composeTestRule.onNodeWithContentDescription("January 2")
+            .assertIsDisplayed().performClick()
 
         val datesNoSelectedOneClick = composeTestRule.onDateNodes(NoSelected)
         datesNoSelectedOneClick[0].assertContentDescriptionEquals("January 1")
         datesNoSelectedOneClick[1].assertContentDescriptionEquals("January 3")
 
-        composeTestRule.onNodeWithContentDescription("January 4").assertExists().performClick()
+        composeTestRule.onNodeWithContentDescription("January 4")
+            .assertIsDisplayed().performClick()
 
         composeTestRule.onDateNode(FirstDay).assertContentDescriptionEquals("January 2")
         composeTestRule.onDateNode(Selected).assertContentDescriptionEquals("January 3")

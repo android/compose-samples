@@ -68,4 +68,10 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
         }
     }
+    // androidx.test and hilt are forcing JUnit, 4.12. This forces them to use 4.13
+    configurations.configureEach {
+        resolutionStrategy {
+            force Libs.JUnit.junit
+        }
+    }
 }
