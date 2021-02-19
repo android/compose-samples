@@ -21,10 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha06"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha07"
 
     object Accompanist {
-        private const val version = "0.5.2.compose-7141639-SNAPSHOT"
+        private const val version = "0.5.2.compose-7154166-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
@@ -53,7 +53,7 @@ object Libs {
         const val navigation = "androidx.navigation:navigation-compose:1.0.0-SNAPSHOT"
 
         object Compose {
-            const val snapshot = "7141639"
+            const val snapshot = "7154166"
             const val version = "1.0.0-SNAPSHOT"
 
             const val animation = "androidx.compose.animation:animation:$version"

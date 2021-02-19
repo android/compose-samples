@@ -52,6 +52,7 @@ import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +64,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.owl.R
 import com.example.owl.model.Topic
@@ -161,34 +163,60 @@ private fun TopicsGrid(modifier: Modifier = Modifier) {
 
 private enum class SelectionState { Unselected, Selected }
 
+/**
+ * Class holding animating values when transitioning topic chip states.
+ */
+private class TopicChipTransition(
+    corerRadius: State<Dp>,
+    selectedAlpha: State<Float>,
+    checkScale: State<Float>
+) {
+    val corerRadius by corerRadius
+    val selectedAlpha by selectedAlpha
+    val checkScale by checkScale
+}
+
 @Composable
-private fun TopicChip(topic: Topic) {
-    val (selected, onSelected) = remember { mutableStateOf(false) }
+private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
     val transition = updateTransition(
-        targetState = if (selected) SelectionState.Selected else SelectionState.Unselected
+        targetState = if (topicSelected) SelectionState.Selected else SelectionState.Unselected
     )
-    val corerRadius by transition.animateDp { state ->
+    val corerRadius = transition.animateDp { state ->
         when (state) {
             SelectionState.Unselected -> 0.dp
             SelectionState.Selected -> 28.dp
         }
     }
-    val selectedAlpha by transition.animateFloat { state ->
+    val selectedAlpha = transition.animateFloat { state ->
         when (state) {
             SelectionState.Unselected -> 0f
             SelectionState.Selected -> 0.8f
         }
     }
-    val checkScale by transition.animateFloat { state ->
+    val checkScale = transition.animateFloat { state ->
         when (state) {
             SelectionState.Unselected -> 0.6f
             SelectionState.Selected -> 1f
         }
     }
+    return remember(transition) {
+        TopicChipTransition(corerRadius, selectedAlpha, checkScale)
+    }
+}
+
+@Composable
+private fun TopicChip(topic: Topic) {
+    val (selected, onSelected) = remember { mutableStateOf(false) }
+    val topicChipTransitionState = topicChipTransition(selected)
+
     Surface(
         modifier = Modifier.padding(4.dp),
         elevation = OwlTheme.elevations.card,
-        shape = MaterialTheme.shapes.medium.copy(topStart = CornerSize(corerRadius))
+        shape = MaterialTheme.shapes.medium.copy(
+            topStart = CornerSize(
+                topicChipTransitionState.corerRadius
+            )
+        )
     ) {
         Row(modifier = Modifier.toggleable(value = selected, onValueChange = onSelected)) {
             Box {
@@ -199,18 +227,20 @@ private fun TopicChip(topic: Topic) {
                         .size(width = 72.dp, height = 72.dp)
                         .aspectRatio(1f)
                 )
-                if (selectedAlpha > 0f) {
+                if (topicChipTransitionState.selectedAlpha > 0f) {
                     Surface(
-                        color = pink500.copy(alpha = selectedAlpha),
+                        color = pink500.copy(alpha = topicChipTransitionState.selectedAlpha),
                         modifier = Modifier.matchParentSize()
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Done,
                             contentDescription = null,
-                            tint = MaterialTheme.colors.onPrimary.copy(alpha = selectedAlpha),
+                            tint = MaterialTheme.colors.onPrimary.copy(
+                                alpha = topicChipTransitionState.selectedAlpha
+                            ),
                             modifier = Modifier
                                 .wrapContentSize()
-                                .scale(checkScale)
+                                .scale(topicChipTransitionState.checkScale)
                         )
                     }
                 }
