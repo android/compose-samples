@@ -167,11 +167,11 @@ private enum class SelectionState { Unselected, Selected }
  * Class holding animating values when transitioning topic chip states.
  */
 private class TopicChipTransition(
-    corerRadius: State<Dp>,
+    cornerRadius: State<Dp>,
     selectedAlpha: State<Float>,
     checkScale: State<Float>
 ) {
-    val corerRadius by corerRadius
+    val cornerRadius by cornerRadius
     val selectedAlpha by selectedAlpha
     val checkScale by checkScale
 }
@@ -214,7 +214,7 @@ private fun TopicChip(topic: Topic) {
         elevation = OwlTheme.elevations.card,
         shape = MaterialTheme.shapes.medium.copy(
             topStart = CornerSize(
-                topicChipTransitionState.corerRadius
+                topicChipTransitionState.cornerRadius
             )
         )
     ) {
