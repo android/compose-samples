@@ -72,6 +72,7 @@ subprojects {
             jvmTarget = "1.8"
         }
     }
+    // Forcing to use the snapshot version
     configurations.configureEach {
         resolutionStrategy.eachDependency { details ->
             if (details.requested.group.startsWith('androidx.compose')) {

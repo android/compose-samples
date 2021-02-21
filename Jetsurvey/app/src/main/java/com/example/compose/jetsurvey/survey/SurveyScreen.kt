@@ -48,10 +48,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 
 @Composable
@@ -175,14 +173,6 @@ private fun TopAppBarTitle(
         style = MaterialTheme.typography.caption,
         modifier = modifier
     )
-}
-
-@Preview
-@Composable
-fun TAPPreview() {
-    JetsurveyTheme {
-        SurveyTopAppBar(questionIndex = 3, totalQuestionsCount = 1, onBackPressed = { })
-    }
 }
 
 @Composable
