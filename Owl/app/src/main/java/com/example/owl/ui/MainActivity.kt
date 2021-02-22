@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            OwlApp(onBackPressedDispatcher)
+            OwlApp(onBackPressedDispatcher, finishActivity = { finish() })
         }
     }
 }

@@ -24,12 +24,12 @@ import com.example.owl.ui.utils.ProvideImageLoader
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 @Composable
-fun OwlApp(backDispatcher: OnBackPressedDispatcher) {
+fun OwlApp(backDispatcher: OnBackPressedDispatcher, finishActivity: () -> Unit) {
 
     CompositionLocalProvider(LocalBackDispatcher provides backDispatcher) {
         ProvideWindowInsets {
             ProvideImageLoader {
-                NavGraph()
+                NavGraph(finishActivity = finishActivity)
             }
         }
     }

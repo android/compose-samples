@@ -34,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,46 +42,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
+import com.example.owl.ui.MainDestinations
 import com.example.owl.ui.theme.BlueTheme
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
-@Composable
-fun Courses(selectCourse: (Long) -> Unit) {
-    BlueTheme {
-        val (selectedTab, setSelectedTab) = remember { mutableStateOf(CourseTabs.FEATURED) }
-        val tabs = CourseTabs.values()
-        Scaffold(
-            backgroundColor = MaterialTheme.colors.primarySurface,
-            bottomBar = {
-                BottomNavigation(
-                    Modifier.navigationBarsHeight(additional = 56.dp)
-                ) {
-                    tabs.forEach { tab ->
-                        BottomNavigationItem(
-                            icon = { Icon(painterResource(tab.icon), contentDescription = null) },
-                            label = { Text(stringResource(tab.title).toUpperCase()) },
-                            selected = tab == selectedTab,
-                            onClick = { setSelectedTab(tab) },
-                            alwaysShowLabel = false,
-                            selectedContentColor = MaterialTheme.colors.secondary,
-                            unselectedContentColor = LocalContentColor.current,
-                            modifier = Modifier.navigationBarsPadding()
-                        )
-                    }
-                }
-            }
-        ) { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            when (selectedTab) {
-                CourseTabs.MY_COURSES -> MyCourses(courses, selectCourse, modifier)
-                CourseTabs.FEATURED -> FeaturedCourses(courses, selectCourse, modifier)
-                CourseTabs.SEARCH -> SearchCourses(topics, modifier)
+
+fun NavGraphBuilder.courses(
+    onCourseSelected: (Long) -> Unit,
+    onboardingComplete: Boolean,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
+    composable(CourseTabs.FEATURED.route) {
+        LaunchedEffect(onboardingComplete) {
+            if (!onboardingComplete) {
+                navController.popBackStack(navController.graph.startDestination, false)
+                navController.navigate(MainDestinations.ONBOARDING_ROUTE)
             }
         }
+        FeaturedCourses(courses, onCourseSelected, modifier)
+    }
+    composable(CourseTabs.MY_COURSES.route) {
+        MyCourses(courses, onCourseSelected, modifier)
+    }
+    composable(CourseTabs.SEARCH.route) {
+        SearchCourses(topics, modifier)
     }
 }
 
@@ -109,11 +103,21 @@ fun CoursesAppBar() {
     }
 }
 
-private enum class CourseTabs(
+enum class CourseTabs(
     @StringRes val title: Int,
-    @DrawableRes val icon: Int
+    @DrawableRes val icon: Int,
+    val route: String
 ) {
-    MY_COURSES(R.string.my_courses, R.drawable.ic_grain),
-    FEATURED(R.string.featured, R.drawable.ic_featured),
-    SEARCH(R.string.search, R.drawable.ic_search)
+    MY_COURSES(R.string.my_courses, R.drawable.ic_grain, CoursesDestinations.MY_COURSES_ROUTE),
+    FEATURED(R.string.featured, R.drawable.ic_featured, CoursesDestinations.FEATURED_ROUTE),
+    SEARCH(R.string.search, R.drawable.ic_search, CoursesDestinations.SEARCH_COURSES_ROUTE)
+}
+
+/**
+ * Destinations used in the ([OwlApp]).
+ */
+private object CoursesDestinations {
+    const val FEATURED_ROUTE = "courses/featured"
+    const val MY_COURSES_ROUTE = "courses/my"
+    const val SEARCH_COURSES_ROUTE = "courses/search"
 }
