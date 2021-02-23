@@ -19,7 +19,7 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
@@ -27,7 +27,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -55,7 +55,7 @@ fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
                 onBackPressed = { onNavigationEvent(SignUpEvent.NavigateBack) }
             )
         },
-        bodyContent = {
+        content = {
             SignInSignUpScreen(
                 onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
                 modifier = Modifier.fillMaxWidth()
@@ -82,7 +82,7 @@ fun SignUpContent(
         val emailState = remember { EmailState() }
         Email(emailState, onImeAction = { passwordFocusRequest.requestFocus() })
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
@@ -92,7 +92,7 @@ fun SignUpContent(
             modifier = Modifier.focusRequester(passwordFocusRequest)
         )
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         val confirmPasswordState = remember { ConfirmPasswordState(passwordState = passwordState) }
         Password(
             label = stringResource(id = R.string.confirm_password),
@@ -101,15 +101,15 @@ fun SignUpContent(
             modifier = Modifier.focusRequester(confirmationPasswordFocusRequest)
         )
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        Spacer(modifier = Modifier.height(16.dp))
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.terms_and_conditions),
                 style = MaterialTheme.typography.caption
             )
         }
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),

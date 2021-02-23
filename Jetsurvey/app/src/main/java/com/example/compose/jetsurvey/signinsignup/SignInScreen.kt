@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
@@ -72,7 +72,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
                 onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) }
             )
         },
-        bodyContent = {
+        content = {
             SignInSignUpScreen(
                 onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
                 modifier = Modifier.fillMaxWidth()
@@ -83,7 +83,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
                             onNavigationEvent(SignInEvent.SignIn(email, password))
                         }
                     )
-                    Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     TextButton(
                         onClick = {
                             scope.launch {
@@ -120,7 +120,7 @@ fun SignInContent(
         val emailState = remember { EmailState() }
         Email(emailState, onImeAction = { focusRequester.requestFocus() })
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         val passwordState = remember { PasswordState() }
         Password(
@@ -129,7 +129,7 @@ fun SignInContent(
             modifier = Modifier.focusRequester(focusRequester),
             onImeAction = { onSignInSubmitted(emailState.text, passwordState.text) }
         )
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { onSignInSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier
@@ -156,7 +156,7 @@ fun ErrorSnackbar(
         snackbar = { data ->
             Snackbar(
                 modifier = Modifier.padding(16.dp),
-                text = {
+                content = {
                     Text(
                         text = data.message,
                         style = MaterialTheme.typography.body2

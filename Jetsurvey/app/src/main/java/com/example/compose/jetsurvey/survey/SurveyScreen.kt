@@ -16,14 +16,14 @@
 
 package com.example.compose.jetsurvey.survey
 
-import androidx.compose.foundation.layout.ConstraintLayout
-import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
@@ -40,8 +40,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
@@ -71,7 +72,7 @@ fun SurveyQuestionsScreen(
                     onBackPressed = onBackPressed
                 )
             },
-            bodyContent = { innerPadding ->
+            content = { innerPadding ->
                 Question(
                     question = questionState.question,
                     answer = questionState.answer,
@@ -104,7 +105,7 @@ fun SurveyResultScreen(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            bodyContent = { innerPadding ->
+            content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
                 SurveyResult(result = result, modifier = modifier)
             },
@@ -126,7 +127,7 @@ fun SurveyResultScreen(
 private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         item {
-            Spacer(modifier = Modifier.preferredHeight(44.dp))
+            Spacer(modifier = Modifier.height(44.dp))
             Text(
                 text = result.surveyResult.library,
                 style = MaterialTheme.typography.h3,
@@ -174,43 +175,39 @@ private fun TopAppBarTitle(
     )
 }
 
-@Suppress("DEPRECATION") // ConstraintLayout
-@OptIn(ExperimentalLayout::class)
 @Composable
 private fun SurveyTopAppBar(
     questionIndex: Int,
     totalQuestionsCount: Int,
     onBackPressed: () -> Unit
 ) {
-    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-        val (button, text, progress) = createRefs()
-        TopAppBarTitle(
-            questionIndex = questionIndex,
-            totalQuestionsCount = totalQuestionsCount,
-            modifier = Modifier
-                .padding(vertical = 20.dp)
-                .constrainAs(text) { centerHorizontallyTo(parent) }
-        )
-
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
-            IconButton(
-                onClick = onBackPressed,
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            TopAppBarTitle(
+                questionIndex = questionIndex,
+                totalQuestionsCount = totalQuestionsCount,
                 modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .constrainAs(button) { end.linkTo(parent.end) }
-            ) {
-                Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.close))
+                    .padding(vertical = 20.dp)
+                    .align(Alignment.Center)
+            )
+
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                IconButton(
+                    onClick = onBackPressed,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.close)
+                    )
+                }
             }
         }
-
         LinearProgressIndicator(
             progress = (questionIndex + 1) / totalQuestionsCount.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .constrainAs(progress) {
-                    bottom.linkTo(text.bottom)
-                },
+                .padding(horizontal = 20.dp),
             backgroundColor = MaterialTheme.colors.progressIndicatorBackground
         )
     }
