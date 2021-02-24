@@ -35,6 +35,7 @@ plugins {
 subprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
