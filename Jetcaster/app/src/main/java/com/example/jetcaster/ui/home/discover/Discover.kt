@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
@@ -50,7 +50,7 @@ fun Discover(
 
     if (viewState.categories.isNotEmpty() && selectedCategory != null) {
         Column(modifier) {
-            Spacer(Modifier.preferredHeight(8.dp))
+            Spacer(Modifier.height(8.dp))
 
             PodcastCategoryTabs(
                 categories = viewState.categories,
@@ -59,7 +59,7 @@ fun Discover(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(Modifier.preferredHeight(8.dp))
+            Spacer(Modifier.height(8.dp))
 
             Crossfade(
                 targetState = selectedCategory,

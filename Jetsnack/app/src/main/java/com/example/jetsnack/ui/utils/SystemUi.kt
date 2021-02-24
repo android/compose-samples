@@ -142,7 +142,7 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
 
 /**
  * An [androidx.compose.runtime.Ambient] holding the current [LocalSysUiController]. Defaults to a
- * no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
+ * no-op controller; consumers should [provide][androidx.compose.runtime.CompositionLocalProvider] a real one.
  */
 val LocalSysUiController = staticCompositionLocalOf<SystemUiController> {
     FakeSystemUiController

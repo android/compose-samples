@@ -20,9 +20,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
@@ -50,7 +50,7 @@ fun FilterBar(filters: List<Filter>) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(start = 8.dp, end = 8.dp),
-        modifier = Modifier.preferredHeightIn(min = 56.dp)
+        modifier = Modifier.heightIn(min = 56.dp)
     ) {
         item {
             IconButton(onClick = { /* todo */ }) {
@@ -91,7 +91,7 @@ fun FilterChip(
     )
     JetsnackSurface(
         modifier = modifier
-            .preferredHeight(28.dp)
+            .height(28.dp)
             .then(border),
         color = backgroundColor,
         contentColor = textColor,

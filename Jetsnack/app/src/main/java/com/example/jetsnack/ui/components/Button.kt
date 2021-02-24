@@ -17,21 +17,21 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.InteractionState
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSizeConstraints
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -44,11 +44,12 @@ import androidx.compose.ui.semantics.Role
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
+
 fun JetsnackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionState: InteractionState = remember { InteractionState() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = ButtonShape,
     border: BorderStroke? = null,
     backgroundGradient: List<Color> = JetsnackTheme.colors.interactivePrimary,
@@ -74,7 +75,7 @@ fun JetsnackButton(
                 onClick = onClick,
                 enabled = enabled,
                 role = Role.Button,
-                interactionState = interactionState,
+                interactionSource = interactionSource,
                 indication = null
             )
     ) {
@@ -83,11 +84,11 @@ fun JetsnackButton(
         ) {
             Row(
                 Modifier
-                    .defaultMinSizeConstraints(
+                    .defaultMinSize(
                         minWidth = ButtonDefaults.MinWidth,
                         minHeight = ButtonDefaults.MinHeight
                     )
-                    .indication(interactionState, LocalIndication.current)
+                    .indication(interactionSource, rememberRipple())
                     .padding(contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,

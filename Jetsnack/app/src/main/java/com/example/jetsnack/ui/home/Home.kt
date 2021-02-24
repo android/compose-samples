@@ -29,8 +29,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -46,7 +46,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +74,6 @@ import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import kotlinx.coroutines.launch
 
 @Composable
 fun Home(onSnackSelected: (Long) -> Unit) {
@@ -189,13 +187,10 @@ private fun JetsnackBottomNavLayout(
             Animatable(if (i == selectedIndex) 1f else 0f)
         }
     }
-    val scope = rememberCoroutineScope()
     selectionFractions.forEachIndexed { index, selectionFraction ->
         val target = if (index == selectedIndex) 1f else 0f
-        if (selectionFraction.targetValue != target) {
-            scope.launch {
-                selectionFraction.animateTo(target, animSpec)
-            }
+        LaunchedEffect(target, animSpec) {
+            selectionFraction.animateTo(target, animSpec)
         }
     }
 
@@ -207,7 +202,7 @@ private fun JetsnackBottomNavLayout(
     }
 
     Layout(
-        modifier = modifier.preferredHeight(BottomNavHeight),
+        modifier = modifier.height(BottomNavHeight),
         content = {
             content()
             Box(Modifier.layoutId("indicator"), content = indicator)

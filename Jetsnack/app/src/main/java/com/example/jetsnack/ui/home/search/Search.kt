@@ -22,10 +22,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
@@ -174,7 +174,7 @@ private fun SearchBar(
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .fillMaxWidth()
-            .preferredHeight(56.dp)
+            .height(56.dp)
             .padding(horizontal = 24.dp, vertical = 8.dp)
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -210,10 +210,10 @@ private fun SearchBar(
                         color = JetsnackTheme.colors.iconPrimary,
                         modifier = Modifier
                             .padding(horizontal = 6.dp)
-                            .preferredSize(36.dp)
+                            .size(36.dp)
                     )
                 } else {
-                    Spacer(Modifier.preferredWidth(IconSize)) // balance arrow icon
+                    Spacer(Modifier.width(IconSize)) // balance arrow icon
                 }
             }
         }
@@ -235,7 +235,7 @@ private fun SearchHint() {
             tint = JetsnackTheme.colors.textHelp,
             contentDescription = stringResource(R.string.label_search)
         )
-        Spacer(Modifier.preferredWidth(8.dp))
+        Spacer(Modifier.width(8.dp))
         Text(
             text = stringResource(R.string.search_jetsnack),
             color = JetsnackTheme.colors.textHelp

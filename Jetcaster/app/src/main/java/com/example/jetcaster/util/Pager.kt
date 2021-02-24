@@ -19,9 +19,9 @@
 package com.example.jetcaster.util
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationEndReason
-import androidx.compose.animation.core.exponentialDecay
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -34,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.ParentDataModifier
@@ -108,12 +107,8 @@ class PagerState(
         if (velocity < 0 && currentPage == maxPage) return
         if (velocity > 0 && currentPage == minPage) return
 
-        val result = _currentPageOffset.animateDecay(velocity, exponentialDecay())
-
-        if (result.endReason != AnimationEndReason.Interrupted) {
-            _currentPageOffset.animateTo(currentPageOffset.roundToInt().toFloat())
-            selectPage()
-        }
+        _currentPageOffset.animateTo(currentPageOffset.roundToInt().toFloat())
+        selectPage()
     }
 
     override fun toString(): String = "PagerState{minPage=$minPage, maxPage=$maxPage, " +
@@ -163,18 +158,19 @@ fun Pager(
                     // need to scale the velocity to match
                     state.fling(velocity / pageSize)
                 }
-            }
-        ) { dy ->
-            coroutineScope.launch {
-                with(state) {
-                    val pos = pageSize * currentPageOffset
-                    val max = if (currentPage == minPage) 0 else pageSize * offscreenLimit
-                    val min = if (currentPage == maxPage) 0 else -pageSize * offscreenLimit
-                    val newPos = (pos + dy).coerceIn(min.toFloat(), max.toFloat())
-                    snapToOffset(newPos / pageSize)
+            },
+            state = rememberDraggableState { dy ->
+                coroutineScope.launch {
+                    with(state) {
+                        val pos = pageSize * currentPageOffset
+                        val max = if (currentPage == minPage) 0 else pageSize * offscreenLimit
+                        val min = if (currentPage == maxPage) 0 else -pageSize * offscreenLimit
+                        val newPos = (pos + dy).coerceIn(min.toFloat(), max.toFloat())
+                        snapToOffset(newPos / pageSize)
+                    }
                 }
-            }
-        }
+            },
+        )
     ) { measurables, constraints ->
         layout(constraints.maxWidth, constraints.maxHeight) {
             val currentPage = state.currentPage

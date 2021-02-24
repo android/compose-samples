@@ -26,4 +26,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 @Immutable
 data class Images(@DrawableRes val lockupLogo: Int)
 
-internal val AmbientImages = staticCompositionLocalOf<Images>(null)
+internal val LocalImages = staticCompositionLocalOf<Images> {
+    error("No LocalImages specified")
+}

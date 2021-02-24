@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -121,7 +121,7 @@ fun DetailsScreen(
 @Composable
 fun DetailsContent(exploreModel: ExploreModel) {
     Column(verticalArrangement = Arrangement.Center) {
-        Spacer(Modifier.preferredHeight(32.dp))
+        Spacer(Modifier.height(32.dp))
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = exploreModel.city.nameToDisplay,
@@ -132,7 +132,7 @@ fun DetailsContent(exploreModel: ExploreModel) {
             text = exploreModel.description,
             style = MaterialTheme.typography.h6
         )
-        Spacer(Modifier.preferredHeight(16.dp))
+        Spacer(Modifier.height(16.dp))
         CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
     }
 }

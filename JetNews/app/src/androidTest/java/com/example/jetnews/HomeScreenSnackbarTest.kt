@@ -20,7 +20,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.ExperimentalComposeApi
-import androidx.compose.runtime.snapshots.snapshotFlow
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText

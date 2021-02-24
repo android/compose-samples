@@ -23,10 +23,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredHeightIn
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -64,11 +64,11 @@ fun Calendar(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier) {
-        item { Spacer(Modifier.preferredHeight(32.dp)) }
+        item { Spacer(Modifier.height(32.dp)) }
         for (month in calendarYear) {
             itemsCalendarMonth(month = month, onDayClicked = onDayClicked)
             item {
-                Spacer(Modifier.preferredHeight(32.dp))
+                Spacer(Modifier.height(32.dp))
             }
         }
     }
@@ -102,7 +102,7 @@ private fun Week(
     Row(modifier = modifier) {
         val spaceModifiers = Modifier
             .weight(1f)
-            .preferredHeightIn(max = CELL_SIZE)
+            .heightIn(max = CELL_SIZE)
         Surface(modifier = spaceModifiers, color = leftFillColor) {
             Spacer(Modifier.fillMaxHeight())
         }
@@ -175,7 +175,7 @@ private fun DayContainer(
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
     Surface(
-        modifier = modifier.preferredSize(width = CELL_SIZE, height = CELL_SIZE),
+        modifier = modifier.size(width = CELL_SIZE, height = CELL_SIZE),
         color = backgroundColor
     ) {
         content()
@@ -234,7 +234,7 @@ private fun LazyListScope.itemsCalendarMonth(
             )
         }
         item {
-            Spacer(Modifier.preferredHeight(8.dp))
+            Spacer(Modifier.height(8.dp))
         }
     }
 }

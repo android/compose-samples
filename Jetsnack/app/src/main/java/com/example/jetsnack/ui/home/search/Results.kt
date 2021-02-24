@@ -23,9 +23,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -106,7 +106,7 @@ private fun SearchResult(
             imageUrl = snack.imageUrl,
             contentDescription = null,
             modifier = Modifier
-                .preferredSize(100.dp)
+                .size(100.dp)
                 .constrainAs(image) {
                     linkTo(
                         top = parent.top,
@@ -147,7 +147,7 @@ private fun SearchResult(
         )
         Spacer(
             Modifier
-                .preferredHeight(8.dp)
+                .height(8.dp)
                 .constrainAs(priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
                 }
@@ -171,7 +171,7 @@ private fun SearchResult(
             shape = CircleShape,
             contentPadding = PaddingValues(0.dp),
             modifier = Modifier
-                .preferredSize(36.dp)
+                .size(36.dp)
                 .constrainAs(add) {
                     linkTo(top = parent.top, bottom = parent.bottom)
                     end.linkTo(parent.end)
@@ -201,14 +201,14 @@ fun NoResults(
             painterResource(R.drawable.empty_state_search),
             contentDescription = null
         )
-        Spacer(Modifier.preferredHeight(24.dp))
+        Spacer(Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.preferredHeight(16.dp))
+        Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.search_no_matches_retry),
             style = MaterialTheme.typography.body2,

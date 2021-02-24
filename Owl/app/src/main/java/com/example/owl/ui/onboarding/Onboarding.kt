@@ -28,9 +28,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -51,7 +51,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +64,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.owl.R
 import com.example.owl.model.Topic
@@ -114,7 +116,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                         .weight(1f)
                         .wrapContentHeight()
                 )
-                Spacer(Modifier.preferredHeight(56.dp)) // center grid accounting for FAB
+                Spacer(Modifier.height(56.dp)) // center grid accounting for FAB
             }
         }
     }
@@ -161,34 +163,60 @@ private fun TopicsGrid(modifier: Modifier = Modifier) {
 
 private enum class SelectionState { Unselected, Selected }
 
+/**
+ * Class holding animating values when transitioning topic chip states.
+ */
+private class TopicChipTransition(
+    cornerRadius: State<Dp>,
+    selectedAlpha: State<Float>,
+    checkScale: State<Float>
+) {
+    val cornerRadius by cornerRadius
+    val selectedAlpha by selectedAlpha
+    val checkScale by checkScale
+}
+
 @Composable
-private fun TopicChip(topic: Topic) {
-    val (selected, onSelected) = remember { mutableStateOf(false) }
+private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
     val transition = updateTransition(
-        targetState = if (selected) SelectionState.Selected else SelectionState.Unselected
+        targetState = if (topicSelected) SelectionState.Selected else SelectionState.Unselected
     )
-    val corerRadius by transition.animateDp { state ->
+    val corerRadius = transition.animateDp { state ->
         when (state) {
             SelectionState.Unselected -> 0.dp
             SelectionState.Selected -> 28.dp
         }
     }
-    val selectedAlpha by transition.animateFloat { state ->
+    val selectedAlpha = transition.animateFloat { state ->
         when (state) {
             SelectionState.Unselected -> 0f
             SelectionState.Selected -> 0.8f
         }
     }
-    val checkScale by transition.animateFloat { state ->
+    val checkScale = transition.animateFloat { state ->
         when (state) {
             SelectionState.Unselected -> 0.6f
             SelectionState.Selected -> 1f
         }
     }
+    return remember(transition) {
+        TopicChipTransition(corerRadius, selectedAlpha, checkScale)
+    }
+}
+
+@Composable
+private fun TopicChip(topic: Topic) {
+    val (selected, onSelected) = remember { mutableStateOf(false) }
+    val topicChipTransitionState = topicChipTransition(selected)
+
     Surface(
         modifier = Modifier.padding(4.dp),
         elevation = OwlTheme.elevations.card,
-        shape = MaterialTheme.shapes.medium.copy(topStart = CornerSize(corerRadius))
+        shape = MaterialTheme.shapes.medium.copy(
+            topStart = CornerSize(
+                topicChipTransitionState.cornerRadius
+            )
+        )
     ) {
         Row(modifier = Modifier.toggleable(value = selected, onValueChange = onSelected)) {
             Box {
@@ -196,21 +224,23 @@ private fun TopicChip(topic: Topic) {
                     url = topic.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .preferredSize(width = 72.dp, height = 72.dp)
+                        .size(width = 72.dp, height = 72.dp)
                         .aspectRatio(1f)
                 )
-                if (selectedAlpha > 0f) {
+                if (topicChipTransitionState.selectedAlpha > 0f) {
                     Surface(
-                        color = pink500.copy(alpha = selectedAlpha),
+                        color = pink500.copy(alpha = topicChipTransitionState.selectedAlpha),
                         modifier = Modifier.matchParentSize()
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Done,
                             contentDescription = null,
-                            tint = MaterialTheme.colors.onPrimary.copy(alpha = selectedAlpha),
+                            tint = MaterialTheme.colors.onPrimary.copy(
+                                alpha = topicChipTransitionState.selectedAlpha
+                            ),
                             modifier = Modifier
                                 .wrapContentSize()
-                                .scale(checkScale)
+                                .scale(topicChipTransitionState.checkScale)
                         )
                     }
                 }
@@ -227,13 +257,13 @@ private fun TopicChip(topic: Topic) {
                     )
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Icon(
                             painter = painterResource(R.drawable.ic_grain),
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(start = 16.dp)
-                                .preferredSize(12.dp)
+                                .size(12.dp)
                         )
                         Text(
                             text = topic.courses.toString(),

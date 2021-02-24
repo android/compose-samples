@@ -18,8 +18,8 @@ package androidx.compose.samples.crane.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.SimpleUserInput
@@ -33,11 +33,11 @@ fun FlySearchContent(datesSelected: String, searchUpdates: FlySearchContentUpdat
             titleSuffix = ", Economy",
             onPeopleChanged = searchUpdates.onPeopleChanged
         )
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         FromDestination()
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         ToDestinationUserInput(onToDestinationChanged = searchUpdates.onToDestinationChanged)
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         DatesUserInput(datesSelected, onDateSelectionClicked = searchUpdates.onDateSelectionClicked)
     }
 }
@@ -46,9 +46,9 @@ fun FlySearchContent(datesSelected: String, searchUpdates: FlySearchContentUpdat
 fun SleepSearchContent(datesSelected: String, sleepUpdates: SleepSearchContentUpdates) {
     CraneSearch {
         PeopleUserInput(onPeopleChanged = { sleepUpdates.onPeopleChanged })
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         DatesUserInput(datesSelected, onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_hotel)
     }
 }
@@ -57,11 +57,11 @@ fun SleepSearchContent(datesSelected: String, sleepUpdates: SleepSearchContentUp
 fun EatSearchContent(datesSelected: String, eatUpdates: EatSearchContentUpdates) {
     CraneSearch {
         PeopleUserInput(onPeopleChanged = { eatUpdates.onPeopleChanged })
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         DatesUserInput(datesSelected, onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         SimpleUserInput(caption = "Select Time", vectorImageId = R.drawable.ic_time)
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_restaurant)
     }
 }
