@@ -169,7 +169,7 @@ class ConversationTest {
  * Make the list of messages longer so the test makes sense on tablets.
  */
 private val conversationTestUiState = ConversationUiState(
-    initialMessages = (exampleUiState.messages.plus(exampleUiState.messages) ),
+    initialMessages = (exampleUiState.messages.plus(exampleUiState.messages)),
     channelName = "#composers",
     channelMembers = 42
 )
