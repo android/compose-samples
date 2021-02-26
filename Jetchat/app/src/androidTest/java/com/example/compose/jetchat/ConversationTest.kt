@@ -31,6 +31,7 @@ import androidx.compose.ui.test.performGesture
 import androidx.compose.ui.test.swipe
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
+import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
@@ -65,7 +66,7 @@ class ConversationTest {
             ) {
                 JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                     ConversationContent(
-                        uiState = exampleUiState,
+                        uiState = conversationTestUiState,
                         navigateToProfile = { },
                         onNavIconPressed = { }
                     )
@@ -163,3 +164,12 @@ class ConversationTest {
             )
             .performClick()
 }
+
+/**
+ * Make the list of messages longer so the test makes sense on tablets.
+ */
+private val conversationTestUiState = ConversationUiState(
+    initialMessages = (exampleUiState.messages.plus(exampleUiState.messages) ),
+    channelName = "#composers",
+    channelMembers = 42
+)
