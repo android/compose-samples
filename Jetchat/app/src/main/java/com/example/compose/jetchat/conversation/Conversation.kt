@@ -53,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -250,11 +251,13 @@ fun Messages(
 
         // Show the button if the first visible item is not the first one or if the offset is
         // greater than the threshold.
-        val jumpToBottomButtonEnabled by derivedStateOf {
-            scrollState.firstVisibleItemIndex != 0 || (
-                scrollState.firstVisibleItemIndex == 0 &&
-                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
-                )
+        val jumpToBottomButtonEnabled by remember {
+            derivedStateOf {
+                scrollState.firstVisibleItemIndex != 0 || (
+                    scrollState.firstVisibleItemIndex == 0 &&
+                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                    )
+            }
         }
 
         JumpToBottom(
