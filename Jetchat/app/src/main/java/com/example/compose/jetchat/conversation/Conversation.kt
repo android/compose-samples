@@ -51,6 +51,8 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -248,13 +250,12 @@ fun Messages(
 
         // Show the button if the first visible item is not the first one or if the offset is
         // greater than the threshold.
-        val jumpToBottomButtonEnabled = (
-            scrollState.firstVisibleItemIndex != 0 ||
-                (
+        val jumpToBottomButtonEnabled by derivedStateOf {
+            scrollState.firstVisibleItemIndex != 0 || (
                     scrollState.firstVisibleItemIndex == 0 &&
-                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
                     )
-            )
+        }
 
         JumpToBottom(
             // Only show if the scroller is not at the bottom
