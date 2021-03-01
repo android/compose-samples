@@ -253,10 +253,8 @@ fun Messages(
         // greater than the threshold.
         val jumpToBottomButtonEnabled by remember {
             derivedStateOf {
-                scrollState.firstVisibleItemIndex != 0 || (
-                    scrollState.firstVisibleItemIndex == 0 &&
-                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
-                    )
+                scrollState.firstVisibleItemIndex != 0 ||
+                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
             }
         }
 
