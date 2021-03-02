@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
@@ -74,8 +73,10 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsWithImePadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 /**
@@ -205,11 +206,17 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
+            // Add content padding so that the content can be scrolled (y-axis)
+            // below the status bar + app bar
+            // TODO: Get height from somewhere
+            contentPadding = LocalWindowInsets.current.statusBars.toPaddingValues(
+                additionalTop = 90.dp
+            ),
             modifier = Modifier
                 .testTag(ConversationTestTag)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
-            items(messages.size) { index ->
+            for (index in messages.indices) {
                 val prevAuthor = messages.getOrNull(index - 1)?.author
                 val nextAuthor = messages.getOrNull(index + 1)?.author
                 val content = messages[index]
@@ -218,29 +225,24 @@ fun Messages(
 
                 // Hardcode day dividers for simplicity
                 if (index == messages.size - 1) {
-                    DayHeader("20 Aug")
+                    item {
+                        DayHeader("20 Aug")
+                    }
                 } else if (index == 2) {
-                    DayHeader("Today")
+                    item {
+                        DayHeader("Today")
+                    }
                 }
 
-                Message(
-                    onAuthorClick = {
-                        navigateToProfile(content.author)
-                    },
-                    msg = content,
-                    isUserMe = content.author == authorMe,
-                    isFirstMessageByAuthor = isFirstMessageByAuthor,
-                    isLastMessageByAuthor = isLastMessageByAuthor
-                )
-            }
-            // Add some space for the top app bar
-            item {
-                // TODO: Get height from somewhere.
-                Spacer(
-                    modifier = Modifier
-                        .height(90.dp)
-                        .statusBarsPadding()
-                )
+                item {
+                    Message(
+                        onAuthorClick = { navigateToProfile(content.author) },
+                        msg = content,
+                        isUserMe = content.author == authorMe,
+                        isFirstMessageByAuthor = isFirstMessageByAuthor,
+                        isLastMessageByAuthor = isLastMessageByAuthor
+                    )
+                }
             }
         }
         // Jump to bottom button shows up when user scrolls past a threshold.
