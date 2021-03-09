@@ -21,13 +21,13 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha08"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha09"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.6.0"
+        private const val version = "0.6.2.compose-7184376-SNAPSHOT"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
@@ -72,7 +72,7 @@ object Libs {
         }
 
         object Compose {
-            private const val snapshot = "7187420"
+            private const val snapshot = "7184376"
             private const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
