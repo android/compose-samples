@@ -43,7 +43,6 @@ class HomeTest {
         }
     }
 
-    @Ignore("Swipeable bug makes the app crash: https://issuetracker.google.com/180488877")
     @Test
     fun home_navigatesToAllScreens() {
         composeTestRule.onNodeWithText("Explore Flights by Destination").assertIsDisplayed()
