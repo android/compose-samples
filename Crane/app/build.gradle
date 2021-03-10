@@ -110,6 +110,7 @@ dependencies {
 
     implementation Libs.Accompanist.coil
     implementation Libs.AndroidX.Activity.activityCompose
+    implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.foundation
