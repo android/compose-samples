@@ -69,7 +69,7 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha03"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha04"
         }
 
         object ConstraintLayout {
