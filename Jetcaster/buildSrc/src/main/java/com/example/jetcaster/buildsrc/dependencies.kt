@@ -27,7 +27,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Accompanist {
-        private const val version = "0.6.2.compose-7184376-SNAPSHOT"
+        private const val version = "0.6.2"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
@@ -61,10 +61,10 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val palette = "androidx.palette:palette:1.0.0"
 
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0-beta03"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha03"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha04"
         }
 
         object Constraint {
@@ -72,8 +72,8 @@ object Libs {
         }
 
         object Compose {
-            private const val snapshot = "7184376"
-            private const val version = "1.0.0-SNAPSHOT"
+            private const val snapshot = ""
+            private const val version = "1.0.0-beta02"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -92,7 +92,7 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.3.0-beta01"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
