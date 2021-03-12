@@ -16,6 +16,8 @@
 
 package com.example.owl.ui
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -34,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -52,8 +53,6 @@ import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.courses.courses
 import com.example.owl.ui.onboarding.Onboarding
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.theme.YellowTheme
-import com.example.owl.ui.utils.backHandler
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
@@ -78,18 +77,23 @@ fun NavGraph(
     // Onboarding could be read from shared preferences.
     var onboardingComplete by remember { mutableStateOf(!showOnboardingInitially) }
 
+    // This is false in the beginning, true after FAB click
+    Log.d("jalc", "onboardingComplete: ${onboardingComplete.toString()}")
     val tabs = CourseTabs.values()
 
     val actions = remember(navController) { MainActions(navController) }
-    AppTheme(navController.currentBackStackEntryAsState().value) {
-        OwlScaffold(bottomBar = { OwlBottomBar(navController = navController, tabs) }) { innerPaddingModifier ->
+
+    BlueTheme {
+        OwlScaffold(
+            bottomBar = { OwlBottomBar(navController = navController, tabs) }
+        ) { innerPaddingModifier ->
             NavHost(
                 navController = navController,
                 startDestination = startDestination
             ) {
                 composable(MainDestinations.ONBOARDING_ROUTE) {
                     // Intercept back in Onboarding: make it finish the activity
-                    backHandler {
+                    BackHandler {
                         finishActivity()
                     }
 
@@ -179,25 +183,13 @@ fun OwlScaffold(
     }
 }
 
-@Composable
-fun AppTheme(backStackEntry: NavBackStackEntry?, content: @Composable () -> Unit) {
-    if (backStackEntry?.arguments?.getString(KEY_ROUTE) == MainDestinations.ONBOARDING_ROUTE) {
-        YellowTheme {
-            content()
-        }
-    } else {
-        BlueTheme {
-            content()
-        }
-    }
-}
-
 /**
  * Models the navigation actions in the app.
  */
 class MainActions(navController: NavHostController) {
     val onboardingComplete: () -> Unit = {
-        navController.popBackStack(navController.graph.startDestination, false)
+//        navController.navigateUp()
+        navController.navigate(MainDestinations.COURSES_ROUTE)
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
         navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$courseId")

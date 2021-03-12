@@ -16,27 +16,20 @@
 
 package com.example.owl.ui.courses
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -50,9 +43,6 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.MainDestinations
-import com.example.owl.ui.theme.BlueTheme
-import dev.chrisbanes.accompanist.insets.navigationBarsHeight
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 
 fun NavGraphBuilder.courses(
@@ -62,9 +52,15 @@ fun NavGraphBuilder.courses(
     modifier: Modifier = Modifier
 ) {
     composable(CourseTabs.FEATURED.route) {
+
+        // This is always false
+        Log.d("jalc", "PreLaunchedEffect.onboardingComplete: ${onboardingComplete}")
+
         LaunchedEffect(onboardingComplete) {
+            // This is always false
+            Log.d("jalc", "LaunchedEffect.onboardingComplete: ${onboardingComplete}")
             if (!onboardingComplete) {
-                navController.popBackStack(navController.graph.startDestination, false)
+                navController.popBackStack(navController.graph.startDestination, true)
                 navController.navigate(MainDestinations.ONBOARDING_ROUTE)
             }
         }
