@@ -145,9 +145,7 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
             tabs.forEach { tab ->
                 BottomNavigationItem(
                     icon = { Icon(painterResource(tab.icon), contentDescription = null) },
-                    label = {
-                        Text(stringResource(tab.title).toUpperCase())
-                    },
+                    label = { Text(stringResource(tab.title).toUpperCase()) },
                     selected = currentRoute == tab.route,
                     onClick = {
                         if (tab.route != currentRoute) {
@@ -195,4 +193,3 @@ class MainActions(navController: NavHostController) {
         navController.navigateUp()
     }
 }
-

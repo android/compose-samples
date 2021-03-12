@@ -43,7 +43,6 @@ import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.MainDestinations
 
-
 fun NavGraphBuilder.courses(
     onCourseSelected: (Long) -> Unit,
     onboardingComplete: State<Boolean>,
