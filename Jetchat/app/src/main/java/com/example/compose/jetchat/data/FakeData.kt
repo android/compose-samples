@@ -24,10 +24,24 @@ import com.example.compose.jetchat.profile.ProfileScreenState
 private val initialMessages = listOf(
     Message(
         "me",
-        "Compose newbie: I’ve scourged the internet for tutorials about async data loading " +
-            "but haven’t found any good ones. What’s the recommended way to load async " +
-            "data and emit composable widgets?",
-        "8:03 PM"
+        "Check it out!",
+        "8:07 PM"
+    ),
+    Message(
+        "me",
+        "Thank you!",
+        "8:06 PM",
+        R.drawable.sticker
+    ),
+    Message(
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsState()` APIs",
+        "8:05 PM"
     ),
     Message(
         "John Glenn",
@@ -38,25 +52,11 @@ private val initialMessages = listOf(
         "8:04 PM"
     ),
     Message(
-        "Taylor Brooks",
-        "@aliconors Take a look at the `Flow.collectAsState()` APIs",
-        "8:05 PM"
-    ),
-    Message(
-        "Taylor Brooks",
-        "You can use all the same stuff",
-        "8:05 PM"
-    ),
-    Message(
         "me",
-        "Thank you!",
-        "8:06 PM",
-        R.drawable.sticker
-    ),
-    Message(
-        "me",
-        "Check it out!",
-        "8:07 PM"
+        "Compose newbie: I’ve scourged the internet for tutorials about async data loading " +
+            "but haven’t found any good ones. What’s the recommended way to load async " +
+            "data and emit composable widgets?",
+        "8:03 PM"
     )
 )
 

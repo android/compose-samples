@@ -23,7 +23,6 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,7 +42,6 @@ class HomeTest {
         }
     }
 
-    @Ignore("Swipeable bug makes the app crash: https://issuetracker.google.com/180488877")
     @Test
     fun home_navigatesToAllScreens() {
         composeTestRule.onNodeWithText("Explore Flights by Destination").assertIsDisplayed()

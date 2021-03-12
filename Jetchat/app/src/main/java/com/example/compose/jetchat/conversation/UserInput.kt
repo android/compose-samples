@@ -21,7 +21,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,7 +64,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -96,7 +94,6 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.compositedOnSurface
 import com.example.compose.jetchat.theme.elevatedSurface
-import kotlinx.coroutines.launch
 
 enum class InputSelector {
     NONE,
@@ -115,17 +112,16 @@ enum class EmojiStickerSelector {
 @Preview
 @Composable
 fun UserInputPreview() {
-    UserInput(onMessageSent = {}, scrollState = rememberScrollState())
+    UserInput(onMessageSent = {})
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
     onMessageSent: (String) -> Unit,
-    scrollState: ScrollState,
     modifier: Modifier = Modifier,
+    resetScroll: () -> Unit = {},
 ) {
-    val scope = rememberCoroutineScope()
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
 
@@ -150,9 +146,7 @@ fun UserInput(
             onTextFieldFocused = { focused ->
                 if (focused) {
                     currentInputSelector = InputSelector.NONE
-                    scope.launch {
-                        scrollState.animateScrollTo(0)
-                    }
+                    resetScroll()
                 }
                 textFieldFocusState = focused
             },
@@ -166,9 +160,7 @@ fun UserInput(
                 // Reset text field and close keyboard
                 textState = TextFieldValue()
                 // Move scroll to bottom
-                scope.launch {
-                    scrollState.animateScrollTo(0)
-                }
+                resetScroll()
                 dismissKeyboard()
             },
             currentInputSelector = currentInputSelector

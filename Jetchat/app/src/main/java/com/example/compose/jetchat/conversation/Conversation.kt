@@ -26,17 +26,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -50,6 +50,9 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,8 +73,10 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsWithImePadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import dev.chrisbanes.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 /**
@@ -92,7 +97,8 @@ fun ConversationContent(
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
 
-    val scrollState = rememberScrollState()
+    val scrollState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
     Surface(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
@@ -108,7 +114,11 @@ fun ConversationContent(
                             Message(authorMe, content, timeNow)
                         )
                     },
-                    scrollState = scrollState,
+                    resetScroll = {
+                        scope.launch {
+                            scrollState.scrollToItem(0)
+                        }
+                    },
                     // Use navigationBarsWithImePadding(), to move the input panel above both the
                     // navigation bar, and on-screen keyboard (IME)
                     modifier = Modifier.navigationBarsWithImePadding(),
@@ -186,43 +196,53 @@ const val ConversationTestTag = "ConversationTestTag"
 fun Messages(
     messages: List<Message>,
     navigateToProfile: (String) -> Unit,
-    scrollState: ScrollState,
+    scrollState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
 
-        Column(
+        val authorMe = stringResource(id = R.string.author_me)
+        LazyColumn(
+            reverseLayout = true,
+            state = scrollState,
+            // Add content padding so that the content can be scrolled (y-axis)
+            // below the status bar + app bar
+            // TODO: Get height from somewhere
+            contentPadding = LocalWindowInsets.current.statusBars.toPaddingValues(
+                additionalTop = 90.dp
+            ),
             modifier = Modifier
                 .testTag(ConversationTestTag)
-                .fillMaxWidth()
-                .verticalScroll(scrollState, reverseScrolling = true)
+                .fillMaxSize()
         ) {
-            val authorMe = stringResource(id = R.string.author_me)
-            Spacer(modifier = Modifier.height(64.dp))
-            messages.forEachIndexed { index, content ->
+            for (index in messages.indices) {
                 val prevAuthor = messages.getOrNull(index - 1)?.author
                 val nextAuthor = messages.getOrNull(index + 1)?.author
+                val content = messages[index]
                 val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
 
                 // Hardcode day dividers for simplicity
-                if (index == 0) {
-                    DayHeader("20 Aug")
-                } else if (index == 4) {
-                    DayHeader("Today")
+                if (index == messages.size - 1) {
+                    item {
+                        DayHeader("20 Aug")
+                    }
+                } else if (index == 2) {
+                    item {
+                        DayHeader("Today")
+                    }
                 }
 
-                Message(
-                    onAuthorClick = {
-                        navigateToProfile(content.author)
-                    },
-                    msg = content,
-                    isUserMe = content.author == authorMe,
-                    isFirstMessageByAuthor = isFirstMessageByAuthor,
-                    isLastMessageByAuthor = isLastMessageByAuthor
-                )
+                item {
+                    Message(
+                        onAuthorClick = { navigateToProfile(content.author) },
+                        msg = content,
+                        isUserMe = content.author == authorMe,
+                        isFirstMessageByAuthor = isFirstMessageByAuthor,
+                        isLastMessageByAuthor = isLastMessageByAuthor
+                    )
+                }
             }
         }
         // Jump to bottom button shows up when user scrolls past a threshold.
@@ -231,15 +251,23 @@ fun Messages(
             JumpToBottomThreshold.toPx()
         }
 
-        // Apply the threshold:
-        val jumpToBottomButtonEnabled = scrollState.value > jumpThreshold
+        // Show the button if the first visible item is not the first one or if the offset is
+        // greater than the threshold.
+        val jumpToBottomButtonEnabled by remember {
+            derivedStateOf {
+                scrollState.firstVisibleItemIndex != 0 ||
+                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
+            }
+        }
 
         JumpToBottom(
             // Only show if the scroller is not at the bottom
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
                 scope.launch {
-                    scrollState.animateScrollTo(0)
+                    // TODO: Replace with animateScrollToItem
+                    // https://issuetracker.google.com/181316785
+                    scrollState.scrollToItem(0)
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -267,9 +295,9 @@ fun Message(
         MaterialTheme.colors.secondary
     }
 
-    val spaceBetweenAuthors = if (isFirstMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
+    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Row(modifier = spaceBetweenAuthors) {
-        if (isFirstMessageByAuthor) {
+        if (isLastMessageByAuthor) {
             // Avatar
             Image(
                 modifier = Modifier
@@ -307,11 +335,11 @@ fun AuthorAndTextMessage(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        if (isFirstMessageByAuthor) {
+        if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
-        ChatItemBubble(msg, isLastMessageByAuthor)
-        if (isLastMessageByAuthor) {
+        ChatItemBubble(msg, isFirstMessageByAuthor)
+        if (isFirstMessageByAuthor) {
             // Last bubble before next author
             Spacer(modifier = Modifier.height(8.dp))
         } else {
