@@ -16,7 +16,6 @@
 
 package com.example.owl.ui.courses
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -29,7 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -47,20 +46,13 @@ import com.example.owl.ui.MainDestinations
 
 fun NavGraphBuilder.courses(
     onCourseSelected: (Long) -> Unit,
-    onboardingComplete: Boolean,
+    onboardingComplete: State<Boolean>,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     composable(CourseTabs.FEATURED.route) {
-
-        // This is always false
-        Log.d("jalc", "PreLaunchedEffect.onboardingComplete: ${onboardingComplete}")
-
         LaunchedEffect(onboardingComplete) {
-            // This is always false
-            Log.d("jalc", "LaunchedEffect.onboardingComplete: ${onboardingComplete}")
-            if (!onboardingComplete) {
-                navController.popBackStack(navController.graph.startDestination, true)
+            if (!onboardingComplete.value) {
                 navController.navigate(MainDestinations.ONBOARDING_ROUTE)
             }
         }

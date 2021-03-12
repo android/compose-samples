@@ -16,7 +16,6 @@
 
 package com.example.owl.ui
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -31,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,10 +73,8 @@ fun NavGraph(
     val navController = rememberNavController()
 
     // Onboarding could be read from shared preferences.
-    var onboardingComplete by remember { mutableStateOf(!showOnboardingInitially) }
+    val onboardingComplete = remember { mutableStateOf(!showOnboardingInitially) }
 
-    // This is false in the beginning, true after FAB click
-    Log.d("jalc", "onboardingComplete: ${onboardingComplete.toString()}")
     val tabs = CourseTabs.values()
 
     val actions = remember(navController) { MainActions(navController) }
@@ -100,7 +96,7 @@ fun NavGraph(
                     Onboarding(
                         onboardingComplete = {
                             // Set the flag so that onboarding is not shown next time.
-                            onboardingComplete = true
+                            onboardingComplete.value = true
                             actions.onboardingComplete()
                         }
                     )
@@ -188,8 +184,7 @@ fun OwlScaffold(
  */
 class MainActions(navController: NavHostController) {
     val onboardingComplete: () -> Unit = {
-//        navController.navigateUp()
-        navController.navigate(MainDestinations.COURSES_ROUTE)
+        navController.popBackStack()
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
         navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$courseId")
