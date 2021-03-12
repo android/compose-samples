@@ -50,12 +50,15 @@ fun NavGraphBuilder.courses(
     modifier: Modifier = Modifier
 ) {
     composable(CourseTabs.FEATURED.route) {
+        // Show onboarding instead if not shown yet.
         LaunchedEffect(onboardingComplete) {
             if (!onboardingComplete.value) {
                 navController.navigate(MainDestinations.ONBOARDING_ROUTE)
             }
         }
-        FeaturedCourses(courses, onCourseSelected, modifier)
+        if (onboardingComplete.value) { // Avoid glitch when showing onboarding
+            FeaturedCourses(courses, onCourseSelected, modifier)
+        }
     }
     composable(CourseTabs.MY_COURSES.route) {
         MyCourses(courses, onCourseSelected, modifier)
