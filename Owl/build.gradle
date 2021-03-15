@@ -45,7 +45,7 @@ subprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             jvmTarget = '1.8'
-            allWarningsAsErrors = false
+            allWarningsAsErrors = true
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
         }
