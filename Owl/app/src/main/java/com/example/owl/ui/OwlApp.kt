@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.example.owl.ui.utils.LocalBackDispatcher
 import com.example.owl.ui.utils.ProvideImageLoader
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.ProvideWindowInsets
 
 @Composable
 fun OwlApp(backDispatcher: OnBackPressedDispatcher) {

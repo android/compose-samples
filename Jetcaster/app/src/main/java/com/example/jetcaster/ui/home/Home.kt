@@ -76,8 +76,8 @@ import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.statusBarsHeight
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime

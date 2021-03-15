@@ -33,8 +33,8 @@ import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
 import com.example.owl.ui.theme.compositedOnSurface
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.coil.LocalImageLoader
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.LocalImageLoader
 import okhttp3.HttpUrl
 
 /**

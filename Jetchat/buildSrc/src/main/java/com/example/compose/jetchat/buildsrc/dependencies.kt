@@ -44,7 +44,7 @@ object Libs {
 
     object Accompanist {
         private const val version = "0.6.2"
-        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
+        const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object AndroidX {

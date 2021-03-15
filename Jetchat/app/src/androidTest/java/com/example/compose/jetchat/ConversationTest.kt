@@ -35,8 +35,8 @@ import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.WindowInsets
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.WindowInsets
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule

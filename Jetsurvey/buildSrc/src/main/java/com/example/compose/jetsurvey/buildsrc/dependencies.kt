@@ -30,7 +30,7 @@ object Libs {
 
     object Accompanist {
         private const val version = "0.6.2"
-        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+        const val coil = "com.google.accompanist:accompanist-coil:$version"
     }
 
     object Kotlin {

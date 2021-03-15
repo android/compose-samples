@@ -90,10 +90,10 @@ import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 private val FabSize = 56.dp
