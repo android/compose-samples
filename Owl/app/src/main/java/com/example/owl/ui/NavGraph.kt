@@ -54,7 +54,9 @@ fun NavGraph(
     showOnboardingInitially: Boolean = true
 ) {
     // Onboarding could be read from shared preferences.
-    val onboardingComplete = remember { mutableStateOf(!showOnboardingInitially) }
+    val onboardingComplete = remember(showOnboardingInitially) {
+        mutableStateOf(!showOnboardingInitially)
+    }
 
     val actions = remember(navController) { MainActions(navController) }
 
