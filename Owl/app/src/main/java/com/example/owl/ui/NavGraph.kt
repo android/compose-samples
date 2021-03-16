@@ -17,30 +17,14 @@
 package com.example.owl.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.navigation
@@ -50,9 +34,6 @@ import com.example.owl.ui.course.CourseDetails
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.courses.courses
 import com.example.owl.ui.onboarding.Onboarding
-import com.example.owl.ui.theme.BlueTheme
-import dev.chrisbanes.accompanist.insets.navigationBarsHeight
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 /**
  * Destinations used in the ([OwlApp]).
@@ -67,115 +48,58 @@ object MainDestinations {
 @Composable
 fun NavGraph(
     finishActivity: () -> Unit,
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
     startDestination: String = MainDestinations.COURSES_ROUTE,
     showOnboardingInitially: Boolean = true
 ) {
-    val navController = rememberNavController()
-
     // Onboarding could be read from shared preferences.
     val onboardingComplete = remember { mutableStateOf(!showOnboardingInitially) }
 
-    val tabs = CourseTabs.values()
-
     val actions = remember(navController) { MainActions(navController) }
 
-    BlueTheme {
-        OwlScaffold(
-            bottomBar = { OwlBottomBar(navController = navController, tabs) }
-        ) { innerPaddingModifier ->
-            NavHost(
-                navController = navController,
-                startDestination = startDestination
-            ) {
-                composable(MainDestinations.ONBOARDING_ROUTE) {
-                    // Intercept back in Onboarding: make it finish the activity
-                    BackHandler {
-                        finishActivity()
-                    }
-
-                    Onboarding(
-                        onboardingComplete = {
-                            // Set the flag so that onboarding is not shown next time.
-                            onboardingComplete.value = true
-                            actions.onboardingComplete()
-                        }
-                    )
-                }
-                navigation(
-                    route = MainDestinations.COURSES_ROUTE,
-                    startDestination = CourseTabs.FEATURED.route
-                ) {
-                    courses(
-                        onCourseSelected = actions.selectCourse,
-                        onboardingComplete = onboardingComplete,
-                        navController = navController,
-                        modifier = innerPaddingModifier
-                    )
-                }
-                composable(
-                    "${MainDestinations.COURSE_DETAIL_ROUTE}/{$COURSE_DETAIL_ID_KEY}",
-                    arguments = listOf(
-                        navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType }
-                    )
-                ) { backStackEntry ->
-                    val arguments = requireNotNull(backStackEntry.arguments)
-                    CourseDetails(
-                        courseId = arguments.getLong(COURSE_DETAIL_ID_KEY),
-                        selectCourse = actions.selectCourse,
-                        upPress = actions.upPress
-                    )
-                }
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(MainDestinations.ONBOARDING_ROUTE) {
+            // Intercept back in Onboarding: make it finish the activity
+            BackHandler {
+                finishActivity()
             }
+
+            Onboarding(
+                onboardingComplete = {
+                    // Set the flag so that onboarding is not shown next time.
+                    onboardingComplete.value = true
+                    actions.onboardingComplete()
+                }
+            )
         }
-    }
-}
-
-@Composable
-fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-        ?: CourseTabs.FEATURED.route
-
-    if (currentRoute in CourseTabs.values().map { it.route }) {
-
-        BottomNavigation(
-            Modifier.navigationBarsHeight(additional = 56.dp)
+        navigation(
+            route = MainDestinations.COURSES_ROUTE,
+            startDestination = CourseTabs.FEATURED.route
         ) {
-            tabs.forEach { tab ->
-                BottomNavigationItem(
-                    icon = { Icon(painterResource(tab.icon), contentDescription = null) },
-                    label = { Text(stringResource(tab.title).toUpperCase()) },
-                    selected = currentRoute == tab.route,
-                    onClick = {
-                        if (tab.route != currentRoute) {
-                            navController.navigate(tab.route) {
-                                popUpTo = navController.graph.startDestination
-                                launchSingleTop = true
-                            }
-                        }
-                    },
-                    alwaysShowLabel = false,
-                    selectedContentColor = MaterialTheme.colors.secondary,
-                    unselectedContentColor = LocalContentColor.current,
-                    modifier = Modifier.navigationBarsPadding()
-                )
-            }
+            courses(
+                onCourseSelected = actions.selectCourse,
+                onboardingComplete = onboardingComplete,
+                navController = navController,
+                modifier = modifier
+            )
         }
-    }
-}
-
-@Composable
-fun OwlScaffold(
-    bottomBar: @Composable () -> Unit,
-    content: @Composable (Modifier) -> Unit
-) {
-    Scaffold(
-        backgroundColor = MaterialTheme.colors.primarySurface,
-        bottomBar = bottomBar
-    ) { innerPadding ->
-        val modifier = Modifier.padding(innerPadding)
-        content(modifier)
+        composable(
+            "${MainDestinations.COURSE_DETAIL_ROUTE}/{$COURSE_DETAIL_ID_KEY}",
+            arguments = listOf(
+                navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val arguments = requireNotNull(backStackEntry.arguments)
+            CourseDetails(
+                courseId = arguments.getLong(COURSE_DETAIL_ID_KEY),
+                selectCourse = actions.selectCourse,
+                upPress = actions.upPress
+            )
+        }
     }
 }
 
