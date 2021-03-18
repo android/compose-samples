@@ -30,7 +30,7 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
-import dev.chrisbanes.accompanist.coil.LocalImageLoader
+import com.google.accompanist.coil.LocalImageLoader
 
 /**
  * Replaces all remote images with a simple black drawable to make testing faster and hermetic.

@@ -35,7 +35,7 @@ import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {

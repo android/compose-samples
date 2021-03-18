@@ -42,6 +42,7 @@ subprojects {
         // Jetpack Compose SNAPSHOTs
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
+            maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }
 
@@ -54,6 +55,16 @@ subprojects {
 
             ktlint(Versions.ktlint)
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
+        }
+    }
+
+    // FIXME: Only needed for Compose 1.0.0-beta03 snapshots
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'androidx.lifecycle'
+                    && details.requested.version == '2.3.1') {
+                details.useVersion('2.4.0-SNAPSHOT')
+            }
         }
     }
 

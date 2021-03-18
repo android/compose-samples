@@ -45,8 +45,8 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import dev.chrisbanes.accompanist.insets.navigationBarsHeight
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.navigationBarsHeight
+import com.google.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun Courses(selectCourse: (Long) -> Unit) {

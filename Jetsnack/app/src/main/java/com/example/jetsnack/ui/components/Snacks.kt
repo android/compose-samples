@@ -56,7 +56,7 @@ import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import dev.chrisbanes.accompanist.coil.CoilImage
+import com.google.accompanist.coil.CoilImage
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp

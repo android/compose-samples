@@ -21,12 +21,12 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha09"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha10"
 
     object Accompanist {
-        private const val version = "0.6.2"
-        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
-        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
+        private const val version = "0.6.3.compose-7217131-SNAPSHOT"
+        const val coil = "com.google.accompanist:accompanist-coil:$version"
+        const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
@@ -47,8 +47,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta03"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-beta02"
+            const val snapshot = "7217131"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -62,12 +62,12 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha04"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Lifecycle {
             const val viewModelCompose =
-                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
+                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
         }
 
         object ConstraintLayout {

@@ -73,8 +73,8 @@ import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.YellowTheme
 import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 
 @Composable

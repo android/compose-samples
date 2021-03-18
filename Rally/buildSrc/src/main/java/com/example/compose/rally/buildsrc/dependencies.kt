@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha09"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha10"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val material = "com.google.android.material:material:1.1.0"
@@ -45,12 +45,12 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta03"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha04"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-beta02"
+            const val snapshot = "7217131"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -72,7 +72,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.0"
+            private const val version = "2.3.3"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }

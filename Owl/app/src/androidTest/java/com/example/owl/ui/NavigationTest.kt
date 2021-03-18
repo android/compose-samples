@@ -28,7 +28,7 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
 import com.example.owl.ui.utils.LocalBackDispatcher
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
 
