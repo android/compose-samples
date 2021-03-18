@@ -45,7 +45,7 @@ import com.example.owl.ui.MainDestinations
 
 fun NavGraphBuilder.courses(
     onCourseSelected: (Long) -> Unit,
-    onboardingComplete: State<Boolean>,
+    onboardingComplete: State<Boolean>, // https://issuetracker.google.com/174783110
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
