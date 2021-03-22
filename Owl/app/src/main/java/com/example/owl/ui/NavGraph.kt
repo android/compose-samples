@@ -16,23 +16,18 @@
 
 package com.example.owl.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.owl.ui.MainDestinations.COURSE_DETAIL_ID_KEY
 import com.example.owl.ui.course.CourseDetails
-import com.example.owl.ui.courses.CourseTabs
-import com.example.owl.ui.courses.courses
+import com.example.owl.ui.courses.Courses
 import com.example.owl.ui.onboarding.Onboarding
 
 /**
@@ -46,54 +41,23 @@ object MainDestinations {
 }
 
 @Composable
-fun NavGraph(
-    finishActivity: () -> Unit,
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    startDestination: String = MainDestinations.COURSES_ROUTE,
-    showOnboardingInitially: Boolean = true
-) {
-    // Onboarding could be read from shared preferences.
-    val onboardingComplete = remember(showOnboardingInitially) {
-        mutableStateOf(!showOnboardingInitially)
-    }
+fun NavGraph(startDestination: String = MainDestinations.ONBOARDING_ROUTE) {
+    val navController = rememberNavController()
 
     val actions = remember(navController) { MainActions(navController) }
-
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
         composable(MainDestinations.ONBOARDING_ROUTE) {
-            // Intercept back in Onboarding: make it finish the activity
-            BackHandler {
-                finishActivity()
-            }
-
-            Onboarding(
-                onboardingComplete = {
-                    // Set the flag so that onboarding is not shown next time.
-                    onboardingComplete.value = true
-                    actions.onboardingComplete()
-                }
-            )
+            Onboarding(onboardingComplete = actions.onboardingComplete)
         }
-        navigation(
-            route = MainDestinations.COURSES_ROUTE,
-            startDestination = CourseTabs.FEATURED.route
-        ) {
-            courses(
-                onCourseSelected = actions.selectCourse,
-                onboardingComplete = onboardingComplete,
-                navController = navController,
-                modifier = modifier
-            )
+        composable(MainDestinations.COURSES_ROUTE) {
+            Courses(selectCourse = actions.selectCourse)
         }
         composable(
             "${MainDestinations.COURSE_DETAIL_ROUTE}/{$COURSE_DETAIL_ID_KEY}",
-            arguments = listOf(
-                navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType }
-            )
+            arguments = listOf(navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType })
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             CourseDetails(
@@ -110,7 +74,7 @@ fun NavGraph(
  */
 class MainActions(navController: NavHostController) {
     val onboardingComplete: () -> Unit = {
-        navController.popBackStack()
+        navController.navigate(MainDestinations.COURSES_ROUTE)
     }
     val selectCourse: (Long) -> Unit = { courseId: Long ->
         navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$courseId")

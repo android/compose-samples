@@ -17,6 +17,7 @@
 package com.example.owl.ui
 
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -26,6 +27,7 @@ import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
+import com.example.owl.ui.utils.LocalBackDispatcher
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
@@ -45,16 +47,15 @@ class NavigationTest {
 
     private fun startActivity(startDestination: String? = null) {
         composeTestRule.setContent {
-            ProvideWindowInsets {
-                ProvideTestImageLoader {
-                    if (startDestination == null) {
-                        NavGraph(finishActivity = { })
-                    } else {
-                        NavGraph(
-                            finishActivity = { },
-                            startDestination = startDestination,
-                            showOnboardingInitially = false
-                        )
+            val backDispatcher = composeTestRule.activity.onBackPressedDispatcher
+            CompositionLocalProvider(LocalBackDispatcher provides backDispatcher) {
+                ProvideWindowInsets {
+                    ProvideTestImageLoader {
+                        if (startDestination == null) {
+                            NavGraph()
+                        } else {
+                            NavGraph(startDestination)
+                        }
                     }
                 }
             }
