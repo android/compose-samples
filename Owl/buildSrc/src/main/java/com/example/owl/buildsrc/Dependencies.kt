@@ -50,11 +50,11 @@ object Libs {
 
     object AndroidX {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta03"
-        const val navigation = "androidx.navigation:navigation-compose:1.0.0-SNAPSHOT"
+        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha08"
 
         object Compose {
-            const val snapshot = "7179952"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-beta02"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
