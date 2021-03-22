@@ -16,6 +16,7 @@
 
 package com.example.owl.ui.course
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -87,7 +88,6 @@ import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.PinkTheme
 import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
-import com.example.owl.ui.utils.backHandler
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
 import dev.chrisbanes.accompanist.insets.LocalWindowInsets
@@ -125,7 +125,7 @@ fun CourseDetails(
             val dragRange = constraints.maxHeight - fabSize
             val scope = rememberCoroutineScope()
 
-            backHandler(
+            BackHandler(
                 enabled = sheetState.currentValue == SheetState.Open,
                 onBack = {
                     scope.launch {
