@@ -88,7 +88,8 @@ private val PinkThemeLight = lightColors(
     primary = pink500,
     secondary = pink500,
     primaryVariant = pink600,
-    onPrimary = Color.Black
+    onPrimary = Color.Black,
+    onSecondary = Color.Black
 )
 
 private val PinkThemeDark = darkColors(
