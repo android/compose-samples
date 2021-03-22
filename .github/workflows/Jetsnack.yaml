@@ -3,7 +3,7 @@ name: Jetsnack
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'Jetsnack/**'
   pull_request:

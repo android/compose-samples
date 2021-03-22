@@ -3,7 +3,7 @@ name: Jetcaster
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'Jetcaster/**'
   pull_request:
