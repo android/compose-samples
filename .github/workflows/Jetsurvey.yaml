@@ -3,7 +3,7 @@ name: Jetsurvey
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'Jetsurvey/**'
   pull_request:

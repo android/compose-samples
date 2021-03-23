@@ -3,7 +3,7 @@ name: Crane
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'Crane/**'
   pull_request:

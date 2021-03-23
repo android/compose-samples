@@ -3,7 +3,7 @@ name: JetNews
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'JetNews/**'
   pull_request:
