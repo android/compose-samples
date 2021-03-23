@@ -128,8 +128,8 @@ fun <Producer, T> produceUiState(
         launch {
             // This for-loop will loop until the [produceState] coroutine is cancelled.
             for (clearEvent in errorClearChannel) {
-                // This for-loop will suspend when errorClearChanel is empty, and resume when the
-                // next value is offered or sent to the chanel.
+                // This for-loop will suspend when errorClearChannel is empty, and resume when the
+                // next value is offered or sent to the channel.
                 value = value.copy(exception = null)
             }
         }
