@@ -52,7 +52,7 @@ The sample also supports synchronized IME transitions when running on API 30+ de
 <img src="screenshots/ime-transition.gif" />
 
 The sample uses the
-[Accompanist Insets library](https://chrisbanes.github.io/accompanist/insets/) for WindowInsets support.
+[Accompanist Insets library](https://google.github.io/accompanist/insets/) for WindowInsets support.
 
 ### Saved state across configuration changes
 Some composable state survives activity or process recreation, like `currentInputSelector` in [UserInput](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
@@ -109,4 +109,4 @@ limitations under the License.
 ```
 
 [compose]: https://developer.android.com/jetpack/compose
-[coil-accompanist]: https://github.com/chrisbanes/accompanist
+[coil-accompanist]: https://google.github.io/accompanist/coil/

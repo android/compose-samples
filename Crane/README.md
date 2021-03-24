@@ -115,5 +115,5 @@ limitations under the License.
 [detailsViewModel]: app/src/main/java/androidx/compose/samples/crane/details/DetailsViewModel.kt
 [homeTest]: app/src/androidTest/java/androidx/compose/samples/crane/home/HomeTest.kt
 [detailsTest]: app/src/androidTest/java/androidx/compose/samples/crane/details/DetailsActivityTest.kt
-[coil-accompanist]: https://github.com/chrisbanes/accompanist
+[coil-accompanist]: https://google.github.io/accompanist/coil/
 [hilt]: https://d.android.com/hilt

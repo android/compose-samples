@@ -74,4 +74,4 @@ limitations under the License.
 [compose]: https://developer.android.com/jetpack/compose
 [owl]: https://material.io/design/material-studies/owl.html
 [materialtheming]: https://material.io/design/material-theming/overview.html#material-theming
-[coil-accompanist]: https://github.com/chrisbanes/accompanist
+[coil-accompanist]: https://google.github.io/accompanist/coil/
