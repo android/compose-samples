@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
  */
 class MainViewModel : ViewModel() {
 
+    // TODO: Expose a flow for events
     private val _drawerShouldBeOpened = MutableLiveData(false)
     val drawerShouldBeOpened: LiveData<Boolean> = _drawerShouldBeOpened
 

@@ -42,6 +42,7 @@ subprojects {
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }
+            maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }
 

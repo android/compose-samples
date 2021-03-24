@@ -51,7 +51,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,15 +68,17 @@ import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
-import com.example.jetcaster.util.Pager
-import com.example.jetcaster.util.PagerState
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.statusBarsHeight
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -154,6 +155,7 @@ fun HomeAppBar(
  */
 private const val MinConstastOfPrimaryVsSurface = 3f
 
+@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
 @Composable
 fun HomeContent(
     featuredPodcasts: List<PodcastWithExtraInfo>,
@@ -175,8 +177,7 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-
-            val pagerState = remember { PagerState() }
+            val pagerState = rememberPagerState(pageCount = featuredPodcasts.size)
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -309,19 +310,18 @@ fun HomeCategoryTabIndicator(
     )
 }
 
+@ExperimentalPagerApi // HorizontalPager is experimental
 @Composable
 fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
+    pagerState: PagerState,
     modifier: Modifier = Modifier,
-    pagerState: PagerState = remember { PagerState() },
     onPodcastUnfollowed: (String) -> Unit,
 ) {
-    pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
-
-    Pager(
+    HorizontalPager(
         state = pagerState,
         modifier = modifier
-    ) {
+    ) { page ->
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,

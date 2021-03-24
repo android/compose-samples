@@ -112,7 +112,7 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
 
     implementation Libs.Accompanist.coil
-
+    implementation Libs.Accompanist.pager
     implementation Libs.Accompanist.insets
 
     implementation Libs.OkHttp.okhttp

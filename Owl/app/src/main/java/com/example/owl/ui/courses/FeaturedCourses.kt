@@ -48,7 +48,7 @@ import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.utils.NetworkImage
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.ceil
 
 @Composable
