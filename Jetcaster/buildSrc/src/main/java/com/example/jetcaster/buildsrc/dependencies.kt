@@ -30,6 +30,7 @@ object Libs {
         private const val version = "0.6.3.compose-7217131-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
+        const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
     object Kotlin {
