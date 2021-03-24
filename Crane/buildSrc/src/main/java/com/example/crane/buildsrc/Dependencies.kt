@@ -30,7 +30,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.6.3.compose-7217131-SNAPSHOT"
+        private const val version = "0.7.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
     }
 
@@ -49,14 +49,14 @@ object Libs {
 
     object AndroidX {
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha05"
         }
 
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-beta01"
 
         object Compose {
-            const val snapshot = "7217131"
-            private const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            private const val version = "1.0.0-beta03"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -70,7 +70,7 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.3.0"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 

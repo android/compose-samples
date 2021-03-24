@@ -43,7 +43,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.6.3.compose-7217131-SNAPSHOT"
+        private const val version = "0.7.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -52,12 +52,12 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta03"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha05"
         }
 
         object Compose {
-            const val snapshot = "7217131"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-beta03"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -96,7 +96,7 @@ object Libs {
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
         }
     }
 }
