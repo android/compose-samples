@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.jetsnack.R
 import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -281,6 +282,7 @@ fun SnackImage(
         CoilImage(
             data = imageUrl,
             contentDescription = contentDescription,
+            previewPlaceholder = R.drawable.placeholder,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
