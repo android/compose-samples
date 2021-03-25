@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha11"
 
     object Accompanist {
-        private const val version = "0.7.0"
+        const val version = "0.7.1-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
