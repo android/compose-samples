@@ -32,6 +32,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
+import com.example.owl.R
 import com.example.owl.ui.theme.compositedOnSurface
 import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.coil.LocalImageLoader
@@ -51,6 +52,7 @@ fun NetworkImage(
     CoilImage(
         data = url,
         modifier = modifier,
+        previewPlaceholder = R.drawable.photo_architecture,
         contentDescription = contentDescription,
         contentScale = contentScale,
         loading = {
