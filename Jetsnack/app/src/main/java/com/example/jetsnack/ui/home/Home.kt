@@ -18,7 +18,6 @@ package com.example.jetsnack.ui.home
 
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
-import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
@@ -62,7 +61,6 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -167,7 +165,6 @@ private fun JetsnackBottomNav(
                     selected = selected,
                     onSelected = { onSectionSelected(section) },
                     animSpec = springSpec,
-                    testTag = section.tag,
                     modifier = BottomNavigationItemPadding
                         .clip(BottomNavIndicatorShape)
                 )
@@ -260,13 +257,10 @@ fun JetsnackBottomNavigationItem(
     selected: Boolean,
     onSelected: () -> Unit,
     animSpec: AnimationSpec<Float>,
-    testTag: HomeSectionTag,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier
-            .selectable(selected = selected, onClick = onSelected)
-            .testTag(testTag.toString()),
+        modifier = modifier.selectable(selected = selected, onClick = onSelected),
         contentAlignment = Alignment.Center
     ) {
         // Animate the icon/text positions within the item based on selection
@@ -360,18 +354,12 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 
 private enum class HomeSections(
     @StringRes val title: Int,
-    val icon: ImageVector,
-    val tag: HomeSectionTag
+    val icon: ImageVector
 ) {
-    Feed(R.string.home_feed, Icons.Outlined.Home, HomeSectionTag.FEED),
-    Search(R.string.home_search, Icons.Outlined.Search, HomeSectionTag.SEARCH),
-    Cart(R.string.home_cart, Icons.Outlined.ShoppingCart, HomeSectionTag.CART),
-    Profile(R.string.home_profile, Icons.Outlined.AccountCircle, HomeSectionTag.PROFILE)
-}
-
-@VisibleForTesting
-enum class HomeSectionTag {
-    FEED, SEARCH, CART, PROFILE
+    Feed(R.string.home_feed, Icons.Outlined.Home),
+    Search(R.string.home_search, Icons.Outlined.Search),
+    Cart(R.string.home_cart, Icons.Outlined.ShoppingCart),
+    Profile(R.string.home_profile, Icons.Outlined.AccountCircle)
 }
 
 @Preview
