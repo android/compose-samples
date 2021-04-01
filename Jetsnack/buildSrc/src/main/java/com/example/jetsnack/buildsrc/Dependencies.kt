@@ -21,16 +21,16 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha11"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha12"
 
     object Accompanist {
-        const val version = "0.7.1-SNAPSHOT"
+        const val version = "0.7.1.compose-7249939-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.31"
+        private const val version = "1.4.32"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -44,11 +44,11 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-beta03"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-beta03"
+            const val snapshot = "7249939"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -63,21 +63,21 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha05"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Lifecycle {
             const val viewModelCompose =
-                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
+                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
         }
 
         object ConstraintLayout {
             const val constraintLayoutCompose =
-                "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
+                "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha05"
         }
 
         object Test {
-            private const val version = "1.2.0"
+            private const val version = "1.3.0"
             const val runner = "androidx.test:runner:$version"
             const val rules = "androidx.test:rules:$version"
             object Ext {
