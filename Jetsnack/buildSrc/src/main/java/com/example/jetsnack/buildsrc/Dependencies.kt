@@ -59,6 +59,7 @@ object Libs {
             const val animation = "androidx.compose.animation:animation:${version}"
             const val tooling = "androidx.compose.ui:ui-tooling:${version}"
             const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
+            const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
         }
 
         object Activity {
@@ -74,5 +75,21 @@ object Libs {
             const val constraintLayoutCompose =
                 "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
         }
+
+        object Test {
+            private const val version = "1.2.0"
+            const val runner = "androidx.test:runner:$version"
+            const val rules = "androidx.test:rules:$version"
+            object Ext {
+                private const val version = "1.1.2-rc01"
+                const val junit = "androidx.test.ext:junit-ktx:$version"
+            }
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+        }
+    }
+
+    object JUnit {
+        private const val version = "4.13"
+        const val junit = "junit:junit:$version"
     }
 }
