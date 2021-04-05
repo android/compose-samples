@@ -17,12 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
@@ -38,6 +33,8 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -49,8 +46,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -182,15 +181,34 @@ fun InterestsScreen(
         },
         topBar = {
             TopAppBar(
-                title = { Text("Interests") },
+                title = {
+                    Text(
+                        text="Interests",
+                        modifier=Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
-                        Icon(
+                        Image(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            colorFilter= ColorFilter.tint(MaterialTheme.colors.primary)
                         )
                     }
-                }
+                },
+                actions={
+                    IconButton(
+                        onClick = { /* TODO: Open search */ }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = stringResource(R.string.cd_search)
+                        )
+                    }
+                },
+                elevation = 0.dp,
+                backgroundColor = MaterialTheme.colors.onPrimary
             )
         },
         content = {

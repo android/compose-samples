@@ -62,6 +62,9 @@ import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.graphics.ColorFilter
 
 /**
  * Stateful Article Screen that manages state using [produceUiState]
@@ -128,20 +131,37 @@ fun ArticleScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Published in: ${post.publication?.name}",
-                        style = MaterialTheme.typography.subtitle2,
-                        color = LocalContentColor.current
-                    )
+                    Column(modifier=Modifier.padding(top= 10.dp, bottom = 5.dp)){
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(align = Alignment.CenterHorizontally)
+                                .padding(end=50.dp)
+                        ) {
+                            Image(
+                                painter=painterResource(R.mipmap.ic_android_article),
+                                contentDescription = "",
+                                modifier = Modifier.padding(end= 10.dp)
+                            )
+                            Text(
+                                text = "Published in: \n${post.publication?.name}",
+                                style = MaterialTheme.typography.subtitle2,
+                                color = LocalContentColor.current
+                            )
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(
+                        Image(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_up)
+                            contentDescription = stringResource(R.string.cd_navigate_up),
+                            colorFilter= ColorFilter.tint(MaterialTheme.colors.primary)
                         )
                     }
-                }
+                },
+                elevation = 0.dp,
+                backgroundColor = MaterialTheme.colors.onPrimary
             )
         },
         content = { innerPadding ->
