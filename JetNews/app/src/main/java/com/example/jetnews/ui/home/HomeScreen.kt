@@ -176,12 +176,12 @@ fun HomeScreen(
             TopAppBar(
                 title = {
                     Image(
-                            painter = painterResource(R.drawable.ic_jetnews_wordmark),
-                            contentDescription = title,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 4.dp, top=10.dp)
+                        painter = painterResource(R.drawable.ic_jetnews_wordmark),
+                        contentDescription = title,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 4.dp, top = 10.dp)
                     )
                 },
                 navigationIcon = {
@@ -193,7 +193,7 @@ fun HomeScreen(
                         )
                     }
                 },
-                actions={
+                actions = {
                     IconButton(
                         onClick = { /* TODO: Open search */ }
                     ) {

@@ -189,8 +189,8 @@ fun InterestsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text="Interests",
-                        modifier=Modifier.fillMaxWidth(),
+                        text = "Interests",
+                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
                 },
@@ -199,11 +199,11 @@ fun InterestsScreen(
                         Image(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            colorFilter= ColorFilter.tint(MaterialTheme.colors.primary)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                         )
                     }
                 },
-                actions={
+                actions = {
                     IconButton(
                         onClick = { /* TODO: Open search */ }
                     ) {

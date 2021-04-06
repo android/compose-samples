@@ -18,6 +18,14 @@ package com.example.jetnews.ui.article
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -41,6 +49,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,15 +66,6 @@ import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.ui.graphics.ColorFilter
 
 /**
  * Stateful Article Screen that manages state using [produceUiState]
@@ -132,17 +132,17 @@ fun ArticleScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Column(modifier=Modifier.padding(top= 10.dp, bottom = 5.dp)){
+                    Column(modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentWidth(align = Alignment.CenterHorizontally)
-                                .padding(end=50.dp)
+                                .padding(end = 50.dp)
                         ) {
                             Image(
-                                painter=painterResource(R.mipmap.ic_android_article),
+                                painter = painterResource(R.mipmap.ic_android_article),
                                 contentDescription = "",
-                                modifier = Modifier.padding(end= 10.dp)
+                                modifier = Modifier.padding(end = 10.dp)
                             )
                             Text(
                                 text = "Published in: \n${post.publication?.name}",
@@ -157,7 +157,7 @@ fun ArticleScreen(
                         Image(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_navigate_up),
-                            colorFilter= ColorFilter.tint(MaterialTheme.colors.primary)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                         )
                     }
                 },
