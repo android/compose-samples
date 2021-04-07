@@ -43,7 +43,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.7.1.compose-7249939-SNAPSHOT"
+        private const val version = "0.7.1.compose-7262094-SNAPSHOT"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -56,7 +56,7 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "7249939"
+            const val snapshot = "7262094"
             const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"

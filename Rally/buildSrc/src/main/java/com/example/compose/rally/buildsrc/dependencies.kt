@@ -49,7 +49,7 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "7249939"
+            const val snapshot = "7262094"
             const val version = "1.0.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"

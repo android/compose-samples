@@ -27,7 +27,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        private const val version = "0.7.1.compose-7249939-SNAPSHOT"
+        private const val version = "0.7.1.compose-7262094-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -73,7 +73,7 @@ object Libs {
         }
 
         object Compose {
-            private const val snapshot = "7249939"
+            private const val snapshot = "7262094"
             private const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
