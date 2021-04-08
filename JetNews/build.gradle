@@ -15,8 +15,8 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4.31'
-    ext.compose_version = '1.0.0-beta03'
+    ext.kotlin_version = '1.4.32'
+    ext.compose_version = '1.0.0-beta04'
     ext.coroutines_version = '1.4.2'
 
     repositories {
@@ -25,13 +25,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha11'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.10.0'
+    id 'com.diffplug.spotless' version '5.11.1'
 }
 
 subprojects {
