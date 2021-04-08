@@ -154,7 +154,10 @@ class UserInputTest {
 
     private fun openEmojiSelector() =
         composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.emoji_selector_bt_desc))
+            .onNodeWithContentDescription(
+                label = activity.getString(R.string.emoji_selector_bt_desc),
+                useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
+            )
             .performClick()
 
     private fun assertEmojiSelectorIsDisplayed() =
