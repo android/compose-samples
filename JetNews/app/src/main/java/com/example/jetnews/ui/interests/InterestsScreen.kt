@@ -222,7 +222,11 @@ private fun TabContent(
 
         ) {
             tabContent.forEachIndexed { index, tabContent ->
-                val colorText = if (selectedTabIndex == index) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+                val colorText = if (selectedTabIndex == index) {
+                    MaterialTheme.colors.primary
+                } else {
+                    MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+                }
                 Tab(
                     text = {
                         Text(
