@@ -153,7 +153,8 @@ private fun MapViewContainer(
     latitude: String,
     longitude: String
 ) {
-    var zoom by rememberSaveable { mutableStateOf(InitialZoom) }
+    var zoom by rememberSaveable(map) { mutableStateOf(InitialZoom) }
+    var mapInitialized by rememberSaveable(map) { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     ZoomControls(zoom) {
@@ -163,14 +164,20 @@ private fun MapViewContainer(
         // Reading zoom so that AndroidView recomposes when it changes. The getMapAsync lambda
         // is stored for later, Compose doesn't recognize state reads
         val mapZoom = zoom
+        if (!mapInitialized) {
+            coroutineScope.launch {
+                val googleMap = mapView.awaitMap()
+                val position = LatLng(latitude.toDouble(), longitude.toDouble())
+                googleMap.addMarker {
+                    position(position)
+                }
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(position))
+                mapInitialized = true
+            }
+        }
         coroutineScope.launch {
             val googleMap = mapView.awaitMap()
             googleMap.setZoom(mapZoom)
-            val position = LatLng(latitude.toDouble(), longitude.toDouble())
-            googleMap.addMarker {
-                position(position)
-            }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position))
         }
     }
 }
