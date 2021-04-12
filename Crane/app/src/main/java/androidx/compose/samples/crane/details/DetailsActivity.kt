@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.base.Result
@@ -166,7 +167,7 @@ private fun MapViewContainer(
         }
     }
 
-    var zoom by remember(map) { mutableStateOf(InitialZoom) }
+    var zoom by rememberSaveable(map) { mutableStateOf(InitialZoom) }
     ZoomControls(zoom) {
         zoom = it.coerceIn(MinZoom, MaxZoom)
     }
