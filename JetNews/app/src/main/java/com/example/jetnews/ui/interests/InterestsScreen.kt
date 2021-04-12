@@ -216,16 +216,34 @@ private fun TabContent(
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column {
         TabRow(
-            selectedTabIndex = selectedTabIndex
+            selectedTabIndex = selectedTabIndex,
+            backgroundColor = MaterialTheme.colors.onPrimary,
+            contentColor = MaterialTheme.colors.primary,
+
         ) {
             tabContent.forEachIndexed { index, tabContent ->
+                val colorText = if (selectedTabIndex == index) {
+                    MaterialTheme.colors.primary
+                } else {
+                    MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+                }
                 Tab(
-                    text = { Text(tabContent.section.title) },
+                    text = {
+                        Text(
+                            text = tabContent.section.title,
+                            color = colorText
+                        )
+                    },
                     selected = selectedTabIndex == index,
-                    onClick = { updateSection(tabContent.section) }
+                    onClick = {
+                        updateSection(tabContent.section)
+                    }
                 )
             }
         }
+        Divider(
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
+        )
         Box(modifier = Modifier.weight(1f)) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
@@ -385,8 +403,8 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
 @Composable
 private fun TopicDivider() {
     Divider(
-        modifier = Modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
-        color = MaterialTheme.colors.surface.copy(alpha = 0.08f)
+        modifier = Modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
     )
 }
 
