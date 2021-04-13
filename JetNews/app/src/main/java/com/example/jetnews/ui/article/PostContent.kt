@@ -267,7 +267,7 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
             trailingPadding = 16.dp
         }
         ParagraphType.Text -> {
-            textStyle = typography.body1
+            textStyle = typography.body1.copy(lineHeight = 28.sp)
             paragraphStyle = paragraphStyle.copy(lineHeight = 28.sp)
         }
         ParagraphType.Header -> {

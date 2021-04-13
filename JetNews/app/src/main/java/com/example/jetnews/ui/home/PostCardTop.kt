@@ -59,17 +59,19 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
 
         Text(
             text = post.title,
-            style = typography.h6
+            style = typography.h6,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
             text = post.metadata.author.name,
-            style = typography.body2
+            style = typography.subtitle2,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-                style = typography.body2
+                style = typography.subtitle2
             )
         }
     }

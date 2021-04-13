@@ -34,6 +34,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -153,12 +154,25 @@ private fun MapViewContainer(
     latitude: String,
     longitude: String
 ) {
-    var zoom by rememberSaveable { mutableStateOf(InitialZoom) }
-    val coroutineScope = rememberCoroutineScope()
+    var mapInitialized by remember(map) { mutableStateOf(false) }
+    LaunchedEffect(map, mapInitialized) {
+        if (!mapInitialized) {
+            val googleMap = map.awaitMap()
+            val position = LatLng(latitude.toDouble(), longitude.toDouble())
+            googleMap.addMarker {
+                position(position)
+            }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position))
+            mapInitialized = true
+        }
+    }
 
+    var zoom by rememberSaveable(map) { mutableStateOf(InitialZoom) }
     ZoomControls(zoom) {
         zoom = it.coerceIn(MinZoom, MaxZoom)
     }
+
+    val coroutineScope = rememberCoroutineScope()
     AndroidView({ map }) { mapView ->
         // Reading zoom so that AndroidView recomposes when it changes. The getMapAsync lambda
         // is stored for later, Compose doesn't recognize state reads
@@ -166,11 +180,6 @@ private fun MapViewContainer(
         coroutineScope.launch {
             val googleMap = mapView.awaitMap()
             googleMap.setZoom(mapZoom)
-            val position = LatLng(latitude.toDouble(), longitude.toDouble())
-            googleMap.addMarker {
-                position(position)
-            }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position))
         }
     }
 }

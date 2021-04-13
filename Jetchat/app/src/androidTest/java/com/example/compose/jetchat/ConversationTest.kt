@@ -116,7 +116,10 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAfterUserInteracted() {
         // First swipe
-        composeTestRule.onNodeWithTag(ConversationTestTag).performGesture {
+        composeTestRule.onNodeWithTag(
+            testTag = ConversationTestTag,
+            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
+        ).performGesture {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
@@ -160,7 +163,8 @@ class ConversationTest {
     private fun openEmojiSelector() =
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.getString(R.string.emoji_selector_bt_desc)
+                label = composeTestRule.activity.getString(R.string.emoji_selector_bt_desc),
+                useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
             )
             .performClick()
 }

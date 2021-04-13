@@ -17,6 +17,7 @@
 package com.example.owl.ui
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
@@ -27,7 +28,6 @@ import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
-import com.example.owl.ui.utils.LocalBackDispatcher
 import com.google.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
@@ -47,14 +47,18 @@ class NavigationTest {
 
     private fun startActivity(startDestination: String? = null) {
         composeTestRule.setContent {
-            val backDispatcher = composeTestRule.activity.onBackPressedDispatcher
-            CompositionLocalProvider(LocalBackDispatcher provides backDispatcher) {
+            CompositionLocalProvider(
+                LocalOnBackPressedDispatcherOwner provides composeTestRule.activity
+            ) {
                 ProvideWindowInsets {
                     ProvideTestImageLoader {
                         if (startDestination == null) {
                             NavGraph()
                         } else {
-                            NavGraph(startDestination)
+                            NavGraph(
+                                startDestination = startDestination,
+                                showOnboardingInitially = false
+                            )
                         }
                     }
                 }
@@ -68,7 +72,10 @@ class NavigationTest {
         startActivity()
         // The first screen should be the onboarding screen.
         // Assert that the FAB label for the onboarding screen exists:
-        composeTestRule.onNodeWithContentDescription(getOnboardingFabLabel()).assertExists()
+        composeTestRule.onNodeWithContentDescription(
+            label = getOnboardingFabLabel(),
+            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
+        ).assertExists()
     }
 
     @Test
@@ -78,7 +85,10 @@ class NavigationTest {
 
         // Navigate to the next screen by clicking on the FAB
         val fabLabel = getOnboardingFabLabel()
-        composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
+        composeTestRule.onNodeWithContentDescription(
+            label = fabLabel,
+            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
+        ).performClick()
 
         // The first course should be shown
         composeTestRule.onNodeWithText(
