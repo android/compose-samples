@@ -38,6 +38,8 @@ subprojects {
     repositories {
         google()
         jcenter()
+
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
     apply plugin: 'com.diffplug.spotless'
