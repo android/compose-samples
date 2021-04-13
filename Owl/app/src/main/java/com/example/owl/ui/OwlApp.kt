@@ -51,13 +51,14 @@ fun OwlApp(finishActivity: () -> Unit) {
             BlueTheme {
                 val tabs = remember { CourseTabs.values() }
                 val navController = rememberNavController()
-                OwlScaffold(
+                Scaffold(
+                    backgroundColor = MaterialTheme.colors.primarySurface,
                     bottomBar = { OwlBottomBar(navController = navController, tabs) }
                 ) { innerPaddingModifier ->
                     NavGraph(
                         finishActivity = finishActivity,
                         navController = navController,
-                        modifier = innerPaddingModifier
+                        modifier = Modifier.padding(innerPaddingModifier)
                     )
                 }
             }
@@ -97,19 +98,5 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
                 )
             }
         }
-    }
-}
-
-@Composable
-fun OwlScaffold(
-    bottomBar: @Composable () -> Unit,
-    content: @Composable (Modifier) -> Unit
-) {
-    Scaffold(
-        backgroundColor = MaterialTheme.colors.primarySurface,
-        bottomBar = bottomBar
-    ) { innerPadding ->
-        val modifier = Modifier.padding(innerPadding)
-        content(modifier)
     }
 }
