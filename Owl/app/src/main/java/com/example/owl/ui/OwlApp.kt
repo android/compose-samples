@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,7 +49,7 @@ fun OwlApp(finishActivity: () -> Unit) {
     ProvideWindowInsets {
         ProvideImageLoader {
             BlueTheme {
-                val tabs = CourseTabs.values()
+                val tabs = remember { CourseTabs.values() }
                 val navController = rememberNavController()
                 OwlScaffold(
                     bottomBar = { OwlBottomBar(navController = navController, tabs) }
@@ -71,7 +72,8 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         ?: CourseTabs.FEATURED.route
 
-    if (currentRoute in CourseTabs.values().map { it.route }) {
+    val routes = remember { CourseTabs.values().map { it.route } }
+    if (currentRoute in routes) {
         BottomNavigation(
             Modifier.navigationBarsHeight(additional = 56.dp)
         ) {
