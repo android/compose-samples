@@ -39,6 +39,7 @@ subprojects {
         google()
         jcenter()
 
+        // Needed for Accompanist SwipeRefresh snapshot
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
