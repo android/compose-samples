@@ -19,7 +19,6 @@ package com.example.jetnews.ui.article
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,7 +50,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -66,6 +64,8 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.home.BookmarkButton
+import com.example.jetnews.ui.theme.articleIconBackground
+import com.example.jetnews.ui.theme.articleIconColor
 import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -135,32 +135,30 @@ fun ArticleScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Column(modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(align = Alignment.CenterHorizontally)
-                                .padding(end = 50.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(align = Alignment.CenterHorizontally)
+                            .padding(end = 50.dp, top = 10.dp, bottom = 5.dp)
+                    ) {
+                        Surface(
+                            color = MaterialTheme.colors.articleIconBackground,
+                            shape = CircleShape,
+                            modifier = Modifier.size(36.dp, 36.dp)
                         ) {
-                            Surface(
-                                color = Color(0xff073042),
-                                shape = CircleShape,
-                                modifier = Modifier.size(36.dp, 36.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_article_icon),
-                                    contentDescription = "",
-                                    colorFilter = ColorFilter.tint(Color(0xff32dd84)),
-                                    modifier = Modifier.padding(6.dp)
-                                )
-                            }
-                            Text(
-                                text = "Published in: \n${post.publication?.name}",
-                                style = MaterialTheme.typography.subtitle2,
-                                color = LocalContentColor.current,
-                                modifier = Modifier.padding(start = 10.dp)
+                            Image(
+                                painter = painterResource(R.drawable.ic_article_icon),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.articleIconColor),
+                                modifier = Modifier.padding(6.dp)
                             )
                         }
+                        Text(
+                            text = "Published in: \n${post.publication?.name}",
+                            style = MaterialTheme.typography.subtitle2,
+                            color = LocalContentColor.current,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
                     }
                 },
                 navigationIcon = {
