@@ -26,4 +26,5 @@
     <string name="unbookmark">unbookmark</string>
     <string name="bookmark">bookmark</string>
     <string name="cd_search">Search</string>
+    <string name="cd_interests">Interests</string>
 </resources>

@@ -189,7 +189,7 @@ fun InterestsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Interests",
+                        text = stringResource(R.string.cd_interests),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
