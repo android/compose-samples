@@ -21,12 +21,11 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -64,8 +63,6 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.home.BookmarkButton
-import com.example.jetnews.ui.theme.articleIconBackground
-import com.example.jetnews.ui.theme.articleIconColor
 import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -141,23 +138,22 @@ fun ArticleScreen(
                             .wrapContentWidth(align = Alignment.CenterHorizontally)
                             .padding(end = 50.dp, top = 10.dp, bottom = 5.dp)
                     ) {
-                        Surface(
-                            color = MaterialTheme.colors.articleIconBackground,
-                            shape = CircleShape,
-                            modifier = Modifier.size(36.dp, 36.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_article_icon),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.articleIconColor),
-                                modifier = Modifier.padding(6.dp)
-                            )
-                        }
+                        Image(
+                            painter = painterResource(R.drawable.article_icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .weight(0.5f)
+                                .padding(5.dp),
+                            alignment = Alignment.CenterEnd
+                        )
                         Text(
-                            text = "Published in: \n${post.publication?.name}",
+                            text = stringResource(id = R.string.published_in, post.publication?.name ?: ""),
                             style = MaterialTheme.typography.subtitle2,
                             color = LocalContentColor.current,
-                            modifier = Modifier.padding(start = 10.dp)
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .weight(1.5f)
                         )
                     }
                 },
