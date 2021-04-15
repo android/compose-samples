@@ -21,9 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
@@ -84,7 +85,7 @@ fun NavGraph(
             startDestination = CourseTabs.FEATURED.route
         ) {
             courses(
-                onCourseSelected = { newCourseId: Long -> actions.openCourse(newCourseId) },
+                onCourseSelected = actions.openCourse,
                 onboardingComplete = onboardingComplete,
                 navController = navController,
                 modifier = modifier
@@ -95,15 +96,15 @@ fun NavGraph(
             arguments = listOf(
                 navArgument(COURSE_DETAIL_ID_KEY) { type = NavType.LongType }
             )
-        ) { backStackEntry ->
+        ) { backStackEntry: NavBackStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             val currentCourseId = arguments.getLong(COURSE_DETAIL_ID_KEY)
             CourseDetails(
                 courseId = currentCourseId,
                 selectCourse = { newCourseId ->
-                    actions.relatedCourse(newCourseId, currentCourseId)
+                    actions.relatedCourse(newCourseId, backStackEntry)
                 },
-                upPress = actions.upPress
+                upPress = { actions.upPress(backStackEntry) }
             )
         }
     }
@@ -118,30 +119,29 @@ class MainActions(navController: NavHostController) {
     }
 
     // Used from COURSES_ROUTE
-    val openCourse: (Long) -> Unit = { newCourseId: Long ->
-        // In order to discard duplicated navigation events, check the current route
-        val currentRoute = navController.currentBackStackEntry?.arguments?.getString(KEY_ROUTE)
-        if (currentRoute?.startsWith(MainDestinations.COURSES_ROUTE) == true) {
+    val openCourse = { newCourseId: Long, from: NavBackStackEntry ->
+        // In order to discard duplicated navigation events, we check the Lifecycle
+        if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$newCourseId")
         }
     }
 
     // Used from COURSE_DETAIL_ROUTE
-    val relatedCourse: (Long, Long) -> Unit = { newCourseId: Long, currentCourseId: Long ->
-        // In order to discard duplicated navigation events, check the current courseId
-        val navControllerCurrentCourseId = navController.currentBackStackEntry?.arguments
-            ?.getLong(COURSE_DETAIL_ID_KEY)
-        if (navControllerCurrentCourseId == currentCourseId) {
+    val relatedCourse = { newCourseId: Long, from: NavBackStackEntry ->
+        // In order to discard duplicated navigation events, we check the Lifecycle
+        if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.COURSE_DETAIL_ROUTE}/$newCourseId")
         }
     }
 
     // Used from COURSE_DETAIL_ROUTE
-    val upPress: () -> Unit = {
-        // In order to discard duplicated navigation events, check the current route
-        val currentRoute = navController.currentBackStackEntry?.arguments?.getString(KEY_ROUTE)
-        if (currentRoute?.startsWith("${MainDestinations.COURSE_DETAIL_ROUTE}/") == true) {
+    val upPress: (rom: NavBackStackEntry) -> Unit = { from ->
+        // In order to discard duplicated navigation events, we check the Lifecycle
+        if (from.lifecycleIsResumed()) {
             navController.navigateUp()
         }
     }
 }
+
+private fun NavBackStackEntry.lifecycleIsResumed() =
+    this.lifecycle.currentState == Lifecycle.State.RESUMED
