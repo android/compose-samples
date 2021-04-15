@@ -194,11 +194,14 @@ private fun SurveyTopAppBar(
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(
                     onClick = onBackPressed,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 20.dp)
+                        .fillMaxWidth()
                 ) {
                     Icon(
                         Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.close)
+                        contentDescription = stringResource(id = R.string.close),
+                        modifier = Modifier.align(Alignment.CenterEnd)
                     )
                 }
             }
@@ -221,9 +224,10 @@ private fun SurveyBottomBar(
     onDonePressed: () -> Unit
 ) {
     Surface(
-        elevation = 3.dp,
-        modifier = Modifier.fillMaxWidth()
+        elevation = 7.dp,
+        modifier = Modifier.fillMaxWidth() // .border(1.dp, MaterialTheme.colors.primary)
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -231,7 +235,9 @@ private fun SurveyBottomBar(
         ) {
             if (questionState.showPrevious) {
                 OutlinedButton(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
                     onClick = onPreviousPressed
                 ) {
                     Text(text = stringResource(id = R.string.previous))
@@ -240,7 +246,9 @@ private fun SurveyBottomBar(
             }
             if (questionState.showDone) {
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
                     onClick = onDonePressed,
                     enabled = questionState.enableNext
                 ) {
@@ -248,7 +256,9 @@ private fun SurveyBottomBar(
                 }
             } else {
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
                     onClick = onNextPressed,
                     enabled = questionState.enableNext
                 ) {
