@@ -74,7 +74,7 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.viewModelProviderFactoryOf
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -145,20 +145,18 @@ fun EpisodeListItem(
         )
 
         if (podcast.imageUrl != null) {
-            // If we have an image Url, we can show it using [CoilImage]
-            CoilImage(
-                data = podcast.imageUrl,
+            // If we have an image Url, we can show it using Coil
+            Image(
+                painter = rememberCoilPainter(podcast.imageUrl, fadeIn = true),
                 contentDescription = null,
-                fadeIn = true,
                 contentScale = ContentScale.Crop,
-                loading = { /* TODO do something better here */ },
                 modifier = Modifier
                     .size(56.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .constrainAs(image) {
                         end.linkTo(parent.end, 16.dp)
                         top.linkTo(parent.top, 16.dp)
-                    }
+                    },
             )
         } else {
             // If we don't have an image url, we need to make sure that the constraint reference
@@ -329,15 +327,13 @@ private fun TopPodcastRowItem(
                 .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
-                CoilImage(
-                    data = podcastImageUrl,
+                Image(
+                    painter = rememberCoilPainter(podcastImageUrl, fadeIn = true),
                     contentDescription = null,
-                    fadeIn = true,
                     contentScale = ContentScale.Crop,
-                    loading = { /* TODO do something better here */ },
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium)
+                        .clip(MaterialTheme.shapes.medium),
                 )
             }
 
