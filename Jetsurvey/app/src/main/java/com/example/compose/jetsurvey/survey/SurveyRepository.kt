@@ -44,12 +44,12 @@ private val jetpackQuestions = mutableListOf(
     Question(
         id = 2,
         questionText = R.string.pick_superhero,
-        answer = SingleChoice(
-            optionsStringRes = listOf(
-                R.string.spiderman,
-                R.string.ironman,
-                R.string.unikitty,
-                R.string.captain_planet
+        answer = PossibleAnswer.SingleChoiceIcon(
+            optionsStringIconRes = listOf(
+                Pair(R.drawable.spider_man, R.string.spiderman),
+                Pair(R.drawable.iron_man, R.string.ironman),
+                Pair(R.drawable.unikitty, R.string.unikitty),
+                Pair(R.drawable.captain_planet, R.string.captain_planet)
             )
         ),
         description = R.string.select_one

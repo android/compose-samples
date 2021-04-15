@@ -50,7 +50,9 @@ sealed class SurveyActionResult {
 
 sealed class PossibleAnswer {
     data class SingleChoice(val optionsStringRes: List<Int>) : PossibleAnswer()
+    data class SingleChoiceIcon(val optionsStringIconRes: List<Pair<Int, Int>>) : PossibleAnswer()
     data class MultipleChoice(val optionsStringRes: List<Int>) : PossibleAnswer()
+    data class MultipleChoiceIcon(val optionsStringIconRes: List<Pair<Int, Int>>) : PossibleAnswer()
     data class Action(
         @StringRes val label: Int,
         val actionType: SurveyActionType
