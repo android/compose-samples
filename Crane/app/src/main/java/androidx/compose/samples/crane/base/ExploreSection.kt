@@ -95,14 +95,12 @@ private fun ExploreItem(
     ) {
         ExploreImageContainer {
             Box {
-                val painter = rememberCoilPainter(
-                    request = item.imageUrl,
-                    fadeIn = true,
-                )
+                val painter = rememberCoilPainter(item.imageUrl, fadeIn = true)
                 Image(
                     painter = painter,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
                 )
 
                 if (painter.loadState == ImageLoadState.Loading) {
