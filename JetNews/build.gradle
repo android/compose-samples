@@ -16,7 +16,7 @@
 
 buildscript {
     ext.kotlin_version = '1.4.32'
-    ext.compose_version = '1.0.0-beta04'
+    ext.compose_version = '1.0.0-SNAPSHOT'
     ext.coroutines_version = '1.4.2'
 
     repositories {
@@ -38,6 +38,7 @@ subprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://androidx.dev/snapshots/builds/7285231/artifacts/repository/" }
 
         // Needed for Accompanist SwipeRefresh snapshot
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
