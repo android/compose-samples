@@ -64,7 +64,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
 fun Question(
@@ -317,11 +317,10 @@ private fun PhotoQuestion(
     ) {
         Column {
             if (answer != null && answer.result is SurveyActionResult.Photo) {
-                CoilImage(
-                    data = answer.result.uri,
+                Image(
+                    painter = rememberCoilPainter(answer.result.uri, fadeIn = true),
+                    contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    fadeIn = true,
-                    contentDescription = null
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))

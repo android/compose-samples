@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,7 +58,7 @@ import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -279,12 +280,14 @@ fun SnackImage(
         shape = CircleShape,
         modifier = modifier
     ) {
-        CoilImage(
-            data = imageUrl,
+        Image(
+            painter = rememberCoilPainter(
+                request = imageUrl,
+                previewPlaceholder = R.drawable.placeholder,
+            ),
             contentDescription = contentDescription,
-            previewPlaceholder = R.drawable.placeholder,
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
         )
     }
 }

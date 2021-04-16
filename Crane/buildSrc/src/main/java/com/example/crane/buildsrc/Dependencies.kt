@@ -30,7 +30,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.7.1"
+        const val version = "0.7.2-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
     }
 
