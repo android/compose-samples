@@ -65,7 +65,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
 fun Question(
@@ -80,7 +80,7 @@ fun Question(
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             val backgroundColor = if (MaterialTheme.colors.isLight) {
                 MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
             } else {
@@ -110,7 +110,7 @@ fun Question(
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 24.dp, start = 8.dp, end = 8.dp)
+                            .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
                     )
                 }
             }
@@ -200,11 +200,22 @@ private fun SingleChoiceQuestion(
                 Unit
             }
             val optionSelected = text == selectedOption
+
+            val answerBorderColor = if (optionSelected) {
+                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            }
+            val answerBackgroundColor = if (optionSelected) {
+                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+            } else {
+                MaterialTheme.colors.background
+            }
             Surface(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                    color = answerBorderColor
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
@@ -215,7 +226,8 @@ private fun SingleChoiceQuestion(
                             selected = optionSelected,
                             onClick = onClickHandle
                         )
-                        .padding(vertical = 16.dp, horizontal = 24.dp),
+                        .background(answerBackgroundColor)
+                        .padding(vertical = 16.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -324,24 +336,36 @@ private fun MultipleChoiceQuestion(
                 val selectedOption = answer?.answersStringRes?.contains(option.value)
                 mutableStateOf(selectedOption ?: false)
             }
+            val answerBorderColor = if (checkedState) {
+                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            }
+            val answerBackgroundColor = if (checkedState) {
+                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+            } else {
+                MaterialTheme.colors.background
+            }
             Surface(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                    color = answerBorderColor
                 ),
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(answerBackgroundColor)
                         .clickable(
                             onClick = {
                                 checkedState = !checkedState
                                 onAnswerSelected(option.value, checkedState)
                             }
                         )
-                        .padding(vertical = 16.dp, horizontal = 24.dp),
+                        .padding(vertical = 16.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -473,11 +497,10 @@ private fun PhotoQuestion(
     ) {
         Column {
             if (answer != null && answer.result is SurveyActionResult.Photo) {
-                CoilImage(
-                    data = answer.result.uri,
+                Image(
+                    painter = rememberCoilPainter(answer.result.uri, fadeIn = true),
+                    contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    fadeIn = true,
-                    contentDescription = null
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
@@ -513,6 +536,8 @@ private fun DateQuestion(
     onAction: (Int, SurveyActionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // val date = Date()
+    // val formatter = SimpleDateFormat("dd/MM/yyyy")
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
         modifier = modifier.padding(bottom = 20.dp)

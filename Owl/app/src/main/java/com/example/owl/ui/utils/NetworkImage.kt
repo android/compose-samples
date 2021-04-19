@@ -16,9 +16,10 @@
 
 package com.example.owl.ui.utils
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -34,12 +35,14 @@ import coil.request.ImageResult
 import coil.size.PixelSize
 import com.example.owl.R
 import com.example.owl.ui.theme.compositedOnSurface
-import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.coil.LocalImageLoader
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import okhttp3.HttpUrl
 
 /**
- * A wrapper around [CoilImage] setting a default [contentScale] and loading placeholder.
+ * A wrapper around [Image] and [rememberCoilPainter], setting a
+ * default [contentScale] and showing content while loading.
  */
 @Composable
 fun NetworkImage(
@@ -49,22 +52,26 @@ fun NetworkImage(
     contentScale: ContentScale = ContentScale.Crop,
     placeholderColor: Color? = MaterialTheme.colors.compositedOnSurface(0.2f)
 ) {
-    CoilImage(
-        data = url,
-        modifier = modifier,
-        previewPlaceholder = R.drawable.photo_architecture,
-        contentDescription = contentDescription,
-        contentScale = contentScale,
-        loading = {
-            if (placeholderColor != null) {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(placeholderColor)
-                )
-            }
+    Box(modifier) {
+        val painter = rememberCoilPainter(
+            request = url,
+            previewPlaceholder = R.drawable.photo_architecture,
+        )
+
+        Image(
+            painter = painter,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+        )
+
+        if (painter.loadState == ImageLoadState.Loading && placeholderColor != null) {
+            Spacer(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(placeholderColor)
+            )
         }
-    )
+    }
 }
 
 @Composable

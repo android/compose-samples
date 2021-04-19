@@ -73,7 +73,7 @@ import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.statusBarsHeight
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -351,14 +351,13 @@ private fun FollowedPodcastCarouselItem(
                 .aspectRatio(1f)
         ) {
             if (podcastImageUrl != null) {
-                CoilImage(
-                    data = podcastImageUrl,
+                Image(
+                    painter = rememberCoilPainter(podcastImageUrl),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    loading = { /* TODO do something better here */ },
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium)
+                        .clip(MaterialTheme.shapes.medium),
                 )
             }
 

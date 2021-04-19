@@ -42,6 +42,8 @@ subprojects {
         // Jetpack Compose SNAPSHOTs
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
+        }
+        if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }

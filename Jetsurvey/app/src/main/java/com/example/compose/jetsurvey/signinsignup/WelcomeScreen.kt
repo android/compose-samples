@@ -167,7 +167,7 @@ private fun SignInCreateAccount(
                 text = stringResource(id = R.string.sign_in_create_account),
                 style = MaterialTheme.typography.subtitle2,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 24.dp)
+                modifier = Modifier.padding(top = 64.dp, bottom = 12.dp)
             )
         }
         val onSubmit = {
@@ -183,7 +183,7 @@ private fun SignInCreateAccount(
             onClick = onSubmit,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 28.dp)
+                .padding(top = 28.dp, bottom = 3.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.user_continue),
