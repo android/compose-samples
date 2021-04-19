@@ -275,11 +275,21 @@ private fun SingleChoiceIconQuestion(
                 Unit
             }
             val optionSelected = text == selectedOption
+            val answerBorderColor = if (optionSelected) {
+                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            }
+            val answerBackgroundColor = if (optionSelected) {
+                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+            } else {
+                MaterialTheme.colors.background
+            }
             Surface(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                    color = answerBorderColor
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
@@ -290,6 +300,7 @@ private fun SingleChoiceIconQuestion(
                             selected = optionSelected,
                             onClick = onClickHandle
                         )
+                        .background(answerBackgroundColor)
                         .padding(vertical = 16.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -401,11 +412,21 @@ private fun MultipleChoiceIconQuestion(
                 val selectedOption = answer?.answersStringRes?.contains(option.value.second)
                 mutableStateOf(selectedOption ?: false)
             }
+            val answerBorderColor = if (checkedState) {
+                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            }
+            val answerBackgroundColor = if (checkedState) {
+                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+            } else {
+                MaterialTheme.colors.background
+            }
             Surface(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                    color = answerBorderColor
                 ),
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
@@ -418,6 +439,7 @@ private fun MultipleChoiceIconQuestion(
                                 onAnswerSelected(option.value.second, checkedState)
                             }
                         )
+                        .background(answerBackgroundColor)
                         .padding(vertical = 16.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -536,8 +558,6 @@ private fun DateQuestion(
     onAction: (Int, SurveyActionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // val date = Date()
-    // val formatter = SimpleDateFormat("dd/MM/yyyy")
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
         modifier = modifier.padding(bottom = 20.dp)
