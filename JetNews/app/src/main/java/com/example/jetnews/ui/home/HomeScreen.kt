@@ -48,7 +48,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -428,7 +427,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            postsRepository = BlockingFakePostsRepository(),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -446,9 +445,8 @@ fun PreviewHomeScreenBodyDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    val context = LocalContext.current
     val posts = runBlocking {
-        BlockingFakePostsRepository(context).getPosts()
+        BlockingFakePostsRepository().getPosts()
     }
     return (posts as Result.Success).data
 }
@@ -461,7 +459,7 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            postsRepository = BlockingFakePostsRepository(),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

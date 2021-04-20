@@ -267,9 +267,7 @@ fun PreviewArticleDark() {
 
 @Composable
 private fun loadFakePost(postId: String): Post {
-    val context = LocalContext.current
-    val post = runBlocking {
-        (BlockingFakePostsRepository(context).getPost(postId) as Result.Success).data
+    return runBlocking {
+        (BlockingFakePostsRepository().getPost(postId) as Result.Success).data
     }
-    return post
 }
