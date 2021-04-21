@@ -16,7 +16,6 @@
 
 package com.example.owl.ui.course
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -324,10 +323,7 @@ private fun RelatedCourses(
                     items(relatedCourses) { related ->
                         CourseListItem(
                             course = related,
-                            onClick = {
-                                Log.d("jalc", "jalc")
-                                selectCourse(related.id)
-                            },
+                            onClick = { selectCourse(related.id) },
                             titleStyle = MaterialTheme.typography.body2,
                             modifier = Modifier
                                 .padding(end = 8.dp)
