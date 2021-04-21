@@ -69,8 +69,8 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.accompanist.coil.rememberCoilPainter
 import java.text.SimpleDateFormat
-import java.util.Locale
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun Question(
