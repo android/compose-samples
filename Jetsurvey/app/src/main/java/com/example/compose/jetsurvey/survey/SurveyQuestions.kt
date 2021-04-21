@@ -344,7 +344,9 @@ private fun PhotoQuestion(
                 Image(
                     painter = rememberCoilPainter(answer.result.uri, fadeIn = true),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .height(302.dp)
+                        .fillMaxWidth(),
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
