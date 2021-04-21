@@ -28,6 +28,11 @@ object Libs {
 
     const val material = "com.google.android.material:material:1.3.0"
 
+    object Accompanist {
+        const val version = "0.8.0"
+        const val insets = "com.google.accompanist:accompanist-insets:$version"
+    }
+
     object Kotlin {
         private const val version = "1.4.32"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
@@ -42,22 +47,17 @@ object Libs {
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
-    object Accompanist {
-        private const val version = "0.7.1"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
-    }
-
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-rc01"
         const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha06"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-beta04"
+            const val version = "1.0.0-beta05"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
