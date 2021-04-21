@@ -16,10 +16,10 @@
 
 package com.example.compose.jetsurvey.survey
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ContentAlpha
@@ -49,6 +50,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -60,11 +62,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.accompanist.coil.rememberCoilPainter
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 
 @Composable
 fun Question(
@@ -304,7 +310,6 @@ private fun ActionQuestion(
         SurveyActionType.PICK_DATE -> {
             DateQuestion(
                 questionId = questionId,
-                answerLabel = possibleAnswer.label,
                 answer = answer,
                 onAction = onAction,
                 modifier = modifier
@@ -375,25 +380,41 @@ private fun PhotoQuestion(
 @Composable
 private fun DateQuestion(
     questionId: Int,
-    @StringRes answerLabel: Int,
     answer: Answer.Action?,
     onAction: (Int, SurveyActionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // val date = Date()
-    // val formatter = SimpleDateFormat("dd/MM/yyyy")
+    val date = if (answer != null && answer.result is SurveyActionResult.Date) {
+        answer.result.date
+    } else {
+        SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(Date())
+    }
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
-        modifier = modifier.padding(vertical = 20.dp)
-    ) {
-        Text(text = stringResource(id = answerLabel))
-    }
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.onPrimary,
+            contentColor = MaterialTheme.colors.onSecondary
+        ),
+        shape = MaterialTheme.shapes.small,
+        modifier = modifier
+            .padding(vertical = 20.dp)
+            .height(54.dp),
+        elevation = ButtonDefaults.elevation(0.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
 
-    if (answer != null && answer.result is SurveyActionResult.Date) {
+    ) {
         Text(
-            text = stringResource(R.string.selected_date, answer.result.date),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(vertical = 20.dp)
+            text = date,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.2f)
         )
     }
 }
@@ -426,10 +447,7 @@ private fun SliderQuestion(
         mutableStateOf(answer?.answerValue ?: possibleAnswer.defaultValue)
     }
     Row(modifier = modifier) {
-        Text(
-            text = stringResource(id = possibleAnswer.startText),
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
+
         Slider(
             value = sliderPosition,
             onValueChange = {
@@ -442,9 +460,31 @@ private fun SliderQuestion(
                 .weight(1f)
                 .padding(horizontal = 16.dp)
         )
+    }
+    Row {
+        Text(
+            text = stringResource(id = possibleAnswer.startText),
+            style = MaterialTheme.typography.caption,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
+        Text(
+            text = stringResource(id = possibleAnswer.neutralText),
+            style = MaterialTheme.typography.caption,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
         Text(
             text = stringResource(id = possibleAnswer.endText),
-            modifier = Modifier.align(Alignment.CenterVertically)
+            style = MaterialTheme.typography.caption,
+            textAlign = TextAlign.End,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
         )
     }
 }

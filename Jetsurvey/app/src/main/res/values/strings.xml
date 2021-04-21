@@ -92,4 +92,7 @@
     <string name="survey_result">Congratulations, you are %s</string>
     <string name="survey_result_description">You are a curious developer, always willing to try
         something new. You want to stay up to date with the trends to Compose is your middle name</string>
+    <string name="strongly_dislike">Strongly\nDislike</string>
+    <string name="strongly_like">Strongly\nLike</string>
+    <string name="neutral">Neutral</string>
 </resources>
