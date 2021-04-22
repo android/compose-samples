@@ -107,7 +107,7 @@ fun Question(
                         text = stringResource(id = question.description),
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillParentMaxWidth()
                             .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
                     )
                 }
@@ -117,7 +117,7 @@ fun Question(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.SingleChoice?,
                     onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
                 is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
                     possibleAnswer = question.answer,
@@ -131,20 +131,20 @@ fun Question(
                             onAnswer(answer.withAnswerSelected(newAnswer, selected))
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
                 is PossibleAnswer.Action -> ActionQuestion(
                     questionId = question.id,
                     possibleAnswer = question.answer,
                     answer = answer as Answer.Action?,
                     onAction = onAction,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
                 is PossibleAnswer.Slider -> SliderQuestion(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.Slider?,
                     onAnswerSelected = { onAnswer(Answer.Slider(it)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
             }
         }
@@ -344,8 +344,8 @@ private fun PhotoQuestion(
                     painter = rememberCoilPainter(answer.result.uri, fadeIn = true),
                     contentDescription = null,
                     modifier = Modifier
+                        .fillMaxWidth()
                         .height(302.dp)
-                        .fillMaxWidth(),
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
