@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -346,8 +347,8 @@ private fun PhotoQuestion(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        // We set a minimum height, so that Coil has a height to initially use
-                        .heightIn(min = 96.dp),
+                        .heightIn(96.dp)
+                        .aspectRatio(4 / 3f)
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
