@@ -58,8 +58,6 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.AppDrawer
-import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.utils.produceUiState
@@ -71,14 +69,14 @@ import kotlinx.coroutines.runBlocking
 /**
  * Stateful HomeScreen which manages state using [produceUiState]
  *
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  * @param postsRepository data source for this screen
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeScreen(
-    navigateTo: (Screen) -> Unit,
     postsRepository: PostsRepository,
+    navigateToArticle: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     val (postUiState, refreshPost, clearError) = produceUiState(postsRepository) {
@@ -102,7 +100,7 @@ fun HomeScreen(
         },
         onRefreshPosts = refreshPost,
         onErrorDismiss = clearError,
-        navigateTo = navigateTo,
+        navigateToArticle = navigateToArticle,
         scaffoldState = scaffoldState
     )
 }
@@ -117,7 +115,7 @@ fun HomeScreen(
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) request the current error be dismissed
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -127,7 +125,7 @@ fun HomeScreen(
     onToggleFavorite: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: () -> Unit,
-    navigateTo: (Screen) -> Unit,
+    navigateToArticle: (String) -> Unit,
     scaffoldState: ScaffoldState
 ) {
     if (posts.hasError) {
@@ -157,13 +155,6 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerContent = {
-            AppDrawer(
-                currentScreen = Screen.Home,
-                closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } },
-                navigateTo = navigateTo
-            )
-        },
         topBar = {
             val title = stringResource(id = R.string.app_name)
             TopAppBar(
@@ -191,7 +182,7 @@ fun HomeScreen(
                         onRefresh = {
                             onRefreshPosts()
                         },
-                        navigateTo = navigateTo,
+                        navigateToArticle = navigateToArticle,
                         favorites = favorites,
                         onToggleFavorite = onToggleFavorite,
                         modifier = modifier
@@ -235,7 +226,7 @@ private fun LoadingContent(
  *
  * @param posts (state) list of posts and error state to display
  * @param onRefresh (event) request to refresh data
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  * @param favorites (state) all favorites
  * @param onToggleFavorite (event) request a single favorite be toggled
  * @param modifier modifier for root element
@@ -244,13 +235,13 @@ private fun LoadingContent(
 private fun HomeScreenErrorAndContent(
     posts: UiState<List<Post>>,
     onRefresh: () -> Unit,
-    navigateTo: (Screen) -> Unit,
+    navigateToArticle: (String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (posts.data != null) {
-        PostList(posts.data, navigateTo, favorites, onToggleFavorite, modifier)
+        PostList(posts.data, navigateToArticle, favorites, onToggleFavorite, modifier)
     } else if (!posts.hasError) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
@@ -265,17 +256,17 @@ private fun HomeScreenErrorAndContent(
 /**
  * Display a list of posts.
  *
- * When a post is clicked on, [navigateTo] will be called to navigate to the detail screen for that
- * post.
+ * When a post is clicked on, [navigateToArticle] will be called to navigate to the detail screen
+ * for that post.
  *
  * @param posts (state) the list to display
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  * @param modifier modifier for the root element
  */
 @Composable
 private fun PostList(
     posts: List<Post>,
-    navigateTo: (Screen) -> Unit,
+    navigateToArticle: (postId: String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -286,10 +277,10 @@ private fun PostList(
     val postsHistory = posts.subList(7, 10)
 
     LazyColumn(modifier = modifier) {
-        item { PostListTopSection(postTop, navigateTo) }
-        item { PostListSimpleSection(postsSimple, navigateTo, favorites, onToggleFavorite) }
-        item { PostListPopularSection(postsPopular, navigateTo) }
-        item { PostListHistorySection(postsHistory, navigateTo) }
+        item { PostListTopSection(postTop, navigateToArticle) }
+        item { PostListSimpleSection(postsSimple, navigateToArticle, favorites, onToggleFavorite) }
+        item { PostListPopularSection(postsPopular, navigateToArticle) }
+        item { PostListHistorySection(postsHistory, navigateToArticle) }
     }
 }
 
@@ -311,10 +302,10 @@ private fun FullScreenLoading() {
  * Top section of [PostList]
  *
  * @param post (state) highlighted post to display
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  */
 @Composable
-private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
+private fun PostListTopSection(post: Post, navigateToArticle: (String) -> Unit) {
     Text(
         modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
         text = "Top stories for you",
@@ -322,7 +313,7 @@ private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
     )
     PostCardTop(
         post = post,
-        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        modifier = Modifier.clickable(onClick = { navigateToArticle(post.id) })
     )
     PostListDivider()
 }
@@ -331,12 +322,12 @@ private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
  * Full-width list items for [PostList]
  *
  * @param posts (state) to display
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  */
 @Composable
 private fun PostListSimpleSection(
     posts: List<Post>,
-    navigateTo: (Screen) -> Unit,
+    navigateToArticle: (String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit
 ) {
@@ -344,7 +335,7 @@ private fun PostListSimpleSection(
         posts.forEach { post ->
             PostCardSimple(
                 post = post,
-                navigateTo = navigateTo,
+                navigateToArticle = navigateToArticle,
                 isFavorite = favorites.contains(post.id),
                 onToggleFavorite = { onToggleFavorite(post.id) }
             )
@@ -357,12 +348,12 @@ private fun PostListSimpleSection(
  * Horizontal scrolling cards for [PostList]
  *
  * @param posts (state) to display
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  */
 @Composable
 private fun PostListPopularSection(
     posts: List<Post>,
-    navigateTo: (Screen) -> Unit
+    navigateToArticle: (String) -> Unit
 ) {
     Column {
         Text(
@@ -373,7 +364,7 @@ private fun PostListPopularSection(
 
         LazyRow(modifier = Modifier.padding(end = 16.dp)) {
             items(posts) { post ->
-                PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
+                PostCardPopular(post, navigateToArticle, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }
         }
         PostListDivider()
@@ -384,16 +375,16 @@ private fun PostListPopularSection(
  * Full-width list items that display "based on your history" for [PostList]
  *
  * @param posts (state) to display
- * @param navigateTo (event) request navigation to [Screen]
+ * @param navigateToArticle (event) request navigation to Article screen
  */
 @Composable
 private fun PostListHistorySection(
     posts: List<Post>,
-    navigateTo: (Screen) -> Unit
+    navigateToArticle: (String) -> Unit
 ) {
     Column {
         posts.forEach { post ->
-            PostCardHistory(post, navigateTo)
+            PostCardHistory(post, navigateToArticle)
             PostListDivider()
         }
     }
@@ -429,7 +420,7 @@ private fun PreviewDrawerOpen() {
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(),
             scaffoldState = scaffoldState,
-            navigateTo = { }
+            navigateToArticle = { }
         )
     }
 }
@@ -461,7 +452,7 @@ private fun PreviewDrawerOpenDark() {
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(),
             scaffoldState = scaffoldState,
-            navigateTo = { }
+            navigateToArticle = { }
         )
     }
 }

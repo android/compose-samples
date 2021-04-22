@@ -16,55 +16,37 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
-import com.example.jetnews.data.interests.InterestsRepository
-import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.ui.article.ArticleScreen
-import com.example.jetnews.ui.home.HomeScreen
-import com.example.jetnews.ui.interests.InterestsScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun JetnewsApp(
-    appContainer: AppContainer,
-    navigationViewModel: NavigationViewModel
+    appContainer: AppContainer
 ) {
     JetnewsTheme {
-        AppContent(
-            navigationViewModel = navigationViewModel,
-            interestsRepository = appContainer.interestsRepository,
-            postsRepository = appContainer.postsRepository
-        )
-    }
-}
-
-@Composable
-private fun AppContent(
-    navigationViewModel: NavigationViewModel,
-    postsRepository: PostsRepository,
-    interestsRepository: InterestsRepository
-) {
-    Crossfade(navigationViewModel.currentScreen) { screen ->
-        Surface(color = MaterialTheme.colors.background) {
-            when (screen) {
-                is Screen.Home -> HomeScreen(
-                    navigateTo = navigationViewModel::navigateTo,
-                    postsRepository = postsRepository
-                )
-                is Screen.Interests -> InterestsScreen(
-                    navigateTo = navigationViewModel::navigateTo,
-                    interestsRepository = interestsRepository
-                )
-                is Screen.Article -> ArticleScreen(
-                    postId = screen.postId,
-                    postsRepository = postsRepository,
-                    onBack = { navigationViewModel.onBack() }
+        val navController = rememberNavController()
+        val coroutineScope = rememberCoroutineScope()
+        val scaffoldState = rememberScaffoldState()
+        Scaffold(
+            scaffoldState = scaffoldState,
+            drawerContent = {
+                AppDrawer(
+                    closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } },
+                    navController = navController
                 )
             }
+        ) {
+            NavGraph(
+                appContainer = appContainer,
+                navController = navController,
+                scaffoldState = scaffoldState
+            )
         }
     }
 }

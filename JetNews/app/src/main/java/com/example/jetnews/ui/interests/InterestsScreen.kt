@@ -59,8 +59,6 @@ import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.ui.AppDrawer
-import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.utils.produceUiState
 import kotlinx.coroutines.launch
@@ -87,13 +85,11 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 /**
  * Stateful InterestsScreen manages state using [produceUiState]
  *
- * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) state for screen Scaffold
  * @param interestsRepository data source for this screen
  */
 @Composable
 fun InterestsScreen(
-    navigateTo: (Screen) -> Unit,
     interestsRepository: InterestsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -147,7 +143,6 @@ fun InterestsScreen(
         tabContent = tabContent,
         tab = currentSection,
         onTabChange = updateSection,
-        navigateTo = navigateTo,
         scaffoldState = scaffoldState
     )
 }
@@ -159,7 +154,6 @@ fun InterestsScreen(
  * list, tabs are displayed in the order specified by this list
  * @param tab (state) the current tab to display, must be in [tabContent]
  * @param onTabChange (event) request a change in [tab] to another tab from [tabContent]
- * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
@@ -167,19 +161,11 @@ fun InterestsScreen(
     tabContent: List<TabContent>,
     tab: Sections,
     onTabChange: (Sections) -> Unit,
-    navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState,
 ) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerContent = {
-            AppDrawer(
-                currentScreen = Screen.Interests,
-                closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } },
-                navigateTo = navigateTo
-            )
-        },
         topBar = {
             TopAppBar(
                 title = { Text("Interests") },
@@ -413,7 +399,6 @@ private fun TopicDivider() {
 fun PreviewInterestsScreen() {
     ThemedPreview {
         InterestsScreen(
-            navigateTo = {},
             interestsRepository = FakeInterestsRepository()
         )
     }
@@ -427,9 +412,8 @@ fun PreviewInterestsScreenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         InterestsScreen(
-            navigateTo = {},
-            scaffoldState = scaffoldState,
-            interestsRepository = FakeInterestsRepository()
+            interestsRepository = FakeInterestsRepository(),
+            scaffoldState = scaffoldState
         )
     }
 }
@@ -442,9 +426,8 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         InterestsScreen(
-            navigateTo = {},
-            scaffoldState = scaffoldState,
-            interestsRepository = FakeInterestsRepository()
+            interestsRepository = FakeInterestsRepository(),
+            scaffoldState = scaffoldState
         )
     }
 }
@@ -457,9 +440,8 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         InterestsScreen(
-            navigateTo = {},
-            scaffoldState = scaffoldState,
-            interestsRepository = FakeInterestsRepository()
+            interestsRepository = FakeInterestsRepository(),
+            scaffoldState = scaffoldState
         )
     }
 }
