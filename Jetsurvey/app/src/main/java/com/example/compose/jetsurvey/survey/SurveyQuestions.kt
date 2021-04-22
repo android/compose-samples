@@ -26,9 +26,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -108,7 +108,7 @@ fun Question(
                         text = stringResource(id = question.description),
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillParentMaxWidth()
                             .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
                     )
                 }
@@ -118,7 +118,7 @@ fun Question(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.SingleChoice?,
                     onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
                 is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
                     possibleAnswer = question.answer,
@@ -132,20 +132,20 @@ fun Question(
                             onAnswer(answer.withAnswerSelected(newAnswer, selected))
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
                 is PossibleAnswer.Action -> ActionQuestion(
                     questionId = question.id,
                     possibleAnswer = question.answer,
                     answer = answer as Answer.Action?,
                     onAction = onAction,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
                 is PossibleAnswer.Slider -> SliderQuestion(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.Slider?,
                     onAnswerSelected = { onAnswer(Answer.Slider(it)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 )
             }
         }
@@ -344,7 +344,10 @@ private fun PhotoQuestion(
                 Image(
                     painter = rememberCoilPainter(answer.result.uri, fadeIn = true),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        // We set a minimum height, so that Coil has a height to initially use
+                        .heightIn(min = 96.dp),
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
