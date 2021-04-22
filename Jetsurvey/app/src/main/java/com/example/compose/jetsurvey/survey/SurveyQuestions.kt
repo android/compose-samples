@@ -348,7 +348,7 @@ private fun PhotoQuestion(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(96.dp)
-                        .aspectRatio(1.22f)
+                        .aspectRatio(4 / 3f)
                 )
             } else {
                 PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
