@@ -418,34 +418,6 @@ fun PreviewInterestsScreenDark() {
     }
 }
 
-@Preview("Interests screen drawer open")
-@Composable
-private fun PreviewDrawerOpen() {
-    ThemedPreview {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        InterestsScreen(
-            interestsRepository = FakeInterestsRepository(),
-            scaffoldState = scaffoldState
-        )
-    }
-}
-
-@Preview("Interests screen drawer open dark theme")
-@Composable
-private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkTheme = true) {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        InterestsScreen(
-            interestsRepository = FakeInterestsRepository(),
-            scaffoldState = scaffoldState
-        )
-    }
-}
-
 @Preview("Interests screen topics tab")
 @Composable
 fun PreviewTopicsTab() {

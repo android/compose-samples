@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -38,7 +37,6 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -410,21 +408,6 @@ fun PreviewHomeScreenBody() {
     }
 }
 
-@Preview("Home screen, open drawer")
-@Composable
-private fun PreviewDrawerOpen() {
-    ThemedPreview {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        HomeScreen(
-            postsRepository = BlockingFakePostsRepository(),
-            scaffoldState = scaffoldState,
-            navigateToArticle = { }
-        )
-    }
-}
-
 @Preview("Home screen dark theme")
 @Composable
 fun PreviewHomeScreenBodyDark() {
@@ -440,19 +423,4 @@ private fun loadFakePosts(): List<Post> {
         BlockingFakePostsRepository().getPosts()
     }
     return (posts as Result.Success).data
-}
-
-@Preview("Home screen, open drawer dark theme")
-@Composable
-private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkTheme = true) {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        HomeScreen(
-            postsRepository = BlockingFakePostsRepository(),
-            scaffoldState = scaffoldState,
-            navigateToArticle = { }
-        )
-    }
 }

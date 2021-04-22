@@ -22,8 +22,8 @@ screen uses a navigation drawer.
 
 Package [`com.example.jetnews.ui`][1]
 
-[`JetnewsApp.kt`][2] arranges the different screens in the `NavDrawerLayout`. It also implements a simple
-navigation pattern.
+[`JetnewsApp.kt`][2] arranges the different screens in the `NavDrawerLayout`. It also implements 
+the navigation library to navigate from one screen to the next.
 
 [1]: app/src/main/java/com/example/jetnews/ui
 [2]: app/src/main/java/com/example/jetnews/ui/JetnewsApp.kt
