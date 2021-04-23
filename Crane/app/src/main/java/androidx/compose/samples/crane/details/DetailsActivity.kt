@@ -32,23 +32,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
@@ -56,9 +62,8 @@ import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.awaitMap
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-private const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
+internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
 fun launchDetailsActivity(context: Context, item: ExploreModel) {
     context.startActivity(createDetailsActivityIntent(context, item))
@@ -71,57 +76,53 @@ fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     return intent
 }
 
-data class DetailsActivityArg(
-    val cityName: String
-)
-
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var viewModelFactory: DetailsViewModelFactory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val args = getDetailsArgs(intent)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            CraneScaffold {
-                DetailsScreen(args, viewModelFactory, onErrorLoading = { finish() })
+            CraneTheme {
+                ProvideWindowInsets {
+                    Surface {
+                        DetailsScreen(
+                            onErrorLoading = { finish() },
+                            modifier = Modifier.statusBarsPadding().navigationBarsPadding()
+                        )
+                    }
+                }
             }
         }
-    }
-
-    private fun getDetailsArgs(intent: Intent): DetailsActivityArg {
-        val cityArg = intent.getStringExtra(KEY_ARG_DETAILS_CITY_NAME)
-        if (cityArg.isNullOrEmpty()) {
-            throw IllegalStateException("DETAILS_CITY_NAME arg cannot be null or empty")
-        }
-        return DetailsActivityArg(cityArg)
     }
 }
 
 @Composable
 fun DetailsScreen(
-    args: DetailsActivityArg,
-    viewModelFactory: DetailsViewModelFactory,
-    onErrorLoading: () -> Unit
+    onErrorLoading: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: DetailsViewModel = viewModel()
 ) {
-    val viewModel: DetailsViewModel = viewModel(
-        factory = DetailsViewModel.provideFactory(viewModelFactory, args.cityName)
-    )
-
     val cityDetailsResult = remember(viewModel) { viewModel.cityDetails }
     if (cityDetailsResult is Result.Success<ExploreModel>) {
-        DetailsContent(cityDetailsResult.data)
-    } else {
-        onErrorLoading()
+        DetailsContent(cityDetailsResult.data, modifier)
+    }
+
+    SideEffect {
+        if (cityDetailsResult is Result.Error) {
+            onErrorLoading()
+        }
     }
 }
 
 @Composable
-fun DetailsContent(exploreModel: ExploreModel) {
-    Column(verticalArrangement = Arrangement.Center) {
+fun DetailsContent(
+    exploreModel: ExploreModel,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.height(32.dp))
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
