@@ -46,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -85,13 +86,15 @@ class DetailsActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            CraneTheme {
-                ProvideWindowInsets {
-                    Surface {
-                        DetailsScreen(
-                            onErrorLoading = { finish() },
-                            modifier = Modifier.statusBarsPadding().navigationBarsPadding()
-                        )
+            ProvideWindowInsets {
+                ProvideImageLoader {
+                    CraneTheme {
+                        Surface {
+                            DetailsScreen(
+                                onErrorLoading = { finish() },
+                                modifier = Modifier.statusBarsPadding().navigationBarsPadding()
+                            )
+                        }
                     }
                 }
             }

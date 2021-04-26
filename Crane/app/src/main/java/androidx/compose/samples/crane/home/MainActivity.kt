@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
@@ -56,12 +57,14 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            CraneTheme {
-                ProvideWindowInsets {
-                    MainScreen(
-                        onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
-                        onDateSelectionClicked = { launchCalendarActivity(this) }
-                    )
+            ProvideWindowInsets {
+                ProvideImageLoader {
+                    CraneTheme {
+                        MainScreen(
+                            onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
+                            onDateSelectionClicked = { launchCalendarActivity(this) }
+                        )
+                    }
                 }
             }
         }

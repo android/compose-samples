@@ -32,13 +32,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DaySelected
 import androidx.compose.samples.crane.data.CalendarYear
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,9 +63,11 @@ class CalendarActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            CraneTheme {
-                ProvideWindowInsets {
-                    CalendarScreen(onBackPressed = { finish() })
+            ProvideWindowInsets {
+                ProvideImageLoader {
+                    CraneTheme {
+                        CalendarScreen(onBackPressed = { finish() })
+                    }
                 }
             }
         }
@@ -77,7 +79,7 @@ fun CalendarScreen(
     onBackPressed: () -> Unit,
     calendarViewModel: CalendarViewModel = viewModel()
 ) {
-    val calendarYear = remember(calendarViewModel) { calendarViewModel.calendarYear }
+    val calendarYear = calendarViewModel.calendarYear
 
     CalendarContent(
         selectedDates = calendarViewModel.datesSelected.toString(),

@@ -30,7 +30,7 @@ class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val cityName: String = savedStateHandle.get<String>(KEY_ARG_DETAILS_CITY_NAME)!!
+    private val cityName = savedStateHandle.get<String>(KEY_ARG_DETAILS_CITY_NAME)!!
 
     val cityDetails: Result<ExploreModel>
         get() {
