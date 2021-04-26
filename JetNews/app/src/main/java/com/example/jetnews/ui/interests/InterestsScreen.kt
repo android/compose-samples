@@ -36,7 +36,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -58,7 +57,9 @@ import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.utils.produceUiState
+import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -169,7 +170,7 @@ fun InterestsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            TopAppBar(
+            InsetAwareTopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
@@ -299,7 +300,7 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
+    LazyColumn(modifier = Modifier.padding(top = 16.dp).navigationBarsPadding()) {
         items(topics) { topic ->
             TopicItem(
                 topic,
@@ -323,7 +324,7 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(Modifier.navigationBarsPadding()) {
         sections.forEach { (section, topics) ->
             item {
                 Text(
