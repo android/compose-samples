@@ -18,11 +18,10 @@ package androidx.compose.samples.crane.home
 
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
-import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalDrawer
+import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberBackdropScaffoldState
-import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -38,6 +37,7 @@ import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.launch
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
@@ -52,11 +52,13 @@ fun CraneHome(
     onDateSelectionClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    ModalDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen,
-        drawerContent = { CraneDrawer() },
+    val scaffoldState = rememberScaffoldState()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        modifier = Modifier.statusBarsPadding(),
+        drawerContent = {
+            CraneDrawer()
+        }
     ) {
         val scope = rememberCoroutineScope()
         CraneHomeContent(
@@ -65,7 +67,7 @@ fun CraneHome(
             onDateSelectionClicked = onDateSelectionClicked,
             openDrawer = {
                 scope.launch {
-                    drawerState.open()
+                    scaffoldState.drawerState.open()
                 }
             }
         )
@@ -79,8 +81,8 @@ fun CraneHomeContent(
     onDateSelectionClicked: () -> Unit,
     openDrawer: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: MainViewModel = viewModel(),
 ) {
-    val viewModel: MainViewModel = viewModel()
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }

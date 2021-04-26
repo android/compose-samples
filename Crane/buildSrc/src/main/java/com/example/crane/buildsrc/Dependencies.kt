@@ -32,6 +32,7 @@ object Libs {
     object Accompanist {
         const val version = "0.8.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
+        const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
@@ -56,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.0.0-beta05"
+            const val version = "1.0.0-beta05"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -87,7 +88,7 @@ object Libs {
     }
 
     object Hilt {
-        private const val version = "2.31.2-alpha"
+        private const val version = "2.35"
 
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
         const val android = "com.google.dagger:hilt-android:$version"

@@ -49,6 +49,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
+import com.google.accompanist.insets.navigationBarsHeight
 
 @Composable
 fun ExploreSection(
@@ -76,6 +77,9 @@ fun ExploreSection(
                         )
                         Divider(color = crane_divider_color)
                     }
+                }
+                item {
+                    Spacer(modifier = Modifier.navigationBarsHeight())
                 }
             }
         }
