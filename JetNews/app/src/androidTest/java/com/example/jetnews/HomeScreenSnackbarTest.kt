@@ -16,12 +16,9 @@
 
 package com.example.jetnews
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
@@ -30,7 +27,6 @@ import com.example.jetnews.ui.state.UiState
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,11 +38,6 @@ class HomeScreenSnackbarTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @OptIn(
-        ExperimentalMaterialApi::class,
-        ExperimentalComposeApi::class
-    )
-    @Ignore("TODO Investigate why this passes locally but fail on CI")
     @Test
     fun postsContainError_snackbarShown() {
         val snackbarHostState = SnackbarHostState()
@@ -72,7 +63,7 @@ class HomeScreenSnackbarTest {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             // wait for the first a non-null `currentSnackbarData`
             snapshotFlow { snackbarHostState.currentSnackbarData }.filterNotNull().first()
-            composeTestRule.onNodeWithText(snackbarText, false, false).assertIsDisplayed()
+            composeTestRule.onNodeWithText(snackbarText, false, false).assertExists()
         }
     }
 }

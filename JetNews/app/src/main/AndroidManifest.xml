@@ -29,10 +29,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Needed for UI tests -->
-        <activity
-            android:name="androidx.activity.ComponentActivity"
-            android:theme="@style/Theme.Jetnews" />
     </application>
 </manifest>

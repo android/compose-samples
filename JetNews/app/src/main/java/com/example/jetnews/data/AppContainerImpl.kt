@@ -38,9 +38,7 @@ interface AppContainer {
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
     override val postsRepository: PostsRepository by lazy {
-        FakePostsRepository(
-            resources = applicationContext.resources
-        )
+        FakePostsRepository()
     }
 
     override val interestsRepository: InterestsRepository by lazy {
