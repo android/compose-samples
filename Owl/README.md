@@ -46,7 +46,7 @@ Compose makes it simple to create a library of components and use them throughou
 #### [Utilities](app/src/main/java/com/example/owl/ui/utils/)
 Owl implements some utility functions of interest:
 * [Window insets](https://goo.gle/compose-insets) will likely be provided by the Compose library at some point. Until then this demonstrates how it can be implemented.
-* [NavGraph](app/src/main/java/com/example/owl/ui/NavGraph.kt) is navigate between composables while taking advantage of the [Navigation component’s](https://developer.android.com/jetpack/compose/navigation) infrastructure and features.
+* [NavGraph](app/src/main/java/com/example/owl/ui/NavGraph.kt) models navigation within the app using [Jetpack Navigation](https://developer.android.com/jetpack/compose/navigation).
 
 ## Data
 Domain types are modelled in the [model package](app/src/main/java/com/example/owl/model), each containing static sample data exposed using fake `Repo`s objects.
