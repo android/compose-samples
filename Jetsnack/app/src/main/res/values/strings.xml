@@ -58,5 +58,7 @@
     <!-- Quantity Selector -->
     <string name="label_increase">Increase</string>
     <string name="label_decrease">Decrease</string>
+    <string name="work_in_progress">This is currently work in progress</string>
+    <string name="grab_beverage">Grab a beverage and check back later!</string>
 
 </resources>
