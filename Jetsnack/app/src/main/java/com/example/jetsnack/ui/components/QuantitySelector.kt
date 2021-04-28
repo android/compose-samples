@@ -17,14 +17,15 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddCircleOutline
-import androidx.compose.material.icons.outlined.RemoveCircleOutline
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -53,14 +54,16 @@ fun QuantitySelector(
                 text = stringResource(R.string.quantity),
                 style = MaterialTheme.typography.subtitle1,
                 color = JetsnackTheme.colors.textSecondary,
-                modifier = Modifier.constrainAs(qty) {
-                    start.linkTo(parent.start)
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                }
+                modifier = Modifier
+                    .padding(end = 18.dp)
+                    .constrainAs(qty) {
+                        start.linkTo(parent.start)
+                        linkTo(top = parent.top, bottom = parent.bottom)
+                    }
             )
         }
         JetsnackGradientTintedIconButton(
-            imageVector = Icons.Outlined.RemoveCircleOutline,
+            imageVector = Icons.Default.Remove,
             onClick = decreaseItemCount,
             contentDescription = stringResource(R.string.label_decrease),
             modifier = Modifier.constrainAs(minus) {
@@ -83,7 +86,7 @@ fun QuantitySelector(
             )
         }
         JetsnackGradientTintedIconButton(
-            imageVector = Icons.Outlined.AddCircleOutline,
+            imageVector = Icons.Default.Add,
             onClick = increaseItemCount,
             contentDescription = stringResource(R.string.label_increase),
             modifier = Modifier.constrainAs(plus) {

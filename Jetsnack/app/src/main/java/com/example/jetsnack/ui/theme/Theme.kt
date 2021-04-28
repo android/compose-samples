@@ -33,6 +33,7 @@ import com.example.jetsnack.ui.utils.LocalSysUiController
 
 private val LightColorPalette = JetsnackColors(
     brand = Shadow5,
+    brandSecondary = Ocean3,
     uiBackground = Neutral0,
     uiBorder = Neutral4,
     uiFloated = FunctionalGrey,
@@ -55,6 +56,7 @@ private val LightColorPalette = JetsnackColors(
 
 private val DarkColorPalette = JetsnackColors(
     brand = Shadow1,
+    brandSecondary = Ocean2,
     uiBackground = Neutral8,
     uiBorder = Neutral3,
     uiFloated = FunctionalDarkGrey,
@@ -73,7 +75,7 @@ private val DarkColorPalette = JetsnackColors(
     gradient3_1 = listOf(Shadow9, Ocean7, Shadow5),
     gradient3_2 = listOf(Rose8, Lavender7, Rose11),
     gradient2_1 = listOf(Ocean3, Shadow3),
-    gradient2_2 = listOf(Ocean7, Shadow7),
+    gradient2_2 = listOf(Ocean4, Shadow2, Shadow2),
     isDark = true
 )
 
@@ -119,6 +121,7 @@ class JetsnackColors(
     gradient2_1: List<Color>,
     gradient2_2: List<Color>,
     brand: Color,
+    brandSecondary: Color,
     uiBackground: Color,
     uiBorder: Color,
     uiFloated: Color,
@@ -152,6 +155,7 @@ class JetsnackColors(
         private set
     var brand by mutableStateOf(brand)
         private set
+    var brandSecondary by mutableStateOf(brandSecondary)
     var uiBackground by mutableStateOf(uiBackground)
         private set
     var uiBorder by mutableStateOf(uiBorder)
@@ -197,6 +201,7 @@ class JetsnackColors(
         gradient2_1 = other.gradient2_1
         gradient2_2 = other.gradient2_2
         brand = other.brand
+        brandSecondary = other.brandSecondary
         uiBackground = other.uiBackground
         uiBorder = other.uiBorder
         uiFloated = other.uiFloated
