@@ -88,7 +88,10 @@ class SurveyFragment : Fragment() {
     }
 
     private fun showDatePicker(questionId: Int) {
-        val picker = MaterialDatePicker.Builder.datePicker().build()
+        val date = viewModel.getCurrentDate(questionId = questionId)
+        val picker = MaterialDatePicker.Builder.datePicker()
+            .setSelection(date)
+            .build()
         activity?.let {
             picker.show(it.supportFragmentManager, picker.toString())
             picker.addOnPositiveButtonClickListener {
