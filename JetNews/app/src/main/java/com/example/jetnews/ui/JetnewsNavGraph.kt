@@ -17,6 +17,7 @@
 package com.example.jetnews.ui
 
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -41,11 +42,11 @@ object MainDestinations {
 }
 
 @Composable
-fun NavGraph(
+fun JetnewsNavGraph(
     appContainer: AppContainer,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = MainDestinations.HOME_ROUTE,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    startDestination: String = MainDestinations.HOME_ROUTE
 ) {
     val actions = remember(navController) { MainActions(navController) }
 
@@ -67,9 +68,8 @@ fun NavGraph(
             )
         }
         composable("${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}") { backStackEntry ->
-            val arguments = requireNotNull(backStackEntry.arguments)
             ArticleScreen(
-                postId = arguments.getString(ARTICLE_ID_KEY)!!,
+                postId = backStackEntry.arguments?.getString(ARTICLE_ID_KEY),
                 onBack = actions.upPress,
                 postsRepository = appContainer.postsRepository
             )

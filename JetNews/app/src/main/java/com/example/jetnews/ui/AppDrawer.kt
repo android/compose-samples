@@ -35,7 +35,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,22 +44,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.KEY_ROUTE
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.R
 
 @Composable
 fun AppDrawer(
-    navController: NavController,
+    currentRoute: String,
+    navigateToHome: () -> Unit,
+    navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit
 ) {
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-        ?: MainDestinations.HOME_ROUTE
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(24.dp))
@@ -71,7 +63,7 @@ fun AppDrawer(
             label = "Home",
             isSelected = currentRoute == MainDestinations.HOME_ROUTE,
             action = {
-                navController.navigate(MainDestinations.HOME_ROUTE)
+                navigateToHome()
                 closeDrawer()
             }
         )
@@ -81,7 +73,7 @@ fun AppDrawer(
             label = "Interests",
             isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
             action = {
-                navController.navigate(MainDestinations.INTERESTS_ROUTE)
+                navigateToInterests()
                 closeDrawer()
             }
         )
@@ -169,7 +161,9 @@ private fun DrawerButton(
 fun PreviewAppDrawer() {
     ThemedPreview {
         AppDrawer(
-            navController = rememberNavController(),
+            currentRoute = MainDestinations.HOME_ROUTE,
+            navigateToHome = {},
+            navigateToInterests = {},
             closeDrawer = { }
         )
     }
@@ -180,7 +174,9 @@ fun PreviewAppDrawer() {
 fun PreviewAppDrawerDark() {
     ThemedPreview(darkTheme = true) {
         AppDrawer(
-            navController = rememberNavController(),
+            currentRoute = MainDestinations.HOME_ROUTE,
+            navigateToHome = {},
+            navigateToInterests = {},
             closeDrawer = { }
         )
     }
