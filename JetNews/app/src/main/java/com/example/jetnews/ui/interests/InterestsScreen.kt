@@ -165,7 +165,6 @@ fun InterestsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
-        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 title = { Text("Interests") },

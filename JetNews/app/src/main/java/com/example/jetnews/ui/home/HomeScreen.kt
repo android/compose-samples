@@ -152,7 +152,6 @@ fun HomeScreen(
 
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
-        scaffoldState = scaffoldState,
         topBar = {
             val title = stringResource(id = R.string.app_name)
             TopAppBar(
