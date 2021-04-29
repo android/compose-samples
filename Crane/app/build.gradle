@@ -109,6 +109,7 @@ dependencies {
     implementation Libs.GoogleMaps.mapsKtx
 
     implementation Libs.Accompanist.coil
+    implementation Libs.Accompanist.insets
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Compose.runtime
@@ -123,9 +124,6 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.viewModelKtx
     implementation Libs.Hilt.android
     kapt Libs.Hilt.compiler
-
-    // FIXME: only needed for Compose alpha12
-    androidTestImplementation Libs.AndroidX.Activity.activityCompose
 
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.runner

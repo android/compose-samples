@@ -16,7 +16,6 @@
 
 package com.example.jetnews.data.posts.impl
 
-import android.content.Context
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
@@ -32,7 +31,7 @@ import kotlinx.coroutines.withContext
  * posts with resources synchronously.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class BlockingFakePostsRepository(private val context: Context) : PostsRepository {
+class BlockingFakePostsRepository : PostsRepository {
 
     // for now, keep the favorites in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())

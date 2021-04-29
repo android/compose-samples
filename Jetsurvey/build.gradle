@@ -40,6 +40,8 @@ subprojects {
 
         if (Libs.AndroidX.Compose.version.endsWith('SNAPSHOT')) {
             maven { url Libs.AndroidX.Compose.snapshotUrl }
+        }
+        if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }

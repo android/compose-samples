@@ -79,8 +79,9 @@ private val jetpackQuestions = mutableListOf(
         answer = PossibleAnswer.Slider(
             range = 1f..10f,
             steps = 3,
-            startText = R.string.selfie_min,
-            endText = R.string.selfie_max
+            startText = R.string.strongly_dislike,
+            endText = R.string.strongly_like,
+            neutralText = R.string.neutral
         )
     )
 ).apply {

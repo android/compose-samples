@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -41,6 +43,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -194,17 +197,24 @@ private fun SurveyTopAppBar(
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(
                     onClick = onBackPressed,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 20.dp)
+                        .fillMaxWidth()
                 ) {
                     Icon(
                         Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.close)
+                        contentDescription = stringResource(id = R.string.close),
+                        modifier = Modifier.align(Alignment.CenterEnd)
                     )
                 }
             }
         }
+        val animatedProgress by animateFloatAsState(
+            targetValue = (questionIndex + 1) / totalQuestionsCount.toFloat(),
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        )
         LinearProgressIndicator(
-            progress = (questionIndex + 1) / totalQuestionsCount.toFloat(),
+            progress = animatedProgress,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
@@ -221,9 +231,10 @@ private fun SurveyBottomBar(
     onDonePressed: () -> Unit
 ) {
     Surface(
-        elevation = 3.dp,
-        modifier = Modifier.fillMaxWidth()
+        elevation = 7.dp,
+        modifier = Modifier.fillMaxWidth() // .border(1.dp, MaterialTheme.colors.primary)
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -231,7 +242,9 @@ private fun SurveyBottomBar(
         ) {
             if (questionState.showPrevious) {
                 OutlinedButton(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
                     onClick = onPreviousPressed
                 ) {
                     Text(text = stringResource(id = R.string.previous))
@@ -240,7 +253,9 @@ private fun SurveyBottomBar(
             }
             if (questionState.showDone) {
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
                     onClick = onDonePressed,
                     enabled = questionState.enableNext
                 ) {
@@ -248,7 +263,9 @@ private fun SurveyBottomBar(
                 }
             } else {
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
                     onClick = onNextPressed,
                     enabled = questionState.enableNext
                 ) {

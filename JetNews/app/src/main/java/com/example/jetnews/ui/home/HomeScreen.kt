@@ -22,12 +22,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
@@ -38,7 +36,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
@@ -55,7 +52,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -68,10 +64,11 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.AppDrawer
 import com.example.jetnews.ui.Screen
-import com.example.jetnews.ui.SwipeToRefreshLayout
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.utils.produceUiState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -252,18 +249,9 @@ private fun LoadingContent(
     if (empty) {
         emptyContent()
     } else {
-        SwipeToRefreshLayout(
-            refreshingState = loading,
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(loading),
             onRefresh = onRefresh,
-            refreshIndicator = {
-                Surface(elevation = 10.dp, shape = CircleShape) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .padding(4.dp)
-                    )
-                }
-            },
             content = content,
         )
     }
@@ -466,7 +454,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            postsRepository = BlockingFakePostsRepository(),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -484,9 +472,8 @@ fun PreviewHomeScreenBodyDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    val context = LocalContext.current
     val posts = runBlocking {
-        BlockingFakePostsRepository(context).getPosts()
+        BlockingFakePostsRepository().getPosts()
     }
     return (posts as Result.Success).data
 }
@@ -499,7 +486,7 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            postsRepository = BlockingFakePostsRepository(),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

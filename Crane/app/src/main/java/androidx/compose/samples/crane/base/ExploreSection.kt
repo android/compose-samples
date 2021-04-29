@@ -47,7 +47,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
+import com.google.accompanist.insets.navigationBarsHeight
 
 @Composable
 fun ExploreSection(
@@ -76,6 +78,9 @@ fun ExploreSection(
                         Divider(color = crane_divider_color)
                     }
                 }
+                item {
+                    Spacer(modifier = Modifier.navigationBarsHeight())
+                }
             }
         }
     }
@@ -93,21 +98,25 @@ private fun ExploreItem(
             .padding(top = 12.dp, bottom = 12.dp)
     ) {
         ExploreImageContainer {
-            CoilImage(
-                data = item.imageUrl,
-                fadeIn = true,
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                loading = {
-                    Box(Modifier.fillMaxSize()) {
-                        Image(
-                            modifier = Modifier.size(36.dp).align(Alignment.Center),
-                            painter = painterResource(id = R.drawable.ic_crane_logo),
-                            contentDescription = null
-                        )
-                    }
+            Box {
+                val painter = rememberCoilPainter(item.imageUrl, fadeIn = true)
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+
+                if (painter.loadState == ImageLoadState.Loading) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_crane_logo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center),
+                    )
                 }
-            )
+            }
         }
         Spacer(Modifier.width(24.dp))
         Column {

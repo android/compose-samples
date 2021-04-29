@@ -54,6 +54,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.navigationBarsHeight
 
 typealias CalendarWeek = List<CalendarDay>
 
@@ -71,6 +72,7 @@ fun Calendar(
                 Spacer(Modifier.height(32.dp))
             }
         }
+        item { Spacer(modifier = Modifier.navigationBarsHeight()) }
     }
 }
 

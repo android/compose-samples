@@ -19,16 +19,18 @@ package androidx.compose.samples.crane.details
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DetailsViewModel @AssistedInject constructor(
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
     private val destinationsRepository: DestinationsRepository,
-    @Assisted private val cityName: String
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val cityName = savedStateHandle.get<String>(KEY_ARG_DETAILS_CITY_NAME)!!
 
     val cityDetails: Result<ExploreModel>
         get() {
@@ -39,21 +41,4 @@ class DetailsViewModel @AssistedInject constructor(
                 Result.Error(IllegalArgumentException("City doesn't exist"))
             }
         }
-
-    @Suppress("UNCHECKED_CAST")
-    companion object {
-        fun provideFactory(
-            assistedFactory: DetailsViewModelFactory,
-            cityName: String
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(cityName) as T
-            }
-        }
-    }
-}
-
-@AssistedFactory
-interface DetailsViewModelFactory {
-    fun create(cityName: String): DetailsViewModel
 }
