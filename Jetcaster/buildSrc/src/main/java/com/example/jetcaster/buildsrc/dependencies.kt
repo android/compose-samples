@@ -17,7 +17,7 @@
 package com.example.jetcaster.buildsrc
 
 object Versions {
-    const val ktlint = "0.40.0"
+    const val ktlint = "0.41.0"
 }
 
 object Libs {
@@ -27,7 +27,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.8.0"
+        const val version = "0.8.2.compose-7321851-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -65,7 +65,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Constraint {
@@ -73,8 +73,8 @@ object Libs {
         }
 
         object Compose {
-            private const val snapshot = ""
-            private const val version = "1.0.0-beta05"
+            const val snapshot = "7321851"
+            const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -93,7 +93,7 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.3.1"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 

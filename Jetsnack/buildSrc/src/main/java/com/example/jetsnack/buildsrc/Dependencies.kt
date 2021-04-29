@@ -17,14 +17,14 @@
 package com.example.jetsnack.buildsrc
 
 object Versions {
-    const val ktlint = "0.40.0"
+    const val ktlint = "0.41.0"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
 
     object Accompanist {
-        const val version = "0.8.0"
+        const val version = "0.8.2.compose-7321851-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
@@ -47,8 +47,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-beta05"
+            const val snapshot = "7321851"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -63,12 +63,12 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Lifecycle {
             const val viewModelCompose =
-                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04"
+                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
         }
 
         object ConstraintLayout {

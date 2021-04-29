@@ -17,7 +17,7 @@
 package com.example.compose.rally.buildsrc
 
 object Versions {
-    const val ktlint = "0.40.0"
+    const val ktlint = "0.41.0"
 }
 
 object Libs {
@@ -45,12 +45,12 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
         }
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-beta05"
+            const val snapshot = "7321851"
+            const val version = "1.0.0-SNAPSHOT"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
