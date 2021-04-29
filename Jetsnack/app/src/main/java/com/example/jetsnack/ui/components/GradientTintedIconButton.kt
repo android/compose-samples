@@ -18,15 +18,13 @@ package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +32,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun JetsnackGradientTintedIconButton(
@@ -45,30 +42,14 @@ fun JetsnackGradientTintedIconButton(
     colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val interactions = remember { mutableStateListOf<Interaction>() }
 
-    LaunchedEffect(interactionSource) {
-        interactionSource.interactions.collect { interaction ->
-            when (interaction) {
-                is PressInteraction.Press -> {
-                    interactions.add(interaction)
-                }
-                is PressInteraction.Release -> {
-                    interactions.remove(interaction.press)
-                }
-                is PressInteraction.Cancel -> {
-                    interactions.remove(interaction.press)
-                }
-            }
-        }
-    }
     // This should use a layer + srcIn but needs investigation
     val border = Modifier.fadeInDiagonalGradientBorder(
         showBorder = true,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = CircleShape
     )
-    val pressed = interactions.any { it is PressInteraction.Press }
+    val pressed by interactionSource.collectIsPressedAsState()
     val background =
         if (pressed)
             Modifier.offsetGradientBackground(

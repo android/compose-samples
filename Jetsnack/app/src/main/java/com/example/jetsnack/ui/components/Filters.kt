@@ -18,9 +18,8 @@ package com.example.jetsnack.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,9 +37,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun FilterBar(filters: List<Filter>) {
@@ -108,24 +104,8 @@ fun FilterChip(
         elevation = 2.dp
     ) {
         val interactionSource = remember { MutableInteractionSource() }
-        val interactions = remember { mutableStateListOf<Interaction>() }
 
-        LaunchedEffect(interactionSource) {
-            interactionSource.interactions.collect { interaction ->
-                when (interaction) {
-                    is PressInteraction.Press -> {
-                        interactions.add(interaction)
-                    }
-                    is PressInteraction.Release -> {
-                        interactions.remove(interaction.press)
-                    }
-                    is PressInteraction.Cancel -> {
-                        interactions.remove(interaction.press)
-                    }
-                }
-            }
-        }
-        val pressed = interactions.any { it is PressInteraction.Press }
+        val pressed by interactionSource.collectIsPressedAsState()
         val backgroundPressed =
             if (pressed)
                 Modifier.offsetGradientBackground(
@@ -137,12 +117,13 @@ fun FilterChip(
                 Modifier.background(Color.Transparent)
 
         Box(
-            modifier = Modifier.toggleable(
-                value = selected,
-                onValueChange = setSelected,
-                interactionSource = interactionSource,
-                indication = null
-            )
+            modifier = Modifier
+                .toggleable(
+                    value = selected,
+                    onValueChange = setSelected,
+                    interactionSource = interactionSource,
+                    indication = null
+                )
                 .then(backgroundPressed)
                 .then(border),
         ) {
