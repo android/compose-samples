@@ -39,7 +39,7 @@ class JetnewsUiTest {
 
     @Test
     fun app_launches() {
-        composeTestRule.onNodeWithText("Jetnews").assertExists()
+        composeTestRule.onNodeWithText("Top stories for you").assertExists()
     }
 
     @Test
