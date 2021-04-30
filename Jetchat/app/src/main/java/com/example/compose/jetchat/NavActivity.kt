@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.os.bundleOf
@@ -59,8 +60,8 @@ class NavActivity : AppCompatActivity() {
                 ) {
                     val scaffoldState = rememberScaffoldState()
 
-                    val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
-                    if (openDrawerEvent.value == true) {
+                    val openDrawerEvent = viewModel.drawerShouldBeOpened.collectAsState()
+                    if (openDrawerEvent.value) {
                         // Open drawer and reset state in VM.
                         LaunchedEffect(Unit) {
                             scaffoldState.drawerState.open()
