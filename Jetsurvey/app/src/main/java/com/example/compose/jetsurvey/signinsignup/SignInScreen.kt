@@ -23,7 +23,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -74,8 +76,11 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         },
         content = {
             SignInSignUpScreen(
-                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+                    .widthIn(max = 840.dp)
+                    .fillMaxWidth(),
+                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) }
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     SignInContent(

@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
@@ -66,7 +68,12 @@ fun SurveyQuestionsScreen(
         questions.questionsState[questions.currentQuestionIndex]
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier
+            .wrapContentSize()
+            .widthIn(max = 840.dp)
+            .fillMaxSize()
+    ) {
         Scaffold(
             topBar = {
                 SurveyTopAppBar(
@@ -106,7 +113,12 @@ fun SurveyResultScreen(
     result: SurveyState.Result,
     onDonePressed: () -> Unit
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier
+            .wrapContentSize()
+            .widthIn(max = 840.dp)
+            .fillMaxSize()
+    ) {
         Scaffold(
             content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
