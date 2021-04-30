@@ -272,9 +272,7 @@ fun Messages(
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
                 scope.launch {
-                    // TODO: Replace with animateScrollToItem
-                    // https://issuetracker.google.com/181316785
-                    scrollState.scrollToItem(0)
+                    scrollState.animateScrollToItem(0)
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
