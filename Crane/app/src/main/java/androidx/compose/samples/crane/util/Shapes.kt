@@ -35,15 +35,9 @@ fun Circle(color: Color) {
 
 @Composable
 fun SemiRect(color: Color, lookingLeft: Boolean = true) {
-
-    val lookLeft = if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
-        lookingLeft
-    } else {
-        !lookingLeft
-    }
-
+    val layoutDirection = LocalLayoutDirection.current
     Canvas(Modifier.fillMaxSize()) {
-        val offset = if (lookLeft) {
+        val offset = if (lookingLeft xor (layoutDirection == LayoutDirection.Rtl)) {
             Offset(0f, 0f)
         } else {
             Offset(size.width / 2, 0f)
