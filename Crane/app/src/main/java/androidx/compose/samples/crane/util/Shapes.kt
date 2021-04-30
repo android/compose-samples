@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 
 @Composable
 fun Circle(color: Color) {
@@ -33,8 +35,15 @@ fun Circle(color: Color) {
 
 @Composable
 fun SemiRect(color: Color, lookingLeft: Boolean = true) {
+
+    val lookLeft = if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
+        lookingLeft
+    } else {
+        !lookingLeft
+    }
+
     Canvas(Modifier.fillMaxSize()) {
-        val offset = if (lookingLeft) {
+        val offset = if (lookLeft) {
             Offset(0f, 0f)
         } else {
             Offset(size.width / 2, 0f)
