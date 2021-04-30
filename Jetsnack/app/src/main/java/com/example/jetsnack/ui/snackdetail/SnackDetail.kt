@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -110,7 +111,7 @@ private fun Header() {
         modifier = Modifier
             .height(280.dp)
             .fillMaxWidth()
-            .background(Brush.horizontalGradient(JetsnackTheme.colors.interactivePrimary))
+            .background(Brush.horizontalGradient(JetsnackTheme.colors.tornado1))
     )
 }
 
@@ -163,7 +164,7 @@ private fun Body(
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(16.dp))
                     Text(
                         text = stringResource(R.string.detail_placeholder),
                         style = MaterialTheme.typography.body1,
@@ -328,6 +329,8 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = stringResource(R.string.add_to_cart),
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
                         maxLines = 1
                     )
                 }
