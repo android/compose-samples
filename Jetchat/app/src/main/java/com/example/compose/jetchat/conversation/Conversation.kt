@@ -243,7 +243,7 @@ fun Messages(
 
                 item {
                     Message(
-                        onAuthorClick = { navigateToProfile(content.author) },
+                        onAuthorClick = { name -> navigateToProfile(name) },
                         msg = content,
                         isUserMe = content.author == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
@@ -282,18 +282,14 @@ fun Messages(
 
 @Composable
 fun Message(
-    onAuthorClick: () -> Unit,
+    onAuthorClick: (String) -> Unit,
     msg: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean
 ) {
-    // TODO: get image from msg.author
-    val painter = if (isUserMe) {
-        painterResource(id = R.drawable.ali)
-    } else {
-        painterResource(id = R.drawable.someone_else)
-    }
+    val painter = painterResource(id = msg.authorImage)
+
     val borderColor = if (isUserMe) {
         MaterialTheme.colors.primary
     } else {
@@ -306,7 +302,7 @@ fun Message(
             // Avatar
             Image(
                 modifier = Modifier
-                    .clickable(onClick = onAuthorClick)
+                    .clickable(onClick = { onAuthorClick(msg.author) })
                     .padding(horizontal = 16.dp)
                     .size(42.dp)
                     .border(1.5.dp, borderColor, CircleShape)
@@ -325,6 +321,7 @@ fun Message(
             msg = msg,
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
+            authorClicked = onAuthorClick,
             modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f)
@@ -337,13 +334,14 @@ fun AuthorAndTextMessage(
     msg: Message,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
+    authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
-        ChatItemBubble(msg, isFirstMessageByAuthor)
+        ChatItemBubble(msg, isFirstMessageByAuthor, authorClicked = authorClicked)
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
             Spacer(modifier = Modifier.height(8.dp))
@@ -411,7 +409,8 @@ private fun RowScope.DayHeaderLine() {
 @Composable
 fun ChatItemBubble(
     message: Message,
-    lastMessageByAuthor: Boolean
+    lastMessageByAuthor: Boolean,
+    authorClicked: (String) -> Unit
 ) {
 
     val backgroundBubbleColor =
@@ -425,7 +424,8 @@ fun ChatItemBubble(
     Column {
         Surface(color = backgroundBubbleColor, shape = bubbleShape) {
             ClickableMessage(
-                message = message
+                message = message,
+                authorClicked = authorClicked
             )
         }
 
@@ -444,7 +444,7 @@ fun ChatItemBubble(
 }
 
 @Composable
-fun ClickableMessage(message: Message) {
+fun ClickableMessage(message: Message, authorClicked: (String) -> Unit) {
     val uriHandler = LocalUriHandler.current
 
     val styledMessage = messageFormatter(text = message.content)
@@ -460,8 +460,7 @@ fun ClickableMessage(message: Message) {
                 ?.let { annotation ->
                     when (annotation.tag) {
                         SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        // TODO(yrezgui): Open profile screen when click PERSON tag
-                        //  (e.g. @aliconors)
+                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
                         else -> Unit
                     }
                 }
