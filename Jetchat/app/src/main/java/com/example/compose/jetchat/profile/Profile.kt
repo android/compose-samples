@@ -120,7 +120,8 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             ProfileFab(
                 extended = scrollState.value == 0,
                 userIsMe = userData.isMe(),
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(Alignment.BottomEnd),
+                onFabClicked = { functionalityNotAvailablePopupShown = true }
             )
         }
     }
@@ -239,11 +240,16 @@ fun ProfileError() {
 }
 
 @Composable
-fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifier) {
+fun ProfileFab(
+    extended: Boolean,
+    userIsMe: Boolean,
+    modifier: Modifier = Modifier,
+    onFabClicked: () -> Unit = { }
+) {
 
     key(userIsMe) { // Prevent multiple invocations to execute during composition
         FloatingActionButton(
-            onClick = { /* TODO */ },
+            onClick = onFabClicked,
             modifier = modifier
                 .padding(16.dp)
                 .navigationBarsPadding()
