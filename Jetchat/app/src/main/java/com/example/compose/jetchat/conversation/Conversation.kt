@@ -52,8 +52,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,6 +70,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
@@ -143,6 +146,10 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { }
 ) {
+    var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
+    if (functionalityNotAvailablePopupShown) {
+        FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
+    }
     JetchatAppBar(
         modifier = modifier,
         onNavIconPressed = onNavIconPressed,
@@ -171,7 +178,7 @@ fun ChannelNameBar(
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     modifier = Modifier
-                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .height(24.dp),
                     contentDescription = stringResource(id = R.string.search)
@@ -180,7 +187,7 @@ fun ChannelNameBar(
                 Icon(
                     imageVector = Icons.Outlined.Info,
                     modifier = Modifier
-                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .height(24.dp),
                     contentDescription = stringResource(id = R.string.info)
