@@ -37,6 +37,8 @@ fun Circle(color: Color) {
 fun SemiRect(color: Color, lookingLeft: Boolean = true) {
     val layoutDirection = LocalLayoutDirection.current
     Canvas(Modifier.fillMaxSize()) {
+        // The SemiRect should face left EITHER the lookingLeft param is true
+        // OR the layoutDirection is Rtl
         val offset = if (lookingLeft xor (layoutDirection == LayoutDirection.Rtl)) {
             Offset(0f, 0f)
         } else {
