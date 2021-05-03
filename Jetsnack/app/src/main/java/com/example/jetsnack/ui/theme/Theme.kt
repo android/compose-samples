@@ -51,6 +51,8 @@ private val LightColorPalette = JetsnackColors(
     gradient3_2 = listOf(Rose2, Lavender3, Rose4),
     gradient2_1 = listOf(Shadow4, Shadow11),
     gradient2_2 = listOf(Ocean3, Shadow3),
+    gradient2_3 = listOf(Lavender3, Rose2),
+    tornado1 = listOf(Shadow4, Ocean3),
     isDark = false
 )
 
@@ -75,7 +77,9 @@ private val DarkColorPalette = JetsnackColors(
     gradient3_1 = listOf(Shadow9, Ocean7, Shadow5),
     gradient3_2 = listOf(Rose8, Lavender7, Rose11),
     gradient2_1 = listOf(Ocean3, Shadow3),
-    gradient2_2 = listOf(Ocean4, Shadow2, Shadow2),
+    gradient2_2 = listOf(Ocean4, Shadow2),
+    gradient2_3 = listOf(Lavender3, Rose3),
+    tornado1 = listOf(Shadow4, Ocean3),
     isDark = true
 )
 
@@ -120,6 +124,7 @@ class JetsnackColors(
     gradient3_2: List<Color>,
     gradient2_1: List<Color>,
     gradient2_2: List<Color>,
+    gradient2_3: List<Color>,
     brand: Color,
     brandSecondary: Color,
     uiBackground: Color,
@@ -133,6 +138,7 @@ class JetsnackColors(
     textHelp: Color,
     textInteractive: Color,
     textLink: Color,
+    tornado1: List<Color>,
     iconPrimary: Color = brand,
     iconSecondary: Color,
     iconInteractive: Color,
@@ -153,9 +159,12 @@ class JetsnackColors(
         private set
     var gradient2_2 by mutableStateOf(gradient2_2)
         private set
+    var gradient2_3 by mutableStateOf(gradient2_3)
+        private set
     var brand by mutableStateOf(brand)
         private set
     var brandSecondary by mutableStateOf(brandSecondary)
+        private set
     var uiBackground by mutableStateOf(uiBackground)
         private set
     var uiBorder by mutableStateOf(uiBorder)
@@ -175,6 +184,8 @@ class JetsnackColors(
     var textHelp by mutableStateOf(textHelp)
         private set
     var textInteractive by mutableStateOf(textInteractive)
+        private set
+    var tornado1 by mutableStateOf(tornado1)
         private set
     var textLink by mutableStateOf(textLink)
         private set
@@ -200,6 +211,7 @@ class JetsnackColors(
         gradient3_2 = other.gradient3_2
         gradient2_1 = other.gradient2_1
         gradient2_2 = other.gradient2_2
+        gradient2_3 = other.gradient2_3
         brand = other.brand
         brandSecondary = other.brandSecondary
         uiBackground = other.uiBackground
@@ -213,6 +225,7 @@ class JetsnackColors(
         textHelp = other.textHelp
         textInteractive = other.textInteractive
         textLink = other.textLink
+        tornado1 = other.tornado1
         iconPrimary = other.iconPrimary
         iconSecondary = other.iconSecondary
         iconInteractive = other.iconInteractive

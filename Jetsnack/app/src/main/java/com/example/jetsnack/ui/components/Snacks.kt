@@ -122,18 +122,18 @@ private fun HighlightedSnacks(
     modifier: Modifier = Modifier
 ) {
     val scroll = rememberScrollState(0)
-    val gradient = when (index % 2) {
+    val gradient = when ((index / 2) % 2) {
         0 -> JetsnackTheme.colors.gradient6_1
         else -> JetsnackTheme.colors.gradient6_2
     }
     // The Cards show a gradient which spans 3 cards and scrolls with parallax.
     val gradientWidth = with(LocalDensity.current) {
-        (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
+        (6 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp)
+        contentPadding = PaddingValues(start = 24.dp, end = 24.dp)
     ) {
         itemsIndexed(snacks) { index, snack ->
             HighlightSnackItem(
