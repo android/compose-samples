@@ -50,30 +50,26 @@ fun JetsnackGradientTintedIconButton(
         shape = CircleShape
     )
     val pressed by interactionSource.collectIsPressedAsState()
-    val background =
-        if (pressed)
-            Modifier.offsetGradientBackground(
-                colors,
-                200f,
-                0f
-            )
-        else
-            Modifier.background(JetsnackTheme.colors.uiBackground)
+    val background = if (pressed) {
+        Modifier.offsetGradientBackground(colors, 200f, 0f)
+    } else {
+        Modifier.background(JetsnackTheme.colors.uiBackground)
+    }
     val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
-    val modifierColor =
-        if (pressed)
-            Modifier.diagonalGradientTint(
-                colors = listOf(
-                    JetsnackTheme.colors.textSecondary,
-                    JetsnackTheme.colors.textSecondary
-                ),
-                blendMode = blendMode
-            )
-        else
-            Modifier.diagonalGradientTint(
-                colors = colors,
-                blendMode = blendMode
-            )
+    val modifierColor = if (pressed) {
+        Modifier.diagonalGradientTint(
+            colors = listOf(
+                JetsnackTheme.colors.textSecondary,
+                JetsnackTheme.colors.textSecondary
+            ),
+            blendMode = blendMode
+        )
+    } else {
+        Modifier.diagonalGradientTint(
+            colors = colors,
+            blendMode = blendMode
+        )
+    }
     Surface(
         modifier = modifier
             .clickable(
