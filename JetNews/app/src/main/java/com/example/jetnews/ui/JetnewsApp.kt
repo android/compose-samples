@@ -36,6 +36,9 @@ fun JetnewsApp(
     JetnewsTheme {
         val navController = rememberNavController()
         val coroutineScope = rememberCoroutineScope()
+        // This top level scaffold contains the app drawer, which needs to be accessible
+        // from multiple screens. An event to open the drawer is passed down to each
+        // screen that needs it.
         val scaffoldState = rememberScaffoldState()
 
         val navBackStackEntry by navController.currentBackStackEntryAsState()

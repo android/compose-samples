@@ -67,14 +67,16 @@ import kotlinx.coroutines.runBlocking
 /**
  * Stateful HomeScreen which manages state using [produceUiState]
  *
- * @param navigateToArticle (event) request navigation to Article screen
  * @param postsRepository data source for this screen
+ * @param navigateToArticle (event) request navigation to Article screen
+ * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeScreen(
     postsRepository: PostsRepository,
     navigateToArticle: (String) -> Unit,
+    openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     val (postUiState, refreshPost, clearError) = produceUiState(postsRepository) {
@@ -99,6 +101,7 @@ fun HomeScreen(
         onRefreshPosts = refreshPost,
         onErrorDismiss = clearError,
         navigateToArticle = navigateToArticle,
+        openDrawer = openDrawer,
         scaffoldState = scaffoldState
     )
 }
@@ -114,6 +117,8 @@ fun HomeScreen(
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) request the current error be dismissed
  * @param navigateToArticle (event) request navigation to Article screen
+ * @param openDrawer (event) request opening the app drawer
+ * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -124,8 +129,11 @@ fun HomeScreen(
     onRefreshPosts: () -> Unit,
     onErrorDismiss: () -> Unit,
     navigateToArticle: (String) -> Unit,
+    openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
@@ -150,14 +158,14 @@ fun HomeScreen(
         }
     }
 
-    val coroutineScope = rememberCoroutineScope()
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             val title = stringResource(id = R.string.app_name)
             TopAppBar(
                 title = { Text(text = title) },
                 navigationIcon = {
-                    IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
+                    IconButton(onClick = { coroutineScope.launch { openDrawer() } }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)
@@ -165,29 +173,28 @@ fun HomeScreen(
                     }
                 }
             )
-        },
-        content = { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            LoadingContent(
-                empty = posts.initialLoad,
-                emptyContent = { FullScreenLoading() },
-                loading = posts.loading,
-                onRefresh = onRefreshPosts,
-                content = {
-                    HomeScreenErrorAndContent(
-                        posts = posts,
-                        onRefresh = {
-                            onRefreshPosts()
-                        },
-                        navigateToArticle = navigateToArticle,
-                        favorites = favorites,
-                        onToggleFavorite = onToggleFavorite,
-                        modifier = modifier
-                    )
-                }
-            )
         }
-    )
+    ) { innerPadding ->
+        val modifier = Modifier.padding(innerPadding)
+        LoadingContent(
+            empty = posts.initialLoad,
+            emptyContent = { FullScreenLoading() },
+            loading = posts.loading,
+            onRefresh = onRefreshPosts,
+            content = {
+                HomeScreenErrorAndContent(
+                    posts = posts,
+                    onRefresh = {
+                        onRefreshPosts()
+                    },
+                    navigateToArticle = navigateToArticle,
+                    favorites = favorites,
+                    onToggleFavorite = onToggleFavorite,
+                    modifier = modifier
+                )
+            }
+        )
+    }
 }
 
 /**
@@ -361,7 +368,11 @@ private fun PostListPopularSection(
 
         LazyRow(modifier = Modifier.padding(end = 16.dp)) {
             items(posts) { post ->
-                PostCardPopular(post, navigateToArticle, Modifier.padding(start = 16.dp, bottom = 16.dp))
+                PostCardPopular(
+                    post,
+                    navigateToArticle,
+                    Modifier.padding(start = 16.dp, bottom = 16.dp)
+                )
             }
         }
         PostListDivider()

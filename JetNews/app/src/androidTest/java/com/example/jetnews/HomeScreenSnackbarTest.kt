@@ -52,6 +52,7 @@ class HomeScreenSnackbarTest {
                 onRefreshPosts = {},
                 onErrorDismiss = {},
                 navigateToArticle = {},
+                openDrawer = {},
                 scaffoldState = scaffoldState
             )
         }

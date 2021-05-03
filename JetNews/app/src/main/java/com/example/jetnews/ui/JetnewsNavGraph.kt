@@ -20,6 +20,7 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +31,7 @@ import com.example.jetnews.ui.MainDestinations.ARTICLE_ID_KEY
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.interests.InterestsScreen
+import kotlinx.coroutines.launch
 
 /**
  * Destinations used in the ([JetnewsApp]).
@@ -49,6 +51,8 @@ fun JetnewsNavGraph(
     startDestination: String = MainDestinations.HOME_ROUTE
 ) {
     val actions = remember(navController) { MainActions(navController) }
+    val coroutineScope = rememberCoroutineScope()
+    val openDrawer: () -> Unit = { coroutineScope.launch { scaffoldState.drawerState.open() } }
 
     NavHost(
         navController = navController,
@@ -58,13 +62,13 @@ fun JetnewsNavGraph(
             HomeScreen(
                 postsRepository = appContainer.postsRepository,
                 navigateToArticle = actions.navigateToArticle,
-                scaffoldState = scaffoldState
+                openDrawer = openDrawer
             )
         }
         composable(MainDestinations.INTERESTS_ROUTE) {
             InterestsScreen(
                 interestsRepository = appContainer.interestsRepository,
-                scaffoldState = scaffoldState
+                openDrawer = openDrawer
             )
         }
         composable("${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}") { backStackEntry ->

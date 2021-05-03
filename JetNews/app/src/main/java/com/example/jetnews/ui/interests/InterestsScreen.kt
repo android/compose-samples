@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
-import androidx.compose.material.DrawerValue
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -38,7 +37,6 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -85,12 +83,14 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 /**
  * Stateful InterestsScreen manages state using [produceUiState]
  *
- * @param scaffoldState (state) state for screen Scaffold
  * @param interestsRepository data source for this screen
+ * @param openDrawer (event) request opening the app drawer
+ * @param scaffoldState (state) state for screen Scaffold
  */
 @Composable
 fun InterestsScreen(
     interestsRepository: InterestsRepository,
+    openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
@@ -143,6 +143,7 @@ fun InterestsScreen(
         tabContent = tabContent,
         tab = currentSection,
         onTabChange = updateSection,
+        openDrawer = openDrawer,
         scaffoldState = scaffoldState
     )
 }
@@ -154,6 +155,7 @@ fun InterestsScreen(
  * list, tabs are displayed in the order specified by this list
  * @param tab (state) the current tab to display, must be in [tabContent]
  * @param onTabChange (event) request a change in [tab] to another tab from [tabContent]
+ * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
@@ -161,15 +163,16 @@ fun InterestsScreen(
     tabContent: List<TabContent>,
     tab: Sections,
     onTabChange: (Sections) -> Unit,
+    openDrawer: () -> Unit,
     scaffoldState: ScaffoldState,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
+                    IconButton(onClick = openDrawer) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer)
@@ -177,11 +180,10 @@ fun InterestsScreen(
                     }
                 }
             )
-        },
-        content = {
-            TabContent(tab, onTabChange, tabContent)
         }
-    )
+    ) {
+        TabContent(tab, onTabChange, tabContent)
+    }
 }
 
 /**
@@ -398,7 +400,8 @@ private fun TopicDivider() {
 fun PreviewInterestsScreen() {
     ThemedPreview {
         InterestsScreen(
-            interestsRepository = FakeInterestsRepository()
+            interestsRepository = FakeInterestsRepository(),
+            openDrawer = {}
         )
     }
 }
@@ -407,12 +410,9 @@ fun PreviewInterestsScreen() {
 @Composable
 fun PreviewInterestsScreenDark() {
     ThemedPreview(darkTheme = true) {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
         InterestsScreen(
             interestsRepository = FakeInterestsRepository(),
-            scaffoldState = scaffoldState
+            openDrawer = {}
         )
     }
 }
