@@ -24,8 +24,6 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha15"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
-    const val material = "com.google.android.material:material:1.3.0"
-
     object Accompanist {
         const val version = "0.8.2.compose-7321851-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
