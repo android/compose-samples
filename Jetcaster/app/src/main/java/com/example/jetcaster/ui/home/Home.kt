@@ -20,6 +20,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -67,14 +68,16 @@ import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.util.CollapsingContent
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
+import com.example.jetcaster.util.Scaffold
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.constrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.insets.statusBarsHeight
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -155,7 +158,6 @@ fun HomeAppBar(
  */
 private const val MinConstastOfPrimaryVsSurface = 3f
 
-@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
 @Composable
 fun HomeContent(
     featuredPodcasts: List<PodcastWithExtraInfo>,
@@ -166,97 +168,116 @@ fun HomeContent(
     onPodcastUnfollowed: (String) -> Unit,
     onCategorySelected: (HomeCategory) -> Unit
 ) {
-    Column(modifier = modifier) {
-        // We dynamically theme this sub-section of the layout to match the selected
-        // 'top podcast'
-
-        val surfaceColor = MaterialTheme.colors.surface
-        val dominantColorState = rememberDominantColorState { color ->
-            // We want a color which has sufficient contrast against the surface color
-            color.constrastAgainst(surfaceColor) >= MinConstastOfPrimaryVsSurface
-        }
-
-        DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState(
-                pageCount = featuredPodcasts.size,
-                initialOffscreenLimit = 2,
-            )
-
-            val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
-                ?.podcast?.imageUrl
-
-            // When the selected image url changes, call updateColorsFromImageUrl() or reset()
-            LaunchedEffect(selectedImageUrl) {
-                if (selectedImageUrl != null) {
-                    dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
-                } else {
-                    dominantColorState.reset()
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalGradientScrim(
-                        color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
-                        startYPercentage = 1f,
-                        endYPercentage = 0f
-                    )
-            ) {
-                val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
-
-                // Draw a scrim over the status bar which matches the app bar
-                Spacer(
-                    Modifier
-                        .background(appBarColor)
-                        .fillMaxWidth()
-                        .statusBarsHeight()
-                )
-
+    Scaffold(
+        topBar = {
+            Surface(color = MaterialTheme.colors.surface.copy(alpha = 0.87f)) {
                 HomeAppBar(
-                    backgroundColor = appBarColor,
-                    modifier = Modifier.fillMaxWidth()
+                    backgroundColor = Color.Transparent,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
                 )
+            }
+        }
+    ) { paddingValues ->
+        // TODO: Copy start/end too
+        val topOnlyPadding = PaddingValues(top = paddingValues.calculateTopPadding())
 
-                if (featuredPodcasts.isNotEmpty()) {
-                    Spacer(Modifier.height(16.dp))
+        CollapsingContent(
+            modifier = modifier,
+            contentPadding = topOnlyPadding,
+            collapsingHeader = {
+                FollowPodcastsHeader(
+                    featuredPodcasts = featuredPodcasts,
+                    onPodcastUnfollowed = onPodcastUnfollowed,
+                    paddingValues = topOnlyPadding,
+                )
+            },
+        ) {
+            Column(Modifier.fillMaxSize()) {
+                if (isRefreshing) {
+                    // TODO show a progress indicator or similar
+                }
 
-                    FollowedPodcasts(
-                        items = featuredPodcasts,
-                        pagerState = pagerState,
-                        onPodcastUnfollowed = onPodcastUnfollowed,
-                        modifier = Modifier
-                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
-                            .fillMaxWidth()
-                            .height(200.dp)
+                if (homeCategories.isNotEmpty()) {
+                    HomeCategoryTabs(
+                        categories = homeCategories,
+                        selectedCategory = selectedHomeCategory,
+                        onCategorySelected = onCategorySelected
                     )
+                }
 
-                    Spacer(Modifier.height(16.dp))
+                when (selectedHomeCategory) {
+                    HomeCategory.Library -> {
+                        // TODO
+                    }
+                    HomeCategory.Discover -> {
+                        Discover(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        )
+                    }
                 }
             }
         }
+    }
+}
 
-        if (isRefreshing) {
-            // TODO show a progress indicator or similar
-        }
+@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
+@Composable
+private fun FollowPodcastsHeader(
+    featuredPodcasts: List<PodcastWithExtraInfo>,
+    onPodcastUnfollowed: (String) -> Unit,
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    // We dynamically theme this sub-section of the layout to match the selected
+    // 'top podcast'
 
-        if (homeCategories.isNotEmpty()) {
-            HomeCategoryTabs(
-                categories = homeCategories,
-                selectedCategory = selectedHomeCategory,
-                onCategorySelected = onCategorySelected
-            )
-        }
+    val surfaceColor = MaterialTheme.colors.surface
+    val dominantColorState = rememberDominantColorState { color ->
+        // We want a color which has sufficient contrast against the surface color
+        color.constrastAgainst(surfaceColor) >= MinConstastOfPrimaryVsSurface
+    }
 
-        when (selectedHomeCategory) {
-            HomeCategory.Library -> {
-                // TODO
+    DynamicThemePrimaryColorsFromImage(dominantColorState) {
+        val pagerState = rememberPagerState(
+            pageCount = featuredPodcasts.size,
+            initialOffscreenLimit = 2,
+        )
+
+        val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
+            ?.podcast?.imageUrl
+
+        // When the selected image url changes, call updateColorsFromImageUrl() or reset()
+        LaunchedEffect(selectedImageUrl) {
+            if (selectedImageUrl != null) {
+                dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
+            } else {
+                dominantColorState.reset()
             }
-            HomeCategory.Discover -> {
-                Discover(
-                    Modifier
+        }
+
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .verticalGradientScrim(
+                    color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
+                    startYPercentage = 1f,
+                    endYPercentage = 0f
+                )
+                .padding(paddingValues)
+        ) {
+            if (featuredPodcasts.isNotEmpty()) {
+                FollowedPodcastsPager(
+                    items = featuredPodcasts,
+                    pagerState = pagerState,
+                    onPodcastUnfollowed = onPodcastUnfollowed,
+                    modifier = Modifier
+                        .padding(start = Keyline1, top = 16.dp, end = Keyline1)
                         .fillMaxWidth()
-                        .weight(1f)
+                        .height(200.dp)
                 )
             }
         }
@@ -315,7 +336,7 @@ fun HomeCategoryTabIndicator(
 
 @ExperimentalPagerApi // HorizontalPager is experimental
 @Composable
-fun FollowedPodcasts(
+fun FollowedPodcastsPager(
     items: List<PodcastWithExtraInfo>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
