@@ -111,7 +111,7 @@ fun PodcastCategory(
             )
         }
 
-        items(viewState.episodes) { item ->
+        items(viewState.episodes, key = { it.episode.uri }) { item ->
             EpisodeListItem(
                 episode = item.episode,
                 podcast = item.podcast,
