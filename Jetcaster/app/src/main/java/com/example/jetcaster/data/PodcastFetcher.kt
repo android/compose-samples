@@ -25,6 +25,7 @@ import com.rometools.rome.io.SyndFeedInput
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -64,11 +65,19 @@ class PodcastsFetcher(
      * The feeds are fetched concurrently, meaning that the resulting emission order may not
      * match the order of [feedUrls].
      */
-    operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> = feedUrls.asFlow()
+    operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> {
         // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
-        .flatMapMerge { feedUrl ->
-            flow { emit(fetchPodcast(feedUrl)) }
-        }
+        return feedUrls.asFlow()
+            .flatMapMerge { feedUrl ->
+                flow {
+                    emit(fetchPodcast(feedUrl))
+                }.catch { e ->
+                    // If an exception was caught while fetching the podcast, wrap it in
+                    // an Error instance.
+                    emit(PodcastRssResponse.Error(e))
+                }
+            }
+    }
 
     private suspend fun fetchPodcast(url: String): PodcastRssResponse {
         val request = Request.Builder()
@@ -92,11 +101,17 @@ class PodcastsFetcher(
     }
 }
 
-data class PodcastRssResponse(
-    val podcast: Podcast,
-    val episodes: List<Episode>,
-    val categories: Set<Category>
-)
+sealed class PodcastRssResponse {
+    data class Error(
+        val throwable: Throwable?,
+    ) : PodcastRssResponse()
+
+    data class Success(
+        val podcast: Podcast,
+        val episodes: List<Episode>,
+        val categories: Set<Category>
+    ) : PodcastRssResponse()
+}
 
 /**
  * Map a Rome [SyndFeed] instance to our own [Podcast] data class.
@@ -119,7 +134,7 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
         ?.map { Category(name = it.name) }
         ?.toSet() ?: emptySet()
 
-    return PodcastRssResponse(podcast, episodes, categories)
+    return PodcastRssResponse.Success(podcast, episodes, categories)
 }
 
 /**
