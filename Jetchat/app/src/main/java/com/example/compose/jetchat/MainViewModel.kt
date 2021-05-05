@@ -16,18 +16,17 @@
 
 package com.example.compose.jetchat
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Used to communicate between screens.
  */
 class MainViewModel : ViewModel() {
 
-    // TODO: Expose a flow for events
-    private val _drawerShouldBeOpened = MutableLiveData(false)
-    val drawerShouldBeOpened: LiveData<Boolean> = _drawerShouldBeOpened
+    private val _drawerShouldBeOpened = MutableStateFlow(false)
+    val drawerShouldBeOpened: StateFlow<Boolean> = _drawerShouldBeOpened
 
     fun openDrawer() {
         _drawerShouldBeOpened.value = true

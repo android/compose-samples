@@ -23,12 +23,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.BackPressHandler
@@ -59,8 +60,8 @@ class NavActivity : AppCompatActivity() {
                 ) {
                     val scaffoldState = rememberScaffoldState()
 
-                    val openDrawerEvent = viewModel.drawerShouldBeOpened.observeAsState()
-                    if (openDrawerEvent.value == true) {
+                    val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
+                    if (drawerOpen) {
                         // Open drawer and reset state in VM.
                         LaunchedEffect(Unit) {
                             scaffoldState.drawerState.open()
@@ -94,10 +95,7 @@ class NavActivity : AppCompatActivity() {
                             }
                         }
                     ) {
-                        // TODO: Fragments inflated via AndroidViewBinding don't work as expected
-                        //  https://issuetracker.google.com/179915946
-                        // AndroidViewBinding(ContentMainBinding::inflate)
-                        FragmentAwareAndroidViewBinding(ContentMainBinding::inflate)
+                        AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
             }
