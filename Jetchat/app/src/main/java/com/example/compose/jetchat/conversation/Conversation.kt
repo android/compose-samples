@@ -102,6 +102,7 @@ fun ConversationContent(
 
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+
     Surface(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
@@ -288,8 +289,6 @@ fun Message(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean
 ) {
-    val painter = painterResource(id = msg.authorImage)
-
     val borderColor = if (isUserMe) {
         MaterialTheme.colors.primary
     } else {
@@ -309,7 +308,7 @@ fun Message(
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
-                painter = painter,
+                painter = painterResource(id = msg.authorImage),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
