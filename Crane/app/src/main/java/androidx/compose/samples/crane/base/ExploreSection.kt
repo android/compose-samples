@@ -107,7 +107,7 @@ private fun ExploreItem(
                     modifier = Modifier.fillMaxSize(),
                 )
 
-                if (painter.loadState == ImageLoadState.Loading) {
+                if (painter.loadState is ImageLoadState.Loading) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_crane_logo),
                         contentDescription = null,

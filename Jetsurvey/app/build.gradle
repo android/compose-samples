@@ -83,9 +83,8 @@ android {
         excludes += "/META-INF/LGPL2.1"
     }
 
-    // TODO: Fix lint errors and remove
     lintOptions {
-        abortOnError false
+        abortOnError true
     }
 }
 
