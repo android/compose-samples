@@ -41,9 +41,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -167,19 +169,20 @@ private fun Body(
                         modifier = HzPadding
                     )
                     Spacer(Modifier.height(16.dp))
-                    val seeMore = remember { mutableStateOf(true) }
+                    var seeMore by remember { mutableStateOf(true) }
                     Text(
                         text = stringResource(R.string.detail_placeholder),
                         style = MaterialTheme.typography.body1,
                         color = JetsnackTheme.colors.textHelp,
-                        maxLines = if (seeMore.value) 5 else Int.MAX_VALUE,
+                        maxLines = if (seeMore) 5 else Int.MAX_VALUE,
                         overflow = TextOverflow.Ellipsis,
                         modifier = HzPadding
                     )
-                    val textButton = if (seeMore.value)
+                    val textButton = if (seeMore) {
                         stringResource(id = R.string.see_more)
-                    else
+                    } else {
                         stringResource(id = R.string.see_less)
+                    }
                     Text(
                         text = textButton,
                         style = MaterialTheme.typography.button,
@@ -190,7 +193,7 @@ private fun Body(
                             .fillMaxWidth()
                             .padding(top = 15.dp)
                             .clickable {
-                                seeMore.value = !seeMore.value
+                                seeMore = !seeMore
                             }
                     )
                     Spacer(Modifier.height(40.dp))
