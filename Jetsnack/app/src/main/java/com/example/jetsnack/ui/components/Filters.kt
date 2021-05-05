@@ -107,15 +107,15 @@ fun FilterChip(
 
         val pressed by interactionSource.collectIsPressedAsState()
         val backgroundPressed =
-            if (pressed)
+            if (pressed) {
                 Modifier.offsetGradientBackground(
                     JetsnackTheme.colors.interactiveSecondary,
                     200f,
                     0f
                 )
-            else
+            } else {
                 Modifier.background(Color.Transparent)
-
+            }
         Box(
             modifier = Modifier
                 .toggleable(
