@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
@@ -74,7 +74,7 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
     Surface(
         modifier = Modifier
             .wrapContentSize()
-            .widthIn(max = 840.dp)
+            .requiredWidthIn(max = 840.dp)
             .fillMaxHeight()
     ) {
         val offset by animateDpAsState(targetValue = currentOffsetHolderDp)

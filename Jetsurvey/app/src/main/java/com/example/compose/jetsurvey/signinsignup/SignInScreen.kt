@@ -77,9 +77,9 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         content = {
             SignInSignUpScreen(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .wrapContentWidth(align = Alignment.CenterHorizontally)
-                    .widthIn(max = 840.dp)
-                    .fillMaxWidth(),
+                    .widthIn(max = 840.dp),
                 onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) }
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
