@@ -23,9 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -48,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.snackbarAction
+import com.example.compose.jetsurvey.util.supportWideScreen
 import kotlinx.coroutines.launch
 
 sealed class SignInEvent {
@@ -76,10 +75,7 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         },
         content = {
             SignInSignUpScreen(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(align = Alignment.CenterHorizontally)
-                    .widthIn(max = 840.dp),
+                modifier = Modifier.supportWideScreen(),
                 onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) }
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {

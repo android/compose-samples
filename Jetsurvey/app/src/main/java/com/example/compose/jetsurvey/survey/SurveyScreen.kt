@@ -26,8 +26,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
@@ -56,6 +54,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
+import com.example.compose.jetsurvey.util.supportWideScreen
 
 @Composable
 fun SurveyQuestionsScreen(
@@ -68,12 +67,7 @@ fun SurveyQuestionsScreen(
         questions.questionsState[questions.currentQuestionIndex]
     }
 
-    Surface(
-        modifier = Modifier
-            .wrapContentSize()
-            .widthIn(max = 840.dp)
-            .fillMaxSize()
-    ) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             topBar = {
                 SurveyTopAppBar(
@@ -113,12 +107,7 @@ fun SurveyResultScreen(
     result: SurveyState.Result,
     onDonePressed: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier
-            .wrapContentSize()
-            .widthIn(max = 840.dp)
-            .fillMaxSize()
-    ) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
