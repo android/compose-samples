@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.util.supportWideScreen
 
 sealed class SignUpEvent {
     object SignIn : SignUpEvent()
@@ -58,7 +59,7 @@ fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
         content = {
             SignInSignUpScreen(
                 onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.supportWideScreen()
             ) {
                 Column {
                     SignUpContent(
@@ -121,7 +122,7 @@ fun SignUpContent(
     }
 }
 
-@Preview
+@Preview(widthDp = 1024)
 @Composable
 fun SignUpPreview() {
     JetsurveyTheme {

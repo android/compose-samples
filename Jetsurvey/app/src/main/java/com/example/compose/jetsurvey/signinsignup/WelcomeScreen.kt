@@ -19,7 +19,6 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -52,6 +51,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.util.supportWideScreen
 
 sealed class WelcomeEvent {
     data class SignInSignUp(val email: String) : WelcomeEvent()
@@ -69,7 +69,7 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
     val currentOffsetHolderDp =
         with(LocalDensity.current) { currentOffsetHolder.value.toDp() }
     val heightDp = with(LocalDensity.current) { heightWithBranding.toDp() }
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         val offset by animateDpAsState(targetValue = currentOffsetHolderDp)
         Column(
             modifier = Modifier
