@@ -35,6 +35,9 @@ abstract class PodcastsDao {
     @Query("SELECT * FROM podcasts WHERE uri = :uri")
     abstract fun podcastWithUri(uri: String): Flow<Podcast>
 
+    @Query("SELECT * FROM podcasts WHERE title LIKE '%' || :title || '%'")
+    abstract fun podcastsWithTitle(title: String): Flow<List<Podcast>>
+
     @Transaction
     @Query(
         """

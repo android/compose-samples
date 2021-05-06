@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2020 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +19,7 @@
     <string name="connection_error_title">Connection error</string>
     <string name="connection_error_message">Unable to fetch podcasts feeds.\nCheck your internet connection and try again.</string>
     <string name="retry_label">Retry</string>
-    
+
     <string name="your_podcasts">Your podcasts</string>
     <string name="latest_episodes">Latest episodes</string>
 
@@ -48,4 +47,5 @@
     <string name="cd_unfollow">Unfollow</string>
     <string name="cd_follow">Follow</string>
 
+    <string name="close">Close</string>
 </resources>

@@ -18,29 +18,31 @@ package com.example.jetcaster.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
+import com.example.jetcaster.ui.search.Search
 
+@ExperimentalFoundationApi
 @Composable
 fun JetcasterApp() {
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
+    val navigationViewModel = viewModel(NavigationViewModel::class.java)
+    val screen = navigationViewModel.state.collectAsState().value
 
-    // TODO: add some navigation
-    if (isOnline) {
-        Home()
-    } else {
+    if (!isOnline) {
         OfflineDialog { isOnline = checkIfOnline(context) }
+    } else when (screen) {
+        Screen.Home -> Home()
+        Screen.Search -> Search()
     }
 }
 
