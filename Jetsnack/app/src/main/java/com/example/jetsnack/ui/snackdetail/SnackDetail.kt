@@ -18,6 +18,7 @@ package com.example.jetsnack.ui.snackdetail
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,9 +41,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -51,6 +54,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -165,13 +169,33 @@ private fun Body(
                         modifier = HzPadding
                     )
                     Spacer(Modifier.height(16.dp))
+                    var seeMore by remember { mutableStateOf(true) }
                     Text(
                         text = stringResource(R.string.detail_placeholder),
                         style = MaterialTheme.typography.body1,
                         color = JetsnackTheme.colors.textHelp,
+                        maxLines = if (seeMore) 5 else Int.MAX_VALUE,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = HzPadding
                     )
-
+                    val textButton = if (seeMore) {
+                        stringResource(id = R.string.see_more)
+                    } else {
+                        stringResource(id = R.string.see_less)
+                    }
+                    Text(
+                        text = textButton,
+                        style = MaterialTheme.typography.button,
+                        textAlign = TextAlign.Center,
+                        color = JetsnackTheme.colors.textLink,
+                        modifier = Modifier
+                            .heightIn(20.dp)
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
+                            .clickable {
+                                seeMore = !seeMore
+                            }
+                    )
                     Spacer(Modifier.height(40.dp))
                     Text(
                         text = stringResource(R.string.ingredients),
