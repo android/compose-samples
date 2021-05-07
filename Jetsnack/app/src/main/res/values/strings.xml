@@ -62,5 +62,6 @@
     <string name="grab_beverage">Grab a beverage and check back later!</string>
     <string name="see_more">SEE MORE</string>
     <string name="see_less">SEE LESS</string>
+    <string name="remove_item">Remove Item</string>
 
 </resources>
