@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -44,12 +45,12 @@ import com.example.owl.model.topics
 import com.example.owl.ui.MainDestinations
 
 fun NavGraphBuilder.courses(
-    onCourseSelected: (Long) -> Unit,
+    onCourseSelected: (Long, NavBackStackEntry) -> Unit,
     onboardingComplete: State<Boolean>, // https://issuetracker.google.com/174783110
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    composable(CourseTabs.FEATURED.route) {
+    composable(CourseTabs.FEATURED.route) { from ->
         // Show onboarding instead if not shown yet.
         LaunchedEffect(onboardingComplete) {
             if (!onboardingComplete.value) {
@@ -57,11 +58,19 @@ fun NavGraphBuilder.courses(
             }
         }
         if (onboardingComplete.value) { // Avoid glitch when showing onboarding
-            FeaturedCourses(courses, onCourseSelected, modifier)
+            FeaturedCourses(
+                courses = courses,
+                selectCourse = { id -> onCourseSelected(id, from) },
+                modifier = modifier
+            )
         }
     }
-    composable(CourseTabs.MY_COURSES.route) {
-        MyCourses(courses, onCourseSelected, modifier)
+    composable(CourseTabs.MY_COURSES.route) { from ->
+        MyCourses(
+            courses = courses,
+            { id -> onCourseSelected(id, from) },
+            modifier
+        )
     }
     composable(CourseTabs.SEARCH.route) {
         SearchCourses(topics, modifier)

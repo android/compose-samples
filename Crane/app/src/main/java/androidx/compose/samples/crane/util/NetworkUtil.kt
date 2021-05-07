@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,65 +14,19 @@
  * limitations under the License.
  */
 
-package com.example.owl.ui.utils
+package androidx.compose.samples.crane.util
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
-import com.example.owl.R
-import com.example.owl.ui.theme.compositedOnSurface
 import com.google.accompanist.coil.LocalImageLoader
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState
 import okhttp3.HttpUrl
-
-/**
- * A wrapper around [Image] and [rememberCoilPainter], setting a
- * default [contentScale] and showing content while loading.
- */
-@Composable
-fun NetworkImage(
-    url: String,
-    contentDescription: String?,
-    modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
-    placeholderColor: Color? = MaterialTheme.colors.compositedOnSurface(0.2f)
-) {
-    Box(modifier) {
-        val painter = rememberCoilPainter(
-            request = url,
-            previewPlaceholder = R.drawable.photo_architecture,
-        )
-
-        Image(
-            painter = painter,
-            contentDescription = contentDescription,
-            contentScale = contentScale,
-        )
-
-        if (painter.loadState is ImageLoadState.Loading && placeholderColor != null) {
-            Spacer(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(placeholderColor)
-            )
-        }
-    }
-}
 
 @Composable
 fun ProvideImageLoader(content: @Composable () -> Unit) {

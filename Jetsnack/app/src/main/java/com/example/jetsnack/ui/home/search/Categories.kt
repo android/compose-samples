@@ -79,7 +79,7 @@ private fun SearchCategoryCollection(
         VerticalGrid(Modifier.padding(horizontal = 16.dp)) {
             val gradient = when (index % 2) {
                 0 -> JetsnackTheme.colors.gradient2_2
-                else -> JetsnackTheme.colors.gradient3_2
+                else -> JetsnackTheme.colors.gradient2_3
             }
             collection.categories.forEach { category ->
                 SearchCategory(

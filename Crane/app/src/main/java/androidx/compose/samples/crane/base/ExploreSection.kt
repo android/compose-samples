@@ -49,6 +49,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
+import com.google.accompanist.insets.navigationBarsHeight
 
 @Composable
 fun ExploreSection(
@@ -77,6 +78,9 @@ fun ExploreSection(
                         Divider(color = crane_divider_color)
                     }
                 }
+                item {
+                    Spacer(modifier = Modifier.navigationBarsHeight())
+                }
             }
         }
     }
@@ -103,7 +107,7 @@ private fun ExploreItem(
                     modifier = Modifier.fillMaxSize(),
                 )
 
-                if (painter.loadState == ImageLoadState.Loading) {
+                if (painter.loadState is ImageLoadState.Loading) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_crane_logo),
                         contentDescription = null,

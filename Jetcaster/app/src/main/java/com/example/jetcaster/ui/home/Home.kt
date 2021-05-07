@@ -177,18 +177,21 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState(pageCount = featuredPodcasts.size)
+            val pagerState = rememberPagerState(
+                pageCount = featuredPodcasts.size,
+                initialOffscreenLimit = 2,
+            )
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
 
             // When the selected image url changes, call updateColorsFromImageUrl() or reset()
-            if (selectedImageUrl != null) {
-                LaunchedEffect(selectedImageUrl) {
+            LaunchedEffect(selectedImageUrl) {
+                if (selectedImageUrl != null) {
                     dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
+                } else {
+                    dominantColorState.reset()
                 }
-            } else {
-                dominantColorState.reset()
             }
 
             Column(

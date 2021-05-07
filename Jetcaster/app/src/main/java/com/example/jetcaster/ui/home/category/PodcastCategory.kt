@@ -111,7 +111,7 @@ fun PodcastCategory(
             )
         }
 
-        items(viewState.episodes) { item ->
+        items(viewState.episodes, key = { it.episode.uri }) { item ->
             EpisodeListItem(
                 episode = item.episode,
                 podcast = item.podcast,
@@ -144,31 +144,19 @@ fun EpisodeListItem(
             }
         )
 
-        if (podcast.imageUrl != null) {
-            // If we have an image Url, we can show it using Coil
-            Image(
-                painter = rememberCoilPainter(podcast.imageUrl, fadeIn = true),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .constrainAs(image) {
-                        end.linkTo(parent.end, 16.dp)
-                        top.linkTo(parent.top, 16.dp)
-                    },
-            )
-        } else {
-            // If we don't have an image url, we need to make sure that the constraint reference
-            // still makes senses for our siblings. We add a zero sized spacer in the spacer
-            // origin position (top-end) with the same margin
-            Spacer(
-                Modifier.constrainAs(image) {
+        // If we have an image Url, we can show it using Coil
+        Image(
+            painter = rememberCoilPainter(podcast.imageUrl, fadeIn = true),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(56.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .constrainAs(image) {
                     end.linkTo(parent.end, 16.dp)
                     top.linkTo(parent.top, 16.dp)
-                }
-            )
-        }
+                },
+        )
 
         Text(
             text = episode.title,

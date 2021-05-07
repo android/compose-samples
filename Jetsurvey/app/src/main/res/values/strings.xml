@@ -21,7 +21,6 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_in_action">SIGN IN</string>
     <string name="sign_in_guest">SIGN IN AS GUEST</string>
     <string name="sign_in_create_account">Sign in or create an account</string>
     <string name="or">or</string>
@@ -66,12 +65,9 @@
     <!-- question 3  -->
     <string name="takeaway">When was the last time you ordered takeaway because you couldn\'t be bothered to cook?</string>
     <string name="pick_date">Pick a date</string>
-    <string name="selected_date">🥡 📅  %s</string>
 
     <!-- question 4-->
     <string name="selfies">How do you feel about selfies 🤳?</string>
-    <string name="selfie_min">😒️</string>
-    <string name="selfie_max">🤩️</string>
 
     <!-- question 5-->
     <string name="selfie_skills">Show off your selfie skills!</string>
@@ -79,10 +75,6 @@
     <string name="retake_photo">RETAKE PHOTO</string>
 
     <!-- question 6-->
-    <string name="best_friend">Who\'s your best friend?</string>
-    <string name="pick_contact">Pick a contact</string>
-
-    <!-- question 7-->
     <string name="favourite_movie">What\'s your favourite movie?</string>
     <string name="star_trek">Star Trek</string>
     <string name="social_network">The social network</string>
@@ -92,4 +84,7 @@
     <string name="survey_result">Congratulations, you are %s</string>
     <string name="survey_result_description">You are a curious developer, always willing to try
         something new. You want to stay up to date with the trends to Compose is your middle name</string>
+    <string name="strongly_dislike">Strongly\nDislike</string>
+    <string name="strongly_like">Strongly\nLike</string>
+    <string name="neutral">Neutral</string>
 </resources>

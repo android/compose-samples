@@ -61,7 +61,8 @@ sealed class PossibleAnswer {
         val steps: Int,
         @StringRes val startText: Int,
         @StringRes val endText: Int,
-        val defaultValue: Float = range.start
+        @StringRes val neutralText: Int,
+        val defaultValue: Float = 5.5f
     ) : PossibleAnswer()
 }
 

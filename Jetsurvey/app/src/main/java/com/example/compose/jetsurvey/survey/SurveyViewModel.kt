@@ -22,6 +22,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.launch
 
 class SurveyViewModel(
@@ -69,6 +72,10 @@ class SurveyViewModel(
         updateStateWithActionResult(questionId, SurveyActionResult.Date(date))
     }
 
+    fun getCurrentDate(questionId: Int): Long {
+        return getSelectedDate(questionId)
+    }
+
     fun getUriToSaveImage(): Uri? {
         uri = photoUriManager.buildNewUri()
         return uri
@@ -100,6 +107,25 @@ class SurveyViewModel(
             return latestState.questionsState[latestState.currentQuestionIndex].question.id
         }
         return null
+    }
+
+    private fun getSelectedDate(questionId: Int): Long {
+        val latestState = _uiState.value
+        var ret = Date().time
+        if (latestState != null && latestState is SurveyState.Questions) {
+            val question =
+                latestState.questionsState.first { questionState ->
+                    questionState.question.id == questionId
+                }
+            val answer: Answer.Action? = question.answer as Answer.Action?
+            if (answer != null && answer.result is SurveyActionResult.Date) {
+                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+                val formatted = formatter.parse(answer.result.date)
+                if (formatted is Date)
+                    ret = formatted.time
+            }
+        }
+        return ret
     }
 }
 
