@@ -48,10 +48,12 @@ import com.example.jetnews.R
 
 @Composable
 fun AppDrawer(
-    navigateTo: (Screen) -> Unit,
-    currentScreen: Screen,
+    currentRoute: String,
+    navigateToHome: () -> Unit,
+    navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit
 ) {
+
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(24.dp))
         JetNewsLogo(Modifier.padding(16.dp))
@@ -59,9 +61,9 @@ fun AppDrawer(
         DrawerButton(
             icon = Icons.Filled.Home,
             label = "Home",
-            isSelected = currentScreen == Screen.Home,
+            isSelected = currentRoute == MainDestinations.HOME_ROUTE,
             action = {
-                navigateTo(Screen.Home)
+                navigateToHome()
                 closeDrawer()
             }
         )
@@ -69,9 +71,9 @@ fun AppDrawer(
         DrawerButton(
             icon = Icons.Filled.ListAlt,
             label = "Interests",
-            isSelected = currentScreen == Screen.Interests,
+            isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
             action = {
-                navigateTo(Screen.Interests)
+                navigateToInterests()
                 closeDrawer()
             }
         )
@@ -159,8 +161,9 @@ private fun DrawerButton(
 fun PreviewAppDrawer() {
     ThemedPreview {
         AppDrawer(
-            navigateTo = { },
-            currentScreen = Screen.Home,
+            currentRoute = MainDestinations.HOME_ROUTE,
+            navigateToHome = {},
+            navigateToInterests = {},
             closeDrawer = { }
         )
     }
@@ -171,8 +174,9 @@ fun PreviewAppDrawer() {
 fun PreviewAppDrawerDark() {
     ThemedPreview(darkTheme = true) {
         AppDrawer(
-            navigateTo = { },
-            currentScreen = Screen.Home,
+            currentRoute = MainDestinations.HOME_ROUTE,
+            navigateToHome = {},
+            navigateToInterests = {},
             closeDrawer = { }
         )
     }

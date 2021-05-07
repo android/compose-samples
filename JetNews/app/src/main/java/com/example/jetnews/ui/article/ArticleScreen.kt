@@ -73,7 +73,7 @@ import kotlinx.coroutines.runBlocking
 @Suppress("DEPRECATION") // allow ViewModelLifecycleScope call
 @Composable
 fun ArticleScreen(
-    postId: String,
+    postId: String?,
     postsRepository: PostsRepository,
     onBack: () -> Unit
 ) {
@@ -98,7 +98,7 @@ fun ArticleScreen(
         onBack = onBack,
         isFavorite = isFavorite,
         onToggleFavorite = {
-            coroutineScope.launch { postsRepository.toggleFavorite(postId) }
+            coroutineScope.launch { postId?.let { postsRepository.toggleFavorite(postId) } }
         }
     )
 }
