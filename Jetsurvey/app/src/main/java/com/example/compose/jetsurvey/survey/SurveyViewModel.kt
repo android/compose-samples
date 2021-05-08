@@ -119,7 +119,7 @@ class SurveyViewModel(
                 }
             val answer: Answer.Action? = question.answer as Answer.Action?
             if (answer != null && answer.result is SurveyActionResult.Date) {
-                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+                val formatter = SimpleDateFormat("EEE, MMM d", Locale.ENGLISH)
                 val formatted = formatter.parse(answer.result.date)
                 if (formatted is Date)
                     ret = formatted.time

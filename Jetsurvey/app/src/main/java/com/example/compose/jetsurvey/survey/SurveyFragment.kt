@@ -28,6 +28,8 @@ import androidx.fragment.app.viewModels
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SurveyFragment : Fragment() {
 
@@ -95,7 +97,11 @@ class SurveyFragment : Fragment() {
         activity?.let {
             picker.show(it.supportFragmentManager, picker.toString())
             picker.addOnPositiveButtonClickListener {
-                viewModel.onDatePicked(questionId, picker.headerText)
+                val selectedData = Date().apply {
+                    time = picker.selection ?: date
+                }
+                val dateFormatted = SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(selectedData)
+                viewModel.onDatePicked(questionId, dateFormatted)
             }
         }
     }
