@@ -54,6 +54,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
+import com.example.compose.jetsurvey.util.supportWideScreen
 
 @Composable
 fun SurveyQuestionsScreen(
@@ -66,7 +67,7 @@ fun SurveyQuestionsScreen(
         questions.questionsState[questions.currentQuestionIndex]
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             topBar = {
                 SurveyTopAppBar(
@@ -106,7 +107,7 @@ fun SurveyResultScreen(
     result: SurveyState.Result,
     onDonePressed: () -> Unit
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)

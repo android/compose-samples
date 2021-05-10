@@ -42,7 +42,7 @@ class FakePostsRepository : PostsRepository {
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
-    override suspend fun getPost(postId: String): Result<Post> {
+    override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
             val post = posts.find { it.id == postId }
             if (post == null) {

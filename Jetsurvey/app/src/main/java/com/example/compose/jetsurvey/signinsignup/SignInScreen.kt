@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.snackbarAction
+import com.example.compose.jetsurvey.util.supportWideScreen
 import kotlinx.coroutines.launch
 
 sealed class SignInEvent {
@@ -74,8 +75,8 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         },
         content = {
             SignInSignUpScreen(
-                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.supportWideScreen(),
+                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) }
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     SignInContent(

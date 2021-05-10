@@ -36,7 +36,7 @@ class BlockingFakePostsRepository : PostsRepository {
     // for now, keep the favorites in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
-    override suspend fun getPost(postId: String): Result<Post> {
+    override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
             val post = posts.find { it.id == postId }
             if (post == null) {

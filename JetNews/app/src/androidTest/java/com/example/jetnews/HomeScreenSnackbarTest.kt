@@ -51,7 +51,8 @@ class HomeScreenSnackbarTest {
                 onToggleFavorite = {},
                 onRefreshPosts = {},
                 onErrorDismiss = {},
-                navigateTo = {},
+                navigateToArticle = {},
+                openDrawer = {},
                 scaffoldState = scaffoldState
             )
         }

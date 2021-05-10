@@ -25,18 +25,19 @@ import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.NoSelecte
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.Selected
 import androidx.compose.samples.crane.data.DatesRepository
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasScrollToKeyAction
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToKey
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
@@ -66,11 +67,12 @@ class CalendarTest {
         }
     }
 
-    @Ignore("performScrollTo doesn't work with LazyLists: issuetracker.google.com/178483889")
+    @ExperimentalTestApi
     @Test
     fun scrollsToTheBottom() {
         composeTestRule.onNodeWithContentDescription("January 1").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("December 31").performScrollTo().performClick()
+        composeTestRule.onNode(hasScrollToKeyAction()).performScrollToKey("2020/12/4")
+        composeTestRule.onNodeWithContentDescription("December 31").performClick()
         assert(datesRepository.datesSelected.toString() == "Dec 31")
     }
 

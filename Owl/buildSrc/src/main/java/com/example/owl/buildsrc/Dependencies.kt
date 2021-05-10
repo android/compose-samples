@@ -17,14 +17,14 @@
 package com.example.owl.buildsrc
 
 object Versions {
-    const val ktlint = "0.40.0"
+    const val ktlint = "0.41.0"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha15"
 
     object Accompanist {
-        const val version = "0.8.0"
+        const val version = "0.9.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
@@ -58,7 +58,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-beta05"
+            const val version = "1.0.0-beta06"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

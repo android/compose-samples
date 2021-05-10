@@ -28,7 +28,7 @@ interface PostsRepository {
     /**
      * Get a specific JetNews post.
      */
-    suspend fun getPost(postId: String): Result<Post>
+    suspend fun getPost(postId: String?): Result<Post>
 
     /**
      * Get JetNews posts.

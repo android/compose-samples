@@ -64,7 +64,7 @@ fun NetworkImage(
             contentScale = contentScale,
         )
 
-        if (painter.loadState == ImageLoadState.Loading && placeholderColor != null) {
+        if (painter.loadState is ImageLoadState.Loading && placeholderColor != null) {
             Spacer(
                 modifier = Modifier
                     .matchParentSize()

@@ -325,7 +325,6 @@ private fun UserInputSelector(
             onClick = onMessageSent,
             colors = buttonColors,
             border = border,
-            // TODO: Workaround for https://issuetracker.google.com/158830170
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
@@ -496,7 +495,6 @@ fun ExtendedSelectorInnerButton(
         shape = MaterialTheme.shapes.medium,
         enabled = selected,
         colors = colors,
-        // TODO: Workaround for https://issuetracker.google.com//158830170
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(
