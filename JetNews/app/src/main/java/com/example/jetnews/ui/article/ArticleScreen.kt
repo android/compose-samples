@@ -155,10 +155,14 @@ fun ArticleScreen(
             )
         }
     ) { innerPadding ->
-        val modifier = Modifier
-            .padding(innerPadding)
-            .navigationBarsPadding(bottom = false)
-        PostContent(post, modifier)
+        PostContent(
+            post = post,
+            modifier = Modifier
+                // innerPadding takes into account the top and bottom bar
+                .padding(innerPadding)
+                // offset content in landscape mode to account for the navigation bar
+                .navigationBarsPadding(bottom = false)
+        )
     }
 }
 
