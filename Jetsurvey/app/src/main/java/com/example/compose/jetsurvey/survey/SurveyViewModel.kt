@@ -27,6 +27,8 @@ import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.launch
 
+const val simpleDateFormatPattern = "EEE, MMM d"
+
 class SurveyViewModel(
     private val surveyRepository: SurveyRepository,
     private val photoUriManager: PhotoUriManager
@@ -68,8 +70,12 @@ class SurveyViewModel(
         _uiState.value = SurveyState.Result(surveyQuestions.surveyTitle, result)
     }
 
-    fun onDatePicked(questionId: Int, date: String) {
-        updateStateWithActionResult(questionId, SurveyActionResult.Date(date))
+    fun onDatePicked(questionId: Int, pickerSelection :Long?) {
+        val selectedData = Date().apply {
+            time = pickerSelection ?: getCurrentDate(questionId)
+        }
+        val formattedDate = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(selectedData)
+        updateStateWithActionResult(questionId, SurveyActionResult.Date(formattedDate))
     }
 
     fun getCurrentDate(questionId: Int): Long {
@@ -119,7 +125,7 @@ class SurveyViewModel(
                 }
             val answer: Answer.Action? = question.answer as Answer.Action?
             if (answer != null && answer.result is SurveyActionResult.Date) {
-                val formatter = SimpleDateFormat("EEE, MMM d", Locale.ENGLISH)
+                val formatter = SimpleDateFormat(simpleDateFormatPattern, Locale.ENGLISH)
                 val formatted = formatter.parse(answer.result.date)
                 if (formatted is Date)
                     ret = formatted.time

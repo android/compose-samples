@@ -98,11 +98,7 @@ class SurveyFragment : Fragment() {
         activity?.let {
             picker.show(it.supportFragmentManager, picker.toString())
             picker.addOnPositiveButtonClickListener {
-                val selectedData = Date().apply {
-                    time = picker.selection ?: date
-                }
-                val dateFormatted = SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(selectedData)
-                viewModel.onDatePicked(questionId, dateFormatted)
+                viewModel.onDatePicked(questionId, picker.selection)
             }
         }
     }
