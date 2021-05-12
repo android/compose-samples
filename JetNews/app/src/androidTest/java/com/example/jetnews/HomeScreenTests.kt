@@ -20,7 +20,6 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.state.UiState
@@ -28,6 +27,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -61,13 +61,14 @@ class HomeScreenTests {
         }
 
         // Then the first message received in the Snackbar is an error message
-        val snackbarText = InstrumentationRegistry.getInstrumentation()
-            .targetContext.resources.getString(R.string.load_error)
         runBlocking {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             // wait for the first a non-null `currentSnackbarData`
-            snapshotFlow { snackbarHostState.currentSnackbarData }.filterNotNull().first()
-            composeTestRule.onNodeWithText(snackbarText).assertExists()
+            val actualSnackbarText = snapshotFlow { snackbarHostState.currentSnackbarData }
+                .filterNotNull().first().message
+            val expectedSnackbarText = InstrumentationRegistry.getInstrumentation()
+                .targetContext.resources.getString(R.string.load_error)
+            assertEquals(expectedSnackbarText, actualSnackbarText)
         }
     }
 }
