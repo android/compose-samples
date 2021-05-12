@@ -38,7 +38,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
