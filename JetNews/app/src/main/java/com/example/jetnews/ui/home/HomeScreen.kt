@@ -61,6 +61,7 @@ import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -194,7 +195,7 @@ fun HomeScreen(
                     navigateToArticle = navigateToArticle,
                     favorites = favorites,
                     onToggleFavorite = onToggleFavorite,
-                    modifier = modifier
+                    modifier = modifier.supportWideScreen()
                 )
             }
         )

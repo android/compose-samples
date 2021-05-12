@@ -50,6 +50,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,6 +64,7 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -235,7 +238,7 @@ private fun TabContent(
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(1f).supportWideScreen()) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }
@@ -336,7 +339,7 @@ private fun TabWithSections(
             item {
                 Text(
                     text = section,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(16.dp).semantics { heading() },
                     style = MaterialTheme.typography.subtitle1
                 )
             }
