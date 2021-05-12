@@ -38,27 +38,27 @@ private val Domine = FontFamily(
 val JetnewsTypography = Typography(
     defaultFontFamily = Montserrat,
     h4 = TextStyle(
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 30.sp,
         letterSpacing = 0.sp
     ),
     h5 = TextStyle(
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         letterSpacing = 0.sp
     ),
     h6 = TextStyle(
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         letterSpacing = 0.sp
     ),
     subtitle1 = TextStyle(
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         letterSpacing = 0.15.sp
     ),
     subtitle2 = TextStyle(
-        fontWeight = FontWeight.W500,
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         letterSpacing = 0.1.sp
     ),
@@ -69,21 +69,22 @@ val JetnewsTypography = Typography(
         letterSpacing = 0.5.sp
     ),
     body2 = TextStyle(
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         letterSpacing = 0.25.sp
     ),
     button = TextStyle(
-        fontWeight = FontWeight.W500,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         letterSpacing = 1.25.sp
     ),
     caption = TextStyle(
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp
     ),
     overline = TextStyle(
-        fontWeight = FontWeight.W500,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
         letterSpacing = 1.sp
     )
