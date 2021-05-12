@@ -59,6 +59,7 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -232,7 +233,7 @@ private fun TabContent(
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(1f).supportWideScreen()) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }
