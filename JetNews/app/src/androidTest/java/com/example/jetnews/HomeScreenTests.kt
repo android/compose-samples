@@ -24,37 +24,40 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
-/**
- * Checks that the Snackbar is shown when the HomeScreen data contains an error.
- */
-class HomeScreenSnackbarTest {
+class HomeScreenTests {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    /**
+     * Checks that the Snackbar is shown when the HomeScreen data contains an error.
+     */
     @Test
     fun postsContainError_snackbarShown() {
         val snackbarHostState = SnackbarHostState()
         composeTestRule.setContent {
-            val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
+            JetnewsTheme {
+                val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
 
-            // When the Home screen receives data with an error
-            HomeScreen(
-                posts = UiState(exception = IllegalStateException()),
-                favorites = emptySet(),
-                onToggleFavorite = {},
-                onRefreshPosts = {},
-                onErrorDismiss = {},
-                navigateToArticle = {},
-                openDrawer = {},
-                scaffoldState = scaffoldState
-            )
+                // When the Home screen receives data with an error
+                HomeScreen(
+                    posts = UiState(exception = IllegalStateException()),
+                    favorites = emptySet(),
+                    onToggleFavorite = {},
+                    onRefreshPosts = {},
+                    onErrorDismiss = {},
+                    navigateToArticle = {},
+                    openDrawer = {},
+                    scaffoldState = scaffoldState
+                )
+            }
         }
 
         // Then the first message received in the Snackbar is an error message
@@ -64,7 +67,7 @@ class HomeScreenSnackbarTest {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             // wait for the first a non-null `currentSnackbarData`
             snapshotFlow { snackbarHostState.currentSnackbarData }.filterNotNull().first()
-            composeTestRule.onNodeWithText(snackbarText, false, false).assertExists()
+            composeTestRule.onNodeWithText(snackbarText).assertExists()
         }
     }
 }
