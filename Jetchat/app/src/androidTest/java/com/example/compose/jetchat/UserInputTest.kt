@@ -38,8 +38,6 @@ import com.example.compose.jetchat.conversation.KeyboardShownKey
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.WindowInsets
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -58,15 +56,11 @@ class UserInputTest {
     @Before
     fun setUp() {
 
-        // Provide empty insets. We can modify this value as necessary
-        val windowInsets = WindowInsets()
-
         // Launch the conversation screen
         val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalBackPressedDispatcher provides onBackPressedDispatcher,
-                LocalWindowInsets provides windowInsets,
+                LocalBackPressedDispatcher provides onBackPressedDispatcher
             ) {
                 JetchatTheme {
                     ConversationContent(
