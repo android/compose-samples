@@ -23,6 +23,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,6 +31,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
 import com.example.jetcaster.ui.search.Search
 
+@ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
 fun JetcasterApp() {

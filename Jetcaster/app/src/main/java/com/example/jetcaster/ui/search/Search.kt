@@ -56,7 +56,7 @@ fun SearchBar() {
         TextField(
             value = searchState.value.searchText,
             onValueChange = searchViewModel::onSearchTextChanged,
-            label = { Text("Search a podcast name:") },
+            label = { Text(stringResource(R.string.search_podcast_prompt)) },
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier.weight(1f),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

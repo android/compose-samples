@@ -48,4 +48,5 @@
     <string name="cd_follow">Follow</string>
 
     <string name="close">Close</string>
+    <string name="search_podcast_prompt">Search a podcast name:</string>
 </resources>
