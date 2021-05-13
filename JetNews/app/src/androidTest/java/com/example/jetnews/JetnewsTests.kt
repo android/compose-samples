@@ -17,6 +17,7 @@
 package com.example.jetnews
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.filters.MediumTest
@@ -26,7 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @MediumTest
-class JetnewsUiTest {
+class JetnewsTests {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -46,5 +47,15 @@ class JetnewsUiTest {
     fun app_opensArticle() {
         composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
         composeTestRule.onNodeWithText("3 min read", substring = true).assertExists()
+    }
+
+    @Test
+    fun app_opensInterests() {
+        composeTestRule.onNodeWithContentDescription(
+            label = "Open navigation drawer",
+            useUnmergedTree = true
+        ).performClick()
+        composeTestRule.onNodeWithText("Interests").performClick()
+        composeTestRule.onNodeWithText("Topics").assertExists()
     }
 }
