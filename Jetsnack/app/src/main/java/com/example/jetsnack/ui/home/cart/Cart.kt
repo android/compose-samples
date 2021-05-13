@@ -129,7 +129,6 @@ fun Cart(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CartContent(
     orderLines: List<OrderLine>,
