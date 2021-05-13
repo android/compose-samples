@@ -31,16 +31,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.samples.crane.base.CraneScaffold
 import androidx.compose.samples.crane.calendar.launchCalendarActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
+import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,11 +54,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            MainScreen(
-                onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
-                onDateSelectionClicked = { launchCalendarActivity(this) }
-            )
+            ProvideWindowInsets {
+                ProvideImageLoader {
+                    CraneTheme {
+                        MainScreen(
+                            onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
+                            onDateSelectionClicked = { launchCalendarActivity(this) }
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -61,21 +74,21 @@ class MainActivity : ComponentActivity() {
 @VisibleForTesting
 @Composable
 fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicked: () -> Unit) {
-    CraneScaffold {
+    Surface(color = MaterialTheme.colors.primary) {
         val transitionState = remember { MutableTransitionState(SplashState.Shown) }
-        val transition = updateTransition(transitionState)
+        val transition = updateTransition(transitionState, label = "splashTransition")
         val splashAlpha by transition.animateFloat(
-            transitionSpec = { tween(durationMillis = 100) }
+            transitionSpec = { tween(durationMillis = 100) }, label = "splashAlpha"
         ) {
             if (it == SplashState.Shown) 1f else 0f
         }
         val contentAlpha by transition.animateFloat(
-            transitionSpec = { tween(durationMillis = 300) }
+            transitionSpec = { tween(durationMillis = 300) }, label = "contentAlpha"
         ) {
             if (it == SplashState.Shown) 0f else 1f
         }
         val contentTopPadding by transition.animateDp(
-            transitionSpec = { spring(stiffness = StiffnessLow) }
+            transitionSpec = { spring(stiffness = StiffnessLow) }, label = "contentTopPadding"
         ) {
             if (it == SplashState.Shown) 100.dp else 0.dp
         }

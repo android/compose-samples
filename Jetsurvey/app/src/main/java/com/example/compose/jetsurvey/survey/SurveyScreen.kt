@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -41,6 +43,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +54,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
+import com.example.compose.jetsurvey.util.supportWideScreen
 
 @Composable
 fun SurveyQuestionsScreen(
@@ -63,7 +67,7 @@ fun SurveyQuestionsScreen(
         questions.questionsState[questions.currentQuestionIndex]
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             topBar = {
                 SurveyTopAppBar(
@@ -103,7 +107,7 @@ fun SurveyResultScreen(
     result: SurveyState.Result,
     onDonePressed: () -> Unit
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
@@ -206,8 +210,12 @@ private fun SurveyTopAppBar(
                 }
             }
         }
+        val animatedProgress by animateFloatAsState(
+            targetValue = (questionIndex + 1) / totalQuestionsCount.toFloat(),
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        )
         LinearProgressIndicator(
-            progress = (questionIndex + 1) / totalQuestionsCount.toFloat(),
+            progress = animatedProgress,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),

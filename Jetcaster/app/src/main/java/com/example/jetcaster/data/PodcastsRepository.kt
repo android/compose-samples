@@ -16,12 +16,13 @@
 
 package com.example.jetcaster.data
 
-import android.util.Log
 import com.example.jetcaster.data.room.TransactionRunner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -44,9 +45,11 @@ class PodcastsRepository(
             refreshingJob?.join()
         } else if (force || podcastStore.isEmpty()) {
             refreshingJob = scope.launch {
-                try {
-                    // Now fetch the podcasts, and add each to each store
-                    podcastsFetcher(SampleFeeds).collect { (podcast, episodes, categories) ->
+                // Now fetch the podcasts, and add each to each store
+                podcastsFetcher(SampleFeeds)
+                    .filter { it is PodcastRssResponse.Success }
+                    .map { it as PodcastRssResponse.Success }
+                    .collect { (podcast, episodes, categories) ->
                         transactionRunner {
                             podcastStore.addPodcast(podcast)
                             episodeStore.addEpisodes(episodes)
@@ -62,9 +65,6 @@ class PodcastsRepository(
                             }
                         }
                     }
-                } catch (e: Throwable) {
-                    Log.d("PodcastsRepository", "podcastsFetcher(SampleFeeds).collect error: $e")
-                }
             }
         }
     }

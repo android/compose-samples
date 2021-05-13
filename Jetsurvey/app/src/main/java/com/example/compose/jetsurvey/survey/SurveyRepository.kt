@@ -46,10 +46,10 @@ private val jetpackQuestions = mutableListOf(
         questionText = R.string.pick_superhero,
         answer = PossibleAnswer.SingleChoiceIcon(
             optionsStringIconRes = listOf(
-                Pair(R.drawable.spider_man, R.string.spiderman),
-                Pair(R.drawable.iron_man, R.string.ironman),
-                Pair(R.drawable.unikitty, R.string.unikitty),
-                Pair(R.drawable.captain_planet, R.string.captain_planet)
+                Pair(R.drawable.spark, R.string.spark),
+                Pair(R.drawable.lenz, R.string.lenz),
+                Pair(R.drawable.bug_of_chaos, R.string.bugchaos),
+                Pair(R.drawable.frag, R.string.frag)
             )
         ),
         description = R.string.select_one
@@ -79,8 +79,9 @@ private val jetpackQuestions = mutableListOf(
         answer = PossibleAnswer.Slider(
             range = 1f..10f,
             steps = 3,
-            startText = R.string.selfie_min,
-            endText = R.string.selfie_max
+            startText = R.string.strongly_dislike,
+            endText = R.string.strongly_like,
+            neutralText = R.string.neutral
         )
     )
 ).apply {

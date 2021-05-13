@@ -36,20 +36,19 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
-import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 
 @Composable
 fun PostCardPopular(
     post: Post,
-    navigateTo: (Screen) -> Unit,
+    navigateToArticle: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.size(280.dp, 240.dp)
     ) {
-        Column(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })) {
+        Column(modifier = Modifier.clickable(onClick = { navigateToArticle(post.id) })) {
 
             Image(
                 painter = painterResource(post.imageId),

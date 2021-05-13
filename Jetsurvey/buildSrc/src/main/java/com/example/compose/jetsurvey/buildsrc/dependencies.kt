@@ -17,11 +17,11 @@
 package com.example.compose.jetsurvey.buildsrc
 
 object Versions {
-    const val ktlint = "0.40.0"
+    const val ktlint = "0.41.0"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha15"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.7.2-SNAPSHOT"
+        const val version = "0.9.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
     }
 
@@ -58,12 +58,12 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha06"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-beta04"
+            const val version = "1.0.0-beta06"
 
             @get:JvmStatic
             val snapshotUrl: String

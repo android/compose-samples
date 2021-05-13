@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.Screen
 import com.example.jetnews.ui.ThemedPreview
 
 @Composable
@@ -91,14 +90,14 @@ fun PostTitle(post: Post) {
 @Composable
 fun PostCardSimple(
     post: Post,
-    navigateTo: (Screen) -> Unit,
+    navigateToArticle: (String) -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {
     val bookmarkAction = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+            .clickable(onClick = { navigateToArticle(post.id) })
             .padding(16.dp)
             .semantics {
                 // By defining a custom action, we tell accessibility services that this whole
@@ -127,10 +126,10 @@ fun PostCardSimple(
 }
 
 @Composable
-fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
+fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     Row(
         Modifier
-            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+            .clickable(onClick = { navigateToArticle(post.id) })
             .padding(16.dp)
     ) {
         PostImage(

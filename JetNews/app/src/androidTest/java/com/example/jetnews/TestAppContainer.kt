@@ -26,7 +26,7 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 class TestAppContainer(private val context: Context) : AppContainer {
 
     override val postsRepository: PostsRepository by lazy {
-        BlockingFakePostsRepository(context)
+        BlockingFakePostsRepository()
     }
 
     override val interestsRepository: InterestsRepository by lazy {

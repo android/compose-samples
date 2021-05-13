@@ -16,7 +16,6 @@
 
 package com.example.jetnews.data.posts.impl
 
-import android.content.res.Resources
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
@@ -35,9 +34,7 @@ import kotlinx.coroutines.withContext
  * posts with resources after some delay in a background thread.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class FakePostsRepository(
-    private val resources: Resources
-) : PostsRepository {
+class FakePostsRepository : PostsRepository {
 
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
@@ -45,7 +42,7 @@ class FakePostsRepository(
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
-    override suspend fun getPost(postId: String): Result<Post> {
+    override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
             val post = posts.find { it.id == postId }
             if (post == null) {

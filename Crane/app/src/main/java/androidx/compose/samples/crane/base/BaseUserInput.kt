@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
+import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -139,7 +140,11 @@ private fun CraneBaseUserInput(
                 )
                 Spacer(Modifier.width(8.dp))
             }
-            Row(Modifier.weight(1f).align(Alignment.CenterVertically)) {
+            Row(
+                Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
                 content()
             }
         }
@@ -149,14 +154,16 @@ private fun CraneBaseUserInput(
 @Preview
 @Composable
 fun PreviewInput() {
-    CraneScaffold {
-        CraneBaseUserInput(
-            tintIcon = { true },
-            vectorImageId = R.drawable.ic_plane,
-            caption = "Caption",
-            showCaption = { true }
-        ) {
-            Text(text = "text", style = MaterialTheme.typography.body1)
+    CraneTheme {
+        Surface {
+            CraneBaseUserInput(
+                tintIcon = { true },
+                vectorImageId = R.drawable.ic_plane,
+                caption = "Caption",
+                showCaption = { true }
+            ) {
+                Text(text = "text", style = MaterialTheme.typography.body1)
+            }
         }
     }
 }

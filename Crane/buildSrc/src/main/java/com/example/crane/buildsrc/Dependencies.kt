@@ -17,11 +17,11 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.40.0"
+    const val ktLint = "0.41.0"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha15"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
@@ -30,8 +30,9 @@ object Libs {
     }
 
     object Accompanist {
-        const val version = "0.7.2-SNAPSHOT"
+        const val version = "0.9.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
+        const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
@@ -49,14 +50,14 @@ object Libs {
 
     object AndroidX {
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha06"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
         }
 
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-rc01"
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.0.0-beta04"
+            const val version = "1.0.0-beta06"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -87,7 +88,7 @@ object Libs {
     }
 
     object Hilt {
-        private const val version = "2.31.2-alpha"
+        private const val version = "2.35"
 
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
         const val android = "com.google.dagger:hilt-android:$version"

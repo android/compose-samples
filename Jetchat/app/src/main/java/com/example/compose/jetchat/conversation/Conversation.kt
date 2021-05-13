@@ -52,8 +52,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,6 +70,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
@@ -99,6 +102,7 @@ fun ConversationContent(
 
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+
     Surface(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
@@ -143,6 +147,10 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { }
 ) {
+    var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
+    if (functionalityNotAvailablePopupShown) {
+        FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
+    }
     JetchatAppBar(
         modifier = modifier,
         onNavIconPressed = onNavIconPressed,
@@ -171,7 +179,7 @@ fun ChannelNameBar(
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     modifier = Modifier
-                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .height(24.dp),
                     contentDescription = stringResource(id = R.string.search)
@@ -180,7 +188,7 @@ fun ChannelNameBar(
                 Icon(
                     imageVector = Icons.Outlined.Info,
                     modifier = Modifier
-                        .clickable(onClick = {}) // TODO: Show not implemented dialog.
+                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .height(24.dp),
                     contentDescription = stringResource(id = R.string.info)
@@ -236,7 +244,7 @@ fun Messages(
 
                 item {
                     Message(
-                        onAuthorClick = { navigateToProfile(content.author) },
+                        onAuthorClick = { name -> navigateToProfile(name) },
                         msg = content,
                         isUserMe = content.author == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
@@ -265,9 +273,7 @@ fun Messages(
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
                 scope.launch {
-                    // TODO: Replace with animateScrollToItem
-                    // https://issuetracker.google.com/181316785
-                    scrollState.scrollToItem(0)
+                    scrollState.animateScrollToItem(0)
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -277,18 +283,12 @@ fun Messages(
 
 @Composable
 fun Message(
-    onAuthorClick: () -> Unit,
+    onAuthorClick: (String) -> Unit,
     msg: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean
 ) {
-    // TODO: get image from msg.author
-    val painter = if (isUserMe) {
-        painterResource(id = R.drawable.ali)
-    } else {
-        painterResource(id = R.drawable.someone_else)
-    }
     val borderColor = if (isUserMe) {
         MaterialTheme.colors.primary
     } else {
@@ -301,14 +301,14 @@ fun Message(
             // Avatar
             Image(
                 modifier = Modifier
-                    .clickable(onClick = onAuthorClick)
+                    .clickable(onClick = { onAuthorClick(msg.author) })
                     .padding(horizontal = 16.dp)
                     .size(42.dp)
                     .border(1.5.dp, borderColor, CircleShape)
                     .border(3.dp, MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
-                painter = painter,
+                painter = painterResource(id = msg.authorImage),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
@@ -320,6 +320,7 @@ fun Message(
             msg = msg,
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
+            authorClicked = onAuthorClick,
             modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f)
@@ -332,13 +333,14 @@ fun AuthorAndTextMessage(
     msg: Message,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
+    authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
-        ChatItemBubble(msg, isFirstMessageByAuthor)
+        ChatItemBubble(msg, isFirstMessageByAuthor, authorClicked = authorClicked)
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
             Spacer(modifier = Modifier.height(8.dp))
@@ -406,7 +408,8 @@ private fun RowScope.DayHeaderLine() {
 @Composable
 fun ChatItemBubble(
     message: Message,
-    lastMessageByAuthor: Boolean
+    lastMessageByAuthor: Boolean,
+    authorClicked: (String) -> Unit
 ) {
 
     val backgroundBubbleColor =
@@ -420,7 +423,8 @@ fun ChatItemBubble(
     Column {
         Surface(color = backgroundBubbleColor, shape = bubbleShape) {
             ClickableMessage(
-                message = message
+                message = message,
+                authorClicked = authorClicked
             )
         }
 
@@ -439,7 +443,7 @@ fun ChatItemBubble(
 }
 
 @Composable
-fun ClickableMessage(message: Message) {
+fun ClickableMessage(message: Message, authorClicked: (String) -> Unit) {
     val uriHandler = LocalUriHandler.current
 
     val styledMessage = messageFormatter(text = message.content)
@@ -455,8 +459,7 @@ fun ClickableMessage(message: Message) {
                 ?.let { annotation ->
                     when (annotation.tag) {
                         SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        // TODO(yrezgui): Open profile screen when click PERSON tag
-                        //  (e.g. @aliconors)
+                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
                         else -> Unit
                     }
                 }

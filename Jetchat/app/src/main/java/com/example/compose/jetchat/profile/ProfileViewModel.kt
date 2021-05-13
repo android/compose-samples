@@ -32,7 +32,12 @@ class ProfileViewModel : ViewModel() {
         if (newUserId != userId) {
             userId = newUserId ?: meProfile.userId
         }
-        _userData.value = if (userId == meProfile.userId) meProfile else colleagueProfile
+        // Workaround for simplicity
+        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
+            meProfile
+        } else {
+            colleagueProfile
+        }
     }
 
     private val _userData = MutableLiveData<ProfileScreenState>()
