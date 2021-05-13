@@ -36,7 +36,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,8 +56,12 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -162,7 +165,7 @@ fun HomeScreen(
         scaffoldState = scaffoldState,
         topBar = {
             val title = stringResource(id = R.string.app_name)
-            TopAppBar(
+            InsetAwareTopAppBar(
                 title = { Text(text = title) },
                 navigationIcon = {
                     IconButton(onClick = { coroutineScope.launch { openDrawer() } }) {
@@ -190,7 +193,7 @@ fun HomeScreen(
                     navigateToArticle = navigateToArticle,
                     favorites = favorites,
                     onToggleFavorite = onToggleFavorite,
-                    modifier = modifier
+                    modifier = modifier.supportWideScreen()
                 )
             }
         )
@@ -280,7 +283,10 @@ private fun PostList(
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(top = false)
+    ) {
         item { PostListTopSection(postTop, navigateToArticle) }
         item { PostListSimpleSection(postsSimple, navigateToArticle, favorites, onToggleFavorite) }
         item { PostListPopularSection(postsPopular, navigateToArticle) }

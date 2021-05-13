@@ -2,7 +2,8 @@
 
 This sample is a [Jetpack Compose][compose] implementation of [Rally][rally], a Material Design study.
 
-To try out these sample apps, you need to use the latest Canary version of Android Studio 4.2.
+To try out this sample app, you need to use the latest
+[Canary version of Android Studio](https://developer.android.com/studio/preview).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).

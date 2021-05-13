@@ -36,7 +36,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -49,6 +48,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -58,7 +59,10 @@ import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
+import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -169,7 +173,7 @@ fun InterestsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            TopAppBar(
+            InsetAwareTopAppBar(
                 title = { Text("Interests") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
@@ -231,7 +235,7 @@ private fun TabContent(
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(1f).supportWideScreen()) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }
@@ -299,7 +303,7 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
+    LazyColumn(modifier = Modifier.padding(top = 16.dp).navigationBarsPadding()) {
         items(topics) { topic ->
             TopicItem(
                 topic,
@@ -323,12 +327,12 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(Modifier.navigationBarsPadding()) {
         sections.forEach { (section, topics) ->
             item {
                 Text(
                     text = section,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(16.dp).semantics { heading() },
                     style = MaterialTheme.typography.subtitle1
                 )
             }

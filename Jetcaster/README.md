@@ -5,7 +5,8 @@
 Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is to
 showcase dynamic theming and full featured architecture.
 
-To try out this sample app, you need to use the latest Canary version of Android Studio 4.2.
+To try out this sample app, you need to use the latest
+[Canary version of Android Studio](https://developer.android.com/studio/preview).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
