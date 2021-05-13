@@ -41,11 +41,11 @@ fun SwipeDismissItem(
     enter: EnterTransition = expandVertically(),
     exit: ExitTransition = shrinkVertically()
 ) {
-    //Hold the current state from the Swipe to Dismiss composable
+    // Hold the current state from the Swipe to Dismiss composable
     val dismissState = rememberDismissState()
-    //Boolean value used for hiding the item if the current state is dismissed
+    // Boolean value used for hiding the item if the current state is dismissed
     val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
-    //Returns the swiped value in dp
+    // Returns the swiped value in dp
     val offset = with(LocalDensity.current) { dismissState.offset.value.toDp() }
 
     AnimatedVisibility(

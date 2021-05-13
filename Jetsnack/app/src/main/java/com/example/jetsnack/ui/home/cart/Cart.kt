@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -191,9 +190,9 @@ private fun CartContent(
                             (offsetX < -120.dp) -> (offsetX * -1)
                             else -> 0.dp
                         }
-                        //To avoid icon to be resized by the graphics layer it is placed in another row. Padding right ensures it looks centered
+                        // To avoid icon to be resized by the graphics layer it is placed in another row. Padding right ensures it looks centered
                         val paddingIcon = if (size > 0.dp) size / 2 else 0.dp
-                        //Conversion for the intended size to a percentage considering initial size is 10
+                        // Conversion for the intended size to a percentage considering initial size is 10
                         val heightPercentage = (size.value / 10)
                         Box {
                             Row(
@@ -239,7 +238,7 @@ private fun CartContent(
                                     )
                                 }
                             }
-                            //Ensures that text moves to the left as the offset grows
+                            // Ensures that text moves to the left as the offset grows
                             val paddingText = if (offsetX < 0.dp)(offsetX / -5) else 0.dp
                             Row(
                                 modifier = Modifier
