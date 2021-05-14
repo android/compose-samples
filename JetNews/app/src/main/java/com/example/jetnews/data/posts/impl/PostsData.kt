@@ -712,7 +712,7 @@ val paragraphsPost5 = listOf(
         ParagraphType.Text,
         "Sequences are lazily evaluated. They have two types of operations: intermediate and terminal. Intermediate operations are not performed on the spot; they’re just stored. Only when a terminal operation is called, the intermediate operations are triggered on each element in a row and finally, the terminal operation is applied. Intermediate operations (like map, distinct, groupBy etc) return another sequence whereas terminal operations (like first, toList, count etc) don’t.",
         listOf(
-            Markup(MarkupType.Code, 357, 3600),
+            Markup(MarkupType.Code, 357, 360),
             Markup(MarkupType.Code, 362, 370),
             Markup(MarkupType.Code, 372, 379),
             Markup(MarkupType.Code, 443, 448),
