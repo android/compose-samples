@@ -148,8 +148,8 @@ fun HomeScreen(
 
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError is false
-        // (thanks to the surrounding if statement) or if scaffoldState changes.
-        LaunchedEffect(scaffoldState) {
+        // (thanks to the surrounding if statement) or if scaffoldState.snackbarHostState changes.
+        LaunchedEffect(scaffoldState.snackbarHostState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
