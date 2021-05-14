@@ -56,11 +56,11 @@
     <string name="watch_movies">Watch movies</string>
 
     <!-- question 2 -->
-    <string name="pick_superhero">Pick a superhero</string>
-    <string name="spiderman">Spider man (Avengers)</string>
-    <string name="ironman">Iron man (Avengers)</string>
-    <string name="unikitty">Uni-kitty (Lego Movie)</string>
-    <string name="captain_planet">Captain Planet</string>
+    <string name="pick_superhero">Pick a Compose comic character</string>
+    <string name="spark">Spark</string>
+    <string name="lenz">Lenz</string>
+    <string name="bugchaos">Bug of Chaos</string>
+    <string name="frag">Frag</string>
 
     <!-- question 3  -->
     <string name="takeaway">When was the last time you ordered takeaway because you couldn\'t be bothered to cook?</string>
