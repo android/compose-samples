@@ -47,9 +47,6 @@ subprojects {
         if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
-
-        // FIXME: Remove once ConstraintLayout snapshot is available on androidx.dev
-        maven { url uri(rootProject.file('../m2repository')) }
     }
 
     apply plugin: 'com.diffplug.spotless'
