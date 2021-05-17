@@ -208,7 +208,7 @@ fun InterestsScreen(
                         )
                     }
                 },
-                backgroundColor = MaterialTheme.colors.onPrimary,
+                backgroundColor = MaterialTheme.colors.surface,
                 elevation = 0.dp
             )
         }

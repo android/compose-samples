@@ -171,10 +171,10 @@ fun HomeScreen(
             val title = stringResource(id = R.string.app_name)
             InsetAwareTopAppBar(
                 title = {
-                    Image(
+                    Icon(
                         painter = painterResource(R.drawable.ic_jetnews_wordmark),
                         contentDescription = title,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
+                        tint = MaterialTheme.colors.onBackground,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(bottom = 4.dp, top = 10.dp)
@@ -199,7 +199,7 @@ fun HomeScreen(
                         )
                     }
                 },
-                backgroundColor = MaterialTheme.colors.onPrimary,
+                backgroundColor = MaterialTheme.colors.surface,
                 elevation = 0.dp
             )
         }

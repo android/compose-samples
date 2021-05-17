@@ -50,8 +50,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -143,18 +142,13 @@ fun ArticleScreen(
                             .wrapContentWidth(align = Alignment.CenterHorizontally)
                             .padding(start = 30.dp)
                     ) {
-                        Surface(
-                            color = Color(0xff073042),
-                            shape = CircleShape,
-                            modifier = Modifier.size(36.dp, 36.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_article_icon),
-                                contentDescription = "",
-                                colorFilter = ColorFilter.tint(Color(0xff32dd84)),
-                                modifier = Modifier.padding(4.dp)
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_article_background),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(36.dp)
+                        )
                         Text(
                             text = stringResource(id = R.string.published_in, post.publication?.name ?: ""),
                             style = MaterialTheme.typography.subtitle2,
@@ -167,15 +161,15 @@ fun ArticleScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Image(
+                        Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_navigate_up),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+                            tint = MaterialTheme.colors.primary
                         )
                     }
                 },
                 elevation = 0.dp,
-                backgroundColor = MaterialTheme.colors.onPrimary
+                backgroundColor = MaterialTheme.colors.surface
             )
         },
         bottomBar = {

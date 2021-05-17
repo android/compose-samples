@@ -23,6 +23,3 @@ val Red300 = Color(0xffea6d7e)
 val Red700 = Color(0xffdd0d3c)
 val Red800 = Color(0xffd00036)
 val Red900 = Color(0xffc20029)
-
-val ArticleIconBackground = Color(0xff073042)
-val ArticleIconColor = Color(0xff32dd84)
