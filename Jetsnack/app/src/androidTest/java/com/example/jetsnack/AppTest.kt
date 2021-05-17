@@ -16,7 +16,6 @@
 
 package com.example.jetsnack
 
-import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -35,7 +34,7 @@ class AppTest {
     @Before
     fun setUp() {
         composeTestRule.setContent {
-            JetsnackApp(OnBackPressedDispatcher())
+            JetsnackApp()
         }
     }
 
@@ -62,6 +61,12 @@ class AppTest {
 
         // Navigate to Profile
         composeTestRule.onNodeWithText("PROFILE").performClick().assertIsDisplayed()
-        composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
+        composeTestRule.onNodeWithText("This is currently work in progress").assertIsDisplayed()
+    }
+
+    @Test
+    fun app_canNavigateToDetailPage() {
+        composeTestRule.onNodeWithText("Chips").performClick()
+        composeTestRule.onNodeWithText("Lorem ipsum", substring = true).assertIsDisplayed()
     }
 }

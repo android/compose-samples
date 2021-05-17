@@ -16,36 +16,19 @@
 
 package com.example.jetsnack.ui
 
-import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import com.example.jetsnack.ui.home.Home
-import com.example.jetsnack.ui.snackdetail.SnackDetail
+import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.Navigator
 import com.google.accompanist.insets.ProvideWindowInsets
 
 @Composable
-fun JetsnackApp(backDispatcher: OnBackPressedDispatcher) {
-    val navigator: Navigator<Destination> = rememberSaveable(
-        saver = Navigator.saver(backDispatcher)
-    ) {
-        Navigator(Destination.Home, backDispatcher)
-    }
-    val actions = remember(navigator) { Actions(navigator) }
+fun JetsnackApp() {
     ProvideWindowInsets {
         JetsnackTheme {
-            Crossfade(navigator.current) { destination ->
-                when (destination) {
-                    Destination.Home -> Home(actions.selectSnack)
-                    is Destination.SnackDetail -> SnackDetail(
-                        snackId = destination.snackId,
-                        upPress = actions.upPress
-                    )
-                }
-            }
+            val navController = rememberNavController()
+            JetsnackNavGraph(
+                navController = navController
+            )
         }
     }
 }
