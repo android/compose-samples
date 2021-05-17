@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -38,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
@@ -99,13 +100,13 @@ fun TutorialPreviewFontscale() {
 }
 
 @Composable
-fun TutorialPreviewTemplate(
-    darkTheme: Boolean = false
-) {
+fun TutorialPreviewTemplate() {
     val previewPosts = posts.subList(1, 2)
     val post = previewPosts[0]
 
-    ThemedPreview(darkTheme) {
-        PostCardTop(post)
+    JetnewsTheme {
+        Surface {
+            PostCardTop(post)
+        }
     }
 }

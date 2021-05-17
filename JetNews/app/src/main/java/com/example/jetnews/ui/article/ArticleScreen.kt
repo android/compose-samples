@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -258,8 +259,10 @@ private fun sharePost(post: Post, context: Context) {
     context.startActivity(Intent.createChooser(intent, "Share post"))
 }
 
-@Preview("Light theme")
-@Preview("Dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Article screen")
+@Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Article screen (big font)", fontScale = 1.5f)
+@Preview("Article screen (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun PreviewArticle() {
     JetnewsTheme {
