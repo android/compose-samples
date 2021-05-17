@@ -16,8 +16,14 @@
 
 package com.example.jetsnack.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.jetsnack.ui.components.JetsnackScaffold
+import com.example.jetsnack.ui.home.HomeSections
+import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
@@ -25,10 +31,16 @@ import com.google.accompanist.insets.ProvideWindowInsets
 fun JetsnackApp() {
     ProvideWindowInsets {
         JetsnackTheme {
+            val tabs = remember { HomeSections.values() }
             val navController = rememberNavController()
-            JetsnackNavGraph(
-                navController = navController
-            )
+            JetsnackScaffold(
+                bottomBar = { JetsnackBottomBar(navController = navController, tabs = tabs) }
+            ) { innerPaddingModifier ->
+                JetsnackNavGraph(
+                    navController = navController,
+                    modifier = Modifier.padding(innerPaddingModifier)
+                )
+            }
         }
     }
 }
