@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -49,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AuthorAndReadTime(
@@ -188,7 +189,7 @@ fun BookmarkButton(
 @Preview("Bookmark Button")
 @Composable
 fun BookmarkButtonPreview() {
-    ThemedPreview {
+    JetnewsTheme {
         Surface {
             BookmarkButton(isBookmarked = false, onClick = { })
         }
@@ -198,7 +199,7 @@ fun BookmarkButtonPreview() {
 @Preview("Bookmark Button Bookmarked")
 @Composable
 fun BookmarkButtonBookmarkedPreview() {
-    ThemedPreview {
+    JetnewsTheme {
         Surface {
             BookmarkButton(isBookmarked = true, onClick = { })
         }
@@ -206,25 +207,22 @@ fun BookmarkButtonBookmarkedPreview() {
 }
 
 @Preview("Simple post card")
+@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SimplePostPreview() {
-    ThemedPreview {
-        PostCardSimple(post3, {}, false, {})
+    JetnewsTheme {
+        Surface {
+            PostCardSimple(post3, {}, false, {})
+        }
     }
 }
 
 @Preview("Post History card")
 @Composable
 fun HistoryPostPreview() {
-    ThemedPreview {
-        PostCardHistory(post3, {})
-    }
-}
-
-@Preview("Simple post card dark theme")
-@Composable
-fun SimplePostDarkPreview() {
-    ThemedPreview(darkTheme = true) {
-        PostCardSimple(post3, {}, false, {})
+    JetnewsTheme {
+        Surface {
+            PostCardHistory(post3, {})
+        }
     }
 }

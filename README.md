@@ -34,12 +34,17 @@ project from Android Studio following the steps
 |  |  |
 | <br><img src="readme/owl.png" alt="Owl" width="240"></img>  <br><br>A Compose implementation of the Owl Material study. The Owl brand uses bold color, shape, and typography to express its brand attributes: energy, daring, and fun.<br><br>• Medium complexity<br>• Material theming & light/dark themes<br>• Custom layout<br>• Animation<br><br>**[> Browse](Owl/)** <br><br>  | <img src="readme/screenshots/Owl.png" width="320" alt="Owl sample demo">|
 
-🧬 Compose in existing app samples
+
+🧬 Additional samples
 ------------
 
-To see how Compose and view-based UIs can coexist and interact together, check out these samples:
-* [Sunflower's `compose` branch](https://goo.gle/sunflower-compose)
-* [Tivi](https://tivi.app)
+| Project | |
+|:-----|---------|
+| <br><img src="readme/material_catalog.png" alt="Material Catalog" width="240"></img>  <br><br>A catalog of Material Design components and features available in Jetpack Compose. See how to implement them and how they look and behave on real devices.<br><br>• Lives in AOSP—always up to date<br>• Uses the same samples as API reference docs<br>• Theme picker to change Material Theming values at runtime<br>• Links to guidelines, docs, source code, and issue tracker<br><br>**[> Browse](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/integration-tests/material-catalog)** <br><br>  | <img src="readme/screenshots/Material_Catalog.png" width="320" alt="Material Catalog sample demo">|
+|  |  |
+| <br><img src="readme/sunflower.png" alt="Sunflower" width="240"></img>  <br><br>A gardening app illustrating Android development best practices with Android Jetpack. The `compose` branch is partially built with Jetpack Compose.<br><br>• Compose working in an existing app: including integration with strings, resources, and themes and styles<br>• Integration with an existing architecture based on Jetpack libraries<br>• `CollapsingToolbarLayout` behavior implemented manually with Compose<br>• Showing [Snackbars](https://material.io/components/snackbars) with Compose<br><br>**[> Browse](https://goo.gle/sunflower-compose)** <br><br>  | <img src="readme/screenshots/Sunflower.png" width="320" alt="Sunflower sample demo">|
+|  |  |
+| <br><img src="readme/tivi.png" alt="Tivi" width="240"></img>  <br><br>A work-in-progress TV show tracking Android app, which connects to [Trakt.tv](https://www.trakt.tv).<br><br>• Entirely written in [Kotlin](https://kotlinlang.org) and uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html) throughout<br>• Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture): Room, Lifecycle, Navigation<br>• Uses [Hilt](https://dagger.dev/hilt) for dependency injection<br><br>**[> Browse](https://tivi.app)** <br><br>  | <img src="readme/screenshots/Tivi.jpg" width="320" alt="Tivi sample demo">|
 
 ## License
 ```

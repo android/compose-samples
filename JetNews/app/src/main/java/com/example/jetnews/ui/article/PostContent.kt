@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.article
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -72,7 +73,7 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 private val defaultSpacerSize = 16.dp
 
@@ -343,17 +344,12 @@ private val Colors.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
 @Preview("Post content")
+@Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPost() {
-    ThemedPreview {
-        PostContent(post = post3)
-    }
-}
-
-@Preview("Post content dark theme")
-@Composable
-fun PreviewPostDark() {
-    ThemedPreview(darkTheme = true) {
-        PostContent(post = post3)
+    JetnewsTheme {
+        Surface {
+            PostContent(post = post3)
+        }
     }
 }
