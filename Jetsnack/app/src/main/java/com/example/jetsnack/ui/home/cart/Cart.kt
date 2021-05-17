@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -230,8 +229,7 @@ private fun CartContent(
                                     Icon(
                                         imageVector = Icons.Filled.DeleteForever,
                                         modifier = Modifier
-                                            .width(16.dp)
-                                            .height(16.dp)
+                                            .size(16.dp)
                                             .alpha(iconAlpha),
                                         tint = JetsnackTheme.colors.uiBackground,
                                         contentDescription = null,
@@ -242,8 +240,7 @@ private fun CartContent(
                             val paddingText = if (offsetX < 0.dp)(offsetX / -5) else 0.dp
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
+                                    .fillMaxSize()
                                     .padding(end = paddingText),
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically
