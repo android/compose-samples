@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
@@ -49,7 +48,6 @@ fun JetsnackNavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = MainDestinations.HOME_ROUTE,
 ) {
-    val actions = remember(navController) { MainActions(navController) }
     NavHost(
         navController = navController,
         startDestination = startDestination
@@ -59,7 +57,12 @@ fun JetsnackNavGraph(
             startDestination = HomeSections.FEED.route
         ) {
             home(
-                onSnackSelected = actions.navigateToSnackDetail,
+                onSnackSelected = { snackId: Long, from: NavBackStackEntry ->
+                    // In order to discard duplicated navigation events, we check the Lifecycle
+                    if (from.lifecycleIsResumed()) {
+                        navController.navigate("${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId")
+                    }
+                },
                 modifier = modifier
             )
         }
@@ -71,24 +74,11 @@ fun JetsnackNavGraph(
             val snackId = arguments.getLong(SNACK_ID_KEY)
             SnackDetail(
                 snackId = snackId,
-                upPress = actions.upPress
+                upPress = {
+                    navController.navigateUp()
+                }
             )
         }
-    }
-}
-
-/**
- * Models the navigation actions in the app.
- */
-class MainActions(navController: NavHostController) {
-    val navigateToSnackDetail = { snackId: Long, from: NavBackStackEntry ->
-        // In order to discard duplicated navigation events, we check the Lifecycle
-        if (from.lifecycleIsResumed()) {
-            navController.navigate("${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId")
-        }
-    }
-    val upPress: () -> Unit = {
-        navController.navigateUp()
     }
 }
 
