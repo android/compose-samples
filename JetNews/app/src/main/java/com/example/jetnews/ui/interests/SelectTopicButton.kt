@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.interests
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun SelectTopicButton(
@@ -62,50 +63,33 @@ fun SelectTopicButton(
 }
 
 @Preview("Off")
+@Preview("Off (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SelectTopicButtonPreviewOff() {
     SelectTopicButtonPreviewTemplate(
-        darkTheme = false,
         selected = false
     )
 }
 
 @Preview("On")
+@Preview("On (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SelectTopicButtonPreviewOn() {
     SelectTopicButtonPreviewTemplate(
-        darkTheme = false,
-        selected = true
-    )
-}
-
-@Preview("Off - dark theme")
-@Composable
-fun SelectTopicButtonPreviewOffDark() {
-    SelectTopicButtonPreviewTemplate(
-        darkTheme = true,
-        selected = false
-    )
-}
-
-@Preview("On - dark theme")
-@Composable
-fun SelectTopicButtonPreviewOnDark() {
-    SelectTopicButtonPreviewTemplate(
-        darkTheme = true,
         selected = true
     )
 }
 
 @Composable
 private fun SelectTopicButtonPreviewTemplate(
-    darkTheme: Boolean = false,
     selected: Boolean
 ) {
-    ThemedPreview(darkTheme) {
-        SelectTopicButton(
-            modifier = Modifier.padding(32.dp),
-            selected = selected
-        )
+    JetnewsTheme {
+        Surface {
+            SelectTopicButton(
+                modifier = Modifier.padding(32.dp),
+                selected = selected
+            )
+        }
     }
 }
