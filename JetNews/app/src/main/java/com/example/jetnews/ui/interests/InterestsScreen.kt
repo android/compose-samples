@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -48,6 +50,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -59,6 +63,7 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -216,23 +221,27 @@ private fun TabContent(
                     MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
                 }
                 Tab(
-                    text = {
-                        Text(
-                            text = tabContent.section.title,
-                            color = colorText
-                        )
-                    },
                     selected = selectedTabIndex == index,
                     onClick = {
                         updateSection(tabContent.section)
-                    }
-                )
+                    },
+                    modifier = Modifier
+                        .heightIn(min = 48.dp)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    Text(
+                        text = tabContent.section.title,
+                        color = colorText,
+                        style = MaterialTheme.typography.subtitle2,
+                        modifier = Modifier.paddingFromBaseline(top = 20.dp)
+                    )
+                }
             }
         }
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(1f).supportWideScreen()) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }
@@ -300,7 +309,11 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.padding(top = 16.dp).navigationBarsPadding()) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .navigationBarsPadding()
+    ) {
         items(topics) { topic ->
             TopicItem(
                 topic,
@@ -329,7 +342,9 @@ private fun TabWithSections(
             item {
                 Text(
                     text = section,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .semantics { heading() },
                     style = MaterialTheme.typography.subtitle1
                 )
             }

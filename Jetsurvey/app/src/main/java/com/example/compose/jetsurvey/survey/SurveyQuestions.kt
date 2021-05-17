@@ -19,7 +19,6 @@ package com.example.compose.jetsurvey.survey
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,6 +60,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -127,6 +127,12 @@ fun Question(
                     onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
                     modifier = Modifier.fillParentMaxWidth()
                 )
+                is PossibleAnswer.SingleChoiceIcon -> SingleChoiceIconQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.SingleChoice?,
+                    onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
                 is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.MultipleChoice?,
@@ -140,6 +146,20 @@ fun Question(
                         }
                     },
                     modifier = Modifier.fillParentMaxWidth()
+                )
+                is PossibleAnswer.MultipleChoiceIcon -> MultipleChoiceIconQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.MultipleChoice?,
+                    onAnswerSelected = { newAnswer, selected ->
+                        // create the answer if it doesn't exist or
+                        // update it based on the user's selection
+                        if (answer == null) {
+                            onAnswer(Answer.MultipleChoice(setOf(newAnswer)))
+                        } else {
+                            onAnswer(answer.withAnswerSelected(newAnswer, selected))
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 )
                 is PossibleAnswer.Action -> ActionQuestion(
                     questionId = question.id,
@@ -235,6 +255,91 @@ private fun SingleChoiceQuestion(
 }
 
 @Composable
+private fun SingleChoiceIconQuestion(
+    possibleAnswer: PossibleAnswer.SingleChoiceIcon,
+    answer: Answer.SingleChoice?,
+    onAnswerSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val options = possibleAnswer.optionsStringIconRes.associateBy { stringResource(id = it.second) }
+
+    val radioOptions = options.keys.toList()
+
+    val selected = if (answer != null) {
+        stringResource(id = answer.answer)
+    } else {
+        null
+    }
+
+    val (selectedOption, onOptionSelected) = remember(answer) { mutableStateOf(selected) }
+
+    Column(modifier = modifier) {
+        radioOptions.forEach { text ->
+            val onClickHandle = {
+                onOptionSelected(text)
+                options[text]?.let { onAnswerSelected(it.second) }
+                Unit
+            }
+            val optionSelected = text == selectedOption
+            val answerBorderColor = if (optionSelected) {
+                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            }
+            val answerBackgroundColor = if (optionSelected) {
+                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+            } else {
+                MaterialTheme.colors.background
+            }
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = answerBorderColor
+                ),
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = optionSelected,
+                            onClick = onClickHandle
+                        )
+                        .background(answerBackgroundColor)
+                        .padding(vertical = 16.dp, horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    options[text]?.let {
+                        Image(
+                            painter = painterResource(
+                                id = it.first
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(56.dp)
+                                .height(56.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                        )
+                    }
+                    Text(
+                        text = text
+                    )
+
+                    RadioButton(
+                        selected = optionSelected,
+                        onClick = onClickHandle,
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = MaterialTheme.colors.primary
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+@Composable
 private fun MultipleChoiceQuestion(
     possibleAnswer: PossibleAnswer.MultipleChoice,
     answer: Answer.MultipleChoice?,
@@ -288,6 +393,78 @@ private fun MultipleChoiceQuestion(
                         onCheckedChange = { selected ->
                             checkedState = selected
                             onAnswerSelected(option.value, selected)
+                        },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = MaterialTheme.colors.primary
+                        ),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MultipleChoiceIconQuestion(
+    possibleAnswer: PossibleAnswer.MultipleChoiceIcon,
+    answer: Answer.MultipleChoice?,
+    onAnswerSelected: (Int, Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val options = possibleAnswer.optionsStringIconRes.associateBy { stringResource(id = it.second) }
+    Column(modifier = modifier) {
+        for (option in options) {
+            var checkedState by remember(answer) {
+                val selectedOption = answer?.answersStringRes?.contains(option.value.second)
+                mutableStateOf(selectedOption ?: false)
+            }
+            val answerBorderColor = if (checkedState) {
+                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            }
+            val answerBackgroundColor = if (checkedState) {
+                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+            } else {
+                MaterialTheme.colors.background
+            }
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = answerBorderColor
+                ),
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = {
+                                checkedState = !checkedState
+                                onAnswerSelected(option.value.second, checkedState)
+                            }
+                        )
+                        .background(answerBackgroundColor)
+                        .padding(vertical = 16.dp, horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Image(
+                        painter = painterResource(id = option.value.first),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(56.dp)
+                            .height(56.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                    )
+                    Text(text = option.key)
+
+                    Checkbox(
+                        checked = checkedState,
+                        onCheckedChange = { selected ->
+                            checkedState = selected
+                            onAnswerSelected(option.value.second, selected)
                         },
                         colors = CheckboxDefaults.colors(
                             checkedColor = MaterialTheme.colors.primary
@@ -501,10 +678,10 @@ fun QuestionPreview() {
         questionText = R.string.pick_superhero,
         answer = PossibleAnswer.SingleChoice(
             optionsStringRes = listOf(
-                R.string.spiderman,
-                R.string.ironman,
-                R.string.unikitty,
-                R.string.captain_planet
+                R.string.spark,
+                R.string.lenz,
+                R.string.bugchaos,
+                R.string.frag
             )
         ),
         description = R.string.select_one

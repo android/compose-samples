@@ -167,19 +167,21 @@ fun BookmarkButton(
     val clickLabel = stringResource(
         if (isBookmarked) R.string.unbookmark else R.string.bookmark
     )
-    IconToggleButton(
-        checked = isBookmarked,
-        onCheckedChange = { onClick() },
-        modifier = modifier.semantics {
-            // Use a custom click label that accessibility services can communicate to the user.
-            // We only want to override the label, not the actual action, so for the action we pass null.
-            this.onClick(label = clickLabel, action = null)
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+        IconToggleButton(
+            checked = isBookmarked,
+            onCheckedChange = { onClick() },
+            modifier = modifier.semantics {
+                // Use a custom click label that accessibility services can communicate to the user.
+                // We only want to override the label, not the actual action, so for the action we pass null.
+                this.onClick(label = clickLabel, action = null)
+            }
+        ) {
+            Icon(
+                imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                contentDescription = null // handled by click label of parent
+            )
         }
-    ) {
-        Icon(
-            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-            contentDescription = null // handled by click label of parent
-        )
     }
 }
 

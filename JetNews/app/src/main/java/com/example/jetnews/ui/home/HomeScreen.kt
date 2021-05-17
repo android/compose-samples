@@ -59,6 +59,7 @@ import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -147,8 +148,8 @@ fun HomeScreen(
 
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError is false
-        // (thanks to the surrounding if statement) or if scaffoldState changes.
-        LaunchedEffect(scaffoldState) {
+        // (thanks to the surrounding if statement) or if scaffoldState.snackbarHostState changes.
+        LaunchedEffect(scaffoldState.snackbarHostState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
@@ -192,7 +193,7 @@ fun HomeScreen(
                     navigateToArticle = navigateToArticle,
                     favorites = favorites,
                     onToggleFavorite = onToggleFavorite,
-                    modifier = modifier
+                    modifier = modifier.supportWideScreen()
                 )
             }
         )

@@ -61,6 +61,7 @@ import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -162,6 +163,8 @@ fun ArticleScreen(
                 .padding(innerPadding)
                 // offset content in landscape mode to account for the navigation bar
                 .navigationBarsPadding(bottom = false)
+                // center content in landscape mode
+                .supportWideScreen()
         )
     }
 }
