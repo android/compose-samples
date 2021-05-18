@@ -33,9 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.theme.BlueTheme
@@ -70,7 +68,7 @@ fun OwlApp(finishActivity: () -> Unit) {
 fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    val currentRoute = navBackStackEntry?.destination?.route
         ?: CourseTabs.FEATURED.route
 
     val routes = remember { CourseTabs.values().map { it.route } }
@@ -86,7 +84,7 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
                     onClick = {
                         if (tab.route != currentRoute) {
                             navController.navigate(tab.route) {
-                                popUpTo = navController.graph.startDestination
+                                popUpTo(navController.graph.startDestinationId)
                                 launchSingleTop = true
                             }
                         }

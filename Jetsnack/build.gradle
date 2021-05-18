@@ -20,6 +20,7 @@ import com.example.jetsnack.buildsrc.Versions
 buildscript {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
     dependencies {

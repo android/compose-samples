@@ -22,6 +22,7 @@ import com.example.compose.jetchat.buildsrc.Versions
 buildscript {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 
@@ -43,7 +44,9 @@ subprojects {
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }
-            maven { url Urls.accompanistSnapshotRepo }
+        }
+        if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
+            maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }
 

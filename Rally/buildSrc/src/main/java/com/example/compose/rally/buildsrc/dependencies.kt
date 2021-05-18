@@ -42,15 +42,15 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0-rc01"
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha08"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-beta06"
+            const val version = "1.0.0-beta07"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
