@@ -403,6 +403,8 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
+/*
+TODO: Fix preview error
 @Composable
 @Preview
 fun PreviewHomeContent() {
@@ -417,6 +419,7 @@ fun PreviewHomeContent() {
         )
     }
 }
+*/
 
 @Composable
 @Preview
