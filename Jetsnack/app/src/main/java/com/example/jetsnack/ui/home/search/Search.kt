@@ -35,7 +35,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +61,7 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.utils.mirroringBackIcon
 import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
@@ -190,7 +190,7 @@ private fun SearchBar(
                 if (searchFocused) {
                     IconButton(onClick = onClearQuery) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = mirroringBackIcon(),
                             tint = JetsnackTheme.colors.iconPrimary,
                             contentDescription = stringResource(R.string.label_back)
                         )
