@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,9 +24,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
@@ -39,8 +37,10 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -55,9 +55,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AuthorAndReadTime(
@@ -135,7 +133,7 @@ fun PostCardSimple(
 
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
-    var openDialog by remember { mutableStateOf(false)  }
+    var openDialog by remember { mutableStateOf(false) }
     Row(
         Modifier.padding(16.dp)
     ) {
@@ -143,11 +141,11 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             Modifier
                 .clickable(onClick = { navigateToArticle(post.id) })
                 .weight(1f)
-        ){
+        ) {
             PostImage(
-            post = post,
-            modifier = Modifier.padding(end = 16.dp)
-        )
+                post = post,
+                modifier = Modifier.padding(end = 16.dp)
+            )
             Column(Modifier.weight(1f)) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
@@ -160,9 +158,9 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                     post = post,
                     modifier = Modifier.padding(top = 4.dp)
                 )
-            }}
-        Row(
-        ){
+            }
+        }
+        Row() {
 
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Icon(
@@ -200,8 +198,8 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                             .padding(15.dp)
                             .clickable {
 
-                            openDialog = false
-                        }
+                                openDialog = false
+                            }
                     )
                 }
             )
@@ -239,7 +237,7 @@ fun BookmarkButton(
 @Preview("Bookmark Button")
 @Composable
 fun BookmarkButtonPreview() {
-    ThemedPreview {
+    JetnewsTheme {
         Surface {
             BookmarkButton(isBookmarked = false, onClick = { })
         }
@@ -249,7 +247,7 @@ fun BookmarkButtonPreview() {
 @Preview("Bookmark Button Bookmarked")
 @Composable
 fun BookmarkButtonBookmarkedPreview() {
-    ThemedPreview {
+    JetnewsTheme {
         Surface {
             BookmarkButton(isBookmarked = true, onClick = { })
         }
@@ -257,25 +255,22 @@ fun BookmarkButtonBookmarkedPreview() {
 }
 
 @Preview("Simple post card")
+@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SimplePostPreview() {
-    ThemedPreview {
-        PostCardSimple(post3, {}, false, {})
+    JetnewsTheme {
+        Surface {
+            PostCardSimple(post3, {}, false, {})
+        }
     }
 }
 
 @Preview("Post History card")
 @Composable
 fun HistoryPostPreview() {
-    ThemedPreview {
-        PostCardHistory(post3, {})
-    }
-}
-
-@Preview("Simple post card dark theme")
-@Composable
-fun SimplePostDarkPreview() {
-    ThemedPreview(darkTheme = true) {
-        PostCardSimple(post3, {}, false, {})
+    JetnewsTheme {
+        Surface {
+            PostCardHistory(post3, {})
+        }
     }
 }

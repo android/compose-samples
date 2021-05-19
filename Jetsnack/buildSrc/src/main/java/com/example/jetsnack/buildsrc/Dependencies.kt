@@ -21,10 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha15"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta01"
 
     object Accompanist {
-        const val version = "0.9.0"
+        const val version = "0.10.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
@@ -44,11 +44,11 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha01"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-beta06"
+            const val version = "1.0.0-beta07"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -63,17 +63,17 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha08"
         }
 
         object Lifecycle {
             const val viewModelCompose =
-                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04"
+                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha05"
         }
 
         object ConstraintLayout {
             const val constraintLayoutCompose =
-                "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha05"
+                "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07"
         }
 
         object Test {

@@ -220,7 +220,7 @@ private fun SelectorExpanded(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FunctionalityNotAvailablePanel() {
-    AnimatedVisibility(visible = true, initiallyVisible = false, enter = fadeIn()) {
+    AnimatedVisibility(visible = true, enter = fadeIn()) {
         Column(
             modifier = Modifier
                 .height(320.dp)
