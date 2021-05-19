@@ -22,6 +22,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ButtonElevation
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
@@ -35,6 +39,8 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -50,6 +56,8 @@ import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.ThemedPreview
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun AuthorAndReadTime(
@@ -127,32 +135,75 @@ fun PostCardSimple(
 
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
+    var openDialog by remember { mutableStateOf(false)  }
     Row(
-        Modifier
-            .clickable(onClick = { navigateToArticle(post.id) })
-            .padding(16.dp)
+        Modifier.padding(16.dp)
     ) {
-        PostImage(
+        Row(
+            Modifier
+                .clickable(onClick = { navigateToArticle(post.id) })
+                .weight(1f)
+        ){
+            PostImage(
             post = post,
             modifier = Modifier.padding(end = 16.dp)
         )
-        Column(Modifier.weight(1f)) {
+            Column(Modifier.weight(1f)) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = "BASED ON YOUR HISTORY",
+                        style = MaterialTheme.typography.overline
+                    )
+                }
+                PostTitle(post = post)
+                AuthorAndReadTime(
+                    post = post,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }}
+        Row(
+        ){
+
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = "BASED ON YOUR HISTORY",
-                    style = MaterialTheme.typography.overline
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = stringResource(R.string.cd_more_actions),
+                    modifier = Modifier.clickable { openDialog = true }
                 )
             }
-            PostTitle(post = post)
-            AuthorAndReadTime(
-                post = post,
-                modifier = Modifier.padding(top = 4.dp)
-            )
         }
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = stringResource(R.string.cd_more_actions)
+        if (openDialog) {
+
+            AlertDialog(
+                modifier = Modifier.padding(20.dp),
+                onDismissRequest = {
+                    openDialog = false
+                },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.fewer_stories),
+                        style = MaterialTheme.typography.h6
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.fewer_stories_content),
+                        style = MaterialTheme.typography.body1
+                    )
+                },
+                confirmButton = {
+                    Text(
+                        text = stringResource(id = R.string.agree),
+                        style = MaterialTheme.typography.button,
+                        color = MaterialTheme.colors.primary,
+                        modifier = Modifier
+                            .padding(15.dp)
+                            .clickable {
+
+                            openDialog = false
+                        }
+                    )
+                }
             )
         }
     }
