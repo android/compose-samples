@@ -66,12 +66,11 @@ import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.getBackStackEntry
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -118,8 +117,7 @@ fun JetsnackBottomBar(
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-        ?: HomeSections.FEED.route
+    val currentRoute = navBackStackEntry?.destination?.route
 
     val sections = remember { HomeSections.values() }
     val routes = remember { sections.map { it.route } }
@@ -175,12 +173,11 @@ fun JetsnackBottomBar(
                         onSelected = {
                             if (section.route != currentRoute) {
                                 navController.navigate(section.route) {
-                                    // Keep the FEED section on the back stack, so the user
-                                    // navigates back to it first before quitting the app.
-                                    popUpTo = navController
-                                        .getBackStackEntry(HomeSections.FEED.route)
-                                        .destination.id
                                     launchSingleTop = true
+                                    restoreState = true
+                                    popUpTo(findStartDestination(navController.graph).id) {
+                                        saveState = true
+                                    }
                                 }
                             }
                         },
@@ -192,6 +189,18 @@ fun JetsnackBottomBar(
             }
         }
     }
+}
+
+private val NavGraph.startDestination: NavDestination?
+    get() = findNode(startDestinationId)
+
+/**
+ * Copied from similar function in NavigationUI.kt
+ *
+ * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:navigation/navigation-ui/src/main/java/androidx/navigation/ui/NavigationUI.kt
+ */
+private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
+    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
 }
 
 @Composable

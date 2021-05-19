@@ -25,9 +25,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.example.jetsnack.ui.MainDestinations.SNACK_ID_KEY
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.addHomeGraph

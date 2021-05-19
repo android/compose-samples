@@ -72,7 +72,7 @@ object Libs {
         }
 
         object Navigation {
-            const val navigationCompose = "androidx.navigation:navigation-compose:1.0.0-alpha10"
+            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-alpha01"
         }
 
         object ConstraintLayout {
