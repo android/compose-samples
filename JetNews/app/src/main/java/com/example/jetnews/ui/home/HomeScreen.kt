@@ -25,8 +25,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -166,7 +168,7 @@ fun HomeScreen(
             }
         }
     }
-
+    val state = rememberLazyListState()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -202,10 +204,11 @@ fun HomeScreen(
                     }
                 },
                 backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp
+                elevation = if (state.firstVisibleItemScrollOffset == 0) 0.dp else 4.dp
             )
         }
     ) { innerPadding ->
+
         val modifier = Modifier.padding(innerPadding)
         LoadingContent(
             empty = posts.initialLoad,
@@ -213,8 +216,10 @@ fun HomeScreen(
             loading = posts.loading,
             onRefresh = onRefreshPosts,
             content = {
+
                 HomeScreenErrorAndContent(
                     posts = posts,
+                    state = state,
                     onRefresh = {
                         onRefreshPosts()
                     },
@@ -269,6 +274,7 @@ private fun LoadingContent(
 @Composable
 private fun HomeScreenErrorAndContent(
     posts: UiState<List<Post>>,
+    state: LazyListState,
     onRefresh: () -> Unit,
     navigateToArticle: (String) -> Unit,
     favorites: Set<String>,
@@ -276,7 +282,7 @@ private fun HomeScreenErrorAndContent(
     modifier: Modifier = Modifier
 ) {
     if (posts.data != null) {
-        PostList(posts.data, navigateToArticle, favorites, onToggleFavorite, modifier)
+        PostList(posts.data, state, navigateToArticle, favorites, onToggleFavorite, modifier)
     } else if (!posts.hasError) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
@@ -301,6 +307,7 @@ private fun HomeScreenErrorAndContent(
 @Composable
 private fun PostList(
     posts: List<Post>,
+    state: LazyListState,
     navigateToArticle: (postId: String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
@@ -313,6 +320,7 @@ private fun PostList(
 
     LazyColumn(
         modifier = modifier,
+        state = state,
         contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(top = false)
     ) {
         item { PostListTopSection(postTop, navigateToArticle) }
