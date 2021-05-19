@@ -80,7 +80,7 @@ import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.insets.navigationBarsPadding
 
-fun NavGraphBuilder.home(
+fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -98,22 +98,15 @@ fun NavGraphBuilder.home(
     }
 }
 
-private object HomeDestinations {
-    const val FEED_ROUTE = "home/feed"
-    const val SEARCH_ROUTE = "home/search"
-    const val CART_ROUTE = "home/cart"
-    const val PROFILE_ROUTE = "home/profile"
-}
-
 enum class HomeSections(
     @StringRes val title: Int,
     val icon: ImageVector,
     val route: String
 ) {
-    FEED(R.string.home_feed, Icons.Outlined.Home, HomeDestinations.FEED_ROUTE),
-    SEARCH(R.string.home_search, Icons.Outlined.Search, HomeDestinations.SEARCH_ROUTE),
-    CART(R.string.home_cart, Icons.Outlined.ShoppingCart, HomeDestinations.CART_ROUTE),
-    PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, HomeDestinations.PROFILE_ROUTE)
+    FEED(R.string.home_feed, Icons.Outlined.Home, "home/feed"),
+    SEARCH(R.string.home_search, Icons.Outlined.Search, "home/search"),
+    CART(R.string.home_cart, Icons.Outlined.ShoppingCart, "home/cart"),
+    PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, "home/profile")
 }
 
 @Composable
@@ -128,20 +121,19 @@ fun JetsnackBottomBar(
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         ?: HomeSections.FEED.route
 
-    val routes = remember { HomeSections.values().map { it.route } }
+    val sections = remember { HomeSections.values() }
+    val routes = remember { sections.map { it.route } }
     if (currentRoute in routes) {
-        val currentSection = HomeSections.values().first { it.route == currentRoute }
+        val currentSection = sections.first { it.route == currentRoute }
         JetsnackSurface(
             color = color,
             contentColor = contentColor
         ) {
-            val springSpec = remember {
-                SpringSpec<Float>(
-                    // Determined experimentally
-                    stiffness = 800f,
-                    dampingRatio = 0.8f
-                )
-            }
+            val springSpec = SpringSpec<Float>(
+                // Determined experimentally
+                stiffness = 800f,
+                dampingRatio = 0.8f
+            )
             JetsnackBottomNavLayout(
                 selectedIndex = currentSection.ordinal,
                 itemCount = routes.size,

@@ -30,7 +30,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.ui.MainDestinations.SNACK_ID_KEY
 import com.example.jetsnack.ui.home.HomeSections
-import com.example.jetsnack.ui.home.home
+import com.example.jetsnack.ui.home.addHomeGraph
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 
 /**
@@ -56,7 +56,7 @@ fun JetsnackNavGraph(
             route = MainDestinations.HOME_ROUTE,
             startDestination = HomeSections.FEED.route
         ) {
-            home(
+            addHomeGraph(
                 onSnackSelected = { snackId: Long, from: NavBackStackEntry ->
                     // In order to discard duplicated navigation events, we check the Lifecycle
                     if (from.lifecycleIsResumed()) {
