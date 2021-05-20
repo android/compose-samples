@@ -71,6 +71,10 @@ object Libs {
                 "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha05"
         }
 
+        object Navigation {
+            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-alpha01"
+        }
+
         object ConstraintLayout {
             const val constraintLayoutCompose =
                 "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07"
