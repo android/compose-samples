@@ -21,7 +21,7 @@ import com.example.crane.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        gradlePluginPortal()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -31,14 +31,14 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.12.4'
+    id 'com.diffplug.spotless' version '5.12.5'
 }
 
 subprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
+        jcenter()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }

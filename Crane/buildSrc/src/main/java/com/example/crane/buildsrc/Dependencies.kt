@@ -26,7 +26,7 @@ object Libs {
 
     object GoogleMaps {
         const val maps = "com.google.android.libraries.maps:maps:3.1.0-beta"
-        const val mapsKtx = "com.google.maps.android:maps-v3-ktx:2.2.0"
+        const val mapsKtx = "com.google.maps.android:maps-v3-ktx:3.0.1"
     }
 
     object Accompanist {
@@ -42,7 +42,7 @@ object Libs {
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
 
         object Coroutines {
-            private const val version = "1.4.2"
+            private const val version = "1.4.3"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
             const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
@@ -83,12 +83,13 @@ object Libs {
                 private const val version = "1.1.2"
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0"
         }
     }
 
     object Hilt {
-        private const val version = "2.35"
+        private const val version = "2.35.1"
 
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
         const val android = "com.google.dagger:hilt-android:$version"
