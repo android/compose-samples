@@ -21,7 +21,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
@@ -31,14 +30,13 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.11.1'
+    id 'com.diffplug.spotless' version '5.12.5'
 }
 
 subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         // Jetpack Compose SNAPSHOTs
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {

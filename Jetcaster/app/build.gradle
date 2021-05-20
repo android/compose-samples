@@ -22,11 +22,6 @@ plugins {
     id 'kotlin-kapt'
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
 android {
     compileSdkVersion 30
 
@@ -37,14 +32,14 @@ android {
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [
-                        "room.incremental"     : "true",
-                        "room.expandProjection": "true"
-                ]
-            }
+    kapt {
+        correctErrorTypes = true
+        useBuildCache = true
+        arguments {
+            arg("room.incremental","true")
+            arg("room.expandProjection","true")
         }
     }
 
@@ -70,6 +65,7 @@ android {
         }
 
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

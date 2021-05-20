@@ -22,7 +22,7 @@ object Versions {
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta01"
-    const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
+    const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
         const val version = "0.10.0"
@@ -39,7 +39,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.4.2"
+        private const val version = "1.4.3"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -109,7 +109,7 @@ object Libs {
         }
 
         object Room {
-            private const val version = "2.2.6"
+            private const val version = "2.3.0"
             const val runtime = "androidx.room:room-runtime:${version}"
             const val ktx = "androidx.room:room-ktx:${version}"
             const val compiler = "androidx.room:room-compiler:${version}"
@@ -117,7 +117,7 @@ object Libs {
     }
 
     object Rome {
-        private const val version = "1.14.1"
+        private const val version = "1.15.0"
         const val rome = "com.rometools:rome:$version"
         const val modules = "com.rometools:rome-modules:$version"
     }
