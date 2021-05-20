@@ -37,7 +37,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.4.1"
+        private const val version = "1.4.3"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -81,15 +81,16 @@ object Libs {
             const val runner = "androidx.test:runner:$version"
             const val rules = "androidx.test:rules:$version"
             object Ext {
-                private const val version = "1.1.2-rc01"
+                private const val version = "1.1.2"
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0"
         }
     }
 
     object JUnit {
-        private const val version = "4.13"
+        private const val version = "4.13.2"
         const val junit = "junit:junit:$version"
     }
 }
