@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-repositories {
-    jcenter()
-}
-
 plugins {
     `kotlin-dsl`
+}
+
+repositories {
+    mavenCentral()
 }

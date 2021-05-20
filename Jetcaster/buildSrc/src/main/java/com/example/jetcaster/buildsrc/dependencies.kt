@@ -60,7 +60,7 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val palette = "androidx.palette:palette:1.0.0"
 
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-beta01"
 
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha08"

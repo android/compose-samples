@@ -44,7 +44,7 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-beta01"
 
         object Compose {
             const val snapshot = ""

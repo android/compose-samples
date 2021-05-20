@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta01"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
-    const val junit = "junit:junit:4.13"
+    const val junit = "junit:junit:4.13.2"
 
     const val material = "com.google.android.material:material:1.3.0"
 
@@ -41,7 +41,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.4.2"
+        private const val version = "1.4.3"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -49,7 +49,7 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-beta01"
 
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha08"
@@ -73,7 +73,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.4"
+            private const val version = "2.3.5"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }

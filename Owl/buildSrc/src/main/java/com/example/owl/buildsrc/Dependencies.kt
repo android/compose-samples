@@ -49,7 +49,7 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-beta01"
         const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha01"
 
         object Activity {
