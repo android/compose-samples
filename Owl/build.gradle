@@ -21,8 +21,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
+
     dependencies {
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin

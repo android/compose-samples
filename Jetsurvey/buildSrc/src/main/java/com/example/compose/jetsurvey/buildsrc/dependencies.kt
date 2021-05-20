@@ -41,7 +41,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.4.1"
+        private const val version = "1.4.3"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -81,7 +81,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.4"
+            private const val version = "2.3.5"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }
