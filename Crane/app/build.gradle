@@ -40,13 +40,13 @@ android {
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.compose.samples.crane.CustomTestRunner"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
-            }
-        }
+        manifestPlaceholders = [googleMapsKey: properties.getProperty("google.maps.key", "")]
+    }
 
-        manifestPlaceholders = [ googleMapsKey : properties.getProperty("google.maps.key", "") ]
+    kapt {
+        arguments {
+            arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+        }
     }
 
     signingConfigs {
@@ -80,7 +80,7 @@ android {
     }
 
     buildFeatures {
-         compose true
+        compose true
 
         // Disable unused AGP features
         buildConfig false
