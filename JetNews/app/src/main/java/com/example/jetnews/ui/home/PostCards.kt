@@ -159,9 +159,6 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
-        }
-        Row() {
-
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
@@ -171,12 +168,9 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             }
         }
         if (openDialog) {
-
             AlertDialog(
                 modifier = Modifier.padding(20.dp),
-                onDismissRequest = {
-                    openDialog = false
-                },
+                onDismissRequest = { openDialog = false },
                 title = {
                     Text(
                         text = stringResource(id = R.string.fewer_stories),
@@ -196,10 +190,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                         color = MaterialTheme.colors.primary,
                         modifier = Modifier
                             .padding(15.dp)
-                            .clickable {
-
-                                openDialog = false
-                            }
+                            .clickable { openDialog = false }
                     )
                 }
             )
