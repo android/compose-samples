@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -134,67 +135,68 @@ fun PostCardSimple(
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
+
     Row(
-        Modifier.padding(16.dp)
+        Modifier
+            .clickable(onClick = { navigateToArticle(post.id) })
     ) {
-        Row(
+        PostImage(
+            post = post,
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        )
+        Column(
             Modifier
-                .clickable(onClick = { navigateToArticle(post.id) })
                 .weight(1f)
+                .padding(top = 16.dp, bottom = 16.dp)
         ) {
-            PostImage(
-                post = post,
-                modifier = Modifier.padding(end = 16.dp)
-            )
-            Column(Modifier.weight(1f)) {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = "BASED ON YOUR HISTORY",
-                        style = MaterialTheme.typography.overline
-                    )
-                }
-                PostTitle(post = post)
-                AuthorAndReadTime(
-                    post = post,
-                    modifier = Modifier.padding(top = 4.dp)
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = "BASED ON YOUR HISTORY",
+                    style = MaterialTheme.typography.overline
                 )
             }
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            PostTitle(post = post)
+            AuthorAndReadTime(
+                post = post,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            IconButton(onClick = { openDialog = true }) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
-                    contentDescription = stringResource(R.string.cd_more_actions),
-                    modifier = Modifier.clickable { openDialog = true }
+                    contentDescription = stringResource(R.string.cd_more_actions)
                 )
             }
         }
-        if (openDialog) {
-            AlertDialog(
-                modifier = Modifier.padding(20.dp),
-                onDismissRequest = { openDialog = false },
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.fewer_stories),
-                        style = MaterialTheme.typography.h6
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(id = R.string.fewer_stories_content),
-                        style = MaterialTheme.typography.body1
-                    )
-                },
-                confirmButton = {
-                    Text(
-                        text = stringResource(id = R.string.agree),
-                        style = MaterialTheme.typography.button,
-                        color = MaterialTheme.colors.primary,
-                        modifier = Modifier
-                            .padding(15.dp)
-                            .clickable { openDialog = false }
-                    )
-                }
-            )
-        }
+    }
+    if (openDialog) {
+        AlertDialog(
+            modifier = Modifier.padding(20.dp),
+            onDismissRequest = { openDialog = false },
+            title = {
+                Text(
+                    text = stringResource(id = R.string.fewer_stories),
+                    style = MaterialTheme.typography.h6
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(id = R.string.fewer_stories_content),
+                    style = MaterialTheme.typography.body1
+                )
+            },
+            confirmButton = {
+                Text(
+                    text = stringResource(id = R.string.agree),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .clickable { openDialog = false }
+                )
+            }
+        )
     }
 }
 
