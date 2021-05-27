@@ -17,11 +17,8 @@
 package com.example.jetcaster.ui.home.discover
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
@@ -38,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.ui.home.category.PodcastCategory
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.util.CollapsingContent
 
 @Composable
 fun Discover(
@@ -49,31 +47,31 @@ fun Discover(
     val selectedCategory = viewState.selectedCategory
 
     if (viewState.categories.isNotEmpty() && selectedCategory != null) {
-        Column(modifier) {
-            Spacer(Modifier.height(8.dp))
-
-            PodcastCategoryTabs(
-                categories = viewState.categories,
-                selectedCategory = selectedCategory,
-                onCategorySelected = viewModel::onCategorySelected,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(8.dp))
-
+        CollapsingContent(
+            modifier = modifier,
+            snapOnRelease = true,
+            collapsingHeader = {
+                PodcastCategoryTabs(
+                    categories = viewState.categories,
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = viewModel::onCategorySelected,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                )
+            }
+        ) {
             Crossfade(
                 targetState = selectedCategory,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
+                modifier = Modifier.fillMaxSize(),
             ) { category ->
+                /**
+                 * TODO, need to think about how this will scroll within the outer VerticalScroller
+                 */
                 /**
                  * TODO, need to think about how this will scroll within the outer VerticalScroller
                  */
                 PodcastCategory(
                     categoryId = category.id,
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
