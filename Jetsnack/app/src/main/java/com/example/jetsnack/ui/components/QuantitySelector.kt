@@ -89,10 +89,10 @@ fun QuantitySelector(
     }
 }
 
-@Preview("Default")
-@Preview("Large font", fontScale = 2f)
-@Preview("Small font", fontScale = 0.5f)
-@Preview("Dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("api 21", apiLevel = 21)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun QuantitySelectorPreview() {
     JetsnackTheme {

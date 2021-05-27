@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.snackdetail
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -362,21 +363,13 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview("Snack Detail")
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("api 21", apiLevel = 21)
+@Preview("large font", fontScale = 2f)
 @Composable
 private fun SnackDetailPreview() {
     JetsnackTheme {
-        SnackDetail(
-            snackId = 1L,
-            upPress = { }
-        )
-    }
-}
-
-@Preview("Snack Detail • Dark")
-@Composable
-private fun SnackDetailDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         SnackDetail(
             snackId = 1L,
             upPress = { }
