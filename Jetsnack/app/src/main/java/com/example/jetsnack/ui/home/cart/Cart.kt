@@ -209,13 +209,7 @@ fun CartItem(
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textSecondary,
             modifier = Modifier.constrainAs(name) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = remove.start,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
+                start.linkTo(image.end, margin = 16.dp)
             }
         )
         IconButton(
@@ -238,20 +232,15 @@ fun CartItem(
             style = MaterialTheme.typography.body1,
             color = JetsnackTheme.colors.textHelp,
             modifier = Modifier.constrainAs(tag) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = parent.end,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
+                start.linkTo(image.end, margin = 16.dp)
             }
         )
         Spacer(
             Modifier
                 .height(8.dp)
                 .constrainAs(priceSpacer) {
-                    linkTo(top = tag.bottom, bottom = price.top)
+                    top.linkTo(tag.bottom)
+                    bottom.linkTo(price.top)
                 }
         )
         Text(
@@ -259,13 +248,7 @@ fun CartItem(
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.constrainAs(price) {
-                linkTo(
-                    start = image.end,
-                    end = quantity.start,
-                    startMargin = 16.dp,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
+                start.linkTo(image.end, margin = 16.dp)
             }
         )
         QuantitySelector(
@@ -279,7 +262,8 @@ fun CartItem(
         )
         JetsnackDivider(
             Modifier.constrainAs(divider) {
-                linkTo(start = parent.start, end = parent.end)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
                 top.linkTo(parent.bottom)
             }
         )
