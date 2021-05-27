@@ -71,10 +71,10 @@ class SurveyViewModel(
     }
 
     fun onDatePicked(questionId: Int, pickerSelection :Long?) {
-        val selectedData = Date().apply {
+        val selectedDate = Date().apply {
             time = pickerSelection ?: getCurrentDate(questionId)
         }
-        val formattedDate = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(selectedData)
+        val formattedDate = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(selectedDate)
         updateStateWithActionResult(questionId, SurveyActionResult.Date(formattedDate))
     }
 
