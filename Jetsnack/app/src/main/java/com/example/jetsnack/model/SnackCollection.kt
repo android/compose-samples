@@ -37,7 +37,11 @@ object SnackRepo {
     fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
     fun getInspiredByCart() = inspiredByCart
     fun getFilters() = filters
+    fun getPriceFilters() = priceFilters
     fun getCart() = cart
+    fun getSortFilters() = sortFilters
+    fun getCategoryFilters() = categoryFilters
+    fun getSortDefault() = sortDefault
 }
 
 /**

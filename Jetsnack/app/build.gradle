@@ -107,6 +107,7 @@ dependencies {
     implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
     implementation Libs.Accompanist.systemuicontroller
+    implementation Libs.Accompanist.flowlayouts
 
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.runner
