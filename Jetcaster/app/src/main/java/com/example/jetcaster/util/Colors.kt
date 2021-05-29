@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.luminance
 import kotlin.math.max
 import kotlin.math.min
 
-fun Color.constrastAgainst(background: Color): Float {
+fun Color.contrastAgainst(background: Color): Float {
     val fg = if (alpha < 1f) compositeOver(background) else this
 
     val fgLuminance = fg.luminance() + 0.05f
