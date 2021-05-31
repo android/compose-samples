@@ -19,14 +19,17 @@ package com.example.jetnews
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.test.filters.MediumTest
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.compose.ui.test.printToString
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
-@MediumTest
+@RunWith(AndroidJUnit4::class)
 class JetnewsTests {
 
     @get:Rule
@@ -35,7 +38,7 @@ class JetnewsTests {
     @Before
     fun setUp() {
         // Using targetContext as the Context of the instrumentation code
-        composeTestRule.launchJetNewsApp(InstrumentationRegistry.getInstrumentation().targetContext)
+        composeTestRule.launchJetNewsApp(ApplicationProvider.getApplicationContext())
     }
 
     @Test
@@ -45,6 +48,8 @@ class JetnewsTests {
 
     @Test
     fun app_opensArticle() {
+        println(composeTestRule.onRoot().printToString())
+        // TODO: test fails on Robolectric
         composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
         composeTestRule.onNodeWithText("3 min read", substring = true).assertExists()
     }
