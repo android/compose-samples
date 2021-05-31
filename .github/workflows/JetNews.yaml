@@ -106,6 +106,7 @@ jobs:
           path: ${{ env.SAMPLE_PATH }}/app/build/reports/androidTests
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
