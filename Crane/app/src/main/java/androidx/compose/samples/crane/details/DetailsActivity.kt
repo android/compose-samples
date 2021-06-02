@@ -120,6 +120,8 @@ fun DetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailsViewModel = viewModel()
 ) {
+    // The `produceState` API is used as an _alternative_ to model the
+    // UiState in the ViewModel and expose it in a stream of data.
     val uiState by produceState(
         key1 = viewModel,
         initialValue = DetailsScreenUiState(isLoading = true)
@@ -132,10 +134,10 @@ fun DetailsScreen(
         }
     }
 
-    Crossfade(targetState = uiState) { currentUiState ->
+    Crossfade(targetState = uiState, modifier) { currentUiState ->
         when {
             currentUiState.exploreModel != null -> {
-                DetailsContent(currentUiState.exploreModel, modifier)
+                DetailsContent(currentUiState.exploreModel, Modifier.fillMaxSize())
             }
             currentUiState.isLoading -> {
                 Box(Modifier.fillMaxSize()) {
