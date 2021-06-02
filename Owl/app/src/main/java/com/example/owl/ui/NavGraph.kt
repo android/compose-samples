@@ -28,9 +28,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.example.owl.ui.MainDestinations.COURSE_DETAIL_ID_KEY
 import com.example.owl.ui.course.CourseDetails
 import com.example.owl.ui.courses.CourseTabs

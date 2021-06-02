@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun PostCardPopular(
@@ -84,18 +86,13 @@ fun PostCardPopular(
 }
 
 @Preview("Regular colors")
+@Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPostCardPopular() {
-    ThemedPreview {
-        PostCardPopular(post1, {})
-    }
-}
-
-@Preview("Dark colors")
-@Composable
-fun PreviewPostCardPopularDark() {
-    ThemedPreview(darkTheme = true) {
-        PostCardPopular(post1, {})
+    JetnewsTheme {
+        Surface {
+            PostCardPopular(post1, {})
+        }
     }
 }
 
@@ -111,16 +108,18 @@ fun PreviewPostCardPopularLongText() {
         facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
         consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
         """.trimIndent()
-    ThemedPreview {
-        PostCardPopular(
-            post1.copy(
-                title = "Title$loremIpsum",
-                metadata = post1.metadata.copy(
-                    author = PostAuthor("Author: $loremIpsum"),
-                    readTimeMinutes = Int.MAX_VALUE
-                )
-            ),
-            {}
-        )
+    JetnewsTheme {
+        Surface {
+            PostCardPopular(
+                post1.copy(
+                    title = "Title$loremIpsum",
+                    metadata = post1.metadata.copy(
+                        author = PostAuthor("Author: $loremIpsum"),
+                        readTimeMinutes = Int.MAX_VALUE
+                    )
+                ),
+                {}
+            )
+        }
     }
 }

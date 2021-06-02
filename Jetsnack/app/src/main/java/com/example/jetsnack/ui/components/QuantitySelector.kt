@@ -16,7 +16,9 @@
 
 package com.example.jetsnack.ui.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.ContentAlpha
@@ -28,14 +30,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
@@ -46,9 +49,7 @@ fun QuantitySelector(
     increaseItemCount: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(modifier = modifier) {
-        val (qty, minus, quantity, plus) = createRefs()
-        createHorizontalChain(qty, minus, quantity, plus, chainStyle = ChainStyle.Packed)
+    Row(modifier = modifier) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(R.string.quantity),
@@ -56,25 +57,19 @@ fun QuantitySelector(
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = Modifier
                     .padding(end = 18.dp)
-                    .constrainAs(qty) {
-                        start.linkTo(parent.start)
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                    }
+                    .align(Alignment.CenterVertically)
             )
         }
         JetsnackGradientTintedIconButton(
             imageVector = Icons.Default.Remove,
             onClick = decreaseItemCount,
             contentDescription = stringResource(R.string.label_decrease),
-            modifier = Modifier.constrainAs(minus) {
-                centerVerticallyTo(quantity)
-                linkTo(top = parent.top, bottom = parent.bottom)
-            }
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         Crossfade(
             targetState = count,
             modifier = Modifier
-                .constrainAs(quantity) { baseline.linkTo(qty.baseline) }
+                .align(Alignment.CenterVertically)
         ) {
             Text(
                 text = "$it",
@@ -89,21 +84,32 @@ fun QuantitySelector(
             imageVector = Icons.Default.Add,
             onClick = increaseItemCount,
             contentDescription = stringResource(R.string.label_increase),
-            modifier = Modifier.constrainAs(plus) {
-                end.linkTo(parent.end)
-                centerVerticallyTo(quantity)
-                linkTo(top = parent.top, bottom = parent.bottom)
-            }
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }
 
-@Preview
+@Preview("Default")
+@Preview("Large font", fontScale = 2f)
+@Preview("Small font", fontScale = 0.5f)
+@Preview("Dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun QuantitySelectorPreview() {
     JetsnackTheme {
         JetsnackSurface {
             QuantitySelector(1, {}, {})
+        }
+    }
+}
+
+@Preview("RTL")
+@Composable
+fun QuantitySelectorPreviewRtl() {
+    JetsnackTheme {
+        JetsnackSurface {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                QuantitySelector(1, {}, {})
+            }
         }
     }
 }

@@ -16,16 +16,18 @@
 
 buildscript {
     ext.kotlin_version = '1.4.32'
-    ext.compose_version = '1.0.0-beta06'
+    ext.compose_version = '1.0.0-beta07'
     ext.coroutines_version = '1.4.2'
+    ext.accompanist_version = '0.10.0'
 
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha15'
+        classpath 'com.android.tools.build:gradle:7.0.0-beta01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -37,6 +39,7 @@ plugins {
 subprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 
@@ -47,7 +50,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.40.0")
+            ktlint("0.41.0")
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }

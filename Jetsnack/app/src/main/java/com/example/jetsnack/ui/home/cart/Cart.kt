@@ -347,6 +347,13 @@ fun CartItem(
                     tint = JetsnackTheme.colors.iconSecondary,
                     contentDescription = stringResource(R.string.label_remove)
                 )
+        )
+        Text(
+            text = snack.name,
+            style = MaterialTheme.typography.subtitle1,
+            color = JetsnackTheme.colors.textSecondary,
+            modifier = Modifier.constrainAs(name) {
+                start.linkTo(image.end, margin = 16.dp)
             }
             Text(
                 text = snack.tagline,
@@ -399,6 +406,56 @@ fun CartItem(
                 }
             )
         }
+        Text(
+            text = snack.tagline,
+            style = MaterialTheme.typography.body1,
+            color = JetsnackTheme.colors.textHelp,
+            modifier = Modifier.constrainAs(tag) {
+                linkTo(
+                    start = image.end,
+                    startMargin = 16.dp,
+                    end = parent.end,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+            }
+        )
+        Spacer(
+            Modifier
+                .height(8.dp)
+                .constrainAs(priceSpacer) {
+                    linkTo(top = tag.bottom, bottom = price.top)
+                }
+        )
+        Text(
+            text = formatPrice(snack.price),
+            style = MaterialTheme.typography.subtitle1,
+            color = JetsnackTheme.colors.textPrimary,
+            modifier = Modifier.constrainAs(price) {
+                linkTo(
+                    start = image.end,
+                    end = quantity.start,
+                    startMargin = 16.dp,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+            }
+        )
+        QuantitySelector(
+            count = orderLine.count,
+            decreaseItemCount = { decreaseItemCount(snack.id) },
+            increaseItemCount = { increaseItemCount(snack.id) },
+            modifier = Modifier.constrainAs(quantity) {
+                baseline.linkTo(price.baseline)
+                end.linkTo(parent.end)
+            }
+        )
+        JetsnackDivider(
+            Modifier.constrainAs(divider) {
+                linkTo(start = parent.start, end = parent.end)
+                top.linkTo(parent.bottom)
+            }
+        )
     }
 }
 

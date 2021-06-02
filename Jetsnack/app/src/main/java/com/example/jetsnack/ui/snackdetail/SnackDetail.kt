@@ -38,8 +38,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -74,6 +72,7 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
+import com.example.jetsnack.ui.utils.mirroringBackIcon
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
@@ -133,7 +132,7 @@ private fun Up(upPress: () -> Unit) {
             )
     ) {
         Icon(
-            imageVector = Icons.Outlined.ArrowBack,
+            imageVector = mirroringBackIcon(),
             tint = JetsnackTheme.colors.iconInteractive,
             contentDescription = stringResource(R.string.label_back)
         )
@@ -323,7 +322,7 @@ private fun CollapsingImageLayout(
             width = constraints.maxWidth,
             height = imageY + imageWidth
         ) {
-            imagePlaceable.place(imageX, imageY)
+            imagePlaceable.placeRelative(imageX, imageY)
         }
     }
 }

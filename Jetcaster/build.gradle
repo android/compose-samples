@@ -20,6 +20,7 @@ import com.example.jetcaster.buildsrc.Versions
 buildscript {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 

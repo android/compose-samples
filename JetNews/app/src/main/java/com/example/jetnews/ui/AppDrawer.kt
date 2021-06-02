@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AppDrawer(
@@ -157,27 +159,17 @@ private fun DrawerButton(
 }
 
 @Preview("Drawer contents")
+@Preview("Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAppDrawer() {
-    ThemedPreview {
-        AppDrawer(
-            currentRoute = MainDestinations.HOME_ROUTE,
-            navigateToHome = {},
-            navigateToInterests = {},
-            closeDrawer = { }
-        )
-    }
-}
-
-@Preview("Drawer contents dark theme")
-@Composable
-fun PreviewAppDrawerDark() {
-    ThemedPreview(darkTheme = true) {
-        AppDrawer(
-            currentRoute = MainDestinations.HOME_ROUTE,
-            navigateToHome = {},
-            navigateToInterests = {},
-            closeDrawer = { }
-        )
+    JetnewsTheme {
+        Surface {
+            AppDrawer(
+                currentRoute = MainDestinations.HOME_ROUTE,
+                navigateToHome = {},
+                navigateToInterests = {},
+                closeDrawer = { }
+            )
+        }
     }
 }

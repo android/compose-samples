@@ -16,12 +16,15 @@
 
 package com.example.jetnews.ui.interests
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,6 +36,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -50,6 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -58,8 +63,8 @@ import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
+import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
@@ -219,17 +224,21 @@ private fun TabContent(
                     MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
                 }
                 Tab(
-                    text = {
-                        Text(
-                            text = tabContent.section.title,
-                            color = colorText
-                        )
-                    },
                     selected = selectedTabIndex == index,
                     onClick = {
                         updateSection(tabContent.section)
-                    }
-                )
+                    },
+                    modifier = Modifier
+                        .heightIn(min = 48.dp)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    Text(
+                        text = tabContent.section.title,
+                        color = colorText,
+                        style = MaterialTheme.typography.subtitle2,
+                        modifier = Modifier.paddingFromBaseline(top = 20.dp)
+                    )
+                }
             }
         }
         Divider(
@@ -303,7 +312,11 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.padding(top = 16.dp).navigationBarsPadding()) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .navigationBarsPadding()
+    ) {
         items(topics) { topic ->
             TopicItem(
                 topic,
@@ -332,7 +345,9 @@ private fun TabWithSections(
             item {
                 Text(
                     text = section,
-                    modifier = Modifier.padding(16.dp).semantics { heading() },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .semantics { heading() },
                     style = MaterialTheme.typography.subtitle1
                 )
             }
@@ -399,10 +414,13 @@ private fun TopicDivider() {
     )
 }
 
-@Preview("Interests screen")
+@Preview("Interests screen", "Interests")
+@Preview("Interests screen (dark)", "Interests", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Interests screen (big font)", "Interests", fontScale = 1.5f)
+@Preview("Interests screen (large screen)", "Interests", device = Devices.PIXEL_C)
 @Composable
 fun PreviewInterestsScreen() {
-    ThemedPreview {
+    JetnewsTheme {
         InterestsScreen(
             interestsRepository = FakeInterestsRepository(),
             openDrawer = {}
@@ -410,101 +428,44 @@ fun PreviewInterestsScreen() {
     }
 }
 
-@Preview("Interests screen dark theme")
-@Composable
-fun PreviewInterestsScreenDark() {
-    ThemedPreview(darkTheme = true) {
-        InterestsScreen(
-            interestsRepository = FakeInterestsRepository(),
-            openDrawer = {}
-        )
-    }
-}
-
-@Preview("Interests screen topics tab")
+@Preview("Interests screen topics tab", "Topics")
+@Preview("Interests screen topics tab (dark)", "Topics", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewTopicsTab() {
-    ThemedPreview {
-        TopicList(loadFakeTopics(), setOf(), {})
-    }
-}
-
-@Preview("Interests screen topics tab dark theme")
-@Composable
-fun PreviewTopicsTabDark() {
-    ThemedPreview(darkTheme = true) {
-        TopicList(loadFakeTopics(), setOf(), {})
-    }
-}
-
-@Composable
-private fun loadFakeTopics(): TopicsMap {
     val topics = runBlocking {
-        FakeInterestsRepository().getTopics()
+        (FakeInterestsRepository().getTopics() as Result.Success).data
     }
-    return (topics as Result.Success).data
+    JetnewsTheme {
+        Surface {
+            TopicList(topics, setOf(), {})
+        }
+    }
 }
 
-@Preview("Interests screen people tab")
+@Preview("Interests screen people tab", "People")
+@Preview("Interests screen people tab (dark)", "People", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPeopleTab() {
-    ThemedPreview {
-        PeopleList(loadFakePeople(), setOf(), { })
-    }
-}
-
-@Preview("Interests screen people tab dark theme")
-@Composable
-fun PreviewPeopleTabDark() {
-    ThemedPreview(darkTheme = true) {
-        PeopleList(loadFakePeople(), setOf(), { })
-    }
-}
-
-@Composable
-private fun loadFakePeople(): List<String> {
     val people = runBlocking {
-        FakeInterestsRepository().getPeople()
+        (FakeInterestsRepository().getPeople() as Result.Success).data
     }
-    return (people as Result.Success).data
+    JetnewsTheme {
+        Surface {
+            PeopleList(people, setOf(), {})
+        }
+    }
 }
 
-@Preview("Interests screen publications tab")
+@Preview("Interests screen publications tab", "Publications")
+@Preview("Interests screen publications tab (dark)", "Publications", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPublicationsTab() {
-    ThemedPreview {
-        PublicationList(loadFakePublications(), setOf(), { })
-    }
-}
-
-@Preview("Interests screen publications tab dark theme")
-@Composable
-fun PreviewPublicationsTabDark() {
-    ThemedPreview(darkTheme = true) {
-        PublicationList(loadFakePublications(), setOf(), { })
-    }
-}
-
-@Composable
-private fun loadFakePublications(): List<String> {
     val publications = runBlocking {
-        FakeInterestsRepository().getPublications()
+        (FakeInterestsRepository().getPublications() as Result.Success).data
     }
-    return (publications as Result.Success).data
-}
-
-@Preview("Interests screen tab with topics")
-@Composable
-fun PreviewTabWithTopics() {
-    ThemedPreview {
-        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
-    }
-}
-
-@Preview("Interests screen tab with topics dark theme")
-@Composable
-fun PreviewTabWithTopicsDark() {
-    ThemedPreview(darkTheme = true) {
-        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
+    JetnewsTheme {
+        Surface {
+            PublicationList(publications, setOf(), {})
+        }
     }
 }

@@ -16,14 +16,17 @@
 
 package com.example.jetnews.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -35,6 +38,10 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -49,7 +56,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AuthorAndReadTime(
@@ -127,16 +134,21 @@ fun PostCardSimple(
 
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
+    var openDialog by remember { mutableStateOf(false) }
+
     Row(
         Modifier
             .clickable(onClick = { navigateToArticle(post.id) })
-            .padding(16.dp)
     ) {
         PostImage(
             post = post,
-            modifier = Modifier.padding(end = 16.dp)
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         )
-        Column(Modifier.weight(1f)) {
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(top = 16.dp, bottom = 16.dp)
+        ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "BASED ON YOUR HISTORY",
@@ -150,11 +162,41 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             )
         }
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = stringResource(R.string.cd_more_actions)
-            )
+            IconButton(onClick = { openDialog = true }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = stringResource(R.string.cd_more_actions)
+                )
+            }
         }
+    }
+    if (openDialog) {
+        AlertDialog(
+            modifier = Modifier.padding(20.dp),
+            onDismissRequest = { openDialog = false },
+            title = {
+                Text(
+                    text = stringResource(id = R.string.fewer_stories),
+                    style = MaterialTheme.typography.h6
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(id = R.string.fewer_stories_content),
+                    style = MaterialTheme.typography.body1
+                )
+            },
+            confirmButton = {
+                Text(
+                    text = stringResource(id = R.string.agree),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .clickable { openDialog = false }
+                )
+            }
+        )
     }
 }
 
@@ -167,26 +209,28 @@ fun BookmarkButton(
     val clickLabel = stringResource(
         if (isBookmarked) R.string.unbookmark else R.string.bookmark
     )
-    IconToggleButton(
-        checked = isBookmarked,
-        onCheckedChange = { onClick() },
-        modifier = modifier.semantics {
-            // Use a custom click label that accessibility services can communicate to the user.
-            // We only want to override the label, not the actual action, so for the action we pass null.
-            this.onClick(label = clickLabel, action = null)
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+        IconToggleButton(
+            checked = isBookmarked,
+            onCheckedChange = { onClick() },
+            modifier = modifier.semantics {
+                // Use a custom click label that accessibility services can communicate to the user.
+                // We only want to override the label, not the actual action, so for the action we pass null.
+                this.onClick(label = clickLabel, action = null)
+            }
+        ) {
+            Icon(
+                imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                contentDescription = null // handled by click label of parent
+            )
         }
-    ) {
-        Icon(
-            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-            contentDescription = null // handled by click label of parent
-        )
     }
 }
 
 @Preview("Bookmark Button")
 @Composable
 fun BookmarkButtonPreview() {
-    ThemedPreview {
+    JetnewsTheme {
         Surface {
             BookmarkButton(isBookmarked = false, onClick = { })
         }
@@ -196,7 +240,7 @@ fun BookmarkButtonPreview() {
 @Preview("Bookmark Button Bookmarked")
 @Composable
 fun BookmarkButtonBookmarkedPreview() {
-    ThemedPreview {
+    JetnewsTheme {
         Surface {
             BookmarkButton(isBookmarked = true, onClick = { })
         }
@@ -204,25 +248,22 @@ fun BookmarkButtonBookmarkedPreview() {
 }
 
 @Preview("Simple post card")
+@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SimplePostPreview() {
-    ThemedPreview {
-        PostCardSimple(post3, {}, false, {})
+    JetnewsTheme {
+        Surface {
+            PostCardSimple(post3, {}, false, {})
+        }
     }
 }
 
 @Preview("Post History card")
 @Composable
 fun HistoryPostPreview() {
-    ThemedPreview {
-        PostCardHistory(post3, {})
-    }
-}
-
-@Preview("Simple post card dark theme")
-@Composable
-fun SimplePostDarkPreview() {
-    ThemedPreview(darkTheme = true) {
-        PostCardSimple(post3, {}, false, {})
+    JetnewsTheme {
+        Surface {
+            PostCardHistory(post3, {})
+        }
     }
 }

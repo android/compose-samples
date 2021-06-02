@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
@@ -55,9 +57,9 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
@@ -148,8 +150,8 @@ fun HomeScreen(
 
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError is false
-        // (thanks to the surrounding if statement) or if scaffoldState changes.
-        LaunchedEffect(scaffoldState) {
+        // (thanks to the surrounding if statement) or if scaffoldState.snackbarHostState changes.
+        LaunchedEffect(scaffoldState.snackbarHostState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
@@ -415,28 +417,25 @@ private fun PostListDivider() {
     )
 }
 
-@Preview("Home screen body")
+@Preview("Home screen")
+@Preview("Home screen (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Home screen (big font)", fontScale = 1.5f)
+@Preview("Home screen (large screen)", device = Devices.PIXEL_C)
 @Composable
-fun PreviewHomeScreenBody() {
-    ThemedPreview {
-        val posts = loadFakePosts()
-        PostList(posts, { }, setOf(), {})
-    }
-}
-
-@Preview("Home screen dark theme")
-@Composable
-fun PreviewHomeScreenBodyDark() {
-    ThemedPreview(darkTheme = true) {
-        val posts = loadFakePosts()
-        PostList(posts, {}, setOf(), {})
-    }
-}
-
-@Composable
-private fun loadFakePosts(): List<Post> {
+fun PreviewHomeScreen() {
     val posts = runBlocking {
-        BlockingFakePostsRepository().getPosts()
+        (BlockingFakePostsRepository().getPosts() as Result.Success).data
     }
-    return (posts as Result.Success).data
+    JetnewsTheme {
+        HomeScreen(
+            posts = UiState(data = posts),
+            favorites = setOf(),
+            onToggleFavorite = { /*TODO*/ },
+            onRefreshPosts = { /*TODO*/ },
+            onErrorDismiss = { /*TODO*/ },
+            navigateToArticle = { /*TODO*/ },
+            openDrawer = { /*TODO*/ },
+            scaffoldState = rememberScaffoldState()
+        )
+    }
 }

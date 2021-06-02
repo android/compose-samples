@@ -29,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import com.example.jetsnack.ui.utils.LocalSysUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColorPalette = JetsnackColors(
     brand = Shadow5,
@@ -90,7 +90,7 @@ fun JetsnackTheme(
 ) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
-    val sysUiController = LocalSysUiController.current
+    val sysUiController = rememberSystemUiController()
     SideEffect {
         sysUiController.setSystemBarsColor(
             color = colors.uiBackground.copy(alpha = AlphaNearOpaque)
