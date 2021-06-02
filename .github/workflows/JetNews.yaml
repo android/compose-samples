@@ -47,7 +47,7 @@ jobs:
 
       - name: Run local tests
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew test --stacktrace
+        run: ./gradlew testDebug
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2
