@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.cart
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +33,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -53,6 +57,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
@@ -162,103 +168,70 @@ private fun CartContent(
         items(orderLines) { orderLine ->
             SwipeDismissItem(
                 background = { offsetX ->
-                    // Adjust padding right for the main Row, while the delete looks like an Icon the padding must be different from zero
-                    val paddingRight = if (offsetX < -15.dp && offsetX > -200.dp) {
-                        ((offsetX / -2))
-                    } else {
-                        0.dp
-                    }
-                    // Row background is uiFloated until the Remove item text appears, then it is replaced with a red Background
-                    val background = if (offsetX >= -200.dp) {
-                        JetsnackTheme.colors.uiFloated
-                    } else {
+                    //Background color changes from light gray to red when the swipe to delete with exceeds 160.dp
+                    val backgroundColor = if(offsetX < -160.dp){
                         JetsnackTheme.colors.error
+                    }else{
+                        JetsnackTheme.colors.uiFloated
                     }
-                    Row(
+                   Column (
                         modifier = Modifier
                             .fillMaxWidth()
-                            .requiredHeight(132.dp)
-                            .background(background),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
+                            .fillMaxHeight()
+                            .background(backgroundColor)
+                            ,
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center){
+                       val padding = if(offsetX > -160.dp) 4.dp else 0.dp
+                       Box(
+                           Modifier
+                               .width(offsetX * -1)
+                               .padding(padding)
+                       ){
+                           val height = (offsetX + 8.dp) * -1
+                           Surface(
+                               modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(height)
+                                   .align(Alignment.Center)
+                               ,
+                               shape = CircleShape,
+                               color = JetsnackTheme.colors.error
 
-                    ) {
-                        // The intended size of the rounded icon
-                        val size = when {
-                            (offsetX < 0.dp && offsetX > -120.dp) -> (offsetX * -1) - 10.dp
-                            (offsetX < -120.dp) -> (offsetX * -1)
-                            else -> 0.dp
-                        }
-                        // To avoid icon to be resized by the graphics layer it is placed in another row. Padding right ensures it looks centered
-                        val paddingIcon = if (size > 0.dp) size / 2 else 0.dp
-                        // Conversion for the intended size to a percentage considering initial size is 10
-                        val heightPercentage = (size.value / 10)
-                        Box {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                                    .padding(end = paddingRight),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Surface(
-                                    modifier = Modifier
-                                        .size(10.dp)
-                                        .graphicsLayer(
-                                            scaleX = heightPercentage,
-                                            scaleY = heightPercentage,
-                                            shape = CircleShape,
-                                            clip = true
-                                        ),
-                                    color = JetsnackTheme.colors.error
+                           ) {
+                               Box(modifier = Modifier.fillMaxSize(),
+                                   contentAlignment = Alignment.Center){
+                                   //Icon must be visible while in this width range
+                                   if (offsetX < -40.dp && offsetX > -152.dp) {
+                                       //Icon alpha decreases as it is about to disappear
+                                       val iconAlpha = if (offsetX < -100.dp) 0.5f else 1f
+                                       Icon(
+                                           imageVector = Icons.Filled.DeleteForever,
+                                           modifier = Modifier
+                                               .size(16.dp)
+                                               .alpha(iconAlpha),
+                                           tint = JetsnackTheme.colors.uiBackground,
+                                           contentDescription = null,
+                                       )
+                                   }
+                                   //Text opacity increases as the text is supposed to appear in the screen
+                                   val textAlpha = if (offsetX > -144.dp) 0.5f else 1f
+                                   if (offsetX < -120.dp) {
+                                       Text(
+                                           text = stringResource(id = R.string.remove_item),
+                                           style = MaterialTheme.typography.subtitle1,
+                                           color = JetsnackTheme.colors.uiBackground,
+                                           textAlign = TextAlign.Center,
+                                           modifier = Modifier
+                                               .alpha(textAlpha)
+                                       )
+                                   }
+                               }
+                           }
 
-                                ) {
-                                }
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .requiredHeight(132.dp)
-                                    .padding(end = paddingIcon),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                if (offsetX < -40.dp && offsetX > -150.dp) {
-                                    val iconAlpha = if (offsetX < -100.dp) 0.5f else 1f
-                                    Icon(
-                                        imageVector = Icons.Filled.DeleteForever,
-                                        modifier = Modifier
-                                            .size(16.dp)
-                                            .alpha(iconAlpha),
-                                        tint = JetsnackTheme.colors.uiBackground,
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-                            // Ensures that text moves to the left as the offset grows
-                            val paddingText = if (offsetX < 0.dp)(offsetX / -5) else 0.dp
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(end = paddingText),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                val textAlpha = if (offsetX > -140.dp) 0.5f else 1f
-                                if (offsetX < -120.dp) {
-                                    Text(
-                                        text = stringResource(id = R.string.remove_item),
-                                        style = MaterialTheme.typography.subtitle1,
-                                        color = JetsnackTheme.colors.uiBackground,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier
-                                            .alpha(textAlpha)
-                                    )
-                                }
-                            }
-                        }
-                    }
+                       }
+                       }
+
                 },
                 content = {
                     CartItem(
@@ -347,13 +320,6 @@ fun CartItem(
                     tint = JetsnackTheme.colors.iconSecondary,
                     contentDescription = stringResource(R.string.label_remove)
                 )
-        )
-        Text(
-            text = snack.name,
-            style = MaterialTheme.typography.subtitle1,
-            color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
-                start.linkTo(image.end, margin = 16.dp)
             }
             Text(
                 text = snack.tagline,
@@ -406,56 +372,6 @@ fun CartItem(
                 }
             )
         }
-        Text(
-            text = snack.tagline,
-            style = MaterialTheme.typography.body1,
-            color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = parent.end,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-            }
-        )
-        Spacer(
-            Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
-                    linkTo(top = tag.bottom, bottom = price.top)
-                }
-        )
-        Text(
-            text = formatPrice(snack.price),
-            style = MaterialTheme.typography.subtitle1,
-            color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
-                linkTo(
-                    start = image.end,
-                    end = quantity.start,
-                    startMargin = 16.dp,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-            }
-        )
-        QuantitySelector(
-            count = orderLine.count,
-            decreaseItemCount = { decreaseItemCount(snack.id) },
-            increaseItemCount = { increaseItemCount(snack.id) },
-            modifier = Modifier.constrainAs(quantity) {
-                baseline.linkTo(price.baseline)
-                end.linkTo(parent.end)
-            }
-        )
-        JetsnackDivider(
-            Modifier.constrainAs(divider) {
-                linkTo(start = parent.start, end = parent.end)
-                top.linkTo(parent.bottom)
-            }
-        )
     }
 }
 
