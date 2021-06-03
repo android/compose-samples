@@ -20,7 +20,6 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -36,7 +35,6 @@ import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -75,13 +73,13 @@ fun PeopleUserInput(
 
         val people = peopleState.people
         CraneUserInput(
-            modifier = Modifier.clickable {
-                peopleState.addPerson()
-                onPeopleChanged(peopleState.people)
-            },
             text = if (people == 1) "$people Adult$titleSuffix" else "$people Adults$titleSuffix",
             vectorImageId = R.drawable.ic_person,
-            tint = tint.value
+            tint = tint.value,
+            onClick = {
+                peopleState.addPerson()
+                onPeopleChanged(peopleState.people)
+            }
         )
         if (transitionState.targetState == Invalid) {
             Text(
@@ -110,7 +108,7 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
 @Composable
 fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
     CraneUserInput(
-        modifier = Modifier.clickable(onClick = onDateSelectionClicked),
+        onClick = onDateSelectionClicked,
         caption = if (datesSelected.isEmpty()) "Select Dates" else null,
         text = datesSelected,
         vectorImageId = R.drawable.ic_calendar
