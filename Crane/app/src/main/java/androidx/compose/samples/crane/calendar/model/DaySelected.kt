@@ -25,8 +25,12 @@ data class DaySelected(val day: Int, val month: CalendarMonth, val year: Calenda
     }
 
     override fun toString(): String {
-        return "${month.name.substring(0, 3)
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} $day"
+        val month = month.name
+            .substring(0, 3)
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+            }
+        return "$month $day"
     }
 
     operator fun compareTo(other: DaySelected): Int {
