@@ -21,6 +21,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.bitmap.BitmapPool
@@ -40,6 +41,7 @@ import com.google.accompanist.coil.LocalImageLoader
 @Composable
 fun ProvideTestImageLoader(content: @Composable () -> Unit) {
     // From https://coil-kt.github.io/coil/image_loaders/
+    val context = LocalContext.current
     val loader = remember {
         object : ImageLoader {
             private val disposable = object : Disposable {
@@ -73,6 +75,8 @@ fun ProvideTestImageLoader(content: @Composable () -> Unit) {
                     )
                 )
             }
+
+            override fun newBuilder() = ImageLoader.Builder(context)
 
             override fun shutdown() {}
         }

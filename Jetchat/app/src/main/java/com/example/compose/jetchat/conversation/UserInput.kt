@@ -69,9 +69,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -393,7 +392,7 @@ private fun UserInputText(
                     .weight(1f)
                     .align(Alignment.Bottom)
             ) {
-                var lastFocusState by remember { mutableStateOf(FocusState.Inactive) }
+                var lastFocusState by remember { mutableStateOf(false) }
                 BasicTextField(
                     value = textFieldValue,
                     onValueChange = { onTextChanged(it) },
@@ -402,10 +401,10 @@ private fun UserInputText(
                         .padding(start = 16.dp)
                         .align(Alignment.CenterStart)
                         .onFocusChanged { state ->
-                            if (lastFocusState != state) {
-                                onTextFieldFocused(state == FocusState.Active)
+                            if (lastFocusState != state.isFocused) {
+                                onTextFieldFocused(state.isFocused)
                             }
-                            lastFocusState = state
+                            lastFocusState = state.isFocused
                         },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = keyboardType,
@@ -444,7 +443,7 @@ fun EmojiSelector(
         modifier = Modifier
             .focusRequester(focusRequester) // Requests focus when the Emoji selector is displayed
             // Make the emoji selector focusable so it can steal focus from TextField
-            .focusModifier()
+            .focusTarget()
             .semantics { contentDescription = a11yLabel }
     ) {
         Row(

@@ -226,7 +226,7 @@ private fun Body(
                     Spacer(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
-                            .navigationBarsPadding(left = false, right = false)
+                            .navigationBarsPadding(start = false, end = false)
                             .height(8.dp)
                     )
                 }
@@ -336,7 +336,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .navigationBarsPadding(left = false, right = false)
+                    .navigationBarsPadding(start = false, end = false)
                     .then(HzPadding)
                     .heightIn(min = BottomBarHeight)
             ) {

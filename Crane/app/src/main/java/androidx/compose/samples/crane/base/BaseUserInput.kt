@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
@@ -63,12 +64,14 @@ fun SimpleUserInput(
 fun CraneUserInput(
     text: String,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = { },
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null,
     tint: Color = LocalContentColor.current
 ) {
     CraneBaseUserInput(
         modifier = modifier,
+        onClick = onClick,
         caption = caption,
         vectorImageId = vectorImageId,
         tintIcon = { text.isNotEmpty() },
@@ -111,9 +114,11 @@ fun CraneEditableUserInput(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CraneBaseUserInput(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = { },
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null,
     showCaption: () -> Boolean = { true },
@@ -121,7 +126,11 @@ private fun CraneBaseUserInput(
     tint: Color = LocalContentColor.current,
     content: @Composable () -> Unit
 ) {
-    Surface(modifier = modifier, color = MaterialTheme.colors.primaryVariant) {
+    Surface(
+        modifier = modifier,
+        onClick = onClick,
+        color = MaterialTheme.colors.primaryVariant
+    ) {
         Row(Modifier.padding(all = 12.dp)) {
             if (vectorImageId != null) {
                 Icon(

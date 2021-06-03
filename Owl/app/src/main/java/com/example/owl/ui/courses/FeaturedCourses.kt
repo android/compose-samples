@@ -49,6 +49,7 @@ import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.utils.NetworkImage
 import com.google.accompanist.insets.statusBarsPadding
+import java.util.Locale
 import kotlin.math.ceil
 
 @Composable
@@ -122,7 +123,7 @@ fun FeaturedCourse(
                     }
             )
             Text(
-                text = course.subject.toUpperCase(),
+                text = course.subject.uppercase(Locale.getDefault()),
                 color = MaterialTheme.colors.primary,
                 style = MaterialTheme.typography.overline,
                 modifier = Modifier

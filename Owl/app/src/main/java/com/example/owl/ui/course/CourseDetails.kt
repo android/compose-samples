@@ -92,8 +92,9 @@ import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.insets.toPaddingValues
+import java.util.Locale
 import kotlinx.coroutines.launch
 
 private val FabSize = 56.dp
@@ -232,7 +233,7 @@ private fun CourseDescriptionHeader(
 @Composable
 private fun CourseDescriptionBody(course: Course) {
     Text(
-        text = course.subject.toUpperCase(),
+        text = course.subject.uppercase(Locale.getDefault()),
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
@@ -418,8 +419,9 @@ private fun Lessons(
             }
             LazyColumn(
                 state = scroll,
-                contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-                    top = false
+                contentPadding = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.systemBars,
+                    applyTop = false
                 )
             ) {
                 items(lessons) { lesson ->
