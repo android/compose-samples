@@ -88,9 +88,7 @@ object Libs {
     }
 
     object Hilt {
-        // TODO use the stable version of Hilt when the next version is released
-        // temporary fix for https://github.com/google/dagger/issues/2618
-        private const val version = "HEAD-SNAPSHOT"
+        private const val version = "2.36"
 
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
         const val android = "com.google.dagger:hilt-android:$version"
