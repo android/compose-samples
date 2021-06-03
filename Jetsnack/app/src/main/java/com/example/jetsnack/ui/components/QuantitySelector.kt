@@ -91,7 +91,6 @@ fun QuantitySelector(
 
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
-@Preview("api 21", apiLevel = 21)
 @Preview("large font", fontScale = 2f)
 @Composable
 fun QuantitySelectorPreview() {

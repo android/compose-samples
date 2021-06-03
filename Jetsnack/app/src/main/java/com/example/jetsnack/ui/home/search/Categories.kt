@@ -154,7 +154,6 @@ private fun SearchCategory(
 
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("api 21", apiLevel = 21)
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun SearchCategoryPreview() {
