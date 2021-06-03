@@ -22,6 +22,14 @@ buildscript {
     repositories {
         google()
         jcenter()
+        // TODO remove when next version of Hilt is released
+        // temporary fix for https://github.com/google/dagger/issues/2618
+        maven {
+            url  "https://oss.sonatype.org/content/repositories/snapshots"
+            content {
+                includeModule("com.google.dagger", "hilt-android-gradle-plugin")
+            }
+        }
     }
     dependencies {
         classpath Libs.androidGradlePlugin
