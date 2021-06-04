@@ -195,7 +195,9 @@ private fun MapViewContainer(
     latitude: String,
     longitude: String
 ) {
-    val cameraPosition = remember(map) { LatLng(latitude.toDouble(), longitude.toDouble()) }
+    val cameraPosition = remember(latitude, longitude) {
+        LatLng(latitude.toDouble(), longitude.toDouble())
+    }
 
     var mapInitialized by remember(map) { mutableStateOf(false) }
     LaunchedEffect(map, mapInitialized) {
