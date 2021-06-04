@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -219,7 +220,6 @@ private fun HighlightSnackItem(
         (HighlightCardWidth + HighlightCardPadding).toPx()
     }
     JetsnackCard(
-        elevation = 4.dp,
         modifier = modifier
             .size(
                 width = 170.dp,
@@ -297,26 +297,12 @@ fun SnackImage(
     }
 }
 
-@Preview("Highlight snack card")
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun SnackCardPreview() {
     JetsnackTheme {
-        val snack = snacks.first()
-        HighlightSnackItem(
-            snack = snack,
-            onSnackClick = { },
-            index = 0,
-            gradient = JetsnackTheme.colors.gradient6_1,
-            gradientWidth = gradientWidth,
-            scroll = 0
-        )
-    }
-}
-
-@Preview("Highlight snack card • Dark Theme")
-@Composable
-fun SnackCardDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         val snack = snacks.first()
         HighlightSnackItem(
             snack = snack,
