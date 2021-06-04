@@ -53,6 +53,7 @@ import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
@@ -164,12 +165,14 @@ fun DetailsContent(
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = exploreModel.city.nameToDisplay,
-            style = MaterialTheme.typography.h4
+            style = MaterialTheme.typography.h4,
+            textAlign = TextAlign.Center
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = exploreModel.description,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(16.dp))
         CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
@@ -192,15 +195,16 @@ private fun MapViewContainer(
     latitude: String,
     longitude: String
 ) {
+    val cameraPosition = remember(latitude, longitude) {
+        LatLng(latitude.toDouble(), longitude.toDouble())
+    }
+
     var mapInitialized by remember(map) { mutableStateOf(false) }
     LaunchedEffect(map, mapInitialized) {
         if (!mapInitialized) {
             val googleMap = map.awaitMap()
-            val position = LatLng(latitude.toDouble(), longitude.toDouble())
-            googleMap.addMarker {
-                position(position)
-            }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position))
+            googleMap.addMarker { position(cameraPosition) }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
             mapInitialized = true
         }
     }
@@ -218,6 +222,8 @@ private fun MapViewContainer(
         coroutineScope.launch {
             val googleMap = mapView.awaitMap()
             googleMap.setZoom(mapZoom)
+            // Move camera to the same place to trigger the zoom update
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
         }
     }
 }
