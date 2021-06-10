@@ -107,6 +107,12 @@ dependencies {
     implementation Libs.Kotlin.Coroutines.android
     implementation Libs.GoogleMaps.maps
     implementation Libs.GoogleMaps.mapsKtx
+    constraints {
+        // Volley is a transitive dependency of maps
+        implementation(Libs.Volley.volley) {
+            because("Only volley 1.2.0 or newer are available on maven.google.com")
+        }
+    }
 
     implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
