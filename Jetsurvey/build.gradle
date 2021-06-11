@@ -21,7 +21,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -37,7 +36,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         if (Libs.AndroidX.Compose.version.endsWith('SNAPSHOT')) {
             maven { url Libs.AndroidX.Compose.snapshotUrl }

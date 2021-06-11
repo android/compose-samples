@@ -21,7 +21,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
@@ -38,7 +37,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         // Jetpack Compose SNAPSHOTs
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {

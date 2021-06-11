@@ -29,6 +29,10 @@ object Libs {
         const val mapsKtx = "com.google.maps.android:maps-v3-ktx:2.2.0"
     }
 
+    object Volley {
+        const val volley = "com.android.volley:volley:1.2.0"
+    }
+
     object Accompanist {
         const val version = "0.11.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
