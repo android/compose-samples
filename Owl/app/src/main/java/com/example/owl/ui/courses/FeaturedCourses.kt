@@ -16,6 +16,7 @@
 
 package com.example.owl.ui.courses
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -242,20 +243,10 @@ private fun FeaturedCoursePreview() {
 }
 
 @Preview(name = "Featured Courses Portrait")
+@Preview(name = "Featured Courses Dark", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun FeaturedCoursesPreview() {
     BlueTheme {
-        FeaturedCourses(
-            courses = courses,
-            selectCourse = { }
-        )
-    }
-}
-
-@Preview(name = "Featured Courses Dark")
-@Composable
-private fun FeaturedCoursesPreviewDark() {
-    BlueTheme(darkTheme = true) {
         FeaturedCourses(
             courses = courses,
             selectCourse = { }
