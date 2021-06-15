@@ -59,6 +59,8 @@ import com.example.compose.jetsurvey.util.supportWideScreen
 @Composable
 fun SurveyQuestionsScreen(
     questions: SurveyState.Questions,
+    shouldAskPermissions: Boolean,
+    onDoNotAskForPermissions: () -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDonePressed: () -> Unit,
     onBackPressed: () -> Unit
@@ -80,11 +82,13 @@ fun SurveyQuestionsScreen(
                 Question(
                     question = questionState.question,
                     answer = questionState.answer,
+                    shouldAskPermissions = shouldAskPermissions,
                     onAnswer = {
                         questionState.answer = it
                         questionState.enableNext = true
                     },
                     onAction = onAction,
+                    onDoNotAskForPermissions = onDoNotAskForPermissions,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)

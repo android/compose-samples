@@ -60,7 +60,9 @@ class SurveyFragment : Fragment() {
                         when (surveyState) {
                             is SurveyState.Questions -> SurveyQuestionsScreen(
                                 questions = surveyState,
+                                shouldAskPermissions = viewModel.askForPermissions,
                                 onAction = { id, action -> handleSurveyAction(id, action) },
+                                onDoNotAskForPermissions = { viewModel.doNotAskForPermissions() },
                                 onDonePressed = { viewModel.computeResult(surveyState) },
                                 onBackPressed = {
                                     activity?.onBackPressedDispatcher?.onBackPressed()

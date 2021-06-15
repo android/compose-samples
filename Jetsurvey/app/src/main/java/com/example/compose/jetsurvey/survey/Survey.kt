@@ -34,7 +34,9 @@ data class Question(
     val id: Int,
     @StringRes val questionText: Int,
     val answer: PossibleAnswer,
-    @StringRes val description: Int? = null
+    @StringRes val description: Int? = null,
+    val permissionsRequired: List<String>? = null,
+    @StringRes val permissionsRationaleText: Int? = null
 )
 
 /**
@@ -69,6 +71,7 @@ sealed class PossibleAnswer {
 }
 
 sealed class Answer<T : PossibleAnswer> {
+    object PermissionsDenied : Answer<Nothing>()
     data class SingleChoice(@StringRes val answer: Int) : Answer<PossibleAnswer.SingleChoice>()
     data class MultipleChoice(val answersStringRes: Set<Int>) :
         Answer<PossibleAnswer.MultipleChoice>()

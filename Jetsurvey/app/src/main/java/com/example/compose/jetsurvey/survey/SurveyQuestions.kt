@@ -54,9 +54,11 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +69,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.permissions.rememberMultiplePermissionsState
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.accompanist.coil.rememberCoilPainter
 import java.text.SimpleDateFormat
@@ -75,6 +78,88 @@ import java.util.Locale
 
 @Composable
 fun Question(
+    question: Question,
+    answer: Answer<*>?,
+    shouldAskPermissions: Boolean,
+    onAnswer: (Answer<*>) -> Unit,
+    onAction: (Int, SurveyActionType) -> Unit,
+    onDoNotAskForPermissions: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (question.permissionsRequired == null) {
+        QuestionContent(question, answer, onAnswer, onAction, modifier)
+    } else {
+        val permissionsContentModifier = modifier.padding(20.dp)
+
+        // When true, the permissions request must be presented to the user.
+        var launchPermissionsRequest by rememberSaveable { mutableStateOf(false) }
+
+        val multiplePermissionsState =
+            rememberMultiplePermissionsState(question.permissionsRequired)
+
+        when {
+            // If all permissions are granted, then show the question
+            multiplePermissionsState.allPermissionsGranted -> {
+                QuestionContent(question, answer, onAnswer, onAction, modifier)
+            }
+            // The user denied some permissions but a rationale should be shown
+            multiplePermissionsState.shouldShowRationale -> {
+                if (!shouldAskPermissions) {
+                    Text(stringResource(R.string.permissions_denied), permissionsContentModifier)
+                } else {
+                    Column(permissionsContentModifier) {
+                        val rationaleId =
+                            question.permissionsRationaleText ?: R.string.permissions_rationale
+                        Text(stringResource(id = rationaleId))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedButton(
+                            onClick = {
+                                multiplePermissionsState.launchMultiplePermissionRequest()
+                            }
+                        ) {
+                            Text(stringResource(R.string.request_permissions))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedButton(onClick = onDoNotAskForPermissions) {
+                            Text(stringResource(R.string.do_not_ask_permissions))
+                        }
+                    }
+                }
+            }
+            // The permissions are not granted, the rationale shouldn't be shown to the user,
+            // and the permissions haven't been requested previously. Request permission!
+            !multiplePermissionsState.permissionRequested -> {
+                launchPermissionsRequest = true
+            }
+            // If the criteria above hasn't been met, the user denied some permission.
+            else -> {
+                Text(stringResource(R.string.permissions_denied), permissionsContentModifier)
+                // Trigger side-effect to not ask for permissions
+                LaunchedEffect(true) {
+                    onDoNotAskForPermissions()
+                }
+            }
+        }
+
+        // Trigger a side-effect to request the permissions if they need to be presented to the user
+        if (launchPermissionsRequest) {
+            LaunchedEffect(multiplePermissionsState) {
+                multiplePermissionsState.launchMultiplePermissionRequest()
+                launchPermissionsRequest = false
+            }
+        }
+
+        // If permissions are denied, inform the caller that can move to the next question
+        if (!shouldAskPermissions) {
+            LaunchedEffect(true) {
+                onAnswer(Answer.PermissionsDenied)
+            }
+        }
+    }
+}
+
+@Composable
+fun QuestionContent(
     question: Question,
     answer: Answer<*>?,
     onAnswer: (Answer<*>) -> Unit,
@@ -687,6 +772,13 @@ fun QuestionPreview() {
         description = R.string.select_one
     )
     JetsurveyTheme {
-        Question(question = question, answer = null, onAnswer = {}, onAction = { _, _ -> })
+        Question(
+            question = question,
+            shouldAskPermissions = true,
+            answer = null,
+            onAnswer = {},
+            onAction = { _, _ -> },
+            onDoNotAskForPermissions = {}
+        )
     }
 }

@@ -83,19 +83,21 @@ private val jetpackQuestions = mutableListOf(
             endText = R.string.strongly_like,
             neutralText = R.string.neutral
         )
-    )
-).apply {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-        // Add the camera feature only for devices 29+
-        add(
-            Question(
-                id = 975,
-                questionText = R.string.selfie_skills,
-                answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO)
-            )
-        )
-    }
-}.toList()
+    ),
+    Question(
+        id = 975,
+        questionText = R.string.selfie_skills,
+        answer = Action(label = R.string.add_photo, actionType = TAKE_PHOTO),
+        permissionsRequired = mutableListOf(
+            android.Manifest.permission.CAMERA
+        ).apply {
+            if (Build.VERSION.SDK_INT < 29) {
+                add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        },
+        permissionsRationaleText = R.string.selfie_permissions
+    ),
+).toList()
 
 private val jetpackSurvey = Survey(
     title = R.string.which_jetpack_library,
