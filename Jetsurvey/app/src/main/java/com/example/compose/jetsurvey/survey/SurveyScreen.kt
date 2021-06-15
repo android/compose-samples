@@ -63,7 +63,8 @@ fun SurveyQuestionsScreen(
     onDoNotAskForPermissions: () -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDonePressed: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    openSettings: () -> Unit
 ) {
     val questionState = remember(questions.currentQuestionIndex) {
         questions.questionsState[questions.currentQuestionIndex]
@@ -84,10 +85,13 @@ fun SurveyQuestionsScreen(
                     answer = questionState.answer,
                     shouldAskPermissions = shouldAskPermissions,
                     onAnswer = {
-                        questionState.answer = it
+                        if (it !is Answer.PermissionsDenied) {
+                            questionState.answer = it
+                        }
                         questionState.enableNext = true
                     },
                     onAction = onAction,
+                    openSettings = openSettings,
                     onDoNotAskForPermissions = onDoNotAskForPermissions,
                     modifier = Modifier
                         .fillMaxSize()

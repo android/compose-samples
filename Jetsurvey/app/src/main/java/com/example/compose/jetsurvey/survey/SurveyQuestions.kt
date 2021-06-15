@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -84,12 +85,13 @@ fun Question(
     onAnswer: (Answer<*>) -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDoNotAskForPermissions: () -> Unit,
+    openSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (question.permissionsRequired == null) {
         QuestionContent(question, answer, onAnswer, onAction, modifier)
     } else {
-        val permissionsContentModifier = modifier.padding(20.dp)
+        val permissionsContentModifier = modifier.padding(horizontal = 20.dp)
 
         // When true, the permissions request must be presented to the user.
         var launchPermissionsRequest by rememberSaveable { mutableStateOf(false) }
@@ -105,13 +107,20 @@ fun Question(
             // The user denied some permissions but a rationale should be shown
             multiplePermissionsState.shouldShowRationale -> {
                 if (!shouldAskPermissions) {
-                    Text(stringResource(R.string.permissions_denied), permissionsContentModifier)
+                    PermissionsDenied(
+                        question.questionText,
+                        openSettings,
+                        permissionsContentModifier
+                    )
                 } else {
                     Column(permissionsContentModifier) {
+                        Spacer(modifier = Modifier.height(32.dp))
+                        QuestionTitle(question.questionText)
+                        Spacer(modifier = Modifier.height(32.dp))
                         val rationaleId =
                             question.permissionsRationaleText ?: R.string.permissions_rationale
                         Text(stringResource(id = rationaleId))
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         OutlinedButton(
                             onClick = {
                                 multiplePermissionsState.launchMultiplePermissionRequest()
@@ -133,7 +142,7 @@ fun Question(
             }
             // If the criteria above hasn't been met, the user denied some permission.
             else -> {
-                Text(stringResource(R.string.permissions_denied), permissionsContentModifier)
+                PermissionsDenied(question.questionText, openSettings, permissionsContentModifier)
                 // Trigger side-effect to not ask for permissions
                 LaunchedEffect(true) {
                     onDoNotAskForPermissions()
@@ -159,7 +168,25 @@ fun Question(
 }
 
 @Composable
-fun QuestionContent(
+private fun PermissionsDenied(
+    @StringRes title: Int,
+    openSettings: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier) {
+        Spacer(modifier = Modifier.height(32.dp))
+        QuestionTitle(title)
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(stringResource(R.string.permissions_denied))
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedButton(onClick = openSettings) {
+            Text(stringResource(R.string.open_settings))
+        }
+    }
+}
+
+@Composable
+private fun QuestionContent(
     question: Question,
     answer: Answer<*>?,
     onAnswer: (Answer<*>) -> Unit,
@@ -172,27 +199,7 @@ fun QuestionContent(
     ) {
         item {
             Spacer(modifier = Modifier.height(32.dp))
-            val backgroundColor = if (MaterialTheme.colors.isLight) {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
-            } else {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = backgroundColor,
-                        shape = MaterialTheme.shapes.small
-                    )
-            ) {
-                Text(
-                    text = stringResource(id = question.questionText),
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 24.dp, horizontal = 16.dp)
-                )
-            }
+            QuestionTitle(question.questionText)
             Spacer(modifier = Modifier.height(24.dp))
             if (question.description != null) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -261,6 +268,31 @@ fun QuestionContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun QuestionTitle(@StringRes title: Int) {
+    val backgroundColor = if (MaterialTheme.colors.isLight) {
+        MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
+    } else {
+        MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = backgroundColor,
+                shape = MaterialTheme.shapes.small
+            )
+    ) {
+        Text(
+            text = stringResource(id = title),
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 16.dp)
+        )
     }
 }
 
@@ -778,7 +810,8 @@ fun QuestionPreview() {
             answer = null,
             onAnswer = {},
             onAction = { _, _ -> },
-            onDoNotAskForPermissions = {}
+            onDoNotAskForPermissions = {},
+            openSettings = {}
         )
     }
 }

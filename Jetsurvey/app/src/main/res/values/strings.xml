@@ -91,8 +91,9 @@
 
     <!-- Permissions-->
     <string name="permissions_rationale">This question requires some permissions. Please grant them.</string>
-    <string name="permissions_denied">Permissions were denied. Thus, this question is not available. Please continue.</string>
-    <string name="request_permissions">Request permissions</string>
-    <string name="do_not_ask_permissions">Do not ask for permissions again</string>
+    <string name="permissions_denied">Permissions were denied. Unfortunately, this question is not available at the moment. Please continue with the survey or grant access to the permissions on the Settings screen.</string>
+    <string name="request_permissions">OK!</string>
+    <string name="do_not_ask_permissions">Nope 🙅</string>
+    <string name="open_settings">Open Settings</string>
 
 </resources>
