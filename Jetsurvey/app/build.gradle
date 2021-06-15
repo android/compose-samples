@@ -112,4 +112,5 @@ dependencies {
     implementation Libs.AndroidX.Compose.runtimeLivedata
 
     implementation Libs.Accompanist.coil
+    implementation Libs.Accompanist.permissions
 }
