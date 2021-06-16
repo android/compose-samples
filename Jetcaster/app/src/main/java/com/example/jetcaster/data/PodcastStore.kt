@@ -30,6 +30,13 @@ class PodcastStore(
     private val transactionRunner: TransactionRunner
 ) {
     /**
+     * Return a flow containing a collection of podcasts which match the given title.
+     */
+    fun podcastsWithTitle(title: String): Flow<List<Podcast>> {
+        return podcastDao.podcastsWithTitle(title)
+    }
+
+    /**
      * Return a flow containing the [Podcast] with the given [uri].
      */
     fun podcastWithUri(uri: String): Flow<Podcast> {

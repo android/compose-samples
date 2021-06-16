@@ -18,39 +18,14 @@ package com.example.jetcaster.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabPosition
-import androidx.compose.material.TabRow
+import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,15 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.ui.NavigationViewModel
+import com.example.jetcaster.ui.Screen
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
-import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
-import com.example.jetcaster.util.ToggleFollowPodcastIconButton
-import com.example.jetcaster.util.constrastAgainst
-import com.example.jetcaster.util.quantityStringResource
-import com.example.jetcaster.util.rememberDominantColorState
-import com.example.jetcaster.util.verticalGradientScrim
+import com.example.jetcaster.util.*
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.statusBarsHeight
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -107,6 +79,8 @@ fun HomeAppBar(
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
+    val navigationViewModel = viewModel(NavigationViewModel::class.java)
+
     TopAppBar(
         title = {
             Row {
@@ -127,7 +101,7 @@ fun HomeAppBar(
         actions = {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(
-                    onClick = { /* TODO: Open search */ }
+                    onClick = { navigationViewModel.navigateTo(Screen.Search) }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Search,

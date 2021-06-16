@@ -19,11 +19,18 @@ package com.example.jetcaster.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.view.WindowCompat
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
 class MainActivity : ComponentActivity() {
+    private val navigationViewModel by viewModels<NavigationViewModel>()
+
+    @ExperimentalComposeUiApi
+    @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,6 +43,12 @@ class MainActivity : ComponentActivity() {
                     JetcasterApp()
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (!navigationViewModel.onBack()) {
+            super.onBackPressed()
         }
     }
 }
