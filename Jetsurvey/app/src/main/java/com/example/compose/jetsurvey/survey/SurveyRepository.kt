@@ -86,8 +86,7 @@ private val jetpackQuestions = mutableListOf(
     ),
 ).apply {
     // TODO: FIX! After taking the selfie, the picture doesn't appear in API 22 and lower.
-    //  A crash happens for API 29. Limiting this question to some APIs.
-    if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT != 29) {
+    if (Build.VERSION.SDK_INT >= 23) {
         add(
             Question(
                 id = 975,
