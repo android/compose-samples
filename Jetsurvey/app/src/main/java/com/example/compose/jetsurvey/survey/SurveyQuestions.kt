@@ -88,7 +88,7 @@ fun Question(
     openSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (question.permissionsRequired == null) {
+    if (question.permissionsRequired == null || question.permissionsRequired.isEmpty()) {
         QuestionContent(question, answer, onAnswer, onAction, modifier)
     } else {
         val permissionsContentModifier = modifier.padding(horizontal = 20.dp)

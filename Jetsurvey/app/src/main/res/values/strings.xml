@@ -73,7 +73,7 @@
     <string name="selfie_skills">Show off your selfie skills!</string>
     <string name="add_photo">ADD PHOTO</string>
     <string name="retake_photo">RETAKE PHOTO</string>
-    <string name="selfie_permissions">Taking a selfie requires this app to have access to the Camera and Storage on your device.</string>
+    <string name="selfie_permissions">Taking a selfie requires this app to have access to your device storage.</string>
 
     <!-- question 6-->
     <string name="favourite_movie">What\'s your favourite movie?</string>
