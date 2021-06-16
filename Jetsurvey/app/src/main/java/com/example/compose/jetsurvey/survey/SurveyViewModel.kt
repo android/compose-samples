@@ -17,6 +17,9 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +38,9 @@ class SurveyViewModel(
     private val _uiState = MutableLiveData<SurveyState>()
     val uiState: LiveData<SurveyState>
         get() = _uiState
+
+    var askForPermissions by mutableStateOf(true)
+        private set
 
     private lateinit var surveyInitialState: SurveyState
 
@@ -87,6 +93,11 @@ class SurveyViewModel(
                 updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
             }
         }
+    }
+
+    // TODO: Ideally this should be stored in the database
+    fun doNotAskForPermissions() {
+        askForPermissions = false
     }
 
     private fun updateStateWithActionResult(questionId: Int, result: SurveyActionResult) {

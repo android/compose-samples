@@ -73,6 +73,7 @@
     <string name="selfie_skills">Show off your selfie skills!</string>
     <string name="add_photo">ADD PHOTO</string>
     <string name="retake_photo">RETAKE PHOTO</string>
+    <string name="selfie_permissions">Taking a selfie requires this app to have access to your device storage.</string>
 
     <!-- question 6-->
     <string name="favourite_movie">What\'s your favourite movie?</string>
@@ -87,4 +88,12 @@
     <string name="strongly_dislike">Strongly\nDislike</string>
     <string name="strongly_like">Strongly\nLike</string>
     <string name="neutral">Neutral</string>
+
+    <!-- Permissions-->
+    <string name="permissions_rationale">This question requires some permissions. Please grant them.</string>
+    <string name="permissions_denied">Permissions were denied. Unfortunately, this question is not available at the moment. Please continue with the survey or grant access to the permissions on the Settings screen.</string>
+    <string name="request_permissions">OK!</string>
+    <string name="do_not_ask_permissions">Nope 🙅</string>
+    <string name="open_settings">Open Settings</string>
+
 </resources>
