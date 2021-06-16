@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.12.0.compose-7418032-SNAPSHOT"
+        const val version = "0.12.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
@@ -54,17 +54,17 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.3.1"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha06"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-beta01"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-beta02"
         }
 
         object Compose {
-            const val snapshot = "7418032"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-beta09"
 
             @get:JvmStatic
             val snapshotUrl: String
