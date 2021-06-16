@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -24,7 +25,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -112,8 +112,7 @@ private fun SnackCollectionList(
     }
     AnimatedVisibility(
         visible = filtersVisible,
-        enter = slideInVertically(
-        ) + expandVertically(
+        enter = slideInVertically() + expandVertically(
             expandFrom = Alignment.Top
         ) + fadeIn(initialAlpha = 0.3f),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()

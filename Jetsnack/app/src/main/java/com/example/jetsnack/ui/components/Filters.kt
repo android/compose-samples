@@ -77,7 +77,7 @@ fun FilterBar(
             }
         }
         items(filters) { filter ->
-            FilterChip(filter = filter, shape =  MaterialTheme.shapes.small)
+            FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
         }
     }
 }

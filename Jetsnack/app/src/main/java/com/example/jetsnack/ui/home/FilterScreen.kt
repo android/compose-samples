@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,7 +96,11 @@ fun FilterScreen(
                             onClick = { /* TODO: Open search */ },
                             enabled = resetEnabled
                         ) {
-                            val alpha = if (resetEnabled) ContentAlpha.high else ContentAlpha.disabled
+                            val alpha = if (resetEnabled) {
+                                ContentAlpha.high
+                            } else {
+                                ContentAlpha.disabled
+                            }
 
                             Text(
                                 text = stringResource(id = R.string.reset),
@@ -143,12 +146,10 @@ fun FilterScreen(
                     title = stringResource(id = R.string.lifestyle),
                     filters = lifeStyleFilters
                 )
-
             }
         }
     }
 }
-
 
 @Composable
 fun FilterChipSection(title: String, filters: List<Filter>) {
@@ -170,7 +171,7 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
 }
 
 @Composable
-fun SortFiltersSection(sortState: String,onFilterChange: (String) -> Unit) {
+fun SortFiltersSection(sortState: String, onFilterChange: (String) -> Unit) {
     FilterTitle(text = stringResource(id = R.string.sort))
     Column(Modifier.padding(bottom = 24.dp)) {
         SortFilters(
@@ -184,7 +185,8 @@ fun SortFiltersSection(sortState: String,onFilterChange: (String) -> Unit) {
 fun SortFilters(
     sortFilters: List<Filter> = SnackRepo.getSortFilters(),
     sortState: String,
-    onChanged: (String) -> Unit) {
+    onChanged: (String) -> Unit
+) {
 
     sortFilters.forEach { filter ->
         SortOption(
