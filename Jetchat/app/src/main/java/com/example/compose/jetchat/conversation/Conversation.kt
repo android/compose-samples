@@ -78,8 +78,8 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.theme.elevatedSurface
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 /**
@@ -217,7 +217,8 @@ fun Messages(
             // Add content padding so that the content can be scrolled (y-axis)
             // below the status bar + app bar
             // TODO: Get height from somewhere
-            contentPadding = LocalWindowInsets.current.statusBars.toPaddingValues(
+            contentPadding = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.statusBars,
                 additionalTop = 90.dp
             ),
             modifier = Modifier

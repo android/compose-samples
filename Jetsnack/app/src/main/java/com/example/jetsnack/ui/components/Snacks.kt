@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +42,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,6 +60,7 @@ import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.utils.mirroringIcon
 import com.google.accompanist.coil.rememberCoilPainter
 
 private val HighlightCardWidth = 170.dp
@@ -100,7 +103,10 @@ fun SnackCollection(
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.ArrowForward,
+                    imageVector = mirroringIcon(
+                        ltrIcon = Icons.Outlined.ArrowForward,
+                        rtlIcon = Icons.Outlined.ArrowBack
+                    ),
                     tint = JetsnackTheme.colors.brand,
                     contentDescription = null
                 )
@@ -214,7 +220,6 @@ private fun HighlightSnackItem(
         (HighlightCardWidth + HighlightCardPadding).toPx()
     }
     JetsnackCard(
-        elevation = 4.dp,
         modifier = modifier
             .size(
                 width = 170.dp,
@@ -292,26 +297,12 @@ fun SnackImage(
     }
 }
 
-@Preview("Highlight snack card")
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun SnackCardPreview() {
     JetsnackTheme {
-        val snack = snacks.first()
-        HighlightSnackItem(
-            snack = snack,
-            onSnackClick = { },
-            index = 0,
-            gradient = JetsnackTheme.colors.gradient6_1,
-            gradientWidth = gradientWidth,
-            scroll = 0
-        )
-    }
-}
-
-@Preview("Highlight snack card • Dark Theme")
-@Composable
-fun SnackCardDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         val snack = snacks.first()
         HighlightSnackItem(
             snack = snack,

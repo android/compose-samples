@@ -52,7 +52,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -141,9 +140,8 @@ fun Email(
         modifier = Modifier
             .fillMaxWidth()
             .onFocusChanged { focusState ->
-                val focused = focusState == FocusState.Active
-                emailState.onFocusChange(focused)
-                if (!focused) {
+                emailState.onFocusChange(focusState.isFocused)
+                if (!focusState.isFocused) {
                     emailState.enableShowErrors()
                 }
             },
@@ -178,9 +176,8 @@ fun Password(
         modifier = modifier
             .fillMaxWidth()
             .onFocusChanged { focusState ->
-                val focused = focusState == FocusState.Active
-                passwordState.onFocusChange(focused)
-                if (!focused) {
+                passwordState.onFocusChange(focusState.isFocused)
+                if (!focusState.isFocused) {
                     passwordState.enableShowErrors()
                 }
             },

@@ -137,7 +137,7 @@ fun JetsnackBottomBar(
                 itemCount = routes.size,
                 indicator = { JetsnackBottomNavIndicator() },
                 animSpec = springSpec,
-                modifier = Modifier.navigationBarsPadding(left = false, right = false)
+                modifier = Modifier.navigationBarsPadding(start = false, end = false)
             ) {
                 tabs.forEach { section ->
                     val selected = section == currentSection
@@ -159,7 +159,7 @@ fun JetsnackBottomBar(
                         },
                         text = {
                             Text(
-                                text = stringResource(section.title).toUpperCase(
+                                text = stringResource(section.title).uppercase(
                                     ConfigurationCompat.getLocales(
                                         LocalConfiguration.current
                                     ).get(0)
@@ -270,10 +270,10 @@ private fun JetsnackBottomNavLayout(
             height = itemPlaceables.maxByOrNull { it.height }?.height ?: 0
         ) {
             val indicatorLeft = indicatorIndex.value * unselectedWidth
-            indicatorPlaceable.place(x = indicatorLeft.toInt(), y = 0)
+            indicatorPlaceable.placeRelative(x = indicatorLeft.toInt(), y = 0)
             var x = 0
             itemPlaceables.forEach { placeable ->
-                placeable.place(x = x, y = 0)
+                placeable.placeRelative(x = x, y = 0)
                 x += placeable.width
             }
         }
@@ -311,12 +311,17 @@ private fun JetsnackBottomNavItemLayout(
 ) {
     Layout(
         content = {
-            Box(Modifier.layoutId("icon"), content = icon)
+            Box(
+                modifier = Modifier
+                    .layoutId("icon")
+                    .padding(horizontal = TextIconSpacing),
+                content = icon
+            )
             val scale = lerp(0.6f, 1f, animationProgress)
             Box(
                 modifier = Modifier
                     .layoutId("text")
-                    .padding(start = TextIconSpacing)
+                    .padding(horizontal = TextIconSpacing)
                     .graphicsLayer {
                         alpha = animationProgress
                         scaleX = scale
@@ -355,9 +360,9 @@ private fun MeasureScope.placeTextAndIcon(
     val textX = iconX + iconPlaceable.width
 
     return layout(width, height) {
-        iconPlaceable.place(iconX.toInt(), iconY)
+        iconPlaceable.placeRelative(iconX.toInt(), iconY)
         if (animationProgress != 0f) {
-            textPlaceable.place(textX.toInt(), textY)
+            textPlaceable.placeRelative(textX.toInt(), textY)
         }
     }
 }
@@ -376,7 +381,7 @@ private fun JetsnackBottomNavIndicator(
     )
 }
 
-private val TextIconSpacing = 4.dp
+private val TextIconSpacing = 2.dp
 private val BottomNavHeight = 56.dp
 private val BottomNavLabelTransformOrigin = TransformOrigin(0f, 0.5f)
 private val BottomNavIndicatorShape = RoundedCornerShape(percent = 50)

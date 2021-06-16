@@ -45,6 +45,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyScreen
+import java.util.Locale
 
 @Composable
 fun RallyTopAppBar(
@@ -60,7 +61,7 @@ fun RallyTopAppBar(
         Row(Modifier.selectableGroup()) {
             allScreens.forEach { screen ->
                 RallyTab(
-                    text = screen.name.toUpperCase(),
+                    text = screen.name.uppercase(Locale.getDefault()),
                     icon = screen.icon,
                     onSelected = { onTabSelected(screen) },
                     selected = currentScreen == screen

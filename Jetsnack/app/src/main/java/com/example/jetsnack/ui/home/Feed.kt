@@ -24,6 +24,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -123,18 +124,12 @@ private fun SnackCollectionList(
     }
 }
 
-@Preview("Home")
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun HomePreview() {
     JetsnackTheme {
-        Feed(onSnackClick = { })
-    }
-}
-
-@Preview("Home • Dark Theme")
-@Composable
-fun HomeDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         Feed(onSnackClick = { })
     }
 }

@@ -16,7 +16,10 @@
 
 package com.example.compose.jetsurvey.survey
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,10 +63,20 @@ class SurveyFragment : Fragment() {
                         when (surveyState) {
                             is SurveyState.Questions -> SurveyQuestionsScreen(
                                 questions = surveyState,
+                                shouldAskPermissions = viewModel.askForPermissions,
                                 onAction = { id, action -> handleSurveyAction(id, action) },
+                                onDoNotAskForPermissions = { viewModel.doNotAskForPermissions() },
                                 onDonePressed = { viewModel.computeResult(surveyState) },
                                 onBackPressed = {
                                     activity?.onBackPressedDispatcher?.onBackPressed()
+                                },
+                                openSettings = {
+                                    activity?.startActivity(
+                                        Intent(
+                                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                            Uri.fromParts("package", context.packageName, null)
+                                        )
+                                    )
                                 }
                             )
                             is SurveyState.Result -> SurveyResultScreen(

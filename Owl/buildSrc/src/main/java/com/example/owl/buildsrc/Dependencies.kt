@@ -21,16 +21,16 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta01"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta03"
 
     object Accompanist {
-        const val version = "0.10.0"
+        const val version = "0.11.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
-        private const val version = "1.4.32"
+        private const val version = "1.5.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -49,16 +49,16 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
-        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha01"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0-beta02"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha02"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha08"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-beta01"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-beta07"
+            const val version = "1.0.0-beta08"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.cart
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -209,13 +210,7 @@ fun CartItem(
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textSecondary,
             modifier = Modifier.constrainAs(name) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = remove.start,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
+                start.linkTo(image.end, margin = 16.dp)
             }
         )
         IconButton(
@@ -238,20 +233,15 @@ fun CartItem(
             style = MaterialTheme.typography.body1,
             color = JetsnackTheme.colors.textHelp,
             modifier = Modifier.constrainAs(tag) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = parent.end,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
+                start.linkTo(image.end, margin = 16.dp)
             }
         )
         Spacer(
             Modifier
                 .height(8.dp)
                 .constrainAs(priceSpacer) {
-                    linkTo(top = tag.bottom, bottom = price.top)
+                    top.linkTo(tag.bottom)
+                    bottom.linkTo(price.top)
                 }
         )
         Text(
@@ -259,13 +249,7 @@ fun CartItem(
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.constrainAs(price) {
-                linkTo(
-                    start = image.end,
-                    end = quantity.start,
-                    startMargin = 16.dp,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
+                start.linkTo(image.end, margin = 16.dp)
             }
         )
         QuantitySelector(
@@ -279,7 +263,8 @@ fun CartItem(
         )
         JetsnackDivider(
             Modifier.constrainAs(divider) {
-                linkTo(start = parent.start, end = parent.end)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
                 top.linkTo(parent.bottom)
             }
         )
@@ -384,9 +369,11 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview("Cart")
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
-fun CartPreview() {
+private fun CartPreview() {
     JetsnackTheme {
         Cart(
             orderLines = SnackRepo.getCart(),
@@ -395,21 +382,6 @@ fun CartPreview() {
             decreaseItemCount = {},
             inspiredByCart = SnackRepo.getInspiredByCart(),
             onSnackClick = {}
-        )
-    }
-}
-
-@Preview("Cart • Dark Theme")
-@Composable
-fun CartDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
-        Cart(
-            orderLines = SnackRepo.getCart(),
-            removeSnack = {},
-            increaseItemCount = {},
-            decreaseItemCount = {},
-            inspiredByCart = SnackRepo.getInspiredByCart(),
-            onSnackClick = { }
         )
     }
 }

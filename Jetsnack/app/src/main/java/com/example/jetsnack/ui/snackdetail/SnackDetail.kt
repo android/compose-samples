@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.snackdetail
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,8 +39,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -74,6 +73,7 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
+import com.example.jetsnack.ui.utils.mirroringBackIcon
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
@@ -133,7 +133,7 @@ private fun Up(upPress: () -> Unit) {
             )
     ) {
         Icon(
-            imageVector = Icons.Outlined.ArrowBack,
+            imageVector = mirroringBackIcon(),
             tint = JetsnackTheme.colors.iconInteractive,
             contentDescription = stringResource(R.string.label_back)
         )
@@ -227,7 +227,7 @@ private fun Body(
                     Spacer(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
-                            .navigationBarsPadding(left = false, right = false)
+                            .navigationBarsPadding(start = false, end = false)
                             .height(8.dp)
                     )
                 }
@@ -323,7 +323,7 @@ private fun CollapsingImageLayout(
             width = constraints.maxWidth,
             height = imageY + imageWidth
         ) {
-            imagePlaceable.place(imageX, imageY)
+            imagePlaceable.placeRelative(imageX, imageY)
         }
     }
 }
@@ -337,7 +337,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .navigationBarsPadding(left = false, right = false)
+                    .navigationBarsPadding(start = false, end = false)
                     .then(HzPadding)
                     .heightIn(min = BottomBarHeight)
             ) {
@@ -363,21 +363,12 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview("Snack Detail")
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 private fun SnackDetailPreview() {
     JetsnackTheme {
-        SnackDetail(
-            snackId = 1L,
-            upPress = { }
-        )
-    }
-}
-
-@Preview("Snack Detail • Dark")
-@Composable
-private fun SnackDetailDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         SnackDetail(
             snackId = 1L,
             upPress = { }

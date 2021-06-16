@@ -77,6 +77,9 @@ and include it in the `local.properties` file as follows:
 google.maps.key={insert_your_api_key_here}
 ```
 
+When restricting the Key to Android apps, use `androidx.compose.samples.crane` as package name, and
+`A0:BD:B3:B6:F0:C4:BE:90:C6:9D:5F:4C:1D:F0:90:80:7F:D7:FE:1F` as SHA-1 certificate fingerprint.
+
 ## Images
 
 Image resources are retrieved from [Unsplash](https://unsplash.com/).

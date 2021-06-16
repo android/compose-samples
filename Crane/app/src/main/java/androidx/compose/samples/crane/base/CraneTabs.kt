@@ -102,7 +102,7 @@ fun CraneTabs(
             ) {
                 Text(
                     modifier = textModifier,
-                    text = title.toUpperCase(
+                    text = title.uppercase(
                         ConfigurationCompat.getLocales(LocalConfiguration.current)[0]
                     )
                 )

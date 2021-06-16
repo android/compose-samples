@@ -63,7 +63,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -287,7 +287,10 @@ private fun PostList(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(top = false)
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false
+        )
     ) {
         item { PostListTopSection(postTop, navigateToArticle) }
         item { PostListSimpleSection(postsSimple, navigateToArticle, favorites, onToggleFavorite) }
