@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -88,7 +89,7 @@ fun Question(
     openSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (question.permissionsRequired == null || question.permissionsRequired.isEmpty()) {
+    if (question.permissionsRequired.isEmpty()) {
         QuestionContent(question, answer, onAnswer, onAction, modifier)
     } else {
         val permissionsContentModifier = modifier.padding(horizontal = 20.dp)
@@ -113,26 +114,12 @@ fun Question(
                         permissionsContentModifier
                     )
                 } else {
-                    Column(permissionsContentModifier) {
-                        Spacer(modifier = Modifier.height(32.dp))
-                        QuestionTitle(question.questionText)
-                        Spacer(modifier = Modifier.height(32.dp))
-                        val rationaleId =
-                            question.permissionsRationaleText ?: R.string.permissions_rationale
-                        Text(stringResource(id = rationaleId))
-                        Spacer(modifier = Modifier.height(16.dp))
-                        OutlinedButton(
-                            onClick = {
-                                multiplePermissionsState.launchMultiplePermissionRequest()
-                            }
-                        ) {
-                            Text(stringResource(R.string.request_permissions))
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedButton(onClick = onDoNotAskForPermissions) {
-                            Text(stringResource(R.string.do_not_ask_permissions))
-                        }
-                    }
+                    PermissionsRationale(
+                        question,
+                        multiplePermissionsState,
+                        onDoNotAskForPermissions,
+                        permissionsContentModifier
+                    )
                 }
             }
             // The permissions are not granted, the rationale shouldn't be shown to the user,
@@ -163,6 +150,35 @@ fun Question(
             LaunchedEffect(true) {
                 onAnswer(Answer.PermissionsDenied)
             }
+        }
+    }
+}
+
+@Composable
+private fun PermissionsRationale(
+    question: Question,
+    multiplePermissionsState: MultiplePermissionsState,
+    onDoNotAskForPermissions: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier) {
+        Spacer(modifier = Modifier.height(32.dp))
+        QuestionTitle(question.questionText)
+        Spacer(modifier = Modifier.height(32.dp))
+        val rationaleId =
+            question.permissionsRationaleText ?: R.string.permissions_rationale
+        Text(stringResource(id = rationaleId))
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedButton(
+            onClick = {
+                multiplePermissionsState.launchMultiplePermissionRequest()
+            }
+        ) {
+            Text(stringResource(R.string.request_permissions))
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(onClick = onDoNotAskForPermissions) {
+            Text(stringResource(R.string.do_not_ask_permissions))
         }
     }
 }

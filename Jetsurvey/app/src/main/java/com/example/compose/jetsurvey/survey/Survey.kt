@@ -35,7 +35,7 @@ data class Question(
     @StringRes val questionText: Int,
     val answer: PossibleAnswer,
     @StringRes val description: Int? = null,
-    val permissionsRequired: List<String>? = null,
+    val permissionsRequired: List<String> = emptyList(),
     @StringRes val permissionsRationaleText: Int? = null
 )
 

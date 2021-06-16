@@ -86,7 +86,7 @@ private val jetpackQuestions = mutableListOf(
     ),
 ).apply {
     // TODO: FIX! After taking the selfie, the picture doesn't appear in API 22 and lower.
-    //  Same happens for API 29. Limiting this question to some APIs.
+    //  A crash happens for API 29. Limiting this question to some APIs.
     if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT != 29) {
         add(
             Question(
@@ -96,7 +96,7 @@ private val jetpackQuestions = mutableListOf(
                 permissionsRequired =
                 when (Build.VERSION.SDK_INT) {
                     in 23..28 -> listOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    else -> null
+                    else -> emptyList()
                 },
                 permissionsRationaleText = R.string.selfie_permissions
             )
