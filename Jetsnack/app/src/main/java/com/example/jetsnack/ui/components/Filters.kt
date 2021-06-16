@@ -52,7 +52,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 @Composable
 fun FilterBar(
     filters: List<Filter>,
-    onFilterClicked: () -> Unit
+    onFilterClick: () -> Unit
 ) {
 
     LazyRow(
@@ -62,7 +62,7 @@ fun FilterBar(
         modifier = Modifier.heightIn(min = 56.dp)
     ) {
         item {
-            IconButton(onClick = onFilterClicked) {
+            IconButton(onClick = onFilterClick) {
                 Icon(
                     imageVector = Icons.Rounded.FilterList,
                     tint = JetsnackTheme.colors.brand,
@@ -75,7 +75,7 @@ fun FilterBar(
             }
         }
         items(filters) { filter ->
-            FilterChip(filter, Modifier, MaterialTheme.shapes.small)
+            FilterChip(filter = filter, shape =  MaterialTheme.shapes.small)
         }
     }
 }

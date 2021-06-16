@@ -89,12 +89,12 @@ private fun SnackCollectionList(
     modifier: Modifier = Modifier
 ) {
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
-    Box {
-        LazyColumn(modifier) {
+    Box(modifier) {
+        LazyColumn {
 
             item {
                 Spacer(Modifier.statusBarsHeight(additional = 56.dp))
-                FilterBar(filters, onFilterClicked = { filtersVisible = true })
+                FilterBar(filters, onFilterClick = { filtersVisible = true })
             }
             itemsIndexed(snackCollections) { index, snackCollection ->
                 if (index > 0) {
@@ -112,7 +112,6 @@ private fun SnackCollectionList(
     AnimatedVisibility(
         visible = filtersVisible,
         enter = slideInVertically(
-            initialOffsetY = { -40 }
         ) + expandVertically(
             expandFrom = Alignment.Top
         ) + fadeIn(initialAlpha = 0.3f),

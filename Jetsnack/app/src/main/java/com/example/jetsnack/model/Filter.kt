@@ -57,5 +57,12 @@ val categoryFilters = listOf(
     Filter(name = "Desserts"),
     Filter(name = "Nuts")
 )
+val lifeStyleFilters = listOf(
+    Filter(name = "Organic"),
+    Filter(name = "Gluten-free"),
+    Filter(name = "Dairy-free"),
+    Filter(name = "Sweet"),
+    Filter(name = "Savory")
+)
 
 var sortDefault = sortFilters.get(0).name

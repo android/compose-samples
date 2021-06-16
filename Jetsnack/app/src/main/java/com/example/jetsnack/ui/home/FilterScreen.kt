@@ -18,16 +18,18 @@ package com.example.jetsnack.ui.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
@@ -48,9 +50,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.jetsnack.R
+import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.FilterChip
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -59,19 +64,22 @@ fun FilterScreen(
     onDismiss: () -> Unit
 ) {
     var sortChanged by remember { mutableStateOf(false) }
+    var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
+    var sliderPosition by remember { mutableStateOf(0f) }
+
     Dialog(onDismissRequest = onDismiss) {
 
         val priceFilters = remember { SnackRepo.getPriceFilters() }
         val categoryFilters = remember { SnackRepo.getCategoryFilters() }
-        val lifeStyleFilters = remember { SnackRepo.getFilters() }
-        Scaffold(
+        val lifeStyleFilters = remember { SnackRepo.getLifeStyleFilters() }
+        JetsnackScaffold(
             topBar = {
                 TopAppBar(
                     navigationIcon = {
                         IconButton(onClick = onDismiss) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = null
+                                contentDescription = stringResource(id = R.string.close)
                             )
                         }
                     },
@@ -89,7 +97,7 @@ fun FilterScreen(
                             onClick = { /* TODO: Open search */ },
                             enabled = resetEnabled
                         ) {
-                            val alpha = if (resetEnabled) 1f else 0.5f
+                            val alpha = if (resetEnabled) ContentAlpha.high else ContentAlpha.disabled
 
                             Text(
                                 text = stringResource(id = R.string.reset),
@@ -101,112 +109,110 @@ fun FilterScreen(
                     },
                     backgroundColor = JetsnackTheme.colors.uiBackground
                 )
-            },
-            backgroundColor = JetsnackTheme.colors.uiBackground,
-            modifier = Modifier.padding(0.dp)
+            }
         ) {
             Column(
                 Modifier
-                    .padding(horizontal = 24.dp, vertical = 15.dp)
-                    .fillMaxSize(),
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
             ) {
-                FilterTitle(text = stringResource(id = R.string.sort))
-                Column(Modifier.padding(bottom = 24.dp)) {
-                    SortFilters(
-                        onChanged = {
-                            sortChanged = it
-                        }
-                    )
-                }
-                FilterTitle(text = stringResource(id = R.string.price))
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    priceFilters.forEach {
-                        FilterChip(
-                            filter = it,
-                            modifier = Modifier.padding(end = 5.dp)
-                        )
+                SortFiltersSection(
+                    sortState = sortState,
+                    onFilterChange = { filterName ->
+                        sortChanged = filterName == SnackRepo.getSortDefault()
+                        sortState = filterName
                     }
-                }
-                FilterTitle(text = stringResource(id = R.string.category))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 28.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    FlowRow(
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    ) {
-                        categoryFilters.forEach {
-                            FilterChip(
-                                filter = it,
-                                modifier = Modifier.padding(end = 5.dp, bottom = 8.dp)
-                            )
-                        }
+                )
+                FilterChipSection(
+                    title = stringResource(id = R.string.price),
+                    filters = priceFilters
+                )
+                FilterChipSection(
+                    title = stringResource(id = R.string.category),
+                    filters = categoryFilters
+                )
+
+                MaxCalories(
+                    sliderPosition = sliderPosition,
+                    onValueChanged = { newValue ->
+                        sliderPosition = newValue
                     }
-                }
-                Row {
-                    FilterTitle(text = stringResource(id = R.string.max_calories))
-                    Text(
-                        text = stringResource(id = R.string.per_serving),
-                        style = MaterialTheme.typography.body2,
-                        color = JetsnackTheme.colors.brand,
-                        modifier = Modifier.padding(top = 5.dp, start = 10.dp)
-                    )
-                }
-                MaxCaloriesSlider()
-                FilterTitle(text = stringResource(id = R.string.lifestyle))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 28.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    FlowRow(
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    ) {
-                        lifeStyleFilters.forEach {
-                            FilterChip(
-                                filter = it,
-                                modifier = Modifier.padding(end = 5.dp, bottom = 8.dp)
-                            )
-                        }
-                    }
-                }
+                )
+                FilterChipSection(
+                    title = stringResource(id = R.string.lifestyle),
+                    filters = lifeStyleFilters
+                )
+
             }
         }
     }
 }
 
+
 @Composable
-fun SortFilters(onChanged: (Boolean) -> Unit) {
-    val sortFilters = SnackRepo.getSortFilters()
-    val defaultValue = SnackRepo.getSortDefault()
-    var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
-    sortFilters.forEach {
+fun FilterChipSection(title: String, filters: List<Filter>) {
+    FilterTitle(text = title)
+    FlowRow(
+        mainAxisAlignment = FlowMainAxisAlignment.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp, bottom = 16.dp)
+            .padding(horizontal = 4.dp)
+    ) {
+        filters.forEach { filter ->
+            FilterChip(
+                filter = filter,
+                modifier = Modifier.padding(end = 4.dp, bottom = 8.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun SortFiltersSection(sortState: String,onFilterChange: (String) -> Unit) {
+    FilterTitle(text = stringResource(id = R.string.sort))
+    Column(Modifier.padding(bottom = 24.dp)) {
+        SortFilters(
+            sortState = sortState,
+            onChanged = onFilterChange
+        )
+    }
+}
+
+@Composable
+fun SortFilters(
+    sortFilters: List<Filter> = SnackRepo.getSortFilters(),
+    sortState: String,
+    onChanged: (String) -> Unit) {
+
+    sortFilters.forEach { filter ->
         SortOption(
-            text = it.name,
-            icon = it.icon,
-            selected = sortState == it.name,
+            text = filter.name,
+            icon = filter.icon,
+            selected = sortState == filter.name,
             onClickOption = {
-                sortState = it.name
-                onChanged(it.name != defaultValue)
+                onChanged(filter.name)
             }
         )
     }
 }
 
 @Composable
-fun MaxCaloriesSlider() {
-    var sliderPosition by remember { mutableStateOf(0f) }
-
+fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
+    Row {
+        FilterTitle(text = stringResource(id = R.string.max_calories))
+        Text(
+            text = stringResource(id = R.string.per_serving),
+            style = MaterialTheme.typography.body2,
+            color = JetsnackTheme.colors.brand,
+            modifier = Modifier.padding(top = 5.dp, start = 10.dp)
+        )
+    }
     Slider(
         value = sliderPosition,
-        onValueChange = {
-            sliderPosition = it
+        onValueChange = { newValue ->
+            onValueChanged(newValue)
         },
         valueRange = 0f..300f,
         steps = 5,
@@ -220,7 +226,7 @@ fun MaxCaloriesSlider() {
 }
 
 @Composable
-fun FilterTitle(text: String,) {
+fun FilterTitle(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.h6,
@@ -238,7 +244,7 @@ fun SortOption(
     Row(
         modifier = Modifier
             .padding(top = 14.dp)
-            .clickable { onClickOption() }
+            .selectable(selected) { onClickOption() }
     ) {
         if (icon != null) {
             Icon(imageVector = icon, contentDescription = null)

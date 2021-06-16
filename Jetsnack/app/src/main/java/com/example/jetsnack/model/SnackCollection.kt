@@ -42,6 +42,7 @@ object SnackRepo {
     fun getSortFilters() = sortFilters
     fun getCategoryFilters() = categoryFilters
     fun getSortDefault() = sortDefault
+    fun getLifeStyleFilters() = lifeStyleFilters
 }
 
 /**

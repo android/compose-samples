@@ -72,5 +72,6 @@
     <string name="android_favorites">Android\'s Favorite (default)</string>
     <string name="rating">Rating</string>
     <string name="alphabetical">Alphabetical</string>
+    <string name="close">Close</string>
 
 </resources>
