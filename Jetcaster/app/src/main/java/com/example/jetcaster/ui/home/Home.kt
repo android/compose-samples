@@ -69,7 +69,7 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
-import com.example.jetcaster.util.constrastAgainst
+import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
@@ -149,11 +149,11 @@ fun HomeAppBar(
 }
 
 /**
- * This is the minimum amount of calculated constrast for a color to be used on top of the
+ * This is the minimum amount of calculated contrast for a color to be used on top of the
  * surface color. These values are defined within the WCAG AA guidelines, and we use a value of
  * 3:1 which is the minimum for user-interface components.
  */
-private const val MinConstastOfPrimaryVsSurface = 3f
+private const val MinContrastOfPrimaryVsSurface = 3f
 
 @OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
 @Composable
@@ -173,7 +173,7 @@ fun HomeContent(
         val surfaceColor = MaterialTheme.colors.surface
         val dominantColorState = rememberDominantColorState { color ->
             // We want a color which has sufficient contrast against the surface color
-            color.constrastAgainst(surfaceColor) >= MinConstastOfPrimaryVsSurface
+            color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
