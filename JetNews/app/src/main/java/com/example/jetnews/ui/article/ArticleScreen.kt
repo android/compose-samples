@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
@@ -132,7 +133,7 @@ fun ArticleScreen(
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
-
+    val scrollState = rememberLazyListState()
     Scaffold(
         topBar = {
             InsetAwareTopAppBar(
@@ -169,7 +170,7 @@ fun ArticleScreen(
                         )
                     }
                 },
-                elevation = 0.dp,
+                elevation = if (scrollState.firstVisibleItemScrollOffset == 0) 0.dp else 4.dp,
                 backgroundColor = MaterialTheme.colors.surface
             )
         },
@@ -184,6 +185,7 @@ fun ArticleScreen(
     ) { innerPadding ->
         PostContent(
             post = post,
+            state = scrollState,
             modifier = Modifier
                 // innerPadding takes into account the top and bottom bar
                 .padding(innerPadding)

@@ -168,7 +168,7 @@ fun HomeScreen(
             }
         }
     }
-    val state = rememberLazyListState()
+    val scrollState = rememberLazyListState()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -204,7 +204,7 @@ fun HomeScreen(
                     }
                 },
                 backgroundColor = MaterialTheme.colors.surface,
-                elevation = if (state.firstVisibleItemScrollOffset == 0) 0.dp else 4.dp
+                elevation = if (scrollState.firstVisibleItemScrollOffset == 0) 0.dp else 4.dp
             )
         }
     ) { innerPadding ->
@@ -219,7 +219,7 @@ fun HomeScreen(
 
                 HomeScreenErrorAndContent(
                     posts = posts,
-                    state = state,
+                    state = scrollState,
                     onRefresh = {
                         onRefreshPosts()
                     },

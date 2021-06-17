@@ -53,7 +53,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -194,10 +193,10 @@ fun InterestsScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+                            tint = MaterialTheme.colors.primary
                         )
                     }
                 },
