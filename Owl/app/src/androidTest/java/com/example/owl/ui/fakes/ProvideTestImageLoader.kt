@@ -20,6 +20,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.bitmap.BitmapPool
@@ -38,44 +40,46 @@ import com.google.accompanist.coil.LocalImageLoader
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProvideTestImageLoader(content: @Composable () -> Unit) {
-
     // From https://coil-kt.github.io/coil/image_loaders/
-    val loader = object : ImageLoader {
-        private val drawable = ColorDrawable(Color.BLACK)
+    val context = LocalContext.current
+    val loader = remember {
+        object : ImageLoader {
+            private val disposable = object : Disposable {
+                override val isDisposed get() = true
+                override fun dispose() {}
+                override suspend fun await() {}
+            }
 
-        private val disposable = object : Disposable {
-            override val isDisposed get() = true
-            override fun dispose() {}
-            override suspend fun await() {}
-        }
+            override val bitmapPool: BitmapPool = BitmapPool(0)
 
-        override val bitmapPool: BitmapPool = BitmapPool(0)
+            override val defaults: DefaultRequestOptions = DefaultRequestOptions()
+            override val memoryCache: MemoryCache
+                get() = TODO("Not yet implemented")
 
-        override val defaults: DefaultRequestOptions = DefaultRequestOptions()
-        override val memoryCache: MemoryCache
-            get() = TODO("Not yet implemented")
+            override fun enqueue(request: ImageRequest): Disposable {
+                // Always call onStart before onSuccess.
+                request.target?.onStart(placeholder = null)
+                request.target?.onSuccess(result = ColorDrawable(Color.BLACK))
+                return disposable
+            }
 
-        override fun enqueue(request: ImageRequest): Disposable {
-            // Always call onStart before onSuccess.
-            request.target?.onStart(drawable)
-            request.target?.onSuccess(drawable)
-            return disposable
-        }
-
-        override suspend fun execute(request: ImageRequest): ImageResult {
-            return SuccessResult(
-                drawable = drawable,
-                request = request,
-                metadata = ImageResult.Metadata(
-                    memoryCacheKey = MemoryCache.Key(""),
-                    isSampled = false,
-                    dataSource = DataSource.MEMORY_CACHE,
-                    isPlaceholderMemoryCacheKeyPresent = false
+            override suspend fun execute(request: ImageRequest): ImageResult {
+                return SuccessResult(
+                    drawable = ColorDrawable(Color.BLACK),
+                    request = request,
+                    metadata = ImageResult.Metadata(
+                        memoryCacheKey = MemoryCache.Key(""),
+                        isSampled = false,
+                        dataSource = DataSource.MEMORY_CACHE,
+                        isPlaceholderMemoryCacheKeyPresent = false
+                    )
                 )
-            )
-        }
+            }
 
-        override fun shutdown() {}
+            override fun newBuilder() = ImageLoader.Builder(context)
+
+            override fun shutdown() {}
+        }
     }
     CompositionLocalProvider(LocalImageLoader provides loader, content = content)
 }

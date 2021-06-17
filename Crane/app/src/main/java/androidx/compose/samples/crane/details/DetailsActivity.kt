@@ -22,23 +22,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,6 +53,7 @@ import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
@@ -92,7 +97,9 @@ class DetailsActivity : ComponentActivity() {
                         Surface {
                             DetailsScreen(
                                 onErrorLoading = { finish() },
-                                modifier = Modifier.statusBarsPadding().navigationBarsPadding()
+                                modifier = Modifier
+                                    .statusBarsPadding()
+                                    .navigationBarsPadding()
                             )
                         }
                     }
@@ -102,20 +109,48 @@ class DetailsActivity : ComponentActivity() {
     }
 }
 
+private data class DetailsScreenUiState(
+    val exploreModel: ExploreModel? = null,
+    val isLoading: Boolean = false,
+    val throwError: Boolean = false
+)
+
 @Composable
 fun DetailsScreen(
     onErrorLoading: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DetailsViewModel = viewModel()
 ) {
-    val cityDetailsResult = remember(viewModel) { viewModel.cityDetails }
-    if (cityDetailsResult is Result.Success<ExploreModel>) {
-        DetailsContent(cityDetailsResult.data, modifier)
+    // The `produceState` API is used as an _alternative_ to model the
+    // UiState in the ViewModel and expose it in a stream of data.
+    val uiState by produceState(
+        key1 = viewModel,
+        initialValue = DetailsScreenUiState(isLoading = true)
+    ) {
+        val cityDetailsResult = viewModel.cityDetails
+        value = if (cityDetailsResult is Result.Success<ExploreModel>) {
+            DetailsScreenUiState(cityDetailsResult.data)
+        } else {
+            DetailsScreenUiState(throwError = true)
+        }
     }
 
-    SideEffect {
-        if (cityDetailsResult is Result.Error) {
-            onErrorLoading()
+    Crossfade(targetState = uiState, modifier) { currentUiState ->
+        when {
+            currentUiState.exploreModel != null -> {
+                DetailsContent(currentUiState.exploreModel, Modifier.fillMaxSize())
+            }
+            currentUiState.isLoading -> {
+                Box(Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+            else -> {
+                onErrorLoading()
+            }
         }
     }
 }
@@ -130,12 +165,14 @@ fun DetailsContent(
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = exploreModel.city.nameToDisplay,
-            style = MaterialTheme.typography.h4
+            style = MaterialTheme.typography.h4,
+            textAlign = TextAlign.Center
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = exploreModel.description,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(16.dp))
         CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
@@ -158,15 +195,16 @@ private fun MapViewContainer(
     latitude: String,
     longitude: String
 ) {
+    val cameraPosition = remember(latitude, longitude) {
+        LatLng(latitude.toDouble(), longitude.toDouble())
+    }
+
     var mapInitialized by remember(map) { mutableStateOf(false) }
     LaunchedEffect(map, mapInitialized) {
         if (!mapInitialized) {
             val googleMap = map.awaitMap()
-            val position = LatLng(latitude.toDouble(), longitude.toDouble())
-            googleMap.addMarker {
-                position(position)
-            }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position))
+            googleMap.addMarker { position(cameraPosition) }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
             mapInitialized = true
         }
     }
@@ -184,6 +222,8 @@ private fun MapViewContainer(
         coroutineScope.launch {
             val googleMap = mapView.awaitMap()
             googleMap.setZoom(mapZoom)
+            // Move camera to the same place to trigger the zoom update
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
         }
     }
 }

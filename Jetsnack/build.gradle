@@ -20,7 +20,7 @@ import com.example.jetsnack.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -36,7 +36,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }

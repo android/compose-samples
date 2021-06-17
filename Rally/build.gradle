@@ -21,7 +21,7 @@ import com.example.compose.rally.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -38,11 +38,9 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }
-            maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }
 

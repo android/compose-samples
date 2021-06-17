@@ -20,7 +20,7 @@ import com.example.compose.jetsurvey.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -36,7 +36,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         if (Libs.AndroidX.Compose.version.endsWith('SNAPSHOT')) {
             maven { url Libs.AndroidX.Compose.snapshotUrl }

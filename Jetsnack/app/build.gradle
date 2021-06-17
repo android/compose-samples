@@ -91,6 +91,7 @@ dependencies {
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
+    implementation Libs.AndroidX.Navigation.navigationCompose
     implementation Libs.AndroidX.ConstraintLayout.constraintLayoutCompose
 
     implementation Libs.AndroidX.Compose.runtime
@@ -105,6 +106,7 @@ dependencies {
 
     implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
+    implementation Libs.Accompanist.systemuicontroller
 
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.runner
