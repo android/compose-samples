@@ -4,8 +4,8 @@ This sample is a [Jetpack Compose][compose] implementation of [Rally][rally], a 
 
 Rally is used as the starting point in the following codelabs:
 
- - [Jetpack Compose Navigation codelab][navcodelab]: Learn how to use the Jetpack Navigation library in Compose, navigate within your application, navigate with arguments, support deep-links, and test your navigation.
- - [Jetpack Compose Testing codelab][testcodelab]: Learn about testing Jetpack Compose UIs. Write your first tests, and learn about testing in isolation, debugging tests, the semantics tree, and test synchronization.
+ - [Jetpack Compose Navigation codelab][navcodelab] (**[code][navcodelabcode]**): Learn how to use the Jetpack Navigation library in Compose, navigate within your application, navigate with arguments, support deep-links, and test your navigation.
+ - [Jetpack Compose Testing codelab][testcodelab] (**[code][testcodelabcode]**):: Learn about testing Jetpack Compose UIs. Write your first tests, and learn about testing in isolation, debugging tests, the semantics tree, and test synchronization.
 
 <img src="screenshots/rally.gif"/>
 
@@ -30,4 +30,6 @@ limitations under the License.
 [compose]: https://developer.android.com/jetpack/compose
 [rally]: https://material.io/design/material-studies/rally.html
 [navcodelab]: https://developer.android.com/codelabs/jetpack-compose-navigation
+[navcodelabcode]: https://github.com/googlecodelabs/android-compose-codelabs/tree/main/NavigationCodelab
 [testcodelab]: https://developer.android.com/codelabs/jetpack-compose-testing
+[testcodelabcode]: https://github.com/googlecodelabs/android-compose-codelabs/tree/main/TestingCodelab
