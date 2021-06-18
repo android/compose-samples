@@ -107,23 +107,23 @@ fun Question(
             // is going to be presented with the permission for the first time. Let's explain
             // why we need the permission
             multiplePermissionsState.shouldShowRationale ||
-                    !multiplePermissionsState.permissionRequested ->
-            {
-                if (!shouldAskPermissions) {
-                    PermissionsDenied(
-                        question.questionText,
-                        openSettings,
-                        permissionsContentModifier
-                    )
-                } else {
-                    PermissionsRationale(
-                        question,
-                        multiplePermissionsState,
-                        onDoNotAskForPermissions,
-                        permissionsContentModifier
-                    )
+                !multiplePermissionsState.permissionRequested ->
+                {
+                    if (!shouldAskPermissions) {
+                        PermissionsDenied(
+                            question.questionText,
+                            openSettings,
+                            permissionsContentModifier
+                        )
+                    } else {
+                        PermissionsRationale(
+                            question,
+                            multiplePermissionsState,
+                            onDoNotAskForPermissions,
+                            permissionsContentModifier
+                        )
+                    }
                 }
-            }
             // If the criteria above hasn't been met, the user denied some permission.
             else -> {
                 PermissionsDenied(question.questionText, openSettings, permissionsContentModifier)
