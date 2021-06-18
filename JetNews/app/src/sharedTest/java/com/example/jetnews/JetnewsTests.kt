@@ -19,9 +19,7 @@ package com.example.jetnews
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.printToString
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
@@ -48,8 +46,6 @@ class JetnewsTests {
 
     @Test
     fun app_opensArticle() {
-        println(composeTestRule.onRoot().printToString())
-        // TODO: test fails on Robolectric
         composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
         composeTestRule.onNodeWithText("3 min read", substring = true).assertExists()
     }
