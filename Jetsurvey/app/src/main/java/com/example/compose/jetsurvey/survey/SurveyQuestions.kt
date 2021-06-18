@@ -103,8 +103,12 @@ fun Question(
             multiplePermissionsState.allPermissionsGranted -> {
                 QuestionContent(question, answer, onAnswer, onAction, modifier)
             }
-            // The user denied some permissions but a rationale should be shown
-            multiplePermissionsState.shouldShowRationale -> {
+            // If user denied some permissions but a rationale should be shown or the user
+            // is going to be presented with the permission for the first time. Let's explain
+            // why we need the permission
+            multiplePermissionsState.shouldShowRationale ||
+                    !multiplePermissionsState.permissionRequested ->
+            {
                 if (!shouldAskPermissions) {
                     PermissionsDenied(
                         question.questionText,
@@ -119,16 +123,6 @@ fun Question(
                         permissionsContentModifier
                     )
                 }
-            }
-            // If this is the first time the user is presented with the permission,
-            // let's give them a heads up and not show the permissions without previous notice.
-            !multiplePermissionsState.permissionRequested -> {
-                PermissionsRationale(
-                    question,
-                    multiplePermissionsState,
-                    onDoNotAskForPermissions,
-                    permissionsContentModifier
-                )
             }
             // If the criteria above hasn't been met, the user denied some permission.
             else -> {
