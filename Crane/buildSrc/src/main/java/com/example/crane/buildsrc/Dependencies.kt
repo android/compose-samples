@@ -21,7 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta04"
+    // FIXME Hilt currently incompatible with AGP 7.0.0-beta04
+    // https://github.com/google/dagger/issues/2337
+    // https://github.com/google/dagger/issues/2700
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta03"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
