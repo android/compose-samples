@@ -26,6 +26,7 @@ class JetnewsApplication : Application() {
     lateinit var container: AppContainer
 
     override fun onCreate() {
+        var hello = "gsd"
         super.onCreate()
         container = AppContainerImpl(this)
     }
