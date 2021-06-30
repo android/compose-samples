@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta04"
 
     object Accompanist {
-        const val version = "0.13.0.compose-7489673-SNAPSHOT"
+        const val version = "0.13.0.compose-7506689-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
@@ -48,7 +48,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
 
         object Compose {
-            const val snapshot = "7489673"
+            const val snapshot = "7506689"
             const val version = "1.0.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"

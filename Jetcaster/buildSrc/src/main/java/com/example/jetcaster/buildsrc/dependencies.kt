@@ -25,7 +25,7 @@ object Libs {
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     object Accompanist {
-        const val version = "0.13.0.compose-7489673-SNAPSHOT"
+        const val version = "0.13.0.compose-7506689-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -71,7 +71,7 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "7489673"
+            const val snapshot = "7506689"
             const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
