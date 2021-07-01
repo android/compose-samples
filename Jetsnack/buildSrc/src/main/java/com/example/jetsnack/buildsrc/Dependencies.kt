@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta04"
 
     object Accompanist {
-        const val version = "0.13.0.compose-7506689-SNAPSHOT"
+        const val version = "0.13.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
@@ -48,8 +48,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
 
         object Compose {
-            const val snapshot = "7506689"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-rc01"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -64,21 +64,21 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-rc01"
         }
 
         object Lifecycle {
             const val viewModelCompose =
-                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+                "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
         }
 
         object Navigation {
-            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-SNAPSHOT"
+            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-alpha04"
         }
 
         object ConstraintLayout {
             const val constraintLayoutCompose =
-                "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07"
+                "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
         }
 
         object Test {

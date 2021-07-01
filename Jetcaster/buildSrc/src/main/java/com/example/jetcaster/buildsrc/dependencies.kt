@@ -25,7 +25,7 @@ object Libs {
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     object Accompanist {
-        const val version = "0.13.0.compose-7506689-SNAPSHOT"
+        const val version = "0.13.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -63,7 +63,7 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.6.0-rc01"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-SNAPSHOT"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-rc01"
         }
 
         object Constraint {
@@ -71,8 +71,8 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "7506689"
-            const val version = "1.0.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.0.0-rc01"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -91,7 +91,7 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.3.1"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-SNAPSHOT"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
