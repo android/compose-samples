@@ -60,10 +60,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
-import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -74,6 +74,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.mirroringBackIcon
+import com.example.jetsnack.ui.utils.viewModelProviderFactoryOf
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
@@ -93,10 +94,13 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 @Composable
 fun SnackDetail(
     snackId: Long,
+    viewModel: SnackDetailViewModel = viewModel(
+        factory = viewModelProviderFactoryOf { SnackDetailViewModel(snackId) }
+    ),
     upPress: () -> Unit
 ) {
-    val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
-    val related = remember(snackId) { SnackRepo.getRelated(snackId) }
+    val snack = viewModel.snack
+    val related = viewModel.related
 
     Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState(0)
@@ -368,9 +372,12 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun SnackDetailPreview() {
+    // Manually create a view model as the view model factory doesn't work with previews
+    val viewModel = SnackDetailViewModel(snackId = 1L)
     JetsnackTheme {
         SnackDetail(
             snackId = 1L,
+            viewModel = viewModel,
             upPress = { }
         )
     }
