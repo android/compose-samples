@@ -26,7 +26,7 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
-    const val material = "com.google.android.material:material:1.3.0"
+    const val material = "com.google.android.material:material:1.4.0"
 
     object Accompanist {
         const val version = "0.13.0"
