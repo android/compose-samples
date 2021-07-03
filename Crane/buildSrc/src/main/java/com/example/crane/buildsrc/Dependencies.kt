@@ -24,7 +24,7 @@ object Libs {
     // FIXME Hilt currently incompatible with AGP 7.0.0-beta04
     // https://github.com/google/dagger/issues/2337
     // https://github.com/google/dagger/issues/2700
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta03"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta05"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
@@ -83,14 +83,14 @@ object Libs {
         }
 
         object Test {
-            private const val version = "1.3.0"
+            private const val version = "1.4.0"
             const val runner = "androidx.test:runner:$version"
             const val rules = "androidx.test:rules:$version"
             object Ext {
-                private const val version = "1.1.2"
+                private const val version = "1.1.3"
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.4.0"
         }
     }
 
