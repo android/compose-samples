@@ -33,6 +33,14 @@ jobs:
       - name: Generate cache key
         run: ./scripts/checksum.sh $SAMPLE_PATH checksum.txt
 
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/modules-*
+            ~/.gradle/caches/jars-*
+            ~/.gradle/caches/build-cache-*
+          key: gradle-${{ hashFiles('checksum.txt') }}
+
       - name: Build project and run local tests
         working-directory: ${{ env.SAMPLE_PATH }}
         run: ./gradlew spotlessCheck assembleDebug lintDebug testDebug --stacktrace
