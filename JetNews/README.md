@@ -76,14 +76,17 @@ on and off, light and dark version in the Android Studio Preview.
 
 The data in the sample is static, held in the `com.example.jetnews.data` package.
 
-### UI testing
+### Instrumented and Robolectric tests
 
-Run UI tests from Android Studio or with the `./gradlew connectedCheck` command.
+UI tests can be run on device/emulators or on JVM with Robolectric.
+
+* To run Instrumented tests use the "Instrumented tests" run configuration or run the `./gradlew connectedCheck` command.
+* To run tests with Robolectric use the "Robolectric tests" run configuration or run the `./gradlew testDebug` command.
 
 ## License
 
 ```
-Copyright 2020 The Android Open Source Project
+Copyright 2021 The Android Open Source Project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
