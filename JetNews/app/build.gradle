@@ -50,6 +50,23 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+    // Tests can be Robolectric or instrumented tests
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
     }
 
     compileOptions {
@@ -106,6 +123,11 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    // Robolectric dependencies
+    testImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    // TODO: Bump to 4.6.* after https://github.com/robolectric/robolectric/issues/6593 is fixed
+    testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
@@ -121,3 +143,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         jvmTarget = "1.8"
     }
 }
+
+tasks.withType(Test) {
+    systemProperty "robolectric.logging", "stdout"
+} 

@@ -41,9 +41,9 @@ jobs:
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
-      - name: Build project
+      - name: Build project and run local tests
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew spotlessCheck assembleDebug lintDebug --stacktrace
+        run: ./gradlew spotlessCheck assembleDebug lintDebug testDebug --stacktrace
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2
@@ -58,7 +58,7 @@ jobs:
           name: build-reports
           path: ${{ env.SAMPLE_PATH }}/app/build/reports
 
-  test:
+  androidTest:
     needs: build
     runs-on: macOS-latest # enables hardware acceleration in the virtual machine
     timeout-minutes: 30
@@ -103,4 +103,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-reports
-          path: ${{ env.SAMPLE_PATH }}/app/build/reports
+          path: ${{ env.SAMPLE_PATH }}/app/build/reports/androidTests
