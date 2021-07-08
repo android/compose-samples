@@ -51,6 +51,8 @@ class JetnewsTests {
 
         println(composeTestRule.onRoot().printToString())
         composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
+
+        println(composeTestRule.onRoot().printToString())
         try {
             composeTestRule.onNodeWithText("3 min read", substring = true).assertExists()
         } catch (e: AssertionError) {
