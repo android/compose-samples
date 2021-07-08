@@ -126,7 +126,8 @@ dependencies {
 
     // Robolectric dependencies
     testImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    testImplementation 'org.robolectric:robolectric:4.6.1'
+    // TODO: Bump to 4.6.* after https://github.com/robolectric/robolectric/issues/6593 is fixed
+    testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
