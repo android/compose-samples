@@ -32,18 +32,17 @@ import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
+import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
 import com.example.owl.R
 import com.example.owl.ui.theme.compositedOnSurface
-import com.google.accompanist.coil.LocalImageLoader
-import com.google.accompanist.coil.rememberCoilPainter
 import okhttp3.HttpUrl
 
 /**
- * A wrapper around [Image] and [rememberCoilPainter], setting a
+ * A wrapper around [Image] and [rememberImagePainter], setting a
  * default [contentScale] and showing content while loading.
  */
 @OptIn(ExperimentalCoilApi::class)

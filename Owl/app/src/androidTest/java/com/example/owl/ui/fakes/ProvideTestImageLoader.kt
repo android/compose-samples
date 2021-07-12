@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.bitmap.BitmapPool
+import coil.compose.LocalImageLoader
 import coil.decode.DataSource
 import coil.memory.MemoryCache
 import coil.request.DefaultRequestOptions
@@ -32,7 +33,6 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
-import com.google.accompanist.coil.LocalImageLoader
 
 /**
  * Replaces all remote images with a simple black drawable to make testing faster and hermetic.

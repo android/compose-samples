@@ -70,6 +70,7 @@ object Libs {
             const val ui = "androidx.compose.ui:ui:$version"
             const val uiUtil = "androidx.compose.ui:ui-util:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+            const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
         }
 
         object ConstraintLayout {
