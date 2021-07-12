@@ -64,6 +64,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
@@ -74,7 +75,6 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.viewModelProviderFactoryOf
-import com.google.accompanist.coil.rememberCoilPainter
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -146,7 +146,12 @@ fun EpisodeListItem(
 
         // If we have an image Url, we can show it using Coil
         Image(
-            painter = rememberCoilPainter(podcast.imageUrl, fadeIn = true),
+            painter = rememberImagePainter(
+                data = podcast.imageUrl,
+                builder = {
+                    crossfade(true)
+                }
+            ),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -316,7 +321,12 @@ private fun TopPodcastRowItem(
         ) {
             if (podcastImageUrl != null) {
                 Image(
-                    painter = rememberCoilPainter(podcastImageUrl, fadeIn = true),
+                    painter = rememberImagePainter(
+                        data = podcastImageUrl,
+                        builder = {
+                            crossfade(true)
+                        }
+                    ),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

@@ -18,7 +18,7 @@ buildscript {
     ext.kotlin_version = '1.5.10'
     ext.compose_version = '1.0.0-SNAPSHOT'
     ext.coroutines_version = '1.4.2'
-    ext.accompanist_version = '0.14.0.compose-7529283-SNAPSHOT'
+    ext.accompanist_version = '0.14.0.compose-7535721-SNAPSHOT'
 
     repositories {
         google()
@@ -26,7 +26,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-beta04'
+        classpath 'com.android.tools.build:gradle:7.0.0-beta05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -40,7 +40,7 @@ subprojects {
         google()
         mavenCentral()
         // Compose snapshot
-        maven { url 'https://androidx.dev/snapshots/builds/7529283/artifacts/repository/' }
+        maven { url 'https://androidx.dev/snapshots/builds/7535721/artifacts/repository/' }
         // Accompanist snapshot
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }

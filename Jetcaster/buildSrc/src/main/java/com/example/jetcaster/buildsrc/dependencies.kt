@@ -21,11 +21,11 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta04"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta05"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     object Accompanist {
-        const val version = "0.14.0.compose-7529283-SNAPSHOT"
+        const val version = "0.14.0.compose-7535721-SNAPSHOT"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -71,7 +71,7 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "7529283"
+            const val snapshot = "7535721"
             const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic

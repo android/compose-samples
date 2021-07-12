@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.example.jetsnack.R
 import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
@@ -61,7 +62,6 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
-import com.google.accompanist.coil.rememberCoilPainter
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -286,9 +286,12 @@ fun SnackImage(
         modifier = modifier
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = imageUrl,
-                previewPlaceholder = R.drawable.placeholder,
+            painter = rememberImagePainter(
+                data = imageUrl,
+                builder = {
+                    crossfade(true)
+                    placeholder(drawableResId = R.drawable.placeholder)
+                }
             ),
             contentDescription = contentDescription,
             modifier = Modifier.fillMaxSize(),
