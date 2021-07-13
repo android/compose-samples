@@ -59,7 +59,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -96,9 +95,6 @@ fun Question(
     } else {
         val permissionsContentModifier = modifier.padding(horizontal = 20.dp)
 
-        // When true, the permissions request must be presented to the user.
-        var launchPermissionsRequest by rememberSaveable { mutableStateOf(false) }
-
         val multiplePermissionsState =
             rememberMultiplePermissionsState(question.permissionsRequired)
 
@@ -107,28 +103,27 @@ fun Question(
             multiplePermissionsState.allPermissionsGranted -> {
                 QuestionContent(question, answer, onAnswer, onAction, modifier)
             }
-            // The user denied some permissions but a rationale should be shown
-            multiplePermissionsState.shouldShowRationale -> {
-                if (!shouldAskPermissions) {
-                    PermissionsDenied(
-                        question.questionText,
-                        openSettings,
-                        permissionsContentModifier
-                    )
-                } else {
-                    PermissionsRationale(
-                        question,
-                        multiplePermissionsState,
-                        onDoNotAskForPermissions,
-                        permissionsContentModifier
-                    )
+            // If user denied some permissions but a rationale should be shown or the user
+            // is going to be presented with the permission for the first time. Let's explain
+            // why we need the permission
+            multiplePermissionsState.shouldShowRationale ||
+                !multiplePermissionsState.permissionRequested ->
+                {
+                    if (!shouldAskPermissions) {
+                        PermissionsDenied(
+                            question.questionText,
+                            openSettings,
+                            permissionsContentModifier
+                        )
+                    } else {
+                        PermissionsRationale(
+                            question,
+                            multiplePermissionsState,
+                            onDoNotAskForPermissions,
+                            permissionsContentModifier
+                        )
+                    }
                 }
-            }
-            // The permissions are not granted, the rationale shouldn't be shown to the user,
-            // and the permissions haven't been requested previously. Request permission!
-            !multiplePermissionsState.permissionRequested -> {
-                launchPermissionsRequest = true
-            }
             // If the criteria above hasn't been met, the user denied some permission.
             else -> {
                 PermissionsDenied(question.questionText, openSettings, permissionsContentModifier)
@@ -136,14 +131,6 @@ fun Question(
                 LaunchedEffect(true) {
                     onDoNotAskForPermissions()
                 }
-            }
-        }
-
-        // Trigger a side-effect to request the permissions if they need to be presented to the user
-        if (launchPermissionsRequest) {
-            LaunchedEffect(multiplePermissionsState) {
-                multiplePermissionsState.launchMultiplePermissionRequest()
-                launchPermissionsRequest = false
             }
         }
 
