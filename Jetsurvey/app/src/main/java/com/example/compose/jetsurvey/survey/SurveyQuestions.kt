@@ -704,7 +704,7 @@ private fun DateQuestion(
     val date = if (answer != null && answer.result is SurveyActionResult.Date) {
         answer.result.date
     } else {
-        SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(Date())
+        SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(Date())
     }
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
