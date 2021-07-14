@@ -29,8 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.14.0.compose-7535721-SNAPSHOT"
-        const val coil = "com.google.accompanist:accompanist-coil:$version"
+        const val version = "0.14.0.compose-7546572-SNAPSHOT"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -63,7 +62,7 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "7535721"
+            const val snapshot = "7546572"
             const val version = "1.0.0-SNAPSHOT"
 
             @get:JvmStatic
@@ -104,5 +103,9 @@ object Libs {
 
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
         }
+    }
+
+    object Coil {
+        const val coilCompose = "io.coil-kt:coil-compose:1.3.0"
     }
 }

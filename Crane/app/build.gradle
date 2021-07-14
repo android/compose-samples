@@ -114,7 +114,6 @@ dependencies {
         }
     }
 
-    implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.appcompat
@@ -130,6 +129,8 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.viewModelKtx
     implementation Libs.Hilt.android
     kapt Libs.Hilt.compiler
+
+    implementation Libs.Coil.coilCompose
 
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.runner
