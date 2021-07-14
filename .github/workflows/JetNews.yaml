@@ -43,7 +43,7 @@ jobs:
 
       - name: Build project and run local tests
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew spotlessCheck assembleDebug lintDebug testDebug --stacktrace
+        run: ./gradlew spotlessCheck assembleDebug lintDebug testDebug --stacktrace --no-build-cache --rerun-tasks
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2

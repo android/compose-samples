@@ -68,9 +68,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -648,7 +648,12 @@ private fun PhotoQuestion(
         Column {
             if (answer != null && answer.result is SurveyActionResult.Photo) {
                 Image(
-                    painter = rememberCoilPainter(answer.result.uri, fadeIn = true),
+                    painter = rememberImagePainter(
+                        data = answer.result.uri,
+                        builder = {
+                            crossfade(true)
+                        }
+                    ),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()

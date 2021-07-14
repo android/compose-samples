@@ -47,8 +47,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter.State.Loading
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.navigationBarsHeight
 
 @Composable
@@ -86,6 +87,7 @@ fun ExploreSection(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun ExploreItem(
     modifier: Modifier = Modifier,
@@ -99,7 +101,12 @@ private fun ExploreItem(
     ) {
         ExploreImageContainer {
             Box {
-                val painter = rememberCoilPainter(item.imageUrl, fadeIn = true)
+                val painter = rememberImagePainter(
+                    data = item.imageUrl,
+                    builder = {
+                        crossfade(true)
+                    }
+                )
                 Image(
                     painter = painter,
                     contentDescription = null,
@@ -107,7 +114,7 @@ private fun ExploreItem(
                     modifier = Modifier.fillMaxSize(),
                 )
 
-                if (painter.loadState is ImageLoadState.Loading) {
+                if (painter.state is Loading) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_crane_logo),
                         contentDescription = null,

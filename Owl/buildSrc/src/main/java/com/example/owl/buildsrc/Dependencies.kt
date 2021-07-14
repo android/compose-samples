@@ -21,11 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta04"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta05"
 
     object Accompanist {
-        const val version = "0.13.0"
-        const val coil = "com.google.accompanist:accompanist-coil:$version"
+        const val version = "0.14.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -58,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-rc01"
+            const val version = "1.0.0-rc02"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -70,6 +69,7 @@ object Libs {
             const val ui = "androidx.compose.ui:ui:$version"
             const val uiUtil = "androidx.compose.ui:ui-util:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+            const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
         }
 
         object ConstraintLayout {
@@ -89,5 +89,9 @@ object Libs {
 
             const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0"
         }
+    }
+
+    object Coil {
+        const val coilCompose = "io.coil-kt:coil-compose:1.3.0"
     }
 }
