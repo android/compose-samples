@@ -47,5 +47,7 @@
     <string name="cd_play">Play</string>
     <string name="cd_unfollow">Unfollow</string>
     <string name="cd_follow">Follow</string>
+    <string name="cd_following">Following</string>
+    <string name="cd_not_following">Not following</string>
 
 </resources>
