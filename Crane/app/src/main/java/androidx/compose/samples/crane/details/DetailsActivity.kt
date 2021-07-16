@@ -199,14 +199,10 @@ private fun MapViewContainer(
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
-    var mapInitialized by remember(map) { mutableStateOf(false) }
-    LaunchedEffect(map, mapInitialized) {
-        if (!mapInitialized) {
-            val googleMap = map.awaitMap()
-            googleMap.addMarker { position(cameraPosition) }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
-            mapInitialized = true
-        }
+    LaunchedEffect(map) {
+        val googleMap = map.awaitMap()
+        googleMap.addMarker { position(cameraPosition) }
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
     }
 
     var zoom by rememberSaveable(map) { mutableStateOf(InitialZoom) }
