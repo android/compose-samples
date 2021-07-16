@@ -208,15 +208,17 @@ fun EpisodeListItem(
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(LocalContentColor.current),
-            modifier = Modifier.clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false, radius = 24.dp)
-            ) { /* TODO */ }
-                .size(36.dp)
+            modifier = Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = false, radius = 24.dp)
+                ) { /* TODO */ }
+                .size(48.dp)
+                .padding(6.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
-                    top.linkTo(titleImageBarrier, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, 16.dp)
+                    top.linkTo(titleImageBarrier, margin = 10.dp)
+                    bottom.linkTo(parent.bottom, 10.dp)
                 }
         )
 
