@@ -85,8 +85,11 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
                     onClick = {
                         if (tab.route != currentRoute) {
                             navController.navigate(tab.route) {
-                                popUpTo(navController.graph.startDestinationId)
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     },

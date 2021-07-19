@@ -60,8 +60,8 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            // Treat all Kotlin warnings as errors
-            allWarningsAsErrors = true
+            // Treat all Kotlin warnings as errors (disabled by default)
+            allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
 
             jvmTarget = "1.8"
 
