@@ -48,7 +48,7 @@ class SurveyFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             // In order for savedState to work, the same ID needs to be used for all instances.
             id = R.id.sign_in_fragment
@@ -108,7 +108,7 @@ class SurveyFragment : Fragment() {
         activity?.let {
             picker.show(it.supportFragmentManager, picker.toString())
             picker.addOnPositiveButtonClickListener {
-                viewModel.onDatePicked(questionId, picker.headerText)
+                viewModel.onDatePicked(questionId, picker.selection)
             }
         }
     }

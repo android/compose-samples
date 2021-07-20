@@ -64,6 +64,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
@@ -74,7 +75,6 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.viewModelProviderFactoryOf
-import com.google.accompanist.coil.rememberCoilPainter
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -146,7 +146,12 @@ fun EpisodeListItem(
 
         // If we have an image Url, we can show it using Coil
         Image(
-            painter = rememberCoilPainter(podcast.imageUrl, fadeIn = true),
+            painter = rememberImagePainter(
+                data = podcast.imageUrl,
+                builder = {
+                    crossfade(true)
+                }
+            ),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -203,15 +208,17 @@ fun EpisodeListItem(
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(LocalContentColor.current),
-            modifier = Modifier.clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false, radius = 24.dp)
-            ) { /* TODO */ }
-                .size(36.dp)
+            modifier = Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = false, radius = 24.dp)
+                ) { /* TODO */ }
+                .size(48.dp)
+                .padding(6.dp)
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
-                    top.linkTo(titleImageBarrier, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, 16.dp)
+                    top.linkTo(titleImageBarrier, margin = 10.dp)
+                    bottom.linkTo(parent.bottom, 10.dp)
                 }
         )
 
@@ -316,7 +323,12 @@ private fun TopPodcastRowItem(
         ) {
             if (podcastImageUrl != null) {
                 Image(
-                    painter = rememberCoilPainter(podcastImageUrl, fadeIn = true),
+                    painter = rememberImagePainter(
+                        data = podcastImageUrl,
+                        builder = {
+                            crossfade(true)
+                        }
+                    ),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

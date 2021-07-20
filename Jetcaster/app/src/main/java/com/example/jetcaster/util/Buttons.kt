@@ -33,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 
@@ -42,9 +44,12 @@ fun ToggleFollowPodcastIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val clickLabel = stringResource(if (isFollowed) R.string.cd_unfollow else R.string.cd_follow)
     IconButton(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier.semantics {
+            onClick(label = clickLabel, action = null)
+        }
     ) {
         Icon(
             // TODO: think about animating these icons
@@ -53,8 +58,8 @@ fun ToggleFollowPodcastIconButton(
                 else -> Icons.Default.Add
             },
             contentDescription = when {
-                isFollowed -> stringResource(R.string.cd_unfollow)
-                else -> stringResource(R.string.cd_follow)
+                isFollowed -> stringResource(R.string.cd_following)
+                else -> stringResource(R.string.cd_not_following)
             },
             tint = animateColorAsState(
                 when {

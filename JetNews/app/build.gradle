@@ -50,16 +50,28 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+    // Tests can be Robolectric or instrumented tests
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-        allWarningsAsErrors = true
     }
 
     buildFeatures {
@@ -96,14 +108,14 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'androidx.activity:activity-ktx:1.2.3'
-    implementation 'androidx.core:core-ktx:1.6.0-beta02'
-    implementation "androidx.activity:activity-compose:1.3.0-beta01"
+    implementation 'androidx.core:core-ktx:1.6.0-rc01'
+    implementation "androidx.activity:activity-compose:1.3.0-rc01"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha06"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
 
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha02"
+    implementation 'androidx.navigation:navigation-compose:2.4.0-alpha04'
 
     androidTestImplementation 'androidx.test:rules:1.3.0'
     androidTestImplementation 'androidx.test:runner:1.3.0'
@@ -111,12 +123,18 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    // Robolectric dependencies
+    testImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    // TODO: Bump to 4.6.* after https://github.com/robolectric/robolectric/issues/6593 is fixed
+    testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
-        // Treat all Kotlin warnings as errors
-        allWarningsAsErrors = true
+        // Treat all Kotlin warnings as errors (disabled by default)
+        allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
+
         freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
         // Enable experimental coroutines APIs, including Flow
         freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
@@ -125,3 +143,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         jvmTarget = "1.8"
     }
 }
+
+tasks.withType(Test) {
+    systemProperty "robolectric.logging", "stdout"
+} 

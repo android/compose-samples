@@ -145,7 +145,7 @@ fun <Producer, T> produceUiState(
     }
     return ProducerResult(
         result = result,
-        onRefresh = { refreshChannel.offer(Unit) },
-        onClearError = { errorClearChannel.offer(Unit) }
+        onRefresh = { refreshChannel.trySend(Unit) },
+        onClearError = { errorClearChannel.trySend(Unit) }
     )
 }
