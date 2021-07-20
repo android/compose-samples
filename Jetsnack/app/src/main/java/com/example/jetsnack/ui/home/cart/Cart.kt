@@ -263,107 +263,106 @@ fun CartItem(
     modifier: Modifier = Modifier
 ) {
     val snack = orderLine.snack
-    Row(modifier = Modifier.background(JetsnackTheme.colors.uiBackground)) {
-        ConstraintLayout(
-            modifier = modifier
-                .fillMaxWidth()
-                .clickable { onSnackClick(snack.id) }
-                .padding(horizontal = 24.dp)
+    ConstraintLayout(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onSnackClick(snack.id) }
+            .background(JetsnackTheme.colors.uiBackground)
+            .padding(horizontal = 24.dp)
 
-        ) {
-            val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
-            createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
-            SnackImage(
-                imageUrl = snack.imageUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp)
-                    .constrainAs(image) {
-                        top.linkTo(parent.top, margin = 16.dp)
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
-                        start.linkTo(parent.start)
-                    }
-            )
-            Text(
-                text = snack.name,
-                style = MaterialTheme.typography.subtitle1,
-                color = JetsnackTheme.colors.textSecondary,
-                modifier = Modifier.constrainAs(name) {
-                    linkTo(
-                        start = image.end,
-                        startMargin = 16.dp,
-                        end = remove.start,
-                        endMargin = 16.dp,
-                        bias = 0f
-                    )
+    ) {
+        val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
+        createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
+        SnackImage(
+            imageUrl = snack.imageUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .size(100.dp)
+                .constrainAs(image) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
                 }
-            )
-            IconButton(
-                onClick = { removeSnack(snack.id) },
-                modifier = Modifier
-                    .constrainAs(remove) {
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
-                    }
-                    .padding(top = 12.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    tint = JetsnackTheme.colors.iconSecondary,
-                    contentDescription = stringResource(R.string.label_remove)
+        )
+        Text(
+            text = snack.name,
+            style = MaterialTheme.typography.subtitle1,
+            color = JetsnackTheme.colors.textSecondary,
+            modifier = Modifier.constrainAs(name) {
+                linkTo(
+                    start = image.end,
+                    startMargin = 16.dp,
+                    end = remove.start,
+                    endMargin = 16.dp,
+                    bias = 0f
                 )
             }
-            Text(
-                text = snack.tagline,
-                style = MaterialTheme.typography.body1,
-                color = JetsnackTheme.colors.textHelp,
-                modifier = Modifier.constrainAs(tag) {
-                    linkTo(
-                        start = image.end,
-                        startMargin = 16.dp,
-                        end = parent.end,
-                        endMargin = 16.dp,
-                        bias = 0f
-                    )
-                }
-            )
-            Spacer(
-                Modifier
-                    .height(8.dp)
-                    .constrainAs(priceSpacer) {
-                        linkTo(top = tag.bottom, bottom = price.top)
-                    }
-            )
-            Text(
-                text = formatPrice(snack.price),
-                style = MaterialTheme.typography.subtitle1,
-                color = JetsnackTheme.colors.textPrimary,
-                modifier = Modifier.constrainAs(price) {
-                    linkTo(
-                        start = image.end,
-                        end = quantity.start,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp,
-                        bias = 0f
-                    )
-                }
-            )
-            QuantitySelector(
-                count = orderLine.count,
-                decreaseItemCount = { decreaseItemCount(snack.id) },
-                increaseItemCount = { increaseItemCount(snack.id) },
-                modifier = Modifier.constrainAs(quantity) {
-                    baseline.linkTo(price.baseline)
+        )
+        IconButton(
+            onClick = { removeSnack(snack.id) },
+            modifier = Modifier
+                .constrainAs(remove) {
+                    top.linkTo(parent.top)
                     end.linkTo(parent.end)
                 }
-            )
-            JetsnackDivider(
-                Modifier.constrainAs(divider) {
-                    linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(parent.bottom)
-                }
+                .padding(top = 12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                tint = JetsnackTheme.colors.iconSecondary,
+                contentDescription = stringResource(R.string.label_remove)
             )
         }
+        Text(
+            text = snack.tagline,
+            style = MaterialTheme.typography.body1,
+            color = JetsnackTheme.colors.textHelp,
+            modifier = Modifier.constrainAs(tag) {
+                linkTo(
+                    start = image.end,
+                    startMargin = 16.dp,
+                    end = parent.end,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+            }
+        )
+        Spacer(
+            Modifier
+                .height(8.dp)
+                .constrainAs(priceSpacer) {
+                    linkTo(top = tag.bottom, bottom = price.top)
+                }
+        )
+        Text(
+            text = formatPrice(snack.price),
+            style = MaterialTheme.typography.subtitle1,
+            color = JetsnackTheme.colors.textPrimary,
+            modifier = Modifier.constrainAs(price) {
+                linkTo(
+                    start = image.end,
+                    end = quantity.start,
+                    startMargin = 16.dp,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+            }
+        )
+        QuantitySelector(
+            count = orderLine.count,
+            decreaseItemCount = { decreaseItemCount(snack.id) },
+            increaseItemCount = { increaseItemCount(snack.id) },
+            modifier = Modifier.constrainAs(quantity) {
+                baseline.linkTo(price.baseline)
+                end.linkTo(parent.end)
+            }
+        )
+        JetsnackDivider(
+            Modifier.constrainAs(divider) {
+                linkTo(start = parent.start, end = parent.end)
+                top.linkTo(parent.bottom)
+            }
+        )
     }
 }
 
