@@ -41,6 +41,7 @@ import com.example.owl.ui.utils.ProvideImageLoader
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.navigationBarsPadding
+import java.util.Locale
 
 @Composable
 fun OwlApp(finishActivity: () -> Unit) {
@@ -79,13 +80,16 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
             tabs.forEach { tab ->
                 BottomNavigationItem(
                     icon = { Icon(painterResource(tab.icon), contentDescription = null) },
-                    label = { Text(stringResource(tab.title).toUpperCase()) },
+                    label = { Text(stringResource(tab.title).uppercase(Locale.getDefault())) },
                     selected = currentRoute == tab.route,
                     onClick = {
                         if (tab.route != currentRoute) {
                             navController.navigate(tab.route) {
-                                popUpTo(navController.graph.startDestinationId)
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     },

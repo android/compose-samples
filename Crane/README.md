@@ -5,7 +5,7 @@ Studies built with [Jetpack Compose](https://developer.android.com/jetpack/compo
 The goal of the sample is to showcase Material components, draggable UI elements, Android Views
 inside Compose, and UI state handling.
 
-To try out this sample app, you need to use the latest Canary version of Android Studio Arctic Fox.
+To try out this sample app, you need to use the latest version of [Android Studio Arctic Fox](https://developer.android.com/studio/preview).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
@@ -76,6 +76,9 @@ and include it in the `local.properties` file as follows:
 ```
 google.maps.key={insert_your_api_key_here}
 ```
+
+When restricting the Key to Android apps, use `androidx.compose.samples.crane` as package name, and
+`A0:BD:B3:B6:F0:C4:BE:90:C6:9D:5F:4C:1D:F0:90:80:7F:D7:FE:1F` as SHA-1 certificate fingerprint.
 
 ## Images
 

@@ -104,9 +104,10 @@ dependencies {
     implementation Libs.AndroidX.Compose.iconsExtended
     implementation Libs.AndroidX.Compose.tooling
 
-    implementation Libs.Accompanist.coil
     implementation Libs.Accompanist.insets
     implementation Libs.Accompanist.systemuicontroller
+
+    implementation Libs.Coil.coilCompose
 
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.runner

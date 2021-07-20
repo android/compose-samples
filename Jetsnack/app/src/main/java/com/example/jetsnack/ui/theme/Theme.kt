@@ -234,6 +234,37 @@ class JetsnackColors(
         notificationBadge = other.notificationBadge
         isDark = other.isDark
     }
+
+    fun copy(): JetsnackColors = JetsnackColors(
+        gradient6_1 = gradient6_1,
+        gradient6_2 = gradient6_2,
+        gradient3_1 = gradient3_1,
+        gradient3_2 = gradient3_2,
+        gradient2_1 = gradient2_1,
+        gradient2_2 = gradient2_2,
+        gradient2_3 = gradient2_3,
+        brand = brand,
+        brandSecondary = brandSecondary,
+        uiBackground = uiBackground,
+        uiBorder = uiBorder,
+        uiFloated = uiFloated,
+        interactivePrimary = interactivePrimary,
+        interactiveSecondary = interactiveSecondary,
+        interactiveMask = interactiveMask,
+        textPrimary = textPrimary,
+        textSecondary = textSecondary,
+        textHelp = textHelp,
+        textInteractive = textInteractive,
+        textLink = textLink,
+        tornado1 = tornado1,
+        iconPrimary = iconPrimary,
+        iconSecondary = iconSecondary,
+        iconInteractive = iconInteractive,
+        iconInteractiveInactive = iconInteractiveInactive,
+        error = error,
+        notificationBadge = notificationBadge,
+        isDark = isDark,
+    )
 }
 
 @Composable
@@ -241,7 +272,11 @@ fun ProvideJetsnackColors(
     colors: JetsnackColors,
     content: @Composable () -> Unit
 ) {
-    val colorPalette = remember { colors }
+    val colorPalette = remember {
+        // Explicitly creating a new object here so we don't mutate the initial [colors]
+        // provided, and overwrite the values set in it.
+        colors.copy()
+    }
     colorPalette.update(colors)
     CompositionLocalProvider(LocalJetsnackColors provides colorPalette, content = content)
 }

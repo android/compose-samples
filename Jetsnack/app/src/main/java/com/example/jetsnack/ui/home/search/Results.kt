@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -218,24 +219,12 @@ fun NoResults(
     }
 }
 
-@Preview("Search Result")
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 private fun SearchResultPreview() {
     JetsnackTheme {
-        JetsnackSurface {
-            SearchResult(
-                snack = snacks[0],
-                onSnackClick = { },
-                showDivider = false
-            )
-        }
-    }
-}
-
-@Preview("Search Result • Dark")
-@Composable
-private fun SearchResultDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         JetsnackSurface {
             SearchResult(
                 snack = snacks[0],

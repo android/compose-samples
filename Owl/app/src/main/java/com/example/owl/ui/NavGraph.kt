@@ -134,7 +134,7 @@ class MainActions(navController: NavHostController) {
     }
 
     // Used from COURSE_DETAIL_ROUTE
-    val upPress: (rom: NavBackStackEntry) -> Unit = { from ->
+    val upPress: (from: NavBackStackEntry) -> Unit = { from ->
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
             navController.navigateUp()

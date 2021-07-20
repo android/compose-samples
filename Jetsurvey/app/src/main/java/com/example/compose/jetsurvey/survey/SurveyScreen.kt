@@ -59,9 +59,12 @@ import com.example.compose.jetsurvey.util.supportWideScreen
 @Composable
 fun SurveyQuestionsScreen(
     questions: SurveyState.Questions,
+    shouldAskPermissions: Boolean,
+    onDoNotAskForPermissions: () -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDonePressed: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    openSettings: () -> Unit
 ) {
     val questionState = remember(questions.currentQuestionIndex) {
         questions.questionsState[questions.currentQuestionIndex]
@@ -80,11 +83,16 @@ fun SurveyQuestionsScreen(
                 Question(
                     question = questionState.question,
                     answer = questionState.answer,
+                    shouldAskPermissions = shouldAskPermissions,
                     onAnswer = {
-                        questionState.answer = it
+                        if (it !is Answer.PermissionsDenied) {
+                            questionState.answer = it
+                        }
                         questionState.enableNext = true
                     },
                     onAction = onAction,
+                    openSettings = openSettings,
+                    onDoNotAskForPermissions = onDoNotAskForPermissions,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)

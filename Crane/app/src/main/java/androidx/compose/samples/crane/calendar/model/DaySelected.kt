@@ -17,6 +17,7 @@
 package androidx.compose.samples.crane.calendar.model
 
 import androidx.compose.samples.crane.data.CalendarYear
+import java.util.Locale
 
 data class DaySelected(val day: Int, val month: CalendarMonth, val year: CalendarYear) {
     val calendarDay = lazy {
@@ -24,7 +25,12 @@ data class DaySelected(val day: Int, val month: CalendarMonth, val year: Calenda
     }
 
     override fun toString(): String {
-        return "${month.name.substring(0, 3).capitalize()} $day"
+        val month = month.name
+            .substring(0, 3)
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+            }
+        return "$month $day"
     }
 
     operator fun compareTo(other: DaySelected): Int {

@@ -17,6 +17,9 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,6 +30,8 @@ import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.launch
 
+const val simpleDateFormatPattern = "EEE, MMM d"
+
 class SurveyViewModel(
     private val surveyRepository: SurveyRepository,
     private val photoUriManager: PhotoUriManager
@@ -35,6 +40,9 @@ class SurveyViewModel(
     private val _uiState = MutableLiveData<SurveyState>()
     val uiState: LiveData<SurveyState>
         get() = _uiState
+
+    var askForPermissions by mutableStateOf(true)
+        private set
 
     private lateinit var surveyInitialState: SurveyState
 
@@ -68,8 +76,13 @@ class SurveyViewModel(
         _uiState.value = SurveyState.Result(surveyQuestions.surveyTitle, result)
     }
 
-    fun onDatePicked(questionId: Int, date: String) {
-        updateStateWithActionResult(questionId, SurveyActionResult.Date(date))
+    fun onDatePicked(questionId: Int, pickerSelection: Long?) {
+        val selectedDate = Date().apply {
+            time = pickerSelection ?: getCurrentDate(questionId)
+        }
+        val formattedDate =
+            SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(selectedDate)
+        updateStateWithActionResult(questionId, SurveyActionResult.Date(formattedDate))
     }
 
     fun getCurrentDate(questionId: Int): Long {
@@ -87,6 +100,11 @@ class SurveyViewModel(
                 updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
             }
         }
+    }
+
+    // TODO: Ideally this should be stored in the database
+    fun doNotAskForPermissions() {
+        askForPermissions = false
     }
 
     private fun updateStateWithActionResult(questionId: Int, result: SurveyActionResult) {
@@ -119,7 +137,7 @@ class SurveyViewModel(
                 }
             val answer: Answer.Action? = question.answer as Answer.Action?
             if (answer != null && answer.result is SurveyActionResult.Date) {
-                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+                val formatter = SimpleDateFormat(simpleDateFormatPattern, Locale.ENGLISH)
                 val formatted = formatter.parse(answer.result.date)
                 if (formatted is Date)
                     ret = formatted.time

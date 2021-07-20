@@ -22,10 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.LocalImageLoader
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
-import com.google.accompanist.coil.LocalImageLoader
 import okhttp3.HttpUrl
 
 @Composable

@@ -49,7 +49,8 @@ fun JetsnackNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         navigation(
             route = MainDestinations.HOME_ROUTE,

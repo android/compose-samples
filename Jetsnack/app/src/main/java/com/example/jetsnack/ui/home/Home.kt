@@ -137,7 +137,7 @@ fun JetsnackBottomBar(
                 itemCount = routes.size,
                 indicator = { JetsnackBottomNavIndicator() },
                 animSpec = springSpec,
-                modifier = Modifier.navigationBarsPadding(left = false, right = false)
+                modifier = Modifier.navigationBarsPadding(start = false, end = false)
             ) {
                 tabs.forEach { section ->
                     val selected = section == currentSection
@@ -159,7 +159,7 @@ fun JetsnackBottomBar(
                         },
                         text = {
                             Text(
-                                text = stringResource(section.title).toUpperCase(
+                                text = stringResource(section.title).uppercase(
                                     ConfigurationCompat.getLocales(
                                         LocalConfiguration.current
                                     ).get(0)

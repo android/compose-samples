@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.cart
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -465,9 +466,11 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview("Cart")
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
-fun CartPreview() {
+private fun CartPreview() {
     JetsnackTheme {
         Cart(
             orderLines = SnackRepo.getCart(),
@@ -476,21 +479,6 @@ fun CartPreview() {
             decreaseItemCount = {},
             inspiredByCart = SnackRepo.getInspiredByCart(),
             onSnackClick = {}
-        )
-    }
-}
-
-@Preview("Cart • Dark Theme")
-@Composable
-fun CartDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
-        Cart(
-            orderLines = SnackRepo.getCart(),
-            removeSnack = {},
-            increaseItemCount = {},
-            decreaseItemCount = {},
-            inspiredByCart = SnackRepo.getInspiredByCart(),
-            onSnackClick = { }
         )
     }
 }
