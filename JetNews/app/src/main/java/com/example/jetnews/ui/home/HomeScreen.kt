@@ -66,6 +66,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.isScrolled
 import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
@@ -204,7 +205,7 @@ fun HomeScreen(
                     }
                 },
                 backgroundColor = MaterialTheme.colors.surface,
-                elevation = if (scrollState.firstVisibleItemScrollOffset == 0) 0.dp else 4.dp
+                elevation = if (!scrollState.isScrolled) 0.dp else 4.dp
             )
         }
     ) { innerPadding ->
@@ -274,7 +275,7 @@ private fun LoadingContent(
 @Composable
 private fun HomeScreenErrorAndContent(
     posts: UiState<List<Post>>,
-    state: LazyListState,
+    state: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit,
     navigateToArticle: (String) -> Unit,
     favorites: Set<String>,

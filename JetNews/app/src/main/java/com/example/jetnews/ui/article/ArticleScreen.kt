@@ -67,6 +67,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.isScrolled
 import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
@@ -170,7 +171,7 @@ fun ArticleScreen(
                         )
                     }
                 },
-                elevation = if (scrollState.firstVisibleItemScrollOffset == 0) 0.dp else 4.dp,
+                elevation = if (!scrollState.isScrolled) 0.dp else 4.dp,
                 backgroundColor = MaterialTheme.colors.surface
             )
         },
