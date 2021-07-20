@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +48,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.jetsnack.R
@@ -64,7 +67,7 @@ fun FilterScreen(
 ) {
     var sortChanged by remember { mutableStateOf(false) }
     var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
-    var sliderPosition by remember { mutableStateOf(0f) }
+    var maxCalories by remember { mutableStateOf(0f) }
 
     Dialog(onDismissRequest = onDismiss) {
 
@@ -101,13 +104,12 @@ fun FilterScreen(
                             } else {
                                 ContentAlpha.disabled
                             }
-
-                            Text(
-                                text = stringResource(id = R.string.reset),
-                                style = MaterialTheme.typography.body2,
-                                color = JetsnackTheme.colors.textLink,
-                                modifier = Modifier.alpha(alpha)
-                            )
+                            CompositionLocalProvider(LocalContentAlpha provides alpha) {
+                                Text(
+                                    text = stringResource(id = R.string.reset),
+                                    style = MaterialTheme.typography.body2
+                                )
+                            }
                         }
                     },
                     backgroundColor = JetsnackTheme.colors.uiBackground
@@ -116,14 +118,14 @@ fun FilterScreen(
         ) {
             Column(
                 Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
             ) {
                 SortFiltersSection(
                     sortState = sortState,
                     onFilterChange = { filterName ->
-                        sortChanged = filterName == SnackRepo.getSortDefault()
+                        sortChanged = filterName != SnackRepo.getSortDefault()
                         sortState = filterName
                     }
                 )
@@ -137,9 +139,9 @@ fun FilterScreen(
                 )
 
                 MaxCalories(
-                    sliderPosition = sliderPosition,
+                    sliderPosition = maxCalories,
                     onValueChanged = { newValue ->
-                        sliderPosition = newValue
+                        maxCalories = newValue
                     }
                 )
                 FilterChipSection(
@@ -202,7 +204,7 @@ fun SortFilters(
 
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
-    Row {
+    FlowRow {
         FilterTitle(text = stringResource(id = R.string.max_calories))
         Text(
             text = stringResource(id = R.string.per_serving),
@@ -266,4 +268,9 @@ fun SortOption(
             )
         }
     }
+}
+@Preview("filter screen")
+@Composable
+fun FilterScreenPreview() {
+    FilterScreen(onDismiss = {})
 }

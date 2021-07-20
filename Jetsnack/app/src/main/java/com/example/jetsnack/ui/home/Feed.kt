@@ -53,7 +53,7 @@ import com.google.accompanist.insets.statusBarsHeight
 @Composable
 fun Feed(
     onSnackClick: (Long) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val snackCollections = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
@@ -70,7 +70,7 @@ private fun Feed(
     snackCollections: List<SnackCollection>,
     filters: List<Filter>,
     onSnackClick: (Long) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
 
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
@@ -95,7 +95,7 @@ private fun SnackCollectionList(
 
             item {
                 Spacer(Modifier.statusBarsHeight(additional = 56.dp))
-                FilterBar(filters, onFilterClick = { filtersVisible = true })
+                FilterBar(filters, onShowFilters = { filtersVisible = true })
             }
             itemsIndexed(snackCollections) { index, snackCollection ->
                 if (index > 0) {
