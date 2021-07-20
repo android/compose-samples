@@ -17,6 +17,8 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,12 +56,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -176,7 +180,9 @@ private fun CartContent(
                         verticalArrangement = Arrangement.Center
                     ) {
                         // Set 4.dp padding only if offset is bigger than 160.dp
-                        val padding = if (offsetX > -160.dp) 4.dp else 0.dp
+                        val padding: Dp by animateDpAsState(
+                            if (offsetX > -160.dp) 4.dp else 0.dp
+                        )
                         Box(
                             Modifier
                                 .width(offsetX * -1)
@@ -199,18 +205,23 @@ private fun CartContent(
                                     // Icon must be visible while in this width range
                                     if (offsetX < -40.dp && offsetX > -152.dp) {
                                         // Icon alpha decreases as it is about to disappear
-                                        val iconAlpha = if (offsetX < -100.dp) 0.5f else 1f
+                                        val iconAlpha: Float by animateFloatAsState(
+                                            if (offsetX < -120.dp) 0.5f else 1f
+                                        )
+
                                         Icon(
                                             imageVector = Icons.Filled.DeleteForever,
                                             modifier = Modifier
                                                 .size(16.dp)
-                                                .alpha(iconAlpha),
+                                                .graphicsLayer(alpha = iconAlpha),
                                             tint = JetsnackTheme.colors.uiBackground,
                                             contentDescription = null,
                                         )
                                     }
                                     // Text opacity increases as the text is supposed to appear in the screen
-                                    val textAlpha = if (offsetX > -144.dp) 0.5f else 1f
+                                    val textAlpha by animateFloatAsState(
+                                        if (offsetX > -144.dp) 0.5f else 1f
+                                    )
                                     if (offsetX < -120.dp) {
                                         Text(
                                             text = stringResource(id = R.string.remove_item),
@@ -218,7 +229,9 @@ private fun CartContent(
                                             color = JetsnackTheme.colors.uiBackground,
                                             textAlign = TextAlign.Center,
                                             modifier = Modifier
-                                                .alpha(textAlpha)
+                                                .graphicsLayer(
+                                                    alpha = textAlpha
+                                                )
                                         )
                                     }
                                 }
