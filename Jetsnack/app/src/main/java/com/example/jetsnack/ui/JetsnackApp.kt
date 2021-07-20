@@ -21,7 +21,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,7 +31,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.jetsnack.ui.SnackbarMessagesState.Companion.SnackbarMessagesStateSaver
+import com.example.jetsnack.ui.ScaffoldStateHolder.Companion.ScaffoldStateHolderSaver
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
@@ -41,7 +40,6 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -69,38 +67,61 @@ fun JetsnackApp() {
     }
 }
 
+/**
+ * Creates a [ScaffoldStateHolder] and memoizes it.
+ *
+ * Pending snackbar messages to show on the screen are remembered across
+ * activity and process recreation.
+ */
 @Composable
 private fun rememberScaffoldStateHolder(
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ): ScaffoldStateHolder {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
-    val snackbarMessages = rememberSnackbarMessagesState(listOf())
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val snackbarHostState = scaffoldState.snackbarHostState
 
-    return remember(
-        navController, scaffoldState.snackbarHostState,
-        snackbarMessages, coroutineScope, lifecycle
+    return rememberSaveable(
+        inputs = arrayOf(navController, snackbarHostState, coroutineScope, lifecycle),
+        saver = ScaffoldStateHolderSaver(
+            navController, snackbarHostState, coroutineScope, lifecycle
+        )
     ) {
         ScaffoldStateHolder(
-            navController, scaffoldState.snackbarHostState, snackbarMessages,
-            coroutineScope, lifecycle
+            navController, scaffoldState.snackbarHostState, coroutineScope, lifecycle, listOf()
         )
     }
 }
 
+/**
+ * State holder for Jetsnack's app scaffold that contains state related to [JetsnackScaffold], and
+ * handles Navigation and Snackbar events.
+ */
 class ScaffoldStateHolder(
     val navController: NavHostController,
     private val snackbarHostState: SnackbarHostState,
-    private val snackbarMessagesState: SnackbarMessagesState,
     coroutineScope: CoroutineScope,
-    lifecycle: Lifecycle
+    lifecycle: Lifecycle,
+    initialSnackbarMessages: List<String>
 ) {
+    // Tabs for JetsnackBottomBar
     val tabs = HomeSections.values()
+
+    // Queue a maximum of 3 snackbar messages
+    private val snackbarMessages = Channel<String>(3, BufferOverflow.DROP_OLDEST)
+    // Cache of the Channel buffer used to restore state
+    private val pendingSnackbarMessages = mutableListOf<String>()
+
     init {
+        // Restore snackbar messages state
+        initialSnackbarMessages.forEach { showSnackbar(it) }
+
         // Process snackbar events only when the lifecycle is at least STARTED
         coroutineScope.launch {
-            snackbarMessagesState.snackbarMessages
+            snackbarMessages
+                .receiveAsFlow()
+                .onEach { pendingSnackbarMessages.remove(it) }
                 .flowWithLifecycle(lifecycle)
                 .collect { message ->
                     snackbarHostState.showSnackbar(message, message)
@@ -109,7 +130,8 @@ class ScaffoldStateHolder(
     }
 
     fun showSnackbar(message: String) {
-        snackbarMessagesState.showSnackbar(message)
+        val result = snackbarMessages.trySend(message)
+        if (result.isSuccess) { pendingSnackbarMessages.add(message) }
     }
 
     fun navigateToSnackDetail(from: NavBackStackEntry, snackId: Long) {
@@ -122,39 +144,20 @@ class ScaffoldStateHolder(
     fun onBackPress() {
         navController.navigateUp()
     }
-}
-
-@Composable
-fun rememberSnackbarMessagesState(initialMessages: List<String>): SnackbarMessagesState =
-    rememberSaveable(
-        inputs = arrayOf(initialMessages),
-        saver = SnackbarMessagesStateSaver
-    ) {
-        SnackbarMessagesState(initialMessages)
-    }
-
-class SnackbarMessagesState(initialMessages: List<String>) {
-    // Synchronous cache of the Channel used to restore state
-    private val pendingMessages = mutableListOf<String>()
-
-    // Queue a maximum of 3 snackbars
-    private val _snackbarMessages = Channel<String>(3, BufferOverflow.DROP_OLDEST)
-    val snackbarMessages: Flow<String> =
-        _snackbarMessages.receiveAsFlow().onEach { pendingMessages.remove(it) }
-
-    init {
-        initialMessages.forEach { showSnackbar(it) }
-    }
-
-    fun showSnackbar(message: String) {
-        val result = _snackbarMessages.trySend(message)
-        if (result.isSuccess) { pendingMessages.add(message) }
-    }
 
     companion object {
-        val SnackbarMessagesStateSaver = listSaver<SnackbarMessagesState, String>(
-            save = { it.pendingMessages },
-            restore = { SnackbarMessagesState(it) }
+        fun ScaffoldStateHolderSaver(
+            navController: NavHostController,
+            snackbarHostState: SnackbarHostState,
+            coroutineScope: CoroutineScope,
+            lifecycle: Lifecycle
+        ) = listSaver<ScaffoldStateHolder, String>(
+            save = { it.pendingSnackbarMessages },
+            restore = { pendingMessages ->
+                ScaffoldStateHolder(
+                    navController, snackbarHostState, coroutineScope, lifecycle, pendingMessages
+                )
+            }
         )
     }
 }
