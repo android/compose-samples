@@ -124,7 +124,7 @@ class ScaffoldStateHolder(
                 .onEach { pendingSnackbarMessages.remove(it) }
                 .flowWithLifecycle(lifecycle)
                 .collect { message ->
-                    snackbarHostState.showSnackbar(message, message)
+                    snackbarHostState.showSnackbar(message)
                 }
         }
     }
