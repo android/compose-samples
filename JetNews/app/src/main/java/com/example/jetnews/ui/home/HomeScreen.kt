@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,8 +25,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -37,6 +40,8 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +51,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -60,6 +66,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.isScrolled
 import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
@@ -162,24 +169,47 @@ fun HomeScreen(
             }
         }
     }
-
+    val scrollState = rememberLazyListState()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             val title = stringResource(id = R.string.app_name)
             InsetAwareTopAppBar(
-                title = { Text(text = title) },
+                title = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_jetnews_wordmark),
+                        contentDescription = title,
+                        tint = MaterialTheme.colors.onBackground,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 4.dp, top = 10.dp)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { coroutineScope.launch { openDrawer() } }) {
-                        Icon(
+                        Image(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                         )
                     }
-                }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { /* TODO: Open search */ }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = stringResource(R.string.cd_search)
+                        )
+                    }
+                },
+                backgroundColor = MaterialTheme.colors.surface,
+                elevation = if (!scrollState.isScrolled) 0.dp else 4.dp
             )
         }
     ) { innerPadding ->
+
         val modifier = Modifier.padding(innerPadding)
         LoadingContent(
             empty = posts.initialLoad,
@@ -187,8 +217,10 @@ fun HomeScreen(
             loading = posts.loading,
             onRefresh = onRefreshPosts,
             content = {
+
                 HomeScreenErrorAndContent(
                     posts = posts,
+                    state = scrollState,
                     onRefresh = {
                         onRefreshPosts()
                     },
@@ -243,6 +275,7 @@ private fun LoadingContent(
 @Composable
 private fun HomeScreenErrorAndContent(
     posts: UiState<List<Post>>,
+    state: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit,
     navigateToArticle: (String) -> Unit,
     favorites: Set<String>,
@@ -250,7 +283,7 @@ private fun HomeScreenErrorAndContent(
     modifier: Modifier = Modifier
 ) {
     if (posts.data != null) {
-        PostList(posts.data, navigateToArticle, favorites, onToggleFavorite, modifier)
+        PostList(posts.data, state, navigateToArticle, favorites, onToggleFavorite, modifier)
     } else if (!posts.hasError) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
@@ -275,6 +308,7 @@ private fun HomeScreenErrorAndContent(
 @Composable
 private fun PostList(
     posts: List<Post>,
+    state: LazyListState,
     navigateToArticle: (postId: String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
@@ -287,6 +321,7 @@ private fun PostList(
 
     LazyColumn(
         modifier = modifier,
+        state = state,
         contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false

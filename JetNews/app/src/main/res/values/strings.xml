@@ -25,6 +25,9 @@
     <string name="cd_bookmark">Bookmark</string>
     <string name="unbookmark">unbookmark</string>
     <string name="bookmark">bookmark</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_interests">Interests</string>
+    <string name="published_in">Published in: \n%1$s</string>
     <string name="fewer_stories">Show fewer stories like this?</string>
     <string name="fewer_stories_content">This feature is not yet implemented</string>
     <string name="agree">AGREE</string>
