@@ -65,9 +65,9 @@ import com.google.accompanist.flowlayout.FlowRow
 fun FilterScreen(
     onDismiss: () -> Unit
 ) {
-    var sortChanged by remember { mutableStateOf(false) }
     var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
     var maxCalories by remember { mutableStateOf(0f) }
+    val defaultFilter = SnackRepo.getSortDefault()
 
     Dialog(onDismissRequest = onDismiss) {
 
@@ -94,7 +94,7 @@ fun FilterScreen(
                         )
                     },
                     actions = {
-                        var resetEnabled = sortChanged
+                        var resetEnabled = sortState != defaultFilter
                         IconButton(
                             onClick = { /* TODO: Open search */ },
                             enabled = resetEnabled
@@ -124,9 +124,8 @@ fun FilterScreen(
             ) {
                 SortFiltersSection(
                     sortState = sortState,
-                    onFilterChange = { filterName ->
-                        sortChanged = filterName != SnackRepo.getSortDefault()
-                        sortState = filterName
+                    onFilterChange = { filter ->
+                        sortState = filter.name
                     }
                 )
                 FilterChipSection(
@@ -173,7 +172,7 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
 }
 
 @Composable
-fun SortFiltersSection(sortState: String, onFilterChange: (String) -> Unit) {
+fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     FilterTitle(text = stringResource(id = R.string.sort))
     Column(Modifier.padding(bottom = 24.dp)) {
         SortFilters(
@@ -187,7 +186,7 @@ fun SortFiltersSection(sortState: String, onFilterChange: (String) -> Unit) {
 fun SortFilters(
     sortFilters: List<Filter> = SnackRepo.getSortFilters(),
     sortState: String,
-    onChanged: (String) -> Unit
+    onChanged: (Filter) -> Unit
 ) {
 
     sortFilters.forEach { filter ->
@@ -196,7 +195,7 @@ fun SortFilters(
             icon = filter.icon,
             selected = sortState == filter.name,
             onClickOption = {
-                onChanged(filter.name)
+                onChanged(filter)
             }
         )
     }
