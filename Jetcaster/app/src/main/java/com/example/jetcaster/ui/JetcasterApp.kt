@@ -18,6 +18,8 @@ package com.example.jetcaster.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -44,12 +46,18 @@ fun JetcasterApp() {
     }
 }
 
-// TODO: Use a better way to check internet connection
 @Suppress("DEPRECATION")
 private fun checkIfOnline(context: Context): Boolean {
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val activeNetwork = cm.activeNetworkInfo
-    return activeNetwork?.isConnectedOrConnecting == true
+
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
+
+        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    } else {
+        cm.activeNetworkInfo?.isConnectedOrConnecting == true
+    }
 }
 
 @Composable
