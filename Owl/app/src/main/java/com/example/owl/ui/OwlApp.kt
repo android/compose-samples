@@ -37,7 +37,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.ProvideImageLoader
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.navigationBarsPadding
@@ -46,20 +45,18 @@ import java.util.Locale
 @Composable
 fun OwlApp(finishActivity: () -> Unit) {
     ProvideWindowInsets {
-        ProvideImageLoader {
-            BlueTheme {
-                val tabs = remember { CourseTabs.values() }
-                val navController = rememberNavController()
-                Scaffold(
-                    backgroundColor = MaterialTheme.colors.primarySurface,
-                    bottomBar = { OwlBottomBar(navController = navController, tabs) }
-                ) { innerPaddingModifier ->
-                    NavGraph(
-                        finishActivity = finishActivity,
-                        navController = navController,
-                        modifier = Modifier.padding(innerPaddingModifier)
-                    )
-                }
+        BlueTheme {
+            val tabs = remember { CourseTabs.values() }
+            val navController = rememberNavController()
+            Scaffold(
+                backgroundColor = MaterialTheme.colors.primarySurface,
+                bottomBar = { OwlBottomBar(navController = navController, tabs) }
+            ) { innerPaddingModifier ->
+                NavGraph(
+                    finishActivity = finishActivity,
+                    navController = navController,
+                    modifier = Modifier.padding(innerPaddingModifier)
+                )
             }
         }
     }

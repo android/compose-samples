@@ -38,7 +38,6 @@ import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DaySelected
 import androidx.compose.samples.crane.data.CalendarYear
 import androidx.compose.samples.crane.ui.CraneTheme
-import androidx.compose.samples.crane.util.ProvideImageLoader
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,10 +63,8 @@ class CalendarActivity : ComponentActivity() {
 
         setContent {
             ProvideWindowInsets {
-                ProvideImageLoader {
-                    CraneTheme {
-                        CalendarScreen(onBackPressed = { finish() })
-                    }
+                CraneTheme {
+                    CalendarScreen(onBackPressed = { finish() })
                 }
             }
         }
