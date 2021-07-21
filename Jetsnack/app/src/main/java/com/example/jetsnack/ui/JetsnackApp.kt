@@ -27,7 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -119,13 +119,14 @@ class ScaffoldStateHolder(
 
         // Process snackbar events only when the lifecycle is at least STARTED
         coroutineScope.launch {
-            snackbarMessages
-                .receiveAsFlow()
-                .onEach { pendingSnackbarMessages.remove(it) }
-                .flowWithLifecycle(lifecycle)
-                .collect { message ->
-                    snackbarHostState.showSnackbar(message)
-                }
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                snackbarMessages
+                    .receiveAsFlow()
+                    .onEach { pendingSnackbarMessages.remove(it) }
+                    .collect { message ->
+                        snackbarHostState.showSnackbar(message)
+                    }
+            }
         }
     }
 
