@@ -21,6 +21,7 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -112,7 +113,6 @@ class ScaffoldStateHolder(
 
     // Queue a maximum of 3 snackbar messages
     private val snackbarMessages = StateChannel<String>(3, BufferOverflow.DROP_OLDEST)
-    val pendingSnackbarMessages = snackbarMessages.getPendingElements()
 
     init {
         coroutineScope.launch {
@@ -151,7 +151,7 @@ class ScaffoldStateHolder(
             coroutineScope: CoroutineScope,
             lifecycle: Lifecycle
         ) = listSaver<ScaffoldStateHolder, String>(
-            save = { it.pendingSnackbarMessages },
+            save = { it.snackbarMessages.pendingElements },
             restore = { pendingMessages ->
                 ScaffoldStateHolder(
                     navController, snackbarHostState, coroutineScope, lifecycle, pendingMessages
@@ -169,7 +169,7 @@ class StateChannel<T>(
     private val onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
 ) {
     // Cache of the Channel buffer used to restore state
-    private var pendingElements = mutableListOf<T>()
+    val pendingElements = mutableStateListOf<T>()
     private val pendingElementsMutex = Mutex()
 
     private val _channel = Channel<T>(capacity, onBufferOverflow)
@@ -178,21 +178,21 @@ class StateChannel<T>(
         .onEach { pendingElementsMutex.withLock { pendingElements.remove(it) } }
 
     suspend fun send(element: T) {
-        val result = _channel.trySend(element)
-        if (result.isSuccess) {
-            pendingElementsMutex.withLock {
-                pendingElements.add(element)
-                // TODO: This code can be optimized
-                if (onBufferOverflow == BufferOverflow.DROP_OLDEST) {
-                    pendingElements = pendingElements.takeLast(capacity).toMutableList()
-                } else if (onBufferOverflow == BufferOverflow.DROP_LATEST) {
-                    pendingElements = pendingElements.take(capacity).toMutableList()
+        _channel.send(element)
+        pendingElementsMutex.withLock {
+            pendingElements.add(element)
+            // TODO: This code can be optimized
+            if (onBufferOverflow == BufferOverflow.DROP_OLDEST) {
+                while(pendingElements.isNotEmpty() && pendingElements.size > capacity) {
+                    pendingElements.removeFirst()
+                }
+            } else if (onBufferOverflow == BufferOverflow.DROP_LATEST) {
+                while(pendingElements.isNotEmpty() && pendingElements.size > capacity) {
+                    pendingElements.removeLast()
                 }
             }
         }
     }
-
-    fun getPendingElements(): List<T> = pendingElements.toList()
 }
 
 /**
