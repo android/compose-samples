@@ -16,13 +16,7 @@
 
 package androidx.compose.samples.crane.util
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.LocalImageLoader
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.PixelSize
