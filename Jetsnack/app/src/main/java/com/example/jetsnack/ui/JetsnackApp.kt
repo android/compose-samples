@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @Composable
 fun JetsnackApp() {
@@ -109,20 +111,17 @@ class ScaffoldStateHolder(
     val tabs = HomeSections.values()
 
     // Queue a maximum of 3 snackbar messages
-    private val snackbarMessages = Channel<String>(3, BufferOverflow.DROP_OLDEST)
-    // Cache of the Channel buffer used to restore state
-    private val pendingSnackbarMessages = mutableListOf<String>()
+    private val snackbarMessages = StateChannel<String>(3, BufferOverflow.DROP_OLDEST)
+    val pendingSnackbarMessages = snackbarMessages.getPendingElements()
 
     init {
-        // Restore snackbar messages state
-        initialSnackbarMessages.forEach { showSnackbar(it) }
-
-        // Process snackbar events only when the lifecycle is at least STARTED
         coroutineScope.launch {
+            // Restore snackbar messages state
+            initialSnackbarMessages.forEach { showSnackbar(it) }
+
+            // Process snackbar events only when the lifecycle is at least STARTED
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                snackbarMessages
-                    .receiveAsFlow()
-                    .onEach { pendingSnackbarMessages.remove(it) }
+                snackbarMessages.stream
                     .collect { message ->
                         snackbarHostState.showSnackbar(message)
                     }
@@ -130,9 +129,8 @@ class ScaffoldStateHolder(
         }
     }
 
-    fun showSnackbar(message: String) {
-        val result = snackbarMessages.trySend(message)
-        if (result.isSuccess) { pendingSnackbarMessages.add(message) }
+    suspend fun showSnackbar(message: String) {
+        snackbarMessages.send(message)
     }
 
     fun navigateToSnackDetail(from: NavBackStackEntry, snackId: Long) {
@@ -161,6 +159,40 @@ class ScaffoldStateHolder(
             }
         )
     }
+}
+
+/**
+ * Implementation of a Channel whose buffered elements can be accessed synchronously.
+ */
+class StateChannel<T>(
+    private val capacity: Int,
+    private val onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
+) {
+    // Cache of the Channel buffer used to restore state
+    private var pendingElements = mutableListOf<T>()
+    private val pendingElementsMutex = Mutex()
+
+    private val _channel = Channel<T>(capacity, onBufferOverflow)
+    val stream = _channel
+        .receiveAsFlow()
+        .onEach { pendingElementsMutex.withLock { pendingElements.remove(it) } }
+
+    suspend fun send(element: T) {
+        val result = _channel.trySend(element)
+        if (result.isSuccess) {
+            pendingElementsMutex.withLock {
+                pendingElements.add(element)
+                // TODO: This code can be optimized
+                if (onBufferOverflow == BufferOverflow.DROP_OLDEST) {
+                    pendingElements = pendingElements.takeLast(capacity).toMutableList()
+                } else if (onBufferOverflow == BufferOverflow.DROP_LATEST) {
+                    pendingElements = pendingElements.take(capacity).toMutableList()
+                }
+            }
+        }
+    }
+
+    fun getPendingElements(): List<T> = pendingElements.toList()
 }
 
 /**
