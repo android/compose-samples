@@ -21,7 +21,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -179,7 +178,7 @@ class StateChannel<T>(
     private val onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
 ) {
     // Cache of the Channel buffer used to restore state
-    val pendingElements = mutableStateListOf<T>()
+    val pendingElements = mutableListOf<T>()
     private val pendingElementsMutex = Mutex()
 
     private val _channel = Channel<T>(capacity, onBufferOverflow)
