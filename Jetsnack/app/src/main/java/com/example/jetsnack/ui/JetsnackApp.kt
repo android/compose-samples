@@ -162,7 +162,13 @@ class ScaffoldStateHolder(
 }
 
 /**
- * Implementation of a Channel whose buffered elements can be accessed synchronously.
+ * Implementation of a Channel whose buffered elements can be accessed synchronously so that they
+ * can be saved/restored on activity and process recreation.
+ *
+ * In this implementation, the exposed `stream` flow is supposed to be collected once at a time
+ * since in case there are multiple collectors, only one will get the event.
+ * If events need to be broadcasted to multiple collectors, expose stream using the `.shareIn`
+ * operator instead.
  */
 class StateChannel<T>(
     private val capacity: Int,
@@ -181,7 +187,6 @@ class StateChannel<T>(
         _channel.send(element)
         pendingElementsMutex.withLock {
             pendingElements.add(element)
-            // TODO: This code can be optimized
             if (onBufferOverflow == BufferOverflow.DROP_OLDEST) {
                 while(pendingElements.isNotEmpty() && pendingElements.size > capacity) {
                     pendingElements.removeFirst()
