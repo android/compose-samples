@@ -169,6 +169,10 @@ class ScaffoldStateHolder(
  * since in case there are multiple collectors, only one will get the event.
  * If events need to be broadcasted to multiple collectors, expose stream using the `.shareIn`
  * operator instead.
+ *
+ * @param capacity capacity of the underlying Channel. This should be a non-negative integer,
+ * and not one of the Channel.* constants.
+ * @param onBufferOverflow configures an action on buffer overflow.
  */
 class StateChannel<T>(
     private val capacity: Int,
@@ -181,20 +185,16 @@ class StateChannel<T>(
     private val _channel = Channel<T>(capacity, onBufferOverflow)
     val stream = _channel
         .receiveAsFlow()
-        .onEach { pendingElementsMutex.withLock { pendingElements.remove(it) } }
+        .onEach { pendingElementsMutex.withLock { pendingElements.removeFirstOrNull() } }
 
     suspend fun send(element: T) {
         _channel.send(element)
         pendingElementsMutex.withLock {
             pendingElements.add(element)
             if (onBufferOverflow == BufferOverflow.DROP_OLDEST) {
-                while(pendingElements.isNotEmpty() && pendingElements.size > capacity) {
-                    pendingElements.removeFirst()
-                }
+                while(pendingElements.size > capacity) { pendingElements.removeFirstOrNull() }
             } else if (onBufferOverflow == BufferOverflow.DROP_LATEST) {
-                while(pendingElements.isNotEmpty() && pendingElements.size > capacity) {
-                    pendingElements.removeLast()
-                }
+                while(pendingElements.size > capacity) { pendingElements.removeLastOrNull() }
             }
         }
     }
