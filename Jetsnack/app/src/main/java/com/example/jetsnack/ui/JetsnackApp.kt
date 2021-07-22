@@ -191,9 +191,9 @@ class StateChannel<T>(
         pendingElementsMutex.withLock {
             pendingElements.add(element)
             if (onBufferOverflow == BufferOverflow.DROP_OLDEST) {
-                while(pendingElements.size > capacity) { pendingElements.removeFirstOrNull() }
+                while (pendingElements.size > capacity) { pendingElements.removeFirstOrNull() }
             } else if (onBufferOverflow == BufferOverflow.DROP_LATEST) {
-                while(pendingElements.size > capacity) { pendingElements.removeLastOrNull() }
+                while (pendingElements.size > capacity) { pendingElements.removeLastOrNull() }
             }
         }
     }
