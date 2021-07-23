@@ -36,6 +36,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DayOfWeek
@@ -48,6 +49,7 @@ import androidx.compose.samples.crane.util.SemiRect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -150,7 +152,7 @@ private fun Day(
         onClick = { onDayClicked(day) },
         onClickEnabled = enabled,
         backgroundColor = day.status.color(MaterialTheme.colors),
-        onClickLabel = "select"
+        onClickLabel = stringResource(id = R.string.click_label_select)
     ) {
         DayStatusContainer(status = day.status) {
             Text(
@@ -189,13 +191,16 @@ private fun DayContainer(
     content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
+    val stateDescriptionLabel = stringResource(
+        if (selected) R.string.state_descr_selected else R.string.state_descr_not_selected
+    )
     Surface(
         modifier = modifier
             .size(width = CELL_SIZE, height = CELL_SIZE)
             .then(
                 if (onClickEnabled) {
                     modifier.semantics {
-                        stateDescription = if (selected) "Selected" else "Not selected"
+                        stateDescription = stateDescriptionLabel
                     }
                 } else {
                     modifier.clearAndSetSemantics { }
