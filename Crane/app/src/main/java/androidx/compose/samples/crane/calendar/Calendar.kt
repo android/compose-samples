@@ -144,6 +144,7 @@ private fun Day(
     DayContainer(
         modifier = modifier.semantics {
             if (enabled) text = AnnotatedString("${month.name} ${day.value} ${month.year}")
+            dayStatusProperty = day.status
         },
         selected = day.status != DaySelectedStatus.NoSelected,
         onClick = { onDayClicked(day) },
