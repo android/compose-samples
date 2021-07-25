@@ -75,7 +75,7 @@ import kotlinx.coroutines.runBlocking
 enum class Sections(@StringRes val titleResId: Int) {
     Topics(R.string.interests_section_topics),
     People(R.string.interests_section_people),
-    Publications(R.string.interests_section_people)
+    Publications(R.string.interests_section_publications)
 }
 
 /**
