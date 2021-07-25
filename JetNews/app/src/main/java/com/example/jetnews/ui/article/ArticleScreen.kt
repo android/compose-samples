@@ -133,7 +133,7 @@ fun ArticleScreen(
             InsetAwareTopAppBar(
                 title = {
                     Text(
-                        text = "Published in: ${post.publication?.name}",
+                        text = stringResource(id = R.string.article_published_in, formatArgs = arrayOf(post.publication?.name.orEmpty())),
                         style = MaterialTheme.typography.subtitle2,
                         color = LocalContentColor.current
                     )
@@ -232,13 +232,13 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         text = {
             Text(
-                text = "Functionality not available \uD83D\uDE48",
+                text = stringResource(id = R.string.article_functionality_not_available),
                 style = MaterialTheme.typography.body2
             )
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "CLOSE")
+                Text(text = stringResource(id = R.string.close))
             }
         }
     )
@@ -256,7 +256,7 @@ private fun sharePost(post: Post, context: Context) {
         putExtra(Intent.EXTRA_TITLE, post.title)
         putExtra(Intent.EXTRA_TEXT, post.url)
     }
-    context.startActivity(Intent.createChooser(intent, "Share post"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.article_share_post)))
 }
 
 @Preview("Article screen")

@@ -71,7 +71,13 @@ fun AuthorAndReadTime(
                 style = textStyle
             )
             Text(
-                text = " - ${post.metadata.readTimeMinutes} min read",
+                text = stringResource(
+                    id = R.string.home_post_min_read,
+                    formatArgs = arrayOf(
+                        post.metadata.date,
+                        post.metadata.readTimeMinutes
+                    )
+                ),
                 style = textStyle
             )
         }
@@ -151,7 +157,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = "BASED ON YOUR HISTORY",
+                    text = stringResource(id = R.string.home_post_based_on_history),
                     style = MaterialTheme.typography.overline
                 )
             }
