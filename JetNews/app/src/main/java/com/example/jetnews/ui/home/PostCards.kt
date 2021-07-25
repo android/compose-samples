@@ -65,20 +65,15 @@ fun AuthorAndReadTime(
 ) {
     Row(modifier) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            val textStyle = MaterialTheme.typography.body2
-            Text(
-                text = post.metadata.author.name,
-                style = textStyle
-            )
             Text(
                 text = stringResource(
                     id = R.string.home_post_min_read,
                     formatArgs = arrayOf(
-                        post.metadata.date,
+                        post.metadata.author.name,
                         post.metadata.readTimeMinutes
                     )
                 ),
-                style = textStyle
+                style = MaterialTheme.typography.body2
             )
         }
     }
