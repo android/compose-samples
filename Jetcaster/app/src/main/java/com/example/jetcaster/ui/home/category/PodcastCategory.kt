@@ -104,7 +104,6 @@ fun PodcastCategory(
         CategoryPodcasts(viewState.topPodcasts, viewModel)
         EpisodeList(viewState.episodes)
     }
-
 }
 
 @Composable
@@ -142,7 +141,6 @@ private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
         }
     }
 }
-
 
 @Composable
 fun EpisodeListItem(
