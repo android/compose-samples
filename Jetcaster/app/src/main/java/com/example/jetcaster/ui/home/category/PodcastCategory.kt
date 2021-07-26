@@ -19,16 +19,7 @@ package com.example.jetcaster.ui.home.category
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -98,10 +89,21 @@ fun PodcastCategory(
     /**
      * TODO: reset scroll position when category changes
      */
-    LazyColumn(
-        modifier = modifier,
+    Column(modifier = modifier) {
+        CategoryPodcasts(viewState, viewModel)
+        EpisodeList(viewState)
+    }
+
+}
+
+@Composable
+private fun CategoryPodcasts(
+    viewState: PodcastCategoryViewState,
+    viewModel: PodcastCategoryViewModel
+) {
+    LazyRow(
         contentPadding = PaddingValues(0.dp),
-        horizontalAlignment = Alignment.Start
+        horizontalArrangement = Arrangement.Start
     ) {
         item {
             CategoryPodcastRow(
@@ -110,6 +112,15 @@ fun PodcastCategory(
                 modifier = Modifier.fillParentMaxWidth()
             )
         }
+    }
+}
+
+@Composable
+private fun EpisodeList(viewState: PodcastCategoryViewState) {
+    LazyColumn(
+        contentPadding = PaddingValues(0.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
 
         items(viewState.episodes, key = { it.episode.uri }) { item ->
             EpisodeListItem(
@@ -120,6 +131,7 @@ fun PodcastCategory(
         }
     }
 }
+
 
 @Composable
 fun EpisodeListItem(
