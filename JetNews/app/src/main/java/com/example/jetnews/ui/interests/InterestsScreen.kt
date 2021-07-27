@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,10 +72,10 @@ import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-enum class Sections(val title: String) {
-    Topics("Topics"),
-    People("People"),
-    Publications("Publications")
+enum class Sections(@StringRes val titleResId: Int) {
+    Topics(R.string.interests_section_topics),
+    People(R.string.interests_section_people),
+    Publications(R.string.interests_section_publications)
 }
 
 /**
@@ -179,7 +180,7 @@ fun InterestsScreen(
         scaffoldState = scaffoldState,
         topBar = {
             InsetAwareTopAppBar(
-                title = { Text("Interests") },
+                title = { Text(stringResource(id = R.string.interests_title)) },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
                         Icon(
@@ -233,7 +234,7 @@ private fun TabContent(
                         .padding(horizontal = 16.dp, vertical = 12.dp)
                 ) {
                     Text(
-                        text = tabContent.section.title,
+                        text = stringResource(id = tabContent.section.titleResId),
                         color = colorText,
                         style = MaterialTheme.typography.subtitle2,
                         modifier = Modifier.paddingFromBaseline(top = 20.dp)
@@ -244,7 +245,11 @@ private fun TabContent(
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
-        Box(modifier = Modifier.weight(1f).supportWideScreen()) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .supportWideScreen()
+        ) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }

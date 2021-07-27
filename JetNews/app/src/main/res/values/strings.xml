@@ -28,4 +28,25 @@
     <string name="fewer_stories">Show fewer stories like this?</string>
     <string name="fewer_stories_content">This feature is not yet implemented</string>
     <string name="agree">AGREE</string>
+    <string name="close">CLOSE</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Home</string>
+    <string name="home_tap_to_load_content">Tap to load content</string>
+    <string name="home_top_section_title">Top stories for you</string>
+    <string name="home_popular_section_title">Popular on Jetnews</string>
+    <string name="home_post_min_read">%1$s - %2$d min read</string>
+    <string name="home_post_based_on_history">BASED ON YOUR HISTORY</string>
+
+    <!-- Article Screen -->
+    <string name="article_published_in">Published in: %s</string>
+    <string name="article_functionality_not_available">Functionality not available \uD83D\uDE48</string>
+    <string name="article_share_post">Share post</string>
+    <string name="article_post_min_read">%1$s • %2$d min read</string>
+
+    <!-- Interests Screen -->
+    <string name="interests_title">Interests</string>
+    <string name="interests_section_topics">Topics</string>
+    <string name="interests_section_people">People</string>
+    <string name="interests_section_publications">Publications</string>
 </resources>

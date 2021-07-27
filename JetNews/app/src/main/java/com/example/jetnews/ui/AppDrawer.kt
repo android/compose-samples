@@ -62,7 +62,7 @@ fun AppDrawer(
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = Icons.Filled.Home,
-            label = "Home",
+            label = stringResource(id = R.string.home_title),
             isSelected = currentRoute == MainDestinations.HOME_ROUTE,
             action = {
                 navigateToHome()
@@ -72,7 +72,7 @@ fun AppDrawer(
 
         DrawerButton(
             icon = Icons.Filled.ListAlt,
-            label = "Interests",
+            label = stringResource(id = R.string.interests_title),
             isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
             action = {
                 navigateToInterests()
