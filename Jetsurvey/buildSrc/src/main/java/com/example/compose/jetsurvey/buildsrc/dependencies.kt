@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-rc01"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     const val junit = "junit:junit:4.13"
@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.14.0"
+        const val version = "0.15.0"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -49,7 +49,7 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
-        const val coreKtx = "androidx.core:core-ktx:1.6.0-alpha03"
+        const val coreKtx = "androidx.core:core-ktx:1.6.0"
 
         object Lifecycle {
             private const val version = "2.3.1"
@@ -58,12 +58,12 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-rc01"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-rc02"
+            const val version = "1.0.0"
 
             @get:JvmStatic
             val snapshotUrl: String

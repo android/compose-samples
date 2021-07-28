@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-rc01"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
@@ -34,7 +34,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val version = "0.14.0"
+        const val version = "0.15.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -45,7 +45,7 @@ object Libs {
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
 
         object Coroutines {
-            private const val version = "1.4.2"
+            private const val version = "1.5.0"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
             const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
@@ -53,14 +53,14 @@ object Libs {
 
     object AndroidX {
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-rc01"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0"
         }
 
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-rc02"
+            const val version = "1.0.0"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
