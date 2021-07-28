@@ -16,9 +16,9 @@
 
 buildscript {
     ext.kotlin_version = '1.5.10'
-    ext.compose_version = '1.0.0-SNAPSHOT'
+    ext.compose_version = '1.0.0'
     ext.coroutines_version = '1.5.0'
-    ext.accompanist_version = '0.15.0.compose-7555628-SNAPSHOT'
+    ext.accompanist_version = '0.15.0'
 
     repositories {
         google()
@@ -26,7 +26,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-rc01'
+        classpath 'com.android.tools.build:gradle:7.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -39,9 +39,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-
-        maven { url 'https://androidx.dev/snapshots/builds/7555628/artifacts/repository/' }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 
     apply plugin: 'com.diffplug.spotless'
