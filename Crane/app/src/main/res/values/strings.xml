@@ -21,6 +21,9 @@
     <string name="cd_back">Back</string>
     <string name="cd_loading">Loading</string>
     <string name="cd_drawer">Open drawer</string>
+    <string name="click_label_select">select</string>
+    <string name="state_descr_selected">Selected</string>
+    <string name="state_descr_not_selected">Not selected</string>
 
     <!-- Home -->
     <string name="home_explore_flights">Explore Flights by Destination</string>
@@ -39,6 +42,7 @@
         <item quantity="other">%d Adults</item>
     </plurals>
 
+    <!-- Detail -->
     <string name="detail_zoom_out">-</string>
     <string name="detail_zoom_in">+</string>
 </resources>
