@@ -35,8 +35,8 @@
     <string name="home_error_max_people">Error: We don\'t support more than %d people</string>
     <string name="home_flight_type_economy">Economy</string>
     <plurals name="home_adult_user_input">
-        <item quantity="one">%1$d Adult</item>
-        <item quantity="other">%1$d Adults</item>
+        <item quantity="one">%d Adult</item>
+        <item quantity="other">%d Adults</item>
     </plurals>
 
     <string name="detail_zoom_out">-</string>
