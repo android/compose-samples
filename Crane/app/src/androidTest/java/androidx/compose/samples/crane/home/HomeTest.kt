@@ -52,4 +52,46 @@ class HomeTest {
         composeTestRule.onNodeWithText("FLY").performClick()
         composeTestRule.onNodeWithText("Explore Flights by Destination").assertIsDisplayed()
     }
+
+    @Test
+    fun home_ClickOnPassengerInputFlyTab() {
+        composeTestRule.onNodeWithText("FLY").performClick()
+        composeTestRule.onNodeWithText("1 Adult, Economy").assertIsDisplayed()
+        composeTestRule.onNodeWithText("1 Adult, Economy").performClick()
+        composeTestRule.onNodeWithText("2 Adults, Economy").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2 Adults, Economy").performClick()
+        composeTestRule.onNodeWithText("3 Adults, Economy").assertIsDisplayed()
+        composeTestRule.onNodeWithText("3 Adults, Economy").performClick()
+        composeTestRule.onNodeWithText("4 Adults, Economy").assertIsDisplayed()
+        composeTestRule.onNodeWithText("4 Adults, Economy").performClick()
+        composeTestRule.onNodeWithText("Error: We don\'t support more than 4 people").assertIsDisplayed()
+    }
+
+    @Test
+    fun home_ClickOnPassengerInputSleepTab() {
+        composeTestRule.onNodeWithText("SLEEP").performClick()
+        composeTestRule.onNodeWithText("1 Adult").assertIsDisplayed()
+        composeTestRule.onNodeWithText("1 Adult").performClick()
+        composeTestRule.onNodeWithText("2 Adults").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2 Adults").performClick()
+        composeTestRule.onNodeWithText("3 Adults").assertIsDisplayed()
+        composeTestRule.onNodeWithText("3 Adults").performClick()
+        composeTestRule.onNodeWithText("4 Adults").assertIsDisplayed()
+        composeTestRule.onNodeWithText("4 Adults").performClick()
+        composeTestRule.onNodeWithText("Error: We don\'t support more than 4 people").assertIsDisplayed()
+    }
+
+    @Test
+    fun home_ClickOnPassengerInputEatTab() {
+        composeTestRule.onNodeWithText("EAT").performClick()
+        composeTestRule.onNodeWithText("1 Adult").assertIsDisplayed()
+        composeTestRule.onNodeWithText("1 Adult").performClick()
+        composeTestRule.onNodeWithText("2 Adults").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2 Adults").performClick()
+        composeTestRule.onNodeWithText("3 Adults").assertIsDisplayed()
+        composeTestRule.onNodeWithText("3 Adults").performClick()
+        composeTestRule.onNodeWithText("4 Adults").assertIsDisplayed()
+        composeTestRule.onNodeWithText("4 Adults").performClick()
+        composeTestRule.onNodeWithText("Error: We don\'t support more than 4 people").assertIsDisplayed()
+    }
 }
