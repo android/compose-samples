@@ -21,4 +21,24 @@
     <string name="cd_back">Back</string>
     <string name="cd_loading">Loading</string>
     <string name="cd_drawer">Open drawer</string>
+
+    <!-- Home -->
+    <string name="home_explore_flights">Explore Flights by Destination</string>
+    <string name="home_explore_restaurants">Explore Restaurants by Destination</string>
+    <string name="home_explore_hotels">Explore Properties by Destination</string>
+    <string name="home_select_location">Select Location</string>
+    <string name="home_select_time">Select Time</string>
+    <string name="home_choose_destination">Choose Destination</string>
+    <string name="home_default_destination">Seoul, South Korea</string>
+    <string name="home_to">To</string>
+    <string name="home_select_dates">Select Dates</string>
+    <string name="home_error_max_people">Error: We don\'t support more than %d people</string>
+    <string name="home_flight_type_economy">Economy</string>
+    <plurals name="home_adult_user_input">
+        <item quantity="one">%1$d Adult</item>
+        <item quantity="other">%1$d Adults</item>
+    </plurals>
+
+    <string name="detail_zoom_out">-</string>
+    <string name="detail_zoom_in">+</string>
 </resources>
