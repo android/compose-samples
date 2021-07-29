@@ -25,10 +25,8 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
@@ -36,6 +34,7 @@ import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.launch
@@ -83,21 +82,24 @@ fun CraneHomeContent(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = viewModel(),
 ) {
-    val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
-
+    val state by viewModel.state.observeAsState(CraneHomeState())
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    var tabSelected by remember { mutableStateOf(CraneScreen.Fly) }
 
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
         frontLayerScrimColor = Color.Unspecified,
         appBar = {
-            HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })
+            HomeTabBar(
+                openDrawer, state.currentScreen,
+                onTabSelected = {
+                    viewModel.getDestinations(it)
+                }
+            )
         },
         backLayerContent = {
             SearchContent(
-                tabSelected,
+                state.currentScreen,
                 viewModel,
                 onPeopleChanged,
                 onDateSelectionClicked,
@@ -105,31 +107,17 @@ fun CraneHomeContent(
             )
         },
         frontLayerContent = {
-            when (tabSelected) {
-                CraneScreen.Fly -> {
-                    suggestedDestinations?.let { destinations ->
-                        ExploreSection(
-                            title = "Explore Flights by Destination",
-                            exploreList = destinations,
-                            onItemClicked = onExploreItemClicked
-                        )
-                    }
-                }
-                CraneScreen.Sleep -> {
-                    ExploreSection(
-                        title = "Explore Properties by Destination",
-                        exploreList = viewModel.hotels,
-                        onItemClicked = onExploreItemClicked
-                    )
-                }
-                CraneScreen.Eat -> {
-                    ExploreSection(
-                        title = "Explore Restaurants by Destination",
-                        exploreList = viewModel.restaurants,
-                        onItemClicked = onExploreItemClicked
-                    )
-                }
+            val titleResId = when (state.currentScreen) {
+                CraneScreen.Fly -> R.string.home_explore_flights
+                CraneScreen.Sleep -> R.string.home_explore_hotels
+                CraneScreen.Eat -> R.string.home_explore_restaurants
             }
+
+            ExploreSection(
+                title = stringResource(id = titleResId),
+                exploreList = state.items,
+                onItemClicked = onExploreItemClicked
+            )
         }
     )
 }
@@ -164,7 +152,7 @@ private fun SearchContent(
 ) {
     // Reading datesSelected State from here instead of passing the String from the ViewModel
     // to cause a recomposition when the dates change.
-    val datesSelected = viewModel.datesSelected.toString()
+    val datesSelected = viewModel.state.value?.datesSelected.toString()
 
     when (tabSelected) {
         CraneScreen.Fly -> FlySearchContent(

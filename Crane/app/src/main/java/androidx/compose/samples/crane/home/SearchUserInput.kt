@@ -36,6 +36,8 @@ import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
 enum class PeopleUserInputAnimationState { Valid, Invalid }
@@ -63,7 +65,7 @@ class PeopleUserInputState {
 
 @Composable
 fun PeopleUserInput(
-    titleSuffix: String? = "",
+    titleSuffix: String = "",
     onPeopleChanged: (Int) -> Unit,
     peopleState: PeopleUserInputState = remember { PeopleUserInputState() }
 ) {
@@ -71,9 +73,21 @@ fun PeopleUserInput(
         val transitionState = remember { peopleState.animationState }
         val tint = tintPeopleUserInput(transitionState)
 
+        val resources = LocalContext.current.resources
         val people = peopleState.people
+        val userInputString = mutableListOf<String>().apply {
+            add(
+                resources.getQuantityString(
+                    R.plurals.home_adult_user_input,
+                    people,
+                    people
+                )
+            )
+            if (titleSuffix.isNotBlank()) add(titleSuffix)
+        }.joinToString(", ")
+
         CraneUserInput(
-            text = if (people == 1) "$people Adult$titleSuffix" else "$people Adults$titleSuffix",
+            text = userInputString,
             vectorImageId = R.drawable.ic_person,
             tint = tint.value,
             onClick = {
@@ -83,7 +97,7 @@ fun PeopleUserInput(
         )
         if (transitionState.targetState == Invalid) {
             Text(
-                text = "Error: We don't support more than $MAX_PEOPLE people",
+                text = stringResource(id = R.string.home_error_max_people, MAX_PEOPLE),
                 style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary)
             )
         }
@@ -92,14 +106,14 @@ fun PeopleUserInput(
 
 @Composable
 fun FromDestination() {
-    CraneUserInput(text = "Seoul, South Korea", vectorImageId = R.drawable.ic_location)
+    CraneUserInput(text = stringResource(id = R.string.home_default_destination), vectorImageId = R.drawable.ic_location)
 }
 
 @Composable
 fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
     CraneEditableUserInput(
-        hint = "Choose Destination",
-        caption = "To",
+        hint = stringResource(id = R.string.home_choose_destination),
+        caption = stringResource(id = R.string.home_to),
         vectorImageId = R.drawable.ic_plane,
         onInputChanged = onToDestinationChanged
     )
@@ -109,7 +123,7 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
 fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
     CraneUserInput(
         onClick = onDateSelectionClicked,
-        caption = if (datesSelected.isEmpty()) "Select Dates" else null,
+        caption = if (datesSelected.isEmpty()) stringResource(id = R.string.home_select_dates) else null,
         text = datesSelected,
         vectorImageId = R.drawable.ic_calendar
     )

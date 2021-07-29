@@ -16,10 +16,8 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.samples.crane.calendar.model.DatesSelectedState
 import androidx.compose.samples.crane.data.DatesRepository
 import androidx.compose.samples.crane.data.DestinationsRepository
-import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.di.DefaultDispatcher
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,28 +39,42 @@ class MainViewModel @Inject constructor(
     datesRepository: DatesRepository
 ) : ViewModel() {
 
-    val hotels: List<ExploreModel> = destinationsRepository.hotels
-    val restaurants: List<ExploreModel> = destinationsRepository.restaurants
-    val datesSelected: DatesSelectedState = datesRepository.datesSelected
-
-    private val _suggestedDestinations = MutableLiveData<List<ExploreModel>>()
-    val suggestedDestinations: LiveData<List<ExploreModel>>
-        get() = _suggestedDestinations
+    private val _state = MutableLiveData(CraneHomeState(datesSelected = datesRepository.datesSelected))
+    val state: LiveData<CraneHomeState>
+        get() = _state
 
     init {
-        _suggestedDestinations.value = destinationsRepository.destinations
+        getDestinations(CraneScreen.Fly)
+    }
+
+    fun getDestinations(crane: CraneScreen) {
+        setState {
+            val items = when (crane) {
+                CraneScreen.Fly -> destinationsRepository.destinations
+                CraneScreen.Sleep -> destinationsRepository.hotels
+                CraneScreen.Eat -> destinationsRepository.restaurants
+            }
+
+            it.copy(
+                items = items,
+                currentScreen = crane
+            )
+        }
     }
 
     fun updatePeople(people: Int) {
         viewModelScope.launch {
-            if (people > MAX_PEOPLE) {
-                _suggestedDestinations.value = emptyList()
+            val newDestinations = if (people > MAX_PEOPLE) {
+                emptyList()
             } else {
-                val newDestinations = withContext(defaultDispatcher) {
+                withContext(defaultDispatcher) {
                     destinationsRepository.destinations
                         .shuffled(Random(people * (1..100).shuffled().first()))
                 }
-                _suggestedDestinations.value = newDestinations
+            }
+
+            setState {
+                it.copy(items = newDestinations)
             }
         }
     }
@@ -73,7 +85,16 @@ class MainViewModel @Inject constructor(
                 destinationsRepository.destinations
                     .filter { it.city.nameToDisplay.contains(newDestination) }
             }
-            _suggestedDestinations.value = newDestinations
+
+            setState {
+                it.copy(items = newDestinations)
+            }
         }
+    }
+
+    private fun setState(modifier: (CraneHomeState) -> CraneHomeState) {
+        val currentState = _state.value
+        val newState = modifier.invoke(currentState!!)
+        _state.value = newState
     }
 }

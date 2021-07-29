@@ -24,13 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.SimpleUserInput
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun FlySearchContent(datesSelected: String, searchUpdates: FlySearchContentUpdates) {
     CraneSearch {
         PeopleUserInput(
-            titleSuffix = ", Economy",
+            titleSuffix = stringResource(id = R.string.home_flight_type_economy),
             onPeopleChanged = searchUpdates.onPeopleChanged
         )
         Spacer(Modifier.height(8.dp))
@@ -49,7 +50,7 @@ fun SleepSearchContent(datesSelected: String, sleepUpdates: SleepSearchContentUp
         Spacer(Modifier.height(8.dp))
         DatesUserInput(datesSelected, onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
         Spacer(Modifier.height(8.dp))
-        SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_hotel)
+        SimpleUserInput(caption = stringResource(id = R.string.home_select_location), vectorImageId = R.drawable.ic_hotel)
     }
 }
 
@@ -60,9 +61,9 @@ fun EatSearchContent(datesSelected: String, eatUpdates: EatSearchContentUpdates)
         Spacer(Modifier.height(8.dp))
         DatesUserInput(datesSelected, onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
         Spacer(Modifier.height(8.dp))
-        SimpleUserInput(caption = "Select Time", vectorImageId = R.drawable.ic_time)
+        SimpleUserInput(caption = stringResource(id = R.string.home_select_time), vectorImageId = R.drawable.ic_time)
         Spacer(Modifier.height(8.dp))
-        SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_restaurant)
+        SimpleUserInput(caption = stringResource(id = R.string.home_select_location), vectorImageId = R.drawable.ic_restaurant)
     }
 }
 
