@@ -47,11 +47,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -227,8 +229,8 @@ private fun ZoomControls(
     onZoomChanged: (Float) -> Unit
 ) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        ZoomButton("-", onClick = { onZoomChanged(zoom * 0.8f) })
-        ZoomButton("+", onClick = { onZoomChanged(zoom * 1.2f) })
+        ZoomButton(stringResource(id = R.string.detail_zoom_out), onClick = { onZoomChanged(zoom * 0.8f) })
+        ZoomButton(stringResource(id = R.string.detail_zoom_in), onClick = { onZoomChanged(zoom * 1.2f) })
     }
 }
 
