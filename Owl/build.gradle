@@ -52,7 +52,7 @@ subprojects {
             // Opt-in to experimental compose APIs
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
 
-            jvmTarget = '1.8'
+            jvmTarget = '11'
         }
     }
 
