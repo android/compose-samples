@@ -29,12 +29,12 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.15.0"
+        const val version = "0.16.0"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
     object Kotlin {
-        private const val version = "1.5.10"
+        private const val version = "1.5.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -58,12 +58,12 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.1"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0"
+            const val version = "1.0.1"
 
             @get:JvmStatic
             val snapshotUrl: String
