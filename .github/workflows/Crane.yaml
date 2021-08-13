@@ -96,6 +96,7 @@ jobs:
           target: google_apis
           arch: x86
           disable-animations: true
+          emulator-build: 7425822
           script: ./gradlew connectedCheck --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}
 
