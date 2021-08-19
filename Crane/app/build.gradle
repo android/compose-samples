@@ -132,7 +132,10 @@ dependencies {
 
     implementation Libs.Coil.coilCompose
 
+    debugImplementation Libs.AndroidX.Compose.uiTestManifest
+
     androidTestImplementation Libs.JUnit.junit
+    androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore
     androidTestImplementation Libs.AndroidX.Test.rules

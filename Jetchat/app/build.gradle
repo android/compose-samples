@@ -113,6 +113,8 @@ dependencies {
 
     implementation Libs.Accompanist.insets
 
+    debugImplementation Libs.AndroidX.Compose.uiTestManifest
+
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.espressoCore
