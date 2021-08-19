@@ -41,15 +41,23 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="${googleMapsKey}"/>
 
-        <activity android:name=".home.MainActivity">
+        <activity
+            android:name=".home.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".details.DetailsActivity" />
-        <activity android:name=".calendar.CalendarActivity" />
+
+        <activity
+            android:name=".details.DetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".calendar.CalendarActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

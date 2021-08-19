@@ -20,11 +20,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId 'com.example.jetnews'
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName '1.0'
         vectorDrawables.useSupportLibrary = true
@@ -117,8 +117,9 @@ dependencies {
 
     implementation 'androidx.navigation:navigation-compose:2.4.0-alpha06'
 
-    androidTestImplementation 'androidx.test:rules:1.3.0'
-    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test:core:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test:$compose_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 

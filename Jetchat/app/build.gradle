@@ -22,12 +22,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.example.compose.jetchat"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -112,6 +112,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.viewBinding
 
     implementation Libs.Accompanist.insets
+
+    debugImplementation Libs.AndroidX.Compose.uiTestManifest
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core

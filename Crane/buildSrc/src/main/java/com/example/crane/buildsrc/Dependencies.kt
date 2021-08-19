@@ -70,6 +70,7 @@ object Libs {
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val animation = "androidx.compose.animation:animation:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+            const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
         }
 
         object Lifecycle {
@@ -79,7 +80,8 @@ object Libs {
         }
 
         object Test {
-            private const val version = "1.3.0"
+            private const val version = "1.4.0"
+            const val core = "androidx.test:core:$version"
             const val runner = "androidx.test:runner:$version"
             const val rules = "androidx.test:rules:$version"
             object Ext {

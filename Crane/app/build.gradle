@@ -30,11 +30,11 @@ if (rootProject.file("local.properties").exists()) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "androidx.compose.samples.crane"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -132,7 +132,10 @@ dependencies {
 
     implementation Libs.Coil.coilCompose
 
+    debugImplementation Libs.AndroidX.Compose.uiTestManifest
+
     androidTestImplementation Libs.JUnit.junit
+    androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore
     androidTestImplementation Libs.AndroidX.Test.rules
