@@ -35,8 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
@@ -45,7 +47,11 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     // TUTORIAL CONTENT STARTS HERE
     val typography = MaterialTheme.typography
-    Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         val imageModifier = Modifier
             .heightIn(min = 180.dp)
             .fillMaxWidth()
@@ -71,7 +77,13 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
-                text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                text = stringResource(
+                    id = R.string.home_post_min_read,
+                    formatArgs = arrayOf(
+                        post.metadata.date,
+                        post.metadata.readTimeMinutes
+                    )
+                ),
                 style = typography.subtitle2
             )
         }

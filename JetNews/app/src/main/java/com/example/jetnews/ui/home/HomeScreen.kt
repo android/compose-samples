@@ -287,7 +287,7 @@ private fun HomeScreenErrorAndContent(
     } else if (!posts.hasError) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
-            Text("Tap to load content", textAlign = TextAlign.Center)
+            Text(stringResource(id = R.string.home_tap_to_load_content), textAlign = TextAlign.Center)
         }
     } else {
         // there's currently an error showing, don't show any content
@@ -358,7 +358,7 @@ private fun FullScreenLoading() {
 private fun PostListTopSection(post: Post, navigateToArticle: (String) -> Unit) {
     Text(
         modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-        text = "Top stories for you",
+        text = stringResource(id = R.string.home_top_section_title),
         style = MaterialTheme.typography.subtitle1
     )
     PostCardTop(
@@ -408,7 +408,7 @@ private fun PostListPopularSection(
     Column {
         Text(
             modifier = Modifier.padding(16.dp),
-            text = "Popular on Jetnews",
+            text = stringResource(id = R.string.home_popular_section_title),
             style = MaterialTheme.typography.subtitle1
         )
 
