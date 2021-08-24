@@ -23,11 +23,13 @@ import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -35,17 +37,60 @@ import java.util.UUID
 /**
  * UI state for the Home screen
  */
-data class HomeUiState(
-    val posts: List<Post> = emptyList(),
+sealed interface HomeUiState {
+
+    val isLoading: Boolean
+    val errorMessages: List<ErrorMessage>
+
+    data class NoPosts(
+        override val isLoading: Boolean,
+        override val errorMessages: List<ErrorMessage>
+    ) : HomeUiState
+
+    data class HasPosts(
+        val postsFeed: PostsFeed,
+        val selectedPost: Post,
+        val isArticleOpen: Boolean,
+        val favorites: Set<String>,
+        override val isLoading: Boolean,
+        override val errorMessages: List<ErrorMessage>
+    ) : HomeUiState
+}
+
+/**
+ * An internal representation of the home state, in a raw form
+ */
+private data class HomeViewModelState(
+    val postsFeed: PostsFeed? = null,
+    val selectedPostId: String? = null, // TODO back selectedPostId in a SavedStateHandle
+    val isArticleOpen: Boolean = false,
     val favorites: Set<String> = emptySet(),
-    val loading: Boolean = false,
-    val errorMessages: List<ErrorMessage> = emptyList()
+    val isLoading: Boolean = false,
+    val errorMessages: List<ErrorMessage> = emptyList(),
 ) {
+
     /**
-     * True if this represents a first load
+     * Converts this [HomeViewModelState] into a more strongly typed [HomeUiState] for driving
+     * the ui.
      */
-    val initialLoad: Boolean
-        get() = posts.isEmpty() && favorites.isEmpty() && errorMessages.isEmpty() && loading
+    fun toUiState(): HomeUiState =
+        if (postsFeed == null) {
+            HomeUiState.NoPosts(
+                isLoading = isLoading,
+                errorMessages = errorMessages
+            )
+        } else {
+            HomeUiState.HasPosts(
+                postsFeed = postsFeed,
+                selectedPost = postsFeed.allPosts.find {
+                    it.id == selectedPostId
+                } ?: postsFeed.highlightedPost,
+                isArticleOpen = isArticleOpen,
+                favorites = favorites,
+                isLoading = isLoading,
+                errorMessages = errorMessages
+            )
+        }
 }
 
 /**
@@ -55,9 +100,16 @@ class HomeViewModel(
     private val postsRepository: PostsRepository
 ) : ViewModel() {
 
+    private val viewModelState = MutableStateFlow(HomeViewModelState(isLoading = true))
+
     // UI state exposed to the UI
-    private val _uiState = MutableStateFlow(HomeUiState(loading = true))
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    val uiState = viewModelState
+        .map { it.toUiState() }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            viewModelState.value.toUiState()
+        )
 
     init {
         refreshPosts()
@@ -65,7 +117,7 @@ class HomeViewModel(
         // Observe for favorite changes in the repo layer
         viewModelScope.launch {
             postsRepository.observeFavorites().collect { favorites ->
-                _uiState.update { it.copy(favorites = favorites) }
+                viewModelState.update { it.copy(favorites = favorites) }
             }
         }
     }
@@ -75,19 +127,19 @@ class HomeViewModel(
      */
     fun refreshPosts() {
         // Ui state is refreshing
-        _uiState.update { it.copy(loading = true) }
+        viewModelState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            val result = postsRepository.getPosts()
-            _uiState.update {
+            val result = postsRepository.getPostsFeed()
+            viewModelState.update {
                 when (result) {
-                    is Result.Success -> it.copy(posts = result.data, loading = false)
+                    is Result.Success -> it.copy(postsFeed = result.data, isLoading = false)
                     is Result.Error -> {
                         val errorMessages = it.errorMessages + ErrorMessage(
                             id = UUID.randomUUID().mostSignificantBits,
                             messageId = R.string.load_error
                         )
-                        it.copy(errorMessages = errorMessages, loading = false)
+                        it.copy(errorMessages = errorMessages, isLoading = false)
                     }
                 }
             }
@@ -104,12 +156,35 @@ class HomeViewModel(
     }
 
     /**
+     * Selects the given article to view more information about it.
+     */
+    fun selectArticle(postId: String) {
+        // Treat selecting a detail as simply interacting with it
+        interactedWithDetail(postId)
+    }
+
+    /**
      * Notify that an error was displayed on the screen
      */
     fun errorShown(errorId: Long) {
-        _uiState.update { currentUiState ->
+        viewModelState.update { currentUiState ->
             val errorMessages = currentUiState.errorMessages.filterNot { it.id == errorId }
             currentUiState.copy(errorMessages = errorMessages)
+        }
+    }
+
+    fun interactedWithList() {
+        viewModelState.update {
+            it.copy(isArticleOpen = false)
+        }
+    }
+
+    fun interactedWithDetail(postId: String) {
+        viewModelState.update {
+            it.copy(
+                selectedPostId = postId,
+                isArticleOpen = true
+            )
         }
     }
 

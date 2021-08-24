@@ -25,7 +25,6 @@ import androidx.navigation.NavHostController
 object JetnewsDestinations {
     const val HOME_ROUTE = "home"
     const val INTERESTS_ROUTE = "interests"
-    const val ARTICLE_ROUTE = "post"
 }
 
 /**
@@ -55,11 +54,5 @@ class JetnewsNavigationActions(navController: NavHostController) {
             launchSingleTop = true
             restoreState = true
         }
-    }
-    val navigateToArticle: (String) -> Unit = { postId: String ->
-        navController.navigate("${JetnewsDestinations.ARTICLE_ROUTE}/$postId")
-    }
-    val upPress: () -> Unit = {
-        navController.navigateUp()
     }
 }
