@@ -86,16 +86,15 @@ import kotlinx.coroutines.launch
  * Entry point for a conversation screen.
  *
  * @param uiState [ConversationUiState] that contains messages to display
- * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
+ * @param navigateToProfile User action when navigation to a profile is requested
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
  */
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
-    navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onNavIconPressed: () -> Unit = { }
+    navigateToProfile: (String) -> Unit
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -104,37 +103,27 @@ fun ConversationContent(
     val scope = rememberCoroutineScope()
 
     Surface(modifier = modifier) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxSize()) {
-                Messages(
-                    messages = uiState.messages,
-                    navigateToProfile = navigateToProfile,
-                    modifier = Modifier.weight(1f),
-                    scrollState = scrollState
-                )
-                UserInput(
-                    onMessageSent = { content ->
-                        uiState.addMessage(
-                            Message(authorMe, content, timeNow)
-                        )
-                    },
-                    resetScroll = {
-                        scope.launch {
-                            scrollState.scrollToItem(0)
-                        }
-                    },
-                    // Use navigationBarsWithImePadding(), to move the input panel above both the
-                    // navigation bar, and on-screen keyboard (IME)
-                    modifier = Modifier.navigationBarsWithImePadding(),
-                )
-            }
-            // Channel name bar floats above the messages
-            ChannelNameBar(
-                channelName = uiState.channelName,
-                channelMembers = uiState.channelMembers,
-                onNavIconPressed = onNavIconPressed,
-                // Use statusBarsPadding() to move the app bar content below the status bar
-                modifier = Modifier.statusBarsPadding(),
+        Column(Modifier.fillMaxSize()) {
+            Messages(
+                messages = uiState.messages,
+                navigateToProfile = navigateToProfile,
+                modifier = Modifier.weight(1f),
+                scrollState = scrollState
+            )
+            UserInput(
+                onMessageSent = { content ->
+                    uiState.addMessage(
+                        Message(authorMe, content, timeNow)
+                    )
+                },
+                resetScroll = {
+                    scope.launch {
+                        scrollState.scrollToItem(0)
+                    }
+                },
+                // Use navigationBarsWithImePadding(), to move the input panel above both the
+                // navigation bar, and on-screen keyboard (IME)
+                modifier = Modifier.navigationBarsWithImePadding(),
             )
         }
     }
@@ -311,7 +300,7 @@ fun Message(
                     .align(Alignment.Top),
                 painter = painterResource(id = msg.authorImage),
                 contentScale = ContentScale.Crop,
-                contentDescription = null,
+                contentDescription = "Navigate to profile page",
             )
         } else {
             // Space under avatar

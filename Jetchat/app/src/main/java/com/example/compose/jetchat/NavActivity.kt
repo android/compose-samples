@@ -81,6 +81,12 @@ class NavActivity : AppCompatActivity() {
 
                     JetchatScaffold(
                         scaffoldState,
+                        complexTopBar = viewModel.complexTopBar,
+                        onNavIconClicked =                         {
+                            scope.launch {
+                                scaffoldState.drawerState.open()
+                            }
+                        },
                         onChatClicked = {
                             findNavController().popBackStack(R.id.nav_home, true)
                             scope.launch {

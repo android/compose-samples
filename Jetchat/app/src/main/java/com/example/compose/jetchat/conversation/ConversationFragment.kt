@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -60,6 +61,10 @@ class ConversationFragment : Fragment() {
             .start(windowInsetsAnimationsEnabled = true)
 
         setContent {
+            SideEffect {
+                activityViewModel.complexTopBar = true
+            }
+
             CompositionLocalProvider(
                 LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
                 LocalWindowInsets provides windowInsets,
@@ -74,9 +79,6 @@ class ConversationFragment : Fragment() {
                                 R.id.nav_profile,
                                 bundle
                             )
-                        },
-                        onNavIconPressed = {
-                            activityViewModel.openDrawer()
                         },
                         // Add padding so that we are inset from any left/right navigation bars
                         // (usually shown when in landscape orientation)

@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
@@ -61,6 +62,10 @@ class ProfileFragment : Fragment() {
         val windowInsets = ViewWindowInsetObserver(this).start()
 
         setContent {
+            SideEffect {
+                activityViewModel.complexTopBar = false
+            }
+
             val userData by viewModel.userData.observeAsState()
 
             CompositionLocalProvider(LocalWindowInsets provides windowInsets) {

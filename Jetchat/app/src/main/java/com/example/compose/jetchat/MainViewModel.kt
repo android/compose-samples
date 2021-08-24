@@ -16,6 +16,9 @@
 
 package com.example.compose.jetchat
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
  * Used to communicate between screens.
  */
 class MainViewModel : ViewModel() {
+    var complexTopBar by mutableStateOf(true)
 
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened: StateFlow<Boolean> = _drawerShouldBeOpened

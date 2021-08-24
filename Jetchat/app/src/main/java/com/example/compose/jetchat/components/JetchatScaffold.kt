@@ -16,30 +16,84 @@
 
 package com.example.compose.jetchat.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.example.compose.jetchat.FunctionalityNotAvailablePopup
+import com.example.compose.jetchat.R
+import com.example.compose.jetchat.conversation.ChannelNameBar
+import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun JetchatScaffold(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
+    complexTopBar: Boolean,
+    onNavIconClicked: () -> Unit,
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
+    var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
+
     JetchatTheme {
         Scaffold(
             scaffoldState = scaffoldState,
+            topBar = {
+                if (complexTopBar) {
+                    ChannelNameBar(
+                        channelName = exampleUiState.channelName,
+                        channelMembers = exampleUiState.channelMembers,
+                        onNavIconPressed = onNavIconClicked,
+                        // Use statusBarsPadding() to move the app bar content below the status bar
+                        modifier = Modifier.statusBarsPadding(),
+                    )
+                } else {
+                    JetchatAppBar(
+                        // Use statusBarsPadding() to move the app bar content below the status bar
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding(),
+                        onNavIconPressed = onNavIconClicked,
+                        title = { },
+                        actions = {
+                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                // More icon
+                                Icon(
+                                    imageVector = Icons.Outlined.MoreVert,
+                                    modifier = Modifier
+                                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                                        .padding(horizontal = 12.dp, vertical = 16.dp)
+                                        .height(24.dp),
+                                    contentDescription = stringResource(id = R.string.more_options)
+                                )
+                            }
+                        }
+                    )
+                }
+            },
             drawerContent = {
                 JetchatDrawer(
                     onProfileClicked = onProfileClicked,
                     onChatClicked = onChatClicked
                 )
             },
-            content = content
+            content = {
+                if (functionalityNotAvailablePopupShown) {
+                    FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
+                }
+                content(it)
+            }
         )
     }
 }

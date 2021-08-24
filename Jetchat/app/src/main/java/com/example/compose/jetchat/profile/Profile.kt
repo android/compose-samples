@@ -72,7 +72,6 @@ import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
-
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
@@ -81,27 +80,6 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
     val scrollState = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        JetchatAppBar(
-            // Use statusBarsPadding() to move the app bar content below the status bar
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding(),
-            onNavIconPressed = onNavIconPressed,
-            title = { },
-            actions = {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    // More icon
-                    Icon(
-                        imageVector = Icons.Outlined.MoreVert,
-                        modifier = Modifier
-                            .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                            .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .height(24.dp),
-                        contentDescription = stringResource(id = R.string.more_options)
-                    )
-                }
-            }
-        )
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
             Surface {
                 Column(
