@@ -187,10 +187,10 @@ fun HomeScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { coroutineScope.launch { openDrawer() } }) {
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+                            tint = (MaterialTheme.colors.primary)
                         )
                     }
                 },
@@ -308,7 +308,7 @@ private fun HomeScreenErrorAndContent(
 @Composable
 private fun PostList(
     posts: List<Post>,
-    state: LazyListState,
+    state: LazyListState = rememberLazyListState(),
     navigateToArticle: (postId: String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
