@@ -61,8 +61,7 @@ class ConversationTest {
                 JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
                     ConversationContent(
                         uiState = conversationTestUiState,
-                        navigateToProfile = { },
-                        onNavIconPressed = { }
+                        navigateToProfile = { }
                     )
                 }
             }

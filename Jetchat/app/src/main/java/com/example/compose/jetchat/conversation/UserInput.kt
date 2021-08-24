@@ -395,45 +395,51 @@ private fun UserInputText(
         horizontalArrangement = Arrangement.End
     ) {
         Surface {
-            Box(
+            var lastFocusState by remember { mutableStateOf(false) }
+            BasicTextField(
+                value = textFieldValue,
+                onValueChange = { onTextChanged(it) },
                 modifier = Modifier
-                    .height(48.dp)
-                    .weight(1f)
-                    .align(Alignment.Bottom)
-            ) {
-                var lastFocusState by remember { mutableStateOf(false) }
-                BasicTextField(
-                    value = textFieldValue,
-                    onValueChange = { onTextChanged(it) },
+                    .onFocusChanged { state ->
+                        if (lastFocusState != state.isFocused) {
+                            onTextFieldFocused(state.isFocused)
+                        }
+                        lastFocusState = state.isFocused
+                    },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = keyboardType,
+                    imeAction = ImeAction.Send
+                ),
+                maxLines = 1,
+                cursorBrush = SolidColor(LocalContentColor.current),
+                textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
+            ) { innerTextField ->
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                        .align(Alignment.CenterStart)
-                        .onFocusChanged { state ->
-                            if (lastFocusState != state.isFocused) {
-                                onTextFieldFocused(state.isFocused)
-                            }
-                            lastFocusState = state.isFocused
-                        },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = keyboardType,
-                        imeAction = ImeAction.Send
-                    ),
-                    maxLines = 1,
-                    cursorBrush = SolidColor(LocalContentColor.current),
-                    textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
-                )
-
-                val disableContentColor =
-                    MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-                if (textFieldValue.text.isEmpty() && !focusState) {
-                    Text(
-                        modifier = Modifier
+                        .height(48.dp)
+                        .weight(1f)
+                        .align(Alignment.Bottom)
+                ) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp)
                             .align(Alignment.CenterStart)
-                            .padding(start = 16.dp),
-                        text = stringResource(id = R.string.textfield_hint),
-                        style = MaterialTheme.typography.body1.copy(color = disableContentColor)
-                    )
+                    ) {
+                        innerTextField()
+                    }
+
+                    val disableContentColor =
+                        MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                    if (textFieldValue.text.isEmpty() && !focusState) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = 16.dp),
+                            text = stringResource(id = R.string.textfield_hint),
+                            style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                        )
+                    }
                 }
             }
         }

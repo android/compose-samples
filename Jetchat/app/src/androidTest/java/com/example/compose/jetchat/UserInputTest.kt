@@ -65,8 +65,7 @@ class UserInputTest {
                 JetchatTheme {
                     ConversationContent(
                         uiState = exampleUiState,
-                        navigateToProfile = { },
-                        onNavIconPressed = { }
+                        navigateToProfile = { }
                     )
                 }
             }

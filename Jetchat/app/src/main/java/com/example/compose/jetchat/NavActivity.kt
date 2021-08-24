@@ -31,7 +31,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.compose.jetchat.components.JetchatScaffold
+import com.example.compose.jetchat.components.DrawerScaffold
 import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
@@ -58,16 +58,7 @@ class NavActivity : AppCompatActivity() {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides this.onBackPressedDispatcher
                 ) {
-                    val scaffoldState = rememberScaffoldState()
-
-                    val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
-                    if (drawerOpen) {
-                        // Open drawer and reset state in VM.
-                        LaunchedEffect(Unit) {
-                            scaffoldState.drawerState.open()
-                            viewModel.resetOpenDrawerAction()
-                        }
-                    }
+                    val scaffoldState = rememberScaffoldState(drawerState = viewModel.drawerState)
 
                     // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
@@ -79,21 +70,9 @@ class NavActivity : AppCompatActivity() {
                         }
                     }
 
-                    JetchatScaffold(
+                    DrawerScaffold(
                         scaffoldState,
-                        onChatClicked = {
-                            findNavController().popBackStack(R.id.nav_home, true)
-                            scope.launch {
-                                scaffoldState.drawerState.close()
-                            }
-                        },
-                        onProfileClicked = {
-                            val bundle = bundleOf("userId" to it)
-                            findNavController().navigate(R.id.nav_profile, bundle)
-                            scope.launch {
-                                scaffoldState.drawerState.close()
-                            }
-                        }
+                        ::findNavController
                     ) {
                         AndroidViewBinding(ContentMainBinding::inflate)
                     }

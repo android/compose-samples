@@ -18,7 +18,6 @@ package com.example.compose.jetchat.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +40,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -61,18 +59,15 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
-import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
-
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
@@ -81,27 +76,6 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
     val scrollState = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        JetchatAppBar(
-            // Use statusBarsPadding() to move the app bar content below the status bar
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding(),
-            onNavIconPressed = onNavIconPressed,
-            title = { },
-            actions = {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    // More icon
-                    Icon(
-                        imageVector = Icons.Outlined.MoreVert,
-                        modifier = Modifier
-                            .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                            .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .height(24.dp),
-                        contentDescription = stringResource(id = R.string.more_options)
-                    )
-                }
-            }
-        )
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
             Surface {
                 Column(

@@ -22,13 +22,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
+import com.example.compose.jetchat.components.TopBarScaffold
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ViewWindowInsetObserver
@@ -61,19 +64,21 @@ class ProfileFragment : Fragment() {
         val windowInsets = ViewWindowInsetObserver(this).start()
 
         setContent {
-            val userData by viewModel.userData.observeAsState()
+            TopBarScaffold(
+                drawerState = activityViewModel.drawerState,
+                complexTopBar = false,
+            ) {
+                val userData by viewModel.userData.observeAsState()
 
-            CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
-                JetchatTheme {
-                    if (userData == null) {
-                        ProfileError()
-                    } else {
-                        ProfileScreen(
-                            userData = userData!!,
-                            onNavIconPressed = {
-                                activityViewModel.openDrawer()
-                            }
-                        )
+                CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
+                    JetchatTheme {
+                        if (userData == null) {
+                            ProfileError()
+                        } else {
+                            ProfileScreen(
+                                userData = userData!!
+                            )
+                        }
                     }
                 }
             }

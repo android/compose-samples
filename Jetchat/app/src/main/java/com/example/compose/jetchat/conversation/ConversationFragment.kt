@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -31,6 +32,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.TopBarScaffold
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
@@ -60,28 +62,30 @@ class ConversationFragment : Fragment() {
             .start(windowInsetsAnimationsEnabled = true)
 
         setContent {
-            CompositionLocalProvider(
-                LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
-                LocalWindowInsets provides windowInsets,
+            TopBarScaffold(
+                drawerState = activityViewModel.drawerState,
+                complexTopBar = false,
             ) {
-                JetchatTheme {
-                    ConversationContent(
-                        uiState = exampleUiState,
-                        navigateToProfile = { user ->
-                            // Click callback
-                            val bundle = bundleOf("userId" to user)
-                            findNavController().navigate(
-                                R.id.nav_profile,
-                                bundle
-                            )
-                        },
-                        onNavIconPressed = {
-                            activityViewModel.openDrawer()
-                        },
-                        // Add padding so that we are inset from any left/right navigation bars
-                        // (usually shown when in landscape orientation)
-                        modifier = Modifier.navigationBarsPadding(bottom = false)
-                    )
+                CompositionLocalProvider(
+                    LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
+                    LocalWindowInsets provides windowInsets,
+                ) {
+                    JetchatTheme {
+                        ConversationContent(
+                            uiState = exampleUiState,
+                            navigateToProfile = { user ->
+                                // Click callback
+                                val bundle = bundleOf("userId" to user)
+                                findNavController().navigate(
+                                    R.id.nav_profile,
+                                    bundle
+                                )
+                            },
+                            // Add padding so that we are inset from any left/right navigation bars
+                            // (usually shown when in landscape orientation)
+                            modifier = Modifier.navigationBarsPadding(bottom = false)
+                        )
+                    }
                 }
             }
         }
