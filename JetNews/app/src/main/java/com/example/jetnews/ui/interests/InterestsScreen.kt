@@ -62,7 +62,6 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.data.successOr
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.supportWideScreen

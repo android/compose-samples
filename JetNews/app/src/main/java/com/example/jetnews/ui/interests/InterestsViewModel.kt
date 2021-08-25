@@ -23,7 +23,6 @@ import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.successOr
-import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

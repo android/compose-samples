@@ -24,7 +24,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.home.HomeUiState
-import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.filterNotNull

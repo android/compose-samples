@@ -23,12 +23,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.MainDestinations.ARTICLE_ID_KEY
 import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.article.ArticleViewModel
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsScreen
@@ -79,11 +82,20 @@ fun JetnewsNavGraph(
                 openDrawer = openDrawer
             )
         }
-        composable("${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}") { backStackEntry ->
+        composable(
+            route = "${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}",
+            arguments = listOf(navArgument(ARTICLE_ID_KEY) { type = NavType.StringType })
+        ) { backStackEntry ->
+            val articleViewModel: ArticleViewModel = viewModel(
+                factory = ArticleViewModel.provideFactory(
+                    postsRepository = appContainer.postsRepository,
+                    owner = backStackEntry,
+                    defaultArgs = backStackEntry.arguments
+                )
+            )
             ArticleScreen(
-                postId = backStackEntry.arguments?.getString(ARTICLE_ID_KEY),
-                onBack = actions.upPress,
-                postsRepository = appContainer.postsRepository
+                articleViewModel = articleViewModel,
+                onBack = actions.upPress
             )
         }
     }
