@@ -188,7 +188,7 @@ fun HomeScreen(
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            tint = (MaterialTheme.colors.primary)
+                            tint = MaterialTheme.colors.primary
                         )
                     }
                 },
