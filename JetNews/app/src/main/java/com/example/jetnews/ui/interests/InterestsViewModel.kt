@@ -31,6 +31,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * UI state for the Interests screen
+ */
 data class InterestsUiState(
     val topics: TopicsMap = emptyMap(),
     val people: List<String> = emptyList(),
@@ -89,6 +92,9 @@ class InterestsViewModel(
         }
     }
 
+    /**
+     * Refresh topics, people, and publications
+     */
     private fun refreshAll() {
         _uiState.update { it.copy(loading = true) }
 

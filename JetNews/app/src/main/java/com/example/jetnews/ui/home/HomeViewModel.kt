@@ -27,10 +27,14 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+/**
+ * UI state for the Home screen
+ */
 data class HomeUiState(
     val posts: List<Post> = emptyList(),
     val favorites: Set<String> = emptySet(),
@@ -57,6 +61,13 @@ class HomeViewModel(
 
     init {
         refreshPosts()
+
+        // Observe for favorite changes in the repo layer
+        viewModelScope.launch {
+            postsRepository.observeFavorites().collect { favorites ->
+                _uiState.update { it.copy(favorites = favorites) }
+            }
+        }
     }
 
     /**

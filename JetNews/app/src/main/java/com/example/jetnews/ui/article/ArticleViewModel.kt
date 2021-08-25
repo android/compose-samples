@@ -33,6 +33,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * UI state for the Article screen
+ */
 data class ArticleUiState(
     val post: Post? = null,
     val isFavorite: Boolean = false,
@@ -49,6 +52,7 @@ class ArticleViewModel(
     private val postsRepository: PostsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
     private val postId: String = savedStateHandle.get<String>(ARTICLE_ID_KEY)!!
 
     // UI state exposed to the UI
@@ -60,7 +64,7 @@ class ArticleViewModel(
         viewModelScope.launch {
             val postResult = postsRepository.getPost(postId)
             _uiState.update {
-                if (!postResult.succeeded) {
+                if (postResult.succeeded) {
                     it.copy(post = (postResult as Result.Success).data, loading = false)
                 } else {
                     it.copy(loading = false)
@@ -82,6 +86,9 @@ class ArticleViewModel(
         }
     }
 
+    /**
+     * Factory for ArticleViewModel that takes PostsRepository as a dependency
+     */
     companion object {
         fun provideFactory(
             postsRepository: PostsRepository,
