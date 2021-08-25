@@ -43,7 +43,6 @@ data class ArticleUiState(
      */
     val failedLoading: Boolean
         get() = !loading && post == null
-
 }
 
 class ArticleViewModel(
