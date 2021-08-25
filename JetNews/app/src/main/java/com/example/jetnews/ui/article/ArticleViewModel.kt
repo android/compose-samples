@@ -37,7 +37,14 @@ data class ArticleUiState(
     val post: Post? = null,
     val isFavorite: Boolean = false,
     val loading: Boolean = false
-)
+) {
+    /**
+     * True if the post couldn't be found
+     */
+    val failedLoading: Boolean
+        get() = !loading && post == null
+
+}
 
 class ArticleViewModel(
     private val postsRepository: PostsRepository,
@@ -53,11 +60,13 @@ class ArticleViewModel(
         // Load post
         viewModelScope.launch {
             val postResult = postsRepository.getPost(postId)
-            if (!postResult.succeeded) throw IllegalStateException(
-                "Post with ID $postId doesn't exist"
-            )
-            val post = (postResult as Result.Success).data
-            _uiState.update { it.copy(post = post) }
+            _uiState.update {
+                if (!postResult.succeeded) {
+                    it.copy(post = (postResult as Result.Success).data, loading = false)
+                } else {
+                    it.copy(loading = false)
+                }
+            }
         }
 
         // Update whether the post is favorite or not

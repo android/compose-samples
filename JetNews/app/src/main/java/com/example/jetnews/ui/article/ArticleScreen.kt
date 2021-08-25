@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -84,6 +85,14 @@ fun ArticleScreen(
             isFavorite = uiState.isFavorite,
             onToggleFavorite = { articleViewModel.toggleFavorite() }
         )
+    }
+
+    // Check for failures while loading the state
+    // TODO: Improve UX
+    LaunchedEffect(uiState) {
+        if (uiState.failedLoading) {
+            onBack()
+        }
     }
 }
 
