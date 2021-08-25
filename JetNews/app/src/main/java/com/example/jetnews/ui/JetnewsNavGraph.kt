@@ -21,6 +21,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,6 +30,7 @@ import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.MainDestinations.ARTICLE_ID_KEY
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
+import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsScreen
 import kotlinx.coroutines.launch
 
@@ -58,8 +60,12 @@ fun JetnewsNavGraph(
         startDestination = startDestination
     ) {
         composable(MainDestinations.HOME_ROUTE) {
+
+            val homeViewModel: HomeViewModel = viewModel(
+                factory = HomeViewModel.provideFactory(appContainer.postsRepository)
+            )
             HomeScreen(
-                postsRepository = appContainer.postsRepository,
+                homeViewModel = homeViewModel,
                 navigateToArticle = actions.navigateToArticle,
                 openDrawer = openDrawer
             )
