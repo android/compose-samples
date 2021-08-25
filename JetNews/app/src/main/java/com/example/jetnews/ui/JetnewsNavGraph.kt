@@ -60,7 +60,6 @@ fun JetnewsNavGraph(
         startDestination = startDestination
     ) {
         composable(MainDestinations.HOME_ROUTE) {
-
             val homeViewModel: HomeViewModel = viewModel(
                 factory = HomeViewModel.provideFactory(appContainer.postsRepository)
             )
