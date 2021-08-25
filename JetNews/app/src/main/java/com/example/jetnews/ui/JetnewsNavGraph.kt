@@ -32,6 +32,7 @@ import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsScreen
+import com.example.jetnews.ui.interests.InterestsViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -70,8 +71,11 @@ fun JetnewsNavGraph(
             )
         }
         composable(MainDestinations.INTERESTS_ROUTE) {
+            val interestsViewModel: InterestsViewModel = viewModel(
+                factory = InterestsViewModel.provideFactory(appContainer.interestsRepository)
+            )
             InterestsScreen(
-                interestsRepository = appContainer.interestsRepository,
+                interestsViewModel = interestsViewModel,
                 openDrawer = openDrawer
             )
         }
