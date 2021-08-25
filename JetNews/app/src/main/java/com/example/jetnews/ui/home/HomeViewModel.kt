@@ -22,11 +22,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.data.succeeded
 import com.example.jetnews.model.Post
 import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -57,7 +57,7 @@ class HomeViewModel(
 
     // UI state exposed to the UI
     private val _uiState = MutableStateFlow(HomeUiState(loading = true))
-    val uiState: StateFlow<HomeUiState> = _uiState
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
         refreshPosts()
@@ -79,17 +79,16 @@ class HomeViewModel(
 
         viewModelScope.launch {
             val result = postsRepository.getPosts()
-            if (result.succeeded) {
-                _uiState.update {
-                    it.copy(loading = false, posts = (result as Result.Success).data)
-                }
-            } else {
-                _uiState.update {
-                    val errorMessages = it.errorMessages + ErrorMessage(
-                        id = UUID.randomUUID().mostSignificantBits,
-                        messageId = R.string.load_error
-                    )
-                    it.copy(loading = false, errorMessages = errorMessages)
+            _uiState.update {
+                when (result) {
+                    is Result.Success -> it.copy(posts = result.data, loading = false)
+                    is Result.Error -> {
+                        val errorMessages = it.errorMessages + ErrorMessage(
+                            id = UUID.randomUUID().mostSignificantBits,
+                            messageId = R.string.load_error
+                        )
+                        it.copy(errorMessages = errorMessages, loading = false)
+                    }
                 }
             }
         }

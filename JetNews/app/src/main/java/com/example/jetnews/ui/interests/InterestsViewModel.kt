@@ -27,6 +27,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,7 +48,7 @@ class InterestsViewModel(
 
     // UI state exposed to the UI
     private val _uiState = MutableStateFlow(InterestsUiState(loading = true))
-    val uiState: StateFlow<InterestsUiState> = _uiState
+    val uiState: StateFlow<InterestsUiState> = _uiState.asStateFlow()
 
     val selectedTopics =
         interestsRepository.observeTopicsSelected().stateIn(

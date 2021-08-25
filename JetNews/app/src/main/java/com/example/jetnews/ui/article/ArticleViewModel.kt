@@ -24,11 +24,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.data.succeeded
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.MainDestinations.ARTICLE_ID_KEY
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -57,17 +57,16 @@ class ArticleViewModel(
 
     // UI state exposed to the UI
     private val _uiState = MutableStateFlow(ArticleUiState(loading = true))
-    val uiState: StateFlow<ArticleUiState> = _uiState
+    val uiState: StateFlow<ArticleUiState> = _uiState.asStateFlow()
 
     init {
         // Load post
         viewModelScope.launch {
             val postResult = postsRepository.getPost(postId)
             _uiState.update {
-                if (postResult.succeeded) {
-                    it.copy(post = (postResult as Result.Success).data, loading = false)
-                } else {
-                    it.copy(loading = false)
+                when (postResult) {
+                    is Result.Success -> it.copy(post = postResult.data, loading = false)
+                    is Result.Error -> it.copy(loading = false)
                 }
             }
         }
