@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -328,6 +329,7 @@ fun FollowedPodcasts(
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier
@@ -341,6 +343,7 @@ fun FollowedPodcasts(
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
+    podcastTitle: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
 ) {
@@ -351,12 +354,11 @@ private fun FollowedPodcastCarouselItem(
             Modifier
                 .weight(1f)
                 .align(Alignment.CenterHorizontally)
-                .aspectRatio(1f)
-        ) {
+                .aspectRatio(1f)) {
             if (podcastImageUrl != null) {
                 Image(
                     painter = rememberImagePainter(data = podcastImageUrl),
-                    contentDescription = null,
+                    contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
