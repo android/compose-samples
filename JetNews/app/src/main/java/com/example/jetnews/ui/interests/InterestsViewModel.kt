@@ -100,22 +100,22 @@ class InterestsViewModel(
         _uiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
-            val topics = async { interestsRepository.getTopics() }
-            val people = async { interestsRepository.getPeople() }
-            val publications = async { interestsRepository.getPublications() }
+            // Trigger repository requests in parallel
+            val topicsDeferred = async { interestsRepository.getTopics() }
+            val peopleDeferred = async { interestsRepository.getPeople() }
+            val publicationsDeferred = async { interestsRepository.getPublications() }
 
-            // An incomplete UI state is created to not `await` in the _uiState.update lambda
-            val incompleteUiState = InterestsUiState(
-                topics = topics.await().successOr(emptyMap()),
-                people = people.await().successOr(emptyList()),
-                publications = publications.await().successOr(emptyList())
-            )
+            // Wait for all requests to finish
+            val topics = topicsDeferred.await().successOr(emptyMap())
+            val people = peopleDeferred.await().successOr(emptyList())
+            val publications = publicationsDeferred.await().successOr(emptyList())
+
             _uiState.update {
                 it.copy(
                     loading = false,
-                    topics = incompleteUiState.topics,
-                    people = incompleteUiState.people,
-                    publications = incompleteUiState.publications
+                    topics = topics,
+                    people = people,
+                    publications = publications
                 )
             }
         }

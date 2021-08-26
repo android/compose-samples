@@ -65,7 +65,7 @@ import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
- * Responsible for displaying the Article Screen of this application.
+ * Displays the Article screen.
  *
  * @param articleViewModel ViewModel that handles the business logic of this screen
  * @param onBack (event) request back navigation

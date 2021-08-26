@@ -68,7 +68,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.runBlocking
 
 /**
- * Responsible for displaying the Home Screen of this application.
+ * Displays the Home screen.
  *
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
@@ -99,7 +99,7 @@ fun HomeScreen(
 }
 
 /**
- * Responsible for displaying the Home Screen of this application.
+ * Displays the Home screen.
  *
  * Stateless composable is not coupled to any specific state management.
  *
@@ -167,22 +167,22 @@ fun HomeScreen(
         val errorMessage = remember(uiState) { uiState.errorMessages[0] }
 
         val errorMessageText: String = stringResource(errorMessage.messageId)
-        val retryMessage = stringResource(id = R.string.retry)
+        val retryMessageText = stringResource(id = R.string.retry)
 
         // If onRefreshPosts or onErrorDismiss change while the LaunchedEffect is running,
         // don't restart the effect and use the latest lambda values.
         val onRefreshPostsState by rememberUpdatedState(onRefreshPosts)
         val onErrorDismissState by rememberUpdatedState(onErrorDismiss)
 
-        LaunchedEffect(errorMessage, errorMessageText, scaffoldState) {
+        LaunchedEffect(errorMessageText, retryMessageText, scaffoldState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessageText,
-                actionLabel = retryMessage
+                actionLabel = retryMessageText
             )
             if (snackbarResult == SnackbarResult.ActionPerformed) {
                 onRefreshPostsState()
             }
-            // Once the message is displayed, notify the ViewModel
+            // Once the message is displayed and dismissed, notify the ViewModel
             onErrorDismissState(errorMessage.id)
         }
     }

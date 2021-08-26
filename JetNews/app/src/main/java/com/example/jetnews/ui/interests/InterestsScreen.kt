@@ -87,7 +87,7 @@ enum class Sections(@StringRes val titleResId: Int) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Responsible for displaying the Interests Screen of this application.
+ * Displays the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
  * @param openDrawer (event) request opening the app drawer
