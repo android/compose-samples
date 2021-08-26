@@ -164,8 +164,10 @@ fun HomeScreen(
 
     // Process one error message at a time and show them as Snackbars in the UI
     if (uiState.errorMessages.isNotEmpty()) {
+        // Remember the errorMessage to display on the screen
         val errorMessage = remember(uiState) { uiState.errorMessages[0] }
 
+        // Get the text to show on the message from resources
         val errorMessageText: String = stringResource(errorMessage.messageId)
         val retryMessageText = stringResource(id = R.string.retry)
 
@@ -174,6 +176,9 @@ fun HomeScreen(
         val onRefreshPostsState by rememberUpdatedState(onRefreshPosts)
         val onErrorDismissState by rememberUpdatedState(onErrorDismiss)
 
+        // Effect running in a coroutine that displays the Snackbar on the screen
+        // If there's a change to errorMessageText, retryMessageText or scaffoldState,
+        // the previous effect will be cancelled and a new one will start with the new values
         LaunchedEffect(errorMessageText, retryMessageText, scaffoldState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessageText,

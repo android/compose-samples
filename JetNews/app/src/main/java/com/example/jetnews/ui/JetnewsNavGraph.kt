@@ -29,9 +29,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
-import com.example.jetnews.ui.MainDestinations.ARTICLE_ID_KEY
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.article.ArticleViewModel
+import com.example.jetnews.ui.article.ArticleViewModel.Companion.ARTICLE_ID_KEY
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsScreen
@@ -45,7 +45,6 @@ object MainDestinations {
     const val HOME_ROUTE = "home"
     const val INTERESTS_ROUTE = "interests"
     const val ARTICLE_ROUTE = "post"
-    const val ARTICLE_ID_KEY = "postId"
 }
 
 @Composable
@@ -86,6 +85,7 @@ fun JetnewsNavGraph(
             route = "${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}",
             arguments = listOf(navArgument(ARTICLE_ID_KEY) { type = NavType.StringType })
         ) { backStackEntry ->
+            // ArticleVM obtains the articleId via backStackEntry.arguments from SavedStateHandle
             val articleViewModel: ArticleViewModel = viewModel(
                 factory = ArticleViewModel.provideFactory(
                     postsRepository = appContainer.postsRepository,

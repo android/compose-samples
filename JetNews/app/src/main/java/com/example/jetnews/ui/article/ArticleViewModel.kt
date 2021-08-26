@@ -25,7 +25,6 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.MainDestinations.ARTICLE_ID_KEY
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -89,6 +88,8 @@ class ArticleViewModel(
      * Factory for ArticleViewModel that takes PostsRepository as a dependency
      */
     companion object {
+        const val ARTICLE_ID_KEY = "postId"
+
         fun provideFactory(
             postsRepository: PostsRepository,
             owner: SavedStateRegistryOwner,
