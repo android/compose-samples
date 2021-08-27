@@ -17,9 +17,9 @@
 package com.example.jetnews.data.interests.impl
 
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
-import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -35,10 +35,10 @@ import kotlinx.coroutines.sync.withLock
 class FakeInterestsRepository : InterestsRepository {
 
     private val topics by lazy {
-        mapOf(
-            "Android" to listOf("Jetpack Compose", "Kotlin", "Jetpack"),
-            "Programming" to listOf("Kotlin", "Declarative UIs", "Java"),
-            "Technology" to listOf("Pixel", "Google")
+        listOf(
+            InterestSection("Android", listOf("Jetpack Compose", "Kotlin", "Jetpack")),
+            InterestSection("Programming", listOf("Kotlin", "Declarative UIs", "Java")),
+            InterestSection("Technology", listOf("Pixel", "Google"))
         )
     }
 
@@ -78,7 +78,7 @@ class FakeInterestsRepository : InterestsRepository {
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
-    override suspend fun getTopics(): Result<TopicsMap> {
+    override suspend fun getTopics(): Result<List<InterestSection>> {
         return Result.Success(topics)
     }
 

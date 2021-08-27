@@ -20,6 +20,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,14 +65,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
-import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.WindowSize
+import com.example.jetnews.utils.getWindowSize
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
@@ -273,7 +281,7 @@ private fun TabContent(
  */
 @Composable
 private fun TopicList(
-    topics: TopicsMap,
+    topics: List<InterestSection>,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
@@ -325,17 +333,27 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .padding(top = 16.dp)
-            .navigationBarsPadding()
-    ) {
-        items(topics) { topic ->
-            TopicItem(
-                topic,
-                selected = selectedTopics.contains(topic)
-            ) { onTopicSelect(topic) }
-            TopicDivider()
+    BoxWithConstraints {
+        val itemMaxWidth = rememberItemMaxWidth(maxWidth)
+        val topicModifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .widthIn(max = itemMaxWidth)
+
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .navigationBarsPadding()
+        ) {
+            items(topics) { topic ->
+                TopicItem(
+                    itemTitle = topic,
+                    selected = selectedTopics.contains(topic),
+                    onToggle = { onTopicSelect(topic) },
+                    modifier = topicModifier
+                )
+                TopicDivider(topicModifier)
+            }
         }
     }
 }
@@ -349,29 +367,64 @@ private fun TabWithTopics(
  */
 @Composable
 private fun TabWithSections(
-    sections: TopicsMap,
+    sections: List<InterestSection>,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    LazyColumn(Modifier.navigationBarsPadding()) {
-        sections.forEach { (section, topics) ->
-            item {
-                Text(
-                    text = section,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .semantics { heading() },
-                    style = MaterialTheme.typography.subtitle1
-                )
+    BoxWithConstraints {
+        val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
+        val itemMaxWidth = rememberItemMaxWidth(maxWidth)
+
+        val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
+        val groupedSections: Array<MutableList<InterestSection>> = remember(columns) {
+            val sectionsInColumns = Array<MutableList<InterestSection>>(columns) { mutableListOf() }
+            sections.forEachIndexed { index, section ->
+                val column = index % columns
+                sectionsInColumns[column] += section
             }
-            items(topics) { topic ->
-                TopicItem(
-                    itemTitle = topic,
-                    selected = selectedTopics.contains(TopicSelection(section, topic))
-                ) { onTopicSelect(TopicSelection(section, topic)) }
-                TopicDivider()
+            sectionsInColumns
+        }
+        
+        Row(
+            Modifier
+                .navigationBarsPadding()
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        ) {
+            groupedSections.forEach { sectionsInGroup ->
+                LazyColumn(Modifier.widthIn(max = itemMaxWidth)) {
+                    sectionsInGroup.forEach { (section, topics) ->
+                        item {
+                            Text(
+                                text = section,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .semantics { heading() },
+                                style = MaterialTheme.typography.subtitle1
+                            )
+                        }
+                        items(topics) { topic ->
+                            TopicItem(
+                                itemTitle = topic,
+                                selected = selectedTopics.contains(TopicSelection(section, topic)),
+                                onToggle = { onTopicSelect(TopicSelection(section, topic)) },
+                                modifier = Modifier
+                            )
+                            TopicDivider(Modifier)
+                        }
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun rememberItemMaxWidth(windowMaxWidth: Dp) = remember(windowMaxWidth) {
+    if (getWindowSize(windowMaxWidth) == WindowSize.Compact) {
+        Dp.Infinity
+    } else {
+        350.dp
     }
 }
 
@@ -383,10 +436,15 @@ private fun TabWithSections(
  * @param onToggle (event) toggle selection for topic
  */
 @Composable
-private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
+private fun TopicItem(
+    itemTitle: String,
+    selected: Boolean,
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val image = painterResource(R.drawable.placeholder_1_1)
     Row(
-        modifier = Modifier
+        modifier = modifier
             .toggleable(
                 value = selected,
                 onValueChange = { onToggle() }
@@ -420,9 +478,9 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
  * Full-width divider for topics
  */
 @Composable
-private fun TopicDivider() {
+private fun TopicDivider(modifier: Modifier = Modifier) {
     Divider(
-        modifier = Modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
+        modifier = modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
     )
 }
