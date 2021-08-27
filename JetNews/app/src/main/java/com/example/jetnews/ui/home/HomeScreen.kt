@@ -36,6 +36,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -46,7 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,58 +59,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
-import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
-import com.example.jetnews.ui.state.UiState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
-import com.example.jetnews.utils.produceUiState
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful HomeScreen which manages state using [produceUiState]
+ * Displays the Home screen.
  *
- * @param postsRepository data source for this screen
+ * Note: AAC ViewModels don't work with Compose Previews currently.
+ *
+ * @param homeViewModel ViewModel that handles the business logic of this screen
  * @param navigateToArticle (event) request navigation to Article screen
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeScreen(
-    postsRepository: PostsRepository,
+    homeViewModel: HomeViewModel,
     navigateToArticle: (String) -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val (postUiState, refreshPost, clearError) = produceUiState(postsRepository) {
-        getPosts()
-    }
-
-    // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
-    // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
-    // removed from the composition tree.
-    val favorites by postsRepository.observeFavorites().collectAsState(setOf())
-
-    // Returns a [CoroutineScope] that is scoped to the lifecycle of [HomeScreen]. When this
-    // screen is removed from composition, the scope will be cancelled.
-    val coroutineScope = rememberCoroutineScope()
+    // UiState of the HomeScreen
+    val uiState by homeViewModel.uiState.collectAsState()
 
     HomeScreen(
-        posts = postUiState.value,
-        favorites = favorites,
-        onToggleFavorite = {
-            coroutineScope.launch { postsRepository.toggleFavorite(it) }
-        },
-        onRefreshPosts = refreshPost,
-        onErrorDismiss = clearError,
+        uiState = uiState,
+        onToggleFavorite = { homeViewModel.toggleFavourite(it) },
+        onRefreshPosts = { homeViewModel.refreshPosts() },
+        onErrorDismiss = { homeViewModel.errorShown(it) },
         navigateToArticle = navigateToArticle,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState
@@ -117,15 +104,14 @@ fun HomeScreen(
 }
 
 /**
- * Responsible for displaying the Home Screen of this application.
+ * Displays the Home screen.
  *
  * Stateless composable is not coupled to any specific state management.
  *
- * @param posts (state) the data to show on the screen
- * @param favorites (state) favorite posts
+ * @param uiState (state) the data to show on the screen
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onRefreshPosts (event) request a refresh of posts
- * @param onErrorDismiss (event) request the current error be dismissed
+ * @param onErrorDismiss (event) error message was shown
  * @param navigateToArticle (event) request navigation to Article screen
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
@@ -133,43 +119,18 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    posts: UiState<List<Post>>,
-    favorites: Set<String>,
+    uiState: HomeUiState,
     onToggleFavorite: (String) -> Unit,
     onRefreshPosts: () -> Unit,
-    onErrorDismiss: () -> Unit,
+    onErrorDismiss: (Long) -> Unit,
     navigateToArticle: (String) -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
-    if (posts.hasError) {
-        val errorMessage = stringResource(id = R.string.load_error)
-        val retryMessage = stringResource(id = R.string.retry)
-
-        // If onRefreshPosts or onErrorDismiss change while the LaunchedEffect is running,
-        // don't restart the effect and use the latest lambda values.
-        val onRefreshPostsState by rememberUpdatedState(onRefreshPosts)
-        val onErrorDismissState by rememberUpdatedState(onErrorDismiss)
-
-        // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
-        // automatically dismiss. This coroutine will cancel whenever posts.hasError is false
-        // (thanks to the surrounding if statement) or if scaffoldState.snackbarHostState changes.
-        LaunchedEffect(scaffoldState.snackbarHostState) {
-            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
-                message = errorMessage,
-                actionLabel = retryMessage
-            )
-            when (snackbarResult) {
-                SnackbarResult.ActionPerformed -> onRefreshPostsState()
-                SnackbarResult.Dismissed -> onErrorDismissState()
-            }
-        }
-    }
     val scrollState = rememberLazyListState()
     Scaffold(
         scaffoldState = scaffoldState,
+        snackbarHost = { SnackbarHost(hostState = it, modifier = Modifier.systemBarsPadding()) },
         topBar = {
             val title = stringResource(id = R.string.app_name)
             InsetAwareTopAppBar(
@@ -184,7 +145,7 @@ fun HomeScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { coroutineScope.launch { openDrawer() } }) {
+                    IconButton(onClick = openDrawer) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
                             contentDescription = stringResource(R.string.cd_open_navigation_drawer),
@@ -207,28 +168,56 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-
         val modifier = Modifier.padding(innerPadding)
         LoadingContent(
-            empty = posts.initialLoad,
+            empty = uiState.initialLoad,
             emptyContent = { FullScreenLoading() },
-            loading = posts.loading,
+            loading = uiState.loading,
             onRefresh = onRefreshPosts,
             content = {
-
                 HomeScreenErrorAndContent(
-                    posts = posts,
-                    state = scrollState,
+                    posts = uiState.posts,
+                    isShowingErrors = uiState.errorMessages.isNotEmpty(),
                     onRefresh = {
                         onRefreshPosts()
                     },
                     navigateToArticle = navigateToArticle,
-                    favorites = favorites,
+                    favorites = uiState.favorites,
                     onToggleFavorite = onToggleFavorite,
                     modifier = modifier.supportWideScreen()
                 )
             }
         )
+    }
+
+    // Process one error message at a time and show them as Snackbars in the UI
+    if (uiState.errorMessages.isNotEmpty()) {
+        // Remember the errorMessage to display on the screen
+        val errorMessage = remember(uiState) { uiState.errorMessages[0] }
+
+        // Get the text to show on the message from resources
+        val errorMessageText: String = stringResource(errorMessage.messageId)
+        val retryMessageText = stringResource(id = R.string.retry)
+
+        // If onRefreshPosts or onErrorDismiss change while the LaunchedEffect is running,
+        // don't restart the effect and use the latest lambda values.
+        val onRefreshPostsState by rememberUpdatedState(onRefreshPosts)
+        val onErrorDismissState by rememberUpdatedState(onErrorDismiss)
+
+        // Effect running in a coroutine that displays the Snackbar on the screen
+        // If there's a change to errorMessageText, retryMessageText or scaffoldState,
+        // the previous effect will be cancelled and a new one will start with the new values
+        LaunchedEffect(errorMessageText, retryMessageText, scaffoldState) {
+            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
+                message = errorMessageText,
+                actionLabel = retryMessageText
+            )
+            if (snackbarResult == SnackbarResult.ActionPerformed) {
+                onRefreshPostsState()
+            }
+            // Once the message is displayed and dismissed, notify the ViewModel
+            onErrorDismissState(errorMessage.id)
+        }
     }
 }
 
@@ -263,26 +252,27 @@ private fun LoadingContent(
 /**
  * Responsible for displaying any error conditions around [PostList].
  *
- * @param posts (state) list of posts and error state to display
+ * @param posts (state) list of posts to display
+ * @param isShowingErrors (state) whether the screen is showing errors or not
+ * @param favorites (state) all favorites
  * @param onRefresh (event) request to refresh data
  * @param navigateToArticle (event) request navigation to Article screen
- * @param favorites (state) all favorites
  * @param onToggleFavorite (event) request a single favorite be toggled
  * @param modifier modifier for root element
  */
 @Composable
 private fun HomeScreenErrorAndContent(
-    posts: UiState<List<Post>>,
-    state: LazyListState = rememberLazyListState(),
+    posts: List<Post>,
+    isShowingErrors: Boolean,
+    favorites: Set<String>,
     onRefresh: () -> Unit,
     navigateToArticle: (String) -> Unit,
-    favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (posts.data != null) {
-        PostList(posts.data, state, navigateToArticle, favorites, onToggleFavorite, modifier)
-    } else if (!posts.hasError) {
+    if (posts.isNotEmpty()) {
+        PostList(posts, navigateToArticle, favorites, onToggleFavorite, modifier)
+    } else if (!isShowingErrors) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
             Text(stringResource(id = R.string.home_tap_to_load_content), textAlign = TextAlign.Center)
@@ -464,8 +454,7 @@ fun PreviewHomeScreen() {
     }
     JetnewsTheme {
         HomeScreen(
-            posts = UiState(data = posts),
-            favorites = setOf(),
+            uiState = HomeUiState(posts = posts),
             onToggleFavorite = { /*TODO*/ },
             onRefreshPosts = { /*TODO*/ },
             onErrorDismiss = { /*TODO*/ },

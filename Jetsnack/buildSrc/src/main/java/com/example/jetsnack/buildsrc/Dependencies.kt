@@ -27,6 +27,7 @@ object Libs {
         const val version = "0.16.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
+        const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }
 
     object Kotlin {
