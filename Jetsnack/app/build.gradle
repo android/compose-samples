@@ -106,6 +106,7 @@ dependencies {
 
     implementation Libs.Accompanist.insets
     implementation Libs.Accompanist.systemuicontroller
+    implementation Libs.Accompanist.flowlayouts
 
     implementation Libs.Coil.coilCompose
 
