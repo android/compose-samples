@@ -23,8 +23,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.jetnews.ui.home.HomeScreen
-import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.ui.home.HomeUiState
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -51,8 +52,9 @@ class HomeScreenTests {
 
                 // When the Home screen receives data with an error
                 HomeScreen(
-                    posts = UiState(exception = IllegalStateException()),
-                    favorites = emptySet(),
+                    uiState = HomeUiState(
+                        errorMessages = listOf(ErrorMessage(0L, R.string.load_error))
+                    ),
                     onToggleFavorite = {},
                     onRefreshPosts = {},
                     onErrorDismiss = {},
