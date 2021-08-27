@@ -184,7 +184,8 @@ fun HomeScreen(
                     navigateToArticle = navigateToArticle,
                     favorites = uiState.favorites,
                     onToggleFavorite = onToggleFavorite,
-                    modifier = modifier.supportWideScreen()
+                    modifier = modifier.supportWideScreen(),
+                    scrollState = scrollState
                 )
             }
         )
@@ -268,10 +269,11 @@ private fun HomeScreenErrorAndContent(
     onRefresh: () -> Unit,
     navigateToArticle: (String) -> Unit,
     onToggleFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollState: LazyListState
 ) {
     if (posts.isNotEmpty()) {
-        PostList(posts, navigateToArticle, favorites, onToggleFavorite, modifier)
+        PostList(posts, navigateToArticle, favorites, onToggleFavorite, modifier, scrollState)
     } else if (!isShowingErrors) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
@@ -296,11 +298,11 @@ private fun HomeScreenErrorAndContent(
 @Composable
 private fun PostList(
     posts: List<Post>,
-    state: LazyListState = rememberLazyListState(),
     navigateToArticle: (postId: String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollState: LazyListState = rememberLazyListState(),
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
@@ -309,7 +311,7 @@ private fun PostList(
 
     LazyColumn(
         modifier = modifier,
-        state = state,
+        state = scrollState,
         contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false
