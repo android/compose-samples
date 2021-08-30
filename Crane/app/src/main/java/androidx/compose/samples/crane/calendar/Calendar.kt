@@ -36,6 +36,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.calendar.model.CalendarDay
 import androidx.compose.samples.crane.calendar.model.CalendarMonth
 import androidx.compose.samples.crane.calendar.model.DayOfWeek
@@ -48,10 +49,14 @@ import androidx.compose.samples.crane.util.SemiRect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
-import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsHeight
@@ -78,7 +83,7 @@ fun Calendar(
 
 @Composable
 private fun MonthHeader(modifier: Modifier = Modifier, month: String, year: String) {
-    Row(modifier = modifier) {
+    Row(modifier = modifier.clearAndSetSemantics { }) {
         Text(
             modifier = Modifier.weight(1f),
             text = month,
@@ -112,10 +117,7 @@ private fun Week(
             Day(
                 day,
                 onDayClicked,
-                Modifier.semantics {
-                    contentDescription = "${month.name} ${day.value}"
-                    dayStatusProperty = day.status
-                }
+                month
             )
         }
         Surface(modifier = spaceModifiers, color = rightFillColor) {
@@ -126,7 +128,7 @@ private fun Week(
 
 @Composable
 private fun DaysOfWeek(modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
+    Row(modifier = modifier.clearAndSetSemantics { }) {
         for (day in DayOfWeek.values()) {
             Day(name = day.name.take(1))
         }
@@ -137,20 +139,28 @@ private fun DaysOfWeek(modifier: Modifier = Modifier) {
 private fun Day(
     day: CalendarDay,
     onDayClicked: (CalendarDay) -> Unit,
+    month: CalendarMonth,
     modifier: Modifier = Modifier
 ) {
     val enabled = day.status != DaySelectedStatus.NonClickable
     DayContainer(
-        modifier = modifier,
-        onClick = { if (day.status != DaySelectedStatus.NonClickable) onDayClicked(day) },
+        modifier = modifier.semantics {
+            if (enabled) text = AnnotatedString("${month.name} ${day.value} ${month.year}")
+            dayStatusProperty = day.status
+        },
+        selected = day.status != DaySelectedStatus.NoSelected,
+        onClick = { onDayClicked(day) },
         onClickEnabled = enabled,
-        backgroundColor = day.status.color(MaterialTheme.colors)
+        backgroundColor = day.status.color(MaterialTheme.colors),
+        onClickLabel = stringResource(id = R.string.click_label_select)
     ) {
         DayStatusContainer(status = day.status) {
             Text(
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center),
+                    .wrapContentSize(Alignment.Center)
+                    // Parent will handle semantics
+                    .clearAndSetSemantics {},
                 text = day.value,
                 style = MaterialTheme.typography.body1.copy(color = Color.White)
             )
@@ -173,17 +183,33 @@ private fun Day(name: String) {
 @Composable
 private fun DayContainer(
     modifier: Modifier = Modifier,
+    selected: Boolean = false,
     onClick: () -> Unit = { },
     onClickEnabled: Boolean = true,
     backgroundColor: Color = Color.Transparent,
+    onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
+    val stateDescriptionLabel = stringResource(
+        if (selected) R.string.state_descr_selected else R.string.state_descr_not_selected
+    )
     Surface(
-        modifier = modifier.size(width = CELL_SIZE, height = CELL_SIZE),
+        modifier = modifier
+            .size(width = CELL_SIZE, height = CELL_SIZE)
+            .then(
+                if (onClickEnabled) {
+                    modifier.semantics {
+                        stateDescription = stateDescriptionLabel
+                    }
+                } else {
+                    modifier.clearAndSetSemantics { }
+                }
+            ),
         onClick = onClick,
         enabled = onClickEnabled,
-        color = backgroundColor
+        color = backgroundColor,
+        onClickLabel = onClickLabel
     ) {
         content()
     }

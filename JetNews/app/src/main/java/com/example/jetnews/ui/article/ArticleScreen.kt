@@ -19,11 +19,16 @@ package com.example.jetnews.ui.article
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -38,14 +43,15 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,57 +60,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
-import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.example.jetnews.utils.produceUiState
+import com.example.jetnews.utils.isScrolled
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful Article Screen that manages state using [produceUiState]
+ * Displays the Article screen.
  *
- * @param postId (state) the post to show
- * @param postsRepository data source for this screen
+ * @param articleViewModel ViewModel that handles the business logic of this screen
  * @param onBack (event) request back navigation
  */
-@Suppress("DEPRECATION") // allow ViewModelLifecycleScope call
 @Composable
 fun ArticleScreen(
-    postId: String?,
-    postsRepository: PostsRepository,
+    articleViewModel: ArticleViewModel,
     onBack: () -> Unit
 ) {
-    val (post) = produceUiState(postsRepository, postId) {
-        getPost(postId)
+    // UiState of the ArticleScreen
+    val uiState by articleViewModel.uiState.collectAsState()
+
+    if (uiState.post != null) {
+        ArticleScreen(
+            post = uiState.post!!,
+            onBack = onBack,
+            isFavorite = uiState.isFavorite,
+            onToggleFavorite = { articleViewModel.toggleFavorite() }
+        )
     }
-    // TODO: handle errors when the repository is capable of creating them
-    val postData = post.value.data ?: return
 
-    // [collectAsState] will automatically collect a Flow<T> and return a State<T> object that
-    // updates whenever the Flow emits a value. Collection is cancelled when [collectAsState] is
-    // removed from the composition tree.
-    val favorites by postsRepository.observeFavorites().collectAsState(setOf())
-    val isFavorite = favorites.contains(postId)
-
-    // Returns a [CoroutineScope] that is scoped to the lifecycle of [ArticleScreen]. When this
-    // screen is removed from composition, the scope will be cancelled.
-    val coroutineScope = rememberCoroutineScope()
-
-    ArticleScreen(
-        post = postData,
-        onBack = onBack,
-        isFavorite = isFavorite,
-        onToggleFavorite = {
-            coroutineScope.launch { postId?.let { postsRepository.toggleFavorite(postId) } }
+    // Check for failures while loading the state
+    // TODO: Improve UX
+    LaunchedEffect(uiState) {
+        if (uiState.failedLoading) {
+            onBack()
         }
-    )
+    }
 }
 
 /**
@@ -127,25 +123,45 @@ fun ArticleScreen(
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
-
+    val scrollState = rememberLazyListState()
     Scaffold(
         topBar = {
             InsetAwareTopAppBar(
                 title = {
-                    Text(
-                        text = "Published in: ${post.publication?.name}",
-                        style = MaterialTheme.typography.subtitle2,
-                        color = LocalContentColor.current
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(align = Alignment.CenterHorizontally)
+                            .padding(start = 30.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_article_background),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(36.dp)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.published_in, post.publication?.name ?: ""),
+                            style = MaterialTheme.typography.subtitle2,
+                            color = LocalContentColor.current,
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .weight(1.5f)
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_up)
+                            contentDescription = stringResource(R.string.cd_navigate_up),
+                            tint = MaterialTheme.colors.primary
                         )
                     }
-                }
+                },
+                elevation = if (!scrollState.isScrolled) 0.dp else 4.dp,
+                backgroundColor = MaterialTheme.colors.surface
             )
         },
         bottomBar = {
@@ -159,6 +175,7 @@ fun ArticleScreen(
     ) { innerPadding ->
         PostContent(
             post = post,
+            state = scrollState,
             modifier = Modifier
                 // innerPadding takes into account the top and bottom bar
                 .padding(innerPadding)
@@ -232,13 +249,13 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         text = {
             Text(
-                text = "Functionality not available \uD83D\uDE48",
+                text = stringResource(id = R.string.article_functionality_not_available),
                 style = MaterialTheme.typography.body2
             )
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "CLOSE")
+                Text(text = stringResource(id = R.string.close))
             }
         }
     )
@@ -256,7 +273,7 @@ private fun sharePost(post: Post, context: Context) {
         putExtra(Intent.EXTRA_TITLE, post.title)
         putExtra(Intent.EXTRA_TEXT, post.url)
     }
-    context.startActivity(Intent.createChooser(intent, "Share post"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.article_share_post)))
 }
 
 @Preview("Article screen")

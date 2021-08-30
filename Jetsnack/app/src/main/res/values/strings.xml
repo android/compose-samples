@@ -63,5 +63,16 @@
     <string name="see_more">SEE MORE</string>
     <string name="see_less">SEE LESS</string>
     <string name="remove_item">Remove Item</string>
+    <string name="reset">Reset</string>
+    <string name="sort">Sort</string>
+    <string name="price">Price</string>
+    <string name="category">Category</string>
+    <string name="max_calories">Max Calories</string>
+    <string name="lifestyle">LifeStyle</string>
+    <string name="per_serving">per serving</string>
+    <string name="android_favorites">Android\'s Favorite (default)</string>
+    <string name="rating">Rating</string>
+    <string name="alphabetical">Alphabetical</string>
+    <string name="close">Close</string>
 
 </resources>

@@ -19,6 +19,7 @@ package com.example.jetcaster.ui.home.category
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -67,6 +68,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
+import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.PreviewEpisodes
@@ -98,20 +100,39 @@ fun PodcastCategory(
     /**
      * TODO: reset scroll position when category changes
      */
-    LazyColumn(
-        modifier = modifier,
+    Column(modifier = modifier) {
+        CategoryPodcasts(viewState.topPodcasts, viewModel)
+        EpisodeList(viewState.episodes)
+    }
+}
+
+@Composable
+private fun CategoryPodcasts(
+    topPodcasts: List<PodcastWithExtraInfo>,
+    viewModel: PodcastCategoryViewModel
+) {
+    LazyRow(
         contentPadding = PaddingValues(0.dp),
-        horizontalAlignment = Alignment.Start
+        horizontalArrangement = Arrangement.Start
     ) {
         item {
             CategoryPodcastRow(
-                podcasts = viewState.topPodcasts,
+                podcasts = topPodcasts,
                 onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
                 modifier = Modifier.fillParentMaxWidth()
             )
         }
+    }
+}
 
-        items(viewState.episodes, key = { it.episode.uri }) { item ->
+@Composable
+private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
+    LazyColumn(
+        contentPadding = PaddingValues(0.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        items(episodes, key = { it.episode.uri }) { item ->
             EpisodeListItem(
                 episode = item.episode,
                 podcast = item.podcast,
