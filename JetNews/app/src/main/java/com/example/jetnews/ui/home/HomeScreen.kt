@@ -24,8 +24,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -38,6 +40,8 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +63,7 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.isScrolled
 import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -122,21 +127,44 @@ fun HomeScreen(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
+    val scrollState = rememberLazyListState()
     Scaffold(
         scaffoldState = scaffoldState,
         snackbarHost = { SnackbarHost(hostState = it, modifier = Modifier.systemBarsPadding()) },
         topBar = {
             val title = stringResource(id = R.string.app_name)
             InsetAwareTopAppBar(
-                title = { Text(text = title) },
+                title = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_jetnews_wordmark),
+                        contentDescription = title,
+                        tint = MaterialTheme.colors.onBackground,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 4.dp, top = 10.dp)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            tint = MaterialTheme.colors.primary
                         )
                     }
-                }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { /* TODO: Open search */ }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = stringResource(R.string.cd_search)
+                        )
+                    }
+                },
+                backgroundColor = MaterialTheme.colors.surface,
+                elevation = if (!scrollState.isScrolled) 0.dp else 4.dp
             )
         }
     ) { innerPadding ->
@@ -156,7 +184,8 @@ fun HomeScreen(
                     navigateToArticle = navigateToArticle,
                     favorites = uiState.favorites,
                     onToggleFavorite = onToggleFavorite,
-                    modifier = modifier.supportWideScreen()
+                    modifier = modifier.supportWideScreen(),
+                    scrollState = scrollState
                 )
             }
         )
@@ -240,10 +269,11 @@ private fun HomeScreenErrorAndContent(
     onRefresh: () -> Unit,
     navigateToArticle: (String) -> Unit,
     onToggleFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollState: LazyListState
 ) {
     if (posts.isNotEmpty()) {
-        PostList(posts, navigateToArticle, favorites, onToggleFavorite, modifier)
+        PostList(posts, navigateToArticle, favorites, onToggleFavorite, modifier, scrollState)
     } else if (!isShowingErrors) {
         // if there are no posts, and no error, let the user refresh manually
         TextButton(onClick = onRefresh, modifier.fillMaxSize()) {
@@ -271,7 +301,8 @@ private fun PostList(
     navigateToArticle: (postId: String) -> Unit,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollState: LazyListState = rememberLazyListState(),
 ) {
     val postTop = posts[3]
     val postsSimple = posts.subList(0, 2)
@@ -280,6 +311,7 @@ private fun PostList(
 
     LazyColumn(
         modifier = modifier,
+        state = scrollState,
         contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false

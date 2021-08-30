@@ -30,7 +30,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
@@ -80,8 +82,13 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 private val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(post: Post, modifier: Modifier = Modifier) {
+fun PostContent(
+    post: Post,
+    state: LazyListState = rememberLazyListState(),
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
+        state = state,
         modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
         item {
