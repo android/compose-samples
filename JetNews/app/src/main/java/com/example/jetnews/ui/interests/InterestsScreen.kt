@@ -70,7 +70,6 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.MainDestinations
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
-import com.example.jetnews.ui.components.JetnewsIcon
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
@@ -165,8 +164,7 @@ private fun InterestsScreenAdaptive(
             AppNavRail(
                 currentRoute = MainDestinations.INTERESTS_ROUTE,
                 navigateToHome = navigateToHome,
-                navigateToInterests = { /* Do nothing */ },
-                topIcon = { modifier -> JetnewsIcon(modifier) }
+                navigateToInterests = { /* Do nothing */ }
             )
             interestsScreenContent()
         }

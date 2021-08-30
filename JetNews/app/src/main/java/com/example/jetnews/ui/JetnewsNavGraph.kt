@@ -103,6 +103,7 @@ fun JetnewsNavGraph(
             )
             ArticleScreen(
                 articleViewModel = articleViewModel,
+                showNavRail = showNavRail,
                 onBack = actions.upPress
             )
         }

@@ -67,7 +67,6 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.MainDestinations
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
-import com.example.jetnews.ui.components.JetnewsIcon
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
 import com.google.accompanist.insets.LocalWindowInsets
@@ -159,8 +158,7 @@ fun HomeScreenAdaptive(
             AppNavRail(
                 currentRoute = MainDestinations.HOME_ROUTE,
                 navigateToHome = { /* Do nothing */ },
-                navigateToInterests = navigateToInterests,
-                topIcon = { modifier -> JetnewsIcon(modifier) }
+                navigateToInterests = navigateToInterests
             )
             homeScreenContent()
         }

@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -44,18 +45,15 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
-fun AppNavRail(
-    currentRoute: String,
-    navigateToHome: () -> Unit,
-    navigateToInterests: () -> Unit,
+fun JetnewsNavRail(
     topIcon: @Composable (Modifier) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    Box(modifier = modifier.fillMaxHeight()) {
+    Box(modifier = modifier.fillMaxHeight().padding(horizontal = 16.dp)) {
         topIcon(
             Modifier
                 .systemBarsPadding()
-                .padding(top = 16.dp)
                 .align(alignment = Alignment.TopCenter)
         )
         Column(
@@ -64,19 +62,36 @@ fun AppNavRail(
                 .align(alignment = Alignment.Center),
             verticalArrangement = Arrangement.Center,
         ) {
-            NavRailButton(
-                icon = Icons.Filled.Home,
-                contentDescription = stringResource(id = R.string.cd_navigate_home),
-                isSelected = currentRoute == MainDestinations.HOME_ROUTE,
-                action = navigateToHome
-            )
-            NavRailButton(
-                icon = Icons.Filled.ListAlt,
-                contentDescription = stringResource(id = R.string.cd_navigate_interests),
-                isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
-                action = navigateToInterests
-            )
+            content()
         }
+    }
+}
+
+@Composable
+fun AppNavRail(
+    currentRoute: String,
+    navigateToHome: () -> Unit,
+    navigateToInterests: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    JetnewsNavRail(
+        topIcon = { topIconInnerModifier ->
+            JetnewsIcon(topIconInnerModifier.padding(top = 16.dp))
+        },
+        modifier = modifier
+    ) {
+        NavRailButton(
+            icon = Icons.Filled.Home,
+            contentDescription = stringResource(id = R.string.cd_navigate_home),
+            isSelected = currentRoute == MainDestinations.HOME_ROUTE,
+            action = navigateToHome
+        )
+        NavRailButton(
+            icon = Icons.Filled.ListAlt,
+            contentDescription = stringResource(id = R.string.cd_navigate_interests),
+            isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
+            action = navigateToInterests
+        )
     }
 }
 
@@ -99,7 +114,7 @@ private fun NavRailButton(
         color = backgroundColor,
         onClick = action,
         shape = CircleShape,
-        modifier = modifier.padding(16.dp).size(48.dp)
+        modifier = modifier.size(48.dp)
     ) {
         NavigationIcon(
             icon = icon,
@@ -117,7 +132,6 @@ fun PreviewAppNavRail() {
     JetnewsTheme {
         Surface {
             AppNavRail(
-                topIcon = { modifier -> JetnewsIcon(modifier) },
                 currentRoute = MainDestinations.HOME_ROUTE,
                 navigateToHome = {},
                 navigateToInterests = {},
