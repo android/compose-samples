@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.Dp
  */
 enum class WindowSize { Compact, Medium, Expanded }
 
-fun getWindowSize(width: Dp): WindowSize = when(width.value) {
+fun getWindowSize(width: Dp): WindowSize = when (width.value) {
     in 0f..599f -> WindowSize.Compact
     in 600f..800f -> WindowSize.Medium
     else -> WindowSize.Expanded
