@@ -16,6 +16,8 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -23,11 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.WindowSize
+import com.example.jetnews.utils.getWindowSize
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
@@ -53,22 +58,40 @@ fun JetnewsApp(
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route ?: MainDestinations.HOME_ROUTE
-            Scaffold(
-                scaffoldState = scaffoldState,
-                drawerContent = {
-                    AppDrawer(
-                        currentRoute = currentRoute,
-                        navigateToHome = { navController.navigate(MainDestinations.HOME_ROUTE) },
-                        navigateToInterests = { navController.navigate(MainDestinations.INTERESTS_ROUTE) },
-                        closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } }
+
+            BoxWithConstraints {
+                val windowSize = getWindowSize(maxWidth)
+                Scaffold(
+                    scaffoldState = scaffoldState,
+                    // If the window size is Compact, show the AppDrawer.
+                    // Otherwise, a NavRail will be shown in individual screens
+                    drawerContent = if (windowSize == WindowSize.Compact) {
+                        {
+                            AppDrawer(
+                                currentRoute = currentRoute,
+                                navigateToHome = {
+                                    navController.navigate(MainDestinations.HOME_ROUTE)
+                                },
+                                navigateToInterests = {
+                                    navController.navigate(MainDestinations.INTERESTS_ROUTE)
+                                },
+                                closeDrawer = {
+                                    coroutineScope.launch { scaffoldState.drawerState.close() }
+                                }
+                            )
+                        }
+                    } else {
+                        null
+                    }
+                ) { innerPaddingModifier ->
+                    JetnewsNavGraph(
+                        appContainer = appContainer,
+                        showNavRail = windowSize != WindowSize.Compact,
+                        navController = navController,
+                        scaffoldState = scaffoldState,
+                        modifier = Modifier.padding(innerPaddingModifier)
                     )
                 }
-            ) {
-                JetnewsNavGraph(
-                    appContainer = appContainer,
-                    navController = navController,
-                    scaffoldState = scaffoldState
-                )
             }
         }
     }

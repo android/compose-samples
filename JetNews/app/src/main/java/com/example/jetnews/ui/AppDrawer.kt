@@ -46,6 +46,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.ui.components.JetnewsIcon
+import com.example.jetnews.ui.components.NavigationIcon
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
@@ -55,7 +57,6 @@ fun AppDrawer(
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit
 ) {
-
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(24.dp))
         JetNewsLogo(Modifier.padding(16.dp))
@@ -85,11 +86,7 @@ fun AppDrawer(
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        Image(
-            painter = painterResource(R.drawable.ic_jetnews_logo),
-            contentDescription = null, // decorative
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-        )
+        JetnewsIcon()
         Spacer(Modifier.width(8.dp))
         Image(
             painter = painterResource(R.drawable.ic_jetnews_wordmark),
@@ -108,11 +105,6 @@ private fun DrawerButton(
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colors
-    val imageAlpha = if (isSelected) {
-        1f
-    } else {
-        0.6f
-    }
     val textIconColor = if (isSelected) {
         colors.primary
     } else {
@@ -141,11 +133,11 @@ private fun DrawerButton(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    imageVector = icon,
+                NavigationIcon(
+                    icon = icon,
+                    isSelected = isSelected,
                     contentDescription = null, // decorative
-                    colorFilter = ColorFilter.tint(textIconColor),
-                    alpha = imageAlpha
+                    tintColor = textIconColor
                 )
                 Spacer(Modifier.width(16.dp))
                 Text(

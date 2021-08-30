@@ -17,9 +17,11 @@
 package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -38,6 +40,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarResult
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -61,10 +64,12 @@ import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.MainDestinations
+import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
+import com.example.jetnews.ui.components.JetnewsIcon
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
-import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.systemBarsPadding
@@ -73,11 +78,12 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.runBlocking
 
 /**
- * Displays the Home screen.
+ * Stateful composable that displays the Home screen.
  *
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param navigateToArticle (event) request navigation to Article screen
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
@@ -85,22 +91,82 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
+    showNavRail: Boolean,
     navigateToArticle: (String) -> Unit,
+    navigateToInterests: () -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsState()
 
-    HomeScreen(
+    HomeScreenAdaptive(
         uiState = uiState,
+        showNavRail = showNavRail,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
         onErrorDismiss = { homeViewModel.errorShown(it) },
         navigateToArticle = navigateToArticle,
+        navigateToInterests = navigateToInterests,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState
     )
+}
+
+/**
+ * Displays the Home screen adapting the UI to different screen sizes.
+ *
+ * Stateless composable is not coupled to any specific state management.
+ *
+ * @param uiState (state) the data to show on the screen
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
+ * @param onToggleFavorite (event) toggles favorite for a post
+ * @param onRefreshPosts (event) request a refresh of posts
+ * @param onErrorDismiss (event) error message was shown
+ * @param navigateToArticle (event) request navigation to Article screen
+ * @param navigateToInterests (event) request navigation to Interests screen
+ * @param openDrawer (event) request opening the app drawer
+ * @param scaffoldState (state) state for the [Scaffold] component on this screen
+ */
+@VisibleForTesting
+@Composable
+fun HomeScreenAdaptive(
+    uiState: HomeUiState,
+    showNavRail: Boolean,
+    onToggleFavorite: (String) -> Unit,
+    onRefreshPosts: () -> Unit,
+    onErrorDismiss: (Long) -> Unit,
+    navigateToArticle: (String) -> Unit,
+    navigateToInterests: () -> Unit,
+    openDrawer: () -> Unit,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
+) {
+    val homeScreenContent = @Composable {
+        HomeScreenContent(
+            uiState = uiState,
+            showNavRail = showNavRail,
+            onToggleFavorite = onToggleFavorite,
+            onRefreshPosts = onRefreshPosts,
+            onErrorDismiss = onErrorDismiss,
+            navigateToArticle = navigateToArticle,
+            openDrawer = openDrawer,
+            scaffoldState = scaffoldState
+        )
+    }
+
+    if (showNavRail) {
+        Row(Modifier.fillMaxSize()) {
+            AppNavRail(
+                currentRoute = MainDestinations.HOME_ROUTE,
+                navigateToHome = { /* Do nothing */ },
+                navigateToInterests = navigateToInterests,
+                topIcon = { modifier -> JetnewsIcon(modifier) }
+            )
+            homeScreenContent()
+        }
+    } else {
+        homeScreenContent()
+    }
 }
 
 /**
@@ -109,6 +175,7 @@ fun HomeScreen(
  * Stateless composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) error message was shown
@@ -118,8 +185,9 @@ fun HomeScreen(
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(
+private fun HomeScreenContent(
     uiState: HomeUiState,
+    showNavRail: Boolean,
     onToggleFavorite: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
@@ -144,14 +212,20 @@ fun HomeScreen(
                             .padding(bottom = 4.dp, top = 10.dp)
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = openDrawer) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            tint = MaterialTheme.colors.primary
-                        )
+                navigationIcon = if (!showNavRail) {
+                    {
+                        IconButton(onClick = openDrawer) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_jetnews_logo),
+                                contentDescription = stringResource(
+                                    R.string.cd_open_navigation_drawer
+                                ),
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
                     }
+                } else {
+                    null
                 },
                 actions = {
                     IconButton(
@@ -184,7 +258,7 @@ fun HomeScreen(
                     navigateToArticle = navigateToArticle,
                     favorites = uiState.favorites,
                     onToggleFavorite = onToggleFavorite,
-                    modifier = modifier.supportWideScreen(),
+                    modifier = modifier,
                     scrollState = scrollState
                 )
             }
@@ -445,24 +519,50 @@ private fun PostListDivider() {
     )
 }
 
-@Preview("Home screen")
-@Preview("Home screen (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Preview("Home screen (big font)", fontScale = 1.5f)
-@Preview("Home screen (large screen)", device = Devices.PIXEL_C)
+@Preview("Home screen drawer")
+@Preview("Home screen drawer (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Home screen drawer (big font)", fontScale = 1.5f)
 @Composable
-fun PreviewHomeScreen() {
+fun PreviewHomeScreenWithDrawer() {
     val posts = runBlocking {
         (BlockingFakePostsRepository().getPosts() as Result.Success).data
     }
     JetnewsTheme {
-        HomeScreen(
+        HomeScreenAdaptive(
             uiState = HomeUiState(posts = posts),
+            showNavRail = false,
             onToggleFavorite = { /*TODO*/ },
             onRefreshPosts = { /*TODO*/ },
             onErrorDismiss = { /*TODO*/ },
             navigateToArticle = { /*TODO*/ },
+            navigateToInterests = { /*TODO*/ },
             openDrawer = { /*TODO*/ },
             scaffoldState = rememberScaffoldState()
         )
+    }
+}
+
+@Preview("Home screen navrail", device = Devices.PIXEL_C)
+@Preview("Home screen navrail (dark)", device = Devices.PIXEL_C, uiMode = UI_MODE_NIGHT_YES)
+@Preview("Home screen navrail (big font)", device = Devices.PIXEL_C, fontScale = 1.5f)
+@Composable
+fun PreviewHomeScreenWithNavRail() {
+    val posts = runBlocking {
+        (BlockingFakePostsRepository().getPosts() as Result.Success).data
+    }
+    JetnewsTheme {
+        Surface {
+            HomeScreenAdaptive(
+                uiState = HomeUiState(posts = posts),
+                showNavRail = true,
+                onToggleFavorite = { /*TODO*/ },
+                onRefreshPosts = { /*TODO*/ },
+                onErrorDismiss = { /*TODO*/ },
+                navigateToArticle = { /*TODO*/ },
+                navigateToInterests = { /*TODO*/ },
+                openDrawer = { /*TODO*/ },
+                scaffoldState = rememberScaffoldState()
+            )
+        }
     }
 }

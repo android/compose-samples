@@ -21,6 +21,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -50,6 +51,8 @@ object MainDestinations {
 @Composable
 fun JetnewsNavGraph(
     appContainer: AppContainer,
+    showNavRail: Boolean,
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     startDestination: String = MainDestinations.HOME_ROUTE
@@ -60,7 +63,8 @@ fun JetnewsNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         composable(MainDestinations.HOME_ROUTE) {
             val homeViewModel: HomeViewModel = viewModel(
@@ -68,7 +72,9 @@ fun JetnewsNavGraph(
             )
             HomeScreen(
                 homeViewModel = homeViewModel,
+                showNavRail = showNavRail,
                 navigateToArticle = actions.navigateToArticle,
+                navigateToInterests = actions.navigateToInterests,
                 openDrawer = openDrawer
             )
         }
@@ -78,6 +84,8 @@ fun JetnewsNavGraph(
             )
             InterestsScreen(
                 interestsViewModel = interestsViewModel,
+                showNavRail = showNavRail,
+                navigateToHome = actions.navigateToHome,
                 openDrawer = openDrawer
             )
         }
@@ -107,6 +115,12 @@ fun JetnewsNavGraph(
 class MainActions(navController: NavHostController) {
     val navigateToArticle: (String) -> Unit = { postId: String ->
         navController.navigate("${MainDestinations.ARTICLE_ROUTE}/$postId")
+    }
+    val navigateToInterests: () -> Unit = {
+        navController.navigate(MainDestinations.INTERESTS_ROUTE)
+    }
+    val navigateToHome: () -> Unit = {
+        navController.navigate(MainDestinations.HOME_ROUTE)
     }
     val upPress: () -> Unit = {
         navController.navigateUp()
