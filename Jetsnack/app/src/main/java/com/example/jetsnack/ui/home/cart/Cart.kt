@@ -165,7 +165,8 @@ private fun CartContent(
         items(orderLines) { orderLine ->
             SwipeDismissItem(
                 background = { offsetX ->
-                    // Background color changes from light gray to red when the swipe to delete with exceeds 160.dp
+                    /*Background color changes from light gray to red when the
+                    swipe to delete with exceeds 160.dp*/
                     val backgroundColor = if (offsetX < -160.dp) {
                         JetsnackTheme.colors.error
                     } else {
@@ -218,7 +219,8 @@ private fun CartContent(
                                             contentDescription = null,
                                         )
                                     }
-                                    // Text opacity increases as the text is supposed to appear in the screen
+                                    /*Text opacity increases as the text is supposed to appear in
+                                    the screen*/
                                     val textAlpha by animateFloatAsState(
                                         if (offsetX > -144.dp) 0.5f else 1f
                                     )
