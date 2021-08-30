@@ -148,17 +148,6 @@ private fun InterestsScreenAdaptive(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
-    val interestsScreenContent = @Composable {
-        InterestsScreen(
-            tabContent = tabContent,
-            tab = currentSection,
-            onTabChange = onTabChange,
-            openDrawer = openDrawer,
-            showNavRail = showNavRail,
-            scaffoldState = scaffoldState
-        )
-    }
-
     if (showNavRail) {
         Row(Modifier.fillMaxSize()) {
             AppNavRail(
@@ -166,10 +155,31 @@ private fun InterestsScreenAdaptive(
                 navigateToHome = navigateToHome,
                 navigateToInterests = { /* Do nothing */ }
             )
-            interestsScreenContent()
+            InterestsScreen(
+                tabContent = tabContent,
+                tab = currentSection,
+                onTabChange = onTabChange,
+                scaffoldState = scaffoldState,
+            )
         }
     } else {
-        interestsScreenContent()
+        InterestsScreen(
+            tabContent = tabContent,
+            tab = currentSection,
+            onTabChange = onTabChange,
+            scaffoldState = scaffoldState,
+            navigationIconContent = {
+                IconButton(onClick = openDrawer) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_jetnews_logo),
+                        contentDescription = stringResource(
+                            R.string.cd_open_navigation_drawer
+                        ),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+            }
+        )
     }
 }
 
@@ -180,22 +190,20 @@ private fun InterestsScreenAdaptive(
  * list, tabs are displayed in the order specified by this list
  * @param tab (state) the current tab to display, must be in [tabContent]
  * @param onTabChange (event) request a change in [tab] to another tab from [tabContent]
- * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
+ * @param navigationIconContent (UI) content to show for the navigation icon
  */
 @Composable
 private fun InterestsScreen(
     tabContent: List<TabContent>,
     tab: Sections,
     onTabChange: (Sections) -> Unit,
-    openDrawer: () -> Unit,
-    showNavRail: Boolean,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    navigationIconContent: @Composable (() -> Unit)? = null
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-
             InsetAwareTopAppBar(
                 title = {
                     Text(
@@ -204,21 +212,7 @@ private fun InterestsScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                navigationIcon = if (!showNavRail) {
-                    {
-                        IconButton(onClick = openDrawer) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_jetnews_logo),
-                                contentDescription = stringResource(
-                                    R.string.cd_open_navigation_drawer
-                                ),
-                                tint = MaterialTheme.colors.primary
-                            )
-                        }
-                    }
-                } else {
-                    null
-                },
+                navigationIcon = navigationIconContent,
                 actions = {
                     IconButton(
                         onClick = { /* TODO: Open search */ }

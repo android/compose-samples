@@ -89,7 +89,7 @@ fun ArticleScreen(
     val uiState by articleViewModel.uiState.collectAsState()
 
     if (uiState.post != null) {
-        ArticleScreenAdaptive(
+        ArticleAdaptiveScreen(
             post = uiState.post!!,
             showNavRail = showNavRail,
             onBack = onBack,
@@ -117,44 +117,51 @@ fun ArticleScreen(
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
  */
 @Composable
-private fun ArticleScreenAdaptive(
+private fun ArticleAdaptiveScreen(
     post: Post,
     showNavRail: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-    if (showDialog) {
-        FunctionalityNotAvailablePopup { showDialog = false }
+    var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
+    if (showUnimplementedActionDialog) {
+        FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
     val context = LocalContext.current
-    val articleScreenContent = @Composable {
-        ArticleScreenContent(
-            post = post,
-            showNavRail = showNavRail,
-            onBack = onBack,
-            onUnimplementedAction = { showDialog = true },
-            isFavorite = isFavorite,
-            onToggleFavorite = onToggleFavorite,
-            onSharePost = { sharePost(post, context) }
-        )
-    }
-
     if (showNavRail) {
         Row(Modifier.fillMaxSize()) {
             InterestsNavRail(
                 onBack = onBack,
-                onUnimplementedAction = { showDialog = true },
+                onUnimplementedAction = { showUnimplementedActionDialog = true },
                 isFavorite = isFavorite,
                 onToggleFavorite = onToggleFavorite,
                 onSharePost = { sharePost(post, context) }
             )
-            articleScreenContent()
+            ArticleScreenContent(post = post)
         }
     } else {
-        articleScreenContent()
+        ArticleScreenContent(
+            post = post,
+            navigationIconContent = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.cd_navigate_up),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+            },
+            bottomBarContent = {
+                BottomBar(
+                    onUnimplementedAction = { showUnimplementedActionDialog = true },
+                    isFavorite = isFavorite,
+                    onToggleFavorite = onToggleFavorite,
+                    onSharePost = { sharePost(post, context) }
+                )
+            }
+        )
     }
 }
 
@@ -162,22 +169,14 @@ private fun ArticleScreenAdaptive(
  * Stateless Article Screen that displays a single post.
  *
  * @param post (state) item to display
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
- * @param onBack (event) request navigate back
- * @param onUnimplementedAction (event) called when the user performs an unimplemented action
- * @param isFavorite (state) is this item currently a favorite
- * @param onToggleFavorite (event) request that this post toggle it's favorite state
- * @param onSharePost (event) request this post to be shared
+ * @param navigationIconContent (UI) content to show for the navigation icon
+ * @param bottomBarContent (UI) content to show for the bottom bar
  */
 @Composable
 private fun ArticleScreenContent(
     post: Post,
-    showNavRail: Boolean,
-    onBack: () -> Unit,
-    onUnimplementedAction: () -> Unit,
-    isFavorite: Boolean,
-    onToggleFavorite: () -> Unit,
-    onSharePost: () -> Unit
+    navigationIconContent: @Composable (() -> Unit)? = null,
+    bottomBarContent: @Composable () -> Unit = { }
 ) {
     val scrollState = rememberLazyListState()
     Scaffold(
@@ -206,35 +205,12 @@ private fun ArticleScreenContent(
                         )
                     }
                 },
-                navigationIcon = if (!showNavRail) {
-                    {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.cd_navigate_up),
-                                tint = MaterialTheme.colors.primary
-                            )
-                        }
-                    }
-                } else {
-                    null
-                },
+                navigationIcon = navigationIconContent,
                 elevation = if (!scrollState.isScrolled) 0.dp else 4.dp,
                 backgroundColor = MaterialTheme.colors.surface
             )
         },
-        bottomBar = if (!showNavRail) {
-            {
-                BottomBar(
-                    onUnimplementedAction = onUnimplementedAction,
-                    isFavorite = isFavorite,
-                    onToggleFavorite = onToggleFavorite,
-                    onSharePost = onSharePost
-                )
-            }
-        } else {
-            { }
-        }
+        bottomBar = bottomBarContent
     ) { innerPadding ->
         PostContent(
             post = post,
@@ -397,7 +373,7 @@ fun PreviewArticleDrawer() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreenAdaptive(post, false, {}, false, {})
+        ArticleAdaptiveScreen(post, false, {}, false, {})
     }
 }
 
@@ -415,7 +391,7 @@ fun PreviewArticleNavRail() {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
         Surface {
-            ArticleScreenAdaptive(post, true, {}, false, {})
+            ArticleAdaptiveScreen(post, true, {}, false, {})
         }
     }
 }

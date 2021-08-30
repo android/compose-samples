@@ -99,7 +99,7 @@ fun HomeScreen(
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsState()
 
-    HomeScreenAdaptive(
+    HomeAdaptiveScreen(
         uiState = uiState,
         showNavRail = showNavRail,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
@@ -129,7 +129,7 @@ fun HomeScreen(
  */
 @VisibleForTesting
 @Composable
-fun HomeScreenAdaptive(
+fun HomeAdaptiveScreen(
     uiState: HomeUiState,
     showNavRail: Boolean,
     onToggleFavorite: (String) -> Unit,
@@ -140,19 +140,6 @@ fun HomeScreenAdaptive(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val homeScreenContent = @Composable {
-        HomeScreenContent(
-            uiState = uiState,
-            showNavRail = showNavRail,
-            onToggleFavorite = onToggleFavorite,
-            onRefreshPosts = onRefreshPosts,
-            onErrorDismiss = onErrorDismiss,
-            navigateToArticle = navigateToArticle,
-            openDrawer = openDrawer,
-            scaffoldState = scaffoldState
-        )
-    }
-
     if (showNavRail) {
         Row(Modifier.fillMaxSize()) {
             AppNavRail(
@@ -160,10 +147,35 @@ fun HomeScreenAdaptive(
                 navigateToHome = { /* Do nothing */ },
                 navigateToInterests = navigateToInterests
             )
-            homeScreenContent()
+            HomeScreenContent(
+                uiState = uiState,
+                onToggleFavorite = onToggleFavorite,
+                onRefreshPosts = onRefreshPosts,
+                onErrorDismiss = onErrorDismiss,
+                navigateToArticle = navigateToArticle,
+                scaffoldState = scaffoldState
+            )
         }
     } else {
-        homeScreenContent()
+        HomeScreenContent(
+            uiState = uiState,
+            onToggleFavorite = onToggleFavorite,
+            onRefreshPosts = onRefreshPosts,
+            onErrorDismiss = onErrorDismiss,
+            navigateToArticle = navigateToArticle,
+            scaffoldState = scaffoldState,
+            navigationIconContent = {
+                IconButton(onClick = openDrawer) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_jetnews_logo),
+                        contentDescription = stringResource(
+                            R.string.cd_open_navigation_drawer
+                        ),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+            }
+        )
     }
 }
 
@@ -173,25 +185,23 @@ fun HomeScreenAdaptive(
  * Stateless composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) error message was shown
  * @param navigateToArticle (event) request navigation to Article screen
- * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
+ * @param navigationIconContent (UI) content to show for the navigation icon
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreenContent(
     uiState: HomeUiState,
-    showNavRail: Boolean,
     onToggleFavorite: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
     navigateToArticle: (String) -> Unit,
-    openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    navigationIconContent: @Composable (() -> Unit)? = null
 ) {
     val scrollState = rememberLazyListState()
     Scaffold(
@@ -210,25 +220,9 @@ private fun HomeScreenContent(
                             .padding(bottom = 4.dp, top = 10.dp)
                     )
                 },
-                navigationIcon = if (!showNavRail) {
-                    {
-                        IconButton(onClick = openDrawer) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_jetnews_logo),
-                                contentDescription = stringResource(
-                                    R.string.cd_open_navigation_drawer
-                                ),
-                                tint = MaterialTheme.colors.primary
-                            )
-                        }
-                    }
-                } else {
-                    null
-                },
+                navigationIcon = navigationIconContent,
                 actions = {
-                    IconButton(
-                        onClick = { /* TODO: Open search */ }
-                    ) {
+                    IconButton(onClick = { /* TODO: Open search */ }) {
                         Icon(
                             imageVector = Icons.Filled.Search,
                             contentDescription = stringResource(R.string.cd_search)
@@ -526,7 +520,7 @@ fun PreviewHomeScreenWithDrawer() {
         (BlockingFakePostsRepository().getPosts() as Result.Success).data
     }
     JetnewsTheme {
-        HomeScreenAdaptive(
+        HomeAdaptiveScreen(
             uiState = HomeUiState(posts = posts),
             showNavRail = false,
             onToggleFavorite = { /*TODO*/ },
@@ -550,7 +544,7 @@ fun PreviewHomeScreenWithNavRail() {
     }
     JetnewsTheme {
         Surface {
-            HomeScreenAdaptive(
+            HomeAdaptiveScreen(
                 uiState = HomeUiState(posts = posts),
                 showNavRail = true,
                 onToggleFavorite = { /*TODO*/ },
