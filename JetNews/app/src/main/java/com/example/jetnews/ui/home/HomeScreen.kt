@@ -38,7 +38,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -67,11 +66,11 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.MainDestinations
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
+import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.runBlocking
@@ -206,7 +205,7 @@ private fun HomeScreenContent(
     val scrollState = rememberLazyListState()
     Scaffold(
         scaffoldState = scaffoldState,
-        snackbarHost = { SnackbarHost(hostState = it, modifier = Modifier.systemBarsPadding()) },
+        snackbarHost = { JetnewsSnackbarHost(hostState = it) },
         topBar = {
             val title = stringResource(id = R.string.app_name)
             InsetAwareTopAppBar(
