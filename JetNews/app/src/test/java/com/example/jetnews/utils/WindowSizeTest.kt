@@ -39,6 +39,6 @@ class WindowSizeTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun getWindowSize_Negative() {
-        assertTrue(getWindowSize((-1).dp) == WindowSize.Expanded)
+        getWindowSize((-1).dp)
     }
 }
