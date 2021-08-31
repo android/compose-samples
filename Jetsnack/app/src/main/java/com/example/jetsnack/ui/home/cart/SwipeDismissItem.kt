@@ -33,13 +33,14 @@ import androidx.compose.ui.unit.Dp
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
+/*Holds the Swipe to dismiss composable, its animation and the current state*/
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
-    background: @Composable (offset: Dp) -> Unit,
-    content: @Composable (isDismissed: Boolean) -> Unit,
     directions: Set<DismissDirection> = setOf(DismissDirection.EndToStart),
     enter: EnterTransition = expandVertically(),
-    exit: ExitTransition = shrinkVertically()
+    exit: ExitTransition = shrinkVertically(),
+    background: @Composable (offset: Dp) -> Unit,
+    content: @Composable (isDismissed: Boolean) -> Unit,
 ) {
     // Hold the current state from the Swipe to Dismiss composable
     val dismissState = rememberDismissState()

@@ -241,16 +241,15 @@ private fun CartContent(
                         }
                     }
                 },
-                content = {
-                    CartItem(
-                        orderLine = orderLine,
-                        removeSnack = removeSnack,
-                        increaseItemCount = increaseItemCount,
-                        decreaseItemCount = decreaseItemCount,
-                        onSnackClick = onSnackClick
-                    )
-                }
-            )
+            ) {
+                CartItem(
+                    orderLine = orderLine,
+                    removeSnack = removeSnack,
+                    increaseItemCount = increaseItemCount,
+                    decreaseItemCount = decreaseItemCount,
+                    onSnackClick = onSnackClick
+                )
+            }
         }
         item {
             SummaryItem(
