@@ -16,21 +16,29 @@
 
 package com.example.jetnews.utils
 
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
-/**
- * Opinionated set of viewport breakpoints
- *     - Compact: Most phones in portrait mode
- *     - Medium: Most foldables and tablets in portrait mode
- *     - Expanded: Most tablets in landscape mode
- *
- * More info: https://material.io/archive/guidelines/layout/responsive-ui.html
- */
-enum class WindowSize { Compact, Medium, Expanded }
+class WindowSizeTest {
 
-fun getWindowSize(width: Dp): WindowSize = when {
-    width.value < 0f -> throw IllegalArgumentException("Dp value cannot be negative")
-    width.value < 600f -> WindowSize.Compact
-    width.value <= 800f -> WindowSize.Medium
-    else -> WindowSize.Expanded
+    @Test
+    fun getWindowSize_Compact() {
+        assertTrue(getWindowSize(599.dp) == WindowSize.Compact)
+    }
+
+    @Test
+    fun getWindowSize_Medium() {
+        assertTrue(getWindowSize(800.dp) == WindowSize.Medium)
+    }
+
+    @Test
+    fun getWindowSize_Expanded() {
+        assertTrue(getWindowSize(801.dp) == WindowSize.Expanded)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun getWindowSize_Negative() {
+        getWindowSize((-1).dp)
+    }
 }
