@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
@@ -41,6 +42,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -54,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -163,16 +167,36 @@ fun InterestsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
+
             InsetAwareTopAppBar(
-                title = { Text(stringResource(id = R.string.interests_title)) },
+                title = {
+                    Text(
+                        text = stringResource(R.string.cd_interests),
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
                         Icon(
                             painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            tint = MaterialTheme.colors.primary
                         )
                     }
-                }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { /* TODO: Open search */ }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = stringResource(R.string.cd_search)
+                        )
+                    }
+                },
+                backgroundColor = MaterialTheme.colors.surface,
+                elevation = 0.dp
             )
         }
     ) {
