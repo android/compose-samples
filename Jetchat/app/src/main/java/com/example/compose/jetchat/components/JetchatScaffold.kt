@@ -34,16 +34,56 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.conversation.ChannelNameBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.launch
+
+
+@Composable
+fun JetchatScaffold(
+    scaffoldState: ScaffoldState,
+    complexTopBar: Boolean,
+    findNavController: () -> NavController,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    JetchatScaffold(
+        scaffoldState,
+//                        complexTopBar = currentDestinationId() == R.id.nav_home,
+        complexTopBar = complexTopBar,
+        onNavIconClicked = {
+            scope.launch {
+                scaffoldState.drawerState.open()
+            }
+        },
+        onChatClicked = {
+            findNavController().popBackStack(R.id.nav_home, true)
+            scope.launch {
+                scaffoldState.drawerState.close()
+            }
+        },
+        onProfileClicked = {
+            val bundle = bundleOf("userId" to it)
+            findNavController().navigate(R.id.nav_profile, bundle)
+            scope.launch {
+                scaffoldState.drawerState.close()
+            }
+        },
+        content = content
+    )
+}
+
 
 @Composable
 fun JetchatScaffold(

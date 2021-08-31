@@ -16,10 +16,15 @@
 
 package com.example.compose.jetchat
 
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -27,7 +32,7 @@ import kotlinx.coroutines.flow.StateFlow
  * Used to communicate between screens.
  */
 class MainViewModel : ViewModel() {
-    var complexTopBar by mutableStateOf(true)
+    val scaffoldState by mutableStateOf(ScaffoldState(DrawerState(DrawerValue.Closed), SnackbarHostState()))
 
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened: StateFlow<Boolean> = _drawerShouldBeOpened

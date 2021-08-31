@@ -58,7 +58,8 @@ class NavActivity : AppCompatActivity() {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides this.onBackPressedDispatcher
                 ) {
-                    val scaffoldState = rememberScaffoldState()
+//                    val scaffoldState = rememberScaffoldState()
+                    val scaffoldState = viewModel.scaffoldState
 
                     val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
                     if (drawerOpen) {
@@ -79,30 +80,7 @@ class NavActivity : AppCompatActivity() {
                         }
                     }
 
-                    JetchatScaffold(
-                        scaffoldState,
-                        complexTopBar = viewModel.complexTopBar,
-                        onNavIconClicked = {
-                            scope.launch {
-                                scaffoldState.drawerState.open()
-                            }
-                        },
-                        onChatClicked = {
-                            findNavController().popBackStack(R.id.nav_home, true)
-                            scope.launch {
-                                scaffoldState.drawerState.close()
-                            }
-                        },
-                        onProfileClicked = {
-                            val bundle = bundleOf("userId" to it)
-                            findNavController().navigate(R.id.nav_profile, bundle)
-                            scope.launch {
-                                scaffoldState.drawerState.close()
-                            }
-                        }
-                    ) {
-                        AndroidViewBinding(ContentMainBinding::inflate)
-                    }
+                    AndroidViewBinding(ContentMainBinding::inflate)
                 }
             }
         }
