@@ -28,8 +28,13 @@ import androidx.compose.ui.unit.Dp
  */
 enum class WindowSize { Compact, Medium, Expanded }
 
-fun getWindowSize(width: Dp): WindowSize = when (width.value) {
-    in 0f..599f -> WindowSize.Compact
-    in 600f..800f -> WindowSize.Medium
-    else -> WindowSize.Expanded
-}
+fun getWindowSize(width: Dp): WindowSize =
+    if (width.value >= 0f) {
+        when {
+            width.value < 600f -> WindowSize.Compact
+            width.value <= 800f -> WindowSize.Medium
+            else -> WindowSize.Expanded
+        }
+    } else {
+        throw IllegalArgumentException("Dp value cannot be negative")
+    }
