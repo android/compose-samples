@@ -82,7 +82,7 @@ class NavActivity : AppCompatActivity() {
                     JetchatScaffold(
                         scaffoldState,
                         complexTopBar = viewModel.complexTopBar,
-                        onNavIconClicked =                         {
+                        onNavIconClicked = {
                             scope.launch {
                                 scaffoldState.drawerState.open()
                             }

@@ -77,12 +77,18 @@ fun JetchatScaffold(
                         onNavIconPressed = onNavIconClicked,
                         title = { },
                         actions = {
-                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            CompositionLocalProvider(
+                                LocalContentAlpha provides ContentAlpha.medium
+                            ) {
                                 // More icon
                                 Icon(
                                     imageVector = Icons.Outlined.MoreVert,
                                     modifier = Modifier
-                                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                                        .clickable(
+                                            onClick = {
+                                                functionalityNotAvailablePopupShown = true
+                                            }
+                                        )
                                         .padding(horizontal = 12.dp, vertical = 16.dp)
                                         .height(24.dp),
                                     contentDescription = stringResource(id = R.string.more_options)

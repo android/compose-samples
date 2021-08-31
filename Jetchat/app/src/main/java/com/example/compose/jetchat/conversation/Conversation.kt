@@ -79,7 +79,6 @@ import com.example.compose.jetchat.theme.elevatedSurface
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.launch
 
 /**
