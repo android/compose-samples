@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -38,8 +39,9 @@ fun JetnewsApp(
     JetnewsTheme {
         ProvideWindowInsets {
             val systemUiController = rememberSystemUiController()
+            val darkIcons = MaterialTheme.colors.isLight
             SideEffect {
-                systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = false)
+                systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = darkIcons)
             }
 
             val navController = rememberNavController()

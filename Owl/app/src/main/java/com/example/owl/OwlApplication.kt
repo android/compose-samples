@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package androidx.compose.samples.crane
+package com.example.owl
 
 import android.app.Application
-import androidx.compose.samples.crane.util.UnsplashSizingInterceptor
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.compose.rememberImagePainter
-import dagger.hilt.android.HiltAndroidApp
+import com.example.owl.ui.utils.UnsplashSizingInterceptor
 
-@HiltAndroidApp
-class CraneApplication : Application(), ImageLoaderFactory {
+@Suppress("unused")
+class OwlApplication : Application(), ImageLoaderFactory {
 
     /**
      * Create the singleton [ImageLoader].

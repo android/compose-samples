@@ -65,14 +65,15 @@ fun AuthorAndReadTime(
 ) {
     Row(modifier) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            val textStyle = MaterialTheme.typography.body2
             Text(
-                text = post.metadata.author.name,
-                style = textStyle
-            )
-            Text(
-                text = " - ${post.metadata.readTimeMinutes} min read",
-                style = textStyle
+                text = stringResource(
+                    id = R.string.home_post_min_read,
+                    formatArgs = arrayOf(
+                        post.metadata.author.name,
+                        post.metadata.readTimeMinutes
+                    )
+                ),
+                style = MaterialTheme.typography.body2
             )
         }
     }
@@ -151,7 +152,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = "BASED ON YOUR HISTORY",
+                    text = stringResource(id = R.string.home_post_based_on_history),
                     style = MaterialTheme.typography.overline
                 )
             }

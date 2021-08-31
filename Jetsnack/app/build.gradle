@@ -23,12 +23,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId 'com.example.jetsnack'
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -106,10 +106,12 @@ dependencies {
 
     implementation Libs.Accompanist.insets
     implementation Libs.Accompanist.systemuicontroller
+    implementation Libs.Accompanist.flowlayouts
 
     implementation Libs.Coil.coilCompose
 
     androidTestImplementation Libs.JUnit.junit
+    androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore
     androidTestImplementation Libs.AndroidX.Test.rules
