@@ -35,18 +35,32 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 /**
- * UI state for the Home screen
+ * UI state for the Home route.
+ *
+ * This is derived from [HomeViewModelState], but split into two possible subclasses to more
+ * precisely represent the state available to render the UI.
  */
 sealed interface HomeUiState {
 
     val isLoading: Boolean
     val errorMessages: List<ErrorMessage>
 
+    /**
+     * There are no posts to render.
+     *
+     * This could either be because they are still loading or they failed to load, and we are
+     * waiting to reload them.
+     */
     data class NoPosts(
         override val isLoading: Boolean,
         override val errorMessages: List<ErrorMessage>
     ) : HomeUiState
 
+    /**
+     * There are posts to render, as contained in [postsFeed].
+     *
+     * There is guaranteed to be a [selectedPost], which is one of the posts from [postsFeed].
+     */
     data class HasPosts(
         val postsFeed: PostsFeed,
         val selectedPost: Post,
@@ -58,7 +72,7 @@ sealed interface HomeUiState {
 }
 
 /**
- * An internal representation of the home state, in a raw form
+ * An internal representation of the Home route state, in a raw form
  */
 private data class HomeViewModelState(
     val postsFeed: PostsFeed? = null,
@@ -82,6 +96,9 @@ private data class HomeViewModelState(
         } else {
             HomeUiState.HasPosts(
                 postsFeed = postsFeed,
+                // Determine the selected post. This will be the post the user last selected.
+                // If there is none (or that post isn't in the current feed), default to the
+                // highlighted post
                 selectedPost = postsFeed.allPosts.find {
                     it.id == selectedPostId
                 } ?: postsFeed.highlightedPost,
@@ -160,7 +177,7 @@ class HomeViewModel(
      */
     fun selectArticle(postId: String) {
         // Treat selecting a detail as simply interacting with it
-        interactedWithDetail(postId)
+        interactedWithArticleDetails(postId)
     }
 
     /**
@@ -173,13 +190,19 @@ class HomeViewModel(
         }
     }
 
-    fun interactedWithList() {
+    /**
+     * Notify that the user interacted with the feed
+     */
+    fun interactedWithFeed() {
         viewModelState.update {
             it.copy(isArticleOpen = false)
         }
     }
 
-    fun interactedWithDetail(postId: String) {
+    /**
+     * Notify that the user interacted with the article details
+     */
+    fun interactedWithArticleDetails(postId: String) {
         viewModelState.update {
             it.copy(
                 selectedPostId = postId,

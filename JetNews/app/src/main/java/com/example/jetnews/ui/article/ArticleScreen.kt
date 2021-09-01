@@ -80,6 +80,7 @@ import kotlinx.coroutines.runBlocking
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
+ * @param lazyListState (state) the [LazyListState] for the article content
  */
 @Composable
 fun ArticleScreen(
@@ -108,6 +109,7 @@ fun ArticleScreen(
         }
         ArticleScreenContent(
             post = post,
+            showNavRail = showNavRail,
             // Allow opening the Drawer if the NavRail is not on the screen
             navigationIconContent = if (!showNavRail) {
                 {
@@ -144,12 +146,14 @@ fun ArticleScreen(
  * Stateless Article Screen that displays a single post.
  *
  * @param post (state) item to display
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param navigationIconContent (UI) content to show for the navigation icon
  * @param bottomBarContent (UI) content to show for the bottom bar
  */
 @Composable
 private fun ArticleScreenContent(
     post: Post,
+    showNavRail: Boolean,
     navigationIconContent: @Composable (() -> Unit)? = null,
     bottomBarContent: @Composable () -> Unit = { },
     lazyListState: LazyListState = rememberLazyListState()
@@ -193,7 +197,10 @@ private fun ArticleScreenContent(
                 // innerPadding takes into account the top and bottom bar
                 .padding(innerPadding)
                 // offset content in landscape mode to account for the navigation bar
-                .navigationBarsPadding(bottom = false),
+                .navigationBarsPadding(
+                    bottom = false,
+                    start = !showNavRail
+                ),
             state = lazyListState,
         )
     }
@@ -224,7 +231,11 @@ private fun ArticleNavRail(
                     tint = MaterialTheme.colors.primary
                 )
             }
-        }
+        },
+        modifier = Modifier.navigationBarsPadding(
+            bottom = false,
+            end = false
+        )
     ) {
         IconButton(onClick = onUnimplementedAction) {
             Icon(

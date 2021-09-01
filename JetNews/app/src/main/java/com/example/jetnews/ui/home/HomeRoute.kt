@@ -37,7 +37,9 @@ import com.example.jetnews.utils.getWindowSize
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
+ * @param showNavRail true if the nav rail should be shown
  * @param openDrawer (event) request opening the app drawer
+ * @param navigateToInterests (event) navigate to the interests screen
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
@@ -58,8 +60,8 @@ fun HomeRoute(
         onSelectPost = { homeViewModel.selectArticle(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
         onErrorDismiss = { homeViewModel.errorShown(it) },
-        onInteractWithList = { homeViewModel.interactedWithList() },
-        onInteractWithDetail = { homeViewModel.interactedWithDetail(it) },
+        onInteractWithFeed = { homeViewModel.interactedWithFeed() },
+        onInteractWithArticleDetails = { homeViewModel.interactedWithArticleDetails(it) },
         openDrawer = openDrawer,
         navigateToInterests = navigateToInterests,
         scaffoldState = scaffoldState,
@@ -72,10 +74,16 @@ fun HomeRoute(
  * This composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
+ * @param showNavRail (state) true if we should show the nav rail
  * @param onToggleFavorite (event) toggles favorite for a post
+ * @param onSelectPost (event) indicate that a post was selected
  * @param onRefreshPosts (event) request a refresh of posts
  * @param onErrorDismiss (event) error message was shown
+ * @param onInteractWithFeed (event) indicate that the feed was interacted with
+ * @param onInteractWithArticleDetails (event) indicate that the article details were interacted
+ * with
  * @param openDrawer (event) request opening the app drawer
+ * @param navigateToInterests (event) navigate to the interests screen
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @OptIn(ExperimentalMaterialApi::class)
@@ -87,8 +95,8 @@ fun HomeRoute(
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
-    onInteractWithList: () -> Unit,
-    onInteractWithDetail: (String) -> Unit,
+    onInteractWithFeed: () -> Unit,
+    onInteractWithArticleDetails: (String) -> Unit,
     openDrawer: () -> Unit,
     navigateToInterests: () -> Unit,
     scaffoldState: ScaffoldState
@@ -108,36 +116,35 @@ fun HomeRoute(
     }
 
     BoxWithConstraints {
-        val useListDetail = when (getWindowSize(maxWidth)) {
-            WindowSize.Compact, WindowSize.Medium -> false
-            WindowSize.Expanded -> true
-        }
-
         // Determine which type of the home screen to display
-        val homeScreenType = if (useListDetail) {
-            HomeScreenType.ListArticle
-        } else {
-            when (uiState) {
-                is HomeUiState.HasPosts -> if (uiState.isArticleOpen) {
-                    HomeScreenType.Article
-                } else {
-                    HomeScreenType.List
+        val homeScreenType = when (getWindowSize(maxWidth)) {
+            WindowSize.Compact,
+            WindowSize.Medium -> {
+                when (uiState) {
+                    is HomeUiState.HasPosts -> {
+                        if (uiState.isArticleOpen) {
+                            HomeScreenType.ArticleDetails
+                        } else {
+                            HomeScreenType.Feed
+                        }
+                    }
+                    is HomeUiState.NoPosts -> HomeScreenType.Feed
                 }
-                is HomeUiState.NoPosts -> HomeScreenType.List
             }
+            WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
         }
 
         when (homeScreenType) {
-            HomeScreenType.ListArticle -> {
-                HomeListDetailScreen(
+            HomeScreenType.FeedWithArticleDetails -> {
+                HomeFeedWithArticleDetailsScreen(
                     uiState = uiState,
                     showNavRail = showNavRail,
                     onToggleFavorite = onToggleFavorite,
                     onSelectPost = onSelectPost,
                     onRefreshPosts = onRefreshPosts,
                     onErrorDismiss = onErrorDismiss,
-                    onInteractWithList = onInteractWithList,
-                    onInteractWithDetail = onInteractWithDetail,
+                    onInteractWithList = onInteractWithFeed,
+                    onInteractWithDetail = onInteractWithArticleDetails,
                     openDrawer = openDrawer,
                     navigateToInterests = navigateToInterests,
                     homeListLazyListState = homeListLazyListState,
@@ -145,29 +152,28 @@ fun HomeRoute(
                     scaffoldState = scaffoldState
                 )
             }
-            HomeScreenType.List -> {
-                HomeListScreen(
+            HomeScreenType.Feed -> {
+                HomeFeedScreen(
                     uiState = uiState,
                     showNavRail = showNavRail,
                     onToggleFavorite = onToggleFavorite,
                     onSelectPost = onSelectPost,
                     onRefreshPosts = onRefreshPosts,
                     onErrorDismiss = onErrorDismiss,
-                    onInteractWithList = onInteractWithList,
                     openDrawer = openDrawer,
                     navigateToInterests = navigateToInterests,
                     homeListLazyListState = homeListLazyListState,
                     scaffoldState = scaffoldState
                 )
             }
-            HomeScreenType.Article -> {
-                // Guaranteed by above condition
+            HomeScreenType.ArticleDetails -> {
+                // Guaranteed by above condition for home screen type
                 check(uiState is HomeUiState.HasPosts)
 
                 ArticleScreen(
                     post = uiState.selectedPost,
                     showNavRail = showNavRail,
-                    onBack = onInteractWithList,
+                    onBack = onInteractWithFeed,
                     isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
                     onToggleFavorite = {
                         onToggleFavorite(uiState.selectedPost.id)
@@ -178,16 +184,26 @@ fun HomeRoute(
                 )
 
                 // If we are just showing the detail, have a back press switch to the list.
+                // This doesn't take anything more than notifying that we "interacted with the list"
+                // since that is what drives the display of the feed
                 BackHandler {
-                    onInteractWithList()
+                    onInteractWithFeed()
                 }
             }
         }
     }
 }
 
+/**
+ * A precise enumeration of which type of screen to display at the home route.
+ *
+ * There are 3 options:
+ * - [FeedWithArticleDetails], which displays both a list of all articles and a specific article.
+ * - [Feed], which displays just the list of all articles
+ * - [ArticleDetails], which displays just a specific article.
+ */
 private enum class HomeScreenType {
-    ListArticle,
-    List,
-    Article
+    FeedWithArticleDetails,
+    Feed,
+    ArticleDetails
 }

@@ -23,7 +23,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.jetnews.ui.home.HomeListScreen
+import com.example.jetnews.ui.home.HomeFeedScreen
 import com.example.jetnews.ui.home.HomeUiState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.ErrorMessage
@@ -52,7 +52,7 @@ class HomeScreenTests {
                 val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
 
                 // When the Home screen receives data with an error
-                HomeListScreen(
+                HomeFeedScreen(
                     uiState = HomeUiState.NoPosts(
                         isLoading = false,
                         errorMessages = listOf(ErrorMessage(0L, R.string.load_error))

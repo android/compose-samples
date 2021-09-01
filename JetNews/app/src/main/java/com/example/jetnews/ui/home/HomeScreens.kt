@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,6 +62,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -75,6 +77,7 @@ import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -84,10 +87,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 
 /**
- * The home screen displaying a list and a detail.
+ * The home screen displaying the feed along with an article details.
  */
 @Composable
-fun HomeListDetailScreen(
+fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
     showNavRail: Boolean,
     onToggleFavorite: (String) -> Unit,
@@ -121,18 +124,12 @@ fun HomeListDetailScreen(
                 contentPadding = rememberInsetsPaddingValues(
                     insets = LocalWindowInsets.current.systemBars,
                     applyTop = false,
+                    applyStart = !showNavRail,
                     applyEnd = false,
                 ),
                 modifier = modifier
                     .width(334.dp)
-                    .pointerInput(Unit) {
-                        while (currentCoroutineContext().isActive) {
-                            awaitPointerEventScope {
-                                awaitPointerEvent(PointerEventPass.Initial)
-                                onInteractWithList()
-                            }
-                        }
-                    },
+                    .notifyInput(onInteractWithList),
                 state = homeListLazyListState
             )
             // Crossfade between different detail posts
@@ -148,13 +145,8 @@ fun HomeListDetailScreen(
                         post = detailPost,
                         modifier = modifier
                             .fillMaxSize()
-                            .pointerInput(Unit) {
-                                while (currentCoroutineContext().isActive) {
-                                    awaitPointerEventScope {
-                                        awaitPointerEvent(PointerEventPass.Initial)
-                                        onInteractWithDetail(detailPost.id)
-                                    }
-                                }
+                            .notifyInput {
+                                onInteractWithDetail(detailPost.id)
                             },
                         contentPadding = rememberInsetsPaddingValues(
                             insets = LocalWindowInsets.current.systemBars,
@@ -170,17 +162,29 @@ fun HomeListDetailScreen(
 }
 
 /**
- * The home screen displaying a list.
+ * A [Modifier] that tracks all input, and calls [block] every time input is received.
+ */
+private fun Modifier.notifyInput(block: () -> Unit): Modifier =
+    pointerInput(block) {
+        while (currentCoroutineContext().isActive) {
+            awaitPointerEventScope {
+                awaitPointerEvent(PointerEventPass.Initial)
+                block()
+            }
+        }
+    }
+
+/**
+ * The home screen displaying just the article feed.
  */
 @Composable
-fun HomeListScreen(
+fun HomeFeedScreen(
     uiState: HomeUiState,
     showNavRail: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
-    onInteractWithList: () -> Unit,
     openDrawer: () -> Unit,
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
@@ -204,16 +208,9 @@ fun HomeListScreen(
             contentPadding = rememberInsetsPaddingValues(
                 insets = LocalWindowInsets.current.systemBars,
                 applyTop = false,
+                applyStart = !showNavRail,
             ),
-            modifier = modifier
-                .pointerInput(Unit) {
-                    while (currentCoroutineContext().isActive) {
-                        awaitPointerEventScope {
-                            awaitPointerEvent(PointerEventPass.Initial)
-                            onInteractWithList()
-                        }
-                    }
-                },
+            modifier = modifier,
             state = homeListLazyListState
         )
     }
@@ -225,7 +222,7 @@ fun HomeListScreen(
  * This sets up the scaffold with the top app bar, and surrounds the [hasPostsContent] with refresh,
  * loading and error handling.
  *
- * This helper functions exists because [HomeListDetailScreen] and [HomeListScreen] are extremely
+ * This helper functions exists because [HomeFeedWithArticleDetailsScreen] and [HomeFeedScreen] are extremely
  * similar, except for the rendered content when there are posts to display.
  */
 @Composable
@@ -248,7 +245,11 @@ private fun HomeScreenWithList(
             AppNavRail(
                 currentRoute = JetnewsDestinations.HOME_ROUTE,
                 navigateToHome = { /* Do nothing */ },
-                navigateToInterests = navigateToInterests
+                navigateToInterests = navigateToInterests,
+                modifier = Modifier.navigationBarsPadding(
+                    bottom = false,
+                    end = false
+                )
             )
         }
         Scaffold(
@@ -564,7 +565,7 @@ fun PreviewHomeListDrawerScreen() {
         (BlockingFakePostsRepository().getPostsFeed() as Result.Success).data
     }
     JetnewsTheme {
-        HomeListScreen(
+        HomeFeedScreen(
             uiState = HomeUiState.HasPosts(
                 postsFeed = postsFeed,
                 selectedPost = postsFeed.highlightedPost,
@@ -578,7 +579,6 @@ fun PreviewHomeListDrawerScreen() {
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
-            onInteractWithList = {},
             openDrawer = {},
             navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
@@ -596,7 +596,7 @@ fun PreviewHomeListNavRailScreen() {
         (BlockingFakePostsRepository().getPostsFeed() as Result.Success).data
     }
     JetnewsTheme {
-        HomeListScreen(
+        HomeFeedScreen(
             uiState = HomeUiState.HasPosts(
                 postsFeed = postsFeed,
                 selectedPost = postsFeed.highlightedPost,
@@ -610,7 +610,6 @@ fun PreviewHomeListNavRailScreen() {
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
-            onInteractWithList = {},
             openDrawer = {},
             navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
@@ -628,7 +627,7 @@ fun PreviewHomeListDetailScreen() {
         (BlockingFakePostsRepository().getPostsFeed() as Result.Success).data
     }
     JetnewsTheme {
-        HomeListDetailScreen(
+        HomeFeedWithArticleDetailsScreen(
             uiState = HomeUiState.HasPosts(
                 postsFeed = postsFeed,
                 selectedPost = postsFeed.highlightedPost,
