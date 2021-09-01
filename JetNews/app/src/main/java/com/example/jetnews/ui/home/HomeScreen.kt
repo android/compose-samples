@@ -76,7 +76,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful composable that displays the Home screen.
+ * Stateful composable that displays the Navigation route for the Home screen.
  *
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
@@ -87,7 +87,7 @@ import kotlinx.coroutines.runBlocking
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
-fun HomeScreen(
+fun HomeRoute(
     homeViewModel: HomeViewModel,
     showNavRail: Boolean,
     navigateToArticle: (String) -> Unit,
@@ -98,7 +98,7 @@ fun HomeScreen(
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsState()
 
-    HomeAdaptiveScreen(
+    HomeScreen(
         uiState = uiState,
         showNavRail = showNavRail,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
@@ -128,7 +128,7 @@ fun HomeScreen(
  */
 @VisibleForTesting
 @Composable
-fun HomeAdaptiveScreen(
+fun HomeScreen(
     uiState: HomeUiState,
     showNavRail: Boolean,
     onToggleFavorite: (String) -> Unit,
@@ -139,23 +139,14 @@ fun HomeAdaptiveScreen(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    if (showNavRail) {
-        Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize()) {
+        if (showNavRail) {
             AppNavRail(
                 currentRoute = MainDestinations.HOME_ROUTE,
                 navigateToHome = { /* Do nothing */ },
                 navigateToInterests = navigateToInterests
             )
-            HomeScreenContent(
-                uiState = uiState,
-                onToggleFavorite = onToggleFavorite,
-                onRefreshPosts = onRefreshPosts,
-                onErrorDismiss = onErrorDismiss,
-                navigateToArticle = navigateToArticle,
-                scaffoldState = scaffoldState
-            )
         }
-    } else {
         HomeScreenContent(
             uiState = uiState,
             onToggleFavorite = onToggleFavorite,
@@ -163,16 +154,19 @@ fun HomeAdaptiveScreen(
             onErrorDismiss = onErrorDismiss,
             navigateToArticle = navigateToArticle,
             scaffoldState = scaffoldState,
-            navigationIconContent = {
-                IconButton(onClick = openDrawer) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_jetnews_logo),
-                        contentDescription = stringResource(
-                            R.string.cd_open_navigation_drawer
-                        ),
-                        tint = MaterialTheme.colors.primary
-                    )
+            // Show the Jetnews logo in the TopAppBar if the NavRail is not on the screen
+            navigationIconContent = if (!showNavRail) {
+                {
+                    IconButton(onClick = openDrawer) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
                 }
+            } else {
+                null
             }
         )
     }
@@ -519,7 +513,7 @@ fun PreviewHomeScreenWithDrawer() {
         (BlockingFakePostsRepository().getPosts() as Result.Success).data
     }
     JetnewsTheme {
-        HomeAdaptiveScreen(
+        HomeScreen(
             uiState = HomeUiState(posts = posts),
             showNavRail = false,
             onToggleFavorite = { /*TODO*/ },
@@ -543,7 +537,7 @@ fun PreviewHomeScreenWithNavRail() {
     }
     JetnewsTheme {
         Surface {
-            HomeAdaptiveScreen(
+            HomeScreen(
                 uiState = HomeUiState(posts = posts),
                 showNavRail = true,
                 onToggleFavorite = { /*TODO*/ },

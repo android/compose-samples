@@ -73,14 +73,14 @@ import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
- * Displays the Article screen.
+ * Stateful composable that displays the Navigation route for the Article screen.
  *
  * @param articleViewModel ViewModel that handles the business logic of this screen
  * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param onBack (event) request back navigation
  */
 @Composable
-fun ArticleScreen(
+fun ArticleRoute(
     articleViewModel: ArticleViewModel,
     showNavRail: Boolean,
     onBack: () -> Unit
@@ -89,7 +89,7 @@ fun ArticleScreen(
     val uiState by articleViewModel.uiState.collectAsState()
 
     if (uiState.post != null) {
-        ArticleAdaptiveScreen(
+        ArticleScreen(
             post = uiState.post!!,
             showNavRail = showNavRail,
             onBack = onBack,
@@ -117,7 +117,7 @@ fun ArticleScreen(
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
  */
 @Composable
-private fun ArticleAdaptiveScreen(
+private fun ArticleScreen(
     post: Post,
     showNavRail: Boolean,
     onBack: () -> Unit,
@@ -129,9 +129,9 @@ private fun ArticleAdaptiveScreen(
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
-    val context = LocalContext.current
-    if (showNavRail) {
-        Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize()) {
+        val context = LocalContext.current
+        if (showNavRail) {
             InterestsNavRail(
                 onBack = onBack,
                 onUnimplementedAction = { showUnimplementedActionDialog = true },
@@ -139,27 +139,35 @@ private fun ArticleAdaptiveScreen(
                 onToggleFavorite = onToggleFavorite,
                 onSharePost = { sharePost(post, context) }
             )
-            ArticleScreenContent(post = post)
         }
-    } else {
         ArticleScreenContent(
             post = post,
-            navigationIconContent = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.cd_navigate_up),
-                        tint = MaterialTheme.colors.primary
+            // Allow opening the Drawer if the NavRail is not on the screen
+            navigationIconContent = if (!showNavRail) {
+                {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_navigate_up),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            } else {
+                null
+            },
+            // Show the bottom bar if the NavRail is not on the screen
+            bottomBarContent = if (!showNavRail) {
+                {
+                    BottomBar(
+                        onUnimplementedAction = { showUnimplementedActionDialog = true },
+                        isFavorite = isFavorite,
+                        onToggleFavorite = onToggleFavorite,
+                        onSharePost = { sharePost(post, context) }
                     )
                 }
-            },
-            bottomBarContent = {
-                BottomBar(
-                    onUnimplementedAction = { showUnimplementedActionDialog = true },
-                    isFavorite = isFavorite,
-                    onToggleFavorite = onToggleFavorite,
-                    onSharePost = { sharePost(post, context) }
-                )
+            } else {
+                { }
             }
         )
     }
@@ -373,7 +381,7 @@ fun PreviewArticleDrawer() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleAdaptiveScreen(post, false, {}, false, {})
+        ArticleScreen(post, false, {}, false, {})
     }
 }
 
@@ -391,7 +399,7 @@ fun PreviewArticleNavRail() {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
         Surface {
-            ArticleAdaptiveScreen(post, true, {}, false, {})
+            ArticleScreen(post, true, {}, false, {})
         }
     }
 }

@@ -93,7 +93,7 @@ enum class Sections(@StringRes val titleResId: Int) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Displays the Interests screen.
+ * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
  * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
@@ -102,7 +102,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param scaffoldState (state) state for screen Scaffold
  */
 @Composable
-fun InterestsScreen(
+fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
     showNavRail: Boolean,
     navigateToHome: () -> Unit,
@@ -114,7 +114,7 @@ fun InterestsScreen(
         mutableStateOf(tabContent.first().section)
     }
 
-    InterestsScreenAdaptive(
+    InterestsScreen(
         tabContent = tabContent,
         currentSection = currentSection,
         showNavRail = showNavRail,
@@ -139,7 +139,7 @@ fun InterestsScreen(
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
-private fun InterestsScreenAdaptive(
+private fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
     showNavRail: Boolean,
@@ -148,36 +148,32 @@ private fun InterestsScreenAdaptive(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
-    if (showNavRail) {
-        Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize()) {
+        if (showNavRail) {
             AppNavRail(
                 currentRoute = MainDestinations.INTERESTS_ROUTE,
                 navigateToHome = navigateToHome,
                 navigateToInterests = { /* Do nothing */ }
             )
-            InterestsScreen(
-                tabContent = tabContent,
-                tab = currentSection,
-                onTabChange = onTabChange,
-                scaffoldState = scaffoldState,
-            )
         }
-    } else {
-        InterestsScreen(
+        InterestsScreenContent(
             tabContent = tabContent,
             tab = currentSection,
             onTabChange = onTabChange,
             scaffoldState = scaffoldState,
-            navigationIconContent = {
-                IconButton(onClick = openDrawer) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_jetnews_logo),
-                        contentDescription = stringResource(
-                            R.string.cd_open_navigation_drawer
-                        ),
-                        tint = MaterialTheme.colors.primary
-                    )
+            // Allow opening the Drawer if the NavRail is not on the screen
+            navigationIconContent = if (!showNavRail) {
+                {
+                    IconButton(onClick = openDrawer) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
                 }
+            } else {
+                null
             }
         )
     }
@@ -194,7 +190,7 @@ private fun InterestsScreenAdaptive(
  * @param navigationIconContent (UI) content to show for the navigation icon
  */
 @Composable
-private fun InterestsScreen(
+private fun InterestsScreenContent(
     tabContent: List<TabContent>,
     tab: Sections,
     onTabChange: (Sections) -> Unit,
@@ -503,7 +499,7 @@ fun PreviewInterestsScreenDrawer() {
             mutableStateOf(tabContent.first().section)
         }
 
-        InterestsScreenAdaptive(
+        InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
             onTabChange = updateSection,
@@ -533,7 +529,7 @@ fun PreviewInterestsScreenNavRail() {
         }
 
         Surface {
-            InterestsScreenAdaptive(
+            InterestsScreen(
                 tabContent = tabContent,
                 currentSection = currentSection,
                 onTabChange = updateSection,

@@ -30,12 +30,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
-import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.article.ArticleRoute
 import com.example.jetnews.ui.article.ArticleViewModel
 import com.example.jetnews.ui.article.ArticleViewModel.Companion.ARTICLE_ID_KEY
-import com.example.jetnews.ui.home.HomeScreen
+import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
-import com.example.jetnews.ui.interests.InterestsScreen
+import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
 import kotlinx.coroutines.launch
 
@@ -70,7 +70,7 @@ fun JetnewsNavGraph(
             val homeViewModel: HomeViewModel = viewModel(
                 factory = HomeViewModel.provideFactory(appContainer.postsRepository)
             )
-            HomeScreen(
+            HomeRoute(
                 homeViewModel = homeViewModel,
                 showNavRail = showNavRail,
                 navigateToArticle = actions.navigateToArticle,
@@ -82,7 +82,7 @@ fun JetnewsNavGraph(
             val interestsViewModel: InterestsViewModel = viewModel(
                 factory = InterestsViewModel.provideFactory(appContainer.interestsRepository)
             )
-            InterestsScreen(
+            InterestsRoute(
                 interestsViewModel = interestsViewModel,
                 showNavRail = showNavRail,
                 navigateToHome = actions.navigateToHome,
@@ -101,7 +101,7 @@ fun JetnewsNavGraph(
                     defaultArgs = backStackEntry.arguments
                 )
             )
-            ArticleScreen(
+            ArticleRoute(
                 articleViewModel = articleViewModel,
                 showNavRail = showNavRail,
                 onBack = actions.upPress
