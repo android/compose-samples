@@ -528,17 +528,15 @@ fun PreviewInterestsScreenNavRail() {
             mutableStateOf(tabContent.first().section)
         }
 
-        Surface {
-            InterestsScreen(
-                tabContent = tabContent,
-                currentSection = currentSection,
-                onTabChange = updateSection,
-                openDrawer = { },
-                navigateToHome = { },
-                showNavRail = true,
-                scaffoldState = rememberScaffoldState()
-            )
-        }
+        InterestsScreen(
+            tabContent = tabContent,
+            currentSection = currentSection,
+            onTabChange = updateSection,
+            openDrawer = { },
+            navigateToHome = { },
+            showNavRail = true,
+            scaffoldState = rememberScaffoldState()
+        )
     }
 }
 

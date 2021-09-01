@@ -39,7 +39,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -536,18 +535,16 @@ fun PreviewHomeScreenWithNavRail() {
         (BlockingFakePostsRepository().getPosts() as Result.Success).data
     }
     JetnewsTheme {
-        Surface {
-            HomeScreen(
-                uiState = HomeUiState(posts = posts),
-                showNavRail = true,
-                onToggleFavorite = { /*TODO*/ },
-                onRefreshPosts = { /*TODO*/ },
-                onErrorDismiss = { /*TODO*/ },
-                navigateToArticle = { /*TODO*/ },
-                navigateToInterests = { /*TODO*/ },
-                openDrawer = { /*TODO*/ },
-                scaffoldState = rememberScaffoldState()
-            )
-        }
+        HomeScreen(
+            uiState = HomeUiState(posts = posts),
+            showNavRail = true,
+            onToggleFavorite = { /*TODO*/ },
+            onRefreshPosts = { /*TODO*/ },
+            onErrorDismiss = { /*TODO*/ },
+            navigateToArticle = { /*TODO*/ },
+            navigateToInterests = { /*TODO*/ },
+            openDrawer = { /*TODO*/ },
+            scaffoldState = rememberScaffoldState()
+        )
     }
 }

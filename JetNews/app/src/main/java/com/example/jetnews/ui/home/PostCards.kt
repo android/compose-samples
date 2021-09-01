@@ -128,7 +128,8 @@ fun PostCardSimple(
             isBookmarked = isFavorite,
             onClick = onToggleFavorite,
             // Remove button semantics so action can be handled at row level
-            modifier = Modifier.clearAndSetSemantics {}
+            modifier = Modifier.clearAndSetSemantics {},
+            contentAlpha = ContentAlpha.medium
         )
     }
 }
@@ -205,12 +206,13 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
 fun BookmarkButton(
     isBookmarked: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentAlpha: Float = ContentAlpha.high
 ) {
     val clickLabel = stringResource(
         if (isBookmarked) R.string.unbookmark else R.string.bookmark
     )
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+    CompositionLocalProvider(LocalContentAlpha provides contentAlpha) {
         IconToggleButton(
             checked = isBookmarked,
             onCheckedChange = { onClick() },

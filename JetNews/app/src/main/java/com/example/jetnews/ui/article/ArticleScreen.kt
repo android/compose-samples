@@ -70,6 +70,7 @@ import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -249,8 +250,8 @@ private fun InterestsNavRail(
     onSharePost: () -> Unit
 ) {
     JetnewsNavRail(
-        topIcon = { modifier ->
-            IconButton(onClick = onBack, modifier = modifier) {
+        header = {
+            IconButton(onClick = onBack, modifier = Modifier.statusBarsPadding()) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.cd_navigate_up),
@@ -398,8 +399,6 @@ fun PreviewArticleNavRail() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        Surface {
-            ArticleScreen(post, true, {}, false, {})
-        }
+        ArticleScreen(post, true, {}, false, {})
     }
 }
