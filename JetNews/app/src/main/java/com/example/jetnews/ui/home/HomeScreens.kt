@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -62,7 +61,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -222,8 +220,8 @@ fun HomeFeedScreen(
  * This sets up the scaffold with the top app bar, and surrounds the [hasPostsContent] with refresh,
  * loading and error handling.
  *
- * This helper functions exists because [HomeFeedWithArticleDetailsScreen] and [HomeFeedScreen] are extremely
- * similar, except for the rendered content when there are posts to display.
+ * This helper functions exists because [HomeFeedWithArticleDetailsScreen] and [HomeFeedScreen] are
+ * extremely similar, except for the rendered content when there are posts to display.
  */
 @Composable
 private fun HomeScreenWithList(
@@ -588,7 +586,11 @@ fun PreviewHomeListDrawerScreen() {
 }
 
 @Preview("Home list navrail screen", device = Devices.NEXUS_7_2013)
-@Preview("Home list navrail screen (dark)", uiMode = UI_MODE_NIGHT_YES, device = Devices.NEXUS_7_2013)
+@Preview(
+    "Home list navrail screen (dark)",
+    uiMode = UI_MODE_NIGHT_YES,
+    device = Devices.NEXUS_7_2013
+)
 @Preview("Home list navrail screen (big font)", fontScale = 1.5f, device = Devices.NEXUS_7_2013)
 @Composable
 fun PreviewHomeListNavRailScreen() {

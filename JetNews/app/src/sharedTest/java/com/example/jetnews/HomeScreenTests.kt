@@ -62,8 +62,8 @@ class HomeScreenTests {
                     onSelectPost = {},
                     onRefreshPosts = {},
                     onErrorDismiss = {},
-                    onInteractWithList = {},
                     openDrawer = {},
+                    navigateToInterests = {},
                     homeListLazyListState = rememberLazyListState(),
                     scaffoldState = scaffoldState
                 )
