@@ -55,6 +55,7 @@ fun JetnewsNavRail(
 ) {
     NavigationRail(
         modifier = modifier,
+        elevation = 0.dp,
         header = header
     ) {
         Column(
