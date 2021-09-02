@@ -22,6 +22,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -64,22 +65,25 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
+import com.example.jetnews.ui.components.JetnewsNavRail
 import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.isScrolled
-import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
- * Displays the Article screen.
+ * Stateful composable that displays the Navigation route for the Article screen.
  *
  * @param articleViewModel ViewModel that handles the business logic of this screen
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param onBack (event) request back navigation
  */
 @Composable
-fun ArticleScreen(
+fun ArticleRoute(
     articleViewModel: ArticleViewModel,
+    showNavRail: Boolean,
     onBack: () -> Unit
 ) {
     // UiState of the ArticleScreen
@@ -88,6 +92,7 @@ fun ArticleScreen(
     if (uiState.post != null) {
         ArticleScreen(
             post = uiState.post!!,
+            showNavRail = showNavRail,
             onBack = onBack,
             isFavorite = uiState.isFavorite,
             onToggleFavorite = { articleViewModel.toggleFavorite() }
@@ -104,25 +109,84 @@ fun ArticleScreen(
 }
 
 /**
- * Stateless Article Screen that displays a single post.
+ * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
  */
 @Composable
-fun ArticleScreen(
+private fun ArticleScreen(
     post: Post,
+    showNavRail: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {
-
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-    if (showDialog) {
-        FunctionalityNotAvailablePopup { showDialog = false }
+    var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
+    if (showUnimplementedActionDialog) {
+        FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
+
+    Row(Modifier.fillMaxSize()) {
+        val context = LocalContext.current
+        if (showNavRail) {
+            ArticleNavRail(
+                onBack = onBack,
+                onUnimplementedAction = { showUnimplementedActionDialog = true },
+                isFavorite = isFavorite,
+                onToggleFavorite = onToggleFavorite,
+                onSharePost = { sharePost(post, context) }
+            )
+        }
+        ArticleScreenContent(
+            post = post,
+            // Allow opening the Drawer if the NavRail is not on the screen
+            navigationIconContent = if (!showNavRail) {
+                {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_navigate_up),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            } else {
+                null
+            },
+            // Show the bottom bar if the NavRail is not on the screen
+            bottomBarContent = if (!showNavRail) {
+                {
+                    BottomBar(
+                        onUnimplementedAction = { showUnimplementedActionDialog = true },
+                        isFavorite = isFavorite,
+                        onToggleFavorite = onToggleFavorite,
+                        onSharePost = { sharePost(post, context) }
+                    )
+                }
+            } else {
+                { }
+            }
+        )
+    }
+}
+
+/**
+ * Stateless Article Screen that displays a single post.
+ *
+ * @param post (state) item to display
+ * @param navigationIconContent (UI) content to show for the navigation icon
+ * @param bottomBarContent (UI) content to show for the bottom bar
+ */
+@Composable
+private fun ArticleScreenContent(
+    post: Post,
+    navigationIconContent: @Composable (() -> Unit)? = null,
+    bottomBarContent: @Composable () -> Unit = { }
+) {
     val scrollState = rememberLazyListState()
     Scaffold(
         topBar = {
@@ -132,7 +196,6 @@ fun ArticleScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(align = Alignment.CenterHorizontally)
-                            .padding(start = 30.dp)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.icon_article_background),
@@ -151,27 +214,12 @@ fun ArticleScreen(
                         )
                     }
                 },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_up),
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
-                },
+                navigationIcon = navigationIconContent,
                 elevation = if (!scrollState.isScrolled) 0.dp else 4.dp,
                 backgroundColor = MaterialTheme.colors.surface
             )
         },
-        bottomBar = {
-            BottomBar(
-                post = post,
-                onUnimplementedAction = { showDialog = true },
-                isFavorite = isFavorite,
-                onToggleFavorite = onToggleFavorite
-            )
-        }
+        bottomBar = bottomBarContent
     ) { innerPadding ->
         PostContent(
             post = post,
@@ -181,8 +229,6 @@ fun ArticleScreen(
                 .padding(innerPadding)
                 // offset content in landscape mode to account for the navigation bar
                 .navigationBarsPadding(bottom = false)
-                // center content in landscape mode
-                .supportWideScreen()
         )
     }
 }
@@ -190,17 +236,69 @@ fun ArticleScreen(
 /**
  * Bottom bar for Article screen
  *
- * @param post (state) used in share sheet to share the post
  * @param onUnimplementedAction (event) called when the user performs an unimplemented action
  * @param isFavorite (state) if this post is currently a favorite
  * @param onToggleFavorite (event) request this post toggle it's favorite status
+ * @param onSharePost (event) request this post to be shared
+ */
+@Composable
+private fun ArticleNavRail(
+    onBack: () -> Unit,
+    onUnimplementedAction: () -> Unit,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
+    onSharePost: () -> Unit
+) {
+    JetnewsNavRail(
+        header = {
+            IconButton(onClick = onBack, modifier = Modifier.statusBarsPadding()) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.cd_navigate_up),
+                    tint = MaterialTheme.colors.primary
+                )
+            }
+        }
+    ) {
+        IconButton(onClick = onUnimplementedAction) {
+            Icon(
+                imageVector = Icons.Filled.ThumbUpOffAlt,
+                contentDescription = stringResource(R.string.cd_add_to_favorites)
+            )
+        }
+        BookmarkButton(
+            isBookmarked = isFavorite,
+            onClick = onToggleFavorite
+        )
+        IconButton(onClick = onSharePost) {
+            Icon(
+                imageVector = Icons.Filled.Share,
+                contentDescription = stringResource(R.string.cd_share)
+            )
+        }
+        IconButton(onClick = onUnimplementedAction) {
+            Icon(
+                painter = painterResource(R.drawable.ic_text_settings),
+                contentDescription = stringResource(R.string.cd_text_settings)
+            )
+        }
+    }
+}
+
+/**
+ * Bottom bar for Article screen
+ *
+ * @param onUnimplementedAction (event) called when the user performs an unimplemented action
+ * @param isFavorite (state) if this post is currently a favorite
+ * @param onToggleFavorite (event) request this post toggle it's favorite status
+ * @param onSharePost (event) request this post to be shared
  */
 @Composable
 private fun BottomBar(
-    post: Post,
     onUnimplementedAction: () -> Unit,
     isFavorite: Boolean,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
+    onSharePost: () -> Unit
 ) {
     Surface(elevation = 8.dp) {
         Row(
@@ -220,8 +318,7 @@ private fun BottomBar(
                 isBookmarked = isFavorite,
                 onClick = onToggleFavorite
             )
-            val context = LocalContext.current
-            IconButton(onClick = { sharePost(post, context) }) {
+            IconButton(onClick = onSharePost) {
                 Icon(
                     imageVector = Icons.Filled.Share,
                     contentDescription = stringResource(R.string.cd_share)
@@ -279,13 +376,29 @@ private fun sharePost(post: Post, context: Context) {
 @Preview("Article screen")
 @Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Article screen (big font)", fontScale = 1.5f)
-@Preview("Article screen (large screen)", device = Devices.PIXEL_C)
 @Composable
-fun PreviewArticle() {
+fun PreviewArticleDrawer() {
     JetnewsTheme {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, {}, false, {})
+        ArticleScreen(post, false, {}, false, {})
+    }
+}
+
+@Preview("Article screen navrail", device = Devices.PIXEL_C)
+@Preview(
+    "Article screen navrail (dark)",
+    uiMode = UI_MODE_NIGHT_YES,
+    device = Devices.PIXEL_C
+)
+@Preview("Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
+@Composable
+fun PreviewArticleNavRail() {
+    JetnewsTheme {
+        val post = runBlocking {
+            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
+        }
+        ArticleScreen(post, true, {}, false, {})
     }
 }

@@ -73,6 +73,8 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
+import com.example.jetnews.ui.JetnewsDestinations
+import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
@@ -99,59 +101,90 @@ enum class Sections(@StringRes val titleResId: Int) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Displays the Interests screen.
+ * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
+ * @param navigateToHome (event) request navigation to Home screen
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for screen Scaffold
  */
 @Composable
-fun InterestsScreen(
+fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
+    showNavRail: Boolean,
+    navigateToHome: () -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    // UiState of the InterestsScreen
-    val uiState by interestsViewModel.uiState.collectAsState()
-
-    // Describe the screen sections here since each section needs 2 states and 1 event.
-    // Pass them to the stateless InterestsScreen using a tabContent.
-    val topicsSection = TabContent(Sections.Topics) {
-        val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
-        TopicList(
-            topics = uiState.topics,
-            selectedTopics = selectedTopics,
-            onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
-        )
+    val tabContent = rememberTabContent(interestsViewModel)
+    val (currentSection, updateSection) = rememberSaveable {
+        mutableStateOf(tabContent.first().section)
     }
 
-    val peopleSection = TabContent(Sections.People) {
-        val selectedPeople by interestsViewModel.selectedPeople.collectAsState()
-        PeopleList(
-            people = uiState.people,
-            selectedPeople = selectedPeople,
-            onPersonSelect = { interestsViewModel.togglePersonSelected(it) }
-        )
-    }
-
-    val publicationSection = TabContent(Sections.Publications) {
-        val selectedPublications by interestsViewModel.selectedPublications.collectAsState()
-        PublicationList(
-            publications = uiState.publications,
-            selectedPublications = selectedPublications,
-            onPublicationSelect = { interestsViewModel.togglePublicationSelected(it) }
-        )
-    }
-
-    val tabContent = listOf(topicsSection, peopleSection, publicationSection)
-    val (currentSection, updateSection) = rememberSaveable { mutableStateOf(tabContent.first().section) }
     InterestsScreen(
         tabContent = tabContent,
-        tab = currentSection,
+        currentSection = currentSection,
+        showNavRail = showNavRail,
         onTabChange = updateSection,
+        navigateToHome = navigateToHome,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState
     )
+}
+
+/**
+ * Stateless interest screen displays the tabs specified in [tabContent] adapting the UI to
+ * different screen sizes.
+ *
+ * @param tabContent (slot) the tabs and their content to display on this screen, must be a
+ * non-empty list, tabs are displayed in the order specified by this list
+ * @param currentSection (state) the current tab to display, must be in [tabContent]
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
+ * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
+ * @param navigateToHome (event) request navigation to Home screen
+ * @param openDrawer (event) request opening the app drawer
+ * @param scaffoldState (state) the state for the screen's [Scaffold]
+ */
+@Composable
+private fun InterestsScreen(
+    tabContent: List<TabContent>,
+    currentSection: Sections,
+    showNavRail: Boolean,
+    onTabChange: (Sections) -> Unit,
+    navigateToHome: () -> Unit,
+    openDrawer: () -> Unit,
+    scaffoldState: ScaffoldState
+) {
+    Row(Modifier.fillMaxSize()) {
+        if (showNavRail) {
+            AppNavRail(
+                currentRoute = JetnewsDestinations.INTERESTS_ROUTE,
+                navigateToHome = navigateToHome,
+                navigateToInterests = { /* Do nothing */ }
+            )
+        }
+        InterestsScreenContent(
+            tabContent = tabContent,
+            tab = currentSection,
+            onTabChange = onTabChange,
+            scaffoldState = scaffoldState,
+            // Allow opening the Drawer if the NavRail is not on the screen
+            navigationIconContent = if (!showNavRail) {
+                {
+                    IconButton(onClick = openDrawer) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            } else {
+                null
+            }
+        )
+    }
 }
 
 /**
@@ -161,16 +194,16 @@ fun InterestsScreen(
  * list, tabs are displayed in the order specified by this list
  * @param tab (state) the current tab to display, must be in [tabContent]
  * @param onTabChange (event) request a change in [tab] to another tab from [tabContent]
- * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
+ * @param navigationIconContent (UI) content to show for the navigation icon
  */
 @Composable
-fun InterestsScreen(
+private fun InterestsScreenContent(
     tabContent: List<TabContent>,
     tab: Sections,
     onTabChange: (Sections) -> Unit,
-    openDrawer: () -> Unit,
     scaffoldState: ScaffoldState,
+    navigationIconContent: @Composable (() -> Unit)? = null
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -183,15 +216,7 @@ fun InterestsScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = openDrawer) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
-                },
+                navigationIcon = navigationIconContent,
                 actions = {
                     IconButton(
                         onClick = { /* TODO: Open search */ }
@@ -496,12 +521,50 @@ private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
         }
     }
 
+@Composable
+private fun rememberTabContent(
+    interestsViewModel: InterestsViewModel
+): List<TabContent> {
+    // UiState of the InterestsScreen
+    val uiState by interestsViewModel.uiState.collectAsState()
+
+    // Describe the screen sections here since each section needs 2 states and 1 event.
+    // Pass them to the stateless InterestsScreen using a tabContent.
+    val topicsSection = TabContent(Sections.Topics) {
+        val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
+        TopicList(
+            topics = uiState.topics,
+            selectedTopics = selectedTopics,
+            onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
+        )
+    }
+
+    val peopleSection = TabContent(Sections.People) {
+        val selectedPeople by interestsViewModel.selectedPeople.collectAsState()
+        PeopleList(
+            people = uiState.people,
+            selectedPeople = selectedPeople,
+            onPersonSelect = { interestsViewModel.togglePersonSelected(it) }
+        )
+    }
+
+    val publicationSection = TabContent(Sections.Publications) {
+        val selectedPublications by interestsViewModel.selectedPublications.collectAsState()
+        PublicationList(
+            publications = uiState.publications,
+            selectedPublications = selectedPublications,
+            onPublicationSelect = { interestsViewModel.togglePublicationSelected(it) }
+        )
+    }
+
+    return listOf(topicsSection, peopleSection, publicationSection)
+}
+
 @Preview("Interests screen", "Interests")
 @Preview("Interests screen (dark)", "Interests", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Interests screen (big font)", "Interests", fontScale = 1.5f)
-@Preview("Interests screen (large screen)", "Interests", device = Devices.PIXEL_C)
 @Composable
-fun PreviewInterestsScreen() {
+fun PreviewInterestsScreenDrawer() {
     JetnewsTheme {
         val tabContent = getFakeTabsContent()
         val (currentSection, updateSection) = rememberSaveable {
@@ -510,9 +573,40 @@ fun PreviewInterestsScreen() {
 
         InterestsScreen(
             tabContent = tabContent,
-            tab = currentSection,
+            currentSection = currentSection,
             onTabChange = updateSection,
             openDrawer = { },
+            navigateToHome = { },
+            showNavRail = false,
+            scaffoldState = rememberScaffoldState()
+        )
+    }
+}
+
+@Preview("Interests screen navrail", "Interests", device = Devices.PIXEL_C)
+@Preview(
+    "Interests screen navrail (dark)", "Interests",
+    uiMode = UI_MODE_NIGHT_YES, device = Devices.PIXEL_C
+)
+@Preview(
+    "Interests screen navrail (big font)", "Interests",
+    fontScale = 1.5f, device = Devices.PIXEL_C
+)
+@Composable
+fun PreviewInterestsScreenNavRail() {
+    JetnewsTheme {
+        val tabContent = getFakeTabsContent()
+        val (currentSection, updateSection) = rememberSaveable {
+            mutableStateOf(tabContent.first().section)
+        }
+
+        InterestsScreen(
+            tabContent = tabContent,
+            currentSection = currentSection,
+            onTabChange = updateSection,
+            openDrawer = { },
+            navigateToHome = { },
+            showNavRail = true,
             scaffoldState = rememberScaffoldState()
         )
     }
