@@ -24,6 +24,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +51,8 @@ fun JetnewsApp(
             }
 
             val navController = rememberNavController()
+            val navigationActions = remember(navController) { JetnewsNavigationActions(navController) }
+
             val coroutineScope = rememberCoroutineScope()
             // This top level scaffold contains the app drawer, which needs to be accessible
             // from multiple screens. An event to open the drawer is passed down to each
@@ -57,7 +60,7 @@ fun JetnewsApp(
             val scaffoldState = rememberScaffoldState()
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route ?: MainDestinations.HOME_ROUTE
+            val currentRoute = navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             BoxWithConstraints {
                 val windowSize = getWindowSize(maxWidth)
@@ -69,12 +72,8 @@ fun JetnewsApp(
                         {
                             AppDrawer(
                                 currentRoute = currentRoute,
-                                navigateToHome = {
-                                    navController.navigate(MainDestinations.HOME_ROUTE)
-                                },
-                                navigateToInterests = {
-                                    navController.navigate(MainDestinations.INTERESTS_ROUTE)
-                                },
+                                navigateToHome = navigationActions.navigateToHome,
+                                navigateToInterests = navigationActions.navigateToInterests,
                                 closeDrawer = {
                                     coroutineScope.launch { scaffoldState.drawerState.close() }
                                 }
@@ -89,6 +88,7 @@ fun JetnewsApp(
                         showNavRail = windowSize != WindowSize.Compact,
                         navController = navController,
                         scaffoldState = scaffoldState,
+                        navigationActions = navigationActions,
                         modifier = Modifier.padding(innerPaddingModifier)
                     )
                 }

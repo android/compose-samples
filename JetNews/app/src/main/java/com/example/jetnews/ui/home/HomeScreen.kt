@@ -62,7 +62,7 @@ import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.MainDestinations
+import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
@@ -141,7 +141,7 @@ fun HomeScreen(
     Row(Modifier.fillMaxSize()) {
         if (showNavRail) {
             AppNavRail(
-                currentRoute = MainDestinations.HOME_ROUTE,
+                currentRoute = JetnewsDestinations.HOME_ROUTE,
                 navigateToHome = { /* Do nothing */ },
                 navigateToInterests = navigateToInterests
             )

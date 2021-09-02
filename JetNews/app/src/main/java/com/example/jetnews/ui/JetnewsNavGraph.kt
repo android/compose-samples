@@ -19,7 +19,6 @@ package com.example.jetnews.ui
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,25 +38,16 @@ import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
 import kotlinx.coroutines.launch
 
-/**
- * Destinations used in the ([JetnewsApp]).
- */
-object MainDestinations {
-    const val HOME_ROUTE = "home"
-    const val INTERESTS_ROUTE = "interests"
-    const val ARTICLE_ROUTE = "post"
-}
-
 @Composable
 fun JetnewsNavGraph(
     appContainer: AppContainer,
     showNavRail: Boolean,
+    navigationActions: JetnewsNavigationActions,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    startDestination: String = MainDestinations.HOME_ROUTE
+    startDestination: String = JetnewsDestinations.HOME_ROUTE
 ) {
-    val actions = remember(navController) { MainActions(navController) }
     val coroutineScope = rememberCoroutineScope()
     val openDrawer: () -> Unit = { coroutineScope.launch { scaffoldState.drawerState.open() } }
 
@@ -66,31 +56,31 @@ fun JetnewsNavGraph(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(MainDestinations.HOME_ROUTE) {
+        composable(JetnewsDestinations.HOME_ROUTE) {
             val homeViewModel: HomeViewModel = viewModel(
                 factory = HomeViewModel.provideFactory(appContainer.postsRepository)
             )
             HomeRoute(
                 homeViewModel = homeViewModel,
                 showNavRail = showNavRail,
-                navigateToArticle = actions.navigateToArticle,
-                navigateToInterests = actions.navigateToInterests,
+                navigateToArticle = navigationActions.navigateToArticle,
+                navigateToInterests = navigationActions.navigateToInterests,
                 openDrawer = openDrawer
             )
         }
-        composable(MainDestinations.INTERESTS_ROUTE) {
+        composable(JetnewsDestinations.INTERESTS_ROUTE) {
             val interestsViewModel: InterestsViewModel = viewModel(
                 factory = InterestsViewModel.provideFactory(appContainer.interestsRepository)
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
                 showNavRail = showNavRail,
-                navigateToHome = actions.navigateToHome,
+                navigateToHome = navigationActions.navigateToHome,
                 openDrawer = openDrawer
             )
         }
         composable(
-            route = "${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}",
+            route = "${JetnewsDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}",
             arguments = listOf(navArgument(ARTICLE_ID_KEY) { type = NavType.StringType })
         ) { backStackEntry ->
             // ArticleVM obtains the articleId via backStackEntry.arguments from SavedStateHandle
@@ -104,26 +94,8 @@ fun JetnewsNavGraph(
             ArticleRoute(
                 articleViewModel = articleViewModel,
                 showNavRail = showNavRail,
-                onBack = actions.upPress
+                onBack = navigationActions.upPress
             )
         }
-    }
-}
-
-/**
- * Models the navigation actions in the app.
- */
-class MainActions(navController: NavHostController) {
-    val navigateToArticle: (String) -> Unit = { postId: String ->
-        navController.navigate("${MainDestinations.ARTICLE_ROUTE}/$postId")
-    }
-    val navigateToInterests: () -> Unit = {
-        navController.navigate(MainDestinations.INTERESTS_ROUTE)
-    }
-    val navigateToHome: () -> Unit = {
-        navController.navigate(MainDestinations.HOME_ROUTE)
-    }
-    val upPress: () -> Unit = {
-        navController.navigateUp()
     }
 }

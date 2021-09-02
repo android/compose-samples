@@ -64,7 +64,7 @@ fun AppDrawer(
         DrawerButton(
             icon = Icons.Filled.Home,
             label = stringResource(id = R.string.home_title),
-            isSelected = currentRoute == MainDestinations.HOME_ROUTE,
+            isSelected = currentRoute == JetnewsDestinations.HOME_ROUTE,
             action = {
                 navigateToHome()
                 closeDrawer()
@@ -74,7 +74,7 @@ fun AppDrawer(
         DrawerButton(
             icon = Icons.Filled.ListAlt,
             label = stringResource(id = R.string.interests_title),
-            isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
+            isSelected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             action = {
                 navigateToInterests()
                 closeDrawer()
@@ -157,7 +157,7 @@ fun PreviewAppDrawer() {
     JetnewsTheme {
         Surface {
             AppDrawer(
-                currentRoute = MainDestinations.HOME_ROUTE,
+                currentRoute = JetnewsDestinations.HOME_ROUTE,
                 navigateToHome = {},
                 navigateToInterests = {},
                 closeDrawer = { }

@@ -42,7 +42,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.ui.MainDestinations
+import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.google.accompanist.insets.statusBarsPadding
 
@@ -84,13 +84,13 @@ fun AppNavRail(
         NavRailIcon(
             icon = Icons.Filled.Home,
             contentDescription = stringResource(id = R.string.cd_navigate_home),
-            isSelected = currentRoute == MainDestinations.HOME_ROUTE,
+            isSelected = currentRoute == JetnewsDestinations.HOME_ROUTE,
             action = navigateToHome
         )
         NavRailIcon(
             icon = Icons.Filled.ListAlt,
             contentDescription = stringResource(id = R.string.cd_navigate_interests),
-            isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
+            isSelected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             action = navigateToInterests
         )
     }
@@ -135,7 +135,7 @@ private fun NavRailIcon(
 fun PreviewAppNavRail() {
     JetnewsTheme {
         AppNavRail(
-            currentRoute = MainDestinations.HOME_ROUTE,
+            currentRoute = JetnewsDestinations.HOME_ROUTE,
             navigateToHome = {},
             navigateToInterests = {},
         )

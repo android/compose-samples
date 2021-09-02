@@ -67,7 +67,7 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.ui.MainDestinations
+import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
@@ -151,7 +151,7 @@ private fun InterestsScreen(
     Row(Modifier.fillMaxSize()) {
         if (showNavRail) {
             AppNavRail(
-                currentRoute = MainDestinations.INTERESTS_ROUTE,
+                currentRoute = JetnewsDestinations.INTERESTS_ROUTE,
                 navigateToHome = navigateToHome,
                 navigateToInterests = { /* Do nothing */ }
             )
