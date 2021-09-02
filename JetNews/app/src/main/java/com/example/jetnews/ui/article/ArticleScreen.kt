@@ -133,7 +133,7 @@ private fun ArticleScreen(
     Row(Modifier.fillMaxSize()) {
         val context = LocalContext.current
         if (showNavRail) {
-            InterestsNavRail(
+            ArticleNavRail(
                 onBack = onBack,
                 onUnimplementedAction = { showUnimplementedActionDialog = true },
                 isFavorite = isFavorite,
@@ -242,7 +242,7 @@ private fun ArticleScreenContent(
  * @param onSharePost (event) request this post to be shared
  */
 @Composable
-private fun InterestsNavRail(
+private fun ArticleNavRail(
     onBack: () -> Unit,
     onUnimplementedAction: () -> Unit,
     isFavorite: Boolean,

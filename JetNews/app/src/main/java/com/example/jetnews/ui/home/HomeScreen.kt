@@ -515,12 +515,12 @@ fun PreviewHomeScreenWithDrawer() {
         HomeScreen(
             uiState = HomeUiState(posts = posts),
             showNavRail = false,
-            onToggleFavorite = { /*TODO*/ },
-            onRefreshPosts = { /*TODO*/ },
-            onErrorDismiss = { /*TODO*/ },
-            navigateToArticle = { /*TODO*/ },
-            navigateToInterests = { /*TODO*/ },
-            openDrawer = { /*TODO*/ },
+            onToggleFavorite = { /*NO-OP*/ },
+            onRefreshPosts = { /*NO-OP*/ },
+            onErrorDismiss = { /*NO-OP*/ },
+            navigateToArticle = { /*NO-OP*/ },
+            navigateToInterests = { /*NO-OP*/ },
+            openDrawer = { /*NO-OP*/ },
             scaffoldState = rememberScaffoldState()
         )
     }
@@ -538,12 +538,12 @@ fun PreviewHomeScreenWithNavRail() {
         HomeScreen(
             uiState = HomeUiState(posts = posts),
             showNavRail = true,
-            onToggleFavorite = { /*TODO*/ },
-            onRefreshPosts = { /*TODO*/ },
-            onErrorDismiss = { /*TODO*/ },
-            navigateToArticle = { /*TODO*/ },
-            navigateToInterests = { /*TODO*/ },
-            openDrawer = { /*TODO*/ },
+            onToggleFavorite = { /*NO-OP*/ },
+            onRefreshPosts = { /*NO-OP*/ },
+            onErrorDismiss = { /*NO-OP*/ },
+            navigateToArticle = { /*NO-OP*/ },
+            navigateToInterests = { /*NO-OP*/ },
+            openDrawer = { /*NO-OP*/ },
             scaffoldState = rememberScaffoldState()
         )
     }

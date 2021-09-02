@@ -109,7 +109,7 @@ fun InterestsRoute(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val tabContent = rememberTapContent(interestsViewModel)
+    val tabContent = rememberTabContent(interestsViewModel)
     val (currentSection, updateSection) = rememberSaveable {
         mutableStateOf(tabContent.first().section)
     }
@@ -450,7 +450,7 @@ private fun TopicDivider() {
 }
 
 @Composable
-private fun rememberTapContent(
+private fun rememberTabContent(
     interestsViewModel: InterestsViewModel
 ): List<TabContent> {
     // UiState of the InterestsScreen
