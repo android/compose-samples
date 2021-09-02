@@ -68,6 +68,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
@@ -383,7 +384,11 @@ private fun TabWithSections(
             modifier = Modifier.navigationBarsPadding().fillMaxSize()
         ) {
             groupedSections.forEach { sectionsInGroup ->
-                LazyColumn(Modifier.widthIn(max = itemMaxWidth)) {
+                LazyColumn(
+                    Modifier
+                        .widthIn(max = itemMaxWidth)
+                        .padding(horizontal = if (columns > 1) 8.dp else 0.dp)
+                ) {
                     sectionsInGroup.forEach { (section, topics) ->
                         item {
                             Text(
@@ -507,17 +512,18 @@ private fun InterestsTabRow(
 
 /**
  * Returns the max width for a Topic Item given maxWidth and number of columns constraints.
- * Per Jetnews mocks, this assumes the number of columns won't be greater than 2.
  */
 @Composable
 private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
     remember(windowMaxWidth, columns) {
-        val windowSize = getWindowSize(windowMaxWidth)
-        when {
-            windowSize == WindowSize.Compact -> Dp.Infinity
-            columns == 1 -> 600.dp
-            (windowSize == WindowSize.Medium || windowMaxWidth < 900.dp) -> 350.dp
-            else -> 450.dp
+        if (columns == 1) {
+            // If the space available is small, fill the screen
+            if (windowMaxWidth < 600.dp) Dp.Infinity else 600.dp
+        } else {
+            // Calculate the max width each item can take given the number of columns
+            val itemMaxWidth = windowMaxWidth / columns
+            // Limit the width of the item for them to not be too big given the available space
+            if (windowMaxWidth < 800.dp) min(itemMaxWidth, 350.dp) else min(itemMaxWidth, 450.dp)
         }
     }
 
