@@ -55,10 +55,12 @@ class HomeScreenTests {
                     uiState = HomeUiState(
                         errorMessages = listOf(ErrorMessage(0L, R.string.load_error))
                     ),
+                    showNavRail = false,
                     onToggleFavorite = {},
                     onRefreshPosts = {},
                     onErrorDismiss = {},
                     navigateToArticle = {},
+                    navigateToInterests = {},
                     openDrawer = {},
                     scaffoldState = scaffoldState
                 )
