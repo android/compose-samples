@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
@@ -117,7 +118,9 @@ fun HomeRoute(
 
     BoxWithConstraints {
         // Determine which type of the home screen to display
-        val homeScreenType = when (getWindowSize(maxWidth)) {
+        val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
+
+        val homeScreenType = when (windowSize) {
             WindowSize.Compact,
             WindowSize.Medium -> {
                 when (uiState) {
