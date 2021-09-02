@@ -54,6 +54,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
@@ -163,11 +164,14 @@ fun HomeFeedWithArticleDetailsScreen(
  * A [Modifier] that tracks all input, and calls [block] every time input is received.
  */
 private fun Modifier.notifyInput(block: () -> Unit): Modifier =
-    pointerInput(block) {
-        while (currentCoroutineContext().isActive) {
-            awaitPointerEventScope {
-                awaitPointerEvent(PointerEventPass.Initial)
-                block()
+    composed {
+        val blockState = rememberUpdatedState(block)
+        pointerInput(Unit) {
+            while (currentCoroutineContext().isActive) {
+                awaitPointerEventScope {
+                    awaitPointerEvent(PointerEventPass.Initial)
+                    blockState.value()
+                }
             }
         }
     }
