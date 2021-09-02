@@ -37,7 +37,10 @@ class FakeInterestsRepository : InterestsRepository {
     private val topics by lazy {
         listOf(
             InterestSection("Android", listOf("Jetpack Compose", "Kotlin", "Jetpack")),
-            InterestSection("Programming", listOf("Kotlin", "Declarative UIs", "Java")),
+            InterestSection(
+                "Programming",
+                listOf("Kotlin", "Declarative UIs", "Java", "Unidirectional Data Flow", "C++")
+            ),
             InterestSection("Technology", listOf("Pixel", "Google"))
         )
     }

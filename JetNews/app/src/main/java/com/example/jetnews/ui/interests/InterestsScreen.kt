@@ -19,11 +19,13 @@ package com.example.jetnews.ui.interests
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -32,7 +34,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -76,7 +77,6 @@ import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
-import com.example.jetnews.utils.supportWideScreen
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
 
@@ -175,7 +175,6 @@ fun InterestsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-
             InsetAwareTopAppBar(
                 title = {
                     Text(
@@ -228,44 +227,11 @@ private fun TabContent(
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column {
-        TabRow(
-            selectedTabIndex = selectedTabIndex,
-            backgroundColor = MaterialTheme.colors.onPrimary,
-            contentColor = MaterialTheme.colors.primary,
-
-        ) {
-            tabContent.forEachIndexed { index, tabContent ->
-                val colorText = if (selectedTabIndex == index) {
-                    MaterialTheme.colors.primary
-                } else {
-                    MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
-                }
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = {
-                        updateSection(tabContent.section)
-                    },
-                    modifier = Modifier
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = tabContent.section.titleResId),
-                        color = colorText,
-                        style = MaterialTheme.typography.subtitle2,
-                        modifier = Modifier.paddingFromBaseline(top = 20.dp)
-                    )
-                }
-            }
-        }
+        InterestsTabRow(selectedTabIndex, updateSection, tabContent)
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .supportWideScreen()
-        ) {
+        Box(modifier = Modifier.weight(1f)) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }
@@ -334,7 +300,7 @@ private fun TabWithTopics(
     onTopicSelect: (String) -> Unit
 ) {
     BoxWithConstraints {
-        val itemMaxWidth = rememberItemMaxWidth(maxWidth)
+        val itemMaxWidth = rememberItemMaxWidth(windowMaxWidth = maxWidth, columns = 1)
         val topicModifier = Modifier
             .fillMaxWidth()
             .wrapContentWidth(Alignment.CenterHorizontally)
@@ -373,9 +339,9 @@ private fun TabWithSections(
 ) {
     BoxWithConstraints {
         val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
-        val itemMaxWidth = rememberItemMaxWidth(maxWidth)
-
         val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
+
+        val itemMaxWidth = rememberItemMaxWidth(windowMaxWidth = maxWidth, columns = columns)
         val groupedSections: Array<MutableList<InterestSection>> = remember(columns) {
             val sectionsInColumns = Array<MutableList<InterestSection>>(columns) { mutableListOf() }
             sections.forEachIndexed { index, section ->
@@ -384,12 +350,10 @@ private fun TabWithSections(
             }
             sectionsInColumns
         }
-        
+
         Row(
-            Modifier
-                .navigationBarsPadding()
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.CenterHorizontally)
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.navigationBarsPadding().fillMaxSize()
         ) {
             groupedSections.forEach { sectionsInGroup ->
                 LazyColumn(Modifier.widthIn(max = itemMaxWidth)) {
@@ -416,15 +380,6 @@ private fun TabWithSections(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun rememberItemMaxWidth(windowMaxWidth: Dp) = remember(windowMaxWidth) {
-    if (getWindowSize(windowMaxWidth) == WindowSize.Compact) {
-        Dp.Infinity
-    } else {
-        350.dp
     }
 }
 
@@ -463,10 +418,11 @@ private fun TopicItem(
             text = itemTitle,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(16.dp),
+                .padding(16.dp)
+                .weight(1f), // Break line if the title is too long
             style = MaterialTheme.typography.subtitle1
         )
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(0.01f))
         SelectTopicButton(
             modifier = Modifier.align(Alignment.CenterVertically),
             selected = selected
@@ -484,6 +440,63 @@ private fun TopicDivider(modifier: Modifier = Modifier) {
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
     )
 }
+
+/**
+ * TabRow for the InterestsScreen
+ */
+@Composable
+private fun InterestsTabRow(
+    selectedTabIndex: Int,
+    updateSection: (Sections) -> Unit,
+    tabContent: List<TabContent>
+) {
+    // TODO: Make the tabs narrower and aligned to the left in large screens
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        backgroundColor = MaterialTheme.colors.onPrimary,
+        contentColor = MaterialTheme.colors.primary
+    ) {
+        tabContent.forEachIndexed { index, tabContent ->
+            val colorText = if (selectedTabIndex == index) {
+                MaterialTheme.colors.primary
+            } else {
+                MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+            }
+            Tab(
+                selected = selectedTabIndex == index,
+                onClick = {
+                    updateSection(tabContent.section)
+                },
+                modifier = Modifier
+                    .heightIn(min = 48.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = stringResource(id = tabContent.section.titleResId),
+                    color = colorText,
+                    style = MaterialTheme.typography.subtitle2,
+                    modifier = Modifier.paddingFromBaseline(top = 20.dp)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Returns the max width for a Topic Item given maxWidth and number of columns constraints.
+ * Per Jetnews mocks, this assumes the number of columns won't be greater than 2.
+ */
+@Composable
+private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
+    remember(windowMaxWidth, columns) {
+        val windowSize = getWindowSize(windowMaxWidth)
+        when {
+            windowSize == WindowSize.Compact -> Dp.Infinity
+            columns == 1 -> 600.dp
+            (windowSize == WindowSize.Medium || windowMaxWidth < 900.dp) -> 350.dp
+            else -> 450.dp
+        }
+    }
 
 @Preview("Interests screen", "Interests")
 @Preview("Interests screen (dark)", "Interests", uiMode = UI_MODE_NIGHT_YES)
@@ -516,7 +529,7 @@ fun PreviewTopicsTab() {
     }
     JetnewsTheme {
         Surface {
-            TopicList(topics, setOf(), {})
+            TopicList(topics, setOf()) { }
         }
     }
 }
@@ -530,7 +543,7 @@ fun PreviewPeopleTab() {
     }
     JetnewsTheme {
         Surface {
-            PeopleList(people, setOf(), {})
+            PeopleList(people, setOf()) { }
         }
     }
 }
@@ -544,7 +557,7 @@ fun PreviewPublicationsTab() {
     }
     JetnewsTheme {
         Surface {
-            PublicationList(publications, setOf(), {})
+            PublicationList(publications, setOf()) { }
         }
     }
 }
