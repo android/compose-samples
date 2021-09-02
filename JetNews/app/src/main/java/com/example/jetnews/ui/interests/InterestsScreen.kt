@@ -342,6 +342,8 @@ private fun TabWithSections(
         val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
 
         val itemMaxWidth = rememberItemMaxWidth(windowMaxWidth = maxWidth, columns = columns)
+        // Group interest sections given the number of columns that fill the screen.
+        // Sections are distributed evenly on the screen using the modulus operator.
         val groupedSections: Array<MutableList<InterestSection>> = remember(columns) {
             val sectionsInColumns = Array<MutableList<InterestSection>>(columns) { mutableListOf() }
             sections.forEachIndexed { index, section ->
@@ -464,12 +466,8 @@ private fun InterestsTabRow(
             }
             Tab(
                 selected = selectedTabIndex == index,
-                onClick = {
-                    updateSection(tabContent.section)
-                },
-                modifier = Modifier
-                    .heightIn(min = 48.dp)
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                onClick = { updateSection(tabContent.section) },
+                modifier = Modifier.heightIn(min = 48.dp)
             ) {
                 Text(
                     text = stringResource(id = tabContent.section.titleResId),
