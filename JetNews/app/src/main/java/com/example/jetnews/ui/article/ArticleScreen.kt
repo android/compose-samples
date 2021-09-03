@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
@@ -44,8 +45,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -74,41 +73,6 @@ import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateful composable that displays the Navigation route for the Article screen.
- *
- * @param articleViewModel ViewModel that handles the business logic of this screen
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
- * @param onBack (event) request back navigation
- */
-@Composable
-fun ArticleRoute(
-    articleViewModel: ArticleViewModel,
-    showNavRail: Boolean,
-    onBack: () -> Unit
-) {
-    // UiState of the ArticleScreen
-    val uiState by articleViewModel.uiState.collectAsState()
-
-    if (uiState.post != null) {
-        ArticleScreen(
-            post = uiState.post!!,
-            showNavRail = showNavRail,
-            onBack = onBack,
-            isFavorite = uiState.isFavorite,
-            onToggleFavorite = { articleViewModel.toggleFavorite() }
-        )
-    }
-
-    // Check for failures while loading the state
-    // TODO: Improve UX
-    LaunchedEffect(uiState) {
-        if (uiState.failedLoading) {
-            onBack()
-        }
-    }
-}
-
-/**
  * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
@@ -116,14 +80,16 @@ fun ArticleRoute(
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
+ * @param lazyListState (state) the [LazyListState] for the article content
  */
 @Composable
-private fun ArticleScreen(
+fun ArticleScreen(
     post: Post,
     showNavRail: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
+    lazyListState: LazyListState = rememberLazyListState()
 ) {
     var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
     if (showUnimplementedActionDialog) {
@@ -143,6 +109,7 @@ private fun ArticleScreen(
         }
         ArticleScreenContent(
             post = post,
+            showNavRail = showNavRail,
             // Allow opening the Drawer if the NavRail is not on the screen
             navigationIconContent = if (!showNavRail) {
                 {
@@ -169,7 +136,8 @@ private fun ArticleScreen(
                 }
             } else {
                 { }
-            }
+            },
+            lazyListState = lazyListState
         )
     }
 }
@@ -178,16 +146,18 @@ private fun ArticleScreen(
  * Stateless Article Screen that displays a single post.
  *
  * @param post (state) item to display
+ * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param navigationIconContent (UI) content to show for the navigation icon
  * @param bottomBarContent (UI) content to show for the bottom bar
  */
 @Composable
 private fun ArticleScreenContent(
     post: Post,
+    showNavRail: Boolean,
     navigationIconContent: @Composable (() -> Unit)? = null,
-    bottomBarContent: @Composable () -> Unit = { }
+    bottomBarContent: @Composable () -> Unit = { },
+    lazyListState: LazyListState = rememberLazyListState()
 ) {
-    val scrollState = rememberLazyListState()
     Scaffold(
         topBar = {
             InsetAwareTopAppBar(
@@ -215,7 +185,7 @@ private fun ArticleScreenContent(
                     }
                 },
                 navigationIcon = navigationIconContent,
-                elevation = if (!scrollState.isScrolled) 0.dp else 4.dp,
+                elevation = if (!lazyListState.isScrolled) 0.dp else 4.dp,
                 backgroundColor = MaterialTheme.colors.surface
             )
         },
@@ -223,12 +193,15 @@ private fun ArticleScreenContent(
     ) { innerPadding ->
         PostContent(
             post = post,
-            state = scrollState,
             modifier = Modifier
                 // innerPadding takes into account the top and bottom bar
                 .padding(innerPadding)
                 // offset content in landscape mode to account for the navigation bar
-                .navigationBarsPadding(bottom = false)
+                .navigationBarsPadding(
+                    bottom = false,
+                    start = !showNavRail
+                ),
+            state = lazyListState,
         )
     }
 }
@@ -258,7 +231,11 @@ private fun ArticleNavRail(
                     tint = MaterialTheme.colors.primary
                 )
             }
-        }
+        },
+        modifier = Modifier.navigationBarsPadding(
+            bottom = false,
+            end = false
+        )
     ) {
         IconButton(onClick = onUnimplementedAction) {
             Icon(

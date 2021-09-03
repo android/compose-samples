@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,11 +52,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -84,10 +82,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
 import com.google.accompanist.insets.navigationBarsPadding
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 enum class Sections(@StringRes val titleResId: Int) {
     Topics(R.string.interests_section_topics),
@@ -108,39 +103,6 @@ enum class Sections(@StringRes val titleResId: Int) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Stateful composable that displays the Navigation route for the Interests screen.
- *
- * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
- * @param navigateToHome (event) request navigation to Home screen
- * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) state for screen Scaffold
- */
-@Composable
-fun InterestsRoute(
-    interestsViewModel: InterestsViewModel,
-    showNavRail: Boolean,
-    navigateToHome: () -> Unit,
-    openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
-) {
-    val tabContent = rememberTabContent(interestsViewModel)
-    val (currentSection, updateSection) = rememberSaveable {
-        mutableStateOf(tabContent.first().section)
-    }
-
-    InterestsScreen(
-        tabContent = tabContent,
-        currentSection = currentSection,
-        showNavRail = showNavRail,
-        onTabChange = updateSection,
-        navigateToHome = navigateToHome,
-        openDrawer = openDrawer,
-        scaffoldState = scaffoldState
-    )
-}
-
-/**
  * Stateless interest screen displays the tabs specified in [tabContent] adapting the UI to
  * different screen sizes.
  *
@@ -154,7 +116,7 @@ fun InterestsRoute(
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
-private fun InterestsScreen(
+fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
     showNavRail: Boolean,
@@ -294,7 +256,7 @@ private fun TopicList(
  * @param onPersonSelect (event) request a person selection be changed
  */
 @Composable
-private fun PeopleList(
+fun PeopleList(
     people: List<String>,
     selectedPeople: Set<String>,
     onPersonSelect: (String) -> Unit
@@ -310,7 +272,7 @@ private fun PeopleList(
  * @param onPublicationSelect (event) request a publication selection be changed
  */
 @Composable
-private fun PublicationList(
+fun PublicationList(
     publications: List<String>,
     selectedPublications: Set<String>,
     onPublicationSelect: (String) -> Unit
@@ -373,8 +335,8 @@ private fun TabWithSections(
         val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
         val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
         val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
+        val groupedSections = rememberSectionsGroupedInColumns(sections, columns)
 
-        val groupedSections by sectionsGroupedInColumnsAsState(sections, columns)
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
@@ -492,7 +454,7 @@ private fun InterestsTabRow(
                     InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
                 }
             }
-            else -> {
+            WindowSize.Medium, WindowSize.Expanded -> {
                 ScrollableTabRow(
                     selectedTabIndex = selectedTabIndex,
                     backgroundColor = MaterialTheme.colors.onPrimary,
@@ -540,43 +502,23 @@ private fun InterestsTabRowContent(
 }
 
 /**
- * Return state for interest sections grouped given the number of columns that fill the screen.
+ * Return the interest sections grouped given the number of columns that fill the screen.
  * Sections are distributed to balance the number of items on each column.
  */
 @Composable
-private fun sectionsGroupedInColumnsAsState(
+private fun rememberSectionsGroupedInColumns(
     sections: List<InterestSection>,
-    columns: Int,
-    defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-): State<Array<MutableList<InterestSection>>> = produceState(
-    initialValue = arrayOf(),
-    keys = arrayOf(sections, columns)
-) {
-    withContext(defaultDispatcher) { // Move the execution of this logic to the background thread
-        val sectionsInColumns = Array<MutableList<InterestSection>>(columns) { mutableListOf() }
-        // For each section, find the column with less elements and add it there
-        sections.forEach { section ->
-            val shortestColumnIndex = sectionsInColumns.getIndexShortestElement()
-            sectionsInColumns[shortestColumnIndex] += section
-        }
-        value = sectionsInColumns
+    columns: Int
+): List<List<InterestSection>> = remember(sections, columns) {
+    val sectionsInColumns = List<MutableList<InterestSection>>(columns) { mutableListOf() }
+    val elementsInColumns = IntArray(columns)
+    // For each section, find the column with less elements and add it there
+    sections.forEach { section ->
+        val shortestColumnIndex = elementsInColumns.withIndex().minByOrNull { it.value }!!.index
+        sectionsInColumns[shortestColumnIndex] += section
+        elementsInColumns[shortestColumnIndex] += section.interests.size
     }
-}
-
-/**
- * Find the position of the array with less interests items in it
- */
-private fun Array<MutableList<InterestSection>>.getIndexShortestElement(): Int {
-    var (indexShortestColumn, elementsInShortestColumn) = Int.MAX_VALUE to Int.MAX_VALUE
-    // For each column group, calculate the number of interests items and find the shortest
-    this.forEachIndexed { index, columnsGroup ->
-        val elements = columnsGroup.fold(0, { acc, section -> acc + section.interests.size })
-        if (elements < elementsInShortestColumn) {
-            indexShortestColumn = index
-            elementsInShortestColumn = elements
-        }
-    }
-    return indexShortestColumn
+    sectionsInColumns.toList()
 }
 
 /**
@@ -597,7 +539,7 @@ private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
     }
 
 @Composable
-private fun rememberTabContent(
+fun rememberTabContent(
     interestsViewModel: InterestsViewModel
 ): List<TabContent> {
     // UiState of the InterestsScreen
