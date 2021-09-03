@@ -51,11 +51,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -83,10 +81,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
 import com.google.accompanist.insets.navigationBarsPadding
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 enum class Sections(@StringRes val titleResId: Int) {
     Topics(R.string.interests_section_topics),
@@ -339,8 +334,8 @@ private fun TabWithSections(
         val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
         val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
         val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
+        val groupedSections = rememberSectionsGroupedInColumns(sections, columns)
 
-        val groupedSections by sectionsGroupedInColumnsAsState(sections, columns)
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
@@ -475,43 +470,23 @@ private fun InterestsTabRow(
 }
 
 /**
- * Return state for interest sections grouped given the number of columns that fill the screen.
+ * Return the interest sections grouped given the number of columns that fill the screen.
  * Sections are distributed to balance the number of items on each column.
  */
 @Composable
-private fun sectionsGroupedInColumnsAsState(
+private fun rememberSectionsGroupedInColumns(
     sections: List<InterestSection>,
-    columns: Int,
-    defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-): State<Array<MutableList<InterestSection>>> = produceState(
-    initialValue = arrayOf(),
-    keys = arrayOf(sections, columns)
-) {
-    withContext(defaultDispatcher) { // Move the execution of this logic to the background thread
-        val sectionsInColumns = Array<MutableList<InterestSection>>(columns) { mutableListOf() }
-        // For each section, find the column with less elements and add it there
-        sections.forEach { section ->
-            val shortestColumnIndex = sectionsInColumns.getIndexShortestElement()
-            sectionsInColumns[shortestColumnIndex] += section
-        }
-        value = sectionsInColumns
+    columns: Int
+): List<List<InterestSection>> = remember(sections, columns) {
+    val sectionsInColumns = List<MutableList<InterestSection>>(columns) { mutableListOf() }
+    val elementsInColumns = IntArray(columns)
+    // For each section, find the column with less elements and add it there
+    sections.forEach { section ->
+        val shortestColumnIndex = elementsInColumns.withIndex().minByOrNull { it.value }!!.index
+        sectionsInColumns[shortestColumnIndex] += section
+        elementsInColumns[shortestColumnIndex] += section.interests.size
     }
-}
-
-/**
- * Find the position of the array with less interests items in it
- */
-private fun Array<MutableList<InterestSection>>.getIndexShortestElement(): Int {
-    var (indexShortestColumn, elementsInShortestColumn) = Int.MAX_VALUE to Int.MAX_VALUE
-    // For each column group, calculate the number of interests items and find the shortest
-    this.forEachIndexed { index, columnsGroup ->
-        val elements = columnsGroup.fold(0, { acc, section -> acc + section.interests.size })
-        if (elements < elementsInShortestColumn) {
-            indexShortestColumn = index
-            elementsInShortestColumn = elements
-        }
-    }
-    return indexShortestColumn
+    sectionsInColumns.toList()
 }
 
 /**
