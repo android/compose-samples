@@ -19,9 +19,9 @@ package com.example.jetnews.ui.interests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
-import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.data.successOr
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
  * UI state for the Interests screen
  */
 data class InterestsUiState(
-    val topics: TopicsMap = emptyMap(),
+    val topics: List<InterestSection> = emptyList(),
     val people: List<String> = emptyList(),
     val publications: List<String> = emptyList(),
     val loading: Boolean = false,
@@ -106,7 +106,7 @@ class InterestsViewModel(
             val publicationsDeferred = async { interestsRepository.getPublications() }
 
             // Wait for all requests to finish
-            val topics = topicsDeferred.await().successOr(emptyMap())
+            val topics = topicsDeferred.await().successOr(emptyList())
             val people = peopleDeferred.await().successOr(emptyList())
             val publications = publicationsDeferred.await().successOr(emptyList())
 
