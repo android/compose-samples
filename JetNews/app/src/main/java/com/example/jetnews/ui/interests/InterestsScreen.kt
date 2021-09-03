@@ -43,6 +43,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
@@ -441,30 +442,61 @@ private fun InterestsTabRow(
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>
 ) {
-    // TODO: Make the tabs narrower and aligned to the left in large screens
-    TabRow(
-        selectedTabIndex = selectedTabIndex,
-        backgroundColor = MaterialTheme.colors.onPrimary,
-        contentColor = MaterialTheme.colors.primary
-    ) {
-        tabContent.forEachIndexed { index, tabContent ->
-            val colorText = if (selectedTabIndex == index) {
-                MaterialTheme.colors.primary
-            } else {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+    BoxWithConstraints {
+        val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
+        when (windowSize) {
+            WindowSize.Compact -> {
+                TabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    backgroundColor = MaterialTheme.colors.onPrimary,
+                    contentColor = MaterialTheme.colors.primary
+                ) {
+                    InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
+                }
             }
-            Tab(
-                selected = selectedTabIndex == index,
-                onClick = { updateSection(tabContent.section) },
-                modifier = Modifier.heightIn(min = 48.dp)
-            ) {
-                Text(
-                    text = stringResource(id = tabContent.section.titleResId),
-                    color = colorText,
-                    style = MaterialTheme.typography.subtitle2,
-                    modifier = Modifier.paddingFromBaseline(top = 20.dp)
-                )
+            WindowSize.Medium, WindowSize.Expanded -> {
+                ScrollableTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    backgroundColor = MaterialTheme.colors.onPrimary,
+                    contentColor = MaterialTheme.colors.primary,
+                    edgePadding = 0.dp
+                ) {
+                    InterestsTabRowContent(
+                        selectedTabIndex = selectedTabIndex,
+                        updateSection = updateSection,
+                        tabContent = tabContent,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun InterestsTabRowContent(
+    selectedTabIndex: Int,
+    updateSection: (Sections) -> Unit,
+    tabContent: List<TabContent>,
+    modifier: Modifier = Modifier
+) {
+    tabContent.forEachIndexed { index, content ->
+        val colorText = if (selectedTabIndex == index) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+        }
+        Tab(
+            selected = selectedTabIndex == index,
+            onClick = { updateSection(content.section) },
+            modifier = Modifier.heightIn(min = 48.dp)
+        ) {
+            Text(
+                text = stringResource(id = content.section.titleResId),
+                color = colorText,
+                style = MaterialTheme.typography.subtitle2,
+                modifier = modifier.paddingFromBaseline(top = 20.dp)
+            )
         }
     }
 }
