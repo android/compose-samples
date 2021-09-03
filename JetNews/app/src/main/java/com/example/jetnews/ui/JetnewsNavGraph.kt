@@ -23,15 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
-import com.example.jetnews.ui.article.ArticleRoute
-import com.example.jetnews.ui.article.ArticleViewModel
-import com.example.jetnews.ui.article.ArticleViewModel.Companion.ARTICLE_ID_KEY
 import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
@@ -63,7 +58,6 @@ fun JetnewsNavGraph(
             HomeRoute(
                 homeViewModel = homeViewModel,
                 showNavRail = showNavRail,
-                navigateToArticle = navigationActions.navigateToArticle,
                 navigateToInterests = navigationActions.navigateToInterests,
                 openDrawer = openDrawer
             )
@@ -77,24 +71,6 @@ fun JetnewsNavGraph(
                 showNavRail = showNavRail,
                 navigateToHome = navigationActions.navigateToHome,
                 openDrawer = openDrawer
-            )
-        }
-        composable(
-            route = "${JetnewsDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}",
-            arguments = listOf(navArgument(ARTICLE_ID_KEY) { type = NavType.StringType })
-        ) { backStackEntry ->
-            // ArticleVM obtains the articleId via backStackEntry.arguments from SavedStateHandle
-            val articleViewModel: ArticleViewModel = viewModel(
-                factory = ArticleViewModel.provideFactory(
-                    postsRepository = appContainer.postsRepository,
-                    owner = backStackEntry,
-                    defaultArgs = backStackEntry.arguments
-                )
-            )
-            ArticleRoute(
-                articleViewModel = articleViewModel,
-                showNavRail = showNavRail,
-                onBack = navigationActions.upPress
             )
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -84,12 +85,14 @@ private val defaultSpacerSize = 16.dp
 @Composable
 fun PostContent(
     post: Post,
-    state: LazyListState = rememberLazyListState(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    state: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
+        modifier = modifier.padding(horizontal = defaultSpacerSize),
+        contentPadding = contentPadding,
         state = state,
-        modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
         item {
             Spacer(Modifier.height(defaultSpacerSize))

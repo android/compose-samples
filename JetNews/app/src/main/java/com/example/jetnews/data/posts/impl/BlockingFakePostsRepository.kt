@@ -19,6 +19,7 @@ package com.example.jetnews.data.posts.impl
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +39,7 @@ class BlockingFakePostsRepository : PostsRepository {
 
     override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
-            val post = posts.find { it.id == postId }
+            val post = posts.allPosts.find { it.id == postId }
             if (post == null) {
                 Result.Error(IllegalArgumentException("Unable to find post"))
             } else {
@@ -47,7 +48,7 @@ class BlockingFakePostsRepository : PostsRepository {
         }
     }
 
-    override suspend fun getPosts(): Result<List<Post>> {
+    override suspend fun getPostsFeed(): Result<PostsFeed> {
         return Result.Success(posts)
     }
 
