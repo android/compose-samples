@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,39 +107,6 @@ enum class Sections(@StringRes val titleResId: Int) {
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
- * Stateful composable that displays the Navigation route for the Interests screen.
- *
- * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
- * @param navigateToHome (event) request navigation to Home screen
- * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) state for screen Scaffold
- */
-@Composable
-fun InterestsRoute(
-    interestsViewModel: InterestsViewModel,
-    showNavRail: Boolean,
-    navigateToHome: () -> Unit,
-    openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
-) {
-    val tabContent = rememberTabContent(interestsViewModel)
-    val (currentSection, updateSection) = rememberSaveable {
-        mutableStateOf(tabContent.first().section)
-    }
-
-    InterestsScreen(
-        tabContent = tabContent,
-        currentSection = currentSection,
-        showNavRail = showNavRail,
-        onTabChange = updateSection,
-        navigateToHome = navigateToHome,
-        openDrawer = openDrawer,
-        scaffoldState = scaffoldState
-    )
-}
-
-/**
  * Stateless interest screen displays the tabs specified in [tabContent] adapting the UI to
  * different screen sizes.
  *
@@ -153,7 +120,7 @@ fun InterestsRoute(
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
-private fun InterestsScreen(
+fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
     showNavRail: Boolean,
@@ -293,7 +260,7 @@ private fun TopicList(
  * @param onPersonSelect (event) request a person selection be changed
  */
 @Composable
-private fun PeopleList(
+fun PeopleList(
     people: List<String>,
     selectedPeople: Set<String>,
     onPersonSelect: (String) -> Unit
@@ -309,7 +276,7 @@ private fun PeopleList(
  * @param onPublicationSelect (event) request a publication selection be changed
  */
 @Composable
-private fun PublicationList(
+fun PublicationList(
     publications: List<String>,
     selectedPublications: Set<String>,
     onPublicationSelect: (String) -> Unit
@@ -565,7 +532,7 @@ private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
     }
 
 @Composable
-private fun rememberTabContent(
+fun rememberTabContent(
     interestsViewModel: InterestsViewModel
 ): List<TabContent> {
     // UiState of the InterestsScreen
