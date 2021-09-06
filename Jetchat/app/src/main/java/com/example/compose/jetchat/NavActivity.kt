@@ -36,6 +36,7 @@ import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import com.google.accompanist.insets.ProvideWindowInsets
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 /**
@@ -64,8 +65,12 @@ class NavActivity : AppCompatActivity() {
                     if (drawerOpen) {
                         // Open drawer and reset state in VM.
                         LaunchedEffect(Unit) {
-                            scaffoldState.drawerState.open()
-                            viewModel.resetOpenDrawerAction()
+                            try {
+                                scaffoldState.drawerState.open()
+                            } catch (ignore: CancellationException) {
+                            } finally {
+                                viewModel.resetOpenDrawerAction()
+                            }
                         }
                     }
 
