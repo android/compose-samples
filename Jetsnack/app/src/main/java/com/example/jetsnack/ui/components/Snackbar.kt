@@ -19,7 +19,6 @@ package com.example.jetsnack.ui.components
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarData
-import androidx.compose.material.SnackbarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
