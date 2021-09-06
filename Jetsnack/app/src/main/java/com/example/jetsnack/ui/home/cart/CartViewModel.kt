@@ -17,8 +17,11 @@
 package com.example.jetsnack.ui.home.cart
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.model.SnackbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -27,18 +30,23 @@ import kotlinx.coroutines.flow.StateFlow
  *
  * TODO: Move data to Repository so it can be displayed and changed consistently throughout the app.
  */
-class CartViewModel : ViewModel() {
+class CartViewModel(private val snackbarManager: SnackbarManager) : ViewModel() {
+
     private val _orderLines: MutableStateFlow<List<OrderLine>> =
         MutableStateFlow(SnackRepo.getCart())
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
-    fun removeSnack(snackId: Long) {
-        _orderLines.value = _orderLines.value.filter { it.snack.id != snackId }
-    }
+    private var increaseCountErrorCounter = 0
 
     fun increaseSnackCount(snackId: Long) {
-        val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
-        updateSnackCount(snackId, currentCount + 1)
+        if (increaseCountErrorCounter < 4) {
+            val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
+            updateSnackCount(snackId, currentCount + 1)
+            increaseCountErrorCounter++
+        } else {
+            increaseCountErrorCounter = 0
+            snackbarManager.showMessage(R.string.cart_increase_error)
+        }
     }
 
     fun decreaseSnackCount(snackId: Long) {
@@ -52,12 +60,30 @@ class CartViewModel : ViewModel() {
         }
     }
 
+    fun removeSnack(snackId: Long) {
+        _orderLines.value = _orderLines.value.filter { it.snack.id != snackId }
+    }
+
     private fun updateSnackCount(snackId: Long, count: Int) {
         _orderLines.value = _orderLines.value.map {
             if (it.snack.id == snackId) {
                 it.copy(count = count)
             } else {
                 it
+            }
+        }
+    }
+
+    /**
+     * Factory for CartViewModel that takes SnackbarManager as a dependency
+     */
+    companion object {
+        fun provideFactory(
+            snackbarManager: SnackbarManager = SnackbarManager,
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return CartViewModel(snackbarManager) as T
             }
         }
     }
