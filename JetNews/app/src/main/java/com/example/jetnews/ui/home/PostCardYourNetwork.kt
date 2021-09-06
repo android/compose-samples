@@ -35,11 +35,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.PostPreviewParameterProvider
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
@@ -95,17 +96,17 @@ fun PostCardPopular(
 @Preview("Regular colors")
 @Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewPostCardPopular() {
+fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
     JetnewsTheme {
         Surface {
-            PostCardPopular(post1, {})
+            PostCardPopular(post, {})
         }
     }
 }
 
 @Preview("Regular colors, long text")
 @Composable
-fun PreviewPostCardPopularLongText() {
+fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
     val loremIpsum =
         """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
@@ -118,9 +119,9 @@ fun PreviewPostCardPopularLongText() {
     JetnewsTheme {
         Surface {
             PostCardPopular(
-                post1.copy(
+                post.copy(
                     title = "Title$loremIpsum",
-                    metadata = post1.metadata.copy(
+                    metadata = post.metadata.copy(
                         author = PostAuthor("Author: $loremIpsum"),
                         readTimeMinutes = Int.MAX_VALUE
                     )
