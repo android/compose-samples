@@ -33,7 +33,9 @@ import androidx.compose.ui.unit.Dp
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
-/*Holds the Swipe to dismiss composable, its animation and the current state*/
+/**
+ * Holds the Swipe to dismiss composable, its animation and the current state
+ */
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
     directions: Set<DismissDirection> = setOf(DismissDirection.EndToStart),
