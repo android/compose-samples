@@ -37,10 +37,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.example.jetnews.PostPreviewParameterProvider
 import com.example.jetnews.R
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.PostPreviewParameterProvider
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
