@@ -71,8 +71,9 @@ fun JetsnackApp() {
                 // If there's a change to messageText, SnackbarManager, or scaffoldState, the
                 // previous effect will be cancelled and a new one will start with the new values
                 LaunchedEffect(messageText, SnackbarManager, scaffoldState) {
+                    // Display the snackbar on the screen, that suspends until it goes away
                     scaffoldState.snackbarHostState.showSnackbar(messageText)
-                    // Once the message is displayed and dismissed, notify the ViewModel
+                    // Once the snackbar is gone or dismissed, notify the SnackbarManager
                     SnackbarManager.setMessageShown(message.id)
                 }
             }

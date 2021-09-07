@@ -39,27 +39,31 @@ class CartViewModel(
         MutableStateFlow(snackRepository.getCart())
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
-    private var increaseCountErrorCounter = 0
+    // Logic to show errors every few requests
+    private var requestCount = 0
+    private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 
     fun increaseSnackCount(snackId: Long) {
-        if (increaseCountErrorCounter < 4) {
+        if (!shouldRandomlyFail()) {
             val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
             updateSnackCount(snackId, currentCount + 1)
-            increaseCountErrorCounter++
         } else {
-            increaseCountErrorCounter = 0
             snackbarManager.showMessage(R.string.cart_increase_error)
         }
     }
 
     fun decreaseSnackCount(snackId: Long) {
-        val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
-        if (currentCount == 1) {
-            // remove snack from cart
-            removeSnack(snackId)
+        if (!shouldRandomlyFail()) {
+            val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
+            if (currentCount == 1) {
+                // remove snack from cart
+                removeSnack(snackId)
+            } else {
+                // update quantity in cart
+                updateSnackCount(snackId, currentCount - 1)
+            }
         } else {
-            // update quantity in cart
-            updateSnackCount(snackId, currentCount - 1)
+            snackbarManager.showMessage(R.string.cart_decrease_error)
         }
     }
 
