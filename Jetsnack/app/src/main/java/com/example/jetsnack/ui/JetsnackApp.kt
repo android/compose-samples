@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.home.rememberBottomBarStateHolder
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
@@ -34,7 +35,10 @@ fun JetsnackApp() {
             val tabs = remember { HomeSections.values() }
             val navController = rememberNavController()
             JetsnackScaffold(
-                bottomBar = { JetsnackBottomBar(navController = navController, tabs = tabs) }
+                bottomBar = {
+                    val bottomBarStateHolder = rememberBottomBarStateHolder(navController, tabs)
+                    JetsnackBottomBar(bottomBarStateHolder)
+                }
             ) { innerPaddingModifier ->
                 JetsnackNavGraph(
                     navController = navController,

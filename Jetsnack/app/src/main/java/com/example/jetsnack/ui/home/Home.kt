@@ -42,6 +42,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -108,21 +109,57 @@ enum class HomeSections(
     PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, "home/profile")
 }
 
+/**
+ * Remembers and creates an instance of [BottomBarStateHolder]
+ */
+@Composable
+fun rememberBottomBarStateHolder(navController: NavController, tabs: Array<HomeSections>) =
+    remember(navController, tabs) {
+        BottomBarStateHolder(navController, tabs)
+    }
+
+/**
+ * Responsible for holding state related to [JetsnackBottomBar] and containing UI-related logic.
+ */
+@Stable
+class BottomBarStateHolder(
+    private val navController: NavController,
+    val tabs: Array<HomeSections>
+) {
+    private val sections = HomeSections.values()
+    private val currentRoute: String?
+        get() = navController.currentDestination?.route
+
+    val routes = sections.map { it.route }
+
+    // Reading this attribute will cause recompositions when the route becomes valid or invalid
+    val isValidRoute: Boolean
+        @Composable get() =
+            navController.currentBackStackEntryAsState().value?.destination?.route in routes
+
+    val currentSection: HomeSections
+        get() = sections.first { it.route == currentRoute }
+
+    fun navigateToRoute(route: String) {
+        if (route != currentRoute) {
+            navController.navigate(route) {
+                launchSingleTop = true
+                restoreState = true
+                popUpTo(findStartDestination(navController.graph).id) {
+                    saveState = true
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun JetsnackBottomBar(
-    navController: NavController,
-    tabs: Array<HomeSections>,
+    stateHolder: BottomBarStateHolder,
     color: Color = JetsnackTheme.colors.iconPrimary,
     contentColor: Color = JetsnackTheme.colors.iconInteractive
 ) {
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val sections = remember { HomeSections.values() }
-    val routes = remember { sections.map { it.route } }
-    if (currentRoute in routes) {
-        val currentSection = sections.first { it.route == currentRoute }
+    if (stateHolder.isValidRoute) {
         JetsnackSurface(
             color = color,
             contentColor = contentColor
@@ -133,14 +170,14 @@ fun JetsnackBottomBar(
                 dampingRatio = 0.8f
             )
             JetsnackBottomNavLayout(
-                selectedIndex = currentSection.ordinal,
-                itemCount = routes.size,
+                selectedIndex = stateHolder.currentSection.ordinal,
+                itemCount = stateHolder.routes.size,
                 indicator = { JetsnackBottomNavIndicator() },
                 animSpec = springSpec,
                 modifier = Modifier.navigationBarsPadding(start = false, end = false)
             ) {
-                tabs.forEach { section ->
-                    val selected = section == currentSection
+                stateHolder.tabs.forEach { section ->
+                    val selected = section == stateHolder.currentSection
                     val tint by animateColorAsState(
                         if (selected) {
                             JetsnackTheme.colors.iconInteractive
@@ -170,17 +207,7 @@ fun JetsnackBottomBar(
                             )
                         },
                         selected = selected,
-                        onSelected = {
-                            if (section.route != currentRoute) {
-                                navController.navigate(section.route) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                    popUpTo(findStartDestination(navController.graph).id) {
-                                        saveState = true
-                                    }
-                                }
-                            }
-                        },
+                        onSelected = { stateHolder.navigateToRoute(section.route) },
                         animSpec = springSpec,
                         modifier = BottomNavigationItemPadding
                             .clip(BottomNavIndicatorShape)
@@ -392,8 +419,10 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomBar(
-            navController = rememberNavController(),
-            tabs = HomeSections.values()
+            rememberBottomBarStateHolder(
+                navController = rememberNavController(),
+                tabs = HomeSections.values()
+            )
         )
     }
 }
