@@ -60,7 +60,6 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
-import com.example.jetsnack.model.SnackbarManager
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -77,7 +76,7 @@ import com.google.accompanist.insets.statusBarsHeight
 fun Cart(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory(SnackbarManager))
+    viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
     val orderLines by viewModel.orderLines.collectAsState()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }

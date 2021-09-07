@@ -30,10 +30,13 @@ import kotlinx.coroutines.flow.StateFlow
  *
  * TODO: Move data to Repository so it can be displayed and changed consistently throughout the app.
  */
-class CartViewModel(private val snackbarManager: SnackbarManager) : ViewModel() {
+class CartViewModel(
+    private val snackbarManager: SnackbarManager,
+    snackRepository: SnackRepo
+) : ViewModel() {
 
     private val _orderLines: MutableStateFlow<List<OrderLine>> =
-        MutableStateFlow(SnackRepo.getCart())
+        MutableStateFlow(snackRepository.getCart())
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
     private var increaseCountErrorCounter = 0
@@ -80,10 +83,11 @@ class CartViewModel(private val snackbarManager: SnackbarManager) : ViewModel() 
     companion object {
         fun provideFactory(
             snackbarManager: SnackbarManager = SnackbarManager,
+            snackRepository: SnackRepo = SnackRepo
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return CartViewModel(snackbarManager) as T
+                return CartViewModel(snackbarManager, snackRepository) as T
             }
         }
     }
