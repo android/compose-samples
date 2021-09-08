@@ -132,8 +132,9 @@ class BottomBarStateHolder(
 
     val routes = sections.map { it.route }
 
-    // Reading this attribute will cause recompositions when the route becomes valid or invalid
-    val isValidRoute: Boolean
+    // Reading this attribute will cause recompositions when the bottom bar needs shown, or not.
+    // Not all routes need to show the bottom bar.
+    val shouldBeShown: Boolean
         @Composable get() =
             navController.currentBackStackEntryAsState().value?.destination?.route in routes
 
@@ -159,7 +160,7 @@ fun JetsnackBottomBar(
     color: Color = JetsnackTheme.colors.iconPrimary,
     contentColor: Color = JetsnackTheme.colors.iconInteractive
 ) {
-    if (stateHolder.isValidRoute) {
+    if (stateHolder.shouldBeShown) {
         JetsnackSurface(
             color = color,
             contentColor = contentColor
