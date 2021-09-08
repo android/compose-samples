@@ -18,13 +18,19 @@ package com.example.jetsnack.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.navigation
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
-import com.example.jetsnack.ui.home.rememberBottomBarStateHolder
+import com.example.jetsnack.ui.home.addHomeGraph
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
@@ -32,19 +38,48 @@ import com.google.accompanist.insets.ProvideWindowInsets
 fun JetsnackApp() {
     ProvideWindowInsets {
         JetsnackTheme {
-            val tabs = remember { HomeSections.values() }
-            val navController = rememberNavController()
+            val appStateHolder = rememberAppStateHolder()
             JetsnackScaffold(
                 bottomBar = {
-                    val bottomBarStateHolder = rememberBottomBarStateHolder(navController, tabs)
-                    JetsnackBottomBar(bottomBarStateHolder)
+                    JetsnackBottomBar(
+                        shouldBeShown = appStateHolder.shouldShowBottomBar,
+                        tabs = appStateHolder.bottomBarTabs,
+                        currentRoute = appStateHolder.currentRoute,
+                        navigateToRoute = appStateHolder::navigateToBottomBarRoute
+                    )
                 }
             ) { innerPaddingModifier ->
-                JetsnackNavGraph(
-                    navController = navController,
+                NavHost(
+                    navController = appStateHolder.navController,
+                    startDestination = MainDestinations.HOME_ROUTE,
                     modifier = Modifier.padding(innerPaddingModifier)
-                )
+                ) {
+                    jetsnackNavGraph(
+                        onSnackSelected = appStateHolder::navigateToSnackDetail,
+                        upPress = appStateHolder::upPress
+                    )
+                }
             }
         }
+    }
+}
+
+private fun NavGraphBuilder.jetsnackNavGraph(
+    onSnackSelected: (Long, NavBackStackEntry) -> Unit,
+    upPress: () -> Unit
+) {
+    navigation(
+        route = MainDestinations.HOME_ROUTE,
+        startDestination = HomeSections.FEED.route
+    ) {
+        addHomeGraph(onSnackSelected)
+    }
+    composable(
+        "${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}",
+        arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) { type = NavType.LongType })
+    ) { backStackEntry ->
+        val arguments = requireNotNull(backStackEntry.arguments)
+        val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
+        SnackDetail(snackId, upPress)
     }
 }
