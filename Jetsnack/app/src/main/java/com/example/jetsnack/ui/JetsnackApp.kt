@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
@@ -27,12 +28,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
 import com.example.jetsnack.ui.components.JetsnackScaffold
+import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.home.addHomeGraph
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun JetsnackApp() {
@@ -47,7 +50,15 @@ fun JetsnackApp() {
                         currentRoute = appStateHolder.currentRoute,
                         navigateToRoute = appStateHolder::navigateToBottomBarRoute
                     )
-                }
+                },
+                snackbarHost = {
+                    SnackbarHost(
+                        hostState = it,
+                        modifier = Modifier.systemBarsPadding(),
+                        snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+                    )
+                },
+                scaffoldState = appStateHolder.scaffoldState
             ) { innerPaddingModifier ->
                 NavHost(
                     navController = appStateHolder.navController,

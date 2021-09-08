@@ -53,6 +53,8 @@
     <string name="cart_shipping_label">Shipping &amp; Handling</string>
     <string name="cart_total_label">Total</string>
     <string name="cart_checkout">Checkout</string>
+    <string name="cart_increase_error">There was an error and the quantity couldn\'t be increased. Please try again.</string>
+    <string name="cart_decrease_error">There was an error and the quantity couldn\'t be decreased. Please try again.</string>
     <string name="label_remove">Remove item</string>
 
     <!-- Quantity Selector -->
