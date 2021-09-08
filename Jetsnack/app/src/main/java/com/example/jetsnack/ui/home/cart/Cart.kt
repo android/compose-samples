@@ -87,9 +87,9 @@ import com.google.accompanist.insets.statusBarsHeight
 @Composable
 fun Cart(
     onSnackClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
-    val viewModel: CartViewModel = viewModel()
     val orderLines by viewModel.orderLines.collectAsState()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
     Cart(
