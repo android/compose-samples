@@ -159,7 +159,7 @@ private tailrec fun findStartDestination(graph: NavDestination): NavDestination 
 }
 
 /**
- * A composable function that returns the [Resources]. It will be recomposed when [Configuration]
+ * A composable function that returns the [Resources]. It will be recomposed when `Configuration`
  * gets updated.
  */
 @Composable
