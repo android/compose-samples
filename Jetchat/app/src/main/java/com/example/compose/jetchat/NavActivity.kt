@@ -31,7 +31,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.compose.jetchat.components.JetchatScaffold
+import com.example.compose.jetchat.components.DrawerScaffold
 import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
@@ -58,17 +58,7 @@ class NavActivity : AppCompatActivity() {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides this.onBackPressedDispatcher
                 ) {
-//                    val scaffoldState = rememberScaffoldState()
-                    val scaffoldState = viewModel.scaffoldState
-
-                    val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
-                    if (drawerOpen) {
-                        // Open drawer and reset state in VM.
-                        LaunchedEffect(Unit) {
-                            scaffoldState.drawerState.open()
-                            viewModel.resetOpenDrawerAction()
-                        }
-                    }
+                    val scaffoldState = rememberScaffoldState(drawerState = viewModel.drawerState)
 
                     // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
@@ -80,7 +70,12 @@ class NavActivity : AppCompatActivity() {
                         }
                     }
 
-                    AndroidViewBinding(ContentMainBinding::inflate)
+                    DrawerScaffold(
+                        scaffoldState,
+                        ::findNavController
+                    ) {
+                        AndroidViewBinding(ContentMainBinding::inflate)
+                    }
                 }
             }
         }

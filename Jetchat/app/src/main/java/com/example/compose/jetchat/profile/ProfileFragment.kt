@@ -31,7 +31,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
-import com.example.compose.jetchat.components.JetchatScaffold
+import com.example.compose.jetchat.components.TopBarScaffold
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ViewWindowInsetObserver
@@ -64,10 +64,9 @@ class ProfileFragment : Fragment() {
         val windowInsets = ViewWindowInsetObserver(this).start()
 
         setContent {
-            JetchatScaffold(
-                scaffoldState = activityViewModel.scaffoldState,
+            TopBarScaffold(
+                drawerState = activityViewModel.drawerState,
                 complexTopBar = false,
-                findNavController = ::findNavController
             ) {
                 val userData by viewModel.userData.observeAsState()
 
@@ -77,10 +76,7 @@ class ProfileFragment : Fragment() {
                             ProfileError()
                         } else {
                             ProfileScreen(
-                                userData = userData!!,
-                                onNavIconPressed = {
-                                    activityViewModel.openDrawer()
-                                }
+                                userData = userData!!
                             )
                         }
                     }

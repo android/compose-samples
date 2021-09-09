@@ -32,15 +32,5 @@ import kotlinx.coroutines.flow.StateFlow
  * Used to communicate between screens.
  */
 class MainViewModel : ViewModel() {
-    val scaffoldState by mutableStateOf(ScaffoldState(DrawerState(DrawerValue.Closed), SnackbarHostState()))
-
-    private val _drawerShouldBeOpened = MutableStateFlow(false)
-    val drawerShouldBeOpened: StateFlow<Boolean> = _drawerShouldBeOpened
-
-    fun openDrawer() {
-        _drawerShouldBeOpened.value = true
-    }
-    fun resetOpenDrawerAction() {
-        _drawerShouldBeOpened.value = false
-    }
+    val drawerState by mutableStateOf(DrawerState(DrawerValue.Closed))
 }

@@ -32,7 +32,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.components.JetchatScaffold
+import com.example.compose.jetchat.components.TopBarScaffold
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
@@ -62,10 +62,9 @@ class ConversationFragment : Fragment() {
             .start(windowInsetsAnimationsEnabled = true)
 
         setContent {
-            JetchatScaffold(
-                scaffoldState = activityViewModel.scaffoldState,
-                complexTopBar = true,
-                findNavController = ::findNavController
+            TopBarScaffold(
+                drawerState = activityViewModel.drawerState,
+                complexTopBar = false,
             ) {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,

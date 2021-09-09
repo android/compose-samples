@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.DrawerState
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Scaffold
@@ -51,22 +52,14 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun JetchatScaffold(
+fun DrawerScaffold(
     scaffoldState: ScaffoldState,
-    complexTopBar: Boolean,
     findNavController: () -> NavController,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    JetchatScaffold(
+    DrawerScaffold(
         scaffoldState,
-//                        complexTopBar = currentDestinationId() == R.id.nav_home,
-        complexTopBar = complexTopBar,
-        onNavIconClicked = {
-            scope.launch {
-                scaffoldState.drawerState.open()
-            }
-        },
         onChatClicked = {
             findNavController().popBackStack(R.id.nav_home, true)
             scope.launch {
@@ -84,17 +77,41 @@ fun JetchatScaffold(
     )
 }
 
-
 @Composable
-fun JetchatScaffold(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    complexTopBar: Boolean,
-    onNavIconClicked: () -> Unit,
+private fun DrawerScaffold(
+    scaffoldState: ScaffoldState,
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
+    JetchatTheme {
+        Scaffold(
+            scaffoldState = scaffoldState,
+            drawerContent = {
+                JetchatDrawer(
+                    onProfileClicked = onProfileClicked,
+                    onChatClicked = onChatClicked
+                )
+            },
+            content = content
+        )
+    }
+}
+
+@Composable
+fun TopBarScaffold(
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    drawerState: DrawerState,
+    complexTopBar: Boolean,
+    content: @Composable (PaddingValues) -> Unit
+) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val onNavIconClicked: () -> Unit = {
+        scope.launch {
+            drawerState.open()
+        }
+    }
 
     JetchatTheme {
         Scaffold(
@@ -137,12 +154,6 @@ fun JetchatScaffold(
                         }
                     )
                 }
-            },
-            drawerContent = {
-                JetchatDrawer(
-                    onProfileClicked = onProfileClicked,
-                    onChatClicked = onChatClicked
-                )
             },
             content = {
                 if (functionalityNotAvailablePopupShown) {
