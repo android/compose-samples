@@ -17,26 +17,16 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.compose.jetchat.components.DrawerScaffold
-import com.example.compose.jetchat.conversation.BackPressHandler
-import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
-import com.example.compose.jetchat.databinding.ContentMainBinding
 import com.google.accompanist.insets.ProvideWindowInsets
-import kotlinx.coroutines.launch
 
 /**
  * Main activity for the app.
