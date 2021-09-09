@@ -105,70 +105,67 @@ enum class HomeSections(
 
 @Composable
 fun JetsnackBottomBar(
-    shouldBeShown: Boolean,
     tabs: Array<HomeSections>,
-    currentRoute: String?,
+    currentRoute: String,
     navigateToRoute: (String) -> Unit,
     color: Color = JetsnackTheme.colors.iconPrimary,
     contentColor: Color = JetsnackTheme.colors.iconInteractive
 ) {
-    if (shouldBeShown) {
-        val routes = remember { tabs.map { it.route } }
-        val currentSection = tabs.first { it.route == currentRoute }
+    val routes = remember { tabs.map { it.route } }
+    val currentSection = tabs.first { it.route == currentRoute }
 
-        JetsnackSurface(
-            color = color,
-            contentColor = contentColor
+    JetsnackSurface(
+        color = color,
+        contentColor = contentColor
+    ) {
+        val springSpec = SpringSpec<Float>(
+            // Determined experimentally
+            stiffness = 800f,
+            dampingRatio = 0.8f
+        )
+        JetsnackBottomNavLayout(
+            selectedIndex = currentSection.ordinal,
+            itemCount = routes.size,
+            indicator = { JetsnackBottomNavIndicator() },
+            animSpec = springSpec,
+            modifier = Modifier.navigationBarsPadding(start = false, end = false)
         ) {
-            val springSpec = SpringSpec<Float>(
-                // Determined experimentally
-                stiffness = 800f,
-                dampingRatio = 0.8f
-            )
-            JetsnackBottomNavLayout(
-                selectedIndex = currentSection.ordinal,
-                itemCount = routes.size,
-                indicator = { JetsnackBottomNavIndicator() },
-                animSpec = springSpec,
-                modifier = Modifier.navigationBarsPadding(start = false, end = false)
-            ) {
-                tabs.forEach { section ->
-                    val selected = section == currentSection
-                    val tint by animateColorAsState(
-                        if (selected) {
-                            JetsnackTheme.colors.iconInteractive
-                        } else {
-                            JetsnackTheme.colors.iconInteractiveInactive
-                        }
-                    )
+            tabs.forEach { section ->
+                val selected = section == currentSection
+                val tint by animateColorAsState(
+                    if (selected) {
+                        JetsnackTheme.colors.iconInteractive
+                    } else {
+                        JetsnackTheme.colors.iconInteractiveInactive
+                    }
+                )
 
-                    JetsnackBottomNavigationItem(
-                        icon = {
-                            Icon(
-                                imageVector = section.icon,
-                                tint = tint,
-                                contentDescription = null
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(section.title).uppercase(
-                                    ConfigurationCompat.getLocales(
-                                        LocalConfiguration.current
-                                    ).get(0)
-                                ),
-                                color = tint,
-                                style = MaterialTheme.typography.button,
-                                maxLines = 1
-                            )
-                        },
-                        selected = selected,
-                        onSelected = { navigateToRoute(section.route) },
-                        animSpec = springSpec,
-                        modifier = BottomNavigationItemPadding
-                            .clip(BottomNavIndicatorShape)
-                    )
-                }
+                JetsnackBottomNavigationItem(
+                    icon = {
+                        Icon(
+                            imageVector = section.icon,
+                            tint = tint,
+                            contentDescription = null
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(section.title).uppercase(
+                                ConfigurationCompat.getLocales(
+                                    LocalConfiguration.current
+                                ).get(0)
+                            ),
+                            color = tint,
+                            style = MaterialTheme.typography.button,
+                            maxLines = 1
+                        )
+                    },
+                    selected = selected,
+                    onSelected = { navigateToRoute(section.route) },
+                    animSpec = springSpec,
+                    modifier = BottomNavigationItemPadding
+                        .clip(BottomNavIndicatorShape)
+                )
             }
         }
     }
@@ -363,7 +360,6 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomBar(
-            shouldBeShown = true,
             tabs = HomeSections.values(),
             currentRoute = "home/feed",
             navigateToRoute = { }

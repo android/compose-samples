@@ -44,12 +44,13 @@ fun JetsnackApp() {
             val appStateHolder = rememberAppStateHolder()
             JetsnackScaffold(
                 bottomBar = {
-                    JetsnackBottomBar(
-                        shouldBeShown = appStateHolder.shouldShowBottomBar,
-                        tabs = appStateHolder.bottomBarTabs,
-                        currentRoute = appStateHolder.currentRoute,
-                        navigateToRoute = appStateHolder::navigateToBottomBarRoute
-                    )
+                    if (appStateHolder.shouldShowBottomBar) {
+                        JetsnackBottomBar(
+                            tabs = appStateHolder.bottomBarTabs,
+                            currentRoute = appStateHolder.currentRoute!!,
+                            navigateToRoute = appStateHolder::navigateToBottomBarRoute
+                        )
+                    }
                 },
                 snackbarHost = {
                     SnackbarHost(
