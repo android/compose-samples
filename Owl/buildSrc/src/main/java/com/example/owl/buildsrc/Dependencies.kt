@@ -17,14 +17,14 @@
 package com.example.owl.buildsrc
 
 object Versions {
-    const val ktlint = "0.41.0"
+    const val ktlint = "0.42.1"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0"
 
     object Accompanist {
-        const val version = "0.16.0"
+        const val version = "0.18.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -36,7 +36,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.5.1"
+        private const val version = "1.5.2"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.1"
+            const val version = "1.0.2"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

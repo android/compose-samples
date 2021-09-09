@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.buildsrc
 
 object Versions {
-    const val ktlint = "0.41.0"
+    const val ktlint = "0.42.1"
 }
 
 object Libs {
@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.16.0"
+        const val version = "0.18.0"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -41,7 +41,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.5.1"
+        private const val version = "1.5.2"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -63,7 +63,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.1"
+            const val version = "1.0.2"
 
             @get:JvmStatic
             val snapshotUrl: String
