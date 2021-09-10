@@ -17,7 +17,7 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.42.1"
+    const val ktLint = "0.41.0"
 }
 
 object Libs {

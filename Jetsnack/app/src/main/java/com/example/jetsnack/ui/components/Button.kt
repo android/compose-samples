@@ -123,7 +123,7 @@ private fun ButtonPreview() {
 private fun RectangleButtonPreview() {
     JetsnackTheme {
         JetsnackButton(onClick = {}, shape = RectangleShape) {
-        Text(text = "Demo")
-    }
+            Text(text = "Demo")
+        }
     }
 }
