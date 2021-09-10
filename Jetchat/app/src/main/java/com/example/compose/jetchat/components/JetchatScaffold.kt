@@ -16,10 +16,19 @@
 
 package com.example.compose.jetchat.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DrawerState
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -28,13 +37,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
+import com.example.compose.jetchat.conversation.ChannelNameBar
+import com.example.compose.jetchat.FunctionalityNotAvailablePopup
+import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.statusBarsPadding
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun DrawerScaffold(
