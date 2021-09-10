@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -574,28 +573,30 @@ private fun PostListDivider() {
 private fun HomeSearch(modifier: Modifier = Modifier) {
     Surface(
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(Dp.Hairline, MaterialTheme.colors.onSurface),
+        border = BorderStroke(Dp.Hairline, MaterialTheme.colors.onSurface.copy(alpha = .6f)),
         elevation = 4.dp,
-        modifier = modifier
-            .fillMaxWidth()
-            .sizeIn(minHeight = 48.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+                IconButton(onClick = { /* Functionality not supported yet */ },) {
+                    Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+                }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.home_search),
                     style = MaterialTheme.typography.body2
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = stringResource(R.string.cd_more_actions)
-                )
+                IconButton(onClick = { /* Functionality not supported yet */ },) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = stringResource(R.string.cd_more_actions),
+                    )
+                }
             }
         }
     }
@@ -613,10 +614,10 @@ private fun PostTopBar(
 ) {
     Surface(
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(Dp.Hairline, MaterialTheme.colors.onSurface),
+        border = BorderStroke(Dp.Hairline, MaterialTheme.colors.onSurface.copy(alpha = .6f)),
         modifier = modifier.padding(end = 16.dp)
     ) {
-        Row {
+        Row(Modifier.padding(horizontal = 8.dp)) {
             FavoriteButton(onClick = { /* Functionality not available */ })
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
             ShareButton(onClick = onSharePost)
