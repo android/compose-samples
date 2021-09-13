@@ -18,20 +18,21 @@ package com.example.jetsnack.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.SnackbarHost
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.navigation.compose.rememberNavController
-import com.example.jetsnack.model.SnackbarManager
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.navigation
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.home.addHomeGraph
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
@@ -40,12 +41,17 @@ import com.google.accompanist.insets.systemBarsPadding
 fun JetsnackApp() {
     ProvideWindowInsets {
         JetsnackTheme {
-            val tabs = remember { HomeSections.values() }
-            val navController = rememberNavController()
-            val scaffoldState = rememberScaffoldState()
-
+            val appStateHolder = rememberAppStateHolder()
             JetsnackScaffold(
-                bottomBar = { JetsnackBottomBar(navController = navController, tabs = tabs) },
+                bottomBar = {
+                    if (appStateHolder.shouldShowBottomBar) {
+                        JetsnackBottomBar(
+                            tabs = appStateHolder.bottomBarTabs,
+                            currentRoute = appStateHolder.currentRoute!!,
+                            navigateToRoute = appStateHolder::navigateToBottomBarRoute
+                        )
+                    }
+                },
                 snackbarHost = {
                     SnackbarHost(
                         hostState = it,
@@ -53,31 +59,39 @@ fun JetsnackApp() {
                         snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
                     )
                 },
-                scaffoldState = scaffoldState
+                scaffoldState = appStateHolder.scaffoldState
             ) { innerPaddingModifier ->
-                JetsnackNavGraph(
-                    navController = navController,
+                NavHost(
+                    navController = appStateHolder.navController,
+                    startDestination = MainDestinations.HOME_ROUTE,
                     modifier = Modifier.padding(innerPaddingModifier)
-                )
-            }
-
-            // Handle Snackbar messages
-            val currentMessages by SnackbarManager.messages.collectAsState()
-            if (currentMessages.isNotEmpty()) {
-                val message = currentMessages[0]
-                val messageText: String = stringResource(message.messageId)
-
-                // Effect running in a coroutine that displays the Snackbar on the screen
-                // If there's a change to messageText, SnackbarManager, or scaffoldState, the
-                // previous effect will be cancelled and a new one will start with the new values
-                LaunchedEffect(messageText, SnackbarManager, scaffoldState) {
-                    // Display the snackbar on the screen. `showSnackbar` is a function
-                    // that suspends until the snackbar disappears from the screen
-                    scaffoldState.snackbarHostState.showSnackbar(messageText)
-                    // Once the snackbar is gone or dismissed, notify the SnackbarManager
-                    SnackbarManager.setMessageShown(message.id)
+                ) {
+                    jetsnackNavGraph(
+                        onSnackSelected = appStateHolder::navigateToSnackDetail,
+                        upPress = appStateHolder::upPress
+                    )
                 }
             }
         }
+    }
+}
+
+private fun NavGraphBuilder.jetsnackNavGraph(
+    onSnackSelected: (Long, NavBackStackEntry) -> Unit,
+    upPress: () -> Unit
+) {
+    navigation(
+        route = MainDestinations.HOME_ROUTE,
+        startDestination = HomeSections.FEED.route
+    ) {
+        addHomeGraph(onSnackSelected)
+    }
+    composable(
+        "${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}",
+        arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) { type = NavType.LongType })
+    ) { backStackEntry ->
+        val arguments = requireNotNull(backStackEntry.arguments)
+        val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
+        SnackDetail(snackId, upPress)
     }
 }
