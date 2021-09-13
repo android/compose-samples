@@ -16,10 +16,7 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -31,7 +28,6 @@ import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun JetnewsNavGraph(
@@ -40,12 +36,9 @@ fun JetnewsNavGraph(
     navigationActions: JetnewsNavigationActions,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    openDrawer: () -> Unit = {},
     startDestination: String = JetnewsDestinations.HOME_ROUTE
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val openDrawer: () -> Unit = { coroutineScope.launch { scaffoldState.drawerState.open() } }
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
