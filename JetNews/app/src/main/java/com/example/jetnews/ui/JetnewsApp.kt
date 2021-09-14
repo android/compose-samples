@@ -54,30 +54,14 @@ fun JetnewsApp(
             val navigationActions = remember(navController) { JetnewsNavigationActions(navController) }
 
             val coroutineScope = rememberCoroutineScope()
-            // This top level composable contains the app drawer, which needs to be accessible
-            // from multiple screens. An event to open the drawer is passed down to each
-            // screen that needs it.
-            val drawerState = rememberDrawerState(DrawerValue.Closed)
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             BoxWithConstraints {
                 val windowSize = getWindowSize(maxWidth)
-
                 val allowDrawerToBeShown = windowSize == WindowSize.Compact
-
-                // Determine the drawer state to pass to the modal drawer.
-                val sizeAwareDrawerState = if (allowDrawerToBeShown) {
-                    // If we want to allow showing the drawer, we use the real, remembered drawer
-                    // state defined above
-                    drawerState
-                } else {
-                    // If we don't want to allow the drawer to be shown, we provide a drawer state
-                    // that is locked closed. This is intentionally not remembered, because we
-                    // don't want to keep track of any changes and always keep it closed
-                    DrawerState(DrawerValue.Closed)
-                }
+                val sizeAwareDrawerState = rememberSizeAwareDrawerState(allowDrawerToBeShown)
 
                 ModalDrawer(
                     drawerContent = {
@@ -85,7 +69,7 @@ fun JetnewsApp(
                             currentRoute = currentRoute,
                             navigateToHome = navigationActions.navigateToHome,
                             navigateToInterests = navigationActions.navigateToInterests,
-                            closeDrawer = { coroutineScope.launch { drawerState.close() } }
+                            closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
                         )
                     },
                     drawerState = sizeAwareDrawerState,
@@ -97,11 +81,30 @@ fun JetnewsApp(
                         // Either allow showing the drawer, or show the nav rail
                         showNavRail = !allowDrawerToBeShown,
                         navController = navController,
-                        openDrawer = { coroutineScope.launch { drawerState.open() } },
+                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                         navigationActions = navigationActions,
                     )
                 }
             }
         }
+    }
+}
+
+/**
+ * Determine the drawer state to pass to the modal drawer.
+ */
+@Composable
+private fun rememberSizeAwareDrawerState(allowDrawerToBeShown: Boolean): DrawerState {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    return if (allowDrawerToBeShown) {
+        // If we want to allow showing the drawer, we use a real, remembered drawer
+        // state defined above
+        drawerState
+    } else {
+        // If we don't want to allow the drawer to be shown, we provide a drawer state
+        // that is locked closed. This is intentionally not remembered, because we
+        // don't want to keep track of any changes and always keep it closed
+        DrawerState(DrawerValue.Closed)
     }
 }
