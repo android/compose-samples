@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
@@ -33,7 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
-import com.example.jetnews.utils.getWindowSize
+import com.example.jetnews.utils.rememberWindowSizeState
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
@@ -51,40 +50,41 @@ fun JetnewsApp(
             }
 
             val navController = rememberNavController()
-            val navigationActions = remember(navController) { JetnewsNavigationActions(navController) }
+            val navigationActions = remember(navController) {
+                JetnewsNavigationActions(navController)
+            }
 
             val coroutineScope = rememberCoroutineScope()
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
+            val currentRoute =
+                navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
-            BoxWithConstraints {
-                val windowSize = getWindowSize(maxWidth)
-                val allowDrawerToBeShown = windowSize == WindowSize.Compact
-                val sizeAwareDrawerState = rememberSizeAwareDrawerState(allowDrawerToBeShown)
+            val windowSize = rememberWindowSizeState()
+            val allowDrawerToBeShown = windowSize == WindowSize.Compact
+            val sizeAwareDrawerState = rememberSizeAwareDrawerState(allowDrawerToBeShown)
 
-                ModalDrawer(
-                    drawerContent = {
-                        AppDrawer(
-                            currentRoute = currentRoute,
-                            navigateToHome = navigationActions.navigateToHome,
-                            navigateToInterests = navigationActions.navigateToInterests,
-                            closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
-                        )
-                    },
-                    drawerState = sizeAwareDrawerState,
-                    // Only enable opening the drawer via gestures if we allow showing it
-                    gesturesEnabled = allowDrawerToBeShown
-                ) {
-                    JetnewsNavGraph(
-                        appContainer = appContainer,
-                        // Either allow showing the drawer, or show the nav rail
-                        showNavRail = !allowDrawerToBeShown,
-                        navController = navController,
-                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
-                        navigationActions = navigationActions,
+            ModalDrawer(
+                drawerContent = {
+                    AppDrawer(
+                        currentRoute = currentRoute,
+                        navigateToHome = navigationActions.navigateToHome,
+                        navigateToInterests = navigationActions.navigateToInterests,
+                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
                     )
-                }
+                },
+                drawerState = sizeAwareDrawerState,
+                // Only enable opening the drawer via gestures if we allow showing it
+                gesturesEnabled = allowDrawerToBeShown
+            ) {
+                JetnewsNavGraph(
+                    appContainer = appContainer,
+                    // Either allow showing the drawer, or show the nav rail
+                    showNavRail = !allowDrawerToBeShown,
+                    navController = navController,
+                    openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                    navigationActions = navigationActions,
+                )
             }
         }
     }
