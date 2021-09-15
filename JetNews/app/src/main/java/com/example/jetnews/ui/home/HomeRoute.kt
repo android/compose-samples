@@ -205,7 +205,6 @@ private enum class HomeScreenType {
     ArticleDetails
 }
 
-@Composable
 private fun getHomeScreenType(
     windowSize: WindowSize,
     uiState: HomeUiState
