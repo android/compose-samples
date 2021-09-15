@@ -22,7 +22,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -91,9 +90,7 @@ import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
-import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -118,7 +115,8 @@ fun HomeFeedWithArticleDetailsScreen(
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     articleDetailLazyListStates: Map<String, LazyListState>,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    modifier: Modifier = Modifier
 ) {
     HomeScreenWithList(
         uiState = uiState,
@@ -128,28 +126,16 @@ fun HomeFeedWithArticleDetailsScreen(
         openDrawer = openDrawer,
         navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
-        scaffoldState = scaffoldState
-    ) { hasPostsUiState, modifier ->
-        val contentModifier = if (showNavRail) {
-            modifier
-                .systemBarsPadding()
-                .padding(top = 16.dp)
-        } else {
-            modifier
-        }
-        Row(contentModifier) {
+        scaffoldState = scaffoldState,
+        modifier = modifier,
+    ) { hasPostsUiState, contentModifier ->
+        Row(Modifier.padding(top = 8.dp)) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
                 favorites = hasPostsUiState.favorites,
                 showExpandedSearch = showNavRail,
                 onArticleTapped = onSelectPost,
                 onToggleFavorite = onToggleFavorite,
-                contentPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.systemBars,
-                    applyTop = false,
-                    applyStart = !showNavRail,
-                    applyEnd = false,
-                ),
                 modifier = Modifier
                     .width(334.dp)
                     .notifyInput(onInteractWithList),
@@ -164,12 +150,7 @@ fun HomeFeedWithArticleDetailsScreen(
 
                 // Key against the post id to avoid sharing any state between different posts
                 key(detailPost.id) {
-                    val contentPadding = rememberInsetsPaddingValues(
-                        insets = LocalWindowInsets.current.systemBars,
-                        applyTop = false,
-                        applyStart = false,
-                    )
-                    Column(Modifier.padding(contentPadding)) {
+                    Column {
                         val context = LocalContext.current
                         PostTopBar(
                             isFavorite = hasPostsUiState.favorites.contains(detailPost.id),
@@ -179,7 +160,7 @@ fun HomeFeedWithArticleDetailsScreen(
                         )
                         PostContent(
                             post = detailPost,
-                            modifier = modifier
+                            modifier = contentModifier
                                 .fillMaxSize()
                                 .notifyInput {
                                     onInteractWithDetail(detailPost.id)
@@ -223,7 +204,8 @@ fun HomeFeedScreen(
     openDrawer: () -> Unit,
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    modifier: Modifier = Modifier
 ) {
     HomeScreenWithList(
         uiState = uiState,
@@ -233,20 +215,16 @@ fun HomeFeedScreen(
         openDrawer = openDrawer,
         navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
-        scaffoldState = scaffoldState
-    ) { hasPostsUiState, modifier ->
+        scaffoldState = scaffoldState,
+        modifier = modifier
+    ) { hasPostsUiState, contentModifier ->
         PostList(
             postsFeed = hasPostsUiState.postsFeed,
             favorites = hasPostsUiState.favorites,
             showExpandedSearch = showNavRail,
             onArticleTapped = onSelectPost,
             onToggleFavorite = onToggleFavorite,
-            contentPadding = rememberInsetsPaddingValues(
-                insets = LocalWindowInsets.current.systemBars,
-                applyTop = false,
-                applyStart = !showNavRail,
-            ),
-            modifier = modifier,
+            modifier = contentModifier,
             state = homeListLazyListState
         )
     }
@@ -271,12 +249,13 @@ private fun HomeScreenWithList(
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     scaffoldState: ScaffoldState,
+    modifier: Modifier = Modifier,
     hasPostsContent: @Composable (
         uiState: HomeUiState.HasPosts,
         modifier: Modifier
     ) -> Unit
 ) {
-    Row(Modifier.fillMaxSize()) {
+    Row(modifier.fillMaxSize()) {
         if (showNavRail) {
             AppNavRail(
                 currentRoute = JetnewsDestinations.HOME_ROUTE,
@@ -413,14 +392,12 @@ private fun PostList(
     showExpandedSearch: Boolean,
     onArticleTapped: (postId: String) -> Unit,
     onToggleFavorite: (String) -> Unit,
-    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         modifier = modifier,
-        state = state,
-        contentPadding = contentPadding
+        state = state
     ) {
         if (showExpandedSearch) {
             item { HomeSearch(Modifier.padding(horizontal = 16.dp)) }

@@ -90,6 +90,7 @@ fun ArticleScreen(
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
+    modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
@@ -97,7 +98,7 @@ fun ArticleScreen(
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
-    Row(Modifier.fillMaxSize()) {
+    Row(modifier.fillMaxSize()) {
         val context = LocalContext.current
         if (showNavRail) {
             ArticleNavRail(
@@ -232,11 +233,7 @@ private fun ArticleNavRail(
                     tint = MaterialTheme.colors.primary
                 )
             }
-        },
-        modifier = Modifier.navigationBarsPadding(
-            bottom = false,
-            end = false
-        )
+        }
     ) {
         FavoriteButton(onClick = onUnimplementedAction)
         BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
