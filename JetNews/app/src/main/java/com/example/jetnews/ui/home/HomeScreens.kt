@@ -281,7 +281,7 @@ private fun HomeScreenWithList(
                 }
             },
         ) { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
+            val contentModifier = Modifier.padding(innerPadding)
 
             LoadingContent(
                 empty = when (uiState) {
@@ -308,7 +308,7 @@ private fun HomeScreenWithList(
                                 }
                             } else {
                                 // there's currently an error showing, don't show any content
-                                Box(modifier.fillMaxSize()) { /* empty screen */ }
+                                Box(contentModifier.fillMaxSize()) { /* empty screen */ }
                             }
                         }
                     }

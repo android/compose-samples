@@ -209,40 +209,35 @@ private enum class HomeScreenType {
 private fun getHomeScreenType(
     windowSize: WindowSize,
     uiState: HomeUiState
-): HomeScreenType {
-    val homeScreenType = when (windowSize) {
-        WindowSize.Compact,
-        WindowSize.Medium -> {
-            when (uiState) {
-                is HomeUiState.HasPosts -> {
-                    if (uiState.isArticleOpen) {
-                        HomeScreenType.ArticleDetails
-                    } else {
-                        HomeScreenType.Feed
-                    }
+): HomeScreenType = when (windowSize) {
+    WindowSize.Compact,
+    WindowSize.Medium -> {
+        when (uiState) {
+            is HomeUiState.HasPosts -> {
+                if (uiState.isArticleOpen) {
+                    HomeScreenType.ArticleDetails
+                } else {
+                    HomeScreenType.Feed
                 }
-                is HomeUiState.NoPosts -> HomeScreenType.Feed
             }
+            is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
-        WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
     }
-    return homeScreenType
+    WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
 }
 
 @SuppressLint("ComposableModifierFactory", "ModifierFactoryExtensionFunction")
 @Composable
-private fun getScreenModifier(showNavRail: Boolean): Modifier {
-    val screenModifier = if (showNavRail) {
-        Modifier
-            .statusBarsPadding()
-            .padding(
-                rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.navigationBars,
-                    applyStart = false
-                )
+private fun getScreenModifier(showNavRail: Boolean): Modifier = if (showNavRail) {
+    Modifier
+        .statusBarsPadding()
+        .padding(
+            rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.navigationBars,
+                applyStart = false,
+                applyBottom = false
             )
-    } else {
-        Modifier
-    }
-    return screenModifier
+        )
+} else {
+    Modifier
 }
