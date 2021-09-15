@@ -17,16 +17,16 @@
 package com.example.jetnews.ui
 
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.ModalDrawer
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -54,45 +54,57 @@ fun JetnewsApp(
             val navigationActions = remember(navController) { JetnewsNavigationActions(navController) }
 
             val coroutineScope = rememberCoroutineScope()
-            // This top level scaffold contains the app drawer, which needs to be accessible
-            // from multiple screens. An event to open the drawer is passed down to each
-            // screen that needs it.
-            val scaffoldState = rememberScaffoldState()
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             BoxWithConstraints {
                 val windowSize = getWindowSize(maxWidth)
-                Scaffold(
-                    scaffoldState = scaffoldState,
-                    // If the window size is Compact, show the AppDrawer.
-                    // Otherwise, a NavRail will be shown in individual screens
-                    drawerContent = if (windowSize == WindowSize.Compact) {
-                        {
-                            AppDrawer(
-                                currentRoute = currentRoute,
-                                navigateToHome = navigationActions.navigateToHome,
-                                navigateToInterests = navigationActions.navigateToInterests,
-                                closeDrawer = {
-                                    coroutineScope.launch { scaffoldState.drawerState.close() }
-                                }
-                            )
-                        }
-                    } else {
-                        null
-                    }
-                ) { innerPaddingModifier ->
+                val allowDrawerToBeShown = windowSize == WindowSize.Compact
+                val sizeAwareDrawerState = rememberSizeAwareDrawerState(allowDrawerToBeShown)
+
+                ModalDrawer(
+                    drawerContent = {
+                        AppDrawer(
+                            currentRoute = currentRoute,
+                            navigateToHome = navigationActions.navigateToHome,
+                            navigateToInterests = navigationActions.navigateToInterests,
+                            closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
+                        )
+                    },
+                    drawerState = sizeAwareDrawerState,
+                    // Only enable opening the drawer via gestures if we allow showing it
+                    gesturesEnabled = allowDrawerToBeShown
+                ) {
                     JetnewsNavGraph(
                         appContainer = appContainer,
-                        showNavRail = windowSize != WindowSize.Compact,
+                        // Either allow showing the drawer, or show the nav rail
+                        showNavRail = !allowDrawerToBeShown,
                         navController = navController,
-                        scaffoldState = scaffoldState,
+                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                         navigationActions = navigationActions,
-                        modifier = Modifier.padding(innerPaddingModifier)
                     )
                 }
             }
         }
+    }
+}
+
+/**
+ * Determine the drawer state to pass to the modal drawer.
+ */
+@Composable
+private fun rememberSizeAwareDrawerState(allowDrawerToBeShown: Boolean): DrawerState {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    return if (allowDrawerToBeShown) {
+        // If we want to allow showing the drawer, we use a real, remembered drawer
+        // state defined above
+        drawerState
+    } else {
+        // If we don't want to allow the drawer to be shown, we provide a drawer state
+        // that is locked closed. This is intentionally not remembered, because we
+        // don't want to keep track of any changes and always keep it closed
+        DrawerState(DrawerValue.Closed)
     }
 }
