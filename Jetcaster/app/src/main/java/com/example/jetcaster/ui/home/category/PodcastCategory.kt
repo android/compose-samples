@@ -333,7 +333,8 @@ private fun TopPodcastRowItem(
     podcastImageUrl: String? = null,
 ) {
     Column(
-        modifier.semantics(mergeDescendants = true){}) {
+        modifier.semantics(mergeDescendants = true) {}
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()
