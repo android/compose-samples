@@ -132,7 +132,7 @@ fun HomeFeedWithArticleDetailsScreen(
         homeListLazyListState = homeListLazyListState,
         scaffoldState = scaffoldState,
         modifier = modifier,
-    ) { hasPostsUiState, contentModifier ->
+    ) { hasPostsUiState, _ ->
         Row {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
