@@ -16,6 +16,8 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
@@ -26,10 +28,12 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.rememberWindowSizeState
@@ -77,14 +81,24 @@ fun JetnewsApp(
                 // Only enable opening the drawer via gestures if we allow showing it
                 gesturesEnabled = allowDrawerToBeShown
             ) {
-                JetnewsNavGraph(
-                    appContainer = appContainer,
-                    // Either allow showing the drawer, or show the nav rail
-                    showNavRail = !allowDrawerToBeShown,
-                    navController = navController,
-                    openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
-                    navigationActions = navigationActions,
-                )
+
+                val showNavRail = windowSize != WindowSize.Compact
+                Row(Modifier.fillMaxSize()) {
+                    if (showNavRail) {
+                        AppNavRail(
+                            currentRoute = currentRoute,
+                            navigateToHome = navigationActions.navigateToHome,
+                            navigateToInterests = navigationActions.navigateToInterests,
+                        )
+                    }
+                    JetnewsNavGraph(
+                        appContainer = appContainer,
+                        // Either allow showing the drawer, or show the nav rail
+                        showTopAppBar = !showNavRail,
+                        navController = navController,
+                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                    )
+                }
             }
         }
     }

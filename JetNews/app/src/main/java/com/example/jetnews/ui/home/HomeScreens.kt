@@ -83,6 +83,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.article.postContentItems
+import com.example.jetnews.ui.article.PostContent
 import com.example.jetnews.ui.article.sharePost
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
@@ -108,7 +109,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -116,7 +117,6 @@ fun HomeFeedWithArticleDetailsScreen(
     onInteractWithList: () -> Unit,
     onInteractWithDetail: (String) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     articleDetailLazyListStates: Map<String, LazyListState>,
     scaffoldState: ScaffoldState,
@@ -124,20 +124,19 @@ fun HomeFeedWithArticleDetailsScreen(
 ) {
     HomeScreenWithList(
         uiState = uiState,
-        showNavRail = showNavRail,
+        showTopAppBar = showTopAppBar,
         onRefreshPosts = onRefreshPosts,
         onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
-        navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
         scaffoldState = scaffoldState,
         modifier = modifier,
-    ) { hasPostsUiState, _ ->
-        Row {
+    ) { hasPostsUiState, contentModifier ->
+        Row(contentModifier) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
                 favorites = hasPostsUiState.favorites,
-                showExpandedSearch = showNavRail,
+                showExpandedSearch = !showTopAppBar,
                 onArticleTapped = onSelectPost,
                 onToggleFavorite = onToggleFavorite,
                 contentPadding = PaddingValues(top = 8.dp),
@@ -204,24 +203,22 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
 @Composable
 fun HomeFeedScreen(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     scaffoldState: ScaffoldState,
     modifier: Modifier = Modifier
 ) {
     HomeScreenWithList(
         uiState = uiState,
-        showNavRail = showNavRail,
+        showTopAppBar = showTopAppBar,
         onRefreshPosts = onRefreshPosts,
         onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
-        navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
         scaffoldState = scaffoldState,
         modifier = modifier
@@ -229,7 +226,7 @@ fun HomeFeedScreen(
         PostList(
             postsFeed = hasPostsUiState.postsFeed,
             favorites = hasPostsUiState.favorites,
-            showExpandedSearch = showNavRail,
+            showExpandedSearch = !showTopAppBar,
             onArticleTapped = onSelectPost,
             onToggleFavorite = onToggleFavorite,
             modifier = contentModifier,
@@ -250,11 +247,10 @@ fun HomeFeedScreen(
 @Composable
 private fun HomeScreenWithList(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     scaffoldState: ScaffoldState,
     modifier: Modifier = Modifier,
@@ -263,66 +259,52 @@ private fun HomeScreenWithList(
         modifier: Modifier
     ) -> Unit
 ) {
-    Row(modifier.fillMaxSize()) {
-        if (showNavRail) {
-            AppNavRail(
-                currentRoute = JetnewsDestinations.HOME_ROUTE,
-                navigateToHome = { /* Do nothing */ },
-                navigateToInterests = navigateToInterests,
-                modifier = Modifier.navigationBarsPadding(
-                    bottom = false,
-                    end = false
+    Scaffold(
+        scaffoldState = scaffoldState,
+        snackbarHost = { JetnewsSnackbarHost(hostState = it) },
+        topBar = {
+            if (showTopAppBar) {
+                HomeTopAppBar(
+                    openDrawer = openDrawer,
+                    elevation = if (!homeListLazyListState.isScrolled) 0.dp else 4.dp
                 )
-            )
-        }
-        Scaffold(
-            scaffoldState = scaffoldState,
-            snackbarHost = {
-                JetnewsSnackbarHost(hostState = it, modifier = Modifier.systemBarsPadding())
-            },
-            topBar = {
-                if (!showNavRail) {
-                    HomeTopAppBar(
-                        openDrawer = openDrawer,
-                        elevation = if (!homeListLazyListState.isScrolled) 0.dp else 4.dp
-                    )
-                }
-            },
-        ) { innerPadding ->
-            val contentModifier = Modifier.padding(innerPadding)
+            }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        val contentModifier = Modifier.padding(innerPadding)
 
-            LoadingContent(
-                empty = when (uiState) {
-                    is HomeUiState.HasPosts -> false
-                    is HomeUiState.NoPosts -> uiState.isLoading
-                },
-                emptyContent = { FullScreenLoading() },
-                loading = uiState.isLoading,
-                onRefresh = onRefreshPosts,
-                content = {
-                    when (uiState) {
-                        is HomeUiState.HasPosts -> hasPostsContent(uiState, modifier)
-                        is HomeUiState.NoPosts -> {
-                            if (uiState.errorMessages.isEmpty()) {
-                                // if there are no posts, and no error, let the user refresh manually
-                                TextButton(
-                                    onClick = onRefreshPosts,
-                                    modifier.fillMaxSize()
-                                ) {
-                                    Text(
-                                        stringResource(id = R.string.home_tap_to_load_content),
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            } else {
-                                // there's currently an error showing, don't show any content
-                                Box(contentModifier.fillMaxSize()) { /* empty screen */ }
+        LoadingContent(
+            empty = when (uiState) {
+                is HomeUiState.HasPosts -> false
+                is HomeUiState.NoPosts -> uiState.isLoading
+            },
+            emptyContent = { FullScreenLoading() },
+            loading = uiState.isLoading,
+            onRefresh = onRefreshPosts,
+            content = {
+                when (uiState) {
+                    is HomeUiState.HasPosts -> hasPostsContent(uiState, contentModifier)
+                    is HomeUiState.NoPosts -> {
+                        if (uiState.errorMessages.isEmpty()) {
+                            // if there are no posts, and no error, let the user refresh manually
+                            TextButton(
+                                onClick = onRefreshPosts,
+                                modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    stringResource(id = R.string.home_tap_to_load_content),
+                                    textAlign = TextAlign.Center
+                                )
                             }
+                        } else {
+                            // there's currently an error showing, don't show any content
+                            Box(contentModifier.fillMaxSize()) { /* empty screen */ }
                         }
                     }
                 }
-            )
-        }
+            }
+        )
     }
 
     // Process one error message at a time and show them as Snackbars in the UI
@@ -570,10 +552,7 @@ private fun HomeSearch(modifier: Modifier = Modifier) {
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(onClick = { /* Functionality not supported yet */ },) {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = stringResource(R.string.cd_search)
-                    )
+                    Icon(imageVector = Icons.Filled.Search, contentDescription = null)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -584,7 +563,7 @@ private fun HomeSearch(modifier: Modifier = Modifier) {
                 IconButton(onClick = { /* Functionality not supported yet */ },) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = stringResource(R.string.cd_more_actions)
+                        contentDescription = stringResource(R.string.cd_more_actions),
                     )
                 }
             }
@@ -676,13 +655,12 @@ fun PreviewHomeListDrawerScreen() {
                 isLoading = false,
                 errorMessages = emptyList()
             ),
-            showNavRail = false,
+            showTopAppBar = false,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
             openDrawer = {},
-            navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
             scaffoldState = rememberScaffoldState()
         )
@@ -711,13 +689,12 @@ fun PreviewHomeListNavRailScreen() {
                 isLoading = false,
                 errorMessages = emptyList()
             ),
-            showNavRail = true,
+            showTopAppBar = true,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
             openDrawer = {},
-            navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
             scaffoldState = rememberScaffoldState()
         )
@@ -742,7 +719,7 @@ fun PreviewHomeListDetailScreen() {
                 isLoading = false,
                 errorMessages = emptyList()
             ),
-            showNavRail = true,
+            showTopAppBar = true,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
@@ -750,7 +727,6 @@ fun PreviewHomeListDetailScreen() {
             onInteractWithList = {},
             onInteractWithDetail = {},
             openDrawer = {},
-            navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
             articleDetailLazyListStates = postsFeed.allPosts.associate { post ->
                 key(post.id) {

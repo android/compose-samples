@@ -57,7 +57,7 @@ class HomeScreenTests {
                         isLoading = false,
                         errorMessages = listOf(ErrorMessage(0L, R.string.load_error))
                     ),
-                    showNavRail = false,
+                    showTopAppBar = false,
                     onToggleFavorite = {},
                     onSelectPost = {},
                     onRefreshPosts = {},

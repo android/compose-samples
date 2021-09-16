@@ -19,7 +19,6 @@ package com.example.jetnews.ui.interests
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 
@@ -27,16 +26,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
  * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
- * @param navigateToHome (event) request navigation to Home screen
+ * @param showNavigationIcon (state) whether the navigation icon needs to be shown
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for screen Scaffold
  */
 @Composable
 fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
-    showNavRail: Boolean,
-    navigateToHome: () -> Unit,
+    showNavigationIcon: Boolean,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -48,9 +45,8 @@ fun InterestsRoute(
     InterestsScreen(
         tabContent = tabContent,
         currentSection = currentSection,
-        showNavRail = showNavRail,
+        showNavigationIcon = showNavigationIcon,
         onTabChange = updateSection,
-        navigateToHome = navigateToHome,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState
     )
