@@ -159,8 +159,12 @@ fun InterestsScreen(
                 elevation = 0.dp
             )
         }
-    ) {
-        TabContent(currentSection, onTabChange, tabContent)
+    ) { innerPadding ->
+        val screenModifier = Modifier
+            .padding(innerPadding)
+            .navigationBarsPadding(start = false, bottom = false)
+
+        TabContent(currentSection, onTabChange, tabContent, screenModifier)
     }
 }
 
@@ -176,10 +180,11 @@ fun InterestsScreen(
 private fun TabContent(
     currentSection: Sections,
     updateSection: (Sections) -> Unit,
-    tabContent: List<TabContent>
+    tabContent: List<TabContent>,
+    modifier: Modifier = Modifier
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
-    Column {
+    Column(modifier) {
         InterestsTabRow(selectedTabIndex, updateSection, tabContent)
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
@@ -252,7 +257,7 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    BoxWithConstraints(Modifier.navigationBarsPadding(start = false, bottom = false)) {
+    BoxWithConstraints {
         val itemMaxWidth = rememberItemMaxWidth(windowMaxWidth = maxWidth, columns = 1)
         val topicModifier = Modifier
             .fillMaxWidth()
@@ -286,7 +291,7 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    BoxWithConstraints(Modifier.navigationBarsPadding(start = false, bottom = false)) {
+    BoxWithConstraints {
         val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
         val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
         val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
