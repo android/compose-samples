@@ -82,6 +82,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(@StringRes val titleResId: Int) {
@@ -130,7 +131,8 @@ fun InterestsScreen(
             AppNavRail(
                 currentRoute = JetnewsDestinations.INTERESTS_ROUTE,
                 navigateToHome = navigateToHome,
-                navigateToInterests = { /* Do nothing */ }
+                navigateToInterests = { /* Do nothing */ },
+                modifier = Modifier.statusBarsPadding()
             )
         }
         InterestsScreenContent(

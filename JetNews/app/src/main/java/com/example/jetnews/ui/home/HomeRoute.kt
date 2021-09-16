@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui.home
 
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.padding
@@ -31,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
@@ -126,7 +126,7 @@ fun HomeRoute(
         val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
         val homeScreenType = getHomeScreenType(windowSize, uiState)
         // Modifier to be applied to the all HomeScreen types
-        val screenModifier = getScreenModifier(showNavRail)
+        val screenModifier = Modifier.homeScreenPadding(showNavRail)
 
         when (homeScreenType) {
             HomeScreenType.FeedWithArticleDetails -> {
@@ -225,18 +225,18 @@ private fun getHomeScreenType(
     WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
 }
 
-@SuppressLint("ComposableModifierFactory", "ModifierFactoryExtensionFunction")
-@Composable
-private fun getScreenModifier(showNavRail: Boolean): Modifier = if (showNavRail) {
-    Modifier
-        .statusBarsPadding()
-        .padding(
-            rememberInsetsPaddingValues(
-                insets = LocalWindowInsets.current.navigationBars,
-                applyStart = false,
-                applyBottom = false
+private fun Modifier.homeScreenPadding(showNavRail: Boolean): Modifier = composed {
+    if (showNavRail) {
+        this
+            .statusBarsPadding()
+            .padding(
+                rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.navigationBars,
+                    applyStart = false,
+                    applyBottom = false
+                )
             )
-        )
-} else {
-    Modifier
+    } else {
+        this
+    }
 }

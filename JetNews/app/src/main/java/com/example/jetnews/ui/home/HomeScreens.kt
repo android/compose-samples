@@ -19,9 +19,11 @@ package com.example.jetnews.ui.home
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +31,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -79,7 +82,7 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.JetnewsDestinations
-import com.example.jetnews.ui.article.PostContent
+import com.example.jetnews.ui.article.postContentItems
 import com.example.jetnews.ui.article.sharePost
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
@@ -101,6 +104,7 @@ import kotlinx.coroutines.runBlocking
 /**
  * The home screen displaying the feed along with an article details.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
@@ -129,13 +133,14 @@ fun HomeFeedWithArticleDetailsScreen(
         scaffoldState = scaffoldState,
         modifier = modifier,
     ) { hasPostsUiState, contentModifier ->
-        Row(Modifier.padding(top = 8.dp)) {
+        Row {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
                 favorites = hasPostsUiState.favorites,
                 showExpandedSearch = showNavRail,
                 onArticleTapped = onSelectPost,
                 onToggleFavorite = onToggleFavorite,
+                contentPadding = PaddingValues(top = 8.dp),
                 modifier = Modifier
                     .width(334.dp)
                     .notifyInput(onInteractWithList),
@@ -150,23 +155,26 @@ fun HomeFeedWithArticleDetailsScreen(
 
                 // Key against the post id to avoid sharing any state between different posts
                 key(detailPost.id) {
-                    Column {
-                        val context = LocalContext.current
-                        PostTopBar(
-                            isFavorite = hasPostsUiState.favorites.contains(detailPost.id),
-                            onToggleFavorite = { onToggleFavorite(detailPost.id) },
-                            onSharePost = { sharePost(detailPost, context) },
-                            modifier = Modifier.align(Alignment.End)
-                        )
-                        PostContent(
-                            post = detailPost,
-                            modifier = contentModifier
-                                .fillMaxSize()
-                                .notifyInput {
-                                    onInteractWithDetail(detailPost.id)
-                                },
-                            state = detailLazyListState
-                        )
+                    LazyColumn(
+                        state = detailLazyListState,
+                        contentPadding = PaddingValues(top = 8.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxSize()
+                            .notifyInput {
+                                onInteractWithDetail(detailPost.id)
+                            }
+                    ) {
+                        stickyHeader {
+                            val context = LocalContext.current
+                            PostTopBar(
+                                isFavorite = hasPostsUiState.favorites.contains(detailPost.id),
+                                onToggleFavorite = { onToggleFavorite(detailPost.id) },
+                                onSharePost = { sharePost(detailPost, context) },
+                                modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
+                            )
+                        }
+                        postContentItems(detailPost)
                     }
                 }
             }
@@ -393,10 +401,12 @@ private fun PostList(
     onArticleTapped: (postId: String) -> Unit,
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         modifier = modifier,
+        contentPadding = contentPadding,
         state = state
     ) {
         if (showExpandedSearch) {
@@ -560,7 +570,10 @@ private fun HomeSearch(modifier: Modifier = Modifier) {
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(onClick = { /* Functionality not supported yet */ },) {
-                    Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.cd_search)
+                    )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -571,7 +584,7 @@ private fun HomeSearch(modifier: Modifier = Modifier) {
                 IconButton(onClick = { /* Functionality not supported yet */ },) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = stringResource(R.string.cd_more_actions),
+                        contentDescription = stringResource(R.string.cd_more_actions)
                     )
                 }
             }
