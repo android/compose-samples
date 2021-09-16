@@ -39,6 +39,7 @@
     <string name="home_popular_section_title">Popular on Jetnews</string>
     <string name="home_post_min_read">%1$s - %2$d min read</string>
     <string name="home_post_based_on_history">BASED ON YOUR HISTORY</string>
+    <string name="home_search">Search articles</string>
 
     <!-- Article Screen -->
     <string name="article_published_in">Published in: %s</string>

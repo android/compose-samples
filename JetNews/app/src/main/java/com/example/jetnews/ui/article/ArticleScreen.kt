@@ -42,8 +42,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,8 +63,11 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsNavRail
-import com.example.jetnews.ui.home.BookmarkButton
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.utils.BookmarkButton
+import com.example.jetnews.ui.utils.FavoriteButton
+import com.example.jetnews.ui.utils.ShareButton
+import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -89,6 +90,7 @@ fun ArticleScreen(
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
+    modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
@@ -96,7 +98,7 @@ fun ArticleScreen(
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
-    Row(Modifier.fillMaxSize()) {
+    Row(modifier.fillMaxSize()) {
         val context = LocalContext.current
         if (showNavRail) {
             ArticleNavRail(
@@ -231,34 +233,12 @@ private fun ArticleNavRail(
                     tint = MaterialTheme.colors.primary
                 )
             }
-        },
-        modifier = Modifier.navigationBarsPadding(
-            bottom = false,
-            end = false
-        )
+        }
     ) {
-        IconButton(onClick = onUnimplementedAction) {
-            Icon(
-                imageVector = Icons.Filled.ThumbUpOffAlt,
-                contentDescription = stringResource(R.string.cd_add_to_favorites)
-            )
-        }
-        BookmarkButton(
-            isBookmarked = isFavorite,
-            onClick = onToggleFavorite
-        )
-        IconButton(onClick = onSharePost) {
-            Icon(
-                imageVector = Icons.Filled.Share,
-                contentDescription = stringResource(R.string.cd_share)
-            )
-        }
-        IconButton(onClick = onUnimplementedAction) {
-            Icon(
-                painter = painterResource(R.drawable.ic_text_settings),
-                contentDescription = stringResource(R.string.cd_text_settings)
-            )
-        }
+        FavoriteButton(onClick = onUnimplementedAction)
+        BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
+        ShareButton(onClick = onSharePost)
+        TextSettingsButton(onClick = onUnimplementedAction)
     }
 }
 
@@ -285,29 +265,11 @@ private fun BottomBar(
                 .height(56.dp)
                 .fillMaxWidth()
         ) {
-            IconButton(onClick = onUnimplementedAction) {
-                Icon(
-                    imageVector = Icons.Filled.ThumbUpOffAlt,
-                    contentDescription = stringResource(R.string.cd_add_to_favorites)
-                )
-            }
-            BookmarkButton(
-                isBookmarked = isFavorite,
-                onClick = onToggleFavorite
-            )
-            IconButton(onClick = onSharePost) {
-                Icon(
-                    imageVector = Icons.Filled.Share,
-                    contentDescription = stringResource(R.string.cd_share)
-                )
-            }
+            FavoriteButton(onClick = onUnimplementedAction)
+            BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
+            ShareButton(onClick = onSharePost)
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = onUnimplementedAction) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_text_settings),
-                    contentDescription = stringResource(R.string.cd_text_settings)
-                )
-            }
+            TextSettingsButton(onClick = onUnimplementedAction)
         }
     }
 }
@@ -341,7 +303,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
  * @param post to share
  * @param context Android context to show the share sheet in
  */
-private fun sharePost(post: Post, context: Context) {
+fun sharePost(post: Post, context: Context) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TITLE, post.title)

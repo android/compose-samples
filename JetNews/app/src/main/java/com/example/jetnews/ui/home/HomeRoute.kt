@@ -18,6 +18,7 @@ package com.example.jetnews.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -28,9 +29,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsPadding
 
 /**
  * Displays the Home route.
@@ -103,9 +109,8 @@ fun HomeRoute(
     scaffoldState: ScaffoldState
 ) {
     // Construct the lazy list states for the list and the details outside of deciding which one to
-    // show.
-    // This allows the associated state to survive beyond that decision, and therefore we get to
-    // preserve the scroll throughout any changes to the content.
+    // show. This allows the associated state to survive beyond that decision, and therefore
+    // we get to preserve the scroll throughout any changes to the content.
     val homeListLazyListState = rememberLazyListState()
     val articleDetailLazyListStates = when (uiState) {
         is HomeUiState.HasPosts -> uiState.postsFeed.allPosts
@@ -119,23 +124,9 @@ fun HomeRoute(
     BoxWithConstraints {
         // Determine which type of the home screen to display
         val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
-
-        val homeScreenType = when (windowSize) {
-            WindowSize.Compact,
-            WindowSize.Medium -> {
-                when (uiState) {
-                    is HomeUiState.HasPosts -> {
-                        if (uiState.isArticleOpen) {
-                            HomeScreenType.ArticleDetails
-                        } else {
-                            HomeScreenType.Feed
-                        }
-                    }
-                    is HomeUiState.NoPosts -> HomeScreenType.Feed
-                }
-            }
-            WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
-        }
+        val homeScreenType = getHomeScreenType(windowSize, uiState)
+        // Modifier to be applied to the all HomeScreen types
+        val screenModifier = Modifier.homeScreenPadding(showNavRail)
 
         when (homeScreenType) {
             HomeScreenType.FeedWithArticleDetails -> {
@@ -152,7 +143,8 @@ fun HomeRoute(
                     navigateToInterests = navigateToInterests,
                     homeListLazyListState = homeListLazyListState,
                     articleDetailLazyListStates = articleDetailLazyListStates,
-                    scaffoldState = scaffoldState
+                    scaffoldState = scaffoldState,
+                    modifier = screenModifier
                 )
             }
             HomeScreenType.Feed -> {
@@ -166,7 +158,8 @@ fun HomeRoute(
                     openDrawer = openDrawer,
                     navigateToInterests = navigateToInterests,
                     homeListLazyListState = homeListLazyListState,
-                    scaffoldState = scaffoldState
+                    scaffoldState = scaffoldState,
+                    modifier = screenModifier
                 )
             }
             HomeScreenType.ArticleDetails -> {
@@ -184,6 +177,7 @@ fun HomeRoute(
                     lazyListState = articleDetailLazyListStates.getValue(
                         uiState.selectedPost.id
                     ),
+                    modifier = screenModifier
                 )
 
                 // If we are just showing the detail, have a back press switch to the list.
@@ -209,4 +203,40 @@ private enum class HomeScreenType {
     FeedWithArticleDetails,
     Feed,
     ArticleDetails
+}
+
+private fun getHomeScreenType(
+    windowSize: WindowSize,
+    uiState: HomeUiState
+): HomeScreenType = when (windowSize) {
+    WindowSize.Compact,
+    WindowSize.Medium -> {
+        when (uiState) {
+            is HomeUiState.HasPosts -> {
+                if (uiState.isArticleOpen) {
+                    HomeScreenType.ArticleDetails
+                } else {
+                    HomeScreenType.Feed
+                }
+            }
+            is HomeUiState.NoPosts -> HomeScreenType.Feed
+        }
+    }
+    WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
+}
+
+private fun Modifier.homeScreenPadding(showNavRail: Boolean): Modifier = composed {
+    if (showNavRail) {
+        this
+            .statusBarsPadding()
+            .padding(
+                rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.navigationBars,
+                    applyStart = false,
+                    applyBottom = false
+                )
+            )
+    } else {
+        this
+    }
 }

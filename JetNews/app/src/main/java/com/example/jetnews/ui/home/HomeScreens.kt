@@ -18,34 +18,45 @@ package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -57,11 +68,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -69,15 +82,18 @@ import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.JetnewsDestinations
-import com.example.jetnews.ui.article.PostContent
+import com.example.jetnews.ui.article.postContentItems
+import com.example.jetnews.ui.article.sharePost
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.utils.BookmarkButton
+import com.example.jetnews.ui.utils.FavoriteButton
+import com.example.jetnews.ui.utils.ShareButton
+import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
-import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -88,6 +104,7 @@ import kotlinx.coroutines.runBlocking
 /**
  * The home screen displaying the feed along with an article details.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
@@ -102,7 +119,8 @@ fun HomeFeedWithArticleDetailsScreen(
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     articleDetailLazyListStates: Map<String, LazyListState>,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    modifier: Modifier = Modifier
 ) {
     HomeScreenWithList(
         uiState = uiState,
@@ -112,21 +130,18 @@ fun HomeFeedWithArticleDetailsScreen(
         openDrawer = openDrawer,
         navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
-        scaffoldState = scaffoldState
-    ) { hasPostsUiState, modifier ->
+        scaffoldState = scaffoldState,
+        modifier = modifier,
+    ) { hasPostsUiState, _ ->
         Row {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
-                onArticleTapped = onSelectPost,
                 favorites = hasPostsUiState.favorites,
+                showExpandedSearch = showNavRail,
+                onArticleTapped = onSelectPost,
                 onToggleFavorite = onToggleFavorite,
-                contentPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.systemBars,
-                    applyTop = false,
-                    applyStart = !showNavRail,
-                    applyEnd = false,
-                ),
-                modifier = modifier
+                contentPadding = PaddingValues(top = 8.dp),
+                modifier = Modifier
                     .width(334.dp)
                     .notifyInput(onInteractWithList),
                 state = homeListLazyListState
@@ -140,20 +155,27 @@ fun HomeFeedWithArticleDetailsScreen(
 
                 // Key against the post id to avoid sharing any state between different posts
                 key(detailPost.id) {
-                    PostContent(
-                        post = detailPost,
-                        modifier = modifier
+                    LazyColumn(
+                        state = detailLazyListState,
+                        contentPadding = PaddingValues(top = 8.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .fillMaxSize()
                             .notifyInput {
                                 onInteractWithDetail(detailPost.id)
-                            },
-                        contentPadding = rememberInsetsPaddingValues(
-                            insets = LocalWindowInsets.current.systemBars,
-                            applyTop = false,
-                            applyStart = false,
-                        ),
-                        state = detailLazyListState
-                    )
+                            }
+                    ) {
+                        stickyHeader {
+                            val context = LocalContext.current
+                            PostTopBar(
+                                isFavorite = hasPostsUiState.favorites.contains(detailPost.id),
+                                onToggleFavorite = { onToggleFavorite(detailPost.id) },
+                                onSharePost = { sharePost(detailPost, context) },
+                                modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
+                            )
+                        }
+                        postContentItems(detailPost)
+                    }
                 }
             }
         }
@@ -190,7 +212,8 @@ fun HomeFeedScreen(
     openDrawer: () -> Unit,
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    modifier: Modifier = Modifier
 ) {
     HomeScreenWithList(
         uiState = uiState,
@@ -200,19 +223,16 @@ fun HomeFeedScreen(
         openDrawer = openDrawer,
         navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
-        scaffoldState = scaffoldState
-    ) { hasPostsUiState, modifier ->
+        scaffoldState = scaffoldState,
+        modifier = modifier
+    ) { hasPostsUiState, contentModifier ->
         PostList(
             postsFeed = hasPostsUiState.postsFeed,
-            onArticleTapped = onSelectPost,
             favorites = hasPostsUiState.favorites,
+            showExpandedSearch = showNavRail,
+            onArticleTapped = onSelectPost,
             onToggleFavorite = onToggleFavorite,
-            contentPadding = rememberInsetsPaddingValues(
-                insets = LocalWindowInsets.current.systemBars,
-                applyTop = false,
-                applyStart = !showNavRail,
-            ),
-            modifier = modifier,
+            modifier = contentModifier,
             state = homeListLazyListState
         )
     }
@@ -237,12 +257,13 @@ private fun HomeScreenWithList(
     navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     scaffoldState: ScaffoldState,
+    modifier: Modifier = Modifier,
     hasPostsContent: @Composable (
         uiState: HomeUiState.HasPosts,
         modifier: Modifier
     ) -> Unit
 ) {
-    Row(Modifier.fillMaxSize()) {
+    Row(modifier.fillMaxSize()) {
         if (showNavRail) {
             AppNavRail(
                 currentRoute = JetnewsDestinations.HOME_ROUTE,
@@ -260,45 +281,15 @@ private fun HomeScreenWithList(
                 JetnewsSnackbarHost(hostState = it, modifier = Modifier.systemBarsPadding())
             },
             topBar = {
-                val title = stringResource(id = R.string.app_name)
-                InsetAwareTopAppBar(
-                    title = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_jetnews_wordmark),
-                            contentDescription = title,
-                            tint = MaterialTheme.colors.onBackground,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 4.dp, top = 10.dp)
-                        )
-                    },
-                    navigationIcon = if (!showNavRail) {
-                        {
-                            IconButton(onClick = openDrawer) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_jetnews_logo),
-                                    contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                                    tint = MaterialTheme.colors.primary
-                                )
-                            }
-                        }
-                    } else {
-                        null
-                    },
-                    actions = {
-                        IconButton(onClick = { /* TODO: Open search */ }) {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = stringResource(R.string.cd_search)
-                            )
-                        }
-                    },
-                    backgroundColor = MaterialTheme.colors.surface,
-                    elevation = if (!homeListLazyListState.isScrolled) 0.dp else 4.dp
-                )
+                if (!showNavRail) {
+                    HomeTopAppBar(
+                        openDrawer = openDrawer,
+                        elevation = if (!homeListLazyListState.isScrolled) 0.dp else 4.dp
+                    )
+                }
             },
         ) { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
+            val contentModifier = Modifier.padding(innerPadding)
 
             LoadingContent(
                 empty = when (uiState) {
@@ -325,7 +316,7 @@ private fun HomeScreenWithList(
                                 }
                             } else {
                                 // there's currently an error showing, don't show any content
-                                Box(modifier.fillMaxSize()) { /* empty screen */ }
+                                Box(contentModifier.fillMaxSize()) { /* empty screen */ }
                             }
                         }
                     }
@@ -405,18 +396,22 @@ private fun LoadingContent(
 @Composable
 private fun PostList(
     postsFeed: PostsFeed,
-    onArticleTapped: (postId: String) -> Unit,
     favorites: Set<String>,
+    showExpandedSearch: Boolean,
+    onArticleTapped: (postId: String) -> Unit,
     onToggleFavorite: (String) -> Unit,
-    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         modifier = modifier,
-        state = state,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
+        state = state
     ) {
+        if (showExpandedSearch) {
+            item { HomeSearch(Modifier.padding(horizontal = 16.dp)) }
+        }
         item { PostListTopSection(postsFeed.highlightedPost, onArticleTapped) }
         if (postsFeed.recommendedPosts.isNotEmpty()) {
             item {
@@ -555,6 +550,111 @@ private fun PostListDivider() {
     Divider(
         modifier = Modifier.padding(horizontal = 14.dp),
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
+    )
+}
+
+/**
+ * Expanded search UI
+ */
+@Composable
+private fun HomeSearch(modifier: Modifier = Modifier) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(Dp.Hairline, MaterialTheme.colors.onSurface.copy(alpha = .6f)),
+        elevation = 4.dp,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                IconButton(onClick = { /* Functionality not supported yet */ },) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.cd_search)
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.home_search),
+                    style = MaterialTheme.typography.body2
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = { /* Functionality not supported yet */ },) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = stringResource(R.string.cd_more_actions)
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Top bar for a Post when displayed next to the Home feed
+ */
+@Composable
+private fun PostTopBar(
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
+    onSharePost: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(Dp.Hairline, MaterialTheme.colors.onSurface.copy(alpha = .6f)),
+        modifier = modifier.padding(end = 16.dp)
+    ) {
+        Row(Modifier.padding(horizontal = 8.dp)) {
+            FavoriteButton(onClick = { /* Functionality not available */ })
+            BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
+            ShareButton(onClick = onSharePost)
+            TextSettingsButton(onClick = { /* Functionality not available */ })
+        }
+    }
+}
+
+/**
+ * TopAppBar for the Home screen
+ */
+@Composable
+private fun HomeTopAppBar(
+    elevation: Dp,
+    openDrawer: () -> Unit
+) {
+    val title = stringResource(id = R.string.app_name)
+    InsetAwareTopAppBar(
+        title = {
+            Icon(
+                painter = painterResource(R.drawable.ic_jetnews_wordmark),
+                contentDescription = title,
+                tint = MaterialTheme.colors.onBackground,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 4.dp, top = 10.dp)
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = openDrawer) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_jetnews_logo),
+                    contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                    tint = MaterialTheme.colors.primary
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = { /* TODO: Open search */ }) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(R.string.cd_search)
+                )
+            }
+        },
+        backgroundColor = MaterialTheme.colors.surface,
+        elevation = elevation
     )
 }
 
