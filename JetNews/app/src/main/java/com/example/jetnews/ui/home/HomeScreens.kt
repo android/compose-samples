@@ -81,11 +81,8 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
-import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.article.postContentItems
-import com.example.jetnews.ui.article.PostContent
 import com.example.jetnews.ui.article.sharePost
-import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.theme.JetnewsTheme
@@ -94,8 +91,6 @@ import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.currentCoroutineContext
@@ -552,7 +547,10 @@ private fun HomeSearch(modifier: Modifier = Modifier) {
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 IconButton(onClick = { /* Functionality not supported yet */ },) {
-                    Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.cd_search)
+                    )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -563,7 +561,7 @@ private fun HomeSearch(modifier: Modifier = Modifier) {
                 IconButton(onClick = { /* Functionality not supported yet */ },) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = stringResource(R.string.cd_more_actions),
+                        contentDescription = stringResource(R.string.cd_more_actions)
                     )
                 }
             }

@@ -44,8 +44,8 @@ enum class WindowSize { Compact, Medium, Expanded }
 
 fun getWindowSize(width: Dp): WindowSize = when {
     width.value < 0f -> throw IllegalArgumentException("Dp value cannot be negative")
-    width.value < 500f -> WindowSize.Compact
-    width.value <= 500f -> WindowSize.Medium
+    width.value < 600f -> WindowSize.Compact
+    width.value <= 800f -> WindowSize.Medium
     else -> WindowSize.Expanded
 }
 
