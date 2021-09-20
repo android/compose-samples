@@ -44,8 +44,6 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -78,11 +76,9 @@ fun AppNavRail(
 ) {
     JetnewsNavRail(
         header = {
-            JetnewsIcon()
+            JetnewsIcon(Modifier.padding(top = 8.dp))
         },
         modifier = modifier
-            .statusBarsPadding()
-            .navigationBarsPadding(bottom = false, end = false)
     ) {
         NavRailIcon(
             icon = Icons.Filled.Home,

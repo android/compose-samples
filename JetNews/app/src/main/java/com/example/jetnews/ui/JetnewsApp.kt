@@ -30,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
@@ -37,7 +39,11 @@ import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.rememberWindowSizeState
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
@@ -74,7 +80,10 @@ fun JetnewsApp(
                         currentRoute = currentRoute,
                         navigateToHome = navigationActions.navigateToHome,
                         navigateToInterests = navigationActions.navigateToInterests,
-                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
+                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
                     )
                 },
                 drawerState = sizeAwareDrawerState,
@@ -82,8 +91,13 @@ fun JetnewsApp(
                 gesturesEnabled = allowDrawerToBeShown
             ) {
 
-                val showNavRail = windowSize != WindowSize.Compact
-                Row(Modifier.fillMaxSize()) {
+                val showNavRail = !allowDrawerToBeShown
+                Row(
+                    Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .navigationBarsPadding(bottom = false)
+                ) {
                     if (showNavRail) {
                         AppNavRail(
                             currentRoute = currentRoute,
@@ -122,3 +136,16 @@ private fun rememberSizeAwareDrawerState(allowDrawerToBeShown: Boolean): DrawerS
         DrawerState(DrawerValue.Closed)
     }
 }
+
+/**
+ * Determine the content padding to apply to the different screens of the app
+ */
+@Composable
+fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp) =
+    rememberInsetsPaddingValues(
+        insets = LocalWindowInsets.current.systemBars,
+        applyTop = false,
+        applyEnd = false,
+        applyStart = false,
+        additionalTop = additionalTop
+    )

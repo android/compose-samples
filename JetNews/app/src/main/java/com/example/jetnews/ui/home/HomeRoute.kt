@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -27,13 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import com.example.jetnews.ui.article.ArticleScreen
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
 
 /**
  * Displays the Home route.
@@ -114,7 +107,6 @@ fun HomeRoute(
     }
 
     // Modifier to be applied to the all HomeScreen types
-    val screenModifier = Modifier.homeScreenPadding(showTopAppBar)
     val homeScreenType = getHomeScreenType(showTopAppBar, uiState)
     when (homeScreenType) {
         HomeScreenType.FeedWithArticleDetails -> {
@@ -130,8 +122,7 @@ fun HomeRoute(
                 openDrawer = openDrawer,
                 homeListLazyListState = homeListLazyListState,
                 articleDetailLazyListStates = articleDetailLazyListStates,
-                scaffoldState = scaffoldState,
-                modifier = screenModifier
+                scaffoldState = scaffoldState
             )
         }
         HomeScreenType.Feed -> {
@@ -144,8 +135,7 @@ fun HomeRoute(
                 onErrorDismiss = onErrorDismiss,
                 openDrawer = openDrawer,
                 homeListLazyListState = homeListLazyListState,
-                scaffoldState = scaffoldState,
-                modifier = screenModifier
+                scaffoldState = scaffoldState
             )
         }
         HomeScreenType.ArticleDetails -> {
@@ -162,8 +152,7 @@ fun HomeRoute(
                 },
                 lazyListState = articleDetailLazyListStates.getValue(
                     uiState.selectedPost.id
-                ),
-                modifier = screenModifier
+                )
             )
 
             // If we are just showing the detail, have a back press switch to the list.
@@ -208,21 +197,4 @@ private fun getHomeScreenType(
         }
     }
     false -> HomeScreenType.FeedWithArticleDetails
-}
-
-private fun Modifier.homeScreenPadding(showTopAppBar: Boolean): Modifier = composed {
-    if (showTopAppBar) {
-        this
-            .navigationBarsPadding(bottom = false)
-    } else {
-        this
-            .statusBarsPadding()
-            .padding(
-                rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.navigationBars,
-                    applyStart = false,
-                    applyBottom = false
-                )
-            )
-    }
 }

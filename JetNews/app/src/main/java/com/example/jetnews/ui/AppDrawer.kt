@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
@@ -55,10 +54,10 @@ fun AppDrawer(
     currentRoute: String,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
-    closeDrawer: () -> Unit
+    closeDrawer: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(Modifier.height(24.dp))
+    Column(modifier = modifier.fillMaxSize()) {
         JetNewsLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(

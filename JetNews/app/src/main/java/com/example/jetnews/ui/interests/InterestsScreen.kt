@@ -48,6 +48,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
@@ -75,11 +76,10 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.ui.components.InsetAwareTopAppBar
+import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
-import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(@StringRes val titleResId: Int) {
@@ -124,7 +124,7 @@ fun InterestsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            InsetAwareTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.cd_interests),
@@ -160,10 +160,7 @@ fun InterestsScreen(
             )
         }
     ) { innerPadding ->
-        val screenModifier = Modifier
-            .padding(innerPadding)
-            .navigationBarsPadding(start = false, bottom = false)
-
+        val screenModifier = Modifier.padding(innerPadding)
         TabContent(currentSection, onTabChange, tabContent, screenModifier)
     }
 }
@@ -264,7 +261,10 @@ private fun TabWithTopics(
             .wrapContentWidth(Alignment.CenterHorizontally)
             .widthIn(max = itemMaxWidth)
 
-        LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
+        LazyColumn(
+            modifier = Modifier.padding(top = 16.dp),
+            contentPadding = rememberContentPaddingForScreen()
+        ) {
             items(topics) { topic ->
                 TopicItem(
                     itemTitle = topic,
@@ -303,9 +303,10 @@ private fun TabWithSections(
         ) {
             groupedSections.forEach { sectionsInGroup ->
                 LazyColumn(
-                    Modifier
+                    modifier = Modifier
                         .widthIn(max = itemMaxWidth)
-                        .padding(horizontal = if (columns > 1) 8.dp else 0.dp)
+                        .padding(horizontal = if (columns > 1) 8.dp else 0.dp),
+                    contentPadding = rememberContentPaddingForScreen(),
                 ) {
                     sectionsInGroup.forEach { (section, topics) ->
                         item {

@@ -51,6 +51,7 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -83,8 +84,8 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.article.postContentItems
 import com.example.jetnews.ui.article.sharePost
-import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
+import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
@@ -127,6 +128,7 @@ fun HomeFeedWithArticleDetailsScreen(
         scaffoldState = scaffoldState,
         modifier = modifier,
     ) { hasPostsUiState, contentModifier ->
+        val contentPadding = rememberContentPaddingForScreen(additionalTop = 8.dp)
         Row(contentModifier) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
@@ -134,7 +136,7 @@ fun HomeFeedWithArticleDetailsScreen(
                 showExpandedSearch = !showTopAppBar,
                 onArticleTapped = onSelectPost,
                 onToggleFavorite = onToggleFavorite,
-                contentPadding = PaddingValues(top = 8.dp),
+                contentPadding = contentPadding,
                 modifier = Modifier
                     .width(334.dp)
                     .notifyInput(onInteractWithList),
@@ -151,7 +153,7 @@ fun HomeFeedWithArticleDetailsScreen(
                 key(detailPost.id) {
                     LazyColumn(
                         state = detailLazyListState,
-                        contentPadding = PaddingValues(top = 8.dp),
+                        contentPadding = contentPadding,
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .fillMaxSize()
@@ -224,6 +226,9 @@ fun HomeFeedScreen(
             showExpandedSearch = !showTopAppBar,
             onArticleTapped = onSelectPost,
             onToggleFavorite = onToggleFavorite,
+            contentPadding = rememberContentPaddingForScreen(
+                additionalTop = if (showTopAppBar) 0.dp else 8.dp
+            ),
             modifier = contentModifier,
             state = homeListLazyListState
         )
@@ -602,7 +607,7 @@ private fun HomeTopAppBar(
     openDrawer: () -> Unit
 ) {
     val title = stringResource(id = R.string.app_name)
-    InsetAwareTopAppBar(
+    TopAppBar(
         title = {
             Icon(
                 painter = painterResource(R.drawable.ic_jetnews_wordmark),

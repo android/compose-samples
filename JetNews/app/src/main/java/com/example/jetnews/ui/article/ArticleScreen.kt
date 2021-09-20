@@ -40,6 +40,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -61,7 +62,6 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
@@ -70,7 +70,6 @@ import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -111,7 +110,6 @@ fun ArticleScreen(
         }
         ArticleScreenContent(
             post = post,
-            showNavRail = showNavRail,
             // Allow opening the Drawer if the NavRail is not on the screen
             navigationIconContent = if (!showNavRail) {
                 {
@@ -133,7 +131,8 @@ fun ArticleScreen(
                         onUnimplementedAction = { showUnimplementedActionDialog = true },
                         isFavorite = isFavorite,
                         onToggleFavorite = onToggleFavorite,
-                        onSharePost = { sharePost(post, context) }
+                        onSharePost = { sharePost(post, context) },
+                        modifier = Modifier.navigationBarsPadding(start = false, end = false)
                     )
                 }
             } else {
@@ -148,21 +147,19 @@ fun ArticleScreen(
  * Stateless Article Screen that displays a single post.
  *
  * @param post (state) item to display
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
  * @param navigationIconContent (UI) content to show for the navigation icon
  * @param bottomBarContent (UI) content to show for the bottom bar
  */
 @Composable
 private fun ArticleScreenContent(
     post: Post,
-    showNavRail: Boolean,
     navigationIconContent: @Composable (() -> Unit)? = null,
     bottomBarContent: @Composable () -> Unit = { },
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     Scaffold(
         topBar = {
-            InsetAwareTopAppBar(
+            TopAppBar(
                 title = {
                     Row(
                         modifier = Modifier
@@ -197,12 +194,7 @@ private fun ArticleScreenContent(
             post = post,
             modifier = Modifier
                 // innerPadding takes into account the top and bottom bar
-                .padding(innerPadding)
-                // offset content in landscape mode to account for the navigation bar
-                .navigationBarsPadding(
-                    bottom = false,
-                    start = !showNavRail
-                ),
+                .padding(innerPadding),
             state = lazyListState,
         )
     }
@@ -226,7 +218,7 @@ private fun ArticleNavRail(
 ) {
     JetnewsNavRail(
         header = {
-            IconButton(onClick = onBack, modifier = Modifier.statusBarsPadding()) {
+            IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.cd_navigate_up),
@@ -255,13 +247,13 @@ private fun BottomBar(
     onUnimplementedAction: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
-    onSharePost: () -> Unit
+    onSharePost: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Surface(elevation = 8.dp) {
+    Surface(elevation = 8.dp, modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .navigationBarsPadding()
                 .height(56.dp)
                 .fillMaxWidth()
         ) {
