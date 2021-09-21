@@ -106,7 +106,6 @@ fun HomeRoute(
         }
     }
 
-    // Modifier to be applied to the all HomeScreen types
     val homeScreenType = getHomeScreenType(showTopAppBar, uiState)
     when (homeScreenType) {
         HomeScreenType.FeedWithArticleDetails -> {

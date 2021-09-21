@@ -71,8 +71,8 @@ fun JetnewsApp(
                 navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             val windowSize = rememberWindowSizeState()
-            val allowDrawerToBeShown = windowSize == WindowSize.Compact
-            val sizeAwareDrawerState = rememberSizeAwareDrawerState(allowDrawerToBeShown)
+            val isDrawerActive = windowSize == WindowSize.Compact
+            val sizeAwareDrawerState = rememberSizeAwareDrawerState(isDrawerActive)
 
             ModalDrawer(
                 drawerContent = {
@@ -87,11 +87,11 @@ fun JetnewsApp(
                     )
                 },
                 drawerState = sizeAwareDrawerState,
-                // Only enable opening the drawer via gestures if we allow showing it
-                gesturesEnabled = allowDrawerToBeShown
+                // Only enable opening the drawer via gestures if it's active
+                gesturesEnabled = isDrawerActive
             ) {
 
-                val showNavRail = !allowDrawerToBeShown
+                val showNavRail = !isDrawerActive
                 Row(
                     Modifier
                         .fillMaxSize()
@@ -122,10 +122,10 @@ fun JetnewsApp(
  * Determine the drawer state to pass to the modal drawer.
  */
 @Composable
-private fun rememberSizeAwareDrawerState(allowDrawerToBeShown: Boolean): DrawerState {
+private fun rememberSizeAwareDrawerState(isDrawerActive: Boolean): DrawerState {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    return if (allowDrawerToBeShown) {
+    return if (isDrawerActive) {
         // If we want to allow showing the drawer, we use a real, remembered drawer
         // state defined above
         drawerState
