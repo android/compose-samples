@@ -17,8 +17,6 @@
 package com.example.jetnews.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -28,15 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import com.example.jetnews.ui.article.ArticleScreen
-import com.example.jetnews.utils.WindowSize
-import com.example.jetnews.utils.getWindowSize
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
 
 /**
  * Displays the Home route.
@@ -44,17 +34,15 @@ import com.google.accompanist.insets.statusBarsPadding
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
- * @param showNavRail true if the nav rail should be shown
+ * @param showTopAppBar true if the top app bar should be shown
  * @param openDrawer (event) request opening the app drawer
- * @param navigateToInterests (event) navigate to the interests screen
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     // UiState of the HomeScreen
@@ -62,7 +50,7 @@ fun HomeRoute(
 
     HomeRoute(
         uiState = uiState,
-        showNavRail = showNavRail,
+        showTopAppBar = showTopAppBar,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
         onSelectPost = { homeViewModel.selectArticle(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
@@ -70,7 +58,6 @@ fun HomeRoute(
         onInteractWithFeed = { homeViewModel.interactedWithFeed() },
         onInteractWithArticleDetails = { homeViewModel.interactedWithArticleDetails(it) },
         openDrawer = openDrawer,
-        navigateToInterests = navigateToInterests,
         scaffoldState = scaffoldState,
     )
 }
@@ -81,7 +68,7 @@ fun HomeRoute(
  * This composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
- * @param showNavRail (state) true if we should show the nav rail
+ * @param showTopAppBar (state) true if the top app bar should be shown
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onSelectPost (event) indicate that a post was selected
  * @param onRefreshPosts (event) request a refresh of posts
@@ -90,14 +77,13 @@ fun HomeRoute(
  * @param onInteractWithArticleDetails (event) indicate that the article details were interacted
  * with
  * @param openDrawer (event) request opening the app drawer
- * @param navigateToInterests (event) navigate to the interests screen
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -105,7 +91,6 @@ fun HomeRoute(
     onInteractWithFeed: () -> Unit,
     onInteractWithArticleDetails: (String) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
     // Construct the lazy list states for the list and the details outside of deciding which one to
@@ -121,71 +106,59 @@ fun HomeRoute(
         }
     }
 
-    BoxWithConstraints {
-        // Determine which type of the home screen to display
-        val windowSize = remember(maxWidth) { getWindowSize(maxWidth) }
-        val homeScreenType = getHomeScreenType(windowSize, uiState)
-        // Modifier to be applied to the all HomeScreen types
-        val screenModifier = Modifier.homeScreenPadding(showNavRail)
+    val homeScreenType = getHomeScreenType(showTopAppBar, uiState)
+    when (homeScreenType) {
+        HomeScreenType.FeedWithArticleDetails -> {
+            HomeFeedWithArticleDetailsScreen(
+                uiState = uiState,
+                showTopAppBar = showTopAppBar,
+                onToggleFavorite = onToggleFavorite,
+                onSelectPost = onSelectPost,
+                onRefreshPosts = onRefreshPosts,
+                onErrorDismiss = onErrorDismiss,
+                onInteractWithList = onInteractWithFeed,
+                onInteractWithDetail = onInteractWithArticleDetails,
+                openDrawer = openDrawer,
+                homeListLazyListState = homeListLazyListState,
+                articleDetailLazyListStates = articleDetailLazyListStates,
+                scaffoldState = scaffoldState
+            )
+        }
+        HomeScreenType.Feed -> {
+            HomeFeedScreen(
+                uiState = uiState,
+                showTopAppBar = showTopAppBar,
+                onToggleFavorite = onToggleFavorite,
+                onSelectPost = onSelectPost,
+                onRefreshPosts = onRefreshPosts,
+                onErrorDismiss = onErrorDismiss,
+                openDrawer = openDrawer,
+                homeListLazyListState = homeListLazyListState,
+                scaffoldState = scaffoldState
+            )
+        }
+        HomeScreenType.ArticleDetails -> {
+            // Guaranteed by above condition for home screen type
+            check(uiState is HomeUiState.HasPosts)
 
-        when (homeScreenType) {
-            HomeScreenType.FeedWithArticleDetails -> {
-                HomeFeedWithArticleDetailsScreen(
-                    uiState = uiState,
-                    showNavRail = showNavRail,
-                    onToggleFavorite = onToggleFavorite,
-                    onSelectPost = onSelectPost,
-                    onRefreshPosts = onRefreshPosts,
-                    onErrorDismiss = onErrorDismiss,
-                    onInteractWithList = onInteractWithFeed,
-                    onInteractWithDetail = onInteractWithArticleDetails,
-                    openDrawer = openDrawer,
-                    navigateToInterests = navigateToInterests,
-                    homeListLazyListState = homeListLazyListState,
-                    articleDetailLazyListStates = articleDetailLazyListStates,
-                    scaffoldState = scaffoldState,
-                    modifier = screenModifier
+            ArticleScreen(
+                post = uiState.selectedPost,
+                showNavRail = !showTopAppBar,
+                onBack = onInteractWithFeed,
+                isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
+                onToggleFavorite = {
+                    onToggleFavorite(uiState.selectedPost.id)
+                },
+                lazyListState = articleDetailLazyListStates.getValue(
+                    uiState.selectedPost.id
                 )
-            }
-            HomeScreenType.Feed -> {
-                HomeFeedScreen(
-                    uiState = uiState,
-                    showNavRail = showNavRail,
-                    onToggleFavorite = onToggleFavorite,
-                    onSelectPost = onSelectPost,
-                    onRefreshPosts = onRefreshPosts,
-                    onErrorDismiss = onErrorDismiss,
-                    openDrawer = openDrawer,
-                    navigateToInterests = navigateToInterests,
-                    homeListLazyListState = homeListLazyListState,
-                    scaffoldState = scaffoldState,
-                    modifier = screenModifier
-                )
-            }
-            HomeScreenType.ArticleDetails -> {
-                // Guaranteed by above condition for home screen type
-                check(uiState is HomeUiState.HasPosts)
+            )
 
-                ArticleScreen(
-                    post = uiState.selectedPost,
-                    showNavRail = showNavRail,
-                    onBack = onInteractWithFeed,
-                    isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
-                    onToggleFavorite = {
-                        onToggleFavorite(uiState.selectedPost.id)
-                    },
-                    lazyListState = articleDetailLazyListStates.getValue(
-                        uiState.selectedPost.id
-                    ),
-                    modifier = screenModifier
-                )
-
-                // If we are just showing the detail, have a back press switch to the list.
-                // This doesn't take anything more than notifying that we "interacted with the list"
-                // since that is what drives the display of the feed
-                BackHandler {
-                    onInteractWithFeed()
-                }
+            // If we are just showing the detail, have a back press switch to the list.
+            // This doesn't take anything more than notifying that we "interacted with the list"
+            // since that is what drives the display of the feed
+            BackHandler {
+                onInteractWithFeed()
             }
         }
     }
@@ -205,12 +178,12 @@ private enum class HomeScreenType {
     ArticleDetails
 }
 
+@Composable
 private fun getHomeScreenType(
-    windowSize: WindowSize,
+    showTopAppBar: Boolean,
     uiState: HomeUiState
-): HomeScreenType = when (windowSize) {
-    WindowSize.Compact,
-    WindowSize.Medium -> {
+): HomeScreenType = when (showTopAppBar) {
+    true -> {
         when (uiState) {
             is HomeUiState.HasPosts -> {
                 if (uiState.isArticleOpen) {
@@ -222,21 +195,5 @@ private fun getHomeScreenType(
             is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
     }
-    WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
-}
-
-private fun Modifier.homeScreenPadding(showNavRail: Boolean): Modifier = composed {
-    if (showNavRail) {
-        this
-            .statusBarsPadding()
-            .padding(
-                rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.navigationBars,
-                    applyStart = false,
-                    applyBottom = false
-                )
-            )
-    } else {
-        this
-    }
+    false -> HomeScreenType.FeedWithArticleDetails
 }

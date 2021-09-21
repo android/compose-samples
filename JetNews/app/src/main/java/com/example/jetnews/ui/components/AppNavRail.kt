@@ -76,7 +76,7 @@ fun AppNavRail(
 ) {
     JetnewsNavRail(
         header = {
-            JetnewsIcon()
+            JetnewsIcon(Modifier.padding(top = 8.dp))
         },
         modifier = modifier
     ) {

@@ -48,6 +48,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
@@ -75,14 +76,10 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.ui.JetnewsDestinations
-import com.example.jetnews.ui.components.AppNavRail
-import com.example.jetnews.ui.components.InsetAwareTopAppBar
+import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.getWindowSize
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(@StringRes val titleResId: Int) {
@@ -110,9 +107,8 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
  * @param currentSection (state) the current tab to display, must be in [tabContent]
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
+ * @param showNavigationIcon (state) whether to show the navigation icon
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
- * @param navigateToHome (event) request navigation to Home screen
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
@@ -120,66 +116,15 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
-    showNavRail: Boolean,
+    showNavigationIcon: Boolean,
     onTabChange: (Sections) -> Unit,
-    navigateToHome: () -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
-) {
-    Row(Modifier.fillMaxSize()) {
-        if (showNavRail) {
-            AppNavRail(
-                currentRoute = JetnewsDestinations.INTERESTS_ROUTE,
-                navigateToHome = navigateToHome,
-                navigateToInterests = { /* Do nothing */ },
-                modifier = Modifier.statusBarsPadding()
-            )
-        }
-        InterestsScreenContent(
-            tabContent = tabContent,
-            tab = currentSection,
-            onTabChange = onTabChange,
-            scaffoldState = scaffoldState,
-            // Allow opening the Drawer if the NavRail is not on the screen
-            navigationIconContent = if (!showNavRail) {
-                {
-                    IconButton(onClick = openDrawer) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
-                }
-            } else {
-                null
-            }
-        )
-    }
-}
-
-/**
- * Stateless interest screen displays the tabs specified in [tabContent]
- *
- * @param tabContent (slot) the tabs and their content to display on this screen, must be a non-empty
- * list, tabs are displayed in the order specified by this list
- * @param tab (state) the current tab to display, must be in [tabContent]
- * @param onTabChange (event) request a change in [tab] to another tab from [tabContent]
- * @param scaffoldState (state) the state for the screen's [Scaffold]
- * @param navigationIconContent (UI) content to show for the navigation icon
- */
-@Composable
-private fun InterestsScreenContent(
-    tabContent: List<TabContent>,
-    tab: Sections,
-    onTabChange: (Sections) -> Unit,
-    scaffoldState: ScaffoldState,
-    navigationIconContent: @Composable (() -> Unit)? = null
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            InsetAwareTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.cd_interests),
@@ -187,7 +132,19 @@ private fun InterestsScreenContent(
                         textAlign = TextAlign.Center
                     )
                 },
-                navigationIcon = navigationIconContent,
+                navigationIcon = if (showNavigationIcon) {
+                    {
+                        IconButton(onClick = openDrawer) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_jetnews_logo),
+                                contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
+                    }
+                } else {
+                    null
+                },
                 actions = {
                     IconButton(
                         onClick = { /* TODO: Open search */ }
@@ -202,8 +159,9 @@ private fun InterestsScreenContent(
                 elevation = 0.dp
             )
         }
-    ) {
-        TabContent(tab, onTabChange, tabContent)
+    ) { innerPadding ->
+        val screenModifier = Modifier.padding(innerPadding)
+        TabContent(currentSection, onTabChange, tabContent, screenModifier)
     }
 }
 
@@ -219,10 +177,11 @@ private fun InterestsScreenContent(
 private fun TabContent(
     currentSection: Sections,
     updateSection: (Sections) -> Unit,
-    tabContent: List<TabContent>
+    tabContent: List<TabContent>,
+    modifier: Modifier = Modifier
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
-    Column {
+    Column(modifier) {
         InterestsTabRow(selectedTabIndex, updateSection, tabContent)
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
@@ -303,9 +262,8 @@ private fun TabWithTopics(
             .widthIn(max = itemMaxWidth)
 
         LazyColumn(
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .navigationBarsPadding()
+            modifier = Modifier.padding(top = 16.dp),
+            contentPadding = rememberContentPaddingForScreen()
         ) {
             items(topics) { topic ->
                 TopicItem(
@@ -341,15 +299,14 @@ private fun TabWithSections(
 
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .navigationBarsPadding()
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             groupedSections.forEach { sectionsInGroup ->
                 LazyColumn(
-                    Modifier
+                    modifier = Modifier
                         .widthIn(max = itemMaxWidth)
-                        .padding(horizontal = if (columns > 1) 8.dp else 0.dp)
+                        .padding(horizontal = if (columns > 1) 8.dp else 0.dp),
+                    contentPadding = rememberContentPaddingForScreen(),
                 ) {
                     sectionsInGroup.forEach { (section, topics) ->
                         item {
@@ -595,8 +552,7 @@ fun PreviewInterestsScreenDrawer() {
             currentSection = currentSection,
             onTabChange = updateSection,
             openDrawer = { },
-            navigateToHome = { },
-            showNavRail = false,
+            showNavigationIcon = false,
             scaffoldState = rememberScaffoldState()
         )
     }
@@ -624,8 +580,7 @@ fun PreviewInterestsScreenNavRail() {
             currentSection = currentSection,
             onTabChange = updateSection,
             openDrawer = { },
-            navigateToHome = { },
-            showNavRail = true,
+            showNavigationIcon = true,
             scaffoldState = rememberScaffoldState()
         )
     }

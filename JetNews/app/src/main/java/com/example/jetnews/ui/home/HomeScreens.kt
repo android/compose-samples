@@ -51,6 +51,7 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -81,20 +82,16 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
-import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.article.postContentItems
 import com.example.jetnews.ui.article.sharePost
-import com.example.jetnews.ui.components.AppNavRail
-import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
+import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.currentCoroutineContext
@@ -108,7 +105,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -116,7 +113,6 @@ fun HomeFeedWithArticleDetailsScreen(
     onInteractWithList: () -> Unit,
     onInteractWithDetail: (String) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     articleDetailLazyListStates: Map<String, LazyListState>,
     scaffoldState: ScaffoldState,
@@ -124,23 +120,23 @@ fun HomeFeedWithArticleDetailsScreen(
 ) {
     HomeScreenWithList(
         uiState = uiState,
-        showNavRail = showNavRail,
+        showTopAppBar = showTopAppBar,
         onRefreshPosts = onRefreshPosts,
         onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
-        navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
         scaffoldState = scaffoldState,
         modifier = modifier,
-    ) { hasPostsUiState, _ ->
-        Row {
+    ) { hasPostsUiState, contentModifier ->
+        val contentPadding = rememberContentPaddingForScreen(additionalTop = 8.dp)
+        Row(contentModifier) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
                 favorites = hasPostsUiState.favorites,
-                showExpandedSearch = showNavRail,
+                showExpandedSearch = !showTopAppBar,
                 onArticleTapped = onSelectPost,
                 onToggleFavorite = onToggleFavorite,
-                contentPadding = PaddingValues(top = 8.dp),
+                contentPadding = contentPadding,
                 modifier = Modifier
                     .width(334.dp)
                     .notifyInput(onInteractWithList),
@@ -157,7 +153,7 @@ fun HomeFeedWithArticleDetailsScreen(
                 key(detailPost.id) {
                     LazyColumn(
                         state = detailLazyListState,
-                        contentPadding = PaddingValues(top = 8.dp),
+                        contentPadding = contentPadding,
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .fillMaxSize()
@@ -204,24 +200,22 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
 @Composable
 fun HomeFeedScreen(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     scaffoldState: ScaffoldState,
     modifier: Modifier = Modifier
 ) {
     HomeScreenWithList(
         uiState = uiState,
-        showNavRail = showNavRail,
+        showTopAppBar = showTopAppBar,
         onRefreshPosts = onRefreshPosts,
         onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
-        navigateToInterests = navigateToInterests,
         homeListLazyListState = homeListLazyListState,
         scaffoldState = scaffoldState,
         modifier = modifier
@@ -229,9 +223,12 @@ fun HomeFeedScreen(
         PostList(
             postsFeed = hasPostsUiState.postsFeed,
             favorites = hasPostsUiState.favorites,
-            showExpandedSearch = showNavRail,
+            showExpandedSearch = !showTopAppBar,
             onArticleTapped = onSelectPost,
             onToggleFavorite = onToggleFavorite,
+            contentPadding = rememberContentPaddingForScreen(
+                additionalTop = if (showTopAppBar) 0.dp else 8.dp
+            ),
             modifier = contentModifier,
             state = homeListLazyListState
         )
@@ -250,11 +247,10 @@ fun HomeFeedScreen(
 @Composable
 private fun HomeScreenWithList(
     uiState: HomeUiState,
-    showNavRail: Boolean,
+    showTopAppBar: Boolean,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
     openDrawer: () -> Unit,
-    navigateToInterests: () -> Unit,
     homeListLazyListState: LazyListState,
     scaffoldState: ScaffoldState,
     modifier: Modifier = Modifier,
@@ -263,66 +259,52 @@ private fun HomeScreenWithList(
         modifier: Modifier
     ) -> Unit
 ) {
-    Row(modifier.fillMaxSize()) {
-        if (showNavRail) {
-            AppNavRail(
-                currentRoute = JetnewsDestinations.HOME_ROUTE,
-                navigateToHome = { /* Do nothing */ },
-                navigateToInterests = navigateToInterests,
-                modifier = Modifier.navigationBarsPadding(
-                    bottom = false,
-                    end = false
+    Scaffold(
+        scaffoldState = scaffoldState,
+        snackbarHost = { JetnewsSnackbarHost(hostState = it) },
+        topBar = {
+            if (showTopAppBar) {
+                HomeTopAppBar(
+                    openDrawer = openDrawer,
+                    elevation = if (!homeListLazyListState.isScrolled) 0.dp else 4.dp
                 )
-            )
-        }
-        Scaffold(
-            scaffoldState = scaffoldState,
-            snackbarHost = {
-                JetnewsSnackbarHost(hostState = it, modifier = Modifier.systemBarsPadding())
-            },
-            topBar = {
-                if (!showNavRail) {
-                    HomeTopAppBar(
-                        openDrawer = openDrawer,
-                        elevation = if (!homeListLazyListState.isScrolled) 0.dp else 4.dp
-                    )
-                }
-            },
-        ) { innerPadding ->
-            val contentModifier = Modifier.padding(innerPadding)
+            }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        val contentModifier = Modifier.padding(innerPadding)
 
-            LoadingContent(
-                empty = when (uiState) {
-                    is HomeUiState.HasPosts -> false
-                    is HomeUiState.NoPosts -> uiState.isLoading
-                },
-                emptyContent = { FullScreenLoading() },
-                loading = uiState.isLoading,
-                onRefresh = onRefreshPosts,
-                content = {
-                    when (uiState) {
-                        is HomeUiState.HasPosts -> hasPostsContent(uiState, modifier)
-                        is HomeUiState.NoPosts -> {
-                            if (uiState.errorMessages.isEmpty()) {
-                                // if there are no posts, and no error, let the user refresh manually
-                                TextButton(
-                                    onClick = onRefreshPosts,
-                                    modifier.fillMaxSize()
-                                ) {
-                                    Text(
-                                        stringResource(id = R.string.home_tap_to_load_content),
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            } else {
-                                // there's currently an error showing, don't show any content
-                                Box(contentModifier.fillMaxSize()) { /* empty screen */ }
+        LoadingContent(
+            empty = when (uiState) {
+                is HomeUiState.HasPosts -> false
+                is HomeUiState.NoPosts -> uiState.isLoading
+            },
+            emptyContent = { FullScreenLoading() },
+            loading = uiState.isLoading,
+            onRefresh = onRefreshPosts,
+            content = {
+                when (uiState) {
+                    is HomeUiState.HasPosts -> hasPostsContent(uiState, contentModifier)
+                    is HomeUiState.NoPosts -> {
+                        if (uiState.errorMessages.isEmpty()) {
+                            // if there are no posts, and no error, let the user refresh manually
+                            TextButton(
+                                onClick = onRefreshPosts,
+                                modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    stringResource(id = R.string.home_tap_to_load_content),
+                                    textAlign = TextAlign.Center
+                                )
                             }
+                        } else {
+                            // there's currently an error showing, don't show any content
+                            Box(contentModifier.fillMaxSize()) { /* empty screen */ }
                         }
                     }
                 }
-            )
-        }
+            }
+        )
     }
 
     // Process one error message at a time and show them as Snackbars in the UI
@@ -625,7 +607,7 @@ private fun HomeTopAppBar(
     openDrawer: () -> Unit
 ) {
     val title = stringResource(id = R.string.app_name)
-    InsetAwareTopAppBar(
+    TopAppBar(
         title = {
             Icon(
                 painter = painterResource(R.drawable.ic_jetnews_wordmark),
@@ -676,13 +658,12 @@ fun PreviewHomeListDrawerScreen() {
                 isLoading = false,
                 errorMessages = emptyList()
             ),
-            showNavRail = false,
+            showTopAppBar = false,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
             openDrawer = {},
-            navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
             scaffoldState = rememberScaffoldState()
         )
@@ -711,13 +692,12 @@ fun PreviewHomeListNavRailScreen() {
                 isLoading = false,
                 errorMessages = emptyList()
             ),
-            showNavRail = true,
+            showTopAppBar = true,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
             openDrawer = {},
-            navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
             scaffoldState = rememberScaffoldState()
         )
@@ -742,7 +722,7 @@ fun PreviewHomeListDetailScreen() {
                 isLoading = false,
                 errorMessages = emptyList()
             ),
-            showNavRail = true,
+            showTopAppBar = true,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
@@ -750,7 +730,6 @@ fun PreviewHomeListDetailScreen() {
             onInteractWithList = {},
             onInteractWithDetail = {},
             openDrawer = {},
-            navigateToInterests = {},
             homeListLazyListState = rememberLazyListState(),
             articleDetailLazyListStates = postsFeed.allPosts.associate { post ->
                 key(post.id) {

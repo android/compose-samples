@@ -16,6 +16,8 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
@@ -26,14 +28,22 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
 import com.example.jetnews.utils.rememberWindowSizeState
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
@@ -61,8 +71,8 @@ fun JetnewsApp(
                 navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             val windowSize = rememberWindowSizeState()
-            val allowDrawerToBeShown = windowSize == WindowSize.Compact
-            val sizeAwareDrawerState = rememberSizeAwareDrawerState(allowDrawerToBeShown)
+            val isDrawerActive = windowSize == WindowSize.Compact
+            val sizeAwareDrawerState = rememberSizeAwareDrawerState(isDrawerActive)
 
             ModalDrawer(
                 drawerContent = {
@@ -70,21 +80,39 @@ fun JetnewsApp(
                         currentRoute = currentRoute,
                         navigateToHome = navigationActions.navigateToHome,
                         navigateToInterests = navigationActions.navigateToInterests,
-                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
+                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
                     )
                 },
                 drawerState = sizeAwareDrawerState,
-                // Only enable opening the drawer via gestures if we allow showing it
-                gesturesEnabled = allowDrawerToBeShown
+                // Only enable opening the drawer via gestures if it's active
+                gesturesEnabled = isDrawerActive
             ) {
-                JetnewsNavGraph(
-                    appContainer = appContainer,
-                    // Either allow showing the drawer, or show the nav rail
-                    showNavRail = !allowDrawerToBeShown,
-                    navController = navController,
-                    openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
-                    navigationActions = navigationActions,
-                )
+
+                val showNavRail = !isDrawerActive
+                Row(
+                    Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .navigationBarsPadding(bottom = false)
+                ) {
+                    if (showNavRail) {
+                        AppNavRail(
+                            currentRoute = currentRoute,
+                            navigateToHome = navigationActions.navigateToHome,
+                            navigateToInterests = navigationActions.navigateToInterests,
+                        )
+                    }
+                    JetnewsNavGraph(
+                        appContainer = appContainer,
+                        // Either allow showing the drawer, or show the nav rail
+                        showTopAppBar = !showNavRail,
+                        navController = navController,
+                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                    )
+                }
             }
         }
     }
@@ -94,10 +122,10 @@ fun JetnewsApp(
  * Determine the drawer state to pass to the modal drawer.
  */
 @Composable
-private fun rememberSizeAwareDrawerState(allowDrawerToBeShown: Boolean): DrawerState {
+private fun rememberSizeAwareDrawerState(isDrawerActive: Boolean): DrawerState {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    return if (allowDrawerToBeShown) {
+    return if (isDrawerActive) {
         // If we want to allow showing the drawer, we use a real, remembered drawer
         // state defined above
         drawerState
@@ -108,3 +136,16 @@ private fun rememberSizeAwareDrawerState(allowDrawerToBeShown: Boolean): DrawerS
         DrawerState(DrawerValue.Closed)
     }
 }
+
+/**
+ * Determine the content padding to apply to the different screens of the app
+ */
+@Composable
+fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp) =
+    rememberInsetsPaddingValues(
+        insets = LocalWindowInsets.current.systemBars,
+        applyTop = false,
+        applyEnd = false,
+        applyStart = false,
+        additionalTop = additionalTop
+    )

@@ -22,6 +22,7 @@
         <item name="colorPrimaryDark">@color/red900</item>
         <item name="colorAccent">@color/red700</item>
         <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:background">@color/status_bar</item>
     </style>
 
 </resources>
