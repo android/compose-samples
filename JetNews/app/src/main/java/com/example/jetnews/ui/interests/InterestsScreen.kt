@@ -259,6 +259,7 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
+    // TODO: Optimize by manually positioning items, rather than using BoxWithConstraints
     BoxWithConstraints {
         val itemMaxWidth = rememberItemMaxWidth(windowMaxWidth = maxWidth, columns = 1)
         val topicModifier = Modifier
@@ -300,6 +301,7 @@ private fun TabWithSections(
 ) {
     val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
 
+    // TODO: Optimize by manually positioning items, rather than using BoxWithConstraints
     BoxWithConstraints {
         val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
         val groupedSections = rememberSectionsGroupedInColumns(sections, columns)
