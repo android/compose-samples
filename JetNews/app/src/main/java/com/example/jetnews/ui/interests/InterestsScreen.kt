@@ -106,16 +106,18 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
  * @param currentSection (state) the current tab to display, must be in [tabContent]
- * @param showNavigationIcon (state) whether to show the navigation icon
+ * @param windowSize (state) the current window size class
+ * @param isDrawerActive (state) true if the drawer is active
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
  */
 @Composable
 fun InterestsScreen(
-    windowSize: WindowSize,
     tabContent: List<TabContent>,
     currentSection: Sections,
+    windowSize: WindowSize,
+    isDrawerActive: Boolean,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
@@ -131,7 +133,7 @@ fun InterestsScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                navigationIcon = if (windowSize == WindowSize.Compact) {
+                navigationIcon = if (isDrawerActive) {
                     {
                         IconButton(onClick = openDrawer) {
                             Icon(
@@ -550,9 +552,10 @@ fun PreviewInterestsScreenDrawer() {
         }
 
         InterestsScreen(
-            windowSize = WindowSize.Compact,
             tabContent = tabContent,
             currentSection = currentSection,
+            windowSize = WindowSize.Compact,
+            isDrawerActive = true,
             onTabChange = updateSection,
             openDrawer = { },
             scaffoldState = rememberScaffoldState()
@@ -578,9 +581,10 @@ fun PreviewInterestsScreenNavRail() {
         }
 
         InterestsScreen(
-            windowSize = WindowSize.Expanded,
             tabContent = tabContent,
             currentSection = currentSection,
+            windowSize = WindowSize.Expanded,
+            isDrawerActive = false,
             onTabChange = updateSection,
             openDrawer = { },
             scaffoldState = rememberScaffoldState()

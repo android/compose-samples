@@ -63,6 +63,7 @@ fun JetnewsNavGraph(
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
                 windowSize = windowSize,
+                isDrawerActive = isDrawerActive,
                 openDrawer = openDrawer
             )
         }

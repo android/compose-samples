@@ -27,7 +27,8 @@ import com.example.jetnews.utils.WindowSize
  * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param windowSize (state) The current window size class
+ * @param windowSize (state) the current window size class
+ * @param isDrawerActive (state) true if the drawer is active
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for screen Scaffold
  */
@@ -35,6 +36,7 @@ import com.example.jetnews.utils.WindowSize
 fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
     windowSize: WindowSize,
+    isDrawerActive: Boolean,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -44,9 +46,10 @@ fun InterestsRoute(
     }
 
     InterestsScreen(
-        windowSize = windowSize,
         tabContent = tabContent,
         currentSection = currentSection,
+        windowSize = windowSize,
+        isDrawerActive = isDrawerActive,
         onTabChange = updateSection,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState
