@@ -17,24 +17,29 @@
 package com.example.jetnews.utils
 
 import androidx.compose.ui.unit.dp
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class WindowSizeTest {
 
     @Test
     fun getWindowSize_Compact() {
-        assertTrue(getWindowSize(599.dp) == WindowSize.Compact)
+        assertEquals(WindowSize.Compact, getWindowSize(599.5.dp))
     }
 
     @Test
-    fun getWindowSize_Medium() {
-        assertTrue(getWindowSize(800.dp) == WindowSize.Medium)
+    fun getWindowSize_Medium_lowEnd() {
+        assertEquals(WindowSize.Medium, getWindowSize(800.dp))
+    }
+
+    @Test
+    fun getWindowSize_Medium_highEnd() {
+        assertEquals(WindowSize.Medium, getWindowSize(839.5.dp))
     }
 
     @Test
     fun getWindowSize_Expanded() {
-        assertTrue(getWindowSize(801.dp) == WindowSize.Expanded)
+        assertEquals(WindowSize.Expanded, getWindowSize(840.dp))
     }
 
     @Test(expected = IllegalArgumentException::class)
