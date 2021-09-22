@@ -293,8 +293,9 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
+    val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
+
     BoxWithConstraints {
-        val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
         val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
         val groupedSections = rememberSectionsGroupedInColumns(sections, columns)
 
