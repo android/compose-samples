@@ -43,7 +43,7 @@ import androidx.window.layout.WindowMetricsCalculator
  */
 enum class WindowSize { Compact, Medium, Expanded }
 
-@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+@VisibleForTesting
 fun getWindowSize(width: Dp): WindowSize = when {
     width.value < 0f -> throw IllegalArgumentException("Dp value cannot be negative")
     width.value < 600f -> WindowSize.Compact

@@ -169,6 +169,7 @@ fun InterestsScreen(
 /**
  * Displays a tab row with [currentSection] selected and the body of the corresponding [tabContent].
  *
+ * @param windowSize (state) the current window size class
  * @param currentSection (state) the tab that is currently selected
  * @param updateSection (event) request a change in tab selection
  * @param tabContent (slot) tabs and their content to display, must be a non-empty list, tabs are
@@ -198,6 +199,7 @@ private fun TabContent(
 /**
  * Display the list for the topic tab
  *
+ * @param windowSize (state) the current window size class
  * @param topics (state) topics to display, mapped by section
  * @param selectedTopics (state) currently selected topics
  * @param onTopicSelect (event) request a topic selection be changed
@@ -284,6 +286,7 @@ private fun TabWithTopics(
 /**
  * Display a sectioned list of topics
  *
+ * @param windowSize (state) the current window size class
  * @param sections (state) topics to display, grouped by sections
  * @param selectedTopics (state) currently selected topics
  * @param onTopicSelect (event) request a topic+section selection be changed
