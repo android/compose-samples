@@ -85,7 +85,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun ArticleScreen(
     post: Post,
-    showNavRail: Boolean,
+    isDrawerActive: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
@@ -99,19 +99,10 @@ fun ArticleScreen(
 
     Row(modifier.fillMaxSize()) {
         val context = LocalContext.current
-        if (showNavRail) {
-            ArticleNavRail(
-                onBack = onBack,
-                onUnimplementedAction = { showUnimplementedActionDialog = true },
-                isFavorite = isFavorite,
-                onToggleFavorite = onToggleFavorite,
-                onSharePost = { sharePost(post, context) }
-            )
-        }
         ArticleScreenContent(
             post = post,
             // Allow opening the Drawer if the NavRail is not on the screen
-            navigationIconContent = if (!showNavRail) {
+            navigationIconContent = if (isDrawerActive) {
                 {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -125,7 +116,7 @@ fun ArticleScreen(
                 null
             },
             // Show the bottom bar if the NavRail is not on the screen
-            bottomBarContent = if (!showNavRail) {
+            bottomBarContent = if (isDrawerActive) {
                 {
                     BottomBar(
                         onUnimplementedAction = { showUnimplementedActionDialog = true },

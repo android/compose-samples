@@ -21,31 +21,32 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.example.jetnews.utils.WindowSize
 
 /**
  * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param showNavigationIcon (state) whether the navigation icon needs to be shown
+ * @param windowSize (state) The current window size class
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for screen Scaffold
  */
 @Composable
 fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
-    showNavigationIcon: Boolean,
+    windowSize: WindowSize,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val tabContent = rememberTabContent(interestsViewModel)
+    val tabContent = rememberTabContent(windowSize, interestsViewModel)
     val (currentSection, updateSection) = rememberSaveable {
         mutableStateOf(tabContent.first().section)
     }
 
     InterestsScreen(
+        windowSize = windowSize,
         tabContent = tabContent,
         currentSection = currentSection,
-        showNavigationIcon = showNavigationIcon,
         onTabChange = updateSection,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState
