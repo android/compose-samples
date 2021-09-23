@@ -62,7 +62,6 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.components.JetnewsNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
@@ -76,7 +75,7 @@ import kotlinx.coroutines.runBlocking
  * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
- * @param showNavRail (state) whether the Drawer or NavigationRail needs to be shown
+ * @param isDrawerActive (state) if the drawer is active
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
@@ -85,7 +84,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun ArticleScreen(
     post: Post,
-    showNavRail: Boolean,
+    isDrawerActive: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
@@ -99,19 +98,10 @@ fun ArticleScreen(
 
     Row(modifier.fillMaxSize()) {
         val context = LocalContext.current
-        if (showNavRail) {
-            ArticleNavRail(
-                onBack = onBack,
-                onUnimplementedAction = { showUnimplementedActionDialog = true },
-                isFavorite = isFavorite,
-                onToggleFavorite = onToggleFavorite,
-                onSharePost = { sharePost(post, context) }
-            )
-        }
         ArticleScreenContent(
             post = post,
-            // Allow opening the Drawer if the NavRail is not on the screen
-            navigationIconContent = if (!showNavRail) {
+            // Allow opening the Drawer if the drawer is active
+            navigationIconContent = if (isDrawerActive) {
                 {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -124,8 +114,8 @@ fun ArticleScreen(
             } else {
                 null
             },
-            // Show the bottom bar if the NavRail is not on the screen
-            bottomBarContent = if (!showNavRail) {
+            // Show the bottom bar if the drawer is active
+            bottomBarContent = if (isDrawerActive) {
                 {
                     BottomBar(
                         onUnimplementedAction = { showUnimplementedActionDialog = true },
@@ -197,40 +187,6 @@ private fun ArticleScreenContent(
                 .padding(innerPadding),
             state = lazyListState,
         )
-    }
-}
-
-/**
- * Bottom bar for Article screen
- *
- * @param onUnimplementedAction (event) called when the user performs an unimplemented action
- * @param isFavorite (state) if this post is currently a favorite
- * @param onToggleFavorite (event) request this post toggle it's favorite status
- * @param onSharePost (event) request this post to be shared
- */
-@Composable
-private fun ArticleNavRail(
-    onBack: () -> Unit,
-    onUnimplementedAction: () -> Unit,
-    isFavorite: Boolean,
-    onToggleFavorite: () -> Unit,
-    onSharePost: () -> Unit
-) {
-    JetnewsNavRail(
-        header = {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.cd_navigate_up),
-                    tint = MaterialTheme.colors.primary
-                )
-            }
-        }
-    ) {
-        FavoriteButton(onClick = onUnimplementedAction)
-        BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
-        ShareButton(onClick = onSharePost)
-        TextSettingsButton(onClick = onUnimplementedAction)
     }
 }
 

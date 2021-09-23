@@ -28,11 +28,13 @@ import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
+import com.example.jetnews.utils.WindowSize
 
 @Composable
 fun JetnewsNavGraph(
     appContainer: AppContainer,
-    showTopAppBar: Boolean,
+    windowSize: WindowSize,
+    isDrawerActive: Boolean,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit = {},
@@ -49,7 +51,8 @@ fun JetnewsNavGraph(
             )
             HomeRoute(
                 homeViewModel = homeViewModel,
-                showTopAppBar = showTopAppBar,
+                windowSize = windowSize,
+                isDrawerActive = isDrawerActive,
                 openDrawer = openDrawer
             )
         }
@@ -59,7 +62,8 @@ fun JetnewsNavGraph(
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
-                showNavigationIcon = showTopAppBar,
+                windowSize = windowSize,
+                isDrawerActive = isDrawerActive,
                 openDrawer = openDrawer
             )
         }

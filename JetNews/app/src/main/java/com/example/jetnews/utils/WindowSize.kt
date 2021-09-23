@@ -19,6 +19,7 @@ package com.example.jetnews.utils
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -42,6 +43,7 @@ import androidx.window.layout.WindowMetricsCalculator
  */
 enum class WindowSize { Compact, Medium, Expanded }
 
+@VisibleForTesting
 fun getWindowSize(width: Dp): WindowSize = when {
     width.value < 0f -> throw IllegalArgumentException("Dp value cannot be negative")
     width.value < 600f -> WindowSize.Compact

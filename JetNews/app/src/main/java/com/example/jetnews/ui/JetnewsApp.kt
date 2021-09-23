@@ -107,8 +107,8 @@ fun JetnewsApp(
                     }
                     JetnewsNavGraph(
                         appContainer = appContainer,
-                        // Either allow showing the drawer, or show the nav rail
-                        showTopAppBar = !showNavRail,
+                        windowSize = windowSize,
+                        isDrawerActive = isDrawerActive,
                         navController = navController,
                         openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                     )
