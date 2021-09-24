@@ -27,7 +27,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import com.example.jetnews.ui.article.ArticleScreen
-import com.example.jetnews.utils.WindowSize
 
 /**
  * Displays the Home route.
@@ -35,7 +34,6 @@ import com.example.jetnews.utils.WindowSize
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
- * @param windowSize (state) the current window size class
  * @param isDrawerActive (state) whether the drawer is active
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
@@ -43,7 +41,6 @@ import com.example.jetnews.utils.WindowSize
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel,
-    windowSize: WindowSize,
     isDrawerActive: Boolean,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -53,7 +50,6 @@ fun HomeRoute(
 
     HomeRoute(
         uiState = uiState,
-        windowSize = windowSize,
         isDrawerActive = isDrawerActive,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
         onSelectPost = { homeViewModel.selectArticle(it) },
@@ -72,7 +68,6 @@ fun HomeRoute(
  * This composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
- * @param windowSize (state) the current window size class
  * @param isDrawerActive (state) whether the drawer is active
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onSelectPost (event) indicate that a post was selected
@@ -88,7 +83,6 @@ fun HomeRoute(
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
-    windowSize: WindowSize,
     isDrawerActive: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
@@ -112,18 +106,12 @@ fun HomeRoute(
         }
     }
 
-    val homeScreenType = getHomeScreenType(windowSize, uiState)
-
-    val showTopAppBar = when (windowSize) {
-        WindowSize.Compact -> true
-        WindowSize.Medium, WindowSize.Expanded -> false
-    }
-
+    val homeScreenType = getHomeScreenType(isDrawerActive, uiState)
     when (homeScreenType) {
         HomeScreenType.FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
                 uiState = uiState,
-                showTopAppBar = showTopAppBar,
+                showTopAppBar = isDrawerActive,
                 onToggleFavorite = onToggleFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
@@ -139,7 +127,7 @@ fun HomeRoute(
         HomeScreenType.Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
-                showTopAppBar = showTopAppBar,
+                showTopAppBar = isDrawerActive,
                 onToggleFavorite = onToggleFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
@@ -191,15 +179,15 @@ private enum class HomeScreenType {
 }
 
 /**
- * Returns the current [HomeScreenType] to display, based on the current window size class and
- * the [HomeUiState].
+ * Returns the current [HomeScreenType] to display, based on whether or not the drawer is active
+ * and the [HomeUiState].
  */
 @Composable
 private fun getHomeScreenType(
-    windowSize: WindowSize,
+    isDrawerActive: Boolean,
     uiState: HomeUiState
-): HomeScreenType = when (windowSize) {
-    WindowSize.Compact, WindowSize.Medium -> {
+): HomeScreenType = when (isDrawerActive) {
+    true -> {
         when (uiState) {
             is HomeUiState.HasPosts -> {
                 if (uiState.isArticleOpen) {
@@ -211,5 +199,5 @@ private fun getHomeScreenType(
             is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
     }
-    WindowSize.Expanded -> HomeScreenType.FeedWithArticleDetails
+    false -> HomeScreenType.FeedWithArticleDetails
 }

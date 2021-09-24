@@ -71,7 +71,7 @@ fun JetnewsApp(
                 navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             val windowSize = rememberWindowSizeState()
-            val isDrawerActive = windowSize == WindowSize.Compact
+            val isDrawerActive = windowSize != WindowSize.Expanded
             val sizeAwareDrawerState = rememberSizeAwareDrawerState(isDrawerActive)
 
             ModalDrawer(
@@ -90,15 +90,13 @@ fun JetnewsApp(
                 // Only enable opening the drawer via gestures if it's active
                 gesturesEnabled = isDrawerActive
             ) {
-
-                val showNavRail = !isDrawerActive
                 Row(
                     Modifier
                         .fillMaxSize()
                         .statusBarsPadding()
                         .navigationBarsPadding(bottom = false)
                 ) {
-                    if (showNavRail) {
+                    if (!isDrawerActive) {
                         AppNavRail(
                             currentRoute = currentRoute,
                             navigateToHome = navigationActions.navigateToHome,
@@ -107,7 +105,6 @@ fun JetnewsApp(
                     }
                     JetnewsNavGraph(
                         appContainer = appContainer,
-                        windowSize = windowSize,
                         isDrawerActive = isDrawerActive,
                         navController = navController,
                         openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
