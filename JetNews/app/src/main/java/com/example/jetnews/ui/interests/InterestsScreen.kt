@@ -105,7 +105,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
  * @param currentSection (state) the current tab to display, must be in [tabContent]
- * @param isDrawerActive (state) true if the drawer is active
+ * @param isExpandedScreen (state) true if the screen is expanded
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
@@ -114,7 +114,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
@@ -130,7 +130,7 @@ fun InterestsScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                navigationIcon = if (isDrawerActive) {
+                navigationIcon = if (!isExpandedScreen) {
                     {
                         IconButton(onClick = openDrawer) {
                             Icon(
@@ -159,7 +159,7 @@ fun InterestsScreen(
         }
     ) { innerPadding ->
         val screenModifier = Modifier.padding(innerPadding)
-        TabContent(currentSection, isDrawerActive, onTabChange, tabContent, screenModifier)
+        TabContent(currentSection, isExpandedScreen, onTabChange, tabContent, screenModifier)
     }
 }
 
@@ -167,7 +167,7 @@ fun InterestsScreen(
  * Displays a tab row with [currentSection] selected and the body of the corresponding [tabContent].
  *
  * @param currentSection (state) the tab that is currently selected
- * @param isDrawerActive (state) whether or not the drawer is active
+ * @param isExpandedScreen (state) whether or not the screen is expanded
  * @param updateSection (event) request a change in tab selection
  * @param tabContent (slot) tabs and their content to display, must be a non-empty list, tabs are
  * displayed in the order of this list
@@ -175,14 +175,14 @@ fun InterestsScreen(
 @Composable
 private fun TabContent(
     currentSection: Sections,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
     modifier: Modifier = Modifier
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column(modifier) {
-        InterestsTabRow(selectedTabIndex, updateSection, tabContent, isDrawerActive)
+        InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
@@ -401,10 +401,10 @@ private fun InterestsTabRow(
     selectedTabIndex: Int,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
-    isDrawerActive: Boolean
+    isExpandedScreen: Boolean
 ) {
-    when (isDrawerActive) {
-        true -> {
+    when (isExpandedScreen) {
+        false -> {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = MaterialTheme.colors.onPrimary,
@@ -413,7 +413,7 @@ private fun InterestsTabRow(
                 InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
             }
         }
-        false -> {
+        true -> {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = MaterialTheme.colors.onPrimary,
@@ -547,7 +547,7 @@ fun PreviewInterestsScreenDrawer() {
         InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
-            isDrawerActive = true,
+            isExpandedScreen = false,
             onTabChange = updateSection,
             openDrawer = { },
             scaffoldState = rememberScaffoldState()
@@ -575,7 +575,7 @@ fun PreviewInterestsScreenNavRail() {
         InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
-            isDrawerActive = false,
+            isExpandedScreen = true,
             onTabChange = updateSection,
             openDrawer = { },
             scaffoldState = rememberScaffoldState()

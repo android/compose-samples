@@ -32,7 +32,7 @@ import com.example.jetnews.ui.interests.InterestsViewModel
 @Composable
 fun JetnewsNavGraph(
     appContainer: AppContainer,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit = {},
@@ -49,7 +49,7 @@ fun JetnewsNavGraph(
             )
             HomeRoute(
                 homeViewModel = homeViewModel,
-                isDrawerActive = isDrawerActive,
+                isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer
             )
         }
@@ -59,7 +59,7 @@ fun JetnewsNavGraph(
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
-                isDrawerActive = isDrawerActive,
+                isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer
             )
         }

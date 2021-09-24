@@ -71,8 +71,8 @@ fun JetnewsApp(
                 navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
             val windowSize = rememberWindowSizeState()
-            val isDrawerActive = windowSize != WindowSize.Expanded
-            val sizeAwareDrawerState = rememberSizeAwareDrawerState(isDrawerActive)
+            val isExpandedScreen = windowSize == WindowSize.Expanded
+            val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
             ModalDrawer(
                 drawerContent = {
@@ -87,8 +87,8 @@ fun JetnewsApp(
                     )
                 },
                 drawerState = sizeAwareDrawerState,
-                // Only enable opening the drawer via gestures if it's active
-                gesturesEnabled = isDrawerActive
+                // Only enable opening the drawer via gestures if the screen is not expanded
+                gesturesEnabled = !isExpandedScreen
             ) {
                 Row(
                     Modifier
@@ -96,7 +96,7 @@ fun JetnewsApp(
                         .statusBarsPadding()
                         .navigationBarsPadding(bottom = false)
                 ) {
-                    if (!isDrawerActive) {
+                    if (isExpandedScreen) {
                         AppNavRail(
                             currentRoute = currentRoute,
                             navigateToHome = navigationActions.navigateToHome,
@@ -105,7 +105,7 @@ fun JetnewsApp(
                     }
                     JetnewsNavGraph(
                         appContainer = appContainer,
-                        isDrawerActive = isDrawerActive,
+                        isExpandedScreen = isExpandedScreen,
                         navController = navController,
                         openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                     )
@@ -119,10 +119,10 @@ fun JetnewsApp(
  * Determine the drawer state to pass to the modal drawer.
  */
 @Composable
-private fun rememberSizeAwareDrawerState(isDrawerActive: Boolean): DrawerState {
+private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    return if (isDrawerActive) {
+    return if (!isExpandedScreen) {
         // If we want to allow showing the drawer, we use a real, remembered drawer
         // state defined above
         drawerState

@@ -34,14 +34,14 @@ import com.example.jetnews.ui.article.ArticleScreen
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
- * @param isDrawerActive (state) whether the drawer is active
+ * @param isExpandedScreen (state) whether the screen is expanded
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -50,7 +50,7 @@ fun HomeRoute(
 
     HomeRoute(
         uiState = uiState,
-        isDrawerActive = isDrawerActive,
+        isExpandedScreen = isExpandedScreen,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
         onSelectPost = { homeViewModel.selectArticle(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
@@ -68,7 +68,7 @@ fun HomeRoute(
  * This composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
- * @param isDrawerActive (state) whether the drawer is active
+ * @param isExpandedScreen (state) whether the screen is expanded
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onSelectPost (event) indicate that a post was selected
  * @param onRefreshPosts (event) request a refresh of posts
@@ -83,7 +83,7 @@ fun HomeRoute(
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -106,12 +106,12 @@ fun HomeRoute(
         }
     }
 
-    val homeScreenType = getHomeScreenType(isDrawerActive, uiState)
+    val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
     when (homeScreenType) {
         HomeScreenType.FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
                 uiState = uiState,
-                showTopAppBar = isDrawerActive,
+                showTopAppBar = !isExpandedScreen,
                 onToggleFavorite = onToggleFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
@@ -127,7 +127,7 @@ fun HomeRoute(
         HomeScreenType.Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
-                showTopAppBar = isDrawerActive,
+                showTopAppBar = !isExpandedScreen,
                 onToggleFavorite = onToggleFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
@@ -143,7 +143,7 @@ fun HomeRoute(
 
             ArticleScreen(
                 post = uiState.selectedPost,
-                isDrawerActive = isDrawerActive,
+                isExpandedScreen = isExpandedScreen,
                 onBack = onInteractWithFeed,
                 isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
                 onToggleFavorite = {
@@ -179,15 +179,15 @@ private enum class HomeScreenType {
 }
 
 /**
- * Returns the current [HomeScreenType] to display, based on whether or not the drawer is active
+ * Returns the current [HomeScreenType] to display, based on whether or not the screen is expanded
  * and the [HomeUiState].
  */
 @Composable
 private fun getHomeScreenType(
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     uiState: HomeUiState
-): HomeScreenType = when (isDrawerActive) {
-    true -> {
+): HomeScreenType = when (isExpandedScreen) {
+    false -> {
         when (uiState) {
             is HomeUiState.HasPosts -> {
                 if (uiState.isArticleOpen) {
@@ -199,5 +199,5 @@ private fun getHomeScreenType(
             is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
     }
-    false -> HomeScreenType.FeedWithArticleDetails
+    true -> HomeScreenType.FeedWithArticleDetails
 }
