@@ -328,6 +328,7 @@ fun FollowedPodcasts(
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier
@@ -341,6 +342,7 @@ fun FollowedPodcasts(
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
+    podcastTitle: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
 ) {
@@ -356,7 +358,7 @@ private fun FollowedPodcastCarouselItem(
             if (podcastImageUrl != null) {
                 Image(
                     painter = rememberImagePainter(data = podcastImageUrl),
-                    contentDescription = null,
+                    contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
