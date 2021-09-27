@@ -21,15 +21,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.window.layout.WindowInfoRepository
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowMetrics
 import androidx.window.layout.WindowMetricsCalculator
 
@@ -56,7 +52,7 @@ fun getWindowSize(width: Dp): WindowSize = when {
  */
 @Composable
 fun rememberWindowSizeState(): WindowSize {
-    val windowMetrics by rememberCurrentWindowMetrics()
+    val windowMetrics = rememberCurrentWindowMetrics()
     val density = LocalDensity.current
 
     return remember(windowMetrics, density) {
@@ -68,17 +64,15 @@ fun rememberWindowSizeState(): WindowSize {
 
 /**
  * Returns the [WindowMetrics] corresponding to the current activities
- * [WindowInfoRepository.currentWindowMetrics] as [State].
+ * [WindowMetricsCalculator.computeCurrentWindowMetrics].
  */
 @Composable
-private fun rememberCurrentWindowMetrics(): State<WindowMetrics> {
+private fun rememberCurrentWindowMetrics(): WindowMetrics {
     val activity = LocalContext.current.findActivity()
-    val currentWindowMetricsFlow = remember(activity) {
-        activity.windowInfoRepository().currentWindowMetrics
-    }
-    return currentWindowMetricsFlow.collectAsState(
+    val configuration = LocalConfiguration.current
+    return remember(activity, configuration) {
         WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(activity)
-    )
+    }
 }
 
 /**
