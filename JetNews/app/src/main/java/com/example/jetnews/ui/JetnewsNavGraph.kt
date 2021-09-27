@@ -62,7 +62,8 @@ fun JetnewsNavGraph(
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
-                windowSize = windowSize,
+                // TabRow is collapsed if the WindowSize is expanded
+                isTabRowExpanded = windowSize != WindowSize.Expanded,
                 isDrawerActive = isDrawerActive,
                 openDrawer = openDrawer
             )

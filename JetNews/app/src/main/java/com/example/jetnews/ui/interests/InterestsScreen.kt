@@ -19,24 +19,20 @@ package com.example.jetnews.ui.interests
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -56,11 +52,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -70,16 +67,15 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
-import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.example.jetnews.utils.WindowSize
+import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
+import kotlin.math.max
 
 enum class Sections(@StringRes val titleResId: Int) {
     Topics(R.string.interests_section_topics),
@@ -106,7 +102,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
  * @param currentSection (state) the current tab to display, must be in [tabContent]
- * @param windowSize (state) the current window size class
+ * @param isTabRowExpanded (state) whether the TabRow is expanded
  * @param isDrawerActive (state) true if the drawer is active
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
  * @param openDrawer (event) request opening the app drawer
@@ -116,7 +112,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
-    windowSize: WindowSize,
+    isTabRowExpanded: Boolean,
     isDrawerActive: Boolean,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
@@ -162,22 +158,64 @@ fun InterestsScreen(
         }
     ) { innerPadding ->
         val screenModifier = Modifier.padding(innerPadding)
-        TabContent(windowSize, currentSection, onTabChange, tabContent, screenModifier)
+        InterestScreenContent(
+            isTabRowExpanded, currentSection, onTabChange, tabContent, screenModifier
+        )
     }
+}
+
+@Composable
+fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
+    // UiState of the InterestsScreen
+    val uiState by interestsViewModel.uiState.collectAsState()
+
+    // Describe the screen sections here since each section needs 2 states and 1 event.
+    // Pass them to the stateless InterestsScreen using a tabContent.
+    val topicsSection = TabContent(Sections.Topics) {
+        val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
+        TabContent(
+            sections = uiState.topics,
+            selectedTopics = selectedTopics,
+            onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
+        )
+    }
+
+    val peopleSection = TabContent(Sections.People) {
+        val selectedPeople by interestsViewModel.selectedPeople.collectAsState()
+        val section = listOf(InterestSection("", uiState.people))
+        TabContent(
+            sections = section,
+            selectedTopics = selectedPeople.map { TopicSelection("people", it) }.toSet(),
+            onTopicSelect = { interestsViewModel.togglePersonSelected(it.topic) }
+        )
+    }
+
+    val publicationSection = TabContent(Sections.Publications) {
+        val selectedPublications by interestsViewModel.selectedPublications.collectAsState()
+        val section = listOf(InterestSection("", uiState.publications))
+        TabContent(
+            sections = section,
+            selectedTopics = selectedPublications
+                .map { TopicSelection("publications", it) }.toSet(),
+            onTopicSelect = { interestsViewModel.togglePublicationSelected(it.topic) }
+        )
+    }
+
+    return listOf(topicsSection, peopleSection, publicationSection)
 }
 
 /**
  * Displays a tab row with [currentSection] selected and the body of the corresponding [tabContent].
  *
- * @param windowSize (state) the current window size class
+ * @param isTabRowExpanded (state) whether the TabRow elements are expanded
  * @param currentSection (state) the tab that is currently selected
  * @param updateSection (event) request a change in tab selection
  * @param tabContent (slot) tabs and their content to display, must be a non-empty list, tabs are
  * displayed in the order of this list
  */
 @Composable
-private fun TabContent(
-    windowSize: WindowSize,
+private fun InterestScreenContent(
+    isTabRowExpanded: Boolean,
     currentSection: Sections,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
@@ -185,7 +223,7 @@ private fun TabContent(
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column(modifier) {
-        InterestsTabRow(windowSize, selectedTabIndex, updateSection, tabContent)
+        InterestsTabRow(isTabRowExpanded, selectedTabIndex, updateSection, tabContent)
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
@@ -197,146 +235,45 @@ private fun TabContent(
 }
 
 /**
- * Display the list for the topic tab
- *
- * @param windowSize (state) the current window size class
- * @param topics (state) topics to display, mapped by section
- * @param selectedTopics (state) currently selected topics
- * @param onTopicSelect (event) request a topic selection be changed
- */
-@Composable
-private fun TopicList(
-    windowSize: WindowSize,
-    topics: List<InterestSection>,
-    selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit
-) {
-    TabWithSections(windowSize, topics, selectedTopics, onTopicSelect)
-}
-
-/**
- * Display the list for people tab
- *
- * @param people (state) people to display
- * @param selectedPeople (state) currently selected people
- * @param onPersonSelect (event) request a person selection be changed
- */
-@Composable
-fun PeopleList(
-    people: List<String>,
-    selectedPeople: Set<String>,
-    onPersonSelect: (String) -> Unit
-) {
-    TabWithTopics(people, selectedPeople, onPersonSelect)
-}
-
-/**
- * Display a list for publications tab
- *
- * @param publications (state) publications to display
- * @param selectedPublications (state) currently selected publications
- * @param onPublicationSelect (event) request a publication selection be changed
- */
-@Composable
-fun PublicationList(
-    publications: List<String>,
-    selectedPublications: Set<String>,
-    onPublicationSelect: (String) -> Unit
-) {
-    TabWithTopics(publications, selectedPublications, onPublicationSelect)
-}
-
-/**
- * Display a simple list of topics
- *
- * @param topics (state) topics to display
- * @param selectedTopics (state) currently selected topics
- * @param onTopicSelect (event) request a topic selection be changed
- */
-@Composable
-private fun TabWithTopics(
-    topics: List<String>,
-    selectedTopics: Set<String>,
-    onTopicSelect: (String) -> Unit
-) {
-    // TODO: Optimize by manually positioning items, rather than using BoxWithConstraints
-    BoxWithConstraints {
-        val itemMaxWidth = rememberItemMaxWidth(windowMaxWidth = maxWidth, columns = 1)
-        val topicModifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-            .widthIn(max = itemMaxWidth)
-
-        LazyColumn(
-            modifier = Modifier.padding(top = 16.dp),
-            contentPadding = rememberContentPaddingForScreen()
-        ) {
-            items(topics) { topic ->
-                TopicItem(
-                    itemTitle = topic,
-                    selected = selectedTopics.contains(topic),
-                    onToggle = { onTopicSelect(topic) },
-                    modifier = topicModifier
-                )
-                TopicDivider(topicModifier)
-            }
-        }
-    }
-}
-
-/**
  * Display a sectioned list of topics
  *
- * @param windowSize (state) the current window size class
  * @param sections (state) topics to display, grouped by sections
  * @param selectedTopics (state) currently selected topics
  * @param onTopicSelect (event) request a topic+section selection be changed
  */
 @Composable
-private fun TabWithSections(
-    windowSize: WindowSize,
+private fun TabContent(
     sections: List<InterestSection>,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
-
-    // TODO: Optimize by manually positioning items, rather than using BoxWithConstraints
-    BoxWithConstraints {
-        val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
-        val groupedSections = rememberSectionsGroupedInColumns(sections, columns)
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            groupedSections.forEach { sectionsInGroup ->
-                LazyColumn(
+    Column(
+        Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .navigationBarsPadding(start = false, end = false)
+    ) {
+        sections.forEach { (section, topics) ->
+            if (section.isNotEmpty()) {
+                Text(
+                    text = section,
                     modifier = Modifier
-                        .widthIn(max = itemMaxWidth)
-                        .padding(horizontal = if (columns > 1) 8.dp else 0.dp),
-                    contentPadding = rememberContentPaddingForScreen(),
-                ) {
-                    sectionsInGroup.forEach { (section, topics) ->
-                        item {
-                            Text(
-                                text = section,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .semantics { heading() },
-                                style = MaterialTheme.typography.subtitle1
-                            )
-                        }
-                        items(topics) { topic ->
-                            TopicItem(
-                                itemTitle = topic,
-                                selected = selectedTopics.contains(TopicSelection(section, topic)),
-                                onToggle = { onTopicSelect(TopicSelection(section, topic)) },
-                                modifier = Modifier
-                            )
-                            TopicDivider(Modifier)
-                        }
-                    }
+                        .padding(16.dp)
+                        .semantics { heading() },
+                    style = MaterialTheme.typography.subtitle1
+                )
+            }
+            InterestsAdaptiveContentLayout(
+                topPadding = if (section.isNotEmpty()) 0.dp else 16.dp,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                topics.forEach { topic ->
+                    TopicItem(
+                        itemTitle = topic,
+                        selected = selectedTopics.contains(TopicSelection(section, topic)),
+                        onToggle = { onTopicSelect(TopicSelection(section, topic)) },
+                    )
                 }
             }
         }
@@ -357,48 +294,43 @@ private fun TopicItem(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val image = painterResource(R.drawable.placeholder_1_1)
-    Row(
-        modifier = modifier
-            .toggleable(
-                value = selected,
-                onValueChange = { onToggle() }
+    Column {
+        Row(
+            modifier = modifier
+                .toggleable(
+                    value = selected,
+                    onValueChange = { onToggle() }
+                )
+                .padding(horizontal = 16.dp)
+        ) {
+            val image = painterResource(R.drawable.placeholder_1_1)
+            Image(
+                painter = image,
+                contentDescription = null, // decorative
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .size(56.dp, 56.dp)
+                    .clip(RoundedCornerShape(4.dp))
             )
-            .padding(horizontal = 16.dp)
-    ) {
-        Image(
-            painter = image,
-            contentDescription = null, // decorative
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .size(56.dp, 56.dp)
-                .clip(RoundedCornerShape(4.dp))
-        )
-        Text(
-            text = itemTitle,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(16.dp)
-                .weight(1f), // Break line if the title is too long
-            style = MaterialTheme.typography.subtitle1
-        )
-        Spacer(Modifier.weight(0.01f))
-        SelectTopicButton(
-            modifier = Modifier.align(Alignment.CenterVertically),
-            selected = selected
+            Text(
+                text = itemTitle,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(16.dp)
+                    .weight(1f), // Break line if the title is too long
+                style = MaterialTheme.typography.subtitle1
+            )
+            Spacer(Modifier.weight(0.01f))
+            SelectTopicButton(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                selected = selected
+            )
+        }
+        Divider(
+            modifier = modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
     }
-}
-
-/**
- * Full-width divider for topics
- */
-@Composable
-private fun TopicDivider(modifier: Modifier = Modifier) {
-    Divider(
-        modifier = modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
-    )
 }
 
 /**
@@ -406,13 +338,13 @@ private fun TopicDivider(modifier: Modifier = Modifier) {
  */
 @Composable
 private fun InterestsTabRow(
-    windowSize: WindowSize,
+    isTabRowExpanded: Boolean,
     selectedTabIndex: Int,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>
 ) {
-    when (windowSize) {
-        WindowSize.Compact -> {
+    when (isTabRowExpanded) {
+        true -> {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = MaterialTheme.colors.onPrimary,
@@ -421,7 +353,7 @@ private fun InterestsTabRow(
                 InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
             }
         }
-        WindowSize.Medium, WindowSize.Expanded -> {
+        false -> {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = MaterialTheme.colors.onPrimary,
@@ -468,81 +400,92 @@ private fun InterestsTabRowContent(
 }
 
 /**
- * Return the interest sections grouped given the number of columns that fill the screen.
- * Sections are distributed to balance the number of items on each column.
+ * Custom layout for the Interests screen that places items on the screen given the available size.
+ *
+ * For example: Given a list of items (A, B, C, D, E) and a screen size that allows 2 columns,
+ * the items will be displayed on the screen as follows:
+ *     A B
+ *     C D
+ *     E
  */
 @Composable
-private fun rememberSectionsGroupedInColumns(
-    sections: List<InterestSection>,
-    columns: Int
-): List<List<InterestSection>> = remember(sections, columns) {
-    val sectionsInColumns = List<MutableList<InterestSection>>(columns) { mutableListOf() }
-    val elementsInColumns = IntArray(columns)
-    // For each section, find the column with less elements and add it there
-    sections.forEach { section ->
-        val shortestColumnIndex = elementsInColumns.withIndex().minByOrNull { it.value }!!.index
-        sectionsInColumns[shortestColumnIndex] += section
-        elementsInColumns[shortestColumnIndex] += section.interests.size
-    }
-    sectionsInColumns.toList()
-}
+private fun InterestsAdaptiveContentLayout(
+    modifier: Modifier = Modifier,
+    topPadding: Dp = 16.dp,
+    itemSpacing: Dp = 8.dp,
+    itemMaxWidth: Dp = 450.dp,
+    content: @Composable () -> Unit,
+) {
+    val compactWidth = with(LocalDensity.current) { 600.dp.roundToPx() }
+    val topPaddingPx = with(LocalDensity.current) { topPadding.roundToPx() }
+    val itemSpacingPx = with(LocalDensity.current) { itemSpacing.roundToPx() }
+    val itemMaxWidthPx = with(LocalDensity.current) { itemMaxWidth.roundToPx() }
 
-/**
- * Returns the max width for a Topic Item given maxWidth and number of columns constraints.
- */
-@Composable
-private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
-    remember(windowMaxWidth, columns) {
-        if (columns == 1) {
-            // If the space available is small, fill the screen
-            if (windowMaxWidth < 600.dp) Dp.Infinity else 600.dp
+    Layout(modifier = modifier, content = content) { measurables, outerConstraints ->
+        // Number of columns to display on the screen
+        val columns = if (outerConstraints.maxWidth < compactWidth) 1 else 2
+        // Max width for each item taking into account available space, spacing and `itemMaxWidth`
+        val itemWidth = if (columns == 1) {
+            Int.MAX_VALUE
         } else {
-            // Calculate the max width each item can take given the number of columns
-            val itemMaxWidth = windowMaxWidth / columns
-            // Limit the width of the item for them to not be too big given the available space
-            if (windowMaxWidth < 800.dp) min(itemMaxWidth, 350.dp) else min(itemMaxWidth, 450.dp)
+            val maxWidthWithSpaces = outerConstraints.maxWidth - (columns - 1) * itemSpacingPx
+            (maxWidthWithSpaces / columns).coerceIn(0, itemMaxWidthPx)
+        }
+
+        // Keep track of the height of each row to calculate the layout's final size
+        val rowHeights = IntArray(measurables.size / columns + 1)
+        // Measure elements with their maximum width and keep track of the height
+        val placeables = measurables.mapIndexed { index, measureable ->
+            val itemConstraints = if (itemWidth == Int.MAX_VALUE) {
+                outerConstraints
+            } else {
+                outerConstraints.copy(maxWidth = itemWidth)
+            }
+            val placeable = measureable.measure(itemConstraints)
+            // Update the height for each row
+            val row = index.floorDiv(columns)
+            rowHeights[row] = max(rowHeights[row], placeable.height)
+            placeable
+        }
+
+        // Calculate maxHeight of the Interests layout. Heights of the row + top padding
+        val layoutHeight = topPaddingPx + rowHeights.sumOf { it }
+        // Calculate maxWidth of the Interests layout
+        val layoutWidth = itemWidth * columns + (itemSpacingPx * (columns - 1))
+        // Lay out given the max width and height
+        layout(
+            outerConstraints.maxWidth.coerceIn(0, layoutWidth),
+            outerConstraints.maxHeight.coerceIn(0, layoutHeight)
+        ) {
+            // Track the y co-ord we have placed children up to
+            var yPosition = topPaddingPx
+            placeables.forEachIndexed { index, placeable ->
+                // If there's only one column, then place items one after the other
+                if (columns == 1) {
+                    // Position item on the screen
+                    placeable.placeRelative(x = 0, y = yPosition)
+                    // Increment the y co-ord with the item's height
+                    yPosition += placeable.height
+                } else {
+                    // If there are multiple columns, then place items relative to each other
+                    if (index % columns == 0) {
+                        // Position item on a new row
+                        placeable.placeRelative(x = 0, y = yPosition)
+                    } else {
+                        // Place element in the same row, the previous item exists at this point
+                        val previousPlaceable = placeables[index - 1]
+                        placeable.placeRelative(
+                            x = previousPlaceable.width + itemSpacingPx,
+                            y = yPosition
+                        )
+
+                        // Increment the y co-ord with the item's height
+                        yPosition += rowHeights[index.floorDiv(columns)]
+                    }
+                }
+            }
         }
     }
-
-@Composable
-fun rememberTabContent(
-    windowSize: WindowSize,
-    interestsViewModel: InterestsViewModel
-): List<TabContent> {
-    // UiState of the InterestsScreen
-    val uiState by interestsViewModel.uiState.collectAsState()
-
-    // Describe the screen sections here since each section needs 2 states and 1 event.
-    // Pass them to the stateless InterestsScreen using a tabContent.
-    val topicsSection = TabContent(Sections.Topics) {
-        val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
-        TopicList(
-            windowSize = windowSize,
-            topics = uiState.topics,
-            selectedTopics = selectedTopics,
-            onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
-        )
-    }
-
-    val peopleSection = TabContent(Sections.People) {
-        val selectedPeople by interestsViewModel.selectedPeople.collectAsState()
-        PeopleList(
-            people = uiState.people,
-            selectedPeople = selectedPeople,
-            onPersonSelect = { interestsViewModel.togglePersonSelected(it) }
-        )
-    }
-
-    val publicationSection = TabContent(Sections.Publications) {
-        val selectedPublications by interestsViewModel.selectedPublications.collectAsState()
-        PublicationList(
-            publications = uiState.publications,
-            selectedPublications = selectedPublications,
-            onPublicationSelect = { interestsViewModel.togglePublicationSelected(it) }
-        )
-    }
-
-    return listOf(topicsSection, peopleSection, publicationSection)
 }
 
 @Preview("Interests screen", "Interests")
@@ -551,7 +494,7 @@ fun rememberTabContent(
 @Composable
 fun PreviewInterestsScreenDrawer() {
     JetnewsTheme {
-        val tabContent = getFakeTabsContent(WindowSize.Compact)
+        val tabContent = getFakeTabsContent()
         val (currentSection, updateSection) = rememberSaveable {
             mutableStateOf(tabContent.first().section)
         }
@@ -559,7 +502,7 @@ fun PreviewInterestsScreenDrawer() {
         InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
-            windowSize = WindowSize.Compact,
+            isTabRowExpanded = true,
             isDrawerActive = true,
             onTabChange = updateSection,
             openDrawer = { },
@@ -580,7 +523,7 @@ fun PreviewInterestsScreenDrawer() {
 @Composable
 fun PreviewInterestsScreenNavRail() {
     JetnewsTheme {
-        val tabContent = getFakeTabsContent(WindowSize.Expanded)
+        val tabContent = getFakeTabsContent()
         val (currentSection, updateSection) = rememberSaveable {
             mutableStateOf(tabContent.first().section)
         }
@@ -588,7 +531,7 @@ fun PreviewInterestsScreenNavRail() {
         InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
-            windowSize = WindowSize.Expanded,
+            isTabRowExpanded = false,
             isDrawerActive = false,
             onTabChange = updateSection,
             openDrawer = { },
@@ -606,7 +549,7 @@ fun PreviewTopicsTab() {
     }
     JetnewsTheme {
         Surface {
-            TopicList(WindowSize.Compact, topics, setOf()) { }
+            TabContent(topics, setOf()) { }
         }
     }
 }
@@ -620,7 +563,7 @@ fun PreviewPeopleTab() {
     }
     JetnewsTheme {
         Surface {
-            PeopleList(people, setOf()) { }
+            TabContent(listOf(InterestSection("", people)), setOf()) { }
         }
     }
 }
@@ -634,29 +577,38 @@ fun PreviewPublicationsTab() {
     }
     JetnewsTheme {
         Surface {
-            PublicationList(publications, setOf()) { }
+            TabContent(listOf(InterestSection("", publications)), setOf()) { }
         }
     }
 }
 
-private fun getFakeTabsContent(windowSize: WindowSize): List<TabContent> {
+private fun getFakeTabsContent(): List<TabContent> {
     val interestsRepository = FakeInterestsRepository()
     val topicsSection = TabContent(Sections.Topics) {
-        TopicList(
-            windowSize,
+        TabContent(
             runBlocking { (interestsRepository.getTopics() as Result.Success).data },
             emptySet()
         ) { }
     }
     val peopleSection = TabContent(Sections.People) {
-        PeopleList(
-            runBlocking { (interestsRepository.getPeople() as Result.Success).data },
+        TabContent(
+            listOf(
+                InterestSection(
+                    "",
+                    runBlocking { (interestsRepository.getPeople() as Result.Success).data },
+                )
+            ),
             emptySet()
         ) { }
     }
     val publicationSection = TabContent(Sections.Publications) {
-        PublicationList(
-            runBlocking { (interestsRepository.getPublications() as Result.Success).data },
+        TabContent(
+            listOf(
+                InterestSection(
+                    "",
+                    runBlocking { (interestsRepository.getPublications() as Result.Success).data },
+                )
+            ),
             emptySet()
         ) { }
     }
