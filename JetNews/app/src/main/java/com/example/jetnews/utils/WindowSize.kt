@@ -17,16 +17,15 @@
 package com.example.jetnews.utils
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.toComposeRect
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.window.layout.WindowMetrics
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.window.layout.WindowMetricsCalculator
 
 /**
@@ -39,50 +38,44 @@ import androidx.window.layout.WindowMetricsCalculator
  */
 enum class WindowSize { Compact, Medium, Expanded }
 
+/**
+ * Partitions a [DpSize] into a enumerated [WindowSize] class.
+ */
 @VisibleForTesting
-fun getWindowSize(width: Dp): WindowSize = when {
-    width.value < 0f -> throw IllegalArgumentException("Dp value cannot be negative")
-    width.value < 600f -> WindowSize.Compact
-    width.value < 840f -> WindowSize.Medium
+fun getWindowSizeClass(windowDpSize: DpSize): WindowSize = when {
+    windowDpSize.width < 0.dp -> throw IllegalArgumentException("Dp value cannot be negative")
+    windowDpSize.width < 600.dp -> WindowSize.Compact
+    windowDpSize.width < 840.dp -> WindowSize.Medium
     else -> WindowSize.Expanded
 }
 
 /**
- * Remembers the [WindowSize] corresponding to the current window metrics.
+ * Remembers the [Size] in pixels of the window corresponding to the current window metrics.
  */
 @Composable
-fun rememberWindowSizeState(): WindowSize {
-    val windowMetrics = rememberCurrentWindowMetrics()
-    val density = LocalDensity.current
-
-    return remember(windowMetrics, density) {
-        with(density) {
-            getWindowSize(windowMetrics.bounds.width().toDp())
-        }
-    }
-}
-
-/**
- * Returns the [WindowMetrics] corresponding to the current activities
- * [WindowMetricsCalculator.computeCurrentWindowMetrics].
- */
-@Composable
-private fun rememberCurrentWindowMetrics(): WindowMetrics {
-    val activity = LocalContext.current.findActivity()
+private fun Activity.rememberWindowSize(): Size {
     val configuration = LocalConfiguration.current
-    return remember(activity, configuration) {
-        WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(activity)
+    // WindowMetricsCalculator implicitly depends on the configuration through the activity,
+    // so recalculate it upon changes.
+    val windowMetrics = remember(configuration) {
+        WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(this)
     }
+    return windowMetrics.bounds.toComposeRect().size
 }
 
 /**
- * Find the closest Activity in a given Context.
+ * Remembers the [WindowSize] class for the window corresponding to the current window metrics.
  */
-private tailrec fun Context.findActivity(): Activity =
-    when (this) {
-        is Activity -> this
-        is ContextWrapper -> baseContext.findActivity()
-        else -> throw IllegalStateException(
-            "findActivity should be called in the context of an Activity"
-        )
+@Composable
+fun Activity.rememberWindowSizeClass(): WindowSize {
+    // Get the size (in pixels) of the window
+    val windowSize = rememberWindowSize()
+
+    // Convert the window size to [Dp]
+    val windowDpSize = with(LocalDensity.current) {
+        windowSize.toDpSize()
     }
+
+    // Calculate the window size class
+    return getWindowSizeClass(windowDpSize)
+}
