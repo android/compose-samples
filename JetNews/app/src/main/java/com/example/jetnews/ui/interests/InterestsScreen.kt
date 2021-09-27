@@ -78,7 +78,6 @@ import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.example.jetnews.utils.WindowSize
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(@StringRes val titleResId: Int) {
@@ -106,8 +105,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
  * @param currentSection (state) the current tab to display, must be in [tabContent]
- * @param windowSize (state) the current window size class
- * @param isDrawerActive (state) true if the drawer is active
+ * @param isExpandedScreen (state) true if the screen is expanded
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
@@ -116,8 +114,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
-    windowSize: WindowSize,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
@@ -133,7 +130,7 @@ fun InterestsScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                navigationIcon = if (isDrawerActive) {
+                navigationIcon = if (!isExpandedScreen) {
                     {
                         IconButton(onClick = openDrawer) {
                             Icon(
@@ -162,30 +159,30 @@ fun InterestsScreen(
         }
     ) { innerPadding ->
         val screenModifier = Modifier.padding(innerPadding)
-        TabContent(windowSize, currentSection, onTabChange, tabContent, screenModifier)
+        TabContent(currentSection, isExpandedScreen, onTabChange, tabContent, screenModifier)
     }
 }
 
 /**
  * Displays a tab row with [currentSection] selected and the body of the corresponding [tabContent].
  *
- * @param windowSize (state) the current window size class
  * @param currentSection (state) the tab that is currently selected
+ * @param isExpandedScreen (state) whether or not the screen is expanded
  * @param updateSection (event) request a change in tab selection
  * @param tabContent (slot) tabs and their content to display, must be a non-empty list, tabs are
  * displayed in the order of this list
  */
 @Composable
 private fun TabContent(
-    windowSize: WindowSize,
     currentSection: Sections,
+    isExpandedScreen: Boolean,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
     modifier: Modifier = Modifier
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column(modifier) {
-        InterestsTabRow(windowSize, selectedTabIndex, updateSection, tabContent)
+        InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
         Divider(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
@@ -199,19 +196,17 @@ private fun TabContent(
 /**
  * Display the list for the topic tab
  *
- * @param windowSize (state) the current window size class
  * @param topics (state) topics to display, mapped by section
  * @param selectedTopics (state) currently selected topics
  * @param onTopicSelect (event) request a topic selection be changed
  */
 @Composable
 private fun TopicList(
-    windowSize: WindowSize,
     topics: List<InterestSection>,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    TabWithSections(windowSize, topics, selectedTopics, onTopicSelect)
+    TabWithSections(topics, selectedTopics, onTopicSelect)
 }
 
 /**
@@ -287,22 +282,19 @@ private fun TabWithTopics(
 /**
  * Display a sectioned list of topics
  *
- * @param windowSize (state) the current window size class
  * @param sections (state) topics to display, grouped by sections
  * @param selectedTopics (state) currently selected topics
  * @param onTopicSelect (event) request a topic+section selection be changed
  */
 @Composable
 private fun TabWithSections(
-    windowSize: WindowSize,
     sections: List<InterestSection>,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    val columns = remember(windowSize) { if (windowSize == WindowSize.Compact) 1 else 2 }
-
     // TODO: Optimize by manually positioning items, rather than using BoxWithConstraints
     BoxWithConstraints {
+        val columns = if (maxWidth < 600.dp) 1 else 2
         val itemMaxWidth = rememberItemMaxWidth(maxWidth, columns)
         val groupedSections = rememberSectionsGroupedInColumns(sections, columns)
 
@@ -406,13 +398,13 @@ private fun TopicDivider(modifier: Modifier = Modifier) {
  */
 @Composable
 private fun InterestsTabRow(
-    windowSize: WindowSize,
     selectedTabIndex: Int,
     updateSection: (Sections) -> Unit,
-    tabContent: List<TabContent>
+    tabContent: List<TabContent>,
+    isExpandedScreen: Boolean
 ) {
-    when (windowSize) {
-        WindowSize.Compact -> {
+    when (isExpandedScreen) {
+        false -> {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = MaterialTheme.colors.onPrimary,
@@ -421,7 +413,7 @@ private fun InterestsTabRow(
                 InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
             }
         }
-        WindowSize.Medium, WindowSize.Expanded -> {
+        true -> {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = MaterialTheme.colors.onPrimary,
@@ -505,10 +497,7 @@ private fun rememberItemMaxWidth(windowMaxWidth: Dp, columns: Int) =
     }
 
 @Composable
-fun rememberTabContent(
-    windowSize: WindowSize,
-    interestsViewModel: InterestsViewModel
-): List<TabContent> {
+fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
     // UiState of the InterestsScreen
     val uiState by interestsViewModel.uiState.collectAsState()
 
@@ -517,7 +506,6 @@ fun rememberTabContent(
     val topicsSection = TabContent(Sections.Topics) {
         val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
         TopicList(
-            windowSize = windowSize,
             topics = uiState.topics,
             selectedTopics = selectedTopics,
             onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
@@ -551,7 +539,7 @@ fun rememberTabContent(
 @Composable
 fun PreviewInterestsScreenDrawer() {
     JetnewsTheme {
-        val tabContent = getFakeTabsContent(WindowSize.Compact)
+        val tabContent = getFakeTabsContent()
         val (currentSection, updateSection) = rememberSaveable {
             mutableStateOf(tabContent.first().section)
         }
@@ -559,8 +547,7 @@ fun PreviewInterestsScreenDrawer() {
         InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
-            windowSize = WindowSize.Compact,
-            isDrawerActive = true,
+            isExpandedScreen = false,
             onTabChange = updateSection,
             openDrawer = { },
             scaffoldState = rememberScaffoldState()
@@ -580,7 +567,7 @@ fun PreviewInterestsScreenDrawer() {
 @Composable
 fun PreviewInterestsScreenNavRail() {
     JetnewsTheme {
-        val tabContent = getFakeTabsContent(WindowSize.Expanded)
+        val tabContent = getFakeTabsContent()
         val (currentSection, updateSection) = rememberSaveable {
             mutableStateOf(tabContent.first().section)
         }
@@ -588,8 +575,7 @@ fun PreviewInterestsScreenNavRail() {
         InterestsScreen(
             tabContent = tabContent,
             currentSection = currentSection,
-            windowSize = WindowSize.Expanded,
-            isDrawerActive = false,
+            isExpandedScreen = true,
             onTabChange = updateSection,
             openDrawer = { },
             scaffoldState = rememberScaffoldState()
@@ -606,7 +592,7 @@ fun PreviewTopicsTab() {
     }
     JetnewsTheme {
         Surface {
-            TopicList(WindowSize.Compact, topics, setOf()) { }
+            TopicList(topics, setOf()) { }
         }
     }
 }
@@ -639,11 +625,10 @@ fun PreviewPublicationsTab() {
     }
 }
 
-private fun getFakeTabsContent(windowSize: WindowSize): List<TabContent> {
+private fun getFakeTabsContent(): List<TabContent> {
     val interestsRepository = FakeInterestsRepository()
     val topicsSection = TabContent(Sections.Topics) {
         TopicList(
-            windowSize,
             runBlocking { (interestsRepository.getTopics() as Result.Success).data },
             emptySet()
         ) { }
