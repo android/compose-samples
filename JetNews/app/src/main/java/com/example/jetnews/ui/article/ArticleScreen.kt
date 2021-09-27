@@ -75,7 +75,7 @@ import kotlinx.coroutines.runBlocking
  * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
- * @param isDrawerActive (state) if the drawer is active
+ * @param showNavigationIcon (state) if the navigation icon should be shown
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
@@ -84,7 +84,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun ArticleScreen(
     post: Post,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
@@ -100,8 +100,8 @@ fun ArticleScreen(
         val context = LocalContext.current
         ArticleScreenContent(
             post = post,
-            // Allow opening the Drawer if the drawer is active
-            navigationIconContent = if (isDrawerActive) {
+            // Allow opening the Drawer if the screen is not expanded
+            navigationIconContent = if (!isExpandedScreen) {
                 {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -114,8 +114,8 @@ fun ArticleScreen(
             } else {
                 null
             },
-            // Show the bottom bar if the drawer is active
-            bottomBarContent = if (isDrawerActive) {
+            // Show the bottom bar if the screen is not expanded
+            bottomBarContent = if (!isExpandedScreen) {
                 {
                     BottomBar(
                         onUnimplementedAction = { showUnimplementedActionDialog = true },
