@@ -26,16 +26,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
  * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param isTabRowExpanded (state) whether the TabRow is expanded
- * @param isDrawerActive (state) true if the drawer is active
+ * @param isExpandedScreen (state) true if the screen is expanded
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for screen Scaffold
  */
 @Composable
 fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
-    isTabRowExpanded: Boolean,
-    isDrawerActive: Boolean,
+    isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -47,8 +45,7 @@ fun InterestsRoute(
     InterestsScreen(
         tabContent = tabContent,
         currentSection = currentSection,
-        isTabRowExpanded = isTabRowExpanded,
-        isDrawerActive = isDrawerActive,
+        isExpandedScreen = isExpandedScreen,
         onTabChange = updateSection,
         openDrawer = openDrawer,
         scaffoldState = scaffoldState

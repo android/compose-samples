@@ -21,7 +21,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -58,7 +60,9 @@ fun JetnewsNavRail(
         header = header
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
             content()
@@ -86,6 +90,7 @@ fun AppNavRail(
             isSelected = currentRoute == JetnewsDestinations.HOME_ROUTE,
             action = navigateToHome
         )
+        Spacer(modifier = Modifier.height(16.dp))
         NavRailIcon(
             icon = Icons.Filled.ListAlt,
             contentDescription = stringResource(id = R.string.cd_navigate_interests),
