@@ -173,7 +173,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
         val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
-        TabContent(
+        TabWithSections(
             sections = uiState.topics,
             selectedTopics = selectedTopics,
             onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
@@ -182,22 +182,19 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
 
     val peopleSection = TabContent(Sections.People) {
         val selectedPeople by interestsViewModel.selectedPeople.collectAsState()
-        val section = listOf(InterestSection("", uiState.people))
-        TabContent(
-            sections = section,
-            selectedTopics = selectedPeople.map { TopicSelection("people", it) }.toSet(),
-            onTopicSelect = { interestsViewModel.togglePersonSelected(it.topic) }
+        TabWithTopics(
+            topics = uiState.people,
+            selectedTopics = selectedPeople,
+            onTopicSelect = { interestsViewModel.togglePersonSelected(it) }
         )
     }
 
     val publicationSection = TabContent(Sections.Publications) {
         val selectedPublications by interestsViewModel.selectedPublications.collectAsState()
-        val section = listOf(InterestSection("", uiState.publications))
-        TabContent(
-            sections = section,
-            selectedTopics = selectedPublications
-                .map { TopicSelection("publications", it) }.toSet(),
-            onTopicSelect = { interestsViewModel.togglePublicationSelected(it.topic) }
+        TabWithTopics(
+            topics = uiState.publications,
+            selectedTopics = selectedPublications,
+            onTopicSelect = { interestsViewModel.togglePublicationSelected(it) }
         )
     }
 
@@ -235,6 +232,42 @@ private fun InterestScreenContent(
 }
 
 /**
+ * Modifier for UI containers that show interests items
+ */
+private val tabContainerModifier = Modifier
+    .fillMaxWidth()
+    .wrapContentWidth(Alignment.CenterHorizontally)
+    .navigationBarsPadding(start = false, end = false)
+    .padding(horizontal = 8.dp)
+
+/**
+ * Display a simple list of topics
+ *
+ * @param topics (state) topics to display
+ * @param selectedTopics (state) currently selected topics
+ * @param onTopicSelect (event) request a topic selection be changed
+ */
+@Composable
+private fun TabWithTopics(
+    topics: List<String>,
+    selectedTopics: Set<String>,
+    onTopicSelect: (String) -> Unit
+) {
+    InterestsAdaptiveContentLayout(
+        topPadding = 16.dp,
+        modifier = tabContainerModifier.verticalScroll(rememberScrollState())
+    ) {
+        topics.forEach { topic ->
+            TopicItem(
+                itemTitle = topic,
+                selected = selectedTopics.contains(topic),
+                onToggle = { onTopicSelect(topic) },
+            )
+        }
+    }
+}
+
+/**
  * Display a sectioned list of topics
  *
  * @param sections (state) topics to display, grouped by sections
@@ -242,32 +275,19 @@ private fun InterestScreenContent(
  * @param onTopicSelect (event) request a topic+section selection be changed
  */
 @Composable
-private fun TabContent(
+private fun TabWithSections(
     sections: List<InterestSection>,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-            .navigationBarsPadding(start = false, end = false)
-    ) {
+    Column(tabContainerModifier.verticalScroll(rememberScrollState())) {
         sections.forEach { (section, topics) ->
-            if (section.isNotEmpty()) {
-                Text(
-                    text = section,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .semantics { heading() },
-                    style = MaterialTheme.typography.subtitle1
-                )
-            }
-            InterestsAdaptiveContentLayout(
-                topPadding = if (section.isNotEmpty()) 0.dp else 16.dp,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
+            Text(
+                text = section,
+                modifier = Modifier.padding(16.dp).semantics { heading() },
+                style = MaterialTheme.typography.subtitle1
+            )
+            InterestsAdaptiveContentLayout {
                 topics.forEach { topic ->
                     TopicItem(
                         itemTitle = topic,
@@ -411,7 +431,7 @@ private fun InterestsTabRowContent(
 @Composable
 private fun InterestsAdaptiveContentLayout(
     modifier: Modifier = Modifier,
-    topPadding: Dp = 16.dp,
+    topPadding: Dp = 0.dp,
     itemSpacing: Dp = 8.dp,
     itemMaxWidth: Dp = 450.dp,
     content: @Composable () -> Unit,
@@ -449,7 +469,7 @@ private fun InterestsAdaptiveContentLayout(
         }
 
         // Calculate maxHeight of the Interests layout. Heights of the row + top padding
-        val layoutHeight = topPaddingPx + rowHeights.sumOf { it }
+        val layoutHeight = topPaddingPx + rowHeights.sum()
         // Calculate maxWidth of the Interests layout
         val layoutWidth = itemWidth * columns + (itemSpacingPx * (columns - 1))
         // Lay out given the max width and height
@@ -460,28 +480,21 @@ private fun InterestsAdaptiveContentLayout(
             // Track the y co-ord we have placed children up to
             var yPosition = topPaddingPx
             placeables.forEachIndexed { index, placeable ->
-                // If there's only one column, then place items one after the other
-                if (columns == 1) {
-                    // Position item on the screen
+                // If there are multiple columns, then place items relative to each other
+                if (index % columns == 0) {
+                    // Position item on a new row
                     placeable.placeRelative(x = 0, y = yPosition)
-                    // Increment the y co-ord with the item's height
-                    yPosition += placeable.height
                 } else {
-                    // If there are multiple columns, then place items relative to each other
-                    if (index % columns == 0) {
-                        // Position item on a new row
-                        placeable.placeRelative(x = 0, y = yPosition)
-                    } else {
-                        // Place element in the same row, the previous item exists at this point
-                        val previousPlaceable = placeables[index - 1]
-                        placeable.placeRelative(
-                            x = previousPlaceable.width + itemSpacingPx,
-                            y = yPosition
-                        )
-
-                        // Increment the y co-ord with the item's height
-                        yPosition += rowHeights[index.floorDiv(columns)]
-                    }
+                    // Place element in the same row, the previous item exists at this point
+                    val previousPlaceable = placeables[index - 1]
+                    placeable.placeRelative(
+                        x = previousPlaceable.width + itemSpacingPx,
+                        y = yPosition
+                    )
+                }
+                // Increment the y co-ord with the height of the row if last item of the row
+                if ((index + 1) % columns == 0) {
+                    yPosition += rowHeights[index.floorDiv(columns)]
                 }
             }
         }
@@ -549,7 +562,7 @@ fun PreviewTopicsTab() {
     }
     JetnewsTheme {
         Surface {
-            TabContent(topics, setOf()) { }
+            TabWithSections(topics, setOf()) { }
         }
     }
 }
@@ -563,7 +576,7 @@ fun PreviewPeopleTab() {
     }
     JetnewsTheme {
         Surface {
-            TabContent(listOf(InterestSection("", people)), setOf()) { }
+            TabWithTopics(people, setOf()) { }
         }
     }
 }
@@ -577,7 +590,7 @@ fun PreviewPublicationsTab() {
     }
     JetnewsTheme {
         Surface {
-            TabContent(listOf(InterestSection("", publications)), setOf()) { }
+            TabWithTopics(publications, setOf()) { }
         }
     }
 }
@@ -585,30 +598,20 @@ fun PreviewPublicationsTab() {
 private fun getFakeTabsContent(): List<TabContent> {
     val interestsRepository = FakeInterestsRepository()
     val topicsSection = TabContent(Sections.Topics) {
-        TabContent(
+        TabWithSections(
             runBlocking { (interestsRepository.getTopics() as Result.Success).data },
             emptySet()
         ) { }
     }
     val peopleSection = TabContent(Sections.People) {
-        TabContent(
-            listOf(
-                InterestSection(
-                    "",
-                    runBlocking { (interestsRepository.getPeople() as Result.Success).data },
-                )
-            ),
+        TabWithTopics(
+            runBlocking { (interestsRepository.getPeople() as Result.Success).data },
             emptySet()
         ) { }
     }
     val publicationSection = TabContent(Sections.Publications) {
-        TabContent(
-            listOf(
-                InterestSection(
-                    "",
-                    runBlocking { (interestsRepository.getPublications() as Result.Success).data },
-                )
-            ),
+        TabWithTopics(
+            runBlocking { (interestsRepository.getPublications() as Result.Success).data },
             emptySet()
         ) { }
     }
