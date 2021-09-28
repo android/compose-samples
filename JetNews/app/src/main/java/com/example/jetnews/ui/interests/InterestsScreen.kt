@@ -432,14 +432,14 @@ private fun InterestsAdaptiveContentLayout(
     itemMaxWidth: Dp = 450.dp,
     content: @Composable () -> Unit,
 ) {
-    val compactWidth = with(LocalDensity.current) { 600.dp.roundToPx() }
+    val oneColumnWidthPx = with(LocalDensity.current) { 600.dp.roundToPx() }
     val topPaddingPx = with(LocalDensity.current) { topPadding.roundToPx() }
     val itemSpacingPx = with(LocalDensity.current) { itemSpacing.roundToPx() }
     val itemMaxWidthPx = with(LocalDensity.current) { itemMaxWidth.roundToPx() }
 
     Layout(modifier = modifier, content = content) { measurables, outerConstraints ->
         // Number of columns to display on the screen
-        val columns = if (outerConstraints.maxWidth < compactWidth) 1 else 2
+        val columns = if (outerConstraints.maxWidth < oneColumnWidthPx) 1 else 2
         // Max width for each item taking into account available space, spacing and `itemMaxWidth`
         val itemWidth = if (columns == 1) {
             Int.MAX_VALUE
