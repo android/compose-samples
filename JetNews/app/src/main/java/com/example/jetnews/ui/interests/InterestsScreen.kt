@@ -65,6 +65,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -468,11 +470,10 @@ private fun InterestsAdaptiveContentLayout(
         val layoutHeight = topPaddingPx + rowHeights.sum()
         // Calculate maxWidth of the Interests layout
         val layoutWidth = itemWidth * columns + (itemSpacingPx * (columns - 1))
+
         // Lay out given the max width and height
-        layout(
-            outerConstraints.maxWidth.coerceIn(0, layoutWidth),
-            outerConstraints.maxHeight.coerceIn(0, layoutHeight)
-        ) {
+        val layoutConstraints = outerConstraints.constrain(IntSize(layoutWidth, layoutHeight))
+        layout(layoutConstraints.width, layoutConstraints.height) {
             // Track the y co-ord we have placed children up to
             var yPosition = topPaddingPx
             // Split placeables in lists that don't exceed the number of columns
