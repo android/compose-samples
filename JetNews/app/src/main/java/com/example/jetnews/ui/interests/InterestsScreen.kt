@@ -57,7 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -284,7 +283,9 @@ private fun TabWithSections(
         sections.forEach { (section, topics) ->
             Text(
                 text = section,
-                modifier = Modifier.padding(16.dp).semantics { heading() },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .semantics { heading() },
                 style = MaterialTheme.typography.subtitle1
             )
             InterestsAdaptiveContentLayout {
@@ -321,30 +322,26 @@ private fun TopicItem(
                     value = selected,
                     onValueChange = { onToggle() }
                 )
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             val image = painterResource(R.drawable.placeholder_1_1)
             Image(
                 painter = image,
                 contentDescription = null, // decorative
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .size(56.dp, 56.dp)
+                    .size(56.dp)
                     .clip(RoundedCornerShape(4.dp))
             )
             Text(
                 text = itemTitle,
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
                     .padding(16.dp)
                     .weight(1f), // Break line if the title is too long
                 style = MaterialTheme.typography.subtitle1
             )
             Spacer(Modifier.weight(0.01f))
-            SelectTopicButton(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                selected = selected
-            )
+            SelectTopicButton(selected = selected)
         }
         Divider(
             modifier = modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
@@ -434,34 +431,33 @@ private fun InterestsAdaptiveContentLayout(
     topPadding: Dp = 0.dp,
     itemSpacing: Dp = 8.dp,
     itemMaxWidth: Dp = 450.dp,
+    multipleColumnsBreakPoint: Dp = 600.dp,
     content: @Composable () -> Unit,
 ) {
-    val oneColumnWidthPx = with(LocalDensity.current) { 600.dp.roundToPx() }
-    val topPaddingPx = with(LocalDensity.current) { topPadding.roundToPx() }
-    val itemSpacingPx = with(LocalDensity.current) { itemSpacing.roundToPx() }
-    val itemMaxWidthPx = with(LocalDensity.current) { itemMaxWidth.roundToPx() }
-
     Layout(modifier = modifier, content = content) { measurables, outerConstraints ->
-        // Number of columns to display on the screen
-        val columns = if (outerConstraints.maxWidth < oneColumnWidthPx) 1 else 2
+        // Convert parameters to Px. Safe to do as `Layout` measure block runs in a `Density` scope
+        val multipleColumnsBreakPointPx = multipleColumnsBreakPoint.roundToPx()
+        val topPaddingPx = topPadding.roundToPx()
+        val itemSpacingPx = itemSpacing.roundToPx()
+        val itemMaxWidthPx = itemMaxWidth.roundToPx()
+
+        // Number of columns to display on the screen. This is harcoded to 2 due to
+        // the design mocks, but this logic could change in the future.
+        val columns = if (outerConstraints.maxWidth < multipleColumnsBreakPointPx) 1 else 2
         // Max width for each item taking into account available space, spacing and `itemMaxWidth`
         val itemWidth = if (columns == 1) {
-            Int.MAX_VALUE
+            outerConstraints.maxWidth
         } else {
             val maxWidthWithSpaces = outerConstraints.maxWidth - (columns - 1) * itemSpacingPx
             (maxWidthWithSpaces / columns).coerceIn(0, itemMaxWidthPx)
         }
+        val itemContraints = outerConstraints.copy(maxWidth = itemWidth)
 
         // Keep track of the height of each row to calculate the layout's final size
         val rowHeights = IntArray(measurables.size / columns + 1)
         // Measure elements with their maximum width and keep track of the height
         val placeables = measurables.mapIndexed { index, measureable ->
-            val itemConstraints = if (itemWidth == Int.MAX_VALUE) {
-                outerConstraints
-            } else {
-                outerConstraints.copy(maxWidth = itemWidth)
-            }
-            val placeable = measureable.measure(itemConstraints)
+            val placeable = measureable.measure(itemContraints)
             // Update the height for each row
             val row = index.floorDiv(columns)
             rowHeights[row] = max(rowHeights[row], placeable.height)
