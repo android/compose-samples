@@ -64,8 +64,8 @@ class ProfileFragment : Fragment() {
 
         setContent {
             TopBarScaffold(
-                drawerState = activityViewModel.drawerState,
-                complexTopBar = false,
+                onNavIconClicked = { activityViewModel.openDrawer() },
+                complexTopBar = false
             ) {
                 val userData by viewModel.userData.observeAsState()
 

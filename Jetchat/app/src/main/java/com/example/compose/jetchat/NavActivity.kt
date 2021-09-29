@@ -22,6 +22,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.viewinterop.AndroidViewBinding
@@ -55,8 +57,15 @@ class NavActivity : AppCompatActivity() {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides this.onBackPressedDispatcher
                 ) {
-                    val scaffoldState = rememberScaffoldState(drawerState = viewModel.drawerState)
-
+                    val scaffoldState = rememberScaffoldState()
+                    val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
+                    if (drawerOpen) {
+                        // Open drawer and reset state in VM.
+                        LaunchedEffect(Unit) {
+                            scaffoldState.drawerState.open()
+                            viewModel.resetOpenDrawerAction()
+                        }
+                    }
                     // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
                     if (scaffoldState.drawerState.isOpen) {

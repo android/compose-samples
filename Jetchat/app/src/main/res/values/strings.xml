@@ -65,5 +65,6 @@
     <string name="search">Search</string>
     <string name="info">Information</string>
     <string name="more_options">More options</string>
+    <string name="profile_navigate">Navigate to profile page</string>
 
 </resources>

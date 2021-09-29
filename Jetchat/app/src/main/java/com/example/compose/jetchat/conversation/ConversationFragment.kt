@@ -62,8 +62,8 @@ class ConversationFragment : Fragment() {
 
         setContent {
             TopBarScaffold(
-                drawerState = activityViewModel.drawerState,
-                complexTopBar = false,
+                onNavIconClicked = { activityViewModel.openDrawer() },
+                complexTopBar = true
             ) {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,

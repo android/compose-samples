@@ -100,17 +100,12 @@ private fun DrawerScaffold(
 @Composable
 fun TopBarScaffold(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    drawerState: DrawerState,
+    onNavIconClicked: () -> Unit,
     complexTopBar: Boolean,
     content: @Composable (PaddingValues) -> Unit
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val onNavIconClicked: () -> Unit = {
-        scope.launch {
-            drawerState.open()
-        }
-    }
 
     JetchatTheme {
         Scaffold(

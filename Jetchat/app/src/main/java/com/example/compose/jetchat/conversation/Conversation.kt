@@ -299,7 +299,7 @@ fun Message(
                     .align(Alignment.Top),
                 painter = painterResource(id = msg.authorImage),
                 contentScale = ContentScale.Crop,
-                contentDescription = "Navigate to profile page",
+                contentDescription = stringResource(id = R.string.profile_navigate)
             )
         } else {
             // Space under avatar
