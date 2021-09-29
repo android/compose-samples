@@ -160,6 +160,10 @@ fun InterestsScreen(
     }
 }
 
+/**
+ * Remembers the content for each tab on the Interests screen
+ * gathering application data from [InterestsViewModel]
+ */
 @Composable
 fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
     // UiState of the InterestsScreen
@@ -475,23 +479,15 @@ private fun InterestsAdaptiveContentLayout(
         ) {
             // Track the y co-ord we have placed children up to
             var yPosition = topPaddingPx
-            placeables.forEachIndexed { index, placeable ->
-                // If there are multiple columns, then place items relative to each other
-                if (index % columns == 0) {
-                    // Position item on a new row
-                    placeable.placeRelative(x = 0, y = yPosition)
-                } else {
-                    // Place element in the same row, the previous item exists at this point
-                    val previousPlaceable = placeables[index - 1]
-                    placeable.placeRelative(
-                        x = previousPlaceable.width + itemSpacingPx,
-                        y = yPosition
-                    )
+            // Split placeables in lists that don't exceed the number of columns
+            // and place them taking into account their width and spacing
+            placeables.chunked(columns).forEachIndexed { rowIndex, row ->
+                var xPosition = 0
+                row.forEach { placeable ->
+                    placeable.placeRelative(x = xPosition, y = yPosition)
+                    xPosition += placeable.width + itemSpacingPx
                 }
-                // Increment the y co-ord with the height of the row if last item of the row
-                if ((index + 1) % columns == 0) {
-                    yPosition += rowHeights[index.floorDiv(columns)]
-                }
+                yPosition += rowHeights[rowIndex]
             }
         }
     }
