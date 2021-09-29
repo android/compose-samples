@@ -450,13 +450,13 @@ private fun InterestsAdaptiveContentLayout(
             val maxWidthWithSpaces = outerConstraints.maxWidth - (columns - 1) * itemSpacingPx
             (maxWidthWithSpaces / columns).coerceIn(0, itemMaxWidthPx)
         }
-        val itemContraints = outerConstraints.copy(maxWidth = itemWidth)
+        val itemConstraints = outerConstraints.copy(maxWidth = itemWidth)
 
         // Keep track of the height of each row to calculate the layout's final size
         val rowHeights = IntArray(measurables.size / columns + 1)
         // Measure elements with their maximum width and keep track of the height
         val placeables = measurables.mapIndexed { index, measureable ->
-            val placeable = measureable.measure(itemContraints)
+            val placeable = measureable.measure(itemConstraints)
             // Update the height for each row
             val row = index.floorDiv(columns)
             rowHeights[row] = max(rowHeights[row], placeable.height)
