@@ -239,7 +239,6 @@ private val tabContainerModifier = Modifier
     .fillMaxWidth()
     .wrapContentWidth(Alignment.CenterHorizontally)
     .navigationBarsPadding(start = false, end = false)
-    .padding(horizontal = 8.dp)
 
 /**
  * Display a simple list of topics
@@ -317,14 +316,12 @@ private fun TopicItem(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(Modifier.padding(horizontal = 16.dp)) {
         Row(
-            modifier = modifier
-                .toggleable(
-                    value = selected,
-                    onValueChange = { onToggle() }
-                )
-                .padding(horizontal = 16.dp),
+            modifier = modifier.toggleable(
+                value = selected,
+                onValueChange = { onToggle() }
+            ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val image = painterResource(R.drawable.placeholder_1_1)
@@ -346,7 +343,7 @@ private fun TopicItem(
             SelectTopicButton(selected = selected)
         }
         Divider(
-            modifier = modifier.padding(start = 90.dp, top = 8.dp, bottom = 8.dp),
+            modifier = modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
         )
     }
@@ -431,7 +428,7 @@ private fun InterestsTabRowContent(
 private fun InterestsAdaptiveContentLayout(
     modifier: Modifier = Modifier,
     topPadding: Dp = 0.dp,
-    itemSpacing: Dp = 8.dp,
+    itemSpacing: Dp = 4.dp,
     itemMaxWidth: Dp = 450.dp,
     multipleColumnsBreakPoint: Dp = 600.dp,
     content: @Composable () -> Unit,
