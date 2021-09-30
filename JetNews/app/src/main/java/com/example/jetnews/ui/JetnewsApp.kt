@@ -38,7 +38,6 @@ import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.WindowSize
-import com.example.jetnews.utils.rememberWindowSizeState
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -49,7 +48,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun JetnewsApp(
-    appContainer: AppContainer
+    appContainer: AppContainer,
+    windowSize: WindowSize
 ) {
     JetnewsTheme {
         ProvideWindowInsets {
@@ -70,7 +70,6 @@ fun JetnewsApp(
             val currentRoute =
                 navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
-            val windowSize = rememberWindowSizeState()
             val isExpandedScreen = windowSize == WindowSize.Expanded
             val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
