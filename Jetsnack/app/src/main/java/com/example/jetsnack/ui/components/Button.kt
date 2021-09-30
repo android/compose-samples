@@ -122,7 +122,9 @@ private fun ButtonPreview() {
 @Composable
 private fun RectangleButtonPreview() {
     JetsnackTheme {
-        JetsnackButton(onClick = {}, shape = RectangleShape) {
+        JetsnackButton(
+            onClick = {}, shape = RectangleShape
+        ) {
             Text(text = "Demo")
         }
     }
