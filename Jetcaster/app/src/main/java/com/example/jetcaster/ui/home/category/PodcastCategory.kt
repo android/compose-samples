@@ -68,6 +68,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
@@ -138,6 +139,7 @@ private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -324,6 +326,7 @@ private fun CategoryPodcastRow(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun TopPodcastRowItem(
     podcastTitle: String,
