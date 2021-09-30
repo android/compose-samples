@@ -113,9 +113,9 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01"
 
-    implementation 'androidx.navigation:navigation-compose:2.4.0-alpha08'
+    implementation 'androidx.navigation:navigation-compose:2.4.0-alpha10'
 
     androidTestImplementation 'androidx.test:core:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
