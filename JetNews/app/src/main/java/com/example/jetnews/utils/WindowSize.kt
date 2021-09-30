@@ -69,7 +69,6 @@ private fun Activity.rememberWindowSize(): Size {
     return windowMetrics.bounds.toComposeRect().size
 }
 
-
 /**
  * Partitions a [DpSize] into a enumerated [WindowSize] class.
  */
