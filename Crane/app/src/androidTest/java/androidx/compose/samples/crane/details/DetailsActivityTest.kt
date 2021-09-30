@@ -21,19 +21,20 @@ import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.CameraPosition
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +48,9 @@ class DetailsActivityTest {
 
     @Inject
     lateinit var destinationsRepository: DestinationsRepository
-    lateinit var cityDetails: ExploreModel
+
+    private lateinit var cityDetails: ExploreModel
+    private lateinit var scenario: ActivityScenario<DetailsActivity>
 
     private val city = MADRID
     private val testExploreModel = ExploreModel(city, "description", "imageUrl")
@@ -56,28 +59,23 @@ class DetailsActivityTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = AndroidComposeTestRule(
-        activityRule = ActivityScenarioRule<DetailsActivity>(
-            createDetailsActivityIntent(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                testExploreModel
-            )
-        ),
-        // Needed for now, discussed in https://issuetracker.google.com/issues/174472899
-        activityProvider = { rule ->
-            var activity: DetailsActivity? = null
-            rule.scenario.onActivity { activity = it }
-            if (activity == null) {
-                throw IllegalStateException("Activity was not set in the ActivityScenarioRule!")
-            }
-            activity!!
-        }
-    )
+    val composeTestRule = createEmptyComposeRule()
 
     @Before
     fun setUp() {
         hiltRule.inject()
         cityDetails = destinationsRepository.getDestination(MADRID.name)!!
+        scenario = ActivityScenario.launch(
+            createDetailsActivityIntent(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                testExploreModel
+            )
+        )
+    }
+
+    @After
+    fun tearDown() {
+        scenario.close()
     }
 
     @Test
@@ -107,7 +105,7 @@ class DetailsActivityTest {
      */
     private fun waitForMap(onCameraPosition: (CameraPosition) -> Unit) {
         val countDownLatch = CountDownLatch(1)
-        composeTestRule.activityRule.scenario.onActivity {
+        scenario.onActivity {
             it.findViewById<MapView>(R.id.map).getMapAsync { map ->
                 onCameraPosition(map.cameraPosition)
                 countDownLatch.countDown()
