@@ -62,6 +62,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
@@ -177,10 +178,7 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState(
-                pageCount = featuredPodcasts.size,
-                initialOffscreenLimit = 2,
-            )
+            val pagerState = rememberPagerState()
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -322,12 +320,14 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
+        count = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier
@@ -337,10 +337,12 @@ fun FollowedPodcasts(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
+    podcastTitle: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
 ) {
@@ -356,7 +358,7 @@ private fun FollowedPodcastCarouselItem(
             if (podcastImageUrl != null) {
                 Image(
                     painter = rememberImagePainter(data = podcastImageUrl),
-                    contentDescription = null,
+                    contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()

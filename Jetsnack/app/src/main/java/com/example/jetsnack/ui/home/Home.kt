@@ -65,13 +65,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
@@ -110,97 +105,70 @@ enum class HomeSections(
 
 @Composable
 fun JetsnackBottomBar(
-    navController: NavController,
     tabs: Array<HomeSections>,
+    currentRoute: String,
+    navigateToRoute: (String) -> Unit,
     color: Color = JetsnackTheme.colors.iconPrimary,
     contentColor: Color = JetsnackTheme.colors.iconInteractive
 ) {
+    val routes = remember { tabs.map { it.route } }
+    val currentSection = tabs.first { it.route == currentRoute }
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val sections = remember { HomeSections.values() }
-    val routes = remember { sections.map { it.route } }
-    if (currentRoute in routes) {
-        val currentSection = sections.first { it.route == currentRoute }
-        JetsnackSurface(
-            color = color,
-            contentColor = contentColor
+    JetsnackSurface(
+        color = color,
+        contentColor = contentColor
+    ) {
+        val springSpec = SpringSpec<Float>(
+            // Determined experimentally
+            stiffness = 800f,
+            dampingRatio = 0.8f
+        )
+        JetsnackBottomNavLayout(
+            selectedIndex = currentSection.ordinal,
+            itemCount = routes.size,
+            indicator = { JetsnackBottomNavIndicator() },
+            animSpec = springSpec,
+            modifier = Modifier.navigationBarsPadding(start = false, end = false)
         ) {
-            val springSpec = SpringSpec<Float>(
-                // Determined experimentally
-                stiffness = 800f,
-                dampingRatio = 0.8f
-            )
-            JetsnackBottomNavLayout(
-                selectedIndex = currentSection.ordinal,
-                itemCount = routes.size,
-                indicator = { JetsnackBottomNavIndicator() },
-                animSpec = springSpec,
-                modifier = Modifier.navigationBarsPadding(start = false, end = false)
-            ) {
-                tabs.forEach { section ->
-                    val selected = section == currentSection
-                    val tint by animateColorAsState(
-                        if (selected) {
-                            JetsnackTheme.colors.iconInteractive
-                        } else {
-                            JetsnackTheme.colors.iconInteractiveInactive
-                        }
-                    )
+            tabs.forEach { section ->
+                val selected = section == currentSection
+                val tint by animateColorAsState(
+                    if (selected) {
+                        JetsnackTheme.colors.iconInteractive
+                    } else {
+                        JetsnackTheme.colors.iconInteractiveInactive
+                    }
+                )
 
-                    JetsnackBottomNavigationItem(
-                        icon = {
-                            Icon(
-                                imageVector = section.icon,
-                                tint = tint,
-                                contentDescription = null
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(section.title).uppercase(
-                                    ConfigurationCompat.getLocales(
-                                        LocalConfiguration.current
-                                    ).get(0)
-                                ),
-                                color = tint,
-                                style = MaterialTheme.typography.button,
-                                maxLines = 1
-                            )
-                        },
-                        selected = selected,
-                        onSelected = {
-                            if (section.route != currentRoute) {
-                                navController.navigate(section.route) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                    popUpTo(findStartDestination(navController.graph).id) {
-                                        saveState = true
-                                    }
-                                }
-                            }
-                        },
-                        animSpec = springSpec,
-                        modifier = BottomNavigationItemPadding
-                            .clip(BottomNavIndicatorShape)
-                    )
-                }
+                JetsnackBottomNavigationItem(
+                    icon = {
+                        Icon(
+                            imageVector = section.icon,
+                            tint = tint,
+                            contentDescription = null
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(section.title).uppercase(
+                                ConfigurationCompat.getLocales(
+                                    LocalConfiguration.current
+                                ).get(0)
+                            ),
+                            color = tint,
+                            style = MaterialTheme.typography.button,
+                            maxLines = 1
+                        )
+                    },
+                    selected = selected,
+                    onSelected = { navigateToRoute(section.route) },
+                    animSpec = springSpec,
+                    modifier = BottomNavigationItemPadding
+                        .clip(BottomNavIndicatorShape)
+                )
             }
         }
     }
-}
-
-private val NavGraph.startDestination: NavDestination?
-    get() = findNode(startDestinationId)
-
-/**
- * Copied from similar function in NavigationUI.kt
- *
- * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:navigation/navigation-ui/src/main/java/androidx/navigation/ui/NavigationUI.kt
- */
-private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
-    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
 }
 
 @Composable
@@ -392,8 +360,9 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomBar(
-            navController = rememberNavController(),
-            tabs = HomeSections.values()
+            tabs = HomeSections.values(),
+            currentRoute = "home/feed",
+            navigateToRoute = { }
         )
     }
 }

@@ -58,6 +58,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,6 +68,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
@@ -111,18 +115,11 @@ private fun CategoryPodcasts(
     topPodcasts: List<PodcastWithExtraInfo>,
     viewModel: PodcastCategoryViewModel
 ) {
-    LazyRow(
-        contentPadding = PaddingValues(0.dp),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        item {
-            CategoryPodcastRow(
-                podcasts = topPodcasts,
-                onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                modifier = Modifier.fillParentMaxWidth()
-            )
-        }
-    }
+    CategoryPodcastRow(
+        podcasts = topPodcasts,
+        onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Composable
@@ -142,6 +139,7 @@ private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -236,6 +234,7 @@ fun EpisodeListItem(
                 ) { /* TODO */ }
                 .size(48.dp)
                 .padding(6.dp)
+                .semantics { role = Role.Button }
                 .constrainAs(playIcon) {
                     start.linkTo(parent.start, Keyline1)
                     top.linkTo(titleImageBarrier, margin = 10.dp)
@@ -327,6 +326,7 @@ private fun CategoryPodcastRow(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun TopPodcastRowItem(
     podcastTitle: String,
@@ -335,7 +335,9 @@ private fun TopPodcastRowItem(
     onToggleFollowClicked: () -> Unit,
     podcastImageUrl: String? = null,
 ) {
-    Column(modifier) {
+    Column(
+        modifier.semantics(mergeDescendants = true) {}
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()
