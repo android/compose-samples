@@ -85,11 +85,10 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 @Composable
-fun Home() {
-    val viewModel = viewModel(HomeViewModel::class.java)
-
+fun Home(
+    viewModel: HomeViewModel = viewModel()
+) {
     val viewState by viewModel.state.collectAsState()
-
     Surface(Modifier.fillMaxSize()) {
         HomeContent(
             featuredPodcasts = viewState.featuredPodcasts,
