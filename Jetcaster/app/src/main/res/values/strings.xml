@@ -43,8 +43,13 @@
     <string name="cd_search">Search</string>
     <string name="cd_account">Account</string>
     <string name="cd_add">Add</string>
+    <string name="cd_back">Back</string>
     <string name="cd_more">More</string>
     <string name="cd_play">Play</string>
+    <string name="cd_skip_previous">Skip previous</string>
+    <string name="cd_reply10">Reply 10 seconds</string>
+    <string name="cd_forward30">Forward 30 seconds</string>
+    <string name="cd_skip_next">Skip next</string>
     <string name="cd_unfollow">Unfollow</string>
     <string name="cd_follow">Follow</string>
     <string name="cd_following">Following</string>
