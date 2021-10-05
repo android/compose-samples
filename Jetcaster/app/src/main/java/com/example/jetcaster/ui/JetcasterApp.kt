@@ -38,8 +38,12 @@ fun JetcasterApp(
             navController = appState.navController,
             startDestination = Screen.Home.route
         ) {
-            composable(Screen.Home.route) {
-                Home(navigateToPlayer = appState::navigateToPlayer)
+            composable(Screen.Home.route) { backStackEntry ->
+                Home(
+                    navigateToPlayer = { episodeUri ->
+                        appState.navigateToPlayer(episodeUri, backStackEntry)
+                    }
+                )
             }
             composable(Screen.Player.route) { backStackEntry ->
                 val playerViewModel: PlayerViewModel = viewModel(

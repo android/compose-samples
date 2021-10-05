@@ -152,9 +152,7 @@ fun EpisodeListItem(
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(
-        modifier = Modifier.clickable { onClick(episode.uri) } then modifier
-    ) {
+    ConstraintLayout(modifier = modifier.clickable { onClick(episode.uri) }) {
         val (
             divider, episodeTitle, podcastTitle, image, playIcon,
             date, addPlaylist, overflow

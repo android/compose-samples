@@ -40,12 +40,17 @@ data class PlayerUiState(
     val podcastImageUrl: String = ""
 )
 
+/**
+ * ViewModel that handles the business logic and screen state of the Player screen
+ */
 class PlayerViewModel(
     episodeStore: EpisodeStore,
     podcastStore: PodcastStore,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // episodeUri should always be present in the PlayerViewModel.
+    // If that's not the case, fail crashing the app!
     private val episodeUri: String = Uri.decode(savedStateHandle.get<String>("episodeUri")!!)
 
     var uiState by mutableStateOf(PlayerUiState())

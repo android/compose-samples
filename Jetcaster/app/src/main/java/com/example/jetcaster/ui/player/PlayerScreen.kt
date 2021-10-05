@@ -113,7 +113,7 @@ fun PlayerContent(
     uiState: PlayerUiState,
     onBackPress: () -> Unit
 ) {
-    PlayerDynamicTheme(uiState) {
+    PlayerDynamicTheme(uiState.podcastImageUrl) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -287,7 +287,7 @@ private fun PlayerButtons(modifier: Modifier = Modifier) {
  */
 @Composable
 private fun PlayerDynamicTheme(
-    uiState: PlayerUiState,
+    podcastImageUrl: String,
     content: @Composable () -> Unit
 ) {
     val surfaceColor = MaterialTheme.colors.surface
@@ -299,9 +299,9 @@ private fun PlayerDynamicTheme(
     }
     DynamicThemePrimaryColorsFromImage(dominantColorState) {
         // Update the dominantColorState with colors coming from the podcast image URL
-        LaunchedEffect(uiState.podcastImageUrl) {
-            if (uiState.podcastImageUrl.isNotEmpty()) {
-                dominantColorState.updateColorsFromImageUrl(uiState.podcastImageUrl)
+        LaunchedEffect(podcastImageUrl) {
+            if (podcastImageUrl.isNotEmpty()) {
+                dominantColorState.updateColorsFromImageUrl(podcastImageUrl)
             } else {
                 dominantColorState.reset()
             }
