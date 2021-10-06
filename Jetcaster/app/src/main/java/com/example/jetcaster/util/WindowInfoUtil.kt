@@ -18,6 +18,8 @@ package com.example.jetcaster.util
 
 import android.graphics.Rect
 import androidx.window.layout.FoldingFeature
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
  * Information about the posture of the device
@@ -32,9 +34,12 @@ sealed interface DevicePosture {
     object BookPosture : DevicePosture
 }
 
-fun isTableTopPosture(foldFeature: FoldingFeature?) =
-    foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
-        foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+@OptIn(ExperimentalContracts::class)
+fun isTableTopPosture(foldFeature: FoldingFeature?): Boolean {
+    contract { returns(true) implies (foldFeature != null) }
+    return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+            foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+}
 
 fun isBookPosture(foldFeature: FoldingFeature?) =
     foldFeature?.state == FoldingFeature.State.HALF_OPENED &&

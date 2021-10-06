@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     layoutInfo.displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
                 when {
                     isTableTopPosture(foldingFeature) ->
-                        DevicePosture.TableTopPosture(foldingFeature?.bounds!!)
+                        DevicePosture.TableTopPosture(foldingFeature.bounds)
                     isBookPosture(foldingFeature) -> DevicePosture.BookPosture
                     else -> DevicePosture.NormalPosture
                 }
