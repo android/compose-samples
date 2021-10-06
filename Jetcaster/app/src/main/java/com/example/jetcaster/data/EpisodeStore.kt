@@ -26,6 +26,13 @@ class EpisodeStore(
     private val episodesDao: EpisodesDao
 ) {
     /**
+     * Returns a flow containing the episode given [episodeUri].
+     */
+    fun episodeWithUri(episodeUri: String): Flow<Episode> {
+        return episodesDao.episode(episodeUri)
+    }
+
+    /**
      * Returns a flow containing the list of episodes associated with the podcast with the
      * given [podcastUri].
      */

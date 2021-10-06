@@ -20,20 +20,50 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import com.example.jetcaster.ui.theme.JetcasterTheme
+import com.example.jetcaster.util.FoldableInfo
+import com.example.jetcaster.util.isBookPosture
+import com.example.jetcaster.util.isTableTopPosture
 import com.google.accompanist.insets.ProvideWindowInsets
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // This app draws behind the system bars, so we want to handle fitting system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        /**
+         * Flow of [FoldableInfo] that emits every time there's a change in the windowLayoutInfo
+         */
+        val foldableInfo = windowInfoRepository().windowLayoutInfo
+            .flowWithLifecycle(this.lifecycle)
+            .map { layoutInfo ->
+                val foldingFeature: FoldingFeature? =
+                    layoutInfo.displayFeatures.find { it is FoldingFeature } as? FoldingFeature
+                FoldableInfo(
+                    isInTableTopPosture = isTableTopPosture(foldingFeature),
+                    isInBookPosture = isBookPosture(foldingFeature),
+                    hingePosition = foldingFeature?.bounds
+                )
+            }
+            .stateIn(
+                scope = lifecycleScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = FoldableInfo()
+            )
 
         setContent {
             JetcasterTheme {
                 ProvideWindowInsets {
-                    JetcasterApp()
+                    JetcasterApp(foldableInfo)
                 }
             }
         }

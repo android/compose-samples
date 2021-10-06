@@ -90,8 +90,13 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.4.0-rc01"
+            const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+        }
+
+        object Navigation {
+            const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha10"
         }
 
         object Test {
@@ -112,6 +117,10 @@ object Libs {
             const val runtime = "androidx.room:room-runtime:${version}"
             const val ktx = "androidx.room:room-ktx:${version}"
             const val compiler = "androidx.room:room-compiler:${version}"
+        }
+
+        object Window {
+            const val window = "androidx.window:window:1.0.0-beta02"
         }
     }
 

@@ -87,6 +87,7 @@ import java.time.format.FormatStyle
 @Composable
 fun PodcastCategory(
     categoryId: Long,
+    navigateToPlayer: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     /**
@@ -106,7 +107,7 @@ fun PodcastCategory(
      */
     Column(modifier = modifier) {
         CategoryPodcasts(viewState.topPodcasts, viewModel)
-        EpisodeList(viewState.episodes)
+        EpisodeList(viewState.episodes, navigateToPlayer)
     }
 }
 
@@ -123,7 +124,10 @@ private fun CategoryPodcasts(
 }
 
 @Composable
-private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
+private fun EpisodeList(
+    episodes: List<EpisodeToPodcast>,
+    navigateToPlayer: (String) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(0.dp),
         verticalArrangement = Arrangement.Center
@@ -133,6 +137,7 @@ private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
             EpisodeListItem(
                 episode = item.episode,
                 podcast = item.podcast,
+                onClick = navigateToPlayer,
                 modifier = Modifier.fillParentMaxWidth()
             )
         }
@@ -144,11 +149,10 @@ private fun EpisodeList(episodes: List<EpisodeToPodcast>) {
 fun EpisodeListItem(
     episode: Episode,
     podcast: Podcast,
+    onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(
-        modifier = Modifier.clickable { /* TODO */ } then modifier
-    ) {
+    ConstraintLayout(modifier = modifier.clickable { onClick(episode.uri) }) {
         val (
             divider, episodeTitle, podcastTitle, image, playIcon,
             date, addPlaylist, overflow
@@ -390,6 +394,7 @@ fun PreviewEpisodeListItem() {
         EpisodeListItem(
             episode = PreviewEpisodes[0],
             podcast = PreviewPodcasts[0],
+            onClick = { },
             modifier = Modifier.fillMaxWidth()
         )
     }

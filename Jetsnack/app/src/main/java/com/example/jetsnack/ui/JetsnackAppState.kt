@@ -49,10 +49,10 @@ object MainDestinations {
 }
 
 /**
- * Remembers and creates an instance of [AppStateHolder]
+ * Remembers and creates an instance of [JetsnackAppState]
  */
 @Composable
-fun rememberAppStateHolder(
+fun rememberJetsnackAppState(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     navController: NavHostController = rememberNavController(),
     snackbarManager: SnackbarManager = SnackbarManager,
@@ -60,14 +60,14 @@ fun rememberAppStateHolder(
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) =
     remember(scaffoldState, navController, snackbarManager, resources, coroutineScope) {
-        AppStateHolder(scaffoldState, navController, snackbarManager, resources, coroutineScope)
+        JetsnackAppState(scaffoldState, navController, snackbarManager, resources, coroutineScope)
     }
 
 /**
  * Responsible for holding state related to [JetsnackApp] and containing UI-related logic.
  */
 @Stable
-class AppStateHolder(
+class JetsnackAppState(
     val scaffoldState: ScaffoldState,
     val navController: NavHostController,
     private val snackbarManager: SnackbarManager,
