@@ -129,10 +129,10 @@ fun PlayerContent(
         // As the Player UI content changes considerably when the device is in tabletop posture,
         // we split the different UIs in different composables. For simpler UIs that don't change
         // much, prefer one composable that makes decisions based on the mode instead.
-        if (!foldableInfo.isInTableTopPosture) {
-            PlayerContentRegular(uiState, onBackPress)
-        } else {
+        if (foldableInfo.isInTableTopPosture) {
             PlayerContentTableTop(uiState, foldableInfo, onBackPress)
+        } else {
+            PlayerContentRegular(uiState, onBackPress)
         }
     }
 }

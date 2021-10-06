@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
             }
             .stateIn(
                 scope = lifecycleScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.Eagerly,
                 initialValue = FoldableInfo()
             )
 
