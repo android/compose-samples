@@ -94,6 +94,10 @@ object Libs {
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
+        object Navigation {
+            const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha10"
+        }
+
         object Test {
             private const val version = "1.4.0"
             const val core = "androidx.test:core:$version"

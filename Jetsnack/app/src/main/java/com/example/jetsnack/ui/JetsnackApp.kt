@@ -41,14 +41,14 @@ import com.google.accompanist.insets.systemBarsPadding
 fun JetsnackApp() {
     ProvideWindowInsets {
         JetsnackTheme {
-            val appStateHolder = rememberAppStateHolder()
+            val appState = rememberJetsnackAppState()
             JetsnackScaffold(
                 bottomBar = {
-                    if (appStateHolder.shouldShowBottomBar) {
+                    if (appState.shouldShowBottomBar) {
                         JetsnackBottomBar(
-                            tabs = appStateHolder.bottomBarTabs,
-                            currentRoute = appStateHolder.currentRoute!!,
-                            navigateToRoute = appStateHolder::navigateToBottomBarRoute
+                            tabs = appState.bottomBarTabs,
+                            currentRoute = appState.currentRoute!!,
+                            navigateToRoute = appState::navigateToBottomBarRoute
                         )
                     }
                 },
@@ -59,16 +59,16 @@ fun JetsnackApp() {
                         snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
                     )
                 },
-                scaffoldState = appStateHolder.scaffoldState
+                scaffoldState = appState.scaffoldState
             ) { innerPaddingModifier ->
                 NavHost(
-                    navController = appStateHolder.navController,
+                    navController = appState.navController,
                     startDestination = MainDestinations.HOME_ROUTE,
                     modifier = Modifier.padding(innerPaddingModifier)
                 ) {
                     jetsnackNavGraph(
-                        onSnackSelected = appStateHolder::navigateToSnackDetail,
-                        upPress = appStateHolder::upPress
+                        onSnackSelected = appState::navigateToSnackDetail,
+                        upPress = appState::upPress
                     )
                 }
             }
