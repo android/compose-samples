@@ -270,8 +270,7 @@ private fun PlayerImage(
             data = podcastImageUrl,
             builder = {
                 crossfade(true)
-            },
-            onExecute = { _, _ -> true }
+            }
         ),
         contentDescription = null,
         contentScale = ContentScale.Crop,
