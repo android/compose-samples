@@ -96,7 +96,9 @@ fun PostCardPopular(
 @Preview("Regular colors")
 @Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
+fun PreviewPostCardPopular(
+    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+) {
     JetnewsTheme {
         Surface {
             PostCardPopular(post, {})
@@ -106,7 +108,9 @@ fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class
 
 @Preview("Regular colors, long text")
 @Composable
-fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
+fun PreviewPostCardPopularLongText(
+    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+) {
     val loremIpsum =
         """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
