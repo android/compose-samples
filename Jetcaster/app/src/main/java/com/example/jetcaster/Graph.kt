@@ -76,7 +76,7 @@ object Graph {
         )
     }
 
-    private val episodeStore by lazy {
+    val episodeStore by lazy {
         EpisodeStore(
             episodesDao = database.episodesDao()
         )

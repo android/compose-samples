@@ -21,10 +21,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
+import com.example.jetcaster.ui.player.PlayerScreen
+import com.example.jetcaster.ui.player.PlayerViewModel
 
 @Composable
 fun JetcasterApp(
@@ -35,11 +38,21 @@ fun JetcasterApp(
             navController = appState.navController,
             startDestination = Screen.Home.route
         ) {
-            composable(Screen.Home.route) {
-                Home()
+            composable(Screen.Home.route) { backStackEntry ->
+                Home(
+                    navigateToPlayer = { episodeUri ->
+                        appState.navigateToPlayer(episodeUri, backStackEntry)
+                    }
+                )
             }
-            composable(Screen.Player.route) {
-                // TODO: Not implemented yet
+            composable(Screen.Player.route) { backStackEntry ->
+                val playerViewModel: PlayerViewModel = viewModel(
+                    factory = PlayerViewModel.provideFactory(
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
+                )
+                PlayerScreen(viewModel = playerViewModel, onBackPress = appState::navigateBack)
             }
         }
     } else {
