@@ -38,7 +38,7 @@ sealed interface DevicePosture {
 fun isTableTopPosture(foldFeature: FoldingFeature?): Boolean {
     contract { returns(true) implies (foldFeature != null) }
     return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
-            foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+        foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
 }
 
 fun isBookPosture(foldFeature: FoldingFeature?) =
