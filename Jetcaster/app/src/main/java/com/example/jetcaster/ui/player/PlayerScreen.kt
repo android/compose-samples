@@ -16,7 +16,6 @@
 
 package com.example.jetcaster.ui.player
 
-import android.graphics.Rect
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -75,8 +74,8 @@ import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
+import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
-import com.example.jetcaster.util.WindowInfo
 import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
@@ -91,12 +90,12 @@ import java.time.Duration
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
-    windowInfo: StateFlow<WindowInfo>,
+    devicePosture: StateFlow<DevicePosture>,
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    val windowInfoValue by windowInfo.collectAsState()
-    PlayerScreen(uiState = uiState, windowInfo = windowInfoValue, onBackPress = onBackPress)
+    val devicePostureValue by devicePosture.collectAsState()
+    PlayerScreen(uiState, devicePostureValue, onBackPress)
 }
 
 /**
@@ -105,13 +104,13 @@ fun PlayerScreen(
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
-    windowInfo: WindowInfo,
+    devicePosture: DevicePosture,
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier) {
         if (uiState.podcastName.isNotEmpty()) {
-            PlayerContent(uiState, windowInfo, onBackPress)
+            PlayerContent(uiState, devicePosture, onBackPress)
         } else {
             FullScreenLoading(modifier)
         }
@@ -122,15 +121,15 @@ private fun PlayerScreen(
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
-    windowInfo: WindowInfo,
+    devicePosture: DevicePosture,
     onBackPress: () -> Unit
 ) {
     PlayerDynamicTheme(uiState.podcastImageUrl) {
         // As the Player UI content changes considerably when the device is in tabletop posture,
         // we split the different UIs in different composables. For simpler UIs that don't change
         // much, prefer one composable that makes decisions based on the mode instead.
-        if (windowInfo.isInTableTopPosture) {
-            PlayerContentTableTop(uiState, windowInfo, onBackPress)
+        if (devicePosture is DevicePosture.TableTopPosture) {
+            PlayerContentTableTop(uiState, devicePosture, onBackPress)
         } else {
             PlayerContentRegular(uiState, onBackPress)
         }
@@ -181,14 +180,11 @@ private fun PlayerContentRegular(
 @Composable
 private fun PlayerContentTableTop(
     uiState: PlayerUiState,
-    windowInfo: WindowInfo,
+    tableTopPosture: DevicePosture.TableTopPosture,
     onBackPress: () -> Unit
 ) {
-    val hingeRect: Rect = windowInfo.hingePosition
-        ?: throw IllegalStateException("Bounds should never be null in tabletop mode")
-
-    val hingePosition = with(LocalDensity.current) { hingeRect.top.toDp() }
-    val hingeHeight = with(LocalDensity.current) { (hingeRect.bottom - hingeRect.top).toDp() }
+    val hingePosition = with(LocalDensity.current) { tableTopPosture.hingePosition.top.toDp() }
+    val hingeHeight = with(LocalDensity.current) { tableTopPosture.hingePosition.height().toDp() }
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Content for the top part of the screen
@@ -440,7 +436,7 @@ fun PlayerScreenPreview() {
                     duration = Duration.ofHours(2),
                     podcastName = "Podcast"
                 ),
-                windowInfo = WindowInfo(),
+                devicePosture = DevicePosture.NormalPosture,
                 onBackPress = { }
             )
         }

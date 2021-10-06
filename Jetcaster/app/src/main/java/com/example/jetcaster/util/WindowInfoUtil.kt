@@ -20,13 +20,17 @@ import android.graphics.Rect
 import androidx.window.layout.FoldingFeature
 
 /**
- * Information about the window of the device
+ * Information about the posture of the device
  */
-data class WindowInfo(
-    val isInTableTopPosture: Boolean = false,
-    val isInBookPosture: Boolean = false,
-    val hingePosition: Rect? = null
-)
+sealed interface DevicePosture {
+    object NormalPosture : DevicePosture
+
+    data class TableTopPosture(
+        val hingePosition: Rect
+    ) : DevicePosture
+
+    object BookPosture : DevicePosture
+}
 
 fun isTableTopPosture(foldFeature: FoldingFeature?) =
     foldFeature?.state == FoldingFeature.State.HALF_OPENED &&

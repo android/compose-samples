@@ -25,7 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import com.example.jetcaster.ui.theme.JetcasterTheme
-import com.example.jetcaster.util.WindowInfo
+import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -41,29 +41,30 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         /**
-         * Flow of [WindowInfo] that emits every time there's a change in the windowLayoutInfo
+         * Flow of [DevicePosture] that emits every time there's a change in the windowLayoutInfo
          */
-        val windowInfo = windowInfoRepository().windowLayoutInfo
+        val devicePosture = windowInfoRepository().windowLayoutInfo
             .flowWithLifecycle(this.lifecycle)
             .map { layoutInfo ->
-                val foldingFeature: FoldingFeature? =
-                    layoutInfo.displayFeatures.find { it is FoldingFeature } as? FoldingFeature
-                WindowInfo(
-                    isInTableTopPosture = isTableTopPosture(foldingFeature),
-                    isInBookPosture = isBookPosture(foldingFeature),
-                    hingePosition = foldingFeature?.bounds
-                )
+                val foldingFeature =
+                    layoutInfo.displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+                when {
+                    isTableTopPosture(foldingFeature) ->
+                        DevicePosture.TableTopPosture(foldingFeature?.bounds!!)
+                    isBookPosture(foldingFeature) -> DevicePosture.BookPosture
+                    else -> DevicePosture.NormalPosture
+                }
             }
             .stateIn(
                 scope = lifecycleScope,
                 started = SharingStarted.Eagerly,
-                initialValue = WindowInfo()
+                initialValue = DevicePosture.NormalPosture
             )
 
         setContent {
             JetcasterTheme {
                 ProvideWindowInsets {
-                    JetcasterApp(windowInfo)
+                    JetcasterApp(devicePosture)
                 }
             }
         }
