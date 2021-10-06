@@ -29,11 +29,11 @@ import com.example.jetcaster.ui.home.Home
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.player.PlayerViewModel
 import com.example.jetcaster.util.FoldableInfo
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun JetcasterApp(
-    foldableInfo: Flow<FoldableInfo>,
+    foldableInfo: StateFlow<FoldableInfo>,
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
     if (appState.isOnline) {

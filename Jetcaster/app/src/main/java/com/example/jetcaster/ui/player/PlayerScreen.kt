@@ -82,7 +82,7 @@ import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 
 /**
@@ -91,11 +91,11 @@ import java.time.Duration
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
-    foldableInfo: Flow<FoldableInfo>,
+    foldableInfo: StateFlow<FoldableInfo>,
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    val foldableInfoValue by foldableInfo.collectAsState(initial = FoldableInfo())
+    val foldableInfoValue by foldableInfo.collectAsState()
     PlayerScreen(uiState = uiState, foldableInfo = foldableInfoValue, onBackPress = onBackPress)
 }
 
