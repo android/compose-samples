@@ -76,7 +76,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
-import com.example.jetcaster.util.FoldableInfo
+import com.example.jetcaster.util.WindowInfo
 import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
@@ -91,12 +91,12 @@ import java.time.Duration
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
-    foldableInfo: StateFlow<FoldableInfo>,
+    windowInfo: StateFlow<WindowInfo>,
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    val foldableInfoValue by foldableInfo.collectAsState()
-    PlayerScreen(uiState = uiState, foldableInfo = foldableInfoValue, onBackPress = onBackPress)
+    val windowInfoValue by windowInfo.collectAsState()
+    PlayerScreen(uiState = uiState, windowInfo = windowInfoValue, onBackPress = onBackPress)
 }
 
 /**
@@ -105,13 +105,13 @@ fun PlayerScreen(
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
-    foldableInfo: FoldableInfo,
+    windowInfo: WindowInfo,
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier) {
         if (uiState.podcastName.isNotEmpty()) {
-            PlayerContent(uiState, foldableInfo, onBackPress)
+            PlayerContent(uiState, windowInfo, onBackPress)
         } else {
             FullScreenLoading(modifier)
         }
@@ -122,15 +122,15 @@ private fun PlayerScreen(
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
-    foldableInfo: FoldableInfo,
+    windowInfo: WindowInfo,
     onBackPress: () -> Unit
 ) {
     PlayerDynamicTheme(uiState.podcastImageUrl) {
         // As the Player UI content changes considerably when the device is in tabletop posture,
         // we split the different UIs in different composables. For simpler UIs that don't change
         // much, prefer one composable that makes decisions based on the mode instead.
-        if (foldableInfo.isInTableTopPosture) {
-            PlayerContentTableTop(uiState, foldableInfo, onBackPress)
+        if (windowInfo.isInTableTopPosture) {
+            PlayerContentTableTop(uiState, windowInfo, onBackPress)
         } else {
             PlayerContentRegular(uiState, onBackPress)
         }
@@ -164,7 +164,7 @@ private fun PlayerContentRegular(
                 modifier = Modifier.weight(10f)
             )
             Spacer(modifier = Modifier.height(32.dp))
-            PodcastDescription(uiState.title, uiState.podcastName,)
+            PodcastDescription(uiState.title, uiState.podcastName)
             Spacer(modifier = Modifier.height(32.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -181,10 +181,10 @@ private fun PlayerContentRegular(
 @Composable
 private fun PlayerContentTableTop(
     uiState: PlayerUiState,
-    foldableInfo: FoldableInfo,
+    windowInfo: WindowInfo,
     onBackPress: () -> Unit
 ) {
-    val hingeRect: Rect = foldableInfo.hingePosition
+    val hingeRect: Rect = windowInfo.hingePosition
         ?: throw IllegalStateException("Bounds should never be null in tabletop mode")
 
     val hingePosition = with(LocalDensity.current) { hingeRect.top.toDp() }
@@ -440,7 +440,7 @@ fun PlayerScreenPreview() {
                     duration = Duration.ofHours(2),
                     podcastName = "Podcast"
                 ),
-                foldableInfo = FoldableInfo(),
+                windowInfo = WindowInfo(),
                 onBackPress = { }
             )
         }

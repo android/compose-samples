@@ -25,7 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import com.example.jetcaster.ui.theme.JetcasterTheme
-import com.example.jetcaster.util.FoldableInfo
+import com.example.jetcaster.util.WindowInfo
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -41,14 +41,14 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         /**
-         * Flow of [FoldableInfo] that emits every time there's a change in the windowLayoutInfo
+         * Flow of [WindowInfo] that emits every time there's a change in the windowLayoutInfo
          */
-        val foldableInfo = windowInfoRepository().windowLayoutInfo
+        val windowInfo = windowInfoRepository().windowLayoutInfo
             .flowWithLifecycle(this.lifecycle)
             .map { layoutInfo ->
                 val foldingFeature: FoldingFeature? =
                     layoutInfo.displayFeatures.find { it is FoldingFeature } as? FoldingFeature
-                FoldableInfo(
+                WindowInfo(
                     isInTableTopPosture = isTableTopPosture(foldingFeature),
                     isInBookPosture = isBookPosture(foldingFeature),
                     hingePosition = foldingFeature?.bounds
@@ -57,13 +57,13 @@ class MainActivity : ComponentActivity() {
             .stateIn(
                 scope = lifecycleScope,
                 started = SharingStarted.Eagerly,
-                initialValue = FoldableInfo()
+                initialValue = WindowInfo()
             )
 
         setContent {
             JetcasterTheme {
                 ProvideWindowInsets {
-                    JetcasterApp(foldableInfo)
+                    JetcasterApp(windowInfo)
                 }
             }
         }

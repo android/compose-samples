@@ -28,12 +28,12 @@ import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.player.PlayerViewModel
-import com.example.jetcaster.util.FoldableInfo
+import com.example.jetcaster.util.WindowInfo
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun JetcasterApp(
-    foldableInfo: StateFlow<FoldableInfo>,
+    windowInfo: StateFlow<WindowInfo>,
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
     if (appState.isOnline) {
@@ -55,7 +55,7 @@ fun JetcasterApp(
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-                PlayerScreen(playerViewModel, foldableInfo, onBackPress = appState::navigateBack)
+                PlayerScreen(playerViewModel, windowInfo, onBackPress = appState::navigateBack)
             }
         }
     } else {

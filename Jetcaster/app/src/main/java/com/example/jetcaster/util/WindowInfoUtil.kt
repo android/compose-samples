@@ -20,9 +20,9 @@ import android.graphics.Rect
 import androidx.window.layout.FoldingFeature
 
 /**
- * Information about a foldable device
+ * Information about the window of the device
  */
-data class FoldableInfo(
+data class WindowInfo(
     val isInTableTopPosture: Boolean = false,
     val isInBookPosture: Boolean = false,
     val hingePosition: Rect? = null
