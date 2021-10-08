@@ -74,6 +74,7 @@ import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.*
 import com.example.jetnews.utils.isScrolled
+import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -122,7 +123,8 @@ fun HomeFeedWithArticleDetailsScreen(
                 contentPadding = contentPadding,
                 modifier = Modifier
                     .width(334.dp)
-                    .notifyInput(onInteractWithList),
+                    .notifyInput(onInteractWithList)
+                    .imePadding(),
                 state = homeListLazyListState
             )
             // Crossfade between different detail posts
@@ -143,6 +145,7 @@ fun HomeFeedWithArticleDetailsScreen(
                             .notifyInput {
                                 onInteractWithDetail(detailPost.id)
                             }
+                            .imePadding()
                     ) {
                         stickyHeader {
                             val context = LocalContext.current
