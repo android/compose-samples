@@ -28,9 +28,12 @@ import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.player.PlayerViewModel
+import com.example.jetcaster.util.DevicePosture
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun JetcasterApp(
+    devicePosture: StateFlow<DevicePosture>,
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
     if (appState.isOnline) {
@@ -52,7 +55,7 @@ fun JetcasterApp(
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-                PlayerScreen(viewModel = playerViewModel, onBackPress = appState::navigateBack)
+                PlayerScreen(playerViewModel, devicePosture, onBackPress = appState::navigateBack)
             }
         }
     } else {

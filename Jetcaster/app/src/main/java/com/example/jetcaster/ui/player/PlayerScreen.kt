@@ -52,29 +52,36 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
+import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
+import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 
 /**
@@ -83,10 +90,12 @@ import java.time.Duration
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
+    devicePosture: StateFlow<DevicePosture>,
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    PlayerScreen(uiState = uiState, onBackPress = onBackPress)
+    val devicePostureValue by devicePosture.collectAsState()
+    PlayerScreen(uiState, devicePostureValue, onBackPress)
 }
 
 /**
@@ -95,12 +104,13 @@ fun PlayerScreen(
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
+    devicePosture: DevicePosture,
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier) {
         if (uiState.podcastName.isNotEmpty()) {
-            PlayerContent(uiState, onBackPress)
+            PlayerContent(uiState, devicePosture, onBackPress)
         } else {
             FullScreenLoading(modifier)
         }
@@ -111,41 +121,110 @@ private fun PlayerScreen(
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
+    devicePosture: DevicePosture,
     onBackPress: () -> Unit
 ) {
     PlayerDynamicTheme(uiState.podcastImageUrl) {
+        // As the Player UI content changes considerably when the device is in tabletop posture,
+        // we split the different UIs in different composables. For simpler UIs that don't change
+        // much, prefer one composable that makes decisions based on the mode instead.
+        if (devicePosture is DevicePosture.TableTopPosture) {
+            PlayerContentTableTop(uiState, devicePosture, onBackPress)
+        } else {
+            PlayerContentRegular(uiState, onBackPress)
+        }
+    }
+}
+
+@Composable
+private fun PlayerContentRegular(
+    uiState: PlayerUiState,
+    onBackPress: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalGradientScrim(
+                color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                startYPercentage = 1f,
+                endYPercentage = 0f
+            )
+            .systemBarsPadding()
+            .padding(horizontal = 8.dp)
+    ) {
+        TopAppBar(onBackPress = onBackPress)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            PlayerImage(
+                podcastImageUrl = uiState.podcastImageUrl,
+                modifier = Modifier.weight(10f)
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            PodcastDescription(uiState.title, uiState.podcastName)
+            Spacer(modifier = Modifier.height(32.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(10f)
+            ) {
+                PlayerSlider(uiState.duration)
+                PlayerButtons(Modifier.padding(vertical = 8.dp))
+            }
+            Spacer(modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun PlayerContentTableTop(
+    uiState: PlayerUiState,
+    tableTopPosture: DevicePosture.TableTopPosture,
+    onBackPress: () -> Unit
+) {
+    val hingePosition = with(LocalDensity.current) { tableTopPosture.hingePosition.top.toDp() }
+    val hingeHeight = with(LocalDensity.current) { tableTopPosture.hingePosition.height().toDp() }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Content for the top part of the screen
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .height(hingePosition)
+                .fillMaxWidth()
                 .verticalGradientScrim(
                     color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
                     startYPercentage = 1f,
                     endYPercentage = 0f
                 )
-                .systemBarsPadding()
-                .padding(horizontal = 8.dp)
+                .systemBarsPadding(bottom = false)
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PlayerImage(uiState.podcastImageUrl)
+        }
+        // Space for the hinge
+        Spacer(modifier = Modifier.height(hingeHeight))
+        // Content for the table part of the screen
+        Column(
+            modifier = Modifier
+                .systemBarsPadding(top = false)
+                .padding(horizontal = 32.dp, vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopAppBar(onBackPress = onBackPress)
+            PodcastDescription(
+                title = uiState.title,
+                podcastName = uiState.podcastName,
+                titleTextStyle = MaterialTheme.typography.h6
+            )
+            Spacer(modifier = Modifier.weight(0.5f))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.weight(10f)
             ) {
-                Spacer(modifier = Modifier.weight(1f))
-                PlayerImage(
-                    podcastImageUrl = uiState.podcastImageUrl,
-                    modifier = Modifier.weight(10f)
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                PodcastDescription(uiState.title, uiState.podcastName,)
-                Spacer(modifier = Modifier.height(32.dp))
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(10f)
-                ) {
-                    PlayerSlider(uiState.duration)
-                    PlayerButtons()
-                }
-                Spacer(modifier = Modifier.weight(1f))
+                PlayerButtons(playerButtonSize = 92.dp, modifier = Modifier.padding(top = 8.dp))
+                PlayerSlider(uiState.duration)
             }
         }
     }
@@ -199,10 +278,14 @@ private fun PlayerImage(
 }
 
 @Composable
-private fun PodcastDescription(title: String, podcastName: String) {
+private fun PodcastDescription(
+    title: String,
+    podcastName: String,
+    titleTextStyle: TextStyle = MaterialTheme.typography.h5
+) {
     Text(
         text = title,
-        style = MaterialTheme.typography.h5,
+        style = titleTextStyle,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -230,16 +313,18 @@ private fun PlayerSlider(episodeDuration: Duration?) {
 }
 
 @Composable
-private fun PlayerButtons(modifier: Modifier = Modifier) {
+private fun PlayerButtons(
+    modifier: Modifier = Modifier,
+    playerButtonSize: Dp = 72.dp,
+    sideButtonSize: Dp = 48.dp
+) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         val buttonsModifier = Modifier
-            .size(48.dp)
+            .size(sideButtonSize)
             .semantics { role = Role.Button }
 
         Image(
@@ -262,7 +347,7 @@ private fun PlayerButtons(modifier: Modifier = Modifier) {
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(LocalContentColor.current),
             modifier = Modifier
-                .size(72.dp)
+                .size(playerButtonSize)
                 .semantics { role = Role.Button }
         )
         Image(
@@ -351,6 +436,7 @@ fun PlayerScreenPreview() {
                     duration = Duration.ofHours(2),
                     podcastName = "Podcast"
                 ),
+                devicePosture = DevicePosture.NormalPosture,
                 onBackPress = { }
             )
         }

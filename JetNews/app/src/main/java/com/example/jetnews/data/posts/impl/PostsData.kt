@@ -24,6 +24,7 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.model.Publication
 
 /**
@@ -1012,16 +1013,18 @@ val post5 = Post(
     imageThumbId = R.drawable.post_5_thumb
 )
 
-val posts: List<Post> =
-    listOf(
-        post1,
-        post2,
-        post3,
-        post4,
-        post5,
-        post1.copy(id = "post6"),
-        post2.copy(id = "post7"),
-        post3.copy(id = "post8"),
-        post4.copy(id = "post9"),
-        post5.copy(id = "post10")
+val posts: PostsFeed =
+    PostsFeed(
+        highlightedPost = post4,
+        recommendedPosts = listOf(post1, post2, post3),
+        popularPosts = listOf(
+            post5,
+            post1.copy(id = "post6"),
+            post2.copy(id = "post7")
+        ),
+        recentPosts = listOf(
+            post3.copy(id = "post8"),
+            post4.copy(id = "post9"),
+            post5.copy(id = "post10")
+        )
     )
