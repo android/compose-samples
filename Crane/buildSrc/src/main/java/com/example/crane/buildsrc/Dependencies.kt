@@ -34,7 +34,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val version = "0.20.0"
+        const val version = "0.21.0.compose-7838202-SNAPSHOT"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -59,8 +59,8 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.4"
+            const val snapshot = "7838202"
+            const val version = "1.1.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
