@@ -19,8 +19,10 @@ package com.example.jetnews.ui.modifiers
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType.Companion.KeyUp
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 
 /**
  * Note: this method intercepts the key event rather than passing it on to children
@@ -28,7 +30,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 fun Modifier.interceptKey(key: Key, onKeyEvent: () -> Unit): Modifier {
     return this.onPreviewKeyEvent {
         @OptIn(ExperimentalComposeUiApi::class)
-        if (it.key == key) {
+        if (it.key == key && it.type == KeyUp) {
             onKeyEvent()
             true
         } else {
