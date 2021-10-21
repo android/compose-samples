@@ -44,6 +44,7 @@ sealed interface HomeUiState {
 
     val isLoading: Boolean
     val errorMessages: List<ErrorMessage>
+    val searchInput: String
 
     /**
      * There are no posts to render.
@@ -53,7 +54,8 @@ sealed interface HomeUiState {
      */
     data class NoPosts(
         override val isLoading: Boolean,
-        override val errorMessages: List<ErrorMessage>
+        override val errorMessages: List<ErrorMessage>,
+        override val searchInput: String
     ) : HomeUiState
 
     /**
@@ -67,7 +69,8 @@ sealed interface HomeUiState {
         val isArticleOpen: Boolean,
         val favorites: Set<String>,
         override val isLoading: Boolean,
-        override val errorMessages: List<ErrorMessage>
+        override val errorMessages: List<ErrorMessage>,
+        override val searchInput: String
     ) : HomeUiState
 }
 
@@ -81,6 +84,7 @@ private data class HomeViewModelState(
     val favorites: Set<String> = emptySet(),
     val isLoading: Boolean = false,
     val errorMessages: List<ErrorMessage> = emptyList(),
+    val searchInput: String = "",
 ) {
 
     /**
@@ -91,7 +95,8 @@ private data class HomeViewModelState(
         if (postsFeed == null) {
             HomeUiState.NoPosts(
                 isLoading = isLoading,
-                errorMessages = errorMessages
+                errorMessages = errorMessages,
+                searchInput = searchInput
             )
         } else {
             HomeUiState.HasPosts(
@@ -105,7 +110,8 @@ private data class HomeViewModelState(
                 isArticleOpen = isArticleOpen,
                 favorites = favorites,
                 isLoading = isLoading,
-                errorMessages = errorMessages
+                errorMessages = errorMessages,
+                searchInput = searchInput
             )
         }
 }
@@ -208,6 +214,15 @@ class HomeViewModel(
                 selectedPostId = postId,
                 isArticleOpen = true
             )
+        }
+    }
+
+    /**
+     * Notify that the user updated the search query
+     */
+    fun onSearchInputChanged(searchInput: String) {
+        viewModelState.update {
+            it.copy(searchInput = searchInput)
         }
     }
 
