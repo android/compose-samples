@@ -55,7 +55,8 @@ class HomeScreenTests {
                 HomeFeedScreen(
                     uiState = HomeUiState.NoPosts(
                         isLoading = false,
-                        errorMessages = listOf(ErrorMessage(0L, R.string.load_error))
+                        errorMessages = listOf(ErrorMessage(0L, R.string.load_error)),
+                        searchInput = ""
                     ),
                     showTopAppBar = false,
                     onToggleFavorite = {},
@@ -64,7 +65,8 @@ class HomeScreenTests {
                     onErrorDismiss = {},
                     openDrawer = {},
                     homeListLazyListState = rememberLazyListState(),
-                    scaffoldState = scaffoldState
+                    scaffoldState = scaffoldState,
+                    onSearchInputChanged = {}
                 )
             }
         }
