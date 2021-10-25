@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jetnews">
 
+        <!-- adjustResize ensures that the main window resizes to make room for the soft keyboard-->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

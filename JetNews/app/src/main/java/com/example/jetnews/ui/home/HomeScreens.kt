@@ -154,7 +154,7 @@ fun HomeFeedWithArticleDetailsScreen(
                 modifier = Modifier
                     .width(334.dp)
                     .notifyInput(onInteractWithList)
-                    .imePadding(),
+                    .imePadding(), // add padding for the on-screen keyboard
                 state = homeListLazyListState,
                 searchInput = hasPostsUiState.searchInput,
                 onSearchInputChanged = onSearchInputChanged,
@@ -177,7 +177,7 @@ fun HomeFeedWithArticleDetailsScreen(
                             .notifyInput {
                                 onInteractWithDetail(detailPost.id)
                             }
-                            .imePadding()
+                            .imePadding() // add padding for the on-screen keyboard
                     ) {
                         stickyHeader {
                             val context = LocalContext.current
@@ -281,7 +281,7 @@ private fun HomeScreenWithList(
     hasPostsContent: @Composable (
         uiState: HomeUiState.HasPosts,
         modifier: Modifier
-    ) -> Unit,
+    ) -> Unit
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -568,7 +568,7 @@ private fun PostListDivider() {
 }
 
 /**
- * Expanded search UI
+ * Expanded search UI - includes support for enter-to-send and escape-to-dismiss on the search field
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -606,8 +606,9 @@ private fun HomeSearch(
                         backgroundColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
-                    ),
+                    ), // keyboardOptions change the newline key to a search key on the soft keyboard
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    // keyboardActions submits the search query when the search key is pressed
                     keyboardActions = KeyboardActions(
                         onSearch = {
                             onSearchInputChanged("")
@@ -620,7 +621,7 @@ private fun HomeSearch(
                         }
                     ),
                     modifier = Modifier
-                        .interceptKey(Key.Enter) {
+                        .interceptKey(Key.Enter) { // submit a search query when Enter is pressed
                             onSearchInputChanged("")
                             Toast
                                 .makeText(
@@ -630,9 +631,9 @@ private fun HomeSearch(
                                 )
                                 .show()
                         }
-                        .interceptKey(Key.Escape) {
+                        .interceptKey(Key.Escape) { // dismiss focus when Escape is pressed
                             focusManager.clearFocus()
-                        },
+                        }
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { /* Functionality not supported yet */ }) {
