@@ -61,11 +61,11 @@ fun JetchatAppBar(
             elevation = 0.dp, // No shadow needed
             contentColor = MaterialTheme.colors.onSurface,
             actions = actions,
-            title = { Row { title() } }, // https://issuetracker.google.com/168793068
+            title = { Row { title() } },
             navigationIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.ic_jetchat),
-                    contentDescription = stringResource(id = R.string.back),
+                    contentDescription = stringResource(id = R.string.navigation_drawer_open),
                     modifier = Modifier
                         .clickable(onClick = onNavIconPressed)
                         .padding(horizontal = 16.dp)
