@@ -482,19 +482,19 @@ fun ExtendedSelectorInnerButton(
     selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    /*val colors = ButtonDefaults.buttonColors(
-        backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.08f),
-        disabledBackgroundColor = getSelectorExpandedColor(), // Same as background
-        contentColor = MaterialTheme.colors.onSurface,
-        disabledContentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.74f)
-    )*/
+    val colors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+        disabledContainerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.74f)
+    )
     TextButton(
         onClick = onClick,
         modifier = modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp)
-            .height(30.dp),
+            .padding(8.dp)
+            .height(36.dp),
         enabled = selected,
-        // colors = colors,
+        colors = colors,
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(
