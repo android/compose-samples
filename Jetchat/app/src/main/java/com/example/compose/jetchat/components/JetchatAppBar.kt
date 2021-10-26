@@ -55,7 +55,7 @@ fun JetchatAppBar(
         CenterAlignedTopAppBar(
             modifier = modifier,
             actions = actions,
-            title = { title() },
+            title = title,
             scrollBehavior = scrollBehavior,
             colors = foregroundColors,
             navigationIcon = {

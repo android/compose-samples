@@ -207,6 +207,7 @@ private fun ProfileHeader(
             modifier = Modifier
                 .heightIn(max = containerHeight / 2)
                 .fillMaxWidth()
+                // TODO: Update to use offset to avoid recomposition
                 .padding(
                     start = 16.dp,
                     top = offsetDp,

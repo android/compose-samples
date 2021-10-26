@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -86,7 +87,7 @@ private fun DrawerHeader() {
 private fun DrawerItemHeader(text: String) {
     Box(
         modifier = Modifier
-            .height(52.dp)
+            .heightIn(min = 52.dp)
             .padding(horizontal = 28.dp),
         contentAlignment = CenterStart
     ) {
@@ -150,18 +151,18 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
             .clickable(onClick = onProfileClicked),
         verticalAlignment = CenterVertically
     ) {
-        val widthPaddingModifier = Modifier
+        val paddingSizeModifier = Modifier
             .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
             .size(24.dp)
         if (profilePic != null) {
             Image(
                 painter = painterResource(id = profilePic),
-                modifier = widthPaddingModifier.then(Modifier.clip(CircleShape)),
+                modifier = paddingSizeModifier.then(Modifier.clip(CircleShape)),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )
         } else {
-            Spacer(modifier = widthPaddingModifier)
+            Spacer(modifier = paddingSizeModifier)
         }
         Text(
             text,

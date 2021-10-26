@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.theme
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -88,18 +89,19 @@ private val JetchatLightColorScheme = lightColorScheme(
     outline = BlueGrey50
 )
 
+@SuppressLint("NewApi")
 @Composable
 fun JetchatTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     isDynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-
+    val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val myColorScheme = when {
-        isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDarkTheme -> {
+        dynamicColor && isDarkTheme -> {
             dynamicDarkColorScheme(LocalContext.current)
         }
-        isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !isDarkTheme -> {
+        dynamicColor && !isDarkTheme -> {
             dynamicLightColorScheme(LocalContext.current)
         }
         isDarkTheme -> JetchatDarkColorScheme
