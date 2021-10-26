@@ -84,7 +84,7 @@ class NavActivity : AppCompatActivity() {
                     JetchatScaffold(
                         scaffoldState,
                         onChatClicked = {
-                            findNavController().popBackStack(R.id.nav_home, true)
+                            findNavController().popBackStack(R.id.nav_home, false)
                             scope.launch {
                                 scaffoldState.drawerState.close()
                             }

@@ -60,7 +60,7 @@ fun JetchatAppBar(
             colors = foregroundColors,
             navigationIcon = {
                 JetchatIcon(
-                    contentDescription = stringResource(id = R.string.back),
+                    contentDescription = stringResource(id = R.string.navigation_drawer_open),
                     modifier = Modifier
                         .size(64.dp)
                         .clickable(onClick = onNavIconPressed)
