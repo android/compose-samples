@@ -26,7 +26,7 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
-    const val material3 = "com.google.android.material:material:1.5.0-alpha04"
+    const val material3 = "com.google.android.material:material:1.5.0-alpha05"
 
     object Accompanist {
         const val version = "0.21.0.compose-7838202-SNAPSHOT"
