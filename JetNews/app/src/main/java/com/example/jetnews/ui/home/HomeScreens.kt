@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
@@ -611,25 +612,13 @@ private fun HomeSearch(
                     // keyboardActions submits the search query when the search key is pressed
                     keyboardActions = KeyboardActions(
                         onSearch = {
-                            onSearchInputChanged("")
-                            Toast.makeText(
-                                context,
-                                "Search is not yet implemented",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            submitSearch(onSearchInputChanged, context)
                             keyboardController?.hide()
                         }
                     ),
                     modifier = Modifier
                         .interceptKey(Key.Enter) { // submit a search query when Enter is pressed
-                            onSearchInputChanged("")
-                            Toast
-                                .makeText(
-                                    context,
-                                    "Search is not yet implemented",
-                                    Toast.LENGTH_SHORT
-                                )
-                                .show()
+                            submitSearch(onSearchInputChanged, context)
                         }
                         .interceptKey(Key.Escape) { // dismiss focus when Escape is pressed
                             focusManager.clearFocus()
@@ -645,6 +634,21 @@ private fun HomeSearch(
             }
         }
     }
+}
+
+/**
+ * Stub helper function to submit a user's search query
+ */
+private fun submitSearch(
+    onSearchInputChanged: (String) -> Unit,
+    context: Context
+) {
+    onSearchInputChanged("")
+    Toast.makeText(
+        context,
+        "Search is not yet implemented",
+        Toast.LENGTH_SHORT
+    ).show()
 }
 
 /**
