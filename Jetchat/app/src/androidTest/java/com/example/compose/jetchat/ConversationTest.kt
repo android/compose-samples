@@ -21,13 +21,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.center
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performGesture
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
@@ -79,7 +78,7 @@ class ConversationTest {
     fun userScrollsUp_jumpToBottomAppears() {
         // Check list is snapped to bottom and swipe up
         findJumpToBottom().assertDoesNotExist()
-        composeTestRule.onNodeWithTag(ConversationTestTag).performGesture {
+        composeTestRule.onNodeWithTag(ConversationTestTag).performTouchInput {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
@@ -93,7 +92,7 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAndDisappears() {
         // When the scroll is not snapped to the bottom
-        composeTestRule.onNodeWithTag(ConversationTestTag).performGesture {
+        composeTestRule.onNodeWithTag(ConversationTestTag).performTouchInput {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
@@ -113,7 +112,7 @@ class ConversationTest {
         composeTestRule.onNodeWithTag(
             testTag = ConversationTestTag,
             useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-        ).performGesture {
+        ).performTouchInput {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
@@ -133,7 +132,7 @@ class ConversationTest {
     @Test
     fun changeTheme_scrollIsPersisted() {
         // Swipe to show the jump to bottom button
-        composeTestRule.onNodeWithTag(ConversationTestTag).performGesture {
+        composeTestRule.onNodeWithTag(ConversationTestTag).performTouchInput {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
