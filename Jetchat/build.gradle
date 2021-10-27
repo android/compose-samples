@@ -40,6 +40,9 @@ subprojects {
         google()
         mavenCentral()
 
+        if (!Libs.AndroidX.Compose.Material3.snapshot.isEmpty()) {
+            maven { url Urls.composeMaterial3SnapshotRepo }
+        }
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }
         }

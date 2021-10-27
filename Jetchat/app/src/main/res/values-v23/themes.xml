@@ -16,7 +16,7 @@
 
 <resources>
 
-    <style name="Platform.Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Platform.Theme.Jetchat" parent="Theme.Material3.DayNight">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
     </style>

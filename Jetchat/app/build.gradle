@@ -100,10 +100,12 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
     implementation Libs.AndroidX.Navigation.fragment
     implementation Libs.AndroidX.Navigation.uiKtx
-    implementation Libs.material
+    implementation Libs.material3
 
     implementation Libs.AndroidX.Compose.layout
+    // TODO (M3): Remove this dependency when all components are available
     implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.Material3.material3
     implementation Libs.AndroidX.Compose.materialIconsExtended
     implementation Libs.AndroidX.Compose.tooling
     implementation Libs.AndroidX.Compose.uiUtil

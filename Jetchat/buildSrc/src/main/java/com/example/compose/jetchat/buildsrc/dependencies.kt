@@ -26,7 +26,7 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
-    const val material = "com.google.android.material:material:1.3.0"
+    const val material3 = "com.google.android.material:material:1.5.0-alpha05"
 
     object Accompanist {
         const val version = "0.21.0-beta"
@@ -71,6 +71,13 @@ object Libs {
             const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
             const val uiUtil = "androidx.compose.ui:ui-util:${version}"
             const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"
+
+            object Material3 {
+                const val snapshot = ""
+                const val version = "1.0.0-alpha01"
+
+                const val material3 = "androidx.compose.material3:material3:$version"
+            }
         }
 
         object Navigation {
@@ -105,5 +112,7 @@ object Libs {
 object Urls {
     const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
         "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
+    const val composeMaterial3SnapshotRepo = "https://androidx.dev/snapshots/builds/" +
+            "${Libs.AndroidX.Compose.Material3.snapshot}/artifacts/repository/"
     const val accompanistSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots"
 }

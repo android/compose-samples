@@ -29,21 +29,21 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +51,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -70,6 +72,7 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
 
@@ -79,27 +82,30 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
     }
 
     val scrollState = rememberScrollState()
+    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) {
         JetchatAppBar(
             // Use statusBarsPadding() to move the app bar content below the status bar
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding(),
+            modifier = Modifier.statusBarsPadding(),
+            scrollBehavior = scrollBehavior,
             onNavIconPressed = onNavIconPressed,
             title = { },
             actions = {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    // More icon
-                    Icon(
-                        imageVector = Icons.Outlined.MoreVert,
-                        modifier = Modifier
-                            .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                            .padding(horizontal = 12.dp, vertical = 16.dp)
-                            .height(24.dp),
-                        contentDescription = stringResource(id = R.string.more_options)
-                    )
-                }
+                // More icon
+                Icon(
+                    imageVector = Icons.Outlined.MoreVert,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                        .padding(horizontal = 12.dp, vertical = 16.dp)
+                        .height(24.dp),
+                    contentDescription = stringResource(id = R.string.more_options)
+                )
             }
         )
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
@@ -173,19 +179,18 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
         text = userData.name,
         modifier = modifier,
-        style = MaterialTheme.typography.h5
+        style = MaterialTheme.typography.headlineSmall
     )
 }
 
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        Text(
-            text = userData.position,
-            modifier = modifier,
-            style = MaterialTheme.typography.body1
-        )
-    }
+    Text(
+        text = userData.position,
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
 }
 
 @Composable
@@ -202,7 +207,13 @@ private fun ProfileHeader(
             modifier = Modifier
                 .heightIn(max = containerHeight / 2)
                 .fillMaxWidth()
-                .padding(top = offsetDp),
+                // TODO: Update to use offset to avoid recomposition
+                .padding(
+                    start = 16.dp,
+                    top = offsetDp,
+                    end = 16.dp
+                )
+                .clip(CircleShape),
             painter = painterResource(id = it),
             contentScale = ContentScale.Crop,
             contentDescription = null
@@ -213,18 +224,18 @@ private fun ProfileHeader(
 @Composable
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+        // TODO (M3): No Divider, replace when available
         Divider()
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = label,
-                modifier = Modifier.baselineHeight(24.dp),
-                style = MaterialTheme.typography.caption
-            )
-        }
+        Text(
+            text = label,
+            modifier = Modifier.baselineHeight(24.dp),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         val style = if (isLink) {
-            MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.primary)
+            MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
         } else {
-            MaterialTheme.typography.body1
+            MaterialTheme.typography.bodyLarge
         }
         Text(
             text = value,
@@ -255,8 +266,7 @@ fun ProfileFab(
                 .navigationBarsPadding()
                 .height(48.dp)
                 .widthIn(min = 48.dp),
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
         ) {
             AnimatingFabContent(
                 icon = {

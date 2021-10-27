@@ -16,7 +16,7 @@
 
 package com.example.compose.jetchat.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,6 +27,7 @@ import com.example.compose.jetchat.R
 private val MontserratFontFamily = FontFamily(
     Font(R.font.montserrat_regular),
     Font(R.font.montserrat_light, FontWeight.Light),
+    Font(R.font.montserrat_medium, FontWeight.Medium),
     Font(R.font.montserrat_semibold, FontWeight.SemiBold)
 )
 
@@ -36,74 +37,109 @@ private val KarlaFontFamily = FontFamily(
 )
 
 val JetchatTypography = Typography(
-    defaultFontFamily = MontserratFontFamily,
-    h1 = TextStyle(
+    displayLarge = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.Light,
-        fontSize = 96.sp,
-        letterSpacing = (-1.5).sp
+        fontSize = 57.sp,
+        lineHeight = 64.sp,
+        letterSpacing = 0.sp
     ),
-    h2 = TextStyle(
+    displayMedium = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.Light,
-        fontSize = 60.sp,
-        letterSpacing = (-0.5).sp
+        fontSize = 45.sp,
+        lineHeight = 52.sp,
+        letterSpacing = 0.sp
     ),
-    h3 = TextStyle(
+    displaySmall = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 48.sp,
+        fontSize = 36.sp,
+        lineHeight = 44.sp,
         letterSpacing = 0.sp
     ),
-    h4 = TextStyle(
+    headlineLarge = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 30.sp,
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
         letterSpacing = 0.sp
     ),
-    h5 = TextStyle(
+    headlineMedium = TextStyle(
+        fontFamily = MontserratFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
+        lineHeight = 32.sp,
         letterSpacing = 0.sp
     ),
-    h6 = TextStyle(
+    titleLarge = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
-    subtitle1 = TextStyle(
+    titleMedium = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        letterSpacing = 0.sp
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
     ),
-    subtitle2 = TextStyle(
+    titleSmall = TextStyle(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
-    body1 = TextStyle(
+    bodyLarge = TextStyle(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        letterSpacing = 0.sp,
-        lineHeight = 24.sp
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
     ),
-    body2 = TextStyle(
+    bodyMedium = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),
-    button = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        letterSpacing = 1.25.sp
-    ),
-    caption = TextStyle(
+    bodySmall = TextStyle(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
-        letterSpacing = 0.15.sp
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp
     ),
-    overline = TextStyle(
+    labelLarge = TextStyle(
+        fontFamily = MontserratFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
-        letterSpacing = 1.sp
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = MontserratFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
     )
 )

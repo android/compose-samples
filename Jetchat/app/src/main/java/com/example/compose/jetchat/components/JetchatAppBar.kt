@@ -16,63 +16,58 @@
 
 package com.example.compose.jetchat.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.theme.elevatedSurface
 
 @Composable
 fun JetchatAppBar(
     modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { },
-    title: @Composable RowScope.() -> Unit,
+    title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    // This bar is translucent but elevation overlays are not applied to translucent colors.
-    // Instead we manually calculate the elevated surface color from the opaque color,
-    // then apply our alpha.
-    //
-    // We set the background on the Column rather than the TopAppBar,
-    // so that the background is drawn behind any padding set on the app bar (i.e. status bar).
-    val backgroundColor = MaterialTheme.colors.elevatedSurface(3.dp)
-    Column(
-        Modifier.background(backgroundColor.copy(alpha = 0.95f))
-    ) {
-        TopAppBar(
+    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+    val backgroundColor = backgroundColors.containerColor(
+        scrollFraction = scrollBehavior?.scrollFraction ?: 0f
+    ).value
+    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = Color.Transparent
+    )
+    Box(modifier = Modifier.background(backgroundColor)) {
+        CenterAlignedTopAppBar(
             modifier = modifier,
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp, // No shadow needed
-            contentColor = MaterialTheme.colors.onSurface,
             actions = actions,
-            title = { Row { title() } },
+            title = title,
+            scrollBehavior = scrollBehavior,
+            colors = foregroundColors,
             navigationIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_jetchat),
+                JetchatIcon(
                     contentDescription = stringResource(id = R.string.navigation_drawer_open),
                     modifier = Modifier
+                        .size(64.dp)
                         .clickable(onClick = onNavIconPressed)
-                        .padding(horizontal = 16.dp)
+                        .padding(16.dp)
                 )
             }
         )
-        Divider()
     }
 }
 
