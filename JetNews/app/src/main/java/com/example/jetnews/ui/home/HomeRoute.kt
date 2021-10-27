@@ -57,6 +57,7 @@ fun HomeRoute(
         onErrorDismiss = { homeViewModel.errorShown(it) },
         onInteractWithFeed = { homeViewModel.interactedWithFeed() },
         onInteractWithArticleDetails = { homeViewModel.interactedWithArticleDetails(it) },
+        onSearchInputChanged = { homeViewModel.onSearchInputChanged(it) },
         openDrawer = openDrawer,
         scaffoldState = scaffoldState,
     )
@@ -90,6 +91,7 @@ fun HomeRoute(
     onErrorDismiss: (Long) -> Unit,
     onInteractWithFeed: () -> Unit,
     onInteractWithArticleDetails: (String) -> Unit,
+    onSearchInputChanged: (String) -> Unit,
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
@@ -121,7 +123,8 @@ fun HomeRoute(
                 openDrawer = openDrawer,
                 homeListLazyListState = homeListLazyListState,
                 articleDetailLazyListStates = articleDetailLazyListStates,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                onSearchInputChanged = onSearchInputChanged,
             )
         }
         HomeScreenType.Feed -> {
@@ -134,7 +137,8 @@ fun HomeRoute(
                 onErrorDismiss = onErrorDismiss,
                 openDrawer = openDrawer,
                 homeListLazyListState = homeListLazyListState,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                onSearchInputChanged = onSearchInputChanged,
             )
         }
         HomeScreenType.ArticleDetails -> {
