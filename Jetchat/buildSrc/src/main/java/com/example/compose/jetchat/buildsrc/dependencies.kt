@@ -73,8 +73,8 @@ object Libs {
             const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"
 
             object Material3 {
-                const val snapshot = "7840506"
-                const val version = "1.0.0-SNAPSHOT"
+                const val snapshot = ""
+                const val version = "1.0.0-alpha01"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
