@@ -19,8 +19,13 @@
         <item name="android:colorAccent">#ff00ff</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:dialogTheme">@style/Theme.DialogFullScreen</item>
     </style>
 
     <style name="Theme.Material.DayNight.NoActionBar" parent="@android:style/Theme.Material.Light.NoActionBar" />
 
+    <style name="Theme.DialogFullScreen" parent="Theme.Material.DayNight.NoActionBar">
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+    </style>
 </resources>

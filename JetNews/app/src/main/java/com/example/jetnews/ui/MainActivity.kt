@@ -21,6 +21,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.utils.rememberWindowSizeClass
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
         val appContainer = (application as JetnewsApplication).container
         setContent {
-            JetnewsApp(appContainer)
+            val windowSizeClass = rememberWindowSizeClass()
+            JetnewsApp(appContainer, windowSizeClass)
         }
     }
 }

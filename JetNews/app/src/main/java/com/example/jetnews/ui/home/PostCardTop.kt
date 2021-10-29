@@ -113,8 +113,7 @@ fun TutorialPreviewFontscale() {
 
 @Composable
 fun TutorialPreviewTemplate() {
-    val previewPosts = posts.subList(1, 2)
-    val post = previewPosts[0]
+    val post = posts.highlightedPost
 
     JetnewsTheme {
         Surface {

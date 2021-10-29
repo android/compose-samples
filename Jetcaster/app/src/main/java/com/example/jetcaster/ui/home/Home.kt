@@ -62,12 +62,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.contrastAgainst
@@ -75,6 +77,7 @@ import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.insets.statusBarsHeight
+import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -84,11 +87,11 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 @Composable
-fun Home() {
-    val viewModel = viewModel(HomeViewModel::class.java)
-
+fun Home(
+    navigateToPlayer: (String) -> Unit,
+    viewModel: HomeViewModel = viewModel()
+) {
     val viewState by viewModel.state.collectAsState()
-
     Surface(Modifier.fillMaxSize()) {
         HomeContent(
             featuredPodcasts = viewState.featuredPodcasts,
@@ -97,6 +100,7 @@ fun Home() {
             selectedHomeCategory = viewState.selectedHomeCategory,
             onCategorySelected = viewModel::onHomeCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
+            navigateToPlayer = navigateToPlayer,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -148,13 +152,6 @@ fun HomeAppBar(
     )
 }
 
-/**
- * This is the minimum amount of calculated contrast for a color to be used on top of the
- * surface color. These values are defined within the WCAG AA guidelines, and we use a value of
- * 3:1 which is the minimum for user-interface components.
- */
-private const val MinContrastOfPrimaryVsSurface = 3f
-
 @OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
 @Composable
 fun HomeContent(
@@ -164,9 +161,10 @@ fun HomeContent(
     homeCategories: List<HomeCategory>,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
-    onCategorySelected: (HomeCategory) -> Unit
+    onCategorySelected: (HomeCategory) -> Unit,
+    navigateToPlayer: (String) -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.systemBarsPadding(top = false, bottom = false)) {
         // We dynamically theme this sub-section of the layout to match the selected
         // 'top podcast'
 
@@ -177,10 +175,7 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState(
-                pageCount = featuredPodcasts.size,
-                initialOffscreenLimit = 2,
-            )
+            val pagerState = rememberPagerState()
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -254,6 +249,7 @@ fun HomeContent(
             }
             HomeCategory.Discover -> {
                 Discover(
+                    navigateToPlayer = navigateToPlayer,
                     Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -322,12 +318,14 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
+        count = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier
@@ -337,10 +335,12 @@ fun FollowedPodcasts(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
+    podcastTitle: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
 ) {
@@ -356,7 +356,7 @@ private fun FollowedPodcastCarouselItem(
             if (podcastImageUrl != null) {
                 Image(
                     painter = rememberImagePainter(data = podcastImageUrl),
-                    contentDescription = null,
+                    contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()

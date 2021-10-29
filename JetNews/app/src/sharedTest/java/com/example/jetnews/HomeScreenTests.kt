@@ -16,15 +16,17 @@
 
 package com.example.jetnews
 
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.jetnews.ui.home.HomeScreen
-import com.example.jetnews.ui.state.UiState
+import com.example.jetnews.ui.home.HomeFeedScreen
+import com.example.jetnews.ui.home.HomeUiState
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -50,15 +52,21 @@ class HomeScreenTests {
                 val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
 
                 // When the Home screen receives data with an error
-                HomeScreen(
-                    posts = UiState(exception = IllegalStateException()),
-                    favorites = emptySet(),
+                HomeFeedScreen(
+                    uiState = HomeUiState.NoPosts(
+                        isLoading = false,
+                        errorMessages = listOf(ErrorMessage(0L, R.string.load_error)),
+                        searchInput = ""
+                    ),
+                    showTopAppBar = false,
                     onToggleFavorite = {},
+                    onSelectPost = {},
                     onRefreshPosts = {},
                     onErrorDismiss = {},
-                    navigateToArticle = {},
                     openDrawer = {},
-                    scaffoldState = scaffoldState
+                    homeListLazyListState = rememberLazyListState(),
+                    scaffoldState = scaffoldState,
+                    onSearchInputChanged = {}
                 )
             }
         }

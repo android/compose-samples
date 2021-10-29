@@ -18,7 +18,7 @@
 
     <!-- Allows us to override platform level specific attributes in their
          respective values-vXX folder. -->
-    <style name="Platform.Theme.Jetchat" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Platform.Theme.Jetchat" parent="Theme.Material3.DayNight">
         <item name="android:statusBarColor">@color/black30</item>
     </style>
 

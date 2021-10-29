@@ -16,8 +16,8 @@
 
 package com.example.compose.jetchat.conversation
 
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -57,7 +57,8 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
  */
 @Composable
 fun messageFormatter(
-    text: String
+    text: String,
+    primary: Boolean
 ): AnnotatedString {
     val tokens = symbolPattern.findAll(text)
 
@@ -66,10 +67,10 @@ fun messageFormatter(
         var cursorPosition = 0
 
         val codeSnippetBackground =
-            if (MaterialTheme.colors.isLight) {
-                Color(0xFFDEDEDE)
+            if (primary) {
+                MaterialTheme.colorScheme.secondary
             } else {
-                Color(0xFF424242)
+                MaterialTheme.colorScheme.surface
             }
 
         for (token in tokens) {
@@ -77,7 +78,8 @@ fun messageFormatter(
 
             val (annotatedString, stringAnnotation) = getSymbolAnnotation(
                 matchResult = token,
-                colors = MaterialTheme.colors,
+                colorScheme = MaterialTheme.colorScheme,
+                primary = primary,
                 codeSnippetBackground = codeSnippetBackground
             )
             append(annotatedString)
@@ -106,7 +108,8 @@ fun messageFormatter(
  */
 private fun getSymbolAnnotation(
     matchResult: MatchResult,
-    colors: Colors,
+    colorScheme: ColorScheme,
+    primary: Boolean,
     codeSnippetBackground: Color
 ): SymbolAnnotation {
     return when (matchResult.value.first()) {
@@ -114,7 +117,7 @@ private fun getSymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
                 spanStyle = SpanStyle(
-                    color = colors.primary,
+                    color = if (primary) colorScheme.inversePrimary else colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
             ),
@@ -162,7 +165,7 @@ private fun getSymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
                 spanStyle = SpanStyle(
-                    color = colors.primary
+                    color = if (primary) colorScheme.inversePrimary else colorScheme.primary
                 )
             ),
             StringAnnotation(

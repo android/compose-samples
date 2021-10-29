@@ -22,14 +22,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DrawerState
-import androidx.compose.material.Icon
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -50,6 +52,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerScaffold(
     scaffoldState: ScaffoldState,
@@ -60,7 +63,7 @@ fun DrawerScaffold(
     DrawerScaffold(
         scaffoldState,
         onChatClicked = {
-            findNavController().popBackStack(R.id.nav_home, true)
+            findNavController().popBackStack(R.id.nav_home, false)
             scope.launch {
                 scaffoldState.drawerState.close()
             }
@@ -77,6 +80,7 @@ fun DrawerScaffold(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun DrawerScaffold(
     scaffoldState: ScaffoldState,
     onProfileClicked: (String) -> Unit,
@@ -98,6 +102,7 @@ private fun DrawerScaffold(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun TopBarScaffold(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     onNavIconClicked: () -> Unit,
@@ -105,7 +110,6 @@ fun TopBarScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     JetchatTheme {
         Scaffold(
@@ -120,31 +124,25 @@ fun TopBarScaffold(
                         modifier = Modifier.statusBarsPadding(),
                     )
                 } else {
+                    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
                     JetchatAppBar(
                         // Use statusBarsPadding() to move the app bar content below the status bar
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .statusBarsPadding(),
+                        modifier = Modifier.statusBarsPadding(),
+                        scrollBehavior = scrollBehavior,
                         onNavIconPressed = onNavIconClicked,
                         title = { },
                         actions = {
-                            CompositionLocalProvider(
-                                LocalContentAlpha provides ContentAlpha.medium
-                            ) {
-                                // More icon
-                                Icon(
-                                    imageVector = Icons.Outlined.MoreVert,
-                                    modifier = Modifier
-                                        .clickable(
-                                            onClick = {
-                                                functionalityNotAvailablePopupShown = true
-                                            }
-                                        )
-                                        .padding(horizontal = 12.dp, vertical = 16.dp)
-                                        .height(24.dp),
-                                    contentDescription = stringResource(id = R.string.more_options)
-                                )
-                            }
+                            // More icon
+                            Icon(
+                                imageVector = Icons.Outlined.MoreVert,
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = { functionalityNotAvailablePopupShown = true }
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 16.dp)
+                                    .height(24.dp),
+                                contentDescription = stringResource(id = R.string.more_options)
+                            )
                         }
                     )
                 }

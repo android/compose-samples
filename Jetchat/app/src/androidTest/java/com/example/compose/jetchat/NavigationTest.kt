@@ -16,14 +16,19 @@
 
 package com.example.compose.jetchat
 
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,13 +47,10 @@ class NavigationTest {
     }
 
     @Test
-    @Ignore("Issue with keyboard sync https://issuetracker.google.com/169235317")
     fun profileScreen_back_conversationScreen() {
         val navController = getNavController()
-        // Navigate to profile
-        composeTestRule.runOnUiThread {
-            navController.navigate(R.id.nav_profile)
-        }
+        // Navigate to profile        \
+        navigateToProfile("Taylor Brooks")
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check
@@ -61,6 +63,43 @@ class NavigationTest {
 
         // Check that we're home
         assertEquals(navController.currentDestination?.id, R.id.nav_home)
+    }
+
+    /**
+     * Regression test for https://github.com/android/compose-samples/issues/670
+     */
+    @Test
+    fun drawer_conversationScreen_backstackPopUp() {
+        navigateToProfile("Ali Conors (you)")
+        navigateToHome()
+        navigateToProfile("Taylor Brooks")
+        navigateToHome()
+
+        // Chewie, we're home
+        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+    }
+
+    private fun navigateToProfile(name: String) {
+        composeTestRule.onNodeWithContentDescription(
+            composeTestRule.activity.getString(R.string.navigation_drawer_open)
+        ).performClick()
+
+        composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
+    }
+
+    private fun isInDrawer() = hasAnyAncestor(isDrawer())
+
+    private fun isDrawer() = SemanticsMatcher.expectValue(
+        SemanticsProperties.PaneTitle,
+        composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu)
+    )
+
+    private fun navigateToHome() {
+        composeTestRule.onNodeWithContentDescription(
+            composeTestRule.activity.getString(R.string.navigation_drawer_open)
+        ).performClick()
+
+        composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
     }
 
     private fun getNavController(): NavController {

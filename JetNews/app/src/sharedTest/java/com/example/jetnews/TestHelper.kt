@@ -19,6 +19,7 @@ package com.example.jetnews
 import android.content.Context
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import com.example.jetnews.ui.JetnewsApp
+import com.example.jetnews.utils.WindowSize
 
 /**
  * Launches the app from a test context
@@ -26,7 +27,8 @@ import com.example.jetnews.ui.JetnewsApp
 fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(
-            TestAppContainer(context)
+            appContainer = TestAppContainer(context),
+            windowSize = WindowSize.Compact
         )
     }
 }
