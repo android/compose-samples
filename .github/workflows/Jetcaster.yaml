@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/Jetcaster.yaml'
       - 'Jetcaster/**'
   pull_request:
     paths:
+      - '.github/workflows/Jetcaster.yaml'
       - 'Jetcaster/**'
 
 env:

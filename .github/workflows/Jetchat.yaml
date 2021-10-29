@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/Jetchat.yaml'
       - 'Jetchat/**'
   pull_request:
     paths:
+      - '.github/workflows/Jetchat.yaml'
       - 'Jetchat/**'
 
 env:

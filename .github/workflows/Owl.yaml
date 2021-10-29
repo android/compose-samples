@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/Owl.yaml'
       - 'Owl/**'
   pull_request:
     paths:
+      - '.github/workflows/Owl.yaml'
       - 'Owl/**'
 
 env:
