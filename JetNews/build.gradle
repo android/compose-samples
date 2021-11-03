@@ -23,9 +23,13 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://storage.googleapis.com/r8-releases/raw'
+        }
     }
 
     dependencies {
+        classpath 'com.android.tools:r8:3.1.34' // Needed for release builds with navigation-compose 2.4.0-alpha10 (https://issuetracker.google.com/issues/204910734)
         classpath 'com.android.tools.build:gradle:7.0.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }

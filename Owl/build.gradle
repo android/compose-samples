@@ -21,8 +21,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://storage.googleapis.com/r8-releases/raw'
+        }
     }
     dependencies {
+        classpath Libs.r8 // Needed for release builds with navigation-compose 2.4.0-alpha10 (https://issuetracker.google.com/issues/204910734)
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
     }
@@ -36,6 +40,7 @@ subprojects {
     repositories {
         google()
         mavenCentral()
+
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
