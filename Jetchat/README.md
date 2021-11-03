@@ -50,8 +50,6 @@ This sample is laid out [edge-to-edge](https://medium.com/androiddevelopers/gest
 
 The sample also supports synchronized IME transitions when running on API 30+ devices. See the use of `Modifier.navigationBarsWithImePadding()` in [ConversationContent](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
 
-<img src="screenshots/ime-transition.gif" />
-
 The sample uses the
 [Accompanist Insets library](https://google.github.io/accompanist/insets/) for WindowInsets support.
 
