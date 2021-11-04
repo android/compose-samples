@@ -17,7 +17,7 @@
 package com.example.owl.buildsrc
 
 object Versions {
-    const val ktlint = "0.42.1"
+    const val ktlint = "0.43.0"
 }
 
 object Libs {
@@ -48,16 +48,16 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0"
-        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha10"
+        const val coreKtx = "androidx.core:core-ktx:1.7.0"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-beta02"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.1"
+            const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta01"
+            const val version = "1.1.0-beta02"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

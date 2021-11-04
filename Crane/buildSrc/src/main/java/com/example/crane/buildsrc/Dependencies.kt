@@ -17,7 +17,7 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.42.1"
+    const val ktLint = "0.43.0"
 }
 
 object Libs {
@@ -53,14 +53,14 @@ object Libs {
 
     object AndroidX {
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.1"
+            const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
 
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta01"
+            const val version = "1.1.0-beta02"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -74,7 +74,7 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.4.0-rc01"
+            private const val version = "2.4.0"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }

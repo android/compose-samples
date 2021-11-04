@@ -17,7 +17,7 @@
 package com.example.compose.jetchat.buildsrc
 
 object Versions {
-    const val ktlint = "0.42.1"
+    const val ktlint = "0.43.0"
 }
 
 object Libs {
@@ -49,15 +49,15 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
-        const val coreKtx = "androidx.core:core-ktx:1.6.0"
+        const val coreKtx = "androidx.core:core-ktx:1.7.0"
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.1"
+            const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta01"
+            const val version = "1.1.0-beta02"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -100,7 +100,7 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.4.0-rc01"
+            private const val version = "2.4.0"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
