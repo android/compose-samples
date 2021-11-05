@@ -17,14 +17,14 @@
 package com.example.jetsnack.buildsrc
 
 object Versions {
-    const val ktlint = "0.42.1"
+    const val ktlint = "0.43.0"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
 
     object Accompanist {
-        const val version = "0.21.0-beta"
+        const val version = "0.21.2-beta"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
@@ -45,11 +45,11 @@ object Libs {
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0"
+        const val coreKtx = "androidx.core:core-ktx:1.7.0"
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta01"
+            const val version = "1.1.0-beta02"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -64,7 +64,7 @@ object Libs {
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.1"
+            const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
 
         object Lifecycle {
@@ -72,7 +72,7 @@ object Libs {
         }
 
         object Navigation {
-            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-alpha10"
+            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-beta02"
         }
 
         object ConstraintLayout {

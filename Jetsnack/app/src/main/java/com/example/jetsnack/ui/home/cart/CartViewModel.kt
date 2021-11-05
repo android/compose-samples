@@ -90,7 +90,7 @@ class CartViewModel(
             snackRepository: SnackRepo = SnackRepo
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return CartViewModel(snackbarManager, snackRepository) as T
             }
         }

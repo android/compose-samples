@@ -234,7 +234,7 @@ class HomeViewModel(
             postsRepository: PostsRepository,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return HomeViewModel(postsRepository) as T
             }
         }
