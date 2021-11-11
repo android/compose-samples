@@ -102,8 +102,8 @@ fun SnackDetail(
         val scroll = rememberScrollState(0)
         Header()
         Body(related, scroll)
-        Title(snack, scroll.value)
-        Image(snack.imageUrl, scroll.value)
+        Title(snack = snack, scrollProvider = { scroll.value })
+        Image(imageUrl = snack.imageUrl, scrollProvider = { scroll.value })
         Up(upPress)
         CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
     }
@@ -237,16 +237,17 @@ private fun Body(
 }
 
 @Composable
-private fun Title(snack: Snack, scroll: Int) {
+private fun Title(snack: Snack, scrollProvider: () -> Int) {
     val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
-    val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
     Column(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .heightIn(min = TitleHeight)
             .statusBarsPadding()
-            .graphicsLayer { translationY = offset }
+            .graphicsLayer {
+                translationY = (maxOffset - scrollProvider()).coerceAtLeast(minOffset)
+            }
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
         Spacer(Modifier.height(16.dp))
@@ -279,13 +280,13 @@ private fun Title(snack: Snack, scroll: Int) {
 @Composable
 private fun Image(
     imageUrl: String,
-    scroll: Int
+    scrollProvider: () -> Int
 ) {
     val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
-    val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
-
     CollapsingImageLayout(
-        collapseFraction = collapseFraction,
+        collapseFractionProvider = {
+            (scrollProvider() / collapseRange).coerceIn(0f, 1f)
+        },
         modifier = HzPadding.then(Modifier.statusBarsPadding())
     ) {
         SnackImage(
@@ -298,7 +299,7 @@ private fun Image(
 
 @Composable
 private fun CollapsingImageLayout(
-    collapseFraction: Float,
+    collapseFractionProvider: () -> Float,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -307,6 +308,7 @@ private fun CollapsingImageLayout(
         content = content
     ) { measurables, constraints ->
         check(measurables.size == 1)
+        val collapseFraction = collapseFractionProvider()
 
         val imageMaxSize = min(ExpandedImageSize.roundToPx(), constraints.maxWidth)
         val imageMinSize = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
