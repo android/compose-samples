@@ -71,7 +71,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta02"
+            const val version = "1.1.0-beta03"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -120,7 +120,7 @@ object Libs {
         }
 
         object Window {
-            const val window = "androidx.window:window:1.0.0-beta02"
+            const val window = "androidx.window:window:1.0.0-beta04"
         }
     }
 
