@@ -25,7 +25,7 @@ object Libs {
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.21.2-beta"
+        const val version = "0.21.3-beta"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
@@ -71,7 +71,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta02"
+            const val version = "1.1.0-beta03"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -120,7 +120,7 @@ object Libs {
         }
 
         object Window {
-            const val window = "androidx.window:window:1.0.0-beta02"
+            const val window = "androidx.window:window:1.0.0-beta04"
         }
     }
 

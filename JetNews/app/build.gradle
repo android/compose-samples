@@ -118,7 +118,7 @@ dependencies {
 
     implementation 'androidx.navigation:navigation-compose:2.4.0-beta02'
 
-    implementation "androidx.window:window:1.0.0-beta03"
+    implementation "androidx.window:window:1.0.0-beta04"
 
     androidTestImplementation 'androidx.test:core:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'

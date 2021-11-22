@@ -23,7 +23,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker.Companion.getOrCreate
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.isBookPosture
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         /**
          * Flow of [DevicePosture] that emits every time there's a change in the windowLayoutInfo
          */
-        val devicePosture = windowInfoRepository().windowLayoutInfo
+        val devicePosture = getOrCreate(this).windowLayoutInfo(this)
             .flowWithLifecycle(this.lifecycle)
             .map { layoutInfo ->
                 val foldingFeature =

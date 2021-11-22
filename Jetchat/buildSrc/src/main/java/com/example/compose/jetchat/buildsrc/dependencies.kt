@@ -29,7 +29,7 @@ object Libs {
     const val material3 = "com.google.android.material:material:1.5.0-alpha05"
 
     object Accompanist {
-        const val version = "0.21.2-beta"
+        const val version = "0.21.3-beta"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta02"
+            const val version = "1.1.0-beta03"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
