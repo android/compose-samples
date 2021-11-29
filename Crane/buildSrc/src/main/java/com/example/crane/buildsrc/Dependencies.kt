@@ -25,8 +25,8 @@ object Libs {
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
-        const val maps = "com.google.android.libraries.maps:maps:3.1.0-beta"
-        const val mapsKtx = "com.google.maps.android:maps-v3-ktx:2.2.0"
+        const val maps = "com.google.android.gms:play-services-maps:18.0.0"
+        const val mapsKtx = "com.google.maps.android:maps-ktx:2.3.0"
     }
 
     object Volley {

@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.MapView
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 
 /**
  * Remembers a MapView and gives it the lifecycle of the current LifecycleOwner
