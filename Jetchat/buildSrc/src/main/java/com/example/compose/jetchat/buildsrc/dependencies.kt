@@ -74,7 +74,7 @@ object Libs {
 
             object Material3 {
                 const val snapshot = ""
-                const val version = "1.0.0-alpha02"
+                const val version = "1.0.0-alpha01"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
