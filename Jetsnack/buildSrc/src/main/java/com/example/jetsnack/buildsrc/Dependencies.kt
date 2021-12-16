@@ -24,14 +24,14 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
 
     object Accompanist {
-        const val version = "0.21.3-beta"
+        const val version = "0.22.0-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }
 
     object Kotlin {
-        private const val version = "1.5.31"
+        private const val version = "1.6.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -49,7 +49,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta03"
+            const val version = "1.1.0-rc02"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -68,16 +68,16 @@ object Libs {
         }
 
         object Lifecycle {
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
         }
 
         object Navigation {
-            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-beta02"
+            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.0-rc01"
         }
 
         object ConstraintLayout {
             const val constraintLayoutCompose =
-                "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc01"
+                "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
         }
 
         object Test {
@@ -99,6 +99,6 @@ object Libs {
     }
 
     object Coil {
-        const val coilCompose = "io.coil-kt:coil-compose:1.3.2"
+        const val coilCompose = "io.coil-kt:coil-compose:1.4.0"
     }
 }
