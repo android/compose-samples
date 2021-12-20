@@ -26,15 +26,15 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
-    const val material3 = "com.google.android.material:material:1.5.0-alpha05"
+    const val material3 = "com.google.android.material:material:1.5.0-rc01"
 
     object Accompanist {
-        const val version = "0.21.3-beta"
+        const val version = "0.22.0-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Kotlin {
-        private const val version = "1.5.31"
+        private const val version = "1.6.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -48,7 +48,7 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.3.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.4.0"
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
 
         object Activity {
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-beta03"
+            const val version = "1.1.0-rc01"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -74,7 +74,7 @@ object Libs {
 
             object Material3 {
                 const val snapshot = ""
-                const val version = "1.0.0-alpha01"
+                const val version = "1.0.0-alpha02"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
