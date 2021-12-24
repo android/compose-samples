@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -84,43 +85,47 @@ private val defaultSpacerSize = 16.dp
 @Composable
 fun PostContent(
     post: Post,
-    state: LazyListState = rememberLazyListState(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    state: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
+        modifier = modifier.padding(horizontal = defaultSpacerSize),
         state = state,
-        modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
+        postContentItems(post)
+    }
+}
+
+fun LazyListScope.postContentItems(post: Post) {
+    item {
+        Spacer(Modifier.height(defaultSpacerSize))
+        PostHeaderImage(post)
+    }
+    item {
+        Text(text = post.title, style = MaterialTheme.typography.h4)
+        Spacer(Modifier.height(8.dp))
+    }
+    post.subtitle?.let { subtitle ->
         item {
-            Spacer(Modifier.height(defaultSpacerSize))
-            PostHeaderImage(post)
-        }
-        item {
-            Text(text = post.title, style = MaterialTheme.typography.h4)
-            Spacer(Modifier.height(8.dp))
-        }
-        post.subtitle?.let { subtitle ->
-            item {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.body2,
-                        lineHeight = 20.sp
-                    )
-                }
-                Spacer(Modifier.height(defaultSpacerSize))
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.body2,
+                    lineHeight = 20.sp
+                )
             }
+            Spacer(Modifier.height(defaultSpacerSize))
         }
-        item {
-            PostMetadata(post.metadata)
-            Spacer(Modifier.height(24.dp))
-        }
-        items(post.paragraphs) {
-            Paragraph(paragraph = it)
-        }
-        item {
-            Spacer(Modifier.height(48.dp))
-        }
+    }
+    item {
+        PostMetadata(post.metadata)
+        Spacer(Modifier.height(24.dp))
+    }
+    items(post.paragraphs) {
+        Paragraph(paragraph = it)
+    }
+    item {
+        Spacer(Modifier.height(48.dp))
     }
 }
 

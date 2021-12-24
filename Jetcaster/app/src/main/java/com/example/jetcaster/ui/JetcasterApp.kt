@@ -16,47 +16,50 @@
 
 package com.example.jetcaster.ui
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
+import com.example.jetcaster.ui.player.PlayerScreen
+import com.example.jetcaster.ui.player.PlayerViewModel
+import com.example.jetcaster.util.DevicePosture
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun JetcasterApp() {
-    val context = LocalContext.current
-    var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
-
-    // TODO: add some navigation
-    if (isOnline) {
-        Home()
+fun JetcasterApp(
+    devicePosture: StateFlow<DevicePosture>,
+    appState: JetcasterAppState = rememberJetcasterAppState()
+) {
+    if (appState.isOnline) {
+        NavHost(
+            navController = appState.navController,
+            startDestination = Screen.Home.route
+        ) {
+            composable(Screen.Home.route) { backStackEntry ->
+                Home(
+                    navigateToPlayer = { episodeUri ->
+                        appState.navigateToPlayer(episodeUri, backStackEntry)
+                    }
+                )
+            }
+            composable(Screen.Player.route) { backStackEntry ->
+                val playerViewModel: PlayerViewModel = viewModel(
+                    factory = PlayerViewModel.provideFactory(
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
+                )
+                PlayerScreen(playerViewModel, devicePosture, onBackPress = appState::navigateBack)
+            }
+        }
     } else {
-        OfflineDialog { isOnline = checkIfOnline(context) }
-    }
-}
-
-@Suppress("DEPRECATION")
-private fun checkIfOnline(context: Context): Boolean {
-    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-
-        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-    } else {
-        cm.activeNetworkInfo?.isConnectedOrConnecting == true
+        OfflineDialog { appState.refreshOnline() }
     }
 }
 

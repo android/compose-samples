@@ -27,14 +27,11 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.IconToggleButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -49,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
-import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,6 +53,7 @@ import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.utils.BookmarkButton
 
 @Composable
 fun AuthorAndReadTime(
@@ -128,7 +125,8 @@ fun PostCardSimple(
             isBookmarked = isFavorite,
             onClick = onToggleFavorite,
             // Remove button semantics so action can be handled at row level
-            modifier = Modifier.clearAndSetSemantics {}
+            modifier = Modifier.clearAndSetSemantics {},
+            contentAlpha = ContentAlpha.medium
         )
     }
 }
@@ -198,33 +196,6 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                 )
             }
         )
-    }
-}
-
-@Composable
-fun BookmarkButton(
-    isBookmarked: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val clickLabel = stringResource(
-        if (isBookmarked) R.string.unbookmark else R.string.bookmark
-    )
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        IconToggleButton(
-            checked = isBookmarked,
-            onCheckedChange = { onClick() },
-            modifier = modifier.semantics {
-                // Use a custom click label that accessibility services can communicate to the user.
-                // We only want to override the label, not the actual action, so for the action we pass null.
-                this.onClick(label = clickLabel, action = null)
-            }
-        ) {
-            Icon(
-                imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                contentDescription = null // handled by click label of parent
-            )
-        }
     }
 }
 

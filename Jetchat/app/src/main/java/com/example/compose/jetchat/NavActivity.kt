@@ -20,7 +20,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.DrawerValue.Closed
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,6 +47,7 @@ import kotlinx.coroutines.launch
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,14 +62,14 @@ class NavActivity : AppCompatActivity() {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides this.onBackPressedDispatcher
                 ) {
-                    val scaffoldState = rememberScaffoldState()
+                    val drawerState = rememberDrawerState(initialValue = Closed)
 
                     val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
                     if (drawerOpen) {
                         // Open drawer and reset state in VM.
                         LaunchedEffect(Unit) {
                             try {
-                                scaffoldState.drawerState.open()
+                                drawerState.open()
                             } catch (ignore: CancellationException) {
                             } finally {
                                 viewModel.resetOpenDrawerAction()
@@ -76,27 +79,27 @@ class NavActivity : AppCompatActivity() {
 
                     // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
-                    if (scaffoldState.drawerState.isOpen) {
+                    if (drawerState.isOpen) {
                         BackPressHandler {
                             scope.launch {
-                                scaffoldState.drawerState.close()
+                                drawerState.close()
                             }
                         }
                     }
 
                     JetchatScaffold(
-                        scaffoldState,
+                        drawerState = drawerState,
                         onChatClicked = {
-                            findNavController().popBackStack(R.id.nav_home, true)
+                            findNavController().popBackStack(R.id.nav_home, false)
                             scope.launch {
-                                scaffoldState.drawerState.close()
+                                drawerState.close()
                             }
                         },
                         onProfileClicked = {
                             val bundle = bundleOf("userId" to it)
                             findNavController().navigate(R.id.nav_profile, bundle)
                             scope.launch {
-                                scaffoldState.drawerState.close()
+                                drawerState.close()
                             }
                         }
                     ) {

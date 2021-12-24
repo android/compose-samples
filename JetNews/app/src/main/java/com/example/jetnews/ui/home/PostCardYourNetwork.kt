@@ -36,11 +36,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.data.posts.impl.post1
+import com.example.jetnews.data.posts.impl.post2
+import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.data.posts.impl.post4
+import com.example.jetnews.data.posts.impl.post5
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
-import com.example.jetnews.model.PostPreviewParameterProvider
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
@@ -96,7 +101,9 @@ fun PostCardPopular(
 @Preview("Regular colors")
 @Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
+fun PreviewPostCardPopular(
+    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+) {
     JetnewsTheme {
         Surface {
             PostCardPopular(post, {})
@@ -106,7 +113,9 @@ fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class
 
 @Preview("Regular colors, long text")
 @Composable
-fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
+fun PreviewPostCardPopularLongText(
+    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+) {
     val loremIpsum =
         """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
@@ -130,4 +139,28 @@ fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvide
             )
         }
     }
+}
+
+/**
+ * Provides sample [Post] instances for Composable Previews.
+ *
+ * When creating a Composable Preview using @Preview, you can pass sample data
+ * by annotating a parameter with @PreviewParameter:
+ *
+ * ```
+ * @Preview
+ * @Composable
+ * fun MyPreview(@PreviewParameter(PostPreviewParameterProvider::class, limit = 2) post: Post) {
+ *   MyComposable(post)
+ * }
+ * ```
+ *
+ * In this simple app we just return the hard-coded posts. When the app
+ * would be more complex - e.g. retrieving the posts from a server - this would
+ * be the right place to instantiate dummy instances.
+ */
+class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
+    override val values = sequenceOf(
+        post1, post2, post3, post4, post5
+    )
 }

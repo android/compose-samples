@@ -18,7 +18,7 @@ This sample showcases:
 * Text Input and focus management
 * Multiple types of animations and transitions
 * Saved state across configuration changes
-* Basic Material Design theming
+* Material Design 3 theming and Material You dynamic color
 * UI tests
 
 <img src="screenshots/jetchat.gif"/>
@@ -50,28 +50,14 @@ This sample is laid out [edge-to-edge](https://medium.com/androiddevelopers/gest
 
 The sample also supports synchronized IME transitions when running on API 30+ devices. See the use of `Modifier.navigationBarsWithImePadding()` in [ConversationContent](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
 
-<img src="screenshots/ime-transition.gif" />
-
 The sample uses the
 [Accompanist Insets library](https://google.github.io/accompanist/insets/) for WindowInsets support.
 
 ### Saved state across configuration changes
 Some composable state survives activity or process recreation, like `currentInputSelector` in [UserInput](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
 
-### Basic Material Design theming
-Jetchat follows the Material Design principles and uses the `MaterialTheme` ambient, with custom light and dark themes. In some cases colors it might be necessary to create additional colors, that can be specified as an overlay or combination of two, or as a specific elevation in dark mode. Jetchat uses some convenient extensions on the Material palette and can be used as follows:
-
-[UserInput](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt)
-```kotlin
-@Composable
-fun getSelectorExpandedColor(): Color {
-    return if (MaterialTheme.colors.isLight) {
-        MaterialTheme.colors.compositedOnSurface(0.04f)
-    } else {
-        MaterialTheme.colors.elevatedSurface(8.dp)
-    }
-}
-```
+### Material Design 3 theming and Material You dynamic color
+Jetchat follows the [Material Design 3](https://m3.material.io) principles and uses the `MaterialTheme` composable and M3 components. On Android 12+ Jetchat supports Material You dynamic color, which extracts a custom color scheme from the device wallpaper. Jetchat uses a custom, branded color scheme as a fallback. It also implements custom typography using the Karla and Montserrat font families.
 
 ### UI tests
 In [androidTest](app/src/androidTest/java/com/example/compose/jetchat) you'll find a suite of UI tests that showcase interesting patterns in Compose:

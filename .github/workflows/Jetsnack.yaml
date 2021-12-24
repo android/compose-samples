@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/Jetsnack.yaml'
       - 'Jetsnack/**'
   pull_request:
     paths:
+      - '.github/workflows/Jetsnack.yaml'
       - 'Jetsnack/**'
 
 env:
@@ -41,9 +43,25 @@ jobs:
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
-      - name: Build project
+      - name: Check spotless
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew spotlessCheck assembleDebug lintDebug --stacktrace
+        run: ./gradlew spotlessCheck --stacktrace
+
+      - name: Check lint
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew lintDebug --stacktrace
+
+      - name: Build debug
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Build release
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Run local tests
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew testDebug --stacktrace
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2

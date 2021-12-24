@@ -29,7 +29,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.14.2'
+    id 'com.diffplug.spotless' version '6.0.0'
 }
 
 subprojects {
@@ -71,14 +71,6 @@ subprojects {
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
-        }
-    }
-    // Forcing to use the snapshot version
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { details ->
-            if (details.requested.group.startsWith('androidx.compose')) {
-                details.useVersion Libs.AndroidX.Compose.version
-            }
         }
     }
 }
