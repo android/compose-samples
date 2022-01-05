@@ -70,10 +70,7 @@ class NavigationTest {
         startActivity()
         // The first screen should be the onboarding screen.
         // Assert that the FAB label for the onboarding screen exists:
-        composeTestRule.onNodeWithContentDescription(
-            label = getOnboardingFabLabel(),
-            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-        ).assertExists()
+        composeTestRule.onNodeWithContentDescription(getOnboardingFabLabel()).assertExists()
     }
 
     @Test
@@ -83,10 +80,7 @@ class NavigationTest {
 
         // Navigate to the next screen by clicking on the FAB
         val fabLabel = getOnboardingFabLabel()
-        composeTestRule.onNodeWithContentDescription(
-            label = fabLabel,
-            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-        ).performClick()
+        composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
 
         // The first course should be shown
         composeTestRule.onNodeWithText(
