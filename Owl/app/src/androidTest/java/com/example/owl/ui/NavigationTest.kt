@@ -39,8 +39,6 @@ class NavigationTest {
 
     /**
      * Using an empty activity to have control of the content that is set.
-     *
-     * This activity must be declared in the manifest (see src/debug/AndroidManifest.xml)
      */
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
