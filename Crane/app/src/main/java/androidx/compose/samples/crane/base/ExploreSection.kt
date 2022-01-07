@@ -129,7 +129,7 @@ private fun ExploreItem(
         Column {
             Text(
                 text = item.city.nameToDisplay,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6.copy(color = Color.DarkGray)
             )
             Spacer(Modifier.height(8.dp))
             Text(
