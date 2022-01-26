@@ -33,6 +33,7 @@ import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -47,14 +48,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.example.jetnews.utils.WindowSize
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
 fun JetnewsApp(
     appContainer: AppContainer,
-    windowSize: WindowSize
+    widthSizeClass: WindowWidthSizeClass
 ) {
     JetnewsTheme {
         val systemUiController = rememberSystemUiController()
@@ -74,7 +74,7 @@ fun JetnewsApp(
         val currentRoute =
             navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
-        val isExpandedScreen = windowSize == WindowSize.Expanded
+        val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
         val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
         ModalDrawer(
