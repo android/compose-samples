@@ -17,11 +17,11 @@
 package com.example.compose.jetchat.buildsrc
 
 object Versions {
-    const val ktlint = "0.43.0"
+    const val ktlint = "0.43.2"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     const val junit = "junit:junit:4.13"
@@ -29,7 +29,7 @@ object Libs {
     const val material3 = "com.google.android.material:material:1.5.0-rc01"
 
     object Accompanist {
-        const val version = "0.22.0-rc"
+        const val version = "0.22.1-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -41,14 +41,14 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.5.2"
+        private const val version = "1.6.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.4.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
 
         object Activity {
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc01"
+            const val version = "1.1.0-rc03"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -81,7 +81,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.5"
+            private const val version = "2.4.0"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }

@@ -17,11 +17,11 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.43.0"
+    const val ktLint = "0.43.2"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
@@ -34,7 +34,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val version = "0.22.0-rc"
+        const val version = "0.22.1-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -45,7 +45,7 @@ object Libs {
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
 
         object Coroutines {
-            private const val version = "1.5.2"
+            private const val version = "1.6.0"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
             const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
@@ -56,11 +56,11 @@ object Libs {
             const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
 
-        const val appcompat = "androidx.appcompat:appcompat:1.4.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc01"
+            const val version = "1.1.0-rc03"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"

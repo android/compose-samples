@@ -17,14 +17,14 @@
 package com.example.owl.buildsrc
 
 object Versions {
-    const val ktlint = "0.43.0"
+    const val ktlint = "0.43.2"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
 
     object Accompanist {
-        const val version = "0.22.0-rc"
+        const val version = "0.22.1-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -36,7 +36,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.5.2"
+        private const val version = "1.6.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -49,7 +49,7 @@ object Libs {
 
     object AndroidX {
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
-        const val navigation = "androidx.navigation:navigation-compose:2.4.0-rc01"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0"
 
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:1.4.0"
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc01"
+            const val version = "1.1.0-rc03"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
