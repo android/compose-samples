@@ -37,10 +37,10 @@ sealed interface DevicePosture {
 @OptIn(ExperimentalContracts::class)
 fun isTableTopPosture(foldFeature: FoldingFeature?): Boolean {
     contract { returns(true) implies (foldFeature != null) }
-    return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+    return foldFeature?.isSeparating == true &&
         foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
 }
 
 fun isBookPosture(foldFeature: FoldingFeature?) =
-    foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+    foldFeature?.isSeparating == true &&
         foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
