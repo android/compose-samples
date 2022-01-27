@@ -17,15 +17,15 @@
 package com.example.jetcaster.buildsrc
 
 object Versions {
-    const val ktlint = "0.43.0"
+    const val ktlint = "0.43.2"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.22.0-rc"
+        const val version = "0.22.1-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
@@ -38,7 +38,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.5.2"
+        private const val version = "1.6.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -56,7 +56,7 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.4.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
         const val palette = "androidx.palette:palette:1.0.0"
 
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
@@ -71,7 +71,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc01"
+            const val version = "1.1.0-rc03"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -96,7 +96,7 @@ object Libs {
         }
 
         object Navigation {
-            const val navigation = "androidx.navigation:navigation-compose:2.4.0-rc01"
+            const val navigation = "androidx.navigation:navigation-compose:2.4.0"
         }
 
         object Test {
@@ -120,7 +120,7 @@ object Libs {
         }
 
         object Window {
-            const val window = "androidx.window:window:1.0.0-rc01"
+            const val window = "androidx.window:window:1.0.0"
         }
     }
 
