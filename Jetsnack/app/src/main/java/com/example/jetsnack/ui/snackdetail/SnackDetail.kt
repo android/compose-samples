@@ -84,6 +84,7 @@ import kotlin.math.min
 @VisibleForTesting const val DETAILS_HEADER = "detailsHeader"
 @VisibleForTesting const val DETAILS_TEXT = "detailsText"
 @VisibleForTesting const val ADD_TO_CART_BUTTON = "addToCartButton"
+@VisibleForTesting const val EXPAND_DETAILS_BUTTON = "expandDetailsText"
 
 private val BottomBarHeight = 56.dp
 private val TitleHeight = 128.dp
@@ -203,7 +204,7 @@ private fun Body(
                             .clickable {
                                 seeMore = !seeMore
                             }
-                            .testTag("seemore")
+                            .testTag(EXPAND_DETAILS_BUTTON)
                     )
                     Spacer(Modifier.height(40.dp))
                     Text(

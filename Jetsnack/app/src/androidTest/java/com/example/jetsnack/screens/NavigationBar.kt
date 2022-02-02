@@ -2,7 +2,8 @@ package com.example.jetsnack.screens
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import com.example.jetsnack.util.*
+import com.example.jetsnack.util.BaseUITestHelper
+import com.example.jetsnack.util.Constants
 
 /**
  * Created by André Schabrocker on 2022-02-01

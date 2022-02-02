@@ -1,9 +1,5 @@
 package com.example.jetsnack.tests
 
-import android.view.KeyEvent
-import androidx.compose.ui.test.*
-import com.example.jetsnack.R
-import com.example.jetsnack.model.*
 import com.example.jetsnack.screens.NavigationBar
 import com.example.jetsnack.screens.ProductDetails
 import com.example.jetsnack.util.BaseUITest

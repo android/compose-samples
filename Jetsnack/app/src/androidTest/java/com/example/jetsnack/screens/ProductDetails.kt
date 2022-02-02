@@ -3,8 +3,9 @@ package com.example.jetsnack.screens
 import android.view.KeyEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.*
 import com.example.jetsnack.R
+import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.components.*
 import com.example.jetsnack.ui.home.cart.CART_ITEM
@@ -39,7 +40,7 @@ object ProductDetails : BaseUITestHelper() {
 
                 composeTestRule.onNodeWithTag(DETAILS_HEADER)
                     .assertIsDisplayed()
-                    .assert(hasText(applicationContext.getString(R.string.detail_header)))
+                    .assert(hasText(applicationContext.resources.getString(R.string.detail_header)))
             }
             // open Product via Cart-Tab and check that product details are displayed
             is EntryPoint.Cart -> {
@@ -49,7 +50,7 @@ object ProductDetails : BaseUITestHelper() {
 
                 composeTestRule.onNodeWithTag(DETAILS_HEADER)
                     .assertIsDisplayed()
-                    .assert(hasText(applicationContext.getString(R.string.detail_header)))
+                    .assert(hasText(applicationContext.resources.getString(R.string.detail_header)))
             }
             // search for "Cheese", open Product and check that product details are displayed
             is EntryPoint.Search -> {
@@ -71,7 +72,7 @@ object ProductDetails : BaseUITestHelper() {
 
                 composeTestRule.onNodeWithTag(DETAILS_HEADER)
                     .assertIsDisplayed()
-                    .assert(hasText(applicationContext.getString(R.string.detail_header)))
+                    .assert(hasText(applicationContext.resources.getString(R.string.detail_header)))
             }
         }
     }
@@ -91,7 +92,7 @@ object ProductDetails : BaseUITestHelper() {
 
         composeTestRule.onNodeWithTag(QUANTITY_TEXT)
             .assertIsDisplayed()
-            .assert(hasText(applicationContext.getString(R.string.quantity)))
+            .assert(hasText(applicationContext.resources.getString(R.string.quantity)))
 
         composeTestRule.onNodeWithTag(ITEM_QUANTITY)
             .assertIsDisplayed()
@@ -99,15 +100,38 @@ object ProductDetails : BaseUITestHelper() {
 
         composeTestRule.onNodeWithTag(ADD_TO_CART_BUTTON)
             .assertIsDisplayed()
-            .assert(hasText(applicationContext.getString(R.string.add_to_cart)))
+            .assert(hasText(applicationContext.resources.getString(R.string.add_to_cart)))
 
         composeTestRule.onNodeWithTag(DETAILS_HEADER)
             .assertIsDisplayed()
-            .assert(hasText(applicationContext.getString(R.string.detail_header)))
+            .assert(hasText(applicationContext.resources.getString(R.string.detail_header)))
 
         composeTestRule.onNodeWithTag(DETAILS_TEXT)
             .assertIsDisplayed()
-            .assert(hasText(applicationContext.getString(R.string.detail_placeholder)))
+            .assert(hasText(applicationContext.resources.getString(R.string.detail_placeholder)))
+
+        // scroll to hidden elements
+        UiScrollable(UiSelector().scrollable(true)).scrollToEnd(1)
+
+        // check elements
+        composeTestRule.onAllNodesWithTag(EXPAND_DETAILS_BUTTON)
+            .onFirst()
+            .performClick()
+
+        composeTestRule.onNodeWithText(applicationContext.resources.getString(R.string.ingredients))
+            .assertIsDisplayed()
+
+        composeTestRule.onNodeWithText(applicationContext.resources.getString(R.string.ingredients_list))
+            .assertIsDisplayed()
+
+        composeTestRule.onAllNodesWithTag(SNACK_COLLECTION_NAME_TEXT)
+            .onFirst()
+            .assert(hasText(SnackRepo.getRelated(6L)[0].name))
+        composeTestRule.onAllNodesWithTag(SNACK_IMAGE, true)
+            .assertCountEquals(6)
+
+        composeTestRule.onAllNodesWithTag(SNACK_TITLE, true)
+            .assertCountEquals(6)
     }
 
     fun changeQuantityOfItem(quantity: Quantity, composeTestRule: ComposeTestRule) {

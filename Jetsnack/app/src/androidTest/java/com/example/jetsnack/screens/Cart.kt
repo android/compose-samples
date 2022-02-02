@@ -49,7 +49,7 @@ import com.example.jetsnack.util.Constants
 
         composeTestRule.onAllNodesWithTag(QUANTITY_TEXT, true)
             .assertCountEquals(3)
-            .assertAll(hasText(applicationContext.getString(R.string.quantity)))
+            .assertAll(hasText(applicationContext.resources.getString(R.string.quantity)))
 
         composeTestRule.onAllNodesWithTag(ITEM_QUANTITY, true)
             .assertCountEquals(3)
@@ -117,7 +117,7 @@ import com.example.jetsnack.util.Constants
         composeTestRule.onNodeWithTag(CHECKOUT_BUTTON)
             .assertIsDisplayed()
             .assertIsEnabled()
-            .assert(hasText(applicationContext.getString(R.string.cart_checkout)))
+            .assert(hasText(applicationContext.resources.getString(R.string.cart_checkout)))
             .performClick()
 
         // scroll to hidden elements
