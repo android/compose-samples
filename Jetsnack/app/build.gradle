@@ -32,6 +32,7 @@ android {
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     signingConfigs {
@@ -68,6 +69,11 @@ android {
         renderScript false
         resValues false
         shaders false
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+        animationsDisabled true
     }
 
     composeOptions {
@@ -113,9 +119,12 @@ dependencies {
     androidTestImplementation Libs.JUnit.junit
     androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.runner
-    androidTestImplementation Libs.AndroidX.Test.espressoCore
+    androidTestImplementation Libs.AndroidX.Test.Espresso.espressoCore
+    androidTestImplementation Libs.AndroidX.Test.UiAutomator.uiautomator
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.Coroutines.test
     androidTestImplementation Libs.AndroidX.Compose.uiTest
+
+    androidTestUtil Libs.AndroidX.Test.orchestrator
 }

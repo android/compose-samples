@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
+
+@VisibleForTesting const val INCREASE_QUANTITY = "increaseQuantity"
+@VisibleForTesting const val DECREASE_QUANTITY = "decreaseQuantity"
+@VisibleForTesting const val QUANTITY_TEXT = "quantityText"
+@VisibleForTesting const val ITEM_QUANTITY = "itemQuantity"
 
 @Composable
 fun QuantitySelector(
@@ -58,13 +65,14 @@ fun QuantitySelector(
                 modifier = Modifier
                     .padding(end = 18.dp)
                     .align(Alignment.CenterVertically)
+                    .testTag(QUANTITY_TEXT)
             )
         }
         JetsnackGradientTintedIconButton(
             imageVector = Icons.Default.Remove,
             onClick = decreaseItemCount,
             contentDescription = stringResource(R.string.label_decrease),
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically).testTag(DECREASE_QUANTITY)
         )
         Crossfade(
             targetState = count,
@@ -77,14 +85,14 @@ fun QuantitySelector(
                 fontSize = 18.sp,
                 color = JetsnackTheme.colors.textPrimary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.widthIn(min = 24.dp)
+                modifier = Modifier.widthIn(min = 24.dp).testTag(ITEM_QUANTITY)
             )
         }
         JetsnackGradientTintedIconButton(
             imageVector = Icons.Default.Add,
             onClick = increaseItemCount,
             contentDescription = stringResource(R.string.label_increase),
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically).testTag(INCREASE_QUANTITY)
         )
     }
 }

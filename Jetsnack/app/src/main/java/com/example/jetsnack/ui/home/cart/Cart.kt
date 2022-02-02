@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -58,6 +59,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -82,6 +84,21 @@ import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 import com.google.accompanist.insets.statusBarsHeight
+
+
+
+@VisibleForTesting const val CART_HEADLINE = "cartHeadline"
+@VisibleForTesting const val CART_ITEM = "cartItem"
+@VisibleForTesting const val REMOVE_ITEM = "removeItem"
+@VisibleForTesting const val PRODUCT_IMAGE = "productImage"
+@VisibleForTesting const val CART_SUMMARY_TITLE = "summaryTitle"
+@VisibleForTesting const val CART_SUBTOTAL_TITLE = "subtotalTitle"
+@VisibleForTesting const val CART_SUBTOTAL_PRICE = "subtotalPrice"
+@VisibleForTesting const val CART_SHIPPING_TITLE = "shippingTotal"
+@VisibleForTesting const val CART_SHIPPING_PRICE = "shippingPrice"
+@VisibleForTesting const val CART_TOTAL_TITLE = "totalTitle"
+@VisibleForTesting const val CART_TOTAL_PRICE = "totalPrice"
+@VisibleForTesting const val CHECKOUT_BUTTON = "checkoutButton"
 
 @Composable
 fun Cart(
@@ -160,6 +177,7 @@ private fun CartContent(
                     .heightIn(min = 56.dp)
                     .padding(horizontal = 24.dp, vertical = 4.dp)
                     .wrapContentHeight()
+                    .testTag(CART_HEADLINE)
             )
         }
         items(orderLines) { orderLine ->
@@ -284,6 +302,7 @@ fun CartItem(
             .clickable { onSnackClick(snack.id) }
             .background(JetsnackTheme.colors.uiBackground)
             .padding(horizontal = 24.dp)
+            .testTag(CART_ITEM)
 
     ) {
         val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
@@ -298,6 +317,7 @@ fun CartItem(
                     bottom.linkTo(parent.bottom, margin = 16.dp)
                     start.linkTo(parent.start)
                 }
+                .testTag(PRODUCT_IMAGE)
         )
         Text(
             text = snack.name,
@@ -321,6 +341,7 @@ fun CartItem(
                     end.linkTo(parent.end)
                 }
                 .padding(top = 12.dp)
+                .testTag(REMOVE_ITEM)
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
@@ -398,6 +419,7 @@ fun SummaryItem(
                 .padding(horizontal = 24.dp)
                 .heightIn(min = 56.dp)
                 .wrapContentHeight()
+                .testTag(CART_SUMMARY_TITLE)
         )
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
@@ -407,11 +429,13 @@ fun SummaryItem(
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
                     .alignBy(LastBaseline)
+                    .testTag(CART_SUBTOTAL_TITLE)
             )
             Text(
                 text = formatPrice(subtotal),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.alignBy(LastBaseline)
+                    .testTag(CART_SUBTOTAL_PRICE)
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
@@ -422,11 +446,13 @@ fun SummaryItem(
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
                     .alignBy(LastBaseline)
+                    .testTag(CART_SHIPPING_TITLE)
             )
             Text(
                 text = formatPrice(shippingCosts),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.alignBy(LastBaseline)
+                    .testTag(CART_SHIPPING_PRICE)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -440,11 +466,13 @@ fun SummaryItem(
                     .padding(end = 16.dp)
                     .wrapContentWidth(Alignment.End)
                     .alignBy(LastBaseline)
+                    .testTag(CART_TOTAL_TITLE)
             )
             Text(
                 text = formatPrice(subtotal + shippingCosts),
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier.alignBy(LastBaseline)
+                    .testTag(CART_TOTAL_PRICE)
             )
         }
         JetsnackDivider()
@@ -468,6 +496,7 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .padding(horizontal = 12.dp, vertical = 8.dp)
                     .weight(1f)
+                    .testTag(CHECKOUT_BUTTON)
             ) {
                 Text(
                     text = stringResource(id = R.string.cart_checkout),

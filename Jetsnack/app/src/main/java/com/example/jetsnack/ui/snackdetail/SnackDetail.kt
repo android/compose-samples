@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,6 +52,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -78,6 +80,10 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 import kotlin.math.min
+
+@VisibleForTesting const val DETAILS_HEADER = "detailsHeader"
+@VisibleForTesting const val DETAILS_TEXT = "detailsText"
+@VisibleForTesting const val ADD_TO_CART_BUTTON = "addToCartButton"
 
 private val BottomBarHeight = 56.dp
 private val TitleHeight = 128.dp
@@ -167,6 +173,7 @@ private fun Body(
                         style = MaterialTheme.typography.overline,
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
+                            .testTag(DETAILS_HEADER)
                     )
                     Spacer(Modifier.height(16.dp))
                     var seeMore by remember { mutableStateOf(true) }
@@ -177,6 +184,7 @@ private fun Body(
                         maxLines = if (seeMore) 5 else Int.MAX_VALUE,
                         overflow = TextOverflow.Ellipsis,
                         modifier = HzPadding
+                            .testTag(DETAILS_TEXT)
                     )
                     val textButton = if (seeMore) {
                         stringResource(id = R.string.see_more)
@@ -195,6 +203,7 @@ private fun Body(
                             .clickable {
                                 seeMore = !seeMore
                             }
+                            .testTag("seemore")
                     )
                     Spacer(Modifier.height(40.dp))
                     Text(
@@ -349,7 +358,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                 Spacer(Modifier.width(16.dp))
                 JetsnackButton(
                     onClick = { /* todo */ },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).testTag(ADD_TO_CART_BUTTON)
                 ) {
                     Text(
                         text = stringResource(R.string.add_to_cart),

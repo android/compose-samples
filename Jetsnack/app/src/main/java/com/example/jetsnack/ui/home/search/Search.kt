@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.home.search
 
 import android.content.res.Configuration
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,6 +65,8 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringBackIcon
 import com.google.accompanist.insets.statusBarsPadding
+
+@VisibleForTesting const val SEARCH_BAR = "searchBar"
 
 @Composable
 fun Search(
@@ -229,6 +233,7 @@ private fun SearchHint() {
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize()
+            .testTag(SEARCH_BAR)
     ) {
         Icon(
             imageVector = Icons.Outlined.Search,

@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -63,6 +65,11 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
+
+@VisibleForTesting const val SNACK_COLLECTION_NAME_TEXT = "productCollectionNameText"
+@VisibleForTesting const val SNACK_COLLECTION_NAME_BUTTON = "productCollectionNameButton"
+@VisibleForTesting const val SNACK_IMAGE = "snackImage"
+@VisibleForTesting const val SNACK_TITLE = "snackTitle"
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -98,10 +105,12 @@ fun SnackCollection(
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
+                    .testTag(SNACK_COLLECTION_NAME_TEXT)
             )
             IconButton(
                 onClick = { /* todo */ },
                 modifier = Modifier.align(Alignment.CenterVertically)
+                    .testTag(SNACK_COLLECTION_NAME_BUTTON)
             ) {
                 Icon(
                     imageVector = mirroringIcon(
@@ -195,13 +204,13 @@ fun SnackItem(
                 imageUrl = snack.imageUrl,
                 elevation = 4.dp,
                 contentDescription = null,
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(120.dp).testTag(SNACK_IMAGE)
             )
             Text(
                 text = snack.name,
                 style = MaterialTheme.typography.subtitle1,
                 color = JetsnackTheme.colors.textSecondary,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp).testTag(SNACK_TITLE)
             )
         }
     }
