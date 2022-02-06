@@ -78,7 +78,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.0-rc02' // For Kotlin 1.6.10. Revert with rc03.
+        kotlinCompilerExtensionVersion '1.1.0-SNAPSHOT' // For Kotlin 1.6.10. Revert with rc03.
     }
 
     packagingOptions {

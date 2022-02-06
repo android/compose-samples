@@ -21,10 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
 
     object Accompanist {
-        const val version = "0.22.1-rc"
+        const val version = "0.22.2.compose-8131182-SNAPSHOT"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -56,8 +56,8 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.1.0-rc03"
+            const val snapshot = "8131182"
+            const val version = "1.1.0-SNAPSHOT"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -74,7 +74,7 @@ object Libs {
 
         object ConstraintLayout {
             const val constraintLayoutCompose =
-                "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+                "androidx.constraintlayout:constraintlayout-compose:1.0.0"
         }
 
         object Test {
