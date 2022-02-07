@@ -66,6 +66,7 @@ object Libs {
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
+            const val toolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
             const val test = "androidx.compose.ui:ui-test:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
             const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"

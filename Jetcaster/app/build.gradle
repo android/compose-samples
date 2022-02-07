@@ -106,7 +106,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended
-    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.toolingPreview
+    debugImplementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.AndroidX.Lifecycle.runtime
     implementation Libs.AndroidX.Lifecycle.viewmodel

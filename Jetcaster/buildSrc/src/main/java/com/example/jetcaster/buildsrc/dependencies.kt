@@ -86,6 +86,7 @@ object Libs {
             const val materialIconsExtended = "androidx.compose.material:material-icons-extended:${version}"
 
             const val tooling = "androidx.compose.ui:ui-tooling:${version}"
+            const val toolingPreview = "androidx.compose.ui:ui-tooling-preview:${version}"
         }
 
         object Lifecycle {

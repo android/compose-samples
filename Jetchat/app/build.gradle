@@ -107,11 +107,12 @@ dependencies {
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.Material3.material3
     implementation Libs.AndroidX.Compose.materialIconsExtended
-    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.toolingPreview
     implementation Libs.AndroidX.Compose.uiUtil
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.viewBinding
+    debugImplementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.Accompanist.insets
 

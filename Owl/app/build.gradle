@@ -97,7 +97,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.animation
     implementation Libs.AndroidX.Compose.iconsExtended
-    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.toolingPreview
+    debugImplementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.Accompanist.insets
 
