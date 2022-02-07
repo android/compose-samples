@@ -91,7 +91,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+        kotlinCompilerExtensionVersion '1.1.0-rc02' // For Kotlin 1.6.10. Revert with rc03
     }
 
     packagingOptions {
