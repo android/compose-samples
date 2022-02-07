@@ -42,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.CraneTheme
@@ -62,7 +63,6 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
 
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
@@ -80,7 +80,6 @@ fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
 
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -174,18 +173,35 @@ fun DetailsContent(
 }
 
 @Composable
-private fun CityMapView(latitude: String, longitude: String) {
+fun CityMapView(
+    latitude: String,
+    longitude: String,
+    cameraState: CameraPositionState = rememberSaveable(saver = CameraPositionState.Saver) { CameraPositionState() },
+    onMapLoaded: () -> Unit = {}
+) {
     val cityLocation = remember(latitude, longitude) {
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(
-            cityLocation,
-            InitialZoom
-        )
-    }
+    cameraState.position = CameraPosition.fromLatLngZoom(
+        cityLocation,
+        InitialZoom
+    )
 
+    MapViewContainer(
+        cameraPositionState = cameraState,
+        onMapLoaded = onMapLoaded
+    ) {
+        Marker(position = cityLocation)
+    }
+}
+
+@Composable
+private fun MapViewContainer(
+    cameraPositionState: CameraPositionState,
+    onMapLoaded: () -> Unit = {},
+    content: (@Composable () -> Unit)? = null
+) {
     val mapProperties = remember {
         MapProperties(
             maxZoomPreference = MaxZoom,
@@ -206,10 +222,10 @@ private fun CityMapView(latitude: String, longitude: String) {
     GoogleMap(
         properties = mapProperties,
         cameraPositionState = cameraPositionState,
-        uiSettings = mapUiSettings
-    ) {
-        Marker(position = cityLocation)
-    }
+        uiSettings = mapUiSettings,
+        onMapLoaded = onMapLoaded,
+        content = content
+    )
 }
 
 @Composable

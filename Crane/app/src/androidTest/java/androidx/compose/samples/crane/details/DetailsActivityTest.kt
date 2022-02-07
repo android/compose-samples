@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,33 @@
 
 package androidx.compose.samples.crane.details
 
-import androidx.compose.samples.crane.R
+import androidx.compose.foundation.layout.Column
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
+import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
-import com.google.android.libraries.maps.MapView
-import com.google.android.libraries.maps.model.CameraPosition
-import com.google.android.libraries.maps.model.LatLng
+import androidx.compose.ui.test.performClick
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.After
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 import kotlin.math.pow
-import kotlin.math.round
 
 @HiltAndroidTest
 class DetailsActivityTest {
-
     @Inject
     lateinit var destinationsRepository: DestinationsRepository
 
     private lateinit var cityDetails: ExploreModel
-    private lateinit var scenario: ActivityScenario<DetailsActivity>
 
     private val city = MADRID
     private val testExploreModel = ExploreModel(city, "description", "imageUrl")
@@ -59,61 +51,67 @@ class DetailsActivityTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createEmptyComposeRule()
+    val composeTestRule = createComposeRule()
+
+    private lateinit var mapState: CameraPositionState
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        cityDetails = destinationsRepository.getDestination(MADRID.name)!!
-        scenario = ActivityScenario.launch(
-            createDetailsActivityIntent(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                testExploreModel
-            )
-        )
-    }
 
-    @After
-    fun tearDown() {
-        scenario.close()
+        cityDetails = destinationsRepository.getDestination(MADRID.name)!!
+        mapState = CameraPositionState()
+
+        val countDownLatch = CountDownLatch(1)
+
+        composeTestRule.setContent {
+            CraneTheme {
+                Column {
+                    CityMapView(
+                        latitude = testExploreModel.city.latitude,
+                        longitude = testExploreModel.city.longitude,
+                        cameraState = mapState,
+                        onMapLoaded = {
+                            countDownLatch.countDown()
+                        }
+                    )
+                }
+            }
+        }
+
+        countDownLatch.await()
     }
 
     @Test
     fun mapView_cameraPositioned() {
-        composeTestRule.onNodeWithText(cityDetails.city.nameToDisplay).assertIsDisplayed()
-        composeTestRule.onNodeWithText(cityDetails.description).assertIsDisplayed()
-        onView(withId(R.id.map)).check(matches(isDisplayed()))
-
-        var cameraPosition: CameraPosition? = null
-        waitForMap(onCameraPosition = { cameraPosition = it })
-
         val expected = LatLng(
             testExploreModel.city.latitude.toDouble(),
             testExploreModel.city.longitude.toDouble()
         )
-        assert(expected.latitude == cameraPosition?.target?.latitude?.round(6))
-        assert(expected.longitude == cameraPosition?.target?.longitude?.round(6))
+        assertTrue(expected.latitude == mapState.position.target.latitude.round(6))
+        assertTrue(expected.longitude == mapState.position.target.longitude.round(6))
     }
 
-    /**
-     * As the MapView is included using the AndroidView API, it cannot be referenced using Compose
-     * testing APIs. Therefore, we use the activityRule to get an instance of the DetailsActivity
-     * an findViewById using MapView's id.
-     *
-     * As obtaining the map is an asynchronous call, we use a CountDownLatch to make this
-     * call synchronous in the test.
-     */
-    private fun waitForMap(onCameraPosition: (CameraPosition) -> Unit) {
-        val countDownLatch = CountDownLatch(1)
-        scenario.onActivity {
-            it.findViewById<MapView>(R.id.map).getMapAsync { map ->
-                onCameraPosition(map.cameraPosition)
-                countDownLatch.countDown()
-            }
-        }
-        countDownLatch.await()
+    @Test
+    fun mapView_zoomIn() {
+        val zoomBefore = mapState.position.zoom
+        composeTestRule.onNodeWithText("+")
+            .assertIsDisplayed()
+            .performClick()
+
+        assertTrue(zoomBefore < mapState.position.zoom)
+    }
+
+    @Test
+    fun mapView_zoomOut() {
+        val zoomBefore = mapState.position.zoom
+        composeTestRule.onNodeWithText("-")
+            .assertIsDisplayed()
+            .performClick()
+
+        assertTrue(zoomBefore > mapState.position.zoom)
     }
 }
 
 private fun Double.round(decimals: Int = 2): Double =
-    round(this * 10f.pow(decimals)) / 10f.pow(decimals)
+    kotlin.math.round(this * 10f.pow(decimals)) / 10f.pow(decimals)
