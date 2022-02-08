@@ -39,7 +39,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -66,10 +65,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
@@ -193,12 +189,14 @@ fun CityMapView(
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
-    // Set our initial map position when the city location changes
-    LaunchedEffect(cityLocation) {
-        cameraPositionState.position = CameraPosition.fromLatLngZoom(
-            cityLocation,
-            InitialZoom
-        )
+    // Set our initial camera position whenever the city location changes.
+    remember(cityLocation) {
+        cameraPositionState.apply {
+            position = CameraPosition.fromLatLngZoom(
+                cityLocation,
+                InitialZoom
+            )
+        }
     }
 
     MapViewContainer(

@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -38,7 +39,7 @@ import javax.inject.Inject
 import kotlin.math.pow
 
 @HiltAndroidTest
-class DetailsActivityTest {
+class CityMapViewTests {
     @Inject
     lateinit var destinationsRepository: DestinationsRepository
 
@@ -70,7 +71,7 @@ class DetailsActivityTest {
                     CityMapView(
                         latitude = testExploreModel.city.latitude,
                         longitude = testExploreModel.city.longitude,
-                        cameraState = mapState,
+                        cameraPositionState = mapState,
                         onMapLoaded = {
                             countDownLatch.countDown()
                         }
@@ -88,8 +89,9 @@ class DetailsActivityTest {
             testExploreModel.city.latitude.toDouble(),
             testExploreModel.city.longitude.toDouble()
         )
-        assertTrue(expected.latitude == mapState.position.target.latitude.round(6))
-        assertTrue(expected.longitude == mapState.position.target.longitude.round(6))
+
+        assertEquals(expected.latitude, mapState.position.target.latitude.round(6))
+        assertEquals(expected.longitude, mapState.position.target.longitude.round(6))
     }
 
     @Test
@@ -98,6 +100,9 @@ class DetailsActivityTest {
         composeTestRule.onNodeWithText("+")
             .assertIsDisplayed()
             .performClick()
+
+        // Wait for the animation to happen
+        composeTestRule.waitForIdle()
 
         assertTrue(zoomBefore < mapState.position.zoom)
     }
@@ -108,6 +113,9 @@ class DetailsActivityTest {
         composeTestRule.onNodeWithText("-")
             .assertIsDisplayed()
             .performClick()
+
+        // Wait for the animation to happen
+        composeTestRule.waitForIdle()
 
         assertTrue(zoomBefore > mapState.position.zoom)
     }
