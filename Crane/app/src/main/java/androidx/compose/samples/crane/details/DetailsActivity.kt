@@ -39,10 +39,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.CraneTheme
@@ -63,7 +64,12 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
@@ -172,32 +178,43 @@ fun DetailsContent(
     }
 }
 
+/**
+ * CityMapView
+ * A composable that shows a map centered on a location with a marker.
+ */
 @Composable
 fun CityMapView(
     latitude: String,
     longitude: String,
-    cameraState: CameraPositionState = rememberSaveable(saver = CameraPositionState.Saver) { CameraPositionState() },
-    onMapLoaded: () -> Unit = {}
+    cameraPositionState: CameraPositionState = rememberCameraPositionState(),
+    onMapLoaded: () -> Unit = {},
 ) {
     val cityLocation = remember(latitude, longitude) {
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
-    cameraState.position = CameraPosition.fromLatLngZoom(
-        cityLocation,
-        InitialZoom
-    )
+    // Set our initial map position when the city location changes
+    LaunchedEffect(cityLocation) {
+        cameraPositionState.position = CameraPosition.fromLatLngZoom(
+            cityLocation,
+            InitialZoom
+        )
+    }
 
     MapViewContainer(
-        cameraPositionState = cameraState,
+        cameraPositionState = cameraPositionState,
         onMapLoaded = onMapLoaded
     ) {
         Marker(position = cityLocation)
     }
 }
 
+/**
+ * MapViewContainer
+ * A MapView styled with custom zoom controls.
+ */
 @Composable
-private fun MapViewContainer(
+fun MapViewContainer(
     cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit = {},
     content: (@Composable () -> Unit)? = null
@@ -214,18 +231,21 @@ private fun MapViewContainer(
         MapUiSettings(zoomControlsEnabled = false)
     }
 
-    ZoomControls(
-        onZoomIn = { cameraPositionState.move(CameraUpdateFactory.zoomIn()) },
-        onZoomOut = { cameraPositionState.move(CameraUpdateFactory.zoomOut()) }
-    )
+    val animationScope = rememberCoroutineScope()
+    Column {
+        ZoomControls(
+            onZoomIn = { animationScope.launch { cameraPositionState.animate(CameraUpdateFactory.zoomIn()) } },
+            onZoomOut = { animationScope.launch { cameraPositionState.animate(CameraUpdateFactory.zoomOut()) } }
+        )
 
-    GoogleMap(
-        properties = mapProperties,
-        cameraPositionState = cameraPositionState,
-        uiSettings = mapUiSettings,
-        onMapLoaded = onMapLoaded,
-        content = content
-    )
+        GoogleMap(
+            properties = mapProperties,
+            cameraPositionState = cameraPositionState,
+            uiSettings = mapUiSettings,
+            onMapLoaded = onMapLoaded,
+            content = content
+        )
+    }
 }
 
 @Composable
