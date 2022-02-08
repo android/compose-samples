@@ -31,7 +31,7 @@ class DetailsContentTests {
     private val city = MADRID
     private val testExploreModel = ExploreModel(city, "description", "imageUrl")
 
-    @get:Rule(order = 1)
+    @get:Rule
     val composeTestRule = createComposeRule()
 
     @Before

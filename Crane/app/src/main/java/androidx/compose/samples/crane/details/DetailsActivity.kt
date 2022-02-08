@@ -39,6 +39,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -190,13 +191,11 @@ fun CityMapView(
     }
 
     // Set our initial camera position whenever the city location changes.
-    remember(cityLocation) {
-        cameraPositionState.apply {
-            position = CameraPosition.fromLatLngZoom(
-                cityLocation,
-                InitialZoom
-            )
-        }
+    LaunchedEffect(cityLocation) {
+        cameraPositionState.position = CameraPosition.fromLatLngZoom(
+            cityLocation,
+            InitialZoom
+        )
     }
 
     MapViewContainer(
