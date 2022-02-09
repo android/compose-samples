@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.22.2.compose-8131182-SNAPSHOT"
+        const val version = "0.22.2"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -62,8 +62,8 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "8131182"
-            const val version = "1.1.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.1.0"
 
             @get:JvmStatic
             val snapshotUrl: String

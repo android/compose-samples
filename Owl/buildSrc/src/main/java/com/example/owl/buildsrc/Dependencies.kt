@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
 
     object Accompanist {
-        const val version = "0.22.2.compose-8131182-SNAPSHOT"
+        const val version = "0.22.2"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -56,8 +56,8 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = "8131182"
-            const val version = "1.1.0-SNAPSHOT"
+            const val snapshot = ""
+            const val version = "1.1.0"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
