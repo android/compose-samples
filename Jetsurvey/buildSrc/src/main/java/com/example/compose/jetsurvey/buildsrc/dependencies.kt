@@ -29,7 +29,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.3.0"
 
     object Accompanist {
-        const val version = "0.22.2"
+        const val version = "0.23.0"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
