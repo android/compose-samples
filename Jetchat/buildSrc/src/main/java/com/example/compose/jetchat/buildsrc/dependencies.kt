@@ -29,7 +29,7 @@ object Libs {
     const val material3 = "com.google.android.material:material:1.5.0-rc01"
 
     object Accompanist {
-        const val version = "0.22.1-rc"
+        const val version = "0.23.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc03"
+            const val version = "1.1.0"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -75,7 +75,7 @@ object Libs {
 
             object Material3 {
                 const val snapshot = ""
-                const val version = "1.0.0-alpha02"
+                const val version = "1.0.0-alpha04"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }

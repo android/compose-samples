@@ -25,7 +25,7 @@ object Libs {
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.22.1-rc"
+        const val version = "0.23.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
@@ -66,12 +66,12 @@ object Libs {
         }
 
         object Constraint {
-            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc03"
+            const val version = "1.1.0"
 
             @get:JvmStatic
             val snapshotUrl: String

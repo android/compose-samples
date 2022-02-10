@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
 
     object Accompanist {
-        const val version = "0.22.1-rc"
+        const val version = "0.23.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
@@ -49,7 +49,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc03"
+            const val version = "1.1.0"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -78,7 +78,7 @@ object Libs {
 
         object ConstraintLayout {
             const val constraintLayoutCompose =
-                "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+                "androidx.constraintlayout:constraintlayout-compose:1.0.0"
         }
 
         object Test {
