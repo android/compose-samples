@@ -20,9 +20,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
+import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.google.android.gms.maps.model.LatLng
@@ -52,7 +53,9 @@ class CityMapViewTests {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createComposeRule()
+    // Using MainActivity so we can initialise Hilt but not have to populate savedstate for
+    // unused viewmodels.
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     private lateinit var mapState: CameraPositionState
 
