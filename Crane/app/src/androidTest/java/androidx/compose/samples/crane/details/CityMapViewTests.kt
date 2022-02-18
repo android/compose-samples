@@ -36,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.pow
 
@@ -83,7 +84,7 @@ class CityMapViewTests {
             }
         }
 
-        // countDownLatch.await()
+        countDownLatch.await(1, TimeUnit.MINUTES)
     }
 
     @Test
