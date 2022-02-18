@@ -33,6 +33,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
@@ -97,6 +98,7 @@ class CityMapViewTests {
         assertEquals(expected.longitude, mapState.position.target.longitude.round(6))
     }
 
+    @Ignore
     @Test
     fun mapView_zoomIn() {
         val zoomBefore = mapState.position.zoom
@@ -110,6 +112,7 @@ class CityMapViewTests {
         assertTrue(zoomBefore < mapState.position.zoom)
     }
 
+    @Ignore
     @Test
     fun mapView_zoomOut() {
         val zoomBefore = mapState.position.zoom
