@@ -84,7 +84,7 @@ class CityMapViewTests {
             }
         }
 
-        countDownLatch.await(1, TimeUnit.MINUTES)
+        assertTrue("Map failed to load in time.", countDownLatch.await(30, TimeUnit.SECONDS))
     }
 
     @Test
@@ -106,7 +106,7 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        composeTestRule.waitForIdle()
+        // composeTestRule.waitForIdle()
 
         assertTrue(zoomBefore < mapState.position.zoom)
     }
@@ -119,7 +119,7 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        composeTestRule.waitForIdle()
+        // composeTestRule.waitForIdle()
 
         assertTrue(zoomBefore > mapState.position.zoom)
     }
