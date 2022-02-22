@@ -31,8 +31,8 @@ if (rootProject.file("local.properties").exists()) {
 
 // For testing on CI, a key can also be provided via an environment variable.
 // The local.properties key takes precedence
-var systemGoogleMapsKey = System.getenv("GOOGLE_MAPS_KEY") ?: ""
-var googleMapsKey = properties.getProperty("google.maps.key", systemGoogleMapsKey)
+String systemGoogleMapsKey = System.getenv("GOOGLE_MAPS_KEY") ?: ""
+String googleMapsKey = properties.getProperty("google.maps.key", systemGoogleMapsKey)
 
 android {
     compileSdkVersion 31
