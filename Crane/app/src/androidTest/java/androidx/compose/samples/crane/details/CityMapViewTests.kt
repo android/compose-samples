@@ -106,7 +106,7 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        // composeTestRule.waitForIdle()
+        composeTestRule.waitForIdle()
 
         assertTrue(zoomBefore < mapState.position.zoom)
     }
@@ -119,7 +119,7 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        // composeTestRule.waitForIdle()
+        composeTestRule.waitForIdle()
 
         assertTrue(zoomBefore > mapState.position.zoom)
     }
