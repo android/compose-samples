@@ -39,7 +39,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -183,16 +182,14 @@ fun DetailsContent(
 fun CityMapView(
     latitude: String,
     longitude: String,
-    cameraPositionState: CameraPositionState = rememberCameraPositionState(),
-    onMapLoaded: () -> Unit = {},
+    onMapLoadedWithCameraState: ((CameraPositionState) -> Unit)? = null, // Exposed for use in tests
 ) {
     val cityLocation = remember(latitude, longitude) {
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
-    // Set our initial camera position whenever the city location changes.
-    LaunchedEffect(cityLocation) {
-        cameraPositionState.position = CameraPosition.fromLatLngZoom(
+    val cameraPositionState = rememberCameraPositionState(cityLocation.toString()) {
+        position = CameraPosition.fromLatLngZoom(
             cityLocation,
             InitialZoom
         )
@@ -200,7 +197,9 @@ fun CityMapView(
 
     MapViewContainer(
         cameraPositionState = cameraPositionState,
-        onMapLoaded = onMapLoaded
+        onMapLoaded = {
+            onMapLoadedWithCameraState?.invoke(cameraPositionState)
+        }
     ) {
         Marker(position = cityLocation)
     }

@@ -65,7 +65,6 @@ class CityMapViewTests {
         hiltRule.inject()
 
         cityDetails = destinationsRepository.getDestination(MADRID.name)!!
-        mapState = CameraPositionState()
 
         val countDownLatch = CountDownLatch(1)
 
@@ -75,8 +74,8 @@ class CityMapViewTests {
                     CityMapView(
                         latitude = testExploreModel.city.latitude,
                         longitude = testExploreModel.city.longitude,
-                        cameraPositionState = mapState,
-                        onMapLoaded = {
+                        onMapLoadedWithCameraState = {
+                            mapState = it
                             countDownLatch.countDown()
                         }
                     )
