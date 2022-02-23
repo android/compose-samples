@@ -74,8 +74,8 @@ class CityMapViewTests {
                     CityMapView(
                         latitude = testExploreModel.city.latitude,
                         longitude = testExploreModel.city.longitude,
-                        onMapLoadedWithCameraState = {
-                            mapState = it
+                        onMapLoadedWithCameraState = { cameraPositionState ->
+                            mapState = cameraPositionState
                             countDownLatch.countDown()
                         }
                     )
