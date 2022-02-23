@@ -21,12 +21,12 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.1"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
-        const val maps = "com.google.android.libraries.maps:maps:3.1.0-beta"
-        const val mapsKtx = "com.google.maps.android:maps-v3-ktx:2.2.0"
+        const val composeMaps = "com.google.maps.android:maps-compose:1.2.0"
+        const val maps = "com.google.android.gms:play-services-maps:18.0.2"
     }
 
     object Volley {
