@@ -183,6 +183,7 @@ fun CityMapView(
     latitude: String,
     longitude: String,
     onMapLoadedWithCameraState: ((CameraPositionState) -> Unit)? = null, // Exposed for use in tests
+    onZoomChanged: (() -> Unit)? = null
 ) {
     val cityLocation = remember(latitude, longitude) {
         LatLng(latitude.toDouble(), longitude.toDouble())
@@ -199,7 +200,8 @@ fun CityMapView(
         cameraPositionState = cameraPositionState,
         onMapLoaded = {
             onMapLoadedWithCameraState?.invoke(cameraPositionState)
-        }
+        },
+        onZoomChanged = onZoomChanged
     ) {
         Marker(position = cityLocation)
     }
@@ -213,6 +215,7 @@ fun CityMapView(
 fun MapViewContainer(
     cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit = {},
+    onZoomChanged: (() -> Unit)? = null,
     content: (@Composable () -> Unit)? = null
 ) {
     val mapProperties = remember {
@@ -230,8 +233,18 @@ fun MapViewContainer(
     val animationScope = rememberCoroutineScope()
     Column {
         ZoomControls(
-            onZoomIn = { animationScope.launch { cameraPositionState.animate(CameraUpdateFactory.zoomIn()) } },
-            onZoomOut = { animationScope.launch { cameraPositionState.animate(CameraUpdateFactory.zoomOut()) } }
+            onZoomIn = {
+                animationScope.launch {
+                    cameraPositionState.animate(CameraUpdateFactory.zoomIn())
+                    onZoomChanged?.invoke()
+                }
+            },
+            onZoomOut = {
+                animationScope.launch {
+                    cameraPositionState.animate(CameraUpdateFactory.zoomOut())
+                    onZoomChanged?.invoke()
+                }
+            }
         )
 
         GoogleMap(

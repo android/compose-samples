@@ -59,6 +59,7 @@ class CityMapViewTests {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     private lateinit var mapState: CameraPositionState
+    private lateinit var zoomLatch: CountDownLatch
 
     @Before
     fun setUp() {
@@ -67,6 +68,7 @@ class CityMapViewTests {
         cityDetails = destinationsRepository.getDestination(MADRID.name)!!
 
         val countDownLatch = CountDownLatch(1)
+        zoomLatch = CountDownLatch(1)
 
         composeTestRule.setContent {
             CraneTheme {
@@ -77,7 +79,8 @@ class CityMapViewTests {
                         onMapLoadedWithCameraState = { cameraPositionState ->
                             mapState = cameraPositionState
                             countDownLatch.countDown()
-                        }
+                        },
+                        onZoomChanged = { zoomLatch.countDown() }
                     )
                 }
             }
@@ -105,7 +108,7 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        composeTestRule.waitForIdle()
+        assertTrue("Zoom timed out", zoomLatch.await(30, TimeUnit.SECONDS))
 
         assertTrue(zoomBefore < mapState.position.zoom)
     }
@@ -118,7 +121,7 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        composeTestRule.waitForIdle()
+        assertTrue("Zoom timed out", zoomLatch.await(30, TimeUnit.SECONDS))
 
         assertTrue(zoomBefore > mapState.position.zoom)
     }
