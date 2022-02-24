@@ -17,16 +17,16 @@
 package com.example.compose.jetchat.buildsrc
 
 object Versions {
-    const val ktlint = "0.43.2"
+    const val ktlint = "0.44.0"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     const val junit = "junit:junit:4.13"
 
-    const val material3 = "com.google.android.material:material:1.5.0-rc01"
+    const val material3 = "com.google.android.material:material:1.5.0"
 
     object Accompanist {
         const val version = "0.23.0"
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0"
+            const val version = "1.1.1"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -82,7 +82,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.4.0"
+            private const val version = "2.4.1"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }
@@ -101,7 +101,7 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.4.0"
+            private const val version = "2.4.1"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"

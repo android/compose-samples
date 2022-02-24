@@ -97,7 +97,6 @@ dependencies {
     implementation Libs.AndroidX.Navigation.fragment
     implementation Libs.AndroidX.Navigation.uiKtx
     implementation Libs.AndroidX.Material.material
-    implementation Libs.material
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
