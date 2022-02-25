@@ -26,10 +26,10 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
-    const val material3 = "com.google.android.material:material:1.5.0"
+    const val material3 = "com.google.android.material:material:1.6.0-alpha02"
 
     object Accompanist {
-        const val version = "0.23.0"
+        const val version = "0.23.1"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
