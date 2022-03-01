@@ -17,11 +17,11 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.43.2"
+    const val ktLint = "0.44.0"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.1"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
@@ -34,7 +34,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val version = "0.23.0"
+        const val version = "0.23.1"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
@@ -60,7 +60,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0"
+            const val version = "1.1.1"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -75,7 +75,7 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.4.0"
+            private const val version = "2.4.1"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }

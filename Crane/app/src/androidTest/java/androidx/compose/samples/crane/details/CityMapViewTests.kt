@@ -33,6 +33,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.pow
 
+@Ignore("To be fixed in https://github.com/android/compose-samples/issues/746")
 @HiltAndroidTest
 class CityMapViewTests {
     @Inject
