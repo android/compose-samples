@@ -69,7 +69,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
@@ -187,7 +186,7 @@ fun DetailsContent(
 fun CityMapView(
     latitude: String,
     longitude: String,
-    onMapLoadedWithCameraState: ((CameraPositionState) -> Unit)? = null, // Exposed for use in tests
+    onCameraPositionChanged: ((CameraPosition) -> Unit)? = null, // Exposed for use in tests
     onZoomChanged: (() -> Unit)? = null
 ) {
     val cityLocation = remember(latitude, longitude) {
@@ -203,16 +202,21 @@ fun CityMapView(
 
     /**
      * HACK: Workaround https://github.com/googlemaps/android-maps-compose/issues/50
+     *
      * In order to support tests still running and passing without an API key we will observe
-     * this first update of the camera state. Google Maps Compose doesn't fire onMapLoaded,
-     * without a key but it will start updating the camera position. We can use that to know that
-     * the map has initialised.
+     * the updates of the camera state to know when the map has loaded.
+     * Google Maps Compose doesn't fire onMapLoaded, without a key but it will start updating
+     * the camera position. We can use that to know that the map has initialised
+     * and ready for tests.
      */
-    LaunchedEffect(key1 = onMapLoadedWithCameraState) {
-        snapshotFlow { cameraPositionState.position }
-            .take(1)
-            .onEach { onMapLoadedWithCameraState?.invoke(cameraPositionState) }
-            .collect()
+    if (onCameraPositionChanged != null) {
+        LaunchedEffect(key1 = onCameraPositionChanged) {
+            snapshotFlow { cameraPositionState.position }
+                .onEach { cameraPosition ->
+                    onCameraPositionChanged(cameraPosition)
+                }
+                .collect()
+        }
     }
 
     MapViewContainer(
@@ -296,6 +300,6 @@ private fun ZoomButton(text: String, onClick: () -> Unit) {
     }
 }
 
-private const val InitialZoom = 5f
+const val InitialZoom = 5f
 const val MinZoom = 2f
 const val MaxZoom = 20f

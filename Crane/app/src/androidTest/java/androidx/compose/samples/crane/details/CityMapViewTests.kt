@@ -26,8 +26,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
@@ -58,7 +58,7 @@ class CityMapViewTests {
     // unused viewmodels.
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    private lateinit var mapState: CameraPositionState
+    private lateinit var currentCameraPosition: CameraPosition
     private lateinit var zoomLatch: CountDownLatch
 
     @Before
@@ -76,8 +76,8 @@ class CityMapViewTests {
                     CityMapView(
                         latitude = testExploreModel.city.latitude,
                         longitude = testExploreModel.city.longitude,
-                        onMapLoadedWithCameraState = { cameraPositionState ->
-                            mapState = cameraPositionState
+                        onCameraPositionChanged = { cameraPosition ->
+                            currentCameraPosition = cameraPosition
                             countDownLatch.countDown()
                         },
                         onZoomChanged = { zoomLatch.countDown() }
@@ -96,13 +96,12 @@ class CityMapViewTests {
             testExploreModel.city.longitude.toDouble()
         )
 
-        assertEquals(expected.latitude, mapState.position.target.latitude.round(6))
-        assertEquals(expected.longitude, mapState.position.target.longitude.round(6))
+        assertEquals(expected.latitude, currentCameraPosition.target.latitude.round(6))
+        assertEquals(expected.longitude, currentCameraPosition.target.longitude.round(6))
     }
 
     @Test
     fun mapView_zoomIn() {
-        val zoomBefore = mapState.position.zoom
         composeTestRule.onNodeWithText("+")
             .assertIsDisplayed()
             .performClick()
@@ -110,12 +109,11 @@ class CityMapViewTests {
         // Wait for the animation to happen
         assertTrue("Zoom timed out", zoomLatch.await(30, TimeUnit.SECONDS))
 
-        assertTrue(zoomBefore < mapState.position.zoom)
+        assertTrue(InitialZoom < currentCameraPosition.zoom)
     }
 
     @Test
     fun mapView_zoomOut() {
-        val zoomBefore = mapState.position.zoom
         composeTestRule.onNodeWithText("-")
             .assertIsDisplayed()
             .performClick()
@@ -123,7 +121,7 @@ class CityMapViewTests {
         // Wait for the animation to happen
         assertTrue("Zoom timed out", zoomLatch.await(30, TimeUnit.SECONDS))
 
-        assertTrue(zoomBefore > mapState.position.zoom)
+        assertTrue(InitialZoom > currentCameraPosition.zoom)
     }
 }
 
