@@ -86,7 +86,10 @@ class CityMapViewTests {
             }
         }
 
-        assertTrue("Map failed to load in time.", countDownLatch.await(30, TimeUnit.SECONDS))
+        assertTrue(
+            "Map failed to load in time.",
+            countDownLatch.await(LATCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        )
     }
 
     @Test
@@ -107,7 +110,10 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        assertTrue("Zoom timed out", zoomLatch.await(30, TimeUnit.SECONDS))
+        assertTrue(
+            "Zoom timed out",
+            zoomLatch.await(LATCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        )
 
         assertTrue(InitialZoom < currentCameraPosition.zoom)
     }
@@ -119,11 +125,15 @@ class CityMapViewTests {
             .performClick()
 
         // Wait for the animation to happen
-        assertTrue("Zoom timed out", zoomLatch.await(30, TimeUnit.SECONDS))
+        assertTrue(
+            "Zoom timed out",
+            zoomLatch.await(LATCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        )
 
         assertTrue(InitialZoom > currentCameraPosition.zoom)
     }
 }
 
+private const val LATCH_TIMEOUT_SECONDS = 60L
 private fun Double.round(decimals: Int = 2): Double =
     kotlin.math.round(this * 10f.pow(decimals)) / 10f.pow(decimals)
