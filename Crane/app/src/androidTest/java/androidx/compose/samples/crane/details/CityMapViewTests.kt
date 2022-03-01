@@ -26,6 +26,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.filters.SdkSuppress
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.pow
 
+@SdkSuppress(minSdkVersion = 28)
 @HiltAndroidTest
 class CityMapViewTests {
     @Inject
