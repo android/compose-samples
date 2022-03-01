@@ -39,10 +39,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.CraneTheme
@@ -65,6 +67,9 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
@@ -196,11 +201,22 @@ fun CityMapView(
         )
     }
 
+    /**
+     * HACK: Workaround https://github.com/googlemaps/android-maps-compose/issues/50
+     * In order to support tests still running and passing without an API key we will observe
+     * this first update of the camera state. Google Maps Compose doesn't fire onMapLoaded,
+     * without a key but it will start updating the camera position. We can use that to know that
+     * the map has initialised.
+     */
+    LaunchedEffect(key1 = onMapLoadedWithCameraState) {
+        snapshotFlow { cameraPositionState.position }
+            .take(1)
+            .onEach { onMapLoadedWithCameraState?.invoke(cameraPositionState) }
+            .collect()
+    }
+
     MapViewContainer(
         cameraPositionState = cameraPositionState,
-        onMapLoaded = {
-            onMapLoadedWithCameraState?.invoke(cameraPositionState)
-        },
         onZoomChanged = onZoomChanged
     ) {
         Marker(position = cityLocation)
@@ -214,7 +230,6 @@ fun CityMapView(
 @Composable
 fun MapViewContainer(
     cameraPositionState: CameraPositionState,
-    onMapLoaded: () -> Unit = {},
     onZoomChanged: (() -> Unit)? = null,
     content: (@Composable () -> Unit)? = null
 ) {
@@ -251,7 +266,6 @@ fun MapViewContainer(
             properties = mapProperties,
             cameraPositionState = cameraPositionState,
             uiSettings = mapUiSettings,
-            onMapLoaded = onMapLoaded,
             content = content
         )
     }
