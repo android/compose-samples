@@ -22,3 +22,5 @@
 
 # Repackage classes into the top-level.
 -repackageclasses
+
+-dontobfuscate

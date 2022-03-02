@@ -140,21 +140,23 @@ fun JetsnackBottomBar(
                     }
                 )
 
+                val text = stringResource(section.title).uppercase(
+                    ConfigurationCompat.getLocales(
+                        LocalConfiguration.current
+                    ).get(0)
+                )
+
                 JetsnackBottomNavigationItem(
                     icon = {
                         Icon(
                             imageVector = section.icon,
                             tint = tint,
-                            contentDescription = null
+                            contentDescription = text
                         )
                     },
                     text = {
                         Text(
-                            text = stringResource(section.title).uppercase(
-                                ConfigurationCompat.getLocales(
-                                    LocalConfiguration.current
-                                ).get(0)
-                            ),
+                            text = text,
                             color = tint,
                             style = MaterialTheme.typography.button,
                             maxLines = 1

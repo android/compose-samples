@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha03"
 
     object Accompanist {
         const val version = "0.23.1"
@@ -46,6 +46,7 @@ object Libs {
 
     object AndroidX {
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
+        const val profileInstaller = "androidx.profileinstaller:profileinstaller:1.2.0-alpha02"
 
         object Compose {
             const val snapshot = ""
@@ -91,6 +92,8 @@ object Libs {
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+            const val macroBenchmark = "androidx.benchmark:benchmark-macro-junit4:1.1.0-beta04"
+            const val uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
         }
     }
 

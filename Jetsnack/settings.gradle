@@ -1,2 +1,3 @@
 include ':app'
 rootProject.name = "Jetsnack"
+include ':benchmark'

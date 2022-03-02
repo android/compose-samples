@@ -51,7 +51,15 @@ android {
 
         release {
             minifyEnabled true
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        benchmark {
+            initWith buildTypes.release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            debuggable false
         }
     }
 
@@ -89,6 +97,7 @@ dependencies {
     implementation Libs.Coroutines.core
 
     implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.profileInstaller
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
     implementation Libs.AndroidX.Navigation.navigationCompose
