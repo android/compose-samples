@@ -15,72 +15,72 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
-//Material 3 color schemes
+// Material 3 color schemes
 private val replyDarkColorScheme = darkColorScheme(
-    primary = reply_dark_primary,
-    onPrimary = reply_dark_on_primary,
-    primaryContainer = reply_dark_primary_container,
-    onPrimaryContainer = reply_dark_on_primary_container,
-    inversePrimary = reply_dark_primary_inverse,
-    secondary = reply_dark_secondary,
-    onSecondary = reply_dark_on_secondary,
-    secondaryContainer = reply_dark_secondary_container,
-    onSecondaryContainer = reply_dark_secondary_container,
-    tertiary = reply_dark_tertiary,
-    onTertiary = reply_dark_on_tertiary,
-    tertiaryContainer = reply_dark_tertiary_container,
-    onTertiaryContainer = reply_dark_on_tertiary_container,
-    error = reply_dark_error,
-    onError = reply_dark_on_error,
-    errorContainer = reply_dark_error_container,
-    onErrorContainer = reply_dark_on_error_container,
-    background = reply_dark_background,
-    onBackground = reply_dark_on_background,
-    surface = reply_dark_surface,
-    onSurface = reply_dark_on_surface,
-    inverseSurface = reply_dark_inverse_surface,
-    inverseOnSurface = reply_dark_inverse_on_surface,
-    surfaceVariant = reply_dark_surface_variant,
-    onSurfaceVariant = reply_dark_on_surface_variant,
-    outline = reply_dark_outline
+    primary = replyDarkPrimary,
+    onPrimary = replyDarkOnPrimary,
+    primaryContainer = replyDarkPrimaryContainer,
+    onPrimaryContainer = replyDarkOnPrimaryContainer,
+    inversePrimary = replyDarkPrimaryInverse,
+    secondary = replyDarkSecondary,
+    onSecondary = replyDarkOnSecondary,
+    secondaryContainer = replyDarkSecondaryContainer,
+    onSecondaryContainer = replyDarkSecondaryContainer,
+    tertiary = replyDarkTertiary,
+    onTertiary = replyDarkOnTertiary,
+    tertiaryContainer = replyDarkTertiaryContainer,
+    onTertiaryContainer = replyDarkOnTertiaryContainer,
+    error = replyDarkError,
+    onError = replyDarkOnError,
+    errorContainer = replyDarkErrorContainer,
+    onErrorContainer = replyDarkOnErrorContainer,
+    background = replyDarkBackground,
+    onBackground = replyDarkOnBackground,
+    surface = replyDarkSurface,
+    onSurface = replyDarkOnSurface,
+    inverseSurface = replyDarkInverseSurface,
+    inverseOnSurface = replyDarkInverseOnSurface,
+    surfaceVariant = replyDarkSurfaceVariant,
+    onSurfaceVariant = replyDarkOnSurfaceVariant,
+    outline = replyDarkOutline
 )
 
 private val replyLightColorScheme = lightColorScheme(
-    primary = reply_light_primary,
-    onPrimary = reply_light_on_primary,
-    primaryContainer = reply_light_primary_container,
-    onPrimaryContainer = reply_light_on_primary_container,
-    inversePrimary = reply_light_primary_inverse,
-    secondary = reply_light_secondary,
-    onSecondary = reply_light_on_secondary,
-    secondaryContainer = reply_light_secondary_container,
-    onSecondaryContainer = reply_light_secondary_container,
-    tertiary = reply_light_tertiary,
-    onTertiary = reply_light_on_tertiary,
-    tertiaryContainer = reply_light_tertiary_container,
-    onTertiaryContainer = reply_light_on_tertiary_container,
-    error = reply_light_error,
-    onError = reply_light_on_error,
-    errorContainer = reply_light_error_container,
-    onErrorContainer = reply_light_on_error_container,
-    background = reply_light_background,
-    onBackground = reply_light_on_background,
-    surface = reply_light_surface,
-    onSurface = reply_light_on_surface,
-    inverseSurface = reply_light_inverse_surface,
-    inverseOnSurface = reply_light_inverse_on_surface,
-    surfaceVariant = reply_light_surface_variant,
-    onSurfaceVariant = reply_light_on_surface_variant,
-    outline = reply_light_outline
+    primary = replyLightPrimary,
+    onPrimary = replyLightOnPrimary,
+    primaryContainer = replyLightPrimaryContainer,
+    onPrimaryContainer = replyLightOnPrimaryContainer,
+    inversePrimary = replyLightPrimaryInverse,
+    secondary = replyLightSecondary,
+    onSecondary = replyLightOnSecondary,
+    secondaryContainer = replyLightSecondaryContainer,
+    onSecondaryContainer = replyLightSecondaryContainer,
+    tertiary = replyLightTertiary,
+    onTertiary = replyLightOnTertiary,
+    tertiaryContainer = replyLightTertiaryContainer,
+    onTertiaryContainer = replyLightOnTertiaryContainer,
+    error = replyLightError,
+    onError = replyLightOnError,
+    errorContainer = replyLightErrorContainer,
+    onErrorContainer = replyLightOnErrorContainer,
+    background = replyLightBackground,
+    onBackground = replyLightOnBackground,
+    surface = replyLightSurface,
+    onSurface = replyLightOnSurface,
+    inverseSurface = replyLightInverseSurface,
+    inverseOnSurface = replyLightInverseOnSurface,
+    surfaceVariant = replyLightSurfaceVariant,
+    onSurfaceVariant = replyLightOnSurfaceVariant,
+    outline = replyLightOutline
 )
 
 @Composable
-fun ReplyM3Theme(
+fun ReplyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val selectedColorScheme = when {
+    val replyColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -91,13 +91,13 @@ fun ReplyM3Theme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = selectedColorScheme.primary.toArgb()
+            (view.context as Activity).window.statusBarColor = replyColorScheme.primary.toArgb()
             ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
 
     MaterialTheme(
-        colorScheme = selectedColorScheme,
+        colorScheme = replyColorScheme,
         typography = replyTypography,
         content = content
     )
