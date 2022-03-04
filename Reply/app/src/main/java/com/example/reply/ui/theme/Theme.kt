@@ -15,43 +15,90 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+//Material 3 color schemes
+private val replyDarkColorScheme = darkColorScheme(
+    primary = reply_dark_primary,
+    onPrimary = reply_dark_on_primary,
+    primaryContainer = reply_dark_primary_container,
+    onPrimaryContainer = reply_dark_on_primary_container,
+    inversePrimary = reply_dark_primary_inverse,
+    secondary = reply_dark_secondary,
+    onSecondary = reply_dark_on_secondary,
+    secondaryContainer = reply_dark_secondary_container,
+    onSecondaryContainer = reply_dark_secondary_container,
+    tertiary = reply_dark_tertiary,
+    onTertiary = reply_dark_on_tertiary,
+    tertiaryContainer = reply_dark_tertiary_container,
+    onTertiaryContainer = reply_dark_on_tertiary_container,
+    error = reply_dark_error,
+    onError = reply_dark_on_error,
+    errorContainer = reply_dark_error_container,
+    onErrorContainer = reply_dark_on_error_container,
+    background = reply_dark_background,
+    onBackground = reply_dark_on_background,
+    surface = reply_dark_surface,
+    onSurface = reply_dark_on_surface,
+    inverseSurface = reply_dark_inverse_surface,
+    inverseOnSurface = reply_dark_inverse_on_surface,
+    surfaceVariant = reply_dark_surface_variant,
+    onSurfaceVariant = reply_dark_on_surface_variant,
+    outline = reply_dark_outline
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+private val replyLightColorScheme = lightColorScheme(
+    primary = reply_light_primary,
+    onPrimary = reply_light_on_primary,
+    primaryContainer = reply_light_primary_container,
+    onPrimaryContainer = reply_light_on_primary_container,
+    inversePrimary = reply_light_primary_inverse,
+    secondary = reply_light_secondary,
+    onSecondary = reply_light_on_secondary,
+    secondaryContainer = reply_light_secondary_container,
+    onSecondaryContainer = reply_light_secondary_container,
+    tertiary = reply_light_tertiary,
+    onTertiary = reply_light_on_tertiary,
+    tertiaryContainer = reply_light_tertiary_container,
+    onTertiaryContainer = reply_light_on_tertiary_container,
+    error = reply_light_error,
+    onError = reply_light_on_error,
+    errorContainer = reply_light_error_container,
+    onErrorContainer = reply_light_on_error_container,
+    background = reply_light_background,
+    onBackground = reply_light_on_background,
+    surface = reply_light_surface,
+    onSurface = reply_light_on_surface,
+    inverseSurface = reply_light_inverse_surface,
+    inverseOnSurface = reply_light_inverse_on_surface,
+    surfaceVariant = reply_light_surface_variant,
+    onSurfaceVariant = reply_light_on_surface_variant,
+    outline = reply_light_outline
 )
 
 @Composable
-fun ReplyTheme(
+fun ReplyM3Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
+    val selectedColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> replyDarkColorScheme
+        else -> replyLightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
+            (view.context as Activity).window.statusBarColor = selectedColorScheme.primary.toArgb()
             ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
+        colorScheme = selectedColorScheme,
+        typography = replyTypography,
         content = content
     )
 }
