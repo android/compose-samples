@@ -6,7 +6,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-//Material 3 typography
+// Material 3 typography
 val replyTypography = Typography(
     headlineLarge = TextStyle(
         fontWeight = FontWeight.SemiBold,
