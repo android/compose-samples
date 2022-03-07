@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,76 @@ import com.example.reply.data.MailboxType
 /**
  * A static data store of [Email]s.
  */
+
 object LocalEmailsDataProvider {
+
+    private val threads = listOf(
+        Email(
+            4L,
+            LocalAccountsDataProvider.getContactAccountById(11L),
+            listOf(
+                LocalAccountsDataProvider.getDefaultUserAccount(),
+                LocalAccountsDataProvider.getContactAccountById(8L),
+                LocalAccountsDataProvider.getContactAccountById(5L)
+            ),
+            "Brazil trip",
+            """
+                Thought we might be able to go over some details about our upcoming vacation.
+
+                I've been doing a bit of research and have come across a few paces in Northern Brazil that I think we should check out. One, the north has some of the most predictable wind on the planet. I'd love to get out on the ocean and kitesurf for a couple of days if we're going to be anywhere near or around Taiba. I hear it's beautiful there and if you're up for it, I'd love to go. Other than that, I haven't spent too much time looking into places along our road trip route. I'm assuming we can find places to stay and things to do as we drive and find places we think look interesting. But... I know you're more of a planner, so if you have ideas or places in mind, lets jot some ideas down!
+
+                Maybe we can jump on the phone later today if you have a second.
+            """.trimIndent(),
+            isStarred = true
+        ),
+        Email(
+            5L,
+            LocalAccountsDataProvider.getContactAccountById(13L),
+            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            "Update to Your Itinerary",
+            ""
+        ),
+        Email(
+            6L,
+            LocalAccountsDataProvider.getContactAccountById(10L),
+            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            "Recipe to try",
+            "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
+                    "very quick to put together.",
+            mailbox = MailboxType.SENT
+        ),
+        Email(
+            7L,
+            LocalAccountsDataProvider.getContactAccountById(9L),
+            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            "Delivered",
+            "Your shoes should be waiting for you at home!"
+        ),
+        Email(
+            8L,
+            LocalAccountsDataProvider.getContactAccountById(13L),
+            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            "Your update on Google Play Store is live!",
+            """
+              Your update, 0.1.1, is now live on the Play Store and available for your alpha users to start testing.
+              
+              Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
+          """.trimIndent(),
+            mailbox = MailboxType.TRASH
+        ),
+        Email(
+            9L,
+            LocalAccountsDataProvider.getContactAccountById(10L),
+            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            "(No subject)",
+            """
+            Hey, 
+            
+            Wanted to email and see what you thought of
+          """.trimIndent(),
+            mailbox = MailboxType.DRAFTS
+        ),
+    )
 
     val allEmails = mutableListOf(
         Email(
@@ -39,7 +108,8 @@ object LocalEmailsDataProvider {
 
                 As always, thank you for shopping with us and we hope you love our specially formulated Cucumber Mask!
             """.trimIndent(),
-            isStarred = true
+            isStarred = true,
+            threads = threads,
         ),
         Email(
             1L,
@@ -54,7 +124,8 @@ object LocalEmailsDataProvider {
                 Talk to you soon,
 
                 Ali
-            """.trimIndent()
+            """.trimIndent(),
+            threads = threads,
         ),
         Email(
             2L,
@@ -68,7 +139,8 @@ object LocalEmailsDataProvider {
                 EmailAttachment(R.drawable.paris_3, "City street in Paris"),
                 EmailAttachment(R.drawable.paris_4, "Street with bike in Paris")
             ),
-            true
+            true,
+            threads = threads,
         ),
         Email(
             3L,

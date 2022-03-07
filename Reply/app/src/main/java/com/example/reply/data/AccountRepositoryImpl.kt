@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 class AccountRepositoryImpl : AccountsRepository {
 
     override fun getDefaultUserAccount(): Flow<Account> = flow {
-        delay(2000)
+        delay(1500)
         emit(LocalAccountsDataProvider.getDefaultUserAccount())
     }
 
