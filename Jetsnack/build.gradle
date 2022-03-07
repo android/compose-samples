@@ -30,7 +30,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '6.3.0'
-    //id 'com.android.test' version '7.3.0-alpha04' apply false
+    id 'com.android.test' version '7.3.0-alpha05' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
 }
 

@@ -42,6 +42,8 @@ class BaselineProfileGenerator {
             device.waitForIdle()
 
             device.run {
+                // We can tap on the major navigation buttons to include their
+                // destinations in our profile.
                 listOf("SEARCH", "MY CART").forEach { desc ->
                     findObject(By.desc(desc))
                         .click()

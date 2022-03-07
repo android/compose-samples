@@ -55,9 +55,17 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
+    /**
+     * Tests the worst case startup performance. No baseline profile, no pre-compilation.
+     */
     @Test
     fun startupNoCompilation() = startup(CompilationMode.None())
 
+    /**
+     * Tests the average startup time a user will see if we didn't include a baseline profile.
+     * This is the test you can compare your baseline profile time to to make sure you are actually seeing
+     * a benefit.
+     */
     @Test
     fun startupBaselineProfileDisabled() = startup(
         CompilationMode.Partial(
@@ -66,10 +74,19 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
         )
     )
 
+    /**
+     * Tests the average startup time a user will see with our baseline profile. This is the test
+     * you are trying to optimise when working out what to include in your profile. If everything
+     * is working correctly this test should have the best performance except for the full
+     * compilation.
+     */
     @Test
     fun startupBaselineProfile() =
         startup(CompilationMode.Partial(baselineProfileMode = BaselineProfileMode.Require))
 
+    /**
+     * Tests the theoretical best case scenario if everything was pre-compiled.
+     */
     @Test
     fun startupFullCompilation() = startup(CompilationMode.Full())
 
