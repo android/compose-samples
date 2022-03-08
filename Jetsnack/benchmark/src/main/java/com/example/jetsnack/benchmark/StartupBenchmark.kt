@@ -21,37 +21,19 @@ import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.filters.LargeTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
-/**
- * Run this benchmark from Studio to see startup measurements, and captured system traces
- * for investigating your app's performance from a cold state.
- */
-@RunWith(AndroidJUnit4ClassRunner::class)
-class ColdStartupBenchmark : AbstractStartupBenchmark(StartupMode.COLD)
-
-/**
- * Run this benchmark from Studio to see startup measurements, and captured system traces
- * for investigating your app's performance from a warm state.
- */
-@RunWith(AndroidJUnit4ClassRunner::class)
-class WarmStartupBenchmark : AbstractStartupBenchmark(StartupMode.WARM)
-
-/**
- * Run this benchmark from Studio to see startup measurements, and captured system traces
- * for investigating your app's performance from a hot state.
- */
-@RunWith(AndroidJUnit4ClassRunner::class)
-class HotStartupBenchmark : AbstractStartupBenchmark(StartupMode.HOT)
+import org.junit.runners.Parameterized
 
 /**
  * Base class for benchmarks with different startup modes.
  * Enables app startups from various states of baseline profile or [CompilationMode]s.
  */
-abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
+@LargeTest
+@RunWith(Parameterized::class)
+class StartupBenchmark(private val startupMode: StartupMode) {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
@@ -67,7 +49,7 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
      * a benefit.
      */
     @Test
-    fun startupBaselineProfileDisabled() = startup(
+    fun startupPartialNoBaseline() = startup(
         CompilationMode.Partial(
             baselineProfileMode = BaselineProfileMode.Disable,
             warmupIterations = 1
@@ -95,9 +77,19 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
         metrics = listOf(StartupTimingMetric()),
         compilationMode = compilationMode,
         iterations = 10,
-        startupMode = startupMode
+        startupMode = startupMode,
+        setupBlock = { pressHome() }
     ) {
-        pressHome()
         startActivityAndWait()
+    }
+
+    companion object {
+        @Parameterized.Parameters(name = "mode={0}")
+        @JvmStatic
+        fun parameters(): List<Array<Any>> = listOf(
+            StartupMode.COLD,
+            StartupMode.WARM,
+            StartupMode.HOT
+        ).map { arrayOf(it) }
     }
 }
