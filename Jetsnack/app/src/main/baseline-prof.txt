@@ -5369,7 +5369,6 @@ HSPLcoil/RealImageLoader$execute$2;->invokeSuspend(Ljava/lang/Object;)Ljava/lang
 HSPLcoil/RealImageLoader$executeMain$1;-><init>(Lcoil/RealImageLoader;Lkotlin/coroutines/Continuation;)V
 HSPLcoil/RealImageLoader$executeMain$1;->invokeSuspend(Ljava/lang/Object;)Ljava/lang/Object;
 HSPLcoil/RealImageLoader$special$$inlined$CoroutineExceptionHandler$1;-><init>(Lcoil/RealImageLoader;)V
-HSPLcoil/RealImageLoader;-><init>(Landroid/content/Context;Lcoil/request/DefaultRequestOptions;Lcoil/bitmap/BitmapPool;Lcoil/ComponentRegistry;Lcoil/util/-Extensions$$ExternalSyntheticLambda0;Lcoil/EventListener$Factory$Companion$$ExternalSyntheticLambda0;Lcoil/ComponentRegistry;Lcoil/util/ImageLoaderOptions;)V
 HSPLcoil/RealImageLoader;->access$executeMain(Lcoil/RealImageLoader;Lcoil/request/ImageRequest;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 HSPLcoil/bitmap/RealBitmapReferenceCounter$$ExternalSyntheticLambda0;-><init>(Ljava/lang/Object;Ljava/lang/Object;I)V
 HSPLcoil/bitmap/RealBitmapReferenceCounter$$ExternalSyntheticLambda0;->run()V
