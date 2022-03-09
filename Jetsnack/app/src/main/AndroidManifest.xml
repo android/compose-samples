@@ -13,6 +13,7 @@
   the License.
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.jetsnack">
 
     <!--Load images from Unsplash-->
@@ -24,6 +25,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jetsnack">
+
+        <profileable android:shell="true" tools:targetApi="q" />
 
         <activity
             android:name=".ui.MainActivity"
