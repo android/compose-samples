@@ -260,7 +260,31 @@ private fun PlayerContentBook(
 
     Row(modifier = Modifier.fillMaxSize()) {
         // Content for the left part of the screen - empty at the moment
-        Spacer(modifier = Modifier.width(hingePosition))
+        Column(
+            modifier = Modifier
+                .width(hingePosition)
+                .verticalGradientScrim(
+                    color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                    startYPercentage = 1f,
+                    endYPercentage = 0f
+                )
+                .systemBarsPadding(bottom = false)
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
+                PodcastInformation(
+                    uiState.title,
+                    uiState.podcastName,
+                    uiState.summary
+                )
+            }
+        }
         // Space for the hinge
         Spacer(modifier = Modifier.width(hingeWidth))
         Column(
@@ -366,6 +390,42 @@ private fun PodcastDescription(
             style = MaterialTheme.typography.body2,
             maxLines = 1
         )
+    }
+}
+
+@Composable
+private fun PodcastInformation(
+    title: String,
+    name: String,
+    summary: String,
+    nameTextStyle: TextStyle = MaterialTheme.typography.h3,
+    titleTextStyle: TextStyle = MaterialTheme.typography.h5,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        Text(
+            text = name,
+            style = nameTextStyle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = title,
+            style = titleTextStyle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Text(
+                text = summary,
+                style = MaterialTheme.typography.body2,
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
