@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 // Generate them via theme builder
 // https://material-foundation.github.io/material-theme-builder/#/custom
 
-val replyLightPrimary= Color(0xFF825500)
+val replyLightPrimary = Color(0xFF825500)
 val replyLightOnPrimary = Color(0xFFFFFFFF)
 val replyLightPrimaryContainer = Color(0xFFFFDDAE)
 val replyLightOnPrimaryContainer = Color(0xFF2A1800)
