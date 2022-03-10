@@ -16,7 +16,6 @@
 
 package androidx.compose.samples.crane.calendar
 
-import androidx.compose.material.Surface
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.FirstDay
 import androidx.compose.samples.crane.calendar.model.DaySelectedStatus.FirstLastDay
@@ -59,14 +58,6 @@ class CalendarTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-
-        composeTestRule.setContent {
-            CraneTheme {
-                Surface {
-                    CalendarScreen(onBackPressed = {})
-                }
-            }
-        }
     }
 
     @ExperimentalTestApi

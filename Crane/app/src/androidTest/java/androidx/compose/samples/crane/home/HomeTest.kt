@@ -35,13 +35,6 @@ class HomeTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Before
-    fun setUp() {
-        composeTestRule.setContent {
-            MainScreen({ }, { })
-        }
-    }
-
     @Test
     fun home_navigatesToAllScreens() {
         composeTestRule.onNodeWithText("Explore Flights by Destination").assertIsDisplayed()
