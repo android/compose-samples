@@ -30,11 +30,11 @@ object LocalEmailsDataProvider {
     private val threads = listOf(
         Email(
             4L,
-            LocalAccountsDataProvider.getContactAccountById(11L),
+            LocalAccountsDataProvider.getContactAccountByUid(11L),
             listOf(
                 LocalAccountsDataProvider.getDefaultUserAccount(),
-                LocalAccountsDataProvider.getContactAccountById(8L),
-                LocalAccountsDataProvider.getContactAccountById(5L)
+                LocalAccountsDataProvider.getContactAccountByUid(8L),
+                LocalAccountsDataProvider.getContactAccountByUid(5L)
             ),
             "Brazil trip",
             """
@@ -48,14 +48,14 @@ object LocalEmailsDataProvider {
         ),
         Email(
             5L,
-            LocalAccountsDataProvider.getContactAccountById(13L),
+            LocalAccountsDataProvider.getContactAccountByUid(13L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Update to Your Itinerary",
             ""
         ),
         Email(
             6L,
-            LocalAccountsDataProvider.getContactAccountById(10L),
+            LocalAccountsDataProvider.getContactAccountByUid(10L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
@@ -64,14 +64,14 @@ object LocalEmailsDataProvider {
         ),
         Email(
             7L,
-            LocalAccountsDataProvider.getContactAccountById(9L),
+            LocalAccountsDataProvider.getContactAccountByUid(9L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Delivered",
             "Your shoes should be waiting for you at home!"
         ),
         Email(
             8L,
-            LocalAccountsDataProvider.getContactAccountById(13L),
+            LocalAccountsDataProvider.getContactAccountByUid(13L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Your update on Google Play Store is live!",
             """
@@ -83,7 +83,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             9L,
-            LocalAccountsDataProvider.getContactAccountById(10L),
+            LocalAccountsDataProvider.getContactAccountByUid(10L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "(No subject)",
             """
@@ -98,7 +98,7 @@ object LocalEmailsDataProvider {
     val allEmails = mutableListOf(
         Email(
             0L,
-            LocalAccountsDataProvider.getContactAccountById(9L),
+            LocalAccountsDataProvider.getContactAccountByUid(9L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Package shipped!",
             """
@@ -113,7 +113,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             1L,
-            LocalAccountsDataProvider.getContactAccountById(6L),
+            LocalAccountsDataProvider.getContactAccountByUid(6L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Brunch this weekend?",
             """
@@ -129,7 +129,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             2L,
-            LocalAccountsDataProvider.getContactAccountById(5L),
+            LocalAccountsDataProvider.getContactAccountByUid(5L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Bonjour from Paris",
             "Here are some great shots from my trip...",
@@ -144,7 +144,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             3L,
-            LocalAccountsDataProvider.getContactAccountById(8L),
+            LocalAccountsDataProvider.getContactAccountByUid(8L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "High school reunion?",
             """
@@ -158,11 +158,11 @@ object LocalEmailsDataProvider {
         ),
         Email(
             4L,
-            LocalAccountsDataProvider.getContactAccountById(11L),
+            LocalAccountsDataProvider.getContactAccountByUid(11L),
             listOf(
                 LocalAccountsDataProvider.getDefaultUserAccount(),
-                LocalAccountsDataProvider.getContactAccountById(8L),
-                LocalAccountsDataProvider.getContactAccountById(5L)
+                LocalAccountsDataProvider.getContactAccountByUid(8L),
+                LocalAccountsDataProvider.getContactAccountByUid(5L)
             ),
             "Brazil trip",
             """
@@ -176,14 +176,14 @@ object LocalEmailsDataProvider {
         ),
         Email(
             5L,
-            LocalAccountsDataProvider.getContactAccountById(13L),
+            LocalAccountsDataProvider.getContactAccountByUid(13L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Update to Your Itinerary",
             ""
         ),
         Email(
             6L,
-            LocalAccountsDataProvider.getContactAccountById(10L),
+            LocalAccountsDataProvider.getContactAccountByUid(10L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
@@ -192,14 +192,14 @@ object LocalEmailsDataProvider {
         ),
         Email(
             7L,
-            LocalAccountsDataProvider.getContactAccountById(9L),
+            LocalAccountsDataProvider.getContactAccountByUid(9L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Delivered",
             "Your shoes should be waiting for you at home!"
         ),
         Email(
             8L,
-            LocalAccountsDataProvider.getContactAccountById(13L),
+            LocalAccountsDataProvider.getContactAccountByUid(13L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Your update on Google Play Store is live!",
             """
@@ -211,7 +211,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             9L,
-            LocalAccountsDataProvider.getContactAccountById(10L),
+            LocalAccountsDataProvider.getContactAccountByUid(10L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "(No subject)",
             """
@@ -223,7 +223,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             10L,
-            LocalAccountsDataProvider.getContactAccountById(5L),
+            LocalAccountsDataProvider.getContactAccountByUid(5L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Try a free TrailGo account",
             """
@@ -235,7 +235,7 @@ object LocalEmailsDataProvider {
         ),
         Email(
             10L,
-            LocalAccountsDataProvider.getContactAccountById(5L),
+            LocalAccountsDataProvider.getContactAccountByUid(5L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Free money",
             """
