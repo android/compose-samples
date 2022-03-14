@@ -34,7 +34,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val version = "0.24.3-alpha"
+        const val version = "0.24.4-alpha"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
