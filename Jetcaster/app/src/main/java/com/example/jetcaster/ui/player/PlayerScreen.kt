@@ -259,7 +259,7 @@ private fun PlayerContentBook(
     val hingeWidth = with(LocalDensity.current) { bookPosture.hingePosition.width().toDp() }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        // Content for the left part of the screen - empty at the moment
+        // Content for the left part of the screen
         Column(
             modifier = Modifier
                 .width(hingePosition)
@@ -287,6 +287,7 @@ private fun PlayerContentBook(
         }
         // Space for the hinge
         Spacer(modifier = Modifier.width(hingeWidth))
+        // Content for the right part of the screen
         Column(
             modifier = Modifier
                 .fillMaxSize()
