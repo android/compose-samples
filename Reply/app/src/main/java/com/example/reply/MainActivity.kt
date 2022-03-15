@@ -11,9 +11,7 @@ import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker.Companion.getOrCreate
 import com.example.reply.ui.*
 import com.example.reply.ui.theme.ReplyTheme
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +54,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     ReplyTheme {
-
+        ReplyApp(
+            windowSize = WindowSize.Compact,
+            devicePosture = MutableStateFlow(DevicePosture.NormalPosture)
+        )
     }
 }
