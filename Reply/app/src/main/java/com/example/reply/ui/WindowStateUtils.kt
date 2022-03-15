@@ -17,6 +17,7 @@
 package com.example.reply.ui
 
 import android.app.Activity
+import android.graphics.Rect
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,7 +27,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowMetricsCalculator
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
  * Opinionated set of viewport breakpoints
@@ -78,4 +82,52 @@ fun getWindowSizeClass(windowDpSize: DpSize): WindowSize = when {
     windowDpSize.width < 600.dp -> WindowSize.Compact
     windowDpSize.width < 840.dp -> WindowSize.Medium
     else -> WindowSize.Expanded
+}
+
+/**
+ * Information about the posture of the device
+ */
+sealed interface DevicePosture {
+    object NormalPosture : DevicePosture
+
+    data class TableTopPosture(
+        val hingePosition: Rect
+    ) : DevicePosture
+
+    data class BookPosture(
+        val hingePosition: Rect
+    ) : DevicePosture
+
+    data class Separating(
+        val hingePosition: Rect,
+        var orientation: FoldingFeature.Orientation
+    ) : DevicePosture
+}
+
+@OptIn(ExperimentalContracts::class)
+fun isTableTopPosture(foldFeature: FoldingFeature?): Boolean {
+    contract { returns(true) implies (foldFeature != null) }
+    return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+            foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+}
+
+@OptIn(ExperimentalContracts::class)
+fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
+    contract { returns(true) implies (foldFeature != null) }
+    return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+            foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
+}
+
+@OptIn(ExperimentalContracts::class)
+fun isSeparating(foldFeature: FoldingFeature?): Boolean {
+    contract { returns(true) implies (foldFeature != null) }
+    return foldFeature?.state == FoldingFeature.State.FLAT && foldFeature.isSeparating
+}
+
+enum class ReplyNavigationType {
+    BOTTOM_NAVIGATION, NAVIGATION_RAIL, FIXED_NAVIGATION_DRAWER
+}
+
+enum class ReplyContentType {
+    LIST_ONLY, LIST_AND_DETAIL
 }
