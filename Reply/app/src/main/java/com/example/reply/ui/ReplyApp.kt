@@ -22,6 +22,9 @@ fun ReplyApp(
     /**
      * This will help us select type of navigation and content type depending on window size and
      * fold state of the device.
+     *
+     * In the state of folding device If it's half fold in BookPosture we want to avoid content
+     * at the crease/hinge
      */
     val (navigationType, contentType) = when (windowSize) {
         WindowSize.Compact -> {
@@ -35,7 +38,11 @@ fun ReplyApp(
             }
         }
         WindowSize.Expanded -> {
-            Pair(ReplyNavigationType.FIXED_NAVIGATION_DRAWER, ReplyContentType.LIST_AND_DETAIL)
+            if (foldingDevicePosture is DevicePosture.BookPosture) {
+                Pair(ReplyNavigationType.NAVIGATION_RAIL, ReplyContentType.LIST_AND_DETAIL)
+            } else {
+                Pair(ReplyNavigationType.FIXED_NAVIGATION_DRAWER, ReplyContentType.LIST_AND_DETAIL)
+            }
         }
     }
 
