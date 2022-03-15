@@ -124,10 +124,16 @@ fun isSeparating(foldFeature: FoldingFeature?): Boolean {
     return foldFeature?.state == FoldingFeature.State.FLAT && foldFeature.isSeparating
 }
 
+/**
+ * Different type of navigation supported by app depending on size and state.
+ */
 enum class ReplyNavigationType {
     BOTTOM_NAVIGATION, NAVIGATION_RAIL, FIXED_NAVIGATION_DRAWER
 }
 
+/**
+ * Content shown depending on size and state of device.
+ */
 enum class ReplyContentType {
     LIST_ONLY, LIST_AND_DETAIL
 }
