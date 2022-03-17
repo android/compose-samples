@@ -27,7 +27,7 @@ import androidx.window.layout.WindowInfoTracker.Companion.getOrCreate
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.isBookPosture
-import com.example.jetcaster.util.isSeparating
+import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,8 +54,8 @@ class MainActivity : ComponentActivity() {
                         DevicePosture.TableTopPosture(foldingFeature.bounds)
                     isBookPosture(foldingFeature) ->
                         DevicePosture.BookPosture(foldingFeature.bounds)
-                    isSeparating(foldingFeature) ->
-                        DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
+                    isSeparatingPosture(foldingFeature) ->
+                        DevicePosture.SeparatingPosture(foldingFeature.bounds, foldingFeature.orientation)
                     else -> DevicePosture.NormalPosture
                 }
             }

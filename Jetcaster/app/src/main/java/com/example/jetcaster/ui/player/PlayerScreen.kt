@@ -135,7 +135,7 @@ fun PlayerContent(
                 PlayerContentTableTop(uiState, devicePosture, onBackPress)
             is DevicePosture.BookPosture ->
                 PlayerContentBook(uiState, devicePosture, onBackPress)
-            is DevicePosture.Separating ->
+            is DevicePosture.SeparatingPosture ->
                 if (devicePosture.orientation == FoldingFeature.Orientation.HORIZONTAL) {
                     PlayerContentTableTop(
                         uiState,
@@ -258,71 +258,82 @@ private fun PlayerContentBook(
     val hingePosition = with(LocalDensity.current) { bookPosture.hingePosition.left.toDp() }
     val hingeWidth = with(LocalDensity.current) { bookPosture.hingePosition.width().toDp() }
 
-    Row(modifier = Modifier.fillMaxSize()) {
-        // Content for the left part of the screen
-        Column(
-            modifier = Modifier
-                .width(hingePosition)
-                .verticalGradientScrim(
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
-                    startYPercentage = 1f,
-                    endYPercentage = 0f
-                )
-                .systemBarsPadding(bottom = false)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.height(32.dp))
-                PodcastInformation(
-                    uiState.title,
-                    uiState.podcastName,
-                    uiState.summary
-                )
-            }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalGradientScrim(
+                color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                startYPercentage = 1f,
+                endYPercentage = 0f
+            )
+            .systemBarsPadding()
+            .padding(horizontal = 8.dp)
+    ) {
+        TopAppBar(onBackPress = onBackPress)
+
+        Row(modifier = Modifier.fillMaxSize()) {
+            // Content for the left part of the screen
+            PlayerContentBookLeft(hingePosition, uiState)
+            // Space for the hinge
+            Spacer(modifier = Modifier.width(hingeWidth))
+            // Content for the right part of the screen
+            PlayerContentBookRight(uiState)
         }
-        // Space for the hinge
-        Spacer(modifier = Modifier.width(hingeWidth))
-        // Content for the right part of the screen
+    }
+}
+
+@Composable
+private fun PlayerContentBookLeft(
+    hingePosition: Dp,
+    uiState: PlayerUiState
+) {
+    Column(
+        modifier = Modifier
+            .width(hingePosition)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalGradientScrim(
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
-                    startYPercentage = 1f,
-                    endYPercentage = 0f
-                )
-                .systemBarsPadding(bottom = false)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 8.dp)
         ) {
-            TopAppBar(onBackPress = onBackPress)
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                PlayerImage(
-                    podcastImageUrl = uiState.podcastImageUrl,
-                    modifier = Modifier.weight(10f)
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                PodcastDescription(uiState.title, uiState.podcastName)
-                Spacer(modifier = Modifier.height(32.dp))
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(10f)
-                ) {
-                    PlayerSlider(uiState.duration)
-                    PlayerButtons(Modifier.padding(vertical = 8.dp))
-                }
-                Spacer(modifier = Modifier.weight(1f))
-            }
+            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
+            PodcastInformation(
+                uiState.title,
+                uiState.podcastName,
+                uiState.summary
+            )
         }
+    }
+}
+
+@Composable
+private fun PlayerContentBookRight(
+    uiState: PlayerUiState
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        PlayerImage(
+            podcastImageUrl = uiState.podcastImageUrl,
+            modifier = Modifier.weight(10f)
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        PodcastDescription(uiState.title, uiState.podcastName)
+        Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(10f)
+        ) {
+            PlayerSlider(uiState.duration)
+            PlayerButtons(Modifier.padding(vertical = 8.dp))
+        }
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
@@ -399,8 +410,8 @@ private fun PodcastInformation(
     title: String,
     name: String,
     summary: String,
-    nameTextStyle: TextStyle = MaterialTheme.typography.h3,
     titleTextStyle: TextStyle = MaterialTheme.typography.h5,
+    nameTextStyle: TextStyle = MaterialTheme.typography.h3,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
