@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
@@ -69,6 +70,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.FoldingFeature
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.jetcaster.R
@@ -128,10 +130,27 @@ fun PlayerContent(
         // As the Player UI content changes considerably when the device is in tabletop posture,
         // we split the different UIs in different composables. For simpler UIs that don't change
         // much, prefer one composable that makes decisions based on the mode instead.
-        if (devicePosture is DevicePosture.TableTopPosture) {
-            PlayerContentTableTop(uiState, devicePosture, onBackPress)
-        } else {
-            PlayerContentRegular(uiState, onBackPress)
+        when (devicePosture) {
+            is DevicePosture.TableTopPosture ->
+                PlayerContentTableTop(uiState, devicePosture, onBackPress)
+            is DevicePosture.BookPosture ->
+                PlayerContentBook(uiState, devicePosture, onBackPress)
+            is DevicePosture.SeparatingPosture ->
+                if (devicePosture.orientation == FoldingFeature.Orientation.HORIZONTAL) {
+                    PlayerContentTableTop(
+                        uiState,
+                        DevicePosture.TableTopPosture(devicePosture.hingePosition),
+                        onBackPress
+                    )
+                } else {
+                    PlayerContentBook(
+                        uiState,
+                        DevicePosture.BookPosture(devicePosture.hingePosition),
+                        onBackPress
+                    )
+                }
+            else ->
+                PlayerContentRegular(uiState, onBackPress)
         }
     }
 }
@@ -231,6 +250,94 @@ private fun PlayerContentTableTop(
 }
 
 @Composable
+private fun PlayerContentBook(
+    uiState: PlayerUiState,
+    bookPosture: DevicePosture.BookPosture,
+    onBackPress: () -> Unit
+) {
+    val hingePosition = with(LocalDensity.current) { bookPosture.hingePosition.left.toDp() }
+    val hingeWidth = with(LocalDensity.current) { bookPosture.hingePosition.width().toDp() }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalGradientScrim(
+                color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                startYPercentage = 1f,
+                endYPercentage = 0f
+            )
+            .systemBarsPadding()
+            .padding(horizontal = 8.dp)
+    ) {
+        TopAppBar(onBackPress = onBackPress)
+
+        Row(modifier = Modifier.fillMaxSize()) {
+            // Content for the left part of the screen
+            PlayerContentBookLeft(hingePosition, uiState)
+            // Space for the hinge
+            Spacer(modifier = Modifier.width(hingeWidth))
+            // Content for the right part of the screen
+            PlayerContentBookRight(uiState)
+        }
+    }
+}
+
+@Composable
+private fun PlayerContentBookLeft(
+    hingePosition: Dp,
+    uiState: PlayerUiState
+) {
+    Column(
+        modifier = Modifier
+            .width(hingePosition)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
+            PodcastInformation(
+                uiState.title,
+                uiState.podcastName,
+                uiState.summary
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlayerContentBookRight(
+    uiState: PlayerUiState
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        PlayerImage(
+            podcastImageUrl = uiState.podcastImageUrl,
+            modifier = Modifier.weight(10f)
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        PodcastDescription(uiState.title, uiState.podcastName)
+        Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(10f)
+        ) {
+            PlayerSlider(uiState.duration)
+            PlayerButtons(Modifier.padding(vertical = 8.dp))
+        }
+        Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+@Composable
 private fun TopAppBar(onBackPress: () -> Unit) {
     Row(Modifier.fillMaxWidth()) {
         IconButton(onClick = onBackPress) {
@@ -295,6 +402,42 @@ private fun PodcastDescription(
             style = MaterialTheme.typography.body2,
             maxLines = 1
         )
+    }
+}
+
+@Composable
+private fun PodcastInformation(
+    title: String,
+    name: String,
+    summary: String,
+    titleTextStyle: TextStyle = MaterialTheme.typography.h5,
+    nameTextStyle: TextStyle = MaterialTheme.typography.h3,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        Text(
+            text = name,
+            style = nameTextStyle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = title,
+            style = titleTextStyle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Text(
+                text = summary,
+                style = MaterialTheme.typography.body2,
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
