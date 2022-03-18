@@ -65,16 +65,16 @@ fun ReplyAppContent(navigationType: ReplyNavigationType, contentType: ReplyConte
     Row(modifier = Modifier
         .fillMaxSize()) {
         if (navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            //ReplyNavigationRail()
+            // TODO ReplyNavigationRail()
         }
         Column(modifier = Modifier.fillMaxSize()) {
             if (contentType == ReplyContentType.LIST_AND_DETAIL) {
-                // ReplyListAndDetailContent()
+                // TODO ReplyListAndDetailContent()
             } else {
-                // ReplyListContent()
+                // TODO ReplyListContent()
             }
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                //ReplyBottomNavigation()
+                // TODO ReplyBottomNavigation()
             }
         }
     }

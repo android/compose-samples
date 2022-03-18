@@ -63,8 +63,8 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     ReplyTheme {
         ReplyApp(
-            windowSize = WindowSize.Compact,
-            devicePosture = MutableStateFlow(DevicePosture.NormalPosture)
+            windowSize = WindowSize.COMPACT,
+            foldingDevicePosture = DevicePosture.NormalPosture
         )
     }
 }
