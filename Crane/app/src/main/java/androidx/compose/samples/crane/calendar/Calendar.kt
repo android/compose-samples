@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -59,7 +60,6 @@ import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsHeight
 
 typealias CalendarWeek = List<CalendarDay>
 
@@ -69,15 +69,10 @@ fun Calendar(
     onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier) {
-        item { Spacer(Modifier.height(32.dp)) }
+    LazyColumn(modifier.navigationBarsPadding()) {
         for (month in calendarYear) {
             itemsCalendarMonth(month = month, onDayClicked = onDayClicked)
-            item {
-                Spacer(Modifier.height(32.dp))
-            }
         }
-        item { Spacer(modifier = Modifier.navigationBarsHeight()) }
     }
 }
 
@@ -242,7 +237,7 @@ private fun LazyListScope.itemsCalendarMonth(
 ) {
     item {
         MonthHeader(
-            modifier = Modifier.padding(horizontal = 32.dp),
+            modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 32.dp),
             month = month.name,
             year = month.year
         )

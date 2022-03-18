@@ -28,7 +28,6 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isTableTopPosture
-import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -63,9 +62,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             JetcasterTheme {
-                ProvideWindowInsets {
-                    JetcasterApp(devicePosture)
-                }
+                JetcasterApp(devicePosture)
             }
         }
     }

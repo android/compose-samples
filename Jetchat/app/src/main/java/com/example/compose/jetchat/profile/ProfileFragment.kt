@@ -30,8 +30,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ViewWindowInsetObserver
 
 class ProfileFragment : Fragment() {
 
@@ -55,15 +53,10 @@ class ProfileFragment : Fragment() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        // Create a ViewWindowInsetObserver using this view, and call start() to
-        // start listening now. The WindowInsets instance is returned, allowing us to
-        // provide it to AmbientWindowInsets in our content below.
-        val windowInsets = ViewWindowInsetObserver(this).start()
-
         setContent {
             val userData by viewModel.userData.observeAsState()
 
-            CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
+            CompositionLocalProvider {
                 JetchatTheme {
                     if (userData == null) {
                         ProfileError()

@@ -37,6 +37,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -81,7 +85,6 @@ import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
-import com.google.accompanist.insets.statusBarsHeight
 
 @Composable
 fun Cart(
@@ -147,9 +150,10 @@ private fun CartContent(
             orderLines.size, orderLines.size
         )
     }
-    LazyColumn(modifier) {
+    LazyColumn(modifier.windowInsetsPadding(
+        WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
+    )) {
         item {
-            Spacer(Modifier.statusBarsHeight(additional = 56.dp))
             Text(
                 text = stringResource(R.string.cart_order_header, snackCountFormattedString),
                 style = MaterialTheme.typography.h6,

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -32,7 +33,6 @@ import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.CourseListItem
 import com.example.owl.ui.theme.BlueTheme
-import com.google.accompanist.insets.statusBarsHeight
 
 @Composable
 fun MyCourses(
@@ -40,10 +40,7 @@ fun MyCourses(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier) {
-        item {
-            Spacer(Modifier.statusBarsHeight())
-        }
+    LazyColumn(modifier.statusBarsPadding()) {
         item {
             CoursesAppBar()
         }

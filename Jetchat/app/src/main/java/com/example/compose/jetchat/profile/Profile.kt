@@ -26,7 +26,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -68,9 +70,6 @@ import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -294,39 +293,31 @@ fun ProfileFab(
 @Preview(widthDp = 640, heightDp = 360)
 @Composable
 fun ConvPreviewLandscapeMeDefault() {
-    ProvideWindowInsets(consumeWindowInsets = false) {
-        JetchatTheme {
-            ProfileScreen(meProfile)
-        }
+    JetchatTheme {
+        ProfileScreen(meProfile)
     }
 }
 
 @Preview(widthDp = 360, heightDp = 480)
 @Composable
 fun ConvPreviewPortraitMeDefault() {
-    ProvideWindowInsets(consumeWindowInsets = false) {
-        JetchatTheme {
-            ProfileScreen(meProfile)
-        }
+    JetchatTheme {
+        ProfileScreen(meProfile)
     }
 }
 
 @Preview(widthDp = 360, heightDp = 480)
 @Composable
 fun ConvPreviewPortraitOtherDefault() {
-    ProvideWindowInsets(consumeWindowInsets = false) {
-        JetchatTheme {
-            ProfileScreen(colleagueProfile)
-        }
+    JetchatTheme {
+        ProfileScreen(colleagueProfile)
     }
 }
 
 @Preview
 @Composable
 fun ProfileFabPreview() {
-    ProvideWindowInsets(consumeWindowInsets = false) {
-        JetchatTheme {
-            ProfileFab(extended = true, userIsMe = false)
-        }
+    JetchatTheme {
+        ProfileFab(extended = true, userIsMe = false)
     }
 }

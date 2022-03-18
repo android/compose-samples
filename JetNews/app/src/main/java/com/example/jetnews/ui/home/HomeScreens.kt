@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -105,7 +106,6 @@ import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
-import com.google.accompanist.insets.imePadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.currentCoroutineContext

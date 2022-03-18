@@ -114,8 +114,6 @@ dependencies {
     implementation Libs.AndroidX.Compose.viewBinding
     debugImplementation Libs.AndroidX.Compose.tooling
 
-    implementation Libs.Accompanist.insets
-
     debugImplementation Libs.AndroidX.Compose.uiTestManifest
 
     androidTestImplementation Libs.junit

@@ -25,7 +25,6 @@ object Libs {
 
     object Accompanist {
         const val version = "0.24.4-alpha"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }

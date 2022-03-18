@@ -100,8 +100,6 @@ dependencies {
     implementation Libs.AndroidX.Compose.toolingPreview
     debugImplementation Libs.AndroidX.Compose.tooling
 
-    implementation Libs.Accompanist.insets
-
     implementation Libs.Coil.coilCompose
 
     androidTestImplementation Libs.AndroidX.Activity.activityCompose

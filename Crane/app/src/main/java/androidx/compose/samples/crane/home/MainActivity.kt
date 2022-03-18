@@ -44,7 +44,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,13 +55,11 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideWindowInsets {
-                CraneTheme {
-                    MainScreen(
-                        onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
-                        onDateSelectionClicked = { launchCalendarActivity(this) }
-                    )
-                }
+            CraneTheme {
+                MainScreen(
+                    onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
+                    onDateSelectionClicked = { launchCalendarActivity(this) }
+                )
             }
         }
     }

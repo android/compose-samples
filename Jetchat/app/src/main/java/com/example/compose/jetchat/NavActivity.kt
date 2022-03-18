@@ -37,7 +37,6 @@ import com.example.compose.jetchat.components.JetchatScaffold
 import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
-import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.launch
 
 /**
@@ -55,9 +54,6 @@ class NavActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            // Provide WindowInsets to our content. We don't want to consume them, so that
-            // they keep being pass down the view hierarchy (since we're using fragments).
-            ProvideWindowInsets(consumeWindowInsets = false) {
                 CompositionLocalProvider(
                     LocalBackPressedDispatcher provides this.onBackPressedDispatcher
                 ) {
@@ -101,7 +97,6 @@ class NavActivity : AppCompatActivity() {
                         AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
-            }
         }
     }
 

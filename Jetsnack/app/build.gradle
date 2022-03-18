@@ -117,7 +117,6 @@ dependencies {
     implementation Libs.AndroidX.Compose.toolingPreview
     debugImplementation Libs.AndroidX.Compose.tooling
 
-    implementation Libs.Accompanist.insets
     implementation Libs.Accompanist.systemuicontroller
     implementation Libs.Accompanist.flowlayouts
 

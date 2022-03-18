@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -72,7 +73,6 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.google.accompanist.insets.navigationBarsPadding
 
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
@@ -128,7 +128,7 @@ fun JetsnackBottomBar(
             itemCount = routes.size,
             indicator = { JetsnackBottomNavIndicator() },
             animSpec = springSpec,
-            modifier = Modifier.navigationBarsPadding(start = false, end = false)
+            modifier = Modifier.navigationBarsPadding()
         ) {
             tabs.forEach { section ->
                 val selected = section == currentSection
