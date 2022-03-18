@@ -15,10 +15,8 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun ReplyApp(
     windowSize: WindowSize,
-    devicePosture: StateFlow<DevicePosture>
+    foldingDevicePosture: DevicePosture
 ) {
-    val foldingDevicePosture = devicePosture.collectAsState().value
-
     /**
      * This will help us select type of navigation and content type depending on window size and
      * fold state of the device.
@@ -26,27 +24,32 @@ fun ReplyApp(
      * In the state of folding device If it's half fold in BookPosture we want to avoid content
      * at the crease/hinge
      */
-    val (navigationType, contentType) = when (windowSize) {
-        WindowSize.Compact -> {
-            Pair(ReplyNavigationType.BOTTOM_NAVIGATION, ReplyContentType.LIST_ONLY)
+    val navigationType: ReplyNavigationType
+    val contentType: ReplyContentType
+    when (windowSize) {
+        WindowSize.COMPACT -> {
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+            contentType = ReplyContentType.LIST_ONLY
         }
-        WindowSize.Medium -> {
-            if (foldingDevicePosture != DevicePosture.NormalPosture) {
-                Pair(ReplyNavigationType.NAVIGATION_RAIL, ReplyContentType.LIST_AND_DETAIL)
+        WindowSize.MEDIUM -> {
+            navigationType = ReplyNavigationType.NAVIGATION_RAIL
+            contentType = if (foldingDevicePosture != DevicePosture.NormalPosture) {
+                ReplyContentType.LIST_AND_DETAIL
             } else {
-                Pair(ReplyNavigationType.NAVIGATION_RAIL, ReplyContentType.LIST_ONLY)
+                ReplyContentType.LIST_ONLY
             }
         }
-        WindowSize.Expanded -> {
-            if (foldingDevicePosture is DevicePosture.BookPosture) {
-                Pair(ReplyNavigationType.NAVIGATION_RAIL, ReplyContentType.LIST_AND_DETAIL)
+        WindowSize.EXPANDED -> {
+            navigationType = if (foldingDevicePosture is DevicePosture.BookPosture) {
+                ReplyNavigationType.NAVIGATION_RAIL
             } else {
-                Pair(ReplyNavigationType.FIXED_NAVIGATION_DRAWER, ReplyContentType.LIST_AND_DETAIL)
+                ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
             }
+            contentType = ReplyContentType.LIST_AND_DETAIL
         }
     }
 
-    if (navigationType == ReplyNavigationType.FIXED_NAVIGATION_DRAWER) {
+    if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(drawerContent = {}) {
             ReplyAppContent(navigationType, contentType)
         }

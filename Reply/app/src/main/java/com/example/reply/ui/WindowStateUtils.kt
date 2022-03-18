@@ -38,9 +38,9 @@ import kotlin.contracts.contract
  *     - Medium: Most foldables and tablets in portrait mode
  *     - Expanded: Most tablets in landscape mode
  *
- * More info: https://material.io/archive/guidelines/layout/responsive-ui.html
+ * More info: https://m3.material.io/foundations/adaptive-design/overview
  */
-enum class WindowSize { Compact, Medium, Expanded }
+enum class WindowSize { COMPACT, MEDIUM, EXPANDED }
 
 /**
  * Remembers the [WindowSize] class for the window corresponding to the current window metrics.
@@ -79,9 +79,9 @@ private fun Activity.rememberWindowSize(): Size {
 @VisibleForTesting
 fun getWindowSizeClass(windowDpSize: DpSize): WindowSize = when {
     windowDpSize.width < 0.dp -> throw IllegalArgumentException("Dp value cannot be negative")
-    windowDpSize.width < 600.dp -> WindowSize.Compact
-    windowDpSize.width < 840.dp -> WindowSize.Medium
-    else -> WindowSize.Expanded
+    windowDpSize.width < 600.dp -> WindowSize.COMPACT
+    windowDpSize.width < 840.dp -> WindowSize.MEDIUM
+    else -> WindowSize.EXPANDED
 }
 
 /**
@@ -128,7 +128,7 @@ fun isSeparating(foldFeature: FoldingFeature?): Boolean {
  * Different type of navigation supported by app depending on size and state.
  */
 enum class ReplyNavigationType {
-    BOTTOM_NAVIGATION, NAVIGATION_RAIL, FIXED_NAVIGATION_DRAWER
+    BOTTOM_NAVIGATION, NAVIGATION_RAIL, PERMANENT_NAVIGATION_DRAWER
 }
 
 /**
