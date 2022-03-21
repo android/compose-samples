@@ -33,10 +33,6 @@ object Libs {
         const val volley = "com.android.volley:volley:1.2.0"
     }
 
-    object Accompanist {
-        const val version = "0.24.4-alpha"
-    }
-
     object Kotlin {
         private const val version = "1.6.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"

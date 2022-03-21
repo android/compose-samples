@@ -71,7 +71,8 @@ fun Search(
     state: SearchState = rememberSearchState()
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        Column(modifier = Modifier.statusBarsPadding()) {
+        Column {
+            Spacer(modifier = Modifier.statusBarsPadding())
             SearchBar(
                 query = state.query,
                 onQueryChange = { state.query = it },

@@ -26,11 +26,12 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -93,13 +94,14 @@ private fun SnackCollectionList(
 ) {
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
     Box(modifier) {
-        LazyColumn(
-            modifier = Modifier.windowInsetsPadding(
-                WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
-            )
-        ) {
+        LazyColumn {
 
             item {
+                Spacer(
+                    Modifier.windowInsetsTopHeight(
+                        WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
+                    )
+                )
                 FilterBar(filters, onShowFilters = { filtersVisible = true })
             }
             itemsIndexed(snackCollections) { index, snackCollection ->

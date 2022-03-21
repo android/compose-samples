@@ -22,7 +22,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -65,7 +69,11 @@ class ConversationFragment : Fragment() {
                             activityViewModel.openDrawer()
                         },
                         // Add padding so that we are inset from any navigation bars
-                        modifier = Modifier.navigationBarsPadding()
+                        modifier = Modifier.windowInsetsPadding(
+                            WindowInsets
+                                .navigationBars
+                                .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                        )
                     )
                 }
             }

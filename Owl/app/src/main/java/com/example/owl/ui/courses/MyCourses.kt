@@ -18,10 +18,12 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +42,10 @@ fun MyCourses(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier.statusBarsPadding()) {
+    LazyColumn(modifier) {
+        item {
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+        }
         item {
             CoursesAppBar()
         }

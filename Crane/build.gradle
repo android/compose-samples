@@ -41,10 +41,6 @@ subprojects {
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }
         }
-
-        if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
-            maven { url Urls.mavenCentralSnapshotRepo }
-        }
     }
 
     apply plugin: 'com.diffplug.spotless'

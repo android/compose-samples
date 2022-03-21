@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
@@ -56,18 +55,16 @@ class ProfileFragment : Fragment() {
         setContent {
             val userData by viewModel.userData.observeAsState()
 
-            CompositionLocalProvider {
-                JetchatTheme {
-                    if (userData == null) {
-                        ProfileError()
-                    } else {
-                        ProfileScreen(
-                            userData = userData!!,
-                            onNavIconPressed = {
-                                activityViewModel.openDrawer()
-                            }
-                        )
-                    }
+            JetchatTheme {
+                if (userData == null) {
+                    ProfileError()
+                } else {
+                    ProfileScreen(
+                        userData = userData!!,
+                        onNavIconPressed = {
+                            activityViewModel.openDrawer()
+                        }
+                    )
                 }
             }
         }
