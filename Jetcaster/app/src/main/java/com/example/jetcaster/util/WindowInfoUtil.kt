@@ -31,7 +31,14 @@ sealed interface DevicePosture {
         val hingePosition: Rect
     ) : DevicePosture
 
-    object BookPosture : DevicePosture
+    data class BookPosture(
+        val hingePosition: Rect
+    ) : DevicePosture
+
+    data class SeparatingPosture(
+        val hingePosition: Rect,
+        var orientation: FoldingFeature.Orientation
+    ) : DevicePosture
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -41,6 +48,15 @@ fun isTableTopPosture(foldFeature: FoldingFeature?): Boolean {
         foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
 }
 
-fun isBookPosture(foldFeature: FoldingFeature?) =
-    foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+@OptIn(ExperimentalContracts::class)
+fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
+    contract { returns(true) implies (foldFeature != null) }
+    return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
         foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
+}
+
+@OptIn(ExperimentalContracts::class)
+fun isSeparatingPosture(foldFeature: FoldingFeature?): Boolean {
+    contract { returns(true) implies (foldFeature != null) }
+    return foldFeature?.state == FoldingFeature.State.FLAT && foldFeature.isSeparating
+}
