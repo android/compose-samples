@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -48,7 +49,6 @@ import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.utils.NetworkImage
-import com.google.accompanist.insets.statusBarsPadding
 import java.util.Locale
 import kotlin.math.ceil
 

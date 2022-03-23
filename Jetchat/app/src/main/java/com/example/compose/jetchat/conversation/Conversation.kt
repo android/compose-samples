@@ -25,11 +25,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -75,10 +82,6 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.launch
 
 /**
@@ -128,9 +131,11 @@ fun ConversationContent(
                             scrollState.scrollToItem(0)
                         }
                     },
-                    // Use navigationBarsWithImePadding(), to move the input panel above both the
+                    // Use navigationBarsPadding() imePadding() and , to move the input panel above both the
                     // navigation bar, and on-screen keyboard (IME)
-                    modifier = Modifier.navigationBarsWithImePadding(),
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding(),
                 )
             }
             // Channel name bar floats above the messages
@@ -221,10 +226,8 @@ fun Messages(
             // Add content padding so that the content can be scrolled (y-axis)
             // below the status bar + app bar
             // TODO: Get height from somewhere
-            contentPadding = rememberInsetsPaddingValues(
-                insets = LocalWindowInsets.current.statusBars,
-                additionalTop = 90.dp
-            ),
+            contentPadding =
+            WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize()

@@ -33,11 +33,6 @@ object Libs {
         const val volley = "com.android.volley:volley:1.2.0"
     }
 
-    object Accompanist {
-        const val version = "0.23.1"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
-    }
-
     object Kotlin {
         private const val version = "1.6.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
@@ -60,7 +55,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.1"
+            const val version = "1.2.0-alpha05"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"

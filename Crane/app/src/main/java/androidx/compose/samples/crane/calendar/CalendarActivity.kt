@@ -25,7 +25,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -44,8 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.statusBarsHeight
 import dagger.hilt.android.AndroidEntryPoint
 
 fun launchCalendarActivity(context: Context) {
@@ -62,10 +63,8 @@ class CalendarActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideWindowInsets {
-                CraneTheme {
-                    CalendarScreen(onBackPressed = { finish() })
-                }
+            CraneTheme {
+                CalendarScreen(onBackPressed = { finish() })
             }
         }
     }
@@ -112,7 +111,7 @@ private fun CalendarTopAppBar(selectedDates: String, onBackPressed: () -> Unit) 
     Column {
         Spacer(
             modifier = Modifier
-                .statusBarsHeight()
+                .windowInsetsTopHeight(WindowInsets.statusBars)
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.primaryVariant)
         )

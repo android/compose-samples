@@ -18,6 +18,7 @@ package com.example.jetsnack.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -37,7 +38,6 @@ import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {

@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -48,7 +49,6 @@ import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
-import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun SearchCourses(

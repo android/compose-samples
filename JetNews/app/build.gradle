@@ -104,7 +104,6 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
 
     implementation 'androidx.appcompat:appcompat:1.4.1'

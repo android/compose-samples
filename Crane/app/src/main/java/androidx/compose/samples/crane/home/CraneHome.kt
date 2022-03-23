@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -37,7 +38,6 @@ import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.launch
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit

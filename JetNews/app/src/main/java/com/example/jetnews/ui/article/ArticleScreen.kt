@@ -22,11 +22,16 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -68,7 +73,6 @@ import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.isScrolled
-import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -122,7 +126,6 @@ fun ArticleScreen(
                         isFavorite = isFavorite,
                         onToggleFavorite = onToggleFavorite,
                         onSharePost = { sharePost(post, context) },
-                        modifier = Modifier.navigationBarsPadding(start = false, end = false)
                     )
                 }
             } else {
@@ -212,6 +215,7 @@ private fun BottomBar(
             modifier = Modifier
                 .height(56.dp)
                 .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Vertical))
         ) {
             FavoriteButton(onClick = onUnimplementedAction)
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)

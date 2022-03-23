@@ -22,14 +22,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -76,8 +83,6 @@ import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.insets.statusBarsHeight
-import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -164,7 +169,11 @@ fun HomeContent(
     onCategorySelected: (HomeCategory) -> Unit,
     navigateToPlayer: (String) -> Unit
 ) {
-    Column(modifier = modifier.systemBarsPadding(top = false, bottom = false)) {
+    Column(
+        modifier = modifier.windowInsetsPadding(
+            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+        )
+    ) {
         // We dynamically theme this sub-section of the layout to match the selected
         // 'top podcast'
 
@@ -205,7 +214,7 @@ fun HomeContent(
                     Modifier
                         .background(appBarColor)
                         .fillMaxWidth()
-                        .statusBarsHeight()
+                        .windowInsetsTopHeight(WindowInsets.statusBars)
                 )
 
                 HomeAppBar(

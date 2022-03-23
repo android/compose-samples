@@ -28,7 +28,6 @@ import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.ProvideTestImageLoader
-import com.google.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
 
@@ -48,16 +47,14 @@ class NavigationTest {
             CompositionLocalProvider(
                 LocalOnBackPressedDispatcherOwner provides composeTestRule.activity
             ) {
-                ProvideWindowInsets {
-                    ProvideTestImageLoader {
-                        if (startDestination == null) {
-                            NavGraph()
-                        } else {
-                            NavGraph(
-                                startDestination = startDestination,
-                                showOnboardingInitially = false
-                            )
-                        }
+                ProvideTestImageLoader {
+                    if (startDestination == null) {
+                        NavGraph()
+                    } else {
+                        NavGraph(
+                            startDestination = startDestination,
+                            showOnboardingInitially = false
+                        )
                     }
                 }
             }

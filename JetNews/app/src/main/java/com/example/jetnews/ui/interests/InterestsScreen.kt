@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
@@ -74,7 +75,6 @@ import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.runBlocking
 import kotlin.math.max
 
@@ -238,7 +238,7 @@ private fun InterestScreenContent(
 private val tabContainerModifier = Modifier
     .fillMaxWidth()
     .wrapContentWidth(Alignment.CenterHorizontally)
-    .navigationBarsPadding(start = false, end = false)
+    .navigationBarsPadding()
 
 /**
  * Display a simple list of topics

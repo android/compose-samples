@@ -22,14 +22,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
@@ -81,8 +87,6 @@ import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 
@@ -216,7 +220,11 @@ private fun PlayerContentTableTop(
                     startYPercentage = 1f,
                     endYPercentage = 0f
                 )
-                .systemBarsPadding(bottom = false)
+                .windowInsetsPadding(
+                    WindowInsets.systemBars.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                    )
+                )
                 .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -227,7 +235,11 @@ private fun PlayerContentTableTop(
         // Content for the table part of the screen
         Column(
             modifier = Modifier
-                .systemBarsPadding(top = false)
+                .windowInsetsPadding(
+                    WindowInsets.systemBars.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                    )
+                )
                 .padding(horizontal = 32.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -571,17 +583,15 @@ fun PlayerButtonsPreview() {
 @Preview
 @Composable
 fun PlayerScreenPreview() {
-    ProvideWindowInsets {
-        JetcasterTheme {
-            PlayerScreen(
-                PlayerUiState(
-                    title = "Title",
-                    duration = Duration.ofHours(2),
-                    podcastName = "Podcast"
-                ),
-                devicePosture = DevicePosture.NormalPosture,
-                onBackPress = { }
-            )
-        }
+    JetcasterTheme {
+        PlayerScreen(
+            PlayerUiState(
+                title = "Title",
+                duration = Duration.ofHours(2),
+                podcastName = "Podcast"
+            ),
+            devicePosture = DevicePosture.NormalPosture,
+            onBackPress = { }
+        )
     }
 }

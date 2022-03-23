@@ -48,10 +48,7 @@ This sample uses animations ranging from simple `AnimatedVisibility` in [Functio
 ### Edge-to-edge UI with synchronized IME transitions
 This sample is laid out [edge-to-edge](https://medium.com/androiddevelopers/gesture-navigation-going-edge-to-edge-812f62e4e83e), drawing its content behind the system bars for a more immersive look.
 
-The sample also supports synchronized IME transitions when running on API 30+ devices. See the use of `Modifier.navigationBarsWithImePadding()` in [ConversationContent](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
-
-The sample uses the
-[Accompanist Insets library](https://google.github.io/accompanist/insets/) for WindowInsets support.
+The sample also supports synchronized IME transitions when running on API 30+ devices. See the use of `Modifier.navigationBarsPadding().imePadding()` in [ConversationContent](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
 
 ### Saved state across configuration changes
 Some composable state survives activity or process recreation, like `currentInputSelector` in [UserInput](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
