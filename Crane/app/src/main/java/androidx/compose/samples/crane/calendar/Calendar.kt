@@ -150,7 +150,6 @@ private fun Day(
         onClick = { onDayClicked(day) },
         onClickEnabled = enabled,
         backgroundColor = day.status.color(MaterialTheme.colors),
-        onClickLabel = stringResource(id = R.string.click_label_select)
     ) {
         DayStatusContainer(status = day.status) {
             Text(
@@ -185,7 +184,6 @@ private fun DayContainer(
     onClick: () -> Unit = { },
     onClickEnabled: Boolean = true,
     backgroundColor: Color = Color.Transparent,
-    onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
@@ -207,7 +205,6 @@ private fun DayContainer(
         onClick = onClick,
         enabled = onClickEnabled,
         color = backgroundColor,
-        onClickLabel = onClickLabel
     ) {
         content()
     }

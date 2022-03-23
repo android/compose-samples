@@ -47,7 +47,6 @@ import com.example.jetnews.R
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.theme.JetnewsTheme
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun JetnewsNavRail(
     modifier: Modifier = Modifier,
@@ -70,7 +69,6 @@ fun JetnewsNavRail(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppNavRail(
     currentRoute: String,
@@ -121,7 +119,6 @@ private fun NavRailIcon(
         color = backgroundColor,
         onClick = action,
         shape = CircleShape,
-        role = Role.Tab,
         modifier = modifier.size(48.dp)
     ) {
         NavigationIcon(

@@ -17,7 +17,7 @@
 package com.example.jetcaster.buildsrc
 
 object Versions {
-    const val ktlint = "0.44.0"
+    const val ktlint = "0.45.1"
 }
 
 object Libs {
@@ -70,7 +70,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-alpha05"
+            const val version = "1.2.0-alpha06"
 
             @get:JvmStatic
             val snapshotUrl: String
