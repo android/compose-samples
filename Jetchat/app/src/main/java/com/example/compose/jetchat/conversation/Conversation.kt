@@ -133,7 +133,9 @@ fun ConversationContent(
                     },
                     // Use navigationBarsPadding() imePadding() and , to move the input panel above both the
                     // navigation bar, and on-screen keyboard (IME)
-                    modifier = Modifier.navigationBarsPadding().imePadding(),
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding(),
                 )
             }
             // Channel name bar floats above the messages
@@ -224,7 +226,8 @@ fun Messages(
             // Add content padding so that the content can be scrolled (y-axis)
             // below the status bar + app bar
             // TODO: Get height from somewhere
-            contentPadding = WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
+            contentPadding =
+            WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize()
