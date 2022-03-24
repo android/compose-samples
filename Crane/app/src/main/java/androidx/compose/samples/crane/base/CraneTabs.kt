@@ -91,7 +91,7 @@ fun CraneTabs(
             Box(
                 Modifier.tabIndicatorOffset(tabPositions[tabSelected.ordinal])
                     .fillMaxSize()
-                    .padding(2.dp)
+                    .padding(horizontal = 4.dp)
                     .border(BorderStroke(2.dp, Color.White), RoundedCornerShape(16.dp))
             )
         },
@@ -105,7 +105,7 @@ fun CraneTabs(
 
             Tab(
                 modifier = Modifier
-                    .padding(2.dp)
+                    .padding(horizontal = 4.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 selected = selected,
                 onClick = {
