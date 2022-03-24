@@ -26,7 +26,7 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
-    const val material3 = "com.google.android.material:material:1.6.0-alpha02"
+    const val material3 = "com.google.android.material:material:1.6.0-alpha03"
 
     object Kotlin {
         private const val version = "1.6.10"
