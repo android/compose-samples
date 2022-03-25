@@ -216,7 +216,6 @@ private fun BottomBar(
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Vertical))
                 .height(56.dp)
                 .fillMaxWidth()
-                
         ) {
             FavoriteButton(onClick = onUnimplementedAction)
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
