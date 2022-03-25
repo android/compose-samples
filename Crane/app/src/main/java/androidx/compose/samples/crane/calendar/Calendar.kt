@@ -187,7 +187,7 @@ private fun DayContainer(
     backgroundColor: Color = Color.Transparent,
     // TODO: Determine the best way to pass the onClickLabel via the updated Surface API
     // https://github.com/android/compose-samples/issues/766
-    onClickLabel: String? = null,
+    @Suppress("UNUSED_PARAMETER") onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
