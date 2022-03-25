@@ -115,6 +115,7 @@ private fun NavRailIcon(
     )
 
     Surface(
+        selected = isSelected,
         color = backgroundColor,
         onClick = action,
         shape = CircleShape,

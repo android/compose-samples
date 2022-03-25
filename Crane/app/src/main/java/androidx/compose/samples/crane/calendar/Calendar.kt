@@ -150,6 +150,7 @@ private fun Day(
         onClick = { onDayClicked(day) },
         onClickEnabled = enabled,
         backgroundColor = day.status.color(MaterialTheme.colors),
+        onClickLabel = stringResource(id = R.string.click_label_select)
     ) {
         DayStatusContainer(status = day.status) {
             Text(
@@ -184,6 +185,9 @@ private fun DayContainer(
     onClick: () -> Unit = { },
     onClickEnabled: Boolean = true,
     backgroundColor: Color = Color.Transparent,
+    // TODO: Determine the best way to pass the onClickLabel via the updated Surface API
+    // https://github.com/android/compose-samples/issues/766
+    onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
@@ -204,6 +208,7 @@ private fun DayContainer(
             ),
         onClick = onClick,
         enabled = onClickEnabled,
+        selected = selected,
         color = backgroundColor,
     ) {
         content()
