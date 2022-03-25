@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
@@ -37,6 +38,7 @@ import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
@@ -109,7 +111,7 @@ fun CraneHomeContent(
                 CraneScreen.Fly -> {
                     suggestedDestinations?.let { destinations ->
                         ExploreSection(
-                            title = "Explore Flights by Destination",
+                            title = stringResource(R.string.explore_flights_by_destination),
                             exploreList = destinations,
                             onItemClicked = onExploreItemClicked
                         )
@@ -117,14 +119,14 @@ fun CraneHomeContent(
                 }
                 CraneScreen.Sleep -> {
                     ExploreSection(
-                        title = "Explore Properties by Destination",
+                        title = stringResource(R.string.explore_properties_by_destination),
                         exploreList = viewModel.hotels,
                         onItemClicked = onExploreItemClicked
                     )
                 }
                 CraneScreen.Eat -> {
                     ExploreSection(
-                        title = "Explore Restaurants by Destination",
+                        title = stringResource(R.string.explore_restaurants_by_destination),
                         exploreList = viewModel.restaurants,
                         onItemClicked = onExploreItemClicked
                     )
