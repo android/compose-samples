@@ -95,7 +95,9 @@ fun CraneEditableUserInput(
         tintIcon = {
             textFieldState.text.isNotEmpty()
         },
-        showCaption = { textFieldState.text.isEmpty() },
+        showCaption = {
+            textFieldState.text.isNotEmpty()
+        },
         vectorImageId = vectorImageId
     ) {
         BasicTextField(
