@@ -17,7 +17,7 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.44.0"
+    const val ktLint = "0.45.1"
 }
 
 object Libs {
@@ -30,7 +30,7 @@ object Libs {
     }
 
     object Volley {
-        const val volley = "com.android.volley:volley:1.2.0"
+        const val volley = "com.android.volley:volley:1.2.1"
     }
 
     object Kotlin {
@@ -55,7 +55,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-alpha05"
+            const val version = "1.2.0-alpha06"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
