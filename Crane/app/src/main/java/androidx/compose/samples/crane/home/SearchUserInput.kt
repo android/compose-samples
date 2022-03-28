@@ -37,6 +37,7 @@ import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -65,7 +66,7 @@ class PeopleUserInputState {
 
 @Composable
 fun PeopleUserInput(
-    titleSuffix: String? = "",
+    titleSuffix: String = "",
     onPeopleChanged: (Int) -> Unit,
     peopleState: PeopleUserInputState = remember { PeopleUserInputState() }
 ) {
@@ -74,10 +75,8 @@ fun PeopleUserInput(
         val tint = tintPeopleUserInput(transitionState)
 
         val people = peopleState.people
-        val resources = LocalContext.current.resources
-        val peopleString = resources.getQuantityString(R.plurals.number_adults_selected, people, people, titleSuffix)
         CraneUserInput(
-            text = peopleString,
+            text = pluralStringResource(id = R.plurals.number_adults_selected, count = people, people, titleSuffix),
             vectorImageId = R.drawable.ic_person,
             tint = tint.value,
             onClick = {
