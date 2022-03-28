@@ -38,7 +38,8 @@ private val screens = listOf(
     R.string.screen_title_my_trips,
     R.string.screen_title_saved_trips,
     R.string.screen_title_price_alerts,
-    R.string.screen_title_my_account)
+    R.string.screen_title_my_account
+)
 
 @Composable
 fun CraneDrawer(modifier: Modifier = Modifier) {
