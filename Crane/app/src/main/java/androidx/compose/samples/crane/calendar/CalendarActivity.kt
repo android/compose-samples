@@ -119,7 +119,7 @@ private fun CalendarTopAppBar(selectedDates: String, onBackPressed: () -> Unit) 
         TopAppBar(
             title = {
                 Text(
-                    text = if (selectedDates.isEmpty()) "Select Dates"
+                    text = if (selectedDates.isEmpty()) stringResource(id = R.string.calendar_select_dates_title)
                     else selectedDates
                 )
             },

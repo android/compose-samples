@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.base
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -81,7 +80,6 @@ fun CraneUserInput(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CraneEditableUserInput(
     hint: String,
