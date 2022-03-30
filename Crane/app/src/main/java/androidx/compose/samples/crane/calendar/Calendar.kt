@@ -56,6 +56,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.text
@@ -185,9 +186,7 @@ private fun DayContainer(
     onClick: () -> Unit = { },
     onClickEnabled: Boolean = true,
     backgroundColor: Color = Color.Transparent,
-    // TODO: Determine the best way to pass the onClickLabel via the updated Surface API
-    // https://github.com/android/compose-samples/issues/766
-    @Suppress("UNUSED_PARAMETER") onClickLabel: String? = null,
+    onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
     // What if this doesn't fit the screen? - LayoutFlexible(1f) + LayoutAspectRatio(1f)
@@ -201,6 +200,7 @@ private fun DayContainer(
                 if (onClickEnabled) {
                     modifier.semantics {
                         stateDescription = stateDescriptionLabel
+                        onClick(label = onClickLabel, action = null)
                     }
                 } else {
                     modifier.clearAndSetSemantics { }
@@ -208,7 +208,6 @@ private fun DayContainer(
             ),
         onClick = onClick,
         enabled = onClickEnabled,
-        selected = selected,
         color = backgroundColor,
     ) {
         content()
