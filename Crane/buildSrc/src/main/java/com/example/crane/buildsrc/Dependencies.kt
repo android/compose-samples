@@ -59,6 +59,8 @@ object Libs {
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
+            const val materialWindow = "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
+
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"

@@ -125,6 +125,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.materialWindow
     implementation Libs.AndroidX.Compose.layout
     implementation Libs.AndroidX.Compose.animation
     implementation Libs.AndroidX.Compose.toolingPreview

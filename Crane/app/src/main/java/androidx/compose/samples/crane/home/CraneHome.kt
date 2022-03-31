@@ -17,13 +17,16 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -40,6 +43,7 @@ import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
@@ -51,6 +55,7 @@ enum class CraneScreen {
 
 @Composable
 fun CraneHome(
+    widthSize: WindowWidthSizeClass,
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit,
     modifier: Modifier = Modifier,
@@ -66,6 +71,7 @@ fun CraneHome(
         val scope = rememberCoroutineScope()
         CraneHomeContent(
             modifier = modifier.padding(contentPadding),
+            widthSize = widthSize,
             onExploreItemClicked = onExploreItemClicked,
             onDateSelectionClicked = onDateSelectionClicked,
             openDrawer = {
@@ -80,6 +86,7 @@ fun CraneHome(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CraneHomeContent(
+    widthSize: WindowWidthSizeClass,
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit,
     openDrawer: () -> Unit,
@@ -100,6 +107,7 @@ fun CraneHomeContent(
         },
         backLayerContent = {
             SearchContent(
+                widthSize,
                 tabSelected,
                 viewModel,
                 onPeopleChanged,
@@ -112,6 +120,7 @@ fun CraneHomeContent(
                 CraneScreen.Fly -> {
                     suggestedDestinations?.let { destinations ->
                         ExploreSection(
+                            widthSize = widthSize,
                             title = stringResource(R.string.explore_flights_by_destination),
                             exploreList = destinations,
                             onItemClicked = onExploreItemClicked
@@ -120,6 +129,7 @@ fun CraneHomeContent(
                 }
                 CraneScreen.Sleep -> {
                     ExploreSection(
+                        widthSize = widthSize,
                         title = stringResource(R.string.explore_properties_by_destination),
                         exploreList = viewModel.hotels,
                         onItemClicked = onExploreItemClicked
@@ -127,6 +137,7 @@ fun CraneHomeContent(
                 }
                 CraneScreen.Eat -> {
                     ExploreSection(
+                        widthSize = widthSize,
                         title = stringResource(R.string.explore_restaurants_by_destination),
                         exploreList = viewModel.restaurants,
                         onItemClicked = onExploreItemClicked
@@ -145,7 +156,7 @@ private fun HomeTabBar(
     modifier: Modifier = Modifier
 ) {
     CraneTabBar(
-        modifier = modifier,
+        modifier = modifier.wrapContentWidth().sizeIn(maxWidth = 500.dp),
         onMenuClicked = openDrawer
     ) { tabBarModifier ->
         CraneTabs(
@@ -159,6 +170,7 @@ private fun HomeTabBar(
 
 @Composable
 private fun SearchContent(
+    widthSize: WindowWidthSizeClass,
     tabSelected: CraneScreen,
     viewModel: MainViewModel,
     onPeopleChanged: (Int) -> Unit,
@@ -171,7 +183,8 @@ private fun SearchContent(
 
     when (tabSelected) {
         CraneScreen.Fly -> FlySearchContent(
-            datesSelected,
+            widthSize = widthSize,
+            datesSelected = datesSelected,
             searchUpdates = FlySearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onToDestinationChanged = { viewModel.toDestinationChanged(it) },
@@ -180,7 +193,8 @@ private fun SearchContent(
             )
         )
         CraneScreen.Sleep -> SleepSearchContent(
-            datesSelected,
+            widthSize = widthSize,
+            datesSelected = datesSelected,
             sleepUpdates = SleepSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,
@@ -188,7 +202,8 @@ private fun SearchContent(
             )
         )
         CraneScreen.Eat -> EatSearchContent(
-            datesSelected,
+            widthSize = widthSize,
+            datesSelected = datesSelected,
             eatUpdates = EatSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,

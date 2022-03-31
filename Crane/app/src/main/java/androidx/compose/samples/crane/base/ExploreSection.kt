@@ -18,32 +18,37 @@ package androidx.compose.samples.crane.base
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.home.OnExploreItemClicked
 import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.samples.crane.ui.crane_caption
-import androidx.compose.samples.crane.ui.crane_divider_color
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +61,7 @@ import coil.compose.rememberImagePainter
 
 @Composable
 fun ExploreSection(
+    widthSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
     title: String,
     exploreList: List<ExploreModel>,
@@ -68,32 +74,85 @@ fun ExploreSection(
                 style = MaterialTheme.typography.caption.copy(color = crane_caption)
             )
             Spacer(Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-            ) {
-                items(exploreList) { exploreItem ->
-                    Column(Modifier.fillParentMaxWidth()) {
-                        ExploreItem(
-                            modifier = Modifier.fillParentMaxWidth(),
-                            item = exploreItem,
-                            onItemClicked = onItemClicked
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(200.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                content = {
+                    items(exploreList) { exploreItem ->
+                        when (widthSize) {
+                            WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
+                                ExploreItemColumn(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    item = exploreItem,
+                                    onItemClicked = onItemClicked
+                                )
+                            }
+                            else -> {
+                                ExploreItemRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    item = exploreItem,
+                                    onItemClicked = onItemClicked
+                                )
+                            }
+                        }
+                    }
+                    item(span = {
+                        // Span the whole bottom row of grid items to add space at the bottom of the grid.
+                        GridItemSpan(maxLineSpan)
+                    }) {
+                        Spacer(
+                            modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars)
                         )
-                        Divider(color = crane_divider_color)
                     }
                 }
-                item {
-                    Spacer(
-                        modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars)
-                    )
-                }
-            }
+            )
         }
     }
 }
 
+/**
+ * Composable with large image card and text underneath.
+ */
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-private fun ExploreItem(
+private fun ExploreItemColumn(
+    modifier: Modifier = Modifier,
+    item: ExploreModel,
+    onItemClicked: OnExploreItemClicked
+) {
+    Column(
+        modifier = modifier
+            .clickable { onItemClicked(item) }
+            .padding(top = 12.dp, bottom = 12.dp)
+    ) {
+        ExploreImageContainer(modifier = Modifier.fillMaxWidth()) {
+            ExploreImage(item)
+        }
+        Spacer(Modifier.height(8.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = item.city.nameToDisplay,
+                style = MaterialTheme.typography.subtitle1
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = item.description,
+                style = MaterialTheme.typography.caption.copy(color = crane_caption)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExploreItemRow(
     modifier: Modifier = Modifier,
     item: ExploreModel,
     onItemClicked: OnExploreItemClicked
@@ -103,39 +162,16 @@ private fun ExploreItem(
             .clickable { onItemClicked(item) }
             .padding(top = 12.dp, bottom = 12.dp)
     ) {
-        ExploreImageContainer {
-            Box {
-                val painter = rememberImagePainter(
-                    data = item.imageUrl,
-                    builder = {
-                        crossfade(true)
-                    }
-                )
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-
-                if (painter.state is Loading) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_crane_logo),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .align(Alignment.Center),
-                    )
-                }
-            }
+        ExploreImageContainer(modifier = Modifier.size(64.dp)) {
+            ExploreImage(item)
         }
         Spacer(Modifier.width(24.dp))
-        Column {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = item.city.nameToDisplay,
                 style = MaterialTheme.typography.h6
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
             Text(
                 text = item.description,
                 style = MaterialTheme.typography.caption.copy(color = crane_caption)
@@ -144,9 +180,41 @@ private fun ExploreItem(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
-private fun ExploreImageContainer(content: @Composable () -> Unit) {
-    Surface(Modifier.size(width = 60.dp, height = 60.dp), RoundedCornerShape(4.dp)) {
+private fun ExploreImage(item: ExploreModel) {
+    Box {
+        val painter = rememberImagePainter(
+            data = item.imageUrl,
+            builder = {
+                crossfade(true)
+            }
+        )
+        Image(
+            painter = painter,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+        )
+
+        if (painter.state is Loading) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_crane_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(36.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExploreImageContainer(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Surface(modifier.aspectRatio(1f), RoundedCornerShape(4.dp)) {
         content()
     }
 }

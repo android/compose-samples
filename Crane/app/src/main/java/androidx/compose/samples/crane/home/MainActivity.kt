@@ -33,6 +33,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -46,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -56,7 +60,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CraneTheme {
+                val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
+
                 MainScreen(
+                    widthSize = widthSizeClass,
                     onExploreItemClicked = { launchDetailsActivity(context = this, item = it) },
                     onDateSelectionClicked = { launchCalendarActivity(this) }
                 )
@@ -67,7 +74,11 @@ class MainActivity : ComponentActivity() {
 
 @VisibleForTesting
 @Composable
-fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicked: () -> Unit) {
+fun MainScreen(
+    widthSize: WindowWidthSizeClass,
+    onExploreItemClicked: OnExploreItemClicked,
+    onDateSelectionClicked: () -> Unit
+) {
     Surface(color = MaterialTheme.colors.primary) {
         val transitionState = remember { MutableTransitionState(SplashState.Shown) }
         val transition = updateTransition(transitionState, label = "splashTransition")
@@ -95,6 +106,7 @@ fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicke
             MainContent(
                 modifier = Modifier.alpha(contentAlpha),
                 topPadding = contentTopPadding,
+                widthSize = widthSize,
                 onExploreItemClicked = onExploreItemClicked,
                 onDateSelectionClicked = onDateSelectionClicked
             )
@@ -106,12 +118,15 @@ fun MainScreen(onExploreItemClicked: OnExploreItemClicked, onDateSelectionClicke
 private fun MainContent(
     modifier: Modifier = Modifier,
     topPadding: Dp = 0.dp,
+    widthSize: WindowWidthSizeClass,
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit
 ) {
+
     Column(modifier = modifier) {
         Spacer(Modifier.padding(top = topPadding))
         CraneHome(
+            widthSize = widthSize,
             modifier = modifier,
             onExploreItemClicked = onExploreItemClicked,
             onDateSelectionClicked = onDateSelectionClicked
