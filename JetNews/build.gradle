@@ -17,6 +17,7 @@
 buildscript {
     ext.kotlin_version = '1.6.10'
     ext.compose_version = '1.2.0-alpha06'
+    ext.compose_snapshot_version = ''
     ext.coroutines_version = '1.6.0'
     ext.accompanist_version = '0.24.4-alpha'
 
@@ -39,6 +40,11 @@ subprojects {
     repositories {
         google()
         mavenCentral()
+
+        if (!compose_snapshot_version.isEmpty()) {
+            maven { url "https://androidx.dev/snapshots/builds/" +
+                    "${compose_snapshot_version}/artifacts/repository/" }
+        }
     }
 
     apply plugin: 'com.diffplug.spotless'
