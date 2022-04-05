@@ -62,6 +62,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -200,7 +201,7 @@ fun CityMapView(
         },
         onZoomChanged = onZoomChanged
     ) {
-        Marker(position = cityLocation)
+        Marker(state = MarkerState(position = cityLocation))
     }
 }
 
