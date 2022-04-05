@@ -54,10 +54,6 @@
             android:name=".details.DetailsActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".calendar.CalendarActivity"
-            android:exported="false" />
-
     </application>
 
 </manifest>
