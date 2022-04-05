@@ -33,20 +33,37 @@ read snapshot_version;
 
 echo "Upgrading to $compose_version snapshot $snapshot_version"
 
-for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
+# Upgrade Dependencies.kt
+# for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
+#     echo $DEPENDENCIES_FILE;
+#     COMPOSE_BLOCK=false;
+#     while IFS= read -r line; do
+#         if [[ $line == *"val version ="* ]] && $COMPOSE_BLOCK = true; then
+#             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
+#         elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
+#             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
+#         else
+#             if [[ $line == *"object Compose {"* ]]; then
+#                 COMPOSE_BLOCK=true;
+#             elif [[ $line == *"}"* ]]; then
+#                 COMPOSE_BLOCK=false;
+#             fi
+#             echo "$line";
+#         fi
+#     done < $DEPENDENCIES_FILE > "${DEPENDENCIES_FILE}_new"
+#     mv "${DEPENDENCIES_FILE}_new" $DEPENDENCIES_FILE
+# done
+
+# Upgrade build.gradle
+for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
     echo $DEPENDENCIES_FILE;
-    COMPOSE_BLOCK=false;
+    
     while IFS= read -r line; do
-        if [[ $line == *"val version ="* ]] && $COMPOSE_BLOCK = true; then
-            echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
+        if [[ $line == *"ext.compose_version ="* ]]; then
+            echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
         elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
         else
-            if [[ $line == *"object Compose {"* ]]; then
-                COMPOSE_BLOCK=true;
-            elif [[ $line == *"}"* ]]; then
-                COMPOSE_BLOCK=false;
-            fi
             echo "$line";
         fi
     done < $DEPENDENCIES_FILE > "${DEPENDENCIES_FILE}_new"
