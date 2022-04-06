@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2020 The Android Open Source Project
+# Copyright (C) 2022 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,23 +25,38 @@
 
 set -e
 
+# Check for clean git status
+if [[ `git status --porcelain` ]]; then
+    read -r -p "You have uncommited git changes. Are you sure you want to continue? [y/N] " response
+    if [[ "$response" =~ ^([nN])$ ]]; then
+        exit 0;
+    fi
+fi
+
 echo "Version to change Compose to (e.g 1.2.0-alpha06): ";
 read compose_version;
 
 echo "Snapshot ID: (Blank for none)";
 read snapshot_version;
 
-echo "Upgrading to $compose_version snapshot $snapshot_version"
+if [ -z "$snapshot_version" ]; then
+    echo "Changing Compose version to $compose_version"
+else
+    echo "Changing Compose version to $compose_version Snapshot $snapshot_version"
+fi
 
 # Change Dependencies.kt versions
 for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
-    echo $DEPENDENCIES_FILE;
     COMPOSE_BLOCK=false;
+    MADE_CHANGE=false;
+    TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
         if [[ $line == *"val version ="* ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
+            MADE_CHANGE=true;
         elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
+            MADE_CHANGE=true;
         else
             if [[ $line == *"object Compose {"* ]]; then
                 COMPOSE_BLOCK=true;
@@ -50,23 +65,36 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
             fi
             echo "$line";
         fi
-    done < $DEPENDENCIES_FILE > "${DEPENDENCIES_FILE}_new"
-    mv "${DEPENDENCIES_FILE}_new" $DEPENDENCIES_FILE
+    done < $DEPENDENCIES_FILE > $TEMP_FILENAME
+    if $MADE_CHANGE = true; then
+        echo $DEPENDENCIES_FILE;
+        mv $TEMP_FILENAME $DEPENDENCIES_FILE;
+    else
+        rm $TEMP_FILENAME;
+    fi
+    
 done
 
 # Change build.gradle versions
 for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
-    echo $DEPENDENCIES_FILE;
-    
+    MADE_CHANGE=false;
+    TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
         if [[ $line == *"ext.compose_version ="* ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
+            MADE_CHANGE=true;
         elif [[ $line == *"ext.compose_snapshot_version ="* ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
+            MADE_CHANGE=true;
         else
             echo "$line";
         fi
-    done < $DEPENDENCIES_FILE > "${DEPENDENCIES_FILE}_new"
-    mv "${DEPENDENCIES_FILE}_new" $DEPENDENCIES_FILE
+    done < $DEPENDENCIES_FILE > $TEMP_FILENAME
+    if $MADE_CHANGE = true; then
+        echo $DEPENDENCIES_FILE;
+        mv $TEMP_FILENAME $DEPENDENCIES_FILE;
+    else
+        rm $TEMP_FILENAME;
+    fi
 done
 
