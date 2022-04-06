@@ -25,7 +25,7 @@ object Libs {
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
     object GoogleMaps {
-        const val composeMaps = "com.google.maps.android:maps-compose:1.2.0"
+        const val composeMaps = "com.google.maps.android:maps-compose:2.1.0"
         const val maps = "com.google.android.gms:play-services-maps:18.0.2"
     }
 
