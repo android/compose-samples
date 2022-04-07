@@ -102,8 +102,12 @@ private fun CalendarContent(
         topBar = {
             CalendarTopAppBar(selectedDates, onBackPressed)
         }
-    ) {
-        Calendar(calendarYear, onDayClicked)
+    ) { contentPadding ->
+        Calendar(
+            calendarYear = calendarYear,
+            onDayClicked = onDayClicked,
+            contentPadding = contentPadding
+        )
     }
 }
 
