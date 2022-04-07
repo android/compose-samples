@@ -17,16 +17,21 @@
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumedWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -64,6 +69,7 @@ import androidx.compose.ui.unit.dp
 
 typealias CalendarWeek = List<CalendarDay>
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Calendar(
     calendarYear: CalendarYear,
@@ -72,12 +78,13 @@ fun Calendar(
     contentPadding: PaddingValues = PaddingValues()
 ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.consumedWindowInsets(contentPadding),
         contentPadding = contentPadding
     ) {
         for (month in calendarYear) {
             itemsCalendarMonth(month = month, onDayClicked = onDayClicked)
         }
+        item { Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars)) }
     }
 }
 
