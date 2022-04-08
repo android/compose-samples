@@ -1,0 +1,70 @@
+name: Feature request
+description: File a feature request
+title: "[FR]: "
+labels: ["enhancement", "triage me"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for this feature request.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: checkboxes
+    attributes:
+      label: Is this a feature request for one of the samples?
+      description: Please confirm that this is a feature request related to this samples repo. If this is a request related to Compose, file a feature request on the Compose [issue tracker](https://issuetracker.google.com/issues/new?component=612128) instead.
+      options:
+      - label: Yes, this is a specific request related to this samples repo.
+        required: true
+  - type: dropdown
+    id: sample-app
+    attributes:
+      label: Sample app
+      description: Which sample app does this request apply to?
+      options:
+        - Crane
+        - JetNews
+        - Jetcaster
+        - Jetchat
+        - Jetsnack
+        - Jetsurvey
+        - Owl
+        - Rally
+        - Other (bug not related to sample app)
+    validations:
+      required: true
+  - type: textarea
+    id: describe-problem
+    attributes:
+      label: Describe the problem
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution
+      description: Please describe the solution you'd like. A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
