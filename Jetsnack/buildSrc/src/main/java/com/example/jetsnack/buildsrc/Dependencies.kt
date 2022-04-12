@@ -21,10 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha07"
 
     object Accompanist {
-        const val version = "0.24.5-alpha"
+        const val version = "0.24.6-alpha"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }
@@ -49,7 +49,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-alpha06"
+            const val version = "1.2.0-alpha07"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"

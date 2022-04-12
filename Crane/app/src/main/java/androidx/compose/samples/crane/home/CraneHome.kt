@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
@@ -61,10 +62,10 @@ fun CraneHome(
         drawerContent = {
             CraneDrawer()
         }
-    ) {
+    ) { contentPadding ->
         val scope = rememberCoroutineScope()
         CraneHomeContent(
-            modifier = modifier,
+            modifier = modifier.padding(contentPadding),
             onExploreItemClicked = onExploreItemClicked,
             onDateSelectionClicked = onDateSelectionClicked,
             openDrawer = {

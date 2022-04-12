@@ -73,6 +73,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import java.util.*
 
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
@@ -130,6 +131,10 @@ fun JetsnackBottomBar(
             animSpec = springSpec,
             modifier = Modifier.navigationBarsPadding()
         ) {
+            val configuration = LocalConfiguration.current
+            val currentLocale: Locale =
+                ConfigurationCompat.getLocales(configuration).get(0) ?: Locale.getDefault()
+
             tabs.forEach { section ->
                 val selected = section == currentSection
                 val tint by animateColorAsState(
@@ -140,11 +145,7 @@ fun JetsnackBottomBar(
                     }
                 )
 
-                val text = stringResource(section.title).uppercase(
-                    ConfigurationCompat.getLocales(
-                        LocalConfiguration.current
-                    ).get(0)
-                )
+                val text = stringResource(section.title).uppercase(currentLocale)
 
                 JetsnackBottomNavigationItem(
                     icon = {

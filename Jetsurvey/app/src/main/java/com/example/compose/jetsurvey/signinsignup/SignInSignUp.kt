@@ -18,6 +18,7 @@ package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,9 +67,13 @@ import com.example.compose.jetsurvey.R
 fun SignInSignUpScreen(
     onSignedInAsGuest: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
     content: @Composable() () -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = contentPadding
+    ) {
         item {
             Spacer(modifier = Modifier.height(44.dp))
             Box(

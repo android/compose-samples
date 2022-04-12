@@ -17,9 +17,12 @@
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumedWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,13 +69,18 @@ import androidx.compose.ui.unit.dp
 
 typealias CalendarWeek = List<CalendarDay>
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Calendar(
     calendarYear: CalendarYear,
     onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
-    LazyColumn(modifier) {
+    LazyColumn(
+        modifier = modifier.consumedWindowInsets(contentPadding),
+        contentPadding = contentPadding
+    ) {
         for (month in calendarYear) {
             itemsCalendarMonth(month = month, onDayClicked = onDayClicked)
         }
