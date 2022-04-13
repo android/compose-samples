@@ -91,6 +91,11 @@ object Libs {
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+            const val uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+        }
+
+        object Benchmark {
+            const val macrobenchmark = "androidx.benchmark:benchmark-macro-junit4:1.1.0-beta04"
         }
     }
 

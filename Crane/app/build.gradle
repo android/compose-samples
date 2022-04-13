@@ -68,6 +68,11 @@ android {
         debug {
             signingConfig signingConfigs.debug
         }
+        benchmark {
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            debuggable false
+        }
 
         release {
             minifyEnabled true
