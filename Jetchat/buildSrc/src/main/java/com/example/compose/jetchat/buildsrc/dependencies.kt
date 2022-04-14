@@ -29,7 +29,7 @@ object Libs {
     const val material3 = "com.google.android.material:material:1.6.0-alpha03"
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.6.20"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -52,7 +52,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-alpha06"
+            const val version = "1.2.0-alpha08"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -64,6 +64,7 @@ object Libs {
             const val toolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
             const val test = "androidx.compose.ui:ui-test:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+            const val uiText = "androidx.compose.ui:ui-text-google-fonts:$version"
             const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
             const val uiUtil = "androidx.compose.ui:ui-util:${version}"
             const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"

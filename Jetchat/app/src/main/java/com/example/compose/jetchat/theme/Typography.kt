@@ -17,23 +17,47 @@
 package com.example.compose.jetchat.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.R
 
-private val MontserratFontFamily = FontFamily(
-    Font(R.font.montserrat_regular),
-    Font(R.font.montserrat_light, FontWeight.Light),
-    Font(R.font.montserrat_medium, FontWeight.Medium),
-    Font(R.font.montserrat_semibold, FontWeight.SemiBold)
+@OptIn(ExperimentalTextApi::class)
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-private val KarlaFontFamily = FontFamily(
-    Font(R.font.karla_regular),
-    Font(R.font.karla_bold, FontWeight.Bold)
+@OptIn(ExperimentalTextApi::class)
+val MontserratFont = GoogleFont(name = "Montserrat")
+
+@OptIn(ExperimentalTextApi::class)
+val KarlaFont = GoogleFont(name = "Karla")
+
+@OptIn(ExperimentalTextApi::class)
+val MontserratFontFamily = FontFamily(
+    Font(googleFont = MontserratFont, fontProvider = provider),
+    Font(resId = R.font.montserrat_regular),
+    Font(googleFont = MontserratFont, fontProvider = provider, weight = FontWeight.Light),
+    Font(resId = R.font.montserrat_light, weight = FontWeight.Light),
+    Font(googleFont = MontserratFont, fontProvider = provider, weight = FontWeight.Medium),
+    Font(resId = R.font.montserrat_medium, weight = FontWeight.Medium),
+    Font(googleFont = MontserratFont, fontProvider = provider, weight = FontWeight.SemiBold),
+    Font(resId = R.font.montserrat_semibold, weight = FontWeight.SemiBold),
+)
+
+@OptIn(ExperimentalTextApi::class)
+val KarlaFontFamily = FontFamily(
+    Font(googleFont = KarlaFont, fontProvider = provider),
+    Font(resId = R.font.karla_regular),
+    Font(googleFont = KarlaFont, fontProvider = provider, weight = FontWeight.Bold),
+    Font(resId = R.font.karla_bold, weight = FontWeight.Bold),
 )
 
 val JetchatTypography = Typography(
