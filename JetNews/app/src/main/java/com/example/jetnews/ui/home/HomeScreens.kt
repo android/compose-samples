@@ -438,8 +438,12 @@ private fun PostList(
                 )
             }
         }
-        if (postsFeed.popularPosts.isNotEmpty()) {
-            item { PostListPopularSection(postsFeed.popularPosts, onArticleTapped) }
+        if (postsFeed.popularPosts.isNotEmpty() && !showExpandedSearch) {
+            item {
+                PostListPopularSection(
+                    postsFeed.popularPosts, onArticleTapped
+                )
+            }
         }
         if (postsFeed.recentPosts.isNotEmpty()) {
             item { PostListHistorySection(postsFeed.recentPosts, onArticleTapped) }
