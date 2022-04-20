@@ -37,7 +37,7 @@ fun ReplyListOnlyContent(
 fun ReplyListAndDetailContent(
     replyHomeUIState: ReplyHomeUIState,
     modifier: Modifier = Modifier,
-    selectedItemIndex: Int = 0
+    selectedItemIndex: Int
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         LazyColumn(modifier = modifier.weight(1f)) {

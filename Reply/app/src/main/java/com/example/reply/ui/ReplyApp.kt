@@ -16,8 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.StateFlow
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.reply.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,7 +89,12 @@ fun ReplyAppContent(navigationType: ReplyNavigationType, contentType: ReplyConte
             .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
             if (contentType == ReplyContentType.LIST_AND_DETAIL) {
-                ReplyListAndDetailContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
+                ReplyListAndDetailContent(
+                    replyHomeUIState = replyHomeUIState,
+                    modifier = Modifier.weight(1f),
+                    // TODO selection of email and detail navigation
+                    selectedItemIndex = 0
+                )
             } else {
                 ReplyListOnlyContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
             }

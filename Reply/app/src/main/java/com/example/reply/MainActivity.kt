@@ -11,8 +11,16 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
-import com.example.reply.ui.*
+import com.example.reply.ui.DevicePosture
+import com.example.reply.ui.ReplyHomeViewModel
+import com.example.reply.ui.isBookPosture
+import com.example.reply.ui.isTableTopPosture
+import com.example.reply.ui.isSeparating
 import com.example.reply.ui.theme.ReplyTheme
+import com.example.reply.ui.rememberWindowSizeClass
+import com.example.reply.ui.ReplyApp
+import com.example.reply.ui.WindowSize
+import com.example.reply.ui.ReplyHomeUIState
 import kotlinx.coroutines.flow.*
 
 class MainActivity : ComponentActivity() {
