@@ -22,7 +22,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -46,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
@@ -94,19 +92,6 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
                     .padding(horizontal = 20.dp)
             )
         }
-    }
-}
-
-private fun Modifier.brandingPreferredHeight(
-    showBranding: Boolean,
-    heightDp: Dp
-): Modifier {
-    return if (!showBranding) {
-        this
-            .wrapContentHeight(unbounded = true)
-            .height(heightDp)
-    } else {
-        this
     }
 }
 
