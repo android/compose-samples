@@ -1,21 +1,31 @@
 package com.example.reply.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.reply.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyApp(
     windowSize: WindowSize,
-    foldingDevicePosture: DevicePosture
+    foldingDevicePosture: DevicePosture,
+    replyHomeUIState: ReplyHomeUIState
 ) {
     /**
      * This will help us select type of navigation and content type depending on window size and
@@ -49,33 +59,133 @@ fun ReplyApp(
         }
     }
 
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
-        PermanentNavigationDrawer(drawerContent = {}) {
-            ReplyAppContent(navigationType, contentType)
+        PermanentNavigationDrawer(drawerContent = {
+            NavigationDrawerContent()
+        }) {
+            ReplyAppContent(navigationType, contentType, replyHomeUIState)
         }
     } else {
-        ModalNavigationDrawer(drawerContent = {}) {
-            ReplyAppContent(navigationType, contentType)
+        ModalNavigationDrawer(
+            drawerContent = {
+                NavigationDrawerContent()
+        }) {
+            ReplyAppContent(navigationType, contentType, replyHomeUIState)
         }
     }
 }
 
 @Composable
-fun ReplyAppContent(navigationType: ReplyNavigationType, contentType: ReplyContentType) {
+fun ReplyAppContent(navigationType: ReplyNavigationType, contentType: ReplyContentType, replyHomeUIState: ReplyHomeUIState) {
     Row(modifier = Modifier
         .fillMaxSize()) {
-        if (navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            // TODO ReplyNavigationRail()
+
+        AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
+            ReplyNavigationRail()
         }
-        Column(modifier = Modifier.fillMaxSize()) {
+
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+        ) {
             if (contentType == ReplyContentType.LIST_AND_DETAIL) {
-                // TODO ReplyListAndDetailContent()
+                ReplyListAndDetailContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
             } else {
-                // TODO ReplyListContent()
+                ReplyListOnlyContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
             }
-            if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                // TODO ReplyBottomNavigation()
+
+            AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                ReplyBottomNavigationBar()
             }
         }
+    }
+}
+
+@Composable
+@Preview
+fun ReplyNavigationRail() {
+    NavigationRail(modifier = Modifier.fillMaxHeight()) {
+        NavigationRailItem(
+            selected = true,
+            onClick = { /*TODO*/ },
+            icon =  { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) }
+        )
+        NavigationRailItem(
+            selected = false,
+            onClick = {/*TODO*/ },
+            icon =  { Icon(imageVector = Icons.Default.Article, stringResource(id = R.string.tab_article)) }
+        )
+        NavigationRailItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon =  { Icon(imageVector = Icons.Outlined.Chat, stringResource(id = R.string.tab_dm)) }
+        )
+        NavigationRailItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon =  { Icon(imageVector = Icons.Outlined.People, stringResource(id = R.string.tab_groups)) }
+        )
+    }
+}
+
+@Composable
+@Preview
+fun ReplyBottomNavigationBar() {
+    NavigationBar(modifier = Modifier.fillMaxWidth()) {
+       NavigationBarItem(
+           selected = true,
+           onClick = { /*TODO*/ },
+           icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) }
+       )
+        NavigationBarItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(imageVector = Icons.Default.Article, contentDescription = stringResource(id = R.string.tab_inbox)) }
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(imageVector = Icons.Outlined.Chat, contentDescription = stringResource(id = R.string.tab_inbox)) }
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(imageVector = Icons.Outlined.Videocam, contentDescription = stringResource(id = R.string.tab_inbox)) }
+        )
+    }
+}
+
+@Composable
+fun NavigationDrawerContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier
+            .wrapContentWidth()
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(start = 24.dp, top = 48.dp)
+    ) {
+        DrawerItem(imageVector = Icons.Default.Inbox, title = stringResource(id = R.string.tab_inbox))
+        DrawerItem(imageVector = Icons.Default.Article, title = stringResource(id = R.string.tab_article))
+        DrawerItem(imageVector = Icons.Default.Chat, title = stringResource(id = R.string.tab_dm))
+        DrawerItem(imageVector = Icons.Default.Videocam, title = stringResource(id = R.string.tab_groups))
+    }
+}
+
+@Composable
+fun DrawerItem(
+    imageVector: ImageVector,
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(imageVector = imageVector, contentDescription = title)
+        Text(text = title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(horizontal = 16.dp))
     }
 }
