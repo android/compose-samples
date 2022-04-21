@@ -1,26 +1,45 @@
 package com.example.reply.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Inbox
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MenuOpen
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Videocam
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
@@ -80,19 +99,27 @@ fun ReplyApp(
     } else {
         ModalNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent(selectedDestination) {
-                    scope.launch {
-                        drawerState.close()
+                NavigationDrawerContent(
+                    selectedDestination,
+                    onDrawerClicked = {
+                        scope.launch {
+                            drawerState.close()
+                        }
                     }
-                }
+                )
             },
             drawerState = drawerState
         ) {
-            ReplyAppContent(navigationType, contentType, replyHomeUIState) {
-                scope.launch {
-                    drawerState.open()
+            ReplyAppContent(
+                navigationType,
+                contentType,
+                replyHomeUIState,
+                onDrawerClicked = {
+                    scope.launch {
+                        drawerState.open()
+                    }
                 }
-            }
+            )
         }
     }
 }
@@ -195,6 +222,7 @@ fun ReplyBottomNavigationBar() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,
@@ -227,47 +255,34 @@ fun NavigationDrawerContent(
                 )
             }
         }
-        DrawerItem(
-            selected = selectedDestination == ReplyDestinations.INBOX,
-            imageVector = Icons.Default.Inbox,
-            title = stringResource(id = R.string.tab_inbox)
-        )
-        DrawerItem(
-            selected = selectedDestination == ReplyDestinations.ARTICLES,
-            imageVector = Icons.Default.Article,
-            title = stringResource(id = R.string.tab_article)
-        )
-        DrawerItem(
-            selected = selectedDestination == ReplyDestinations.DM,
-            imageVector = Icons.Default.Chat,
-            title = stringResource(id = R.string.tab_dm)
-        )
-        DrawerItem(
-            selected = selectedDestination == ReplyDestinations.GROUPS,
-            imageVector = Icons.Default.Videocam,
-            title = stringResource(id = R.string.tab_groups)
-        )
-    }
-}
 
-@Composable
-fun DrawerItem(
-    imageVector: ImageVector,
-    title: String,
-    selected: Boolean = false,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(
-                color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
-                shape = RoundedCornerShape(50)
-            )
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Icon(imageVector = imageVector, contentDescription = title)
-        Text(text = title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(horizontal = 16.dp))
+        NavigationDrawerItem(
+            selected = selectedDestination == ReplyDestinations.INBOX,
+            label = { Text(text = stringResource(id = R.string.tab_inbox), modifier = Modifier.padding(horizontal = 16.dp)) },
+            icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription =  stringResource(id = R.string.tab_inbox)) },
+            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+            onClick = { /*TODO*/ }
+        )
+        NavigationDrawerItem(
+            selected = selectedDestination == ReplyDestinations.ARTICLES,
+            label = { Text(text = stringResource(id = R.string.tab_article), modifier = Modifier.padding(horizontal = 16.dp)) },
+            icon = { Icon(imageVector =  Icons.Default.Article, contentDescription =  stringResource(id = R.string.tab_article)) },
+            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+            onClick = { /*TODO*/ }
+        )
+        NavigationDrawerItem(
+            selected = selectedDestination == ReplyDestinations.DM,
+            label = { Text(text = stringResource(id = R.string.tab_dm), modifier = Modifier.padding(horizontal = 16.dp)) },
+            icon = { Icon(imageVector =  Icons.Default.Chat, contentDescription =  stringResource(id = R.string.tab_dm)) },
+            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+            onClick = { /*TODO*/ }
+        )
+        NavigationDrawerItem(
+            selected = selectedDestination == ReplyDestinations.GROUPS,
+            label = { Text(text = stringResource(id = R.string.tab_groups), modifier = Modifier.padding(horizontal = 16.dp)) },
+            icon = { Icon(imageVector =  Icons.Default.Article, contentDescription =  stringResource(id = R.string.tab_groups)) },
+            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+            onClick = { /*TODO*/ }
+        )
     }
 }

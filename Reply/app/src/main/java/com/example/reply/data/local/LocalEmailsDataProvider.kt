@@ -44,6 +44,7 @@ object LocalEmailsDataProvider {
 
                 Maybe we can jump on the phone later today if you have a second.
             """.trimIndent(),
+            createAt = "2 hours ago",
             isStarred = true
         ),
         Email(
@@ -51,7 +52,8 @@ object LocalEmailsDataProvider {
             LocalAccountsDataProvider.getContactAccountByUid(13L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Update to Your Itinerary",
-            ""
+            "",
+            createAt = "2 hours ago",
         ),
         Email(
             6L,
@@ -60,6 +62,7 @@ object LocalEmailsDataProvider {
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
                     "very quick to put together.",
+            createAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
         Email(
@@ -67,7 +70,8 @@ object LocalEmailsDataProvider {
             LocalAccountsDataProvider.getContactAccountByUid(9L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Delivered",
-            "Your shoes should be waiting for you at home!"
+            "Your shoes should be waiting for you at home!",
+            createAt = "2 hours ago",
         ),
         Email(
             8L,
@@ -79,7 +83,8 @@ object LocalEmailsDataProvider {
               
               Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
           """.trimIndent(),
-            mailbox = MailboxType.TRASH
+            mailbox = MailboxType.TRASH,
+            createAt = "3 hours ago",
         ),
         Email(
             9L,
@@ -91,8 +96,9 @@ object LocalEmailsDataProvider {
             
             Wanted to email and see what you thought of
           """.trimIndent(),
+            createAt = "3 hours ago",
             mailbox = MailboxType.DRAFTS
-        ),
+        )
     )
 
     val allEmails = mutableListOf(
@@ -108,6 +114,7 @@ object LocalEmailsDataProvider {
 
                 As always, thank you for shopping with us and we hope you love our specially formulated Cucumber Mask!
             """.trimIndent(),
+            createAt = "20 mins ago",
             isStarred = true,
             threads = threads,
         ),
@@ -125,6 +132,7 @@ object LocalEmailsDataProvider {
 
                 Ali
             """.trimIndent(),
+            createAt = "40 mins ago",
             threads = threads,
         ),
         Email(
@@ -140,6 +148,7 @@ object LocalEmailsDataProvider {
                 EmailAttachment(R.drawable.paris_4, "Street with bike in Paris")
             ),
             true,
+            createAt = "1 hour ago",
             threads = threads,
         ),
         Email(
@@ -154,6 +163,7 @@ object LocalEmailsDataProvider {
 
                 Anyway, it turns out she is on the organizing committee for the high school reunion this fall. I don't know if you were planning on going or not, but she could definitely use our help in trying to track down lots of missing alums. If you can make it, we're doing a little phone-tree party at her place next Saturday, hoping that if we can find one person, thee more will...
             """.trimIndent(),
+            createAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
         Email(
@@ -172,6 +182,7 @@ object LocalEmailsDataProvider {
 
                 Maybe we can jump on the phone later today if you have a second.
             """.trimIndent(),
+            createAt = "2 hours ago",
             isStarred = true
         ),
         Email(
@@ -179,7 +190,8 @@ object LocalEmailsDataProvider {
             LocalAccountsDataProvider.getContactAccountByUid(13L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Update to Your Itinerary",
-            ""
+            "",
+            createAt = "2 hours ago",
         ),
         Email(
             6L,
@@ -188,6 +200,7 @@ object LocalEmailsDataProvider {
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
                     "very quick to put together.",
+            createAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
         Email(
@@ -195,7 +208,8 @@ object LocalEmailsDataProvider {
             LocalAccountsDataProvider.getContactAccountByUid(9L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Delivered",
-            "Your shoes should be waiting for you at home!"
+            "Your shoes should be waiting for you at home!",
+            createAt = "2 hours ago",
         ),
         Email(
             8L,
@@ -207,7 +221,8 @@ object LocalEmailsDataProvider {
               
               Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
           """.trimIndent(),
-            mailbox = MailboxType.TRASH
+            mailbox = MailboxType.TRASH,
+            createAt = "3 hours ago",
         ),
         Email(
             9L,
@@ -219,6 +234,7 @@ object LocalEmailsDataProvider {
             
             Wanted to email and see what you thought of
           """.trimIndent(),
+            createAt = "3 hours ago",
             mailbox = MailboxType.DRAFTS
         ),
         Email(
@@ -231,16 +247,18 @@ object LocalEmailsDataProvider {
             
             Whether you're an experienced hiker or just looking to get outside for the afternoon, there's a segment that suits you.
           """.trimIndent(),
+            createAt = "3 hours ago",
             mailbox = MailboxType.TRASH
         ),
         Email(
-            10L,
+            11L,
             LocalAccountsDataProvider.getContactAccountByUid(5L),
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Free money",
             """
             You've been selected as a winner in our latest raffle! To claim your prize, click on the link.
           """.trimIndent(),
+            createAt = "3 hours ago",
             mailbox = MailboxType.SPAM
         )
     )
@@ -258,7 +276,8 @@ object LocalEmailsDataProvider {
     fun create(): Email {
         return Email(
             System.nanoTime(), // Unique ID generation.
-            LocalAccountsDataProvider.getDefaultUserAccount()
+            LocalAccountsDataProvider.getDefaultUserAccount(),
+            createAt = "Just now",
         )
     }
 
@@ -274,7 +293,8 @@ object LocalEmailsDataProvider {
             recipients = listOf(replyTo.sender) + replyTo.recipients,
             subject = replyTo.subject,
             isStarred = replyTo.isStarred,
-            isImportant = replyTo.isImportant
+            isImportant = replyTo.isImportant,
+            createAt = "Just now",
         )
     }
 

@@ -32,6 +32,7 @@ data class Email(
     var isImportant: Boolean = false,
     var isStarred: Boolean = false,
     var mailbox: MailboxType = MailboxType.INBOX,
+    var createAt: String,
     val threads: List<Email> = emptyList()
 ) {
     val senderPreview: String = "${sender.fullName} - 4 hrs ago"

@@ -15,10 +15,10 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     val uiState: StateFlow<ReplyHomeUIState> = _uiState
 
     init {
-        observerEmails()
+        observeEmails()
     }
 
-    private fun observerEmails() {
+    private fun observeEmails() {
         _uiState.value = ReplyHomeUIState(loading = true)
         viewModelScope.launch {
             emailsRepository.getAllEmails()

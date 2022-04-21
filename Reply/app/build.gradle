@@ -53,7 +53,7 @@ dependencies {
 
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation 'androidx.compose.material3:material3:1.0.0-alpha07'
-    implementation 'androidx.compose.material:material-icons-extended:1.1.1'
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-alpha04"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha04"

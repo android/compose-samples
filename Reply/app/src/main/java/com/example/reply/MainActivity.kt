@@ -21,7 +21,9 @@ import com.example.reply.ui.rememberWindowSizeClass
 import com.example.reply.ui.ReplyApp
 import com.example.reply.ui.WindowSize
 import com.example.reply.ui.ReplyHomeUIState
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
 
 class MainActivity : ComponentActivity() {
 
