@@ -3,6 +3,7 @@ package com.example.reply.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -10,13 +11,16 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +62,7 @@ fun ReplyApp(
     }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(drawerContent = {
@@ -68,20 +73,36 @@ fun ReplyApp(
     } else {
         ModalNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent()
-        }) {
-            ReplyAppContent(navigationType, contentType, replyHomeUIState)
+                NavigationDrawerContent {
+                    scope.launch {
+                        drawerState.close()
+                    }
+                }
+            },
+            drawerState = drawerState
+        ) {
+            ReplyAppContent(navigationType, contentType, replyHomeUIState) {
+                scope.launch {
+                    drawerState.open()
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ReplyAppContent(navigationType: ReplyNavigationType, contentType: ReplyContentType, replyHomeUIState: ReplyHomeUIState) {
+fun ReplyAppContent(
+    navigationType: ReplyNavigationType,
+    contentType: ReplyContentType,
+    replyHomeUIState: ReplyHomeUIState,
+    onDrawerClicked: () -> Unit = {}
+) {
     Row(modifier = Modifier
         .fillMaxSize()) {
-
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            ReplyNavigationRail()
+            ReplyNavigationRail(
+                onDrawerClicked = onDrawerClicked
+            )
         }
 
         Column(modifier = Modifier
@@ -108,8 +129,15 @@ fun ReplyAppContent(navigationType: ReplyNavigationType, contentType: ReplyConte
 
 @Composable
 @Preview
-fun ReplyNavigationRail() {
+fun ReplyNavigationRail(
+    onDrawerClicked: () -> Unit = {},
+) {
     NavigationRail(modifier = Modifier.fillMaxHeight()) {
+        NavigationRailItem(
+            selected = false,
+            onClick = onDrawerClicked,
+            icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
+        )
         NavigationRailItem(
             selected = true,
             onClick = { /*TODO*/ },
@@ -161,14 +189,30 @@ fun ReplyBottomNavigationBar() {
 }
 
 @Composable
-fun NavigationDrawerContent(modifier: Modifier = Modifier) {
+fun NavigationDrawerContent(modifier: Modifier = Modifier, onDrawerClicked: () -> Unit = {}) {
     Column(
         modifier
             .wrapContentWidth()
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.inverseOnSurface)
-            .padding(start = 24.dp, top = 48.dp)
+            .padding(24.dp)
     ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable {
+                    onDrawerClicked.invoke()
+                },
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.app_name).uppercase(),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Icon(imageVector = Icons.Default.MenuOpen, contentDescription = stringResource(id = R.string.navigation_drawer))
+        }
         DrawerItem(imageVector = Icons.Default.Inbox, title = stringResource(id = R.string.tab_inbox))
         DrawerItem(imageVector = Icons.Default.Article, title = stringResource(id = R.string.tab_article))
         DrawerItem(imageVector = Icons.Default.Chat, title = stringResource(id = R.string.tab_dm))
