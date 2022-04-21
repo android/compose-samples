@@ -5,14 +5,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,16 +68,19 @@ fun ReplyApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    //TODO replace it with stateful or navigation host controller
+    val selectedDestination = ReplyDestinations.INBOX
+
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(drawerContent = {
-            NavigationDrawerContent()
+            NavigationDrawerContent(selectedDestination)
         }) {
             ReplyAppContent(navigationType, contentType, replyHomeUIState)
         }
     } else {
         ModalNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent {
+                NavigationDrawerContent(selectedDestination) {
                     scope.launch {
                         drawerState.close()
                     }
@@ -189,7 +196,11 @@ fun ReplyBottomNavigationBar() {
 }
 
 @Composable
-fun NavigationDrawerContent(modifier: Modifier = Modifier, onDrawerClicked: () -> Unit = {}) {
+fun NavigationDrawerContent(
+    selectedDestination: String,
+    modifier: Modifier = Modifier,
+    onDrawerClicked: () -> Unit = {}
+) {
     Column(
         modifier
             .wrapContentWidth()
@@ -200,23 +211,42 @@ fun NavigationDrawerContent(modifier: Modifier = Modifier, onDrawerClicked: () -
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable {
-                    onDrawerClicked.invoke()
-                },
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(id = R.string.app_name).uppercase(),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            Icon(imageVector = Icons.Default.MenuOpen, contentDescription = stringResource(id = R.string.navigation_drawer))
+            IconButton(onClick = onDrawerClicked) {
+                Icon(
+                    imageVector = Icons.Default.MenuOpen,
+                    contentDescription = stringResource(id = R.string.navigation_drawer)
+                )
+            }
         }
-        DrawerItem(imageVector = Icons.Default.Inbox, title = stringResource(id = R.string.tab_inbox))
-        DrawerItem(imageVector = Icons.Default.Article, title = stringResource(id = R.string.tab_article))
-        DrawerItem(imageVector = Icons.Default.Chat, title = stringResource(id = R.string.tab_dm))
-        DrawerItem(imageVector = Icons.Default.Videocam, title = stringResource(id = R.string.tab_groups))
+        DrawerItem(
+            selected = selectedDestination == ReplyDestinations.INBOX,
+            imageVector = Icons.Default.Inbox,
+            title = stringResource(id = R.string.tab_inbox)
+        )
+        DrawerItem(
+            selected = selectedDestination == ReplyDestinations.ARTICLES,
+            imageVector = Icons.Default.Article,
+            title = stringResource(id = R.string.tab_article)
+        )
+        DrawerItem(
+            selected = selectedDestination == ReplyDestinations.DM,
+            imageVector = Icons.Default.Chat,
+            title = stringResource(id = R.string.tab_dm)
+        )
+        DrawerItem(
+            selected = selectedDestination == ReplyDestinations.GROUPS,
+            imageVector = Icons.Default.Videocam,
+            title = stringResource(id = R.string.tab_groups)
+        )
     }
 }
 
@@ -224,11 +254,16 @@ fun NavigationDrawerContent(modifier: Modifier = Modifier, onDrawerClicked: () -
 fun DrawerItem(
     imageVector: ImageVector,
     title: String,
+    selected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .background(
+                color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+                shape = RoundedCornerShape(50)
+            )
             .padding(16.dp),
         horizontalArrangement = Arrangement.Start
     ) {
