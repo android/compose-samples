@@ -19,15 +19,14 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     }
 
     private fun observeEmails() {
-        _uiState.value = ReplyHomeUIState(loading = true)
         viewModelScope.launch {
             emailsRepository.getAllEmails()
                 .catch { ex ->
                     _uiState.value = ReplyHomeUIState(error = ex.message)
                 }
                 .collect { emails ->
-                _uiState.value = ReplyHomeUIState(emails = emails)
-            }
+                    _uiState.value = ReplyHomeUIState(emails = emails)
+                }
         }
     }
 }
