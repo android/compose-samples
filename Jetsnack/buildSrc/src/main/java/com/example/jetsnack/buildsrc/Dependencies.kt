@@ -17,20 +17,20 @@
 package com.example.jetsnack.buildsrc
 
 object Versions {
-    const val ktlint = "0.45.1"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha07"
 
     object Accompanist {
-        const val version = "0.24.6-alpha"
+        const val version = "0.24.7-alpha"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.6.20"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -49,7 +49,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-alpha07"
+            const val version = "1.2.0-alpha08"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -73,7 +73,7 @@ object Libs {
         }
 
         object Navigation {
-            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.1"
+            const val navigationCompose = "androidx.navigation:navigation-compose:2.4.2"
         }
 
         object ConstraintLayout {

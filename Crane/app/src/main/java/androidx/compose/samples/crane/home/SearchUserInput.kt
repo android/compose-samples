@@ -35,6 +35,7 @@ import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -63,6 +64,7 @@ class PeopleUserInputState {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PeopleUserInput(
     titleSuffix: String = "",
