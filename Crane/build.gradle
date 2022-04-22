@@ -30,7 +30,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.3.0'
+    id 'com.diffplug.spotless' version '6.4.2'
 }
 
 subprojects {
@@ -62,7 +62,7 @@ subprojects {
             jvmTarget = "1.8"
 
             // Use experimental APIs
-            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
         }
     }
     // androidx.test and hilt are forcing JUnit, 4.12. This forces them to use 4.13

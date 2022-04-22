@@ -116,7 +116,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
 
-    implementation 'androidx.navigation:navigation-compose:2.4.1'
+    implementation 'androidx.navigation:navigation-compose:2.4.2'
 
     implementation "androidx.window:window:1.0.0"
 
@@ -139,9 +139,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         // Treat all Kotlin warnings as errors (disabled by default)
         allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
 
-        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
         // Enable experimental coroutines APIs, including Flow
-        freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+        freeCompilerArgs += '-opt-in=kotlin.Experimental'
 
         // Set JVM target to 1.8
         jvmTarget = "1.8"

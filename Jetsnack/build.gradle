@@ -29,9 +29,9 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.3.0'
+    id 'com.diffplug.spotless' version '6.4.2'
     id 'com.android.test' version '7.3.0-alpha07' apply false
-    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+    id 'org.jetbrains.kotlin.android' version '1.6.20' apply false
 }
 
 subprojects {
@@ -52,9 +52,9 @@ subprojects {
             // Treat all Kotlin warnings as errors (disabled by default)
             allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
 
-            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
             // Enable experimental coroutines APIs, including Flow
-            freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+            freeCompilerArgs += '-opt-in=kotlin.Experimental'
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"

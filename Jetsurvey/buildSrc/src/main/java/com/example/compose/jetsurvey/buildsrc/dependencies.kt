@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.buildsrc
 
 object Versions {
-    const val ktlint = "0.45.1"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
@@ -27,12 +27,12 @@ object Libs {
     const val junit = "junit:junit:4.13"
 
     object Accompanist {
-        const val version = "0.24.6-alpha"
+        const val version = "0.24.7-alpha"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.6.20"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -61,7 +61,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-alpha07"
+            const val version = "1.2.0-alpha08"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -80,7 +80,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.4.1"
+            private const val version = "2.4.2"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
         }
