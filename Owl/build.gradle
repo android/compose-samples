@@ -47,7 +47,7 @@ subprojects {
             // Treat all Kotlin warnings as errors (disabled by default)
             allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
             // Opt-in to experimental compose APIs
-            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
 
             jvmTarget = '1.8'
         }
