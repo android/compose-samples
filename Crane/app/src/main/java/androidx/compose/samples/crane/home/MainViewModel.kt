@@ -61,7 +61,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-
     fun updatePeople(people: Int) {
         viewModelScope.launch {
             if (people > MAX_PEOPLE) {
@@ -85,5 +84,4 @@ class MainViewModel @Inject constructor(
             _suggestedDestinations.value = newDestinations
         }
     }
-
 }
