@@ -71,11 +71,13 @@ android {
 
         release {
             minifyEnabled true
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -119,7 +121,9 @@ dependencies {
         }
     }
 
+    coreLibraryDesugaring Libs.coreLibraryDesugar
     implementation Libs.AndroidX.Activity.activityCompose
+    implementation Libs.AndroidX.Lifecycle.navigation
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
@@ -134,6 +138,7 @@ dependencies {
 
     implementation Libs.AndroidX.Lifecycle.viewModelKtx
     implementation Libs.Hilt.android
+    implementation Libs.Hilt.navigation
     kapt Libs.Hilt.compiler
 
     implementation Libs.Coil.coilCompose
