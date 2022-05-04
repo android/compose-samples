@@ -72,7 +72,7 @@ fun Calendar(
             val animationSpec: TweenSpec<Float> = tween(
                 durationMillis =
                 (numberSelectedDays.coerceAtLeast(0) * DURATION_MILLIS_PER_DAY)
-                    .coerceAtMost(1000),
+                    .coerceAtMost(2000),
                 easing = EaseOutQuart
             )
             selectedAnimationPercentage.animateTo(
