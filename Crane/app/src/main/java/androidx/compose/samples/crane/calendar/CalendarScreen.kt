@@ -16,11 +16,6 @@
 
 package androidx.compose.samples.crane.calendar
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,54 +32,28 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.R
-import androidx.compose.samples.crane.calendar.model.CalendarDay
-import androidx.compose.samples.crane.calendar.model.CalendarMonth
-import androidx.compose.samples.crane.calendar.model.DaySelected
-import androidx.compose.samples.crane.data.CalendarYear
-import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.samples.crane.calendar.model.CalendarState
+import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import dagger.hilt.android.AndroidEntryPoint
-
-fun launchCalendarActivity(context: Context) {
-    val intent = Intent(context, CalendarActivity::class.java)
-    context.startActivity(intent)
-}
-
-@AndroidEntryPoint
-class CalendarActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        setContent {
-            CraneTheme {
-                CalendarScreen(onBackPressed = { finish() })
-            }
-        }
-    }
-}
+import java.time.LocalDate
 
 @Composable
 fun CalendarScreen(
     onBackPressed: () -> Unit,
-    calendarViewModel: CalendarViewModel = viewModel()
+    mainViewModel: MainViewModel
 ) {
-    val calendarYear = calendarViewModel.calendarYear
+    val calendarState = remember {
+        mainViewModel.calendarState
+    }
 
     CalendarContent(
-        selectedDates = calendarViewModel.datesSelected.toString(),
-        calendarYear = calendarYear,
-        onDayClicked = { calendarDay, calendarMonth ->
-            calendarViewModel.onDaySelected(
-                DaySelected(calendarDay.value.toInt(), calendarMonth, calendarYear)
-            )
+        calendarState = calendarState,
+        onDayClicked = { dateClicked ->
+            mainViewModel.onDaySelected(dateClicked)
         },
         onBackPressed = onBackPressed
     )
@@ -92,19 +61,18 @@ fun CalendarScreen(
 
 @Composable
 private fun CalendarContent(
-    selectedDates: String,
-    calendarYear: CalendarYear,
-    onDayClicked: (CalendarDay, CalendarMonth) -> Unit,
+    calendarState: CalendarState,
+    onDayClicked: (LocalDate) -> Unit,
     onBackPressed: () -> Unit
 ) {
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
-            CalendarTopAppBar(selectedDates, onBackPressed)
+            CalendarTopAppBar(calendarState, onBackPressed)
         }
     ) { contentPadding ->
         Calendar(
-            calendarYear = calendarYear,
+            calendarState = calendarState,
             onDayClicked = onDayClicked,
             contentPadding = contentPadding
         )
@@ -112,7 +80,8 @@ private fun CalendarContent(
 }
 
 @Composable
-private fun CalendarTopAppBar(selectedDates: String, onBackPressed: () -> Unit) {
+private fun CalendarTopAppBar(calendarState: CalendarState, onBackPressed: () -> Unit) {
+    val calendarUiState = calendarState.calendarUiState.value
     Column {
         Spacer(
             modifier = Modifier
@@ -123,8 +92,11 @@ private fun CalendarTopAppBar(selectedDates: String, onBackPressed: () -> Unit) 
         TopAppBar(
             title = {
                 Text(
-                    text = if (selectedDates.isEmpty()) stringResource(id = R.string.calendar_select_dates_title)
-                    else selectedDates
+                    text = if (!calendarUiState.hasSelectedDates) {
+                        stringResource(id = R.string.calendar_select_dates_title)
+                    } else {
+                        calendarUiState.selectedDatesFormatted
+                    }
                 )
             },
             navigationIcon = {

@@ -24,6 +24,8 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
 
+    const val coreLibraryDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
+
     object GoogleMaps {
         const val composeMaps = "com.google.maps.android:maps-compose:2.1.0"
         const val maps = "com.google.android.gms:play-services-maps:18.0.2"
@@ -69,12 +71,14 @@ object Libs {
             const val animation = "androidx.compose.animation:animation:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
             const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
+
         }
 
         object Lifecycle {
             private const val version = "2.4.1"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+            const val navigation = "androidx.navigation:navigation-compose:$version"
         }
 
         object Test {
@@ -87,6 +91,11 @@ object Libs {
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+            const val uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+        }
+
+        object Benchmark {
+            const val macrobenchmark = "androidx.benchmark:benchmark-macro-junit4:1.1.0-beta04"
         }
     }
 
@@ -97,6 +106,7 @@ object Libs {
         const val android = "com.google.dagger:hilt-android:$version"
         const val compiler = "com.google.dagger:hilt-compiler:$version"
         const val testing = "com.google.dagger:hilt-android-testing:$version"
+        const val navigation = "androidx.hilt:hilt-navigation-compose:1.0.0"
     }
 
     object JUnit {
