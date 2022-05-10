@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-buildscript {
-    ext {
-        kotlin_version = '1.6.20'
-        compose_version = '1.2.0-alpha08'
-        coroutines_version = '1.6.0'
-        agp_version = "7.2.0-beta02"
-    }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id 'com.android.application' version "$agp_version" apply false
-    id 'com.android.library' version "$agp_version" apply false
-    id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
-}
+package com.example.reply.ui
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+object ReplyDestinations {
+    const val INBOX = "Inbox"
+    const val ARTICLES = "Articles"
+    const val DM = "DirectMessages"
+    const val GROUPS = "Groups"
 }
