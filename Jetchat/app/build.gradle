@@ -112,6 +112,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.viewBinding
+    implementation Libs.AndroidX.Compose.uiText
     debugImplementation Libs.AndroidX.Compose.tooling
 
     debugImplementation Libs.AndroidX.Compose.uiTestManifest
