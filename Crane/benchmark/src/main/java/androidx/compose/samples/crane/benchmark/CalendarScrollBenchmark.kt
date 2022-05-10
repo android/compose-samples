@@ -24,17 +24,26 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.Until
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
 private const val ITERATIONS = 5
+
+@Ignore("This test cannot run on an emulator so is disabled for CI, it is here as a sample.")
 @RunWith(AndroidJUnit4::class)
 class CalendarScrollBenchmark {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
+    /**
+     * When developing a screen, you can use a benchmark test like this one to
+     * tweak and optimise it's performance. For example, wondering if you should remember something?
+     * Try it without remember and save the results of the test, try it again with remember and
+     * see if the results were improved.
+     **/
     @Test
     fun testCalendarScroll() {
         benchmarkRule.measureRepeated(
