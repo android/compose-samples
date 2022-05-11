@@ -25,7 +25,7 @@ object Libs {
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.24.7-alpha"
+        const val version = "0.24.8-beta"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
