@@ -11,7 +11,9 @@ on:
     paths:
       - '.github/workflows/Owl.yaml'
       - 'Owl/**'
-
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 env:
   SAMPLE_PATH: Owl
 

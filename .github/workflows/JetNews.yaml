@@ -11,7 +11,9 @@ on:
     paths:
       - '.github/workflows/JetNews.yaml'
       - 'JetNews/**'
-
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 env:
   SAMPLE_PATH: JetNews
 
