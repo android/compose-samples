@@ -131,6 +131,6 @@ object Libs {
     }
 
     object Coil {
-        const val coilCompose = "io.coil-kt:coil-compose:1.4.0"
+        const val coilCompose = "io.coil-kt:coil-compose:2.0.0"
     }
 }
