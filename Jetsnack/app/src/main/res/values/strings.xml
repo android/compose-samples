@@ -53,6 +53,8 @@
     <string name="cart_shipping_label">Shipping &amp; Handling</string>
     <string name="cart_total_label">Total</string>
     <string name="cart_checkout">Checkout</string>
+    <string name="cart_increase_error">There was an error and the quantity couldn\'t be increased. Please try again.</string>
+    <string name="cart_decrease_error">There was an error and the quantity couldn\'t be decreased. Please try again.</string>
     <string name="label_remove">Remove item</string>
 
     <!-- Quantity Selector -->
@@ -62,5 +64,17 @@
     <string name="grab_beverage">Grab a beverage and check back later!</string>
     <string name="see_more">SEE MORE</string>
     <string name="see_less">SEE LESS</string>
+    <string name="remove_item">Remove Item</string>
+    <string name="reset">Reset</string>
+    <string name="sort">Sort</string>
+    <string name="price">Price</string>
+    <string name="category">Category</string>
+    <string name="max_calories">Max Calories</string>
+    <string name="lifestyle">LifeStyle</string>
+    <string name="per_serving">per serving</string>
+    <string name="android_favorites">Android\'s Favorite (default)</string>
+    <string name="rating">Rating</string>
+    <string name="alphabetical">Alphabetical</string>
+    <string name="close">Close</string>
 
 </resources>

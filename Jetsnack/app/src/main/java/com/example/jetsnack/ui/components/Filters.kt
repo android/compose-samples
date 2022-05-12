@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -44,13 +45,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun FilterBar(filters: List<Filter>) {
+fun FilterBar(
+    filters: List<Filter>,
+    onShowFilters: () -> Unit
+) {
 
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
@@ -59,7 +64,7 @@ fun FilterBar(filters: List<Filter>) {
         modifier = Modifier.heightIn(min = 56.dp)
     ) {
         item {
-            IconButton(onClick = { /* todo */ }) {
+            IconButton(onClick = onShowFilters) {
                 Icon(
                     imageVector = Icons.Rounded.FilterList,
                     tint = JetsnackTheme.colors.brand,
@@ -72,7 +77,7 @@ fun FilterBar(filters: List<Filter>) {
             }
         }
         items(filters) { filter ->
-            FilterChip(filter)
+            FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
         }
     }
 }
@@ -127,7 +132,6 @@ fun FilterChip(
                 .then(backgroundPressed)
                 .then(border),
         ) {
-
             Text(
                 text = filter.name,
                 style = MaterialTheme.typography.caption,
@@ -138,5 +142,25 @@ fun FilterChip(
                 )
             )
         }
+    }
+}
+
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
+@Composable
+private fun FilterDisabledPreview() {
+    JetsnackTheme {
+        FilterChip(Filter(name = "Demo", enabled = false), Modifier.padding(4.dp))
+    }
+}
+
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
+@Composable
+private fun FilterEnabledPreview() {
+    JetsnackTheme {
+        FilterChip(Filter(name = "Demo", enabled = true))
     }
 }

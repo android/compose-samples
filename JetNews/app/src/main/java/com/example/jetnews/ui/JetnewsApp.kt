@@ -16,61 +16,136 @@
 
 package com.example.jetnews.ui
 
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalDrawer
+import androidx.compose.material.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.compose.KEY_ROUTE
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
 fun JetnewsApp(
-    appContainer: AppContainer
+    appContainer: AppContainer,
+    widthSizeClass: WindowWidthSizeClass
 ) {
     JetnewsTheme {
-        ProvideWindowInsets {
-            val systemUiController = rememberSystemUiController()
-            SideEffect {
-                systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = false)
-            }
+        val systemUiController = rememberSystemUiController()
+        val darkIcons = MaterialTheme.colors.isLight
+        SideEffect {
+            systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = darkIcons)
+        }
 
-            val navController = rememberNavController()
-            val coroutineScope = rememberCoroutineScope()
-            // This top level scaffold contains the app drawer, which needs to be accessible
-            // from multiple screens. An event to open the drawer is passed down to each
-            // screen that needs it.
-            val scaffoldState = rememberScaffoldState()
+        val navController = rememberNavController()
+        val navigationActions = remember(navController) {
+            JetnewsNavigationActions(navController)
+        }
 
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-                ?: MainDestinations.HOME_ROUTE
-            Scaffold(
-                scaffoldState = scaffoldState,
-                drawerContent = {
-                    AppDrawer(
+        val coroutineScope = rememberCoroutineScope()
+
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute =
+            navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
+
+        val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+        val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
+
+        ModalDrawer(
+            drawerContent = {
+                AppDrawer(
+                    currentRoute = currentRoute,
+                    navigateToHome = navigationActions.navigateToHome,
+                    navigateToInterests = navigationActions.navigateToInterests,
+                    closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
+                )
+            },
+            drawerState = sizeAwareDrawerState,
+            // Only enable opening the drawer via gestures if the screen is not expanded
+            gesturesEnabled = !isExpandedScreen
+        ) {
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .windowInsetsPadding(
+                        WindowInsets
+                            .navigationBars
+                            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    )
+            ) {
+                if (isExpandedScreen) {
+                    AppNavRail(
                         currentRoute = currentRoute,
-                        navigateToHome = { navController.navigate(MainDestinations.HOME_ROUTE) },
-                        navigateToInterests = { navController.navigate(MainDestinations.INTERESTS_ROUTE) },
-                        closeDrawer = { coroutineScope.launch { scaffoldState.drawerState.close() } }
+                        navigateToHome = navigationActions.navigateToHome,
+                        navigateToInterests = navigationActions.navigateToInterests,
                     )
                 }
-            ) {
                 JetnewsNavGraph(
                     appContainer = appContainer,
+                    isExpandedScreen = isExpandedScreen,
                     navController = navController,
-                    scaffoldState = scaffoldState
+                    openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                 )
             }
         }
     }
 }
+
+/**
+ * Determine the drawer state to pass to the modal drawer.
+ */
+@Composable
+private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    return if (!isExpandedScreen) {
+        // If we want to allow showing the drawer, we use a real, remembered drawer
+        // state defined above
+        drawerState
+    } else {
+        // If we don't want to allow the drawer to be shown, we provide a drawer state
+        // that is locked closed. This is intentionally not remembered, because we
+        // don't want to keep track of any changes and always keep it closed
+        DrawerState(DrawerValue.Closed)
+    }
+}
+
+/**
+ * Determine the content padding to apply to the different screens of the app
+ */
+@Composable
+fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp) =
+    WindowInsets.systemBars
+        .only(WindowInsetsSides.Bottom)
+        .add(WindowInsets(top = additionalTop))
+        .asPaddingValues()

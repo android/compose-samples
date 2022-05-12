@@ -5,11 +5,15 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/Crane.yaml'
       - 'Crane/**'
   pull_request:
     paths:
+      - '.github/workflows/Crane.yaml'
       - 'Crane/**'
-
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 env:
   SAMPLE_PATH: Crane
 
@@ -41,9 +45,25 @@ jobs:
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
-      - name: Build project
+      - name: Check spotless
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew spotlessCheck assembleDebug lintDebug --stacktrace
+        run: ./gradlew spotlessCheck --stacktrace
+
+      - name: Check lint
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew lintDebug --stacktrace
+
+      - name: Build debug
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Build release
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Run local tests
+        working-directory: ${{ env.SAMPLE_PATH }}
+        run: ./gradlew testDebug --stacktrace
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2
@@ -91,6 +111,8 @@ jobs:
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis

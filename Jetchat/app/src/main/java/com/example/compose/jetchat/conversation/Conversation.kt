@@ -25,11 +25,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -37,19 +44,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +66,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalDensity
@@ -75,11 +82,6 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.theme.elevatedSurface
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 /**
@@ -90,6 +92,7 @@ import kotlinx.coroutines.launch
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
@@ -101,11 +104,16 @@ fun ConversationContent(
     val timeNow = stringResource(id = R.string.now)
 
     val scrollState = rememberLazyListState()
+    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
     val scope = rememberCoroutineScope()
 
     Surface(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxSize()) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+            ) {
                 Messages(
                     messages = uiState.messages,
                     navigateToProfile = navigateToProfile,
@@ -123,9 +131,11 @@ fun ConversationContent(
                             scrollState.scrollToItem(0)
                         }
                     },
-                    // Use navigationBarsWithImePadding(), to move the input panel above both the
+                    // Use navigationBarsPadding() imePadding() and , to move the input panel above both the
                     // navigation bar, and on-screen keyboard (IME)
-                    modifier = Modifier.navigationBarsWithImePadding(),
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding(),
                 )
             }
             // Channel name bar floats above the messages
@@ -133,6 +143,7 @@ fun ConversationContent(
                 channelName = uiState.channelName,
                 channelMembers = uiState.channelMembers,
                 onNavIconPressed = onNavIconPressed,
+                scrollBehavior = scrollBehavior,
                 // Use statusBarsPadding() to move the app bar content below the status bar
                 modifier = Modifier.statusBarsPadding(),
             )
@@ -145,6 +156,7 @@ fun ChannelNameBar(
     channelName: String,
     channelMembers: Int,
     modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { }
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
@@ -153,47 +165,44 @@ fun ChannelNameBar(
     }
     JetchatAppBar(
         modifier = modifier,
+        scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
         title = {
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 // Channel name
                 Text(
                     text = channelName,
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.titleMedium
                 )
                 // Number of members
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = stringResource(R.string.members, channelMembers),
-                        style = MaterialTheme.typography.caption
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.members, channelMembers),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         },
         actions = {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                // Search icon
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    modifier = Modifier
-                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                        .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .height(24.dp),
-                    contentDescription = stringResource(id = R.string.search)
-                )
-                // Info icon
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    modifier = Modifier
-                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                        .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .height(24.dp),
-                    contentDescription = stringResource(id = R.string.info)
-                )
-            }
+            // Search icon
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                    .padding(horizontal = 12.dp, vertical = 16.dp)
+                    .height(24.dp),
+                contentDescription = stringResource(id = R.string.search)
+            )
+            // Info icon
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                    .padding(horizontal = 12.dp, vertical = 16.dp)
+                    .height(24.dp),
+                contentDescription = stringResource(id = R.string.info)
+            )
         }
     )
 }
@@ -217,9 +226,8 @@ fun Messages(
             // Add content padding so that the content can be scrolled (y-axis)
             // below the status bar + app bar
             // TODO: Get height from somewhere
-            contentPadding = LocalWindowInsets.current.statusBars.toPaddingValues(
-                additionalTop = 90.dp
-            ),
+            contentPadding =
+            WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize()
@@ -290,9 +298,9 @@ fun Message(
     isLastMessageByAuthor: Boolean
 ) {
     val borderColor = if (isUserMe) {
-        MaterialTheme.colors.primary
+        MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colors.secondary
+        MaterialTheme.colorScheme.tertiary
     }
 
     val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
@@ -305,7 +313,7 @@ fun Message(
                     .padding(horizontal = 16.dp)
                     .size(42.dp)
                     .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colors.surface, CircleShape)
+                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
                 painter = painterResource(id = msg.authorImage),
@@ -318,6 +326,7 @@ fun Message(
         }
         AuthorAndTextMessage(
             msg = msg,
+            isUserMe = isUserMe,
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
             authorClicked = onAuthorClick,
@@ -331,6 +340,7 @@ fun Message(
 @Composable
 fun AuthorAndTextMessage(
     msg: Message,
+    isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
     authorClicked: (String) -> Unit,
@@ -340,7 +350,7 @@ fun AuthorAndTextMessage(
         if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
-        ChatItemBubble(msg, isFirstMessageByAuthor, authorClicked = authorClicked)
+        ChatItemBubble(msg, isUserMe, authorClicked = authorClicked)
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
             Spacer(modifier = Modifier.height(8.dp))
@@ -357,24 +367,22 @@ private fun AuthorNameTimestamp(msg: Message) {
     Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
         Text(
             text = msg.author,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .alignBy(LastBaseline)
                 .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
         )
         Spacer(modifier = Modifier.width(8.dp))
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = msg.timestamp,
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier.alignBy(LastBaseline)
-            )
-        }
+        Text(
+            text = msg.timestamp,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.alignBy(LastBaseline),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
-private val ChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp)
-private val LastChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
+private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
 
 @Composable
 fun DayHeader(dayString: String) {
@@ -384,13 +392,12 @@ fun DayHeader(dayString: String) {
             .height(16.dp)
     ) {
         DayHeaderLine()
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = dayString,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.overline
-            )
-        }
+        Text(
+            text = dayString,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         DayHeaderLine()
     }
 }
@@ -401,36 +408,41 @@ private fun RowScope.DayHeaderLine() {
         modifier = Modifier
             .weight(1f)
             .align(Alignment.CenterVertically),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
 }
 
 @Composable
 fun ChatItemBubble(
     message: Message,
-    lastMessageByAuthor: Boolean,
+    isUserMe: Boolean,
     authorClicked: (String) -> Unit
 ) {
 
-    val backgroundBubbleColor =
-        if (MaterialTheme.colors.isLight) {
-            Color(0xFFF5F5F5)
-        } else {
-            MaterialTheme.colors.elevatedSurface(2.dp)
-        }
+    val backgroundBubbleColor = if (isUserMe) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
 
-    val bubbleShape = if (lastMessageByAuthor) LastChatBubbleShape else ChatBubbleShape
     Column {
-        Surface(color = backgroundBubbleColor, shape = bubbleShape) {
+        Surface(
+            color = backgroundBubbleColor,
+            shape = ChatBubbleShape
+        ) {
             ClickableMessage(
                 message = message,
+                isUserMe = isUserMe,
                 authorClicked = authorClicked
             )
         }
 
         message.image?.let {
             Spacer(modifier = Modifier.height(4.dp))
-            Surface(color = backgroundBubbleColor, shape = bubbleShape) {
+            Surface(
+                color = backgroundBubbleColor,
+                shape = ChatBubbleShape
+            ) {
                 Image(
                     painter = painterResource(it),
                     contentScale = ContentScale.Fit,
@@ -443,15 +455,22 @@ fun ChatItemBubble(
 }
 
 @Composable
-fun ClickableMessage(message: Message, authorClicked: (String) -> Unit) {
+fun ClickableMessage(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit
+) {
     val uriHandler = LocalUriHandler.current
 
-    val styledMessage = messageFormatter(text = message.content)
+    val styledMessage = messageFormatter(
+        text = message.content,
+        primary = isUserMe
+    )
 
     ClickableText(
         text = styledMessage,
-        style = MaterialTheme.typography.body1.copy(color = LocalContentColor.current),
-        modifier = Modifier.padding(8.dp),
+        style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
+        modifier = Modifier.padding(16.dp),
         onClick = {
             styledMessage
                 .getStringAnnotations(start = it, end = it)

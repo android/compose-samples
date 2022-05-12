@@ -16,7 +16,12 @@
 
 package com.example.owl.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -33,35 +38,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.utils.ProvideImageLoader
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsHeight
-import com.google.accompanist.insets.navigationBarsPadding
+import java.util.Locale
 
 @Composable
 fun OwlApp(finishActivity: () -> Unit) {
-    ProvideWindowInsets {
-        ProvideImageLoader {
-            BlueTheme {
-                val tabs = remember { CourseTabs.values() }
-                val navController = rememberNavController()
-                Scaffold(
-                    backgroundColor = MaterialTheme.colors.primarySurface,
-                    bottomBar = { OwlBottomBar(navController = navController, tabs) }
-                ) { innerPaddingModifier ->
-                    NavGraph(
-                        finishActivity = finishActivity,
-                        navController = navController,
-                        modifier = Modifier.padding(innerPaddingModifier)
-                    )
-                }
-            }
+    BlueTheme {
+        val tabs = remember { CourseTabs.values() }
+        val navController = rememberNavController()
+        Scaffold(
+            backgroundColor = MaterialTheme.colors.primarySurface,
+            bottomBar = { OwlBottomBar(navController = navController, tabs) }
+        ) { innerPaddingModifier ->
+            NavGraph(
+                finishActivity = finishActivity,
+                navController = navController,
+                modifier = Modifier.padding(innerPaddingModifier)
+            )
         }
     }
 }
@@ -70,24 +66,29 @@ fun OwlApp(finishActivity: () -> Unit) {
 fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    val currentRoute = navBackStackEntry?.destination?.route
         ?: CourseTabs.FEATURED.route
 
     val routes = remember { CourseTabs.values().map { it.route } }
     if (currentRoute in routes) {
         BottomNavigation(
-            Modifier.navigationBarsHeight(additional = 56.dp)
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars.add(WindowInsets(bottom = 56.dp))
+            )
         ) {
             tabs.forEach { tab ->
                 BottomNavigationItem(
                     icon = { Icon(painterResource(tab.icon), contentDescription = null) },
-                    label = { Text(stringResource(tab.title).toUpperCase()) },
+                    label = { Text(stringResource(tab.title).uppercase(Locale.getDefault())) },
                     selected = currentRoute == tab.route,
                     onClick = {
                         if (tab.route != currentRoute) {
                             navController.navigate(tab.route) {
-                                popUpTo = navController.graph.startDestination
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     },

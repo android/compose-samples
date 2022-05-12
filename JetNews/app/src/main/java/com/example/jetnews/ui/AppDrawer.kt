@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
@@ -45,23 +45,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.ui.components.JetnewsIcon
+import com.example.jetnews.ui.components.NavigationIcon
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AppDrawer(
     currentRoute: String,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
-    closeDrawer: () -> Unit
+    closeDrawer: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(Modifier.height(24.dp))
+    Column(modifier = modifier.fillMaxSize()) {
         JetNewsLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = Icons.Filled.Home,
-            label = "Home",
-            isSelected = currentRoute == MainDestinations.HOME_ROUTE,
+            label = stringResource(id = R.string.home_title),
+            isSelected = currentRoute == JetnewsDestinations.HOME_ROUTE,
             action = {
                 navigateToHome()
                 closeDrawer()
@@ -70,8 +72,8 @@ fun AppDrawer(
 
         DrawerButton(
             icon = Icons.Filled.ListAlt,
-            label = "Interests",
-            isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
+            label = stringResource(id = R.string.interests_title),
+            isSelected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             action = {
                 navigateToInterests()
                 closeDrawer()
@@ -83,11 +85,7 @@ fun AppDrawer(
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        Image(
-            painter = painterResource(R.drawable.ic_jetnews_logo),
-            contentDescription = null, // decorative
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-        )
+        JetnewsIcon()
         Spacer(Modifier.width(8.dp))
         Image(
             painter = painterResource(R.drawable.ic_jetnews_wordmark),
@@ -106,11 +104,6 @@ private fun DrawerButton(
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colors
-    val imageAlpha = if (isSelected) {
-        1f
-    } else {
-        0.6f
-    }
     val textIconColor = if (isSelected) {
         colors.primary
     } else {
@@ -139,11 +132,11 @@ private fun DrawerButton(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    imageVector = icon,
+                NavigationIcon(
+                    icon = icon,
+                    isSelected = isSelected,
                     contentDescription = null, // decorative
-                    colorFilter = ColorFilter.tint(textIconColor),
-                    alpha = imageAlpha
+                    tintColor = textIconColor
                 )
                 Spacer(Modifier.width(16.dp))
                 Text(
@@ -157,27 +150,17 @@ private fun DrawerButton(
 }
 
 @Preview("Drawer contents")
+@Preview("Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAppDrawer() {
-    ThemedPreview {
-        AppDrawer(
-            currentRoute = MainDestinations.HOME_ROUTE,
-            navigateToHome = {},
-            navigateToInterests = {},
-            closeDrawer = { }
-        )
-    }
-}
-
-@Preview("Drawer contents dark theme")
-@Composable
-fun PreviewAppDrawerDark() {
-    ThemedPreview(darkTheme = true) {
-        AppDrawer(
-            currentRoute = MainDestinations.HOME_ROUTE,
-            navigateToHome = {},
-            navigateToInterests = {},
-            closeDrawer = { }
-        )
+    JetnewsTheme {
+        Surface {
+            AppDrawer(
+                currentRoute = JetnewsDestinations.HOME_ROUTE,
+                navigateToHome = {},
+                navigateToInterests = {},
+                closeDrawer = { }
+            )
+        }
     }
 }

@@ -27,8 +27,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
-import com.example.owl.ui.fakes.ProvideTestImageLoader
-import com.google.accompanist.insets.ProvideWindowInsets
+import com.example.owl.ui.fakes.installTestImageLoader
 import org.junit.Rule
 import org.junit.Test
 
@@ -39,28 +38,23 @@ class NavigationTest {
 
     /**
      * Using an empty activity to have control of the content that is set.
-     *
-     * This activity must be declared in the manifest (see src/debug/AndroidManifest.xml)
      */
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private fun startActivity(startDestination: String? = null) {
+        installTestImageLoader()
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalOnBackPressedDispatcherOwner provides composeTestRule.activity
             ) {
-                ProvideWindowInsets {
-                    ProvideTestImageLoader {
-                        if (startDestination == null) {
-                            NavGraph()
-                        } else {
-                            NavGraph(
-                                startDestination = startDestination,
-                                showOnboardingInitially = false
-                            )
-                        }
-                    }
+                if (startDestination == null) {
+                    NavGraph()
+                } else {
+                    NavGraph(
+                        startDestination = startDestination,
+                        showOnboardingInitially = false
+                    )
                 }
             }
         }
@@ -72,10 +66,7 @@ class NavigationTest {
         startActivity()
         // The first screen should be the onboarding screen.
         // Assert that the FAB label for the onboarding screen exists:
-        composeTestRule.onNodeWithContentDescription(
-            label = getOnboardingFabLabel(),
-            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-        ).assertExists()
+        composeTestRule.onNodeWithContentDescription(getOnboardingFabLabel()).assertExists()
     }
 
     @Test
@@ -85,10 +76,7 @@ class NavigationTest {
 
         // Navigate to the next screen by clicking on the FAB
         val fabLabel = getOnboardingFabLabel()
-        composeTestRule.onNodeWithContentDescription(
-            label = fabLabel,
-            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-        ).performClick()
+        composeTestRule.onNodeWithContentDescription(fabLabel).performClick()
 
         // The first course should be shown
         composeTestRule.onNodeWithText(

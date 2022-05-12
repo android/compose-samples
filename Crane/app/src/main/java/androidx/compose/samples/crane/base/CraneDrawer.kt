@@ -33,7 +33,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-private val screens = listOf("Find Trips", "My Trips", "Saved Trips", "Price Alerts", "My Account")
+private val screens = listOf(
+    R.string.screen_title_find_trips,
+    R.string.screen_title_my_trips,
+    R.string.screen_title_saved_trips,
+    R.string.screen_title_price_alerts,
+    R.string.screen_title_my_account
+)
 
 @Composable
 fun CraneDrawer(modifier: Modifier = Modifier) {
@@ -46,9 +52,9 @@ fun CraneDrawer(modifier: Modifier = Modifier) {
             painter = painterResource(R.drawable.ic_crane_drawer),
             contentDescription = stringResource(R.string.cd_drawer)
         )
-        for (screen in screens) {
+        for (screenTitleResource in screens) {
             Spacer(Modifier.height(24.dp))
-            Text(text = screen, style = MaterialTheme.typography.h4)
+            Text(text = stringResource(id = screenTitleResource), style = MaterialTheme.typography.h4)
         }
     }
 }

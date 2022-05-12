@@ -35,6 +35,13 @@ abstract class EpisodesDao {
 
     @Query(
         """
+        SELECT * FROM episodes WHERE uri = :uri
+        """
+    )
+    abstract fun episode(uri: String): Flow<Episode>
+
+    @Query(
+        """
         SELECT * FROM episodes WHERE podcast_uri = :podcastUri
         ORDER BY datetime(published) DESC
         LIMIT :limit

@@ -28,12 +28,12 @@ kapt {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId 'com.example.jetcaster'
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -106,14 +106,19 @@ dependencies {
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.materialIconsExtended
-    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.toolingPreview
+    debugImplementation Libs.AndroidX.Compose.tooling
 
+    implementation Libs.AndroidX.Lifecycle.runtime
     implementation Libs.AndroidX.Lifecycle.viewmodel
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
+    implementation Libs.AndroidX.Navigation.navigation
 
-    implementation Libs.Accompanist.coil
+    implementation Libs.AndroidX.Window.window
+
     implementation Libs.Accompanist.pager
-    implementation Libs.Accompanist.insets
+
+    implementation Libs.Coil.coilCompose
 
     implementation Libs.OkHttp.okhttp
     implementation Libs.OkHttp.logging

@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -138,11 +139,11 @@ private fun SearchCategory(
             width = constraints.maxWidth,
             height = constraints.minHeight
         ) {
-            textPlaceable.place(
+            textPlaceable.placeRelative(
                 x = 0,
                 y = (constraints.maxHeight - textPlaceable.height) / 2 // centered
             )
-            imagePlaceable.place(
+            imagePlaceable.placeRelative(
                 // image is placed to end of text i.e. will overflow to the end (but be clipped)
                 x = textWidth,
                 y = (constraints.maxHeight - imagePlaceable.height) / 2 // centered
@@ -151,24 +152,12 @@ private fun SearchCategory(
     }
 }
 
-@Preview("Category")
+@Preview("default")
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 private fun SearchCategoryPreview() {
     JetsnackTheme {
-        SearchCategory(
-            category = SearchCategory(
-                name = "Desserts",
-                imageUrl = ""
-            ),
-            gradient = JetsnackTheme.colors.gradient3_2
-        )
-    }
-}
-
-@Preview("Category • Dark")
-@Composable
-private fun SearchCategoryDarkPreview() {
-    JetsnackTheme(darkTheme = true) {
         SearchCategory(
             category = SearchCategory(
                 name = "Desserts",

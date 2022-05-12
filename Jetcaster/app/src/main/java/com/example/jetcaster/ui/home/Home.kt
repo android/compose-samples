@@ -22,14 +22,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -62,19 +69,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
+import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
-import com.example.jetcaster.util.constrastAgainst
+import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.insets.statusBarsHeight
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -84,11 +91,11 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 @Composable
-fun Home() {
-    val viewModel = viewModel(HomeViewModel::class.java)
-
+fun Home(
+    navigateToPlayer: (String) -> Unit,
+    viewModel: HomeViewModel = viewModel()
+) {
     val viewState by viewModel.state.collectAsState()
-
     Surface(Modifier.fillMaxSize()) {
         HomeContent(
             featuredPodcasts = viewState.featuredPodcasts,
@@ -97,6 +104,7 @@ fun Home() {
             selectedHomeCategory = viewState.selectedHomeCategory,
             onCategorySelected = viewModel::onHomeCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
+            navigateToPlayer = navigateToPlayer,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -148,13 +156,6 @@ fun HomeAppBar(
     )
 }
 
-/**
- * This is the minimum amount of calculated constrast for a color to be used on top of the
- * surface color. These values are defined within the WCAG AA guidelines, and we use a value of
- * 3:1 which is the minimum for user-interface components.
- */
-private const val MinConstastOfPrimaryVsSurface = 3f
-
 @OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
 @Composable
 fun HomeContent(
@@ -164,23 +165,25 @@ fun HomeContent(
     homeCategories: List<HomeCategory>,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
-    onCategorySelected: (HomeCategory) -> Unit
+    onCategorySelected: (HomeCategory) -> Unit,
+    navigateToPlayer: (String) -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.windowInsetsPadding(
+            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+        )
+    ) {
         // We dynamically theme this sub-section of the layout to match the selected
         // 'top podcast'
 
         val surfaceColor = MaterialTheme.colors.surface
         val dominantColorState = rememberDominantColorState { color ->
             // We want a color which has sufficient contrast against the surface color
-            color.constrastAgainst(surfaceColor) >= MinConstastOfPrimaryVsSurface
+            color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState(
-                pageCount = featuredPodcasts.size,
-                initialOffscreenLimit = 2,
-            )
+            val pagerState = rememberPagerState()
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -210,7 +213,7 @@ fun HomeContent(
                     Modifier
                         .background(appBarColor)
                         .fillMaxWidth()
-                        .statusBarsHeight()
+                        .windowInsetsTopHeight(WindowInsets.statusBars)
                 )
 
                 HomeAppBar(
@@ -254,6 +257,7 @@ fun HomeContent(
             }
             HomeCategory.Discover -> {
                 Discover(
+                    navigateToPlayer = navigateToPlayer,
                     Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -322,12 +326,14 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
+        count = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
             lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier
@@ -341,6 +347,7 @@ fun FollowedPodcasts(
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
+    podcastTitle: String? = null,
     lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
 ) {
@@ -354,9 +361,9 @@ private fun FollowedPodcastCarouselItem(
                 .aspectRatio(1f)
         ) {
             if (podcastImageUrl != null) {
-                Image(
-                    painter = rememberCoilPainter(podcastImageUrl),
-                    contentDescription = null,
+                AsyncImage(
+                    model = podcastImageUrl,
+                    contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
@@ -403,6 +410,8 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
+/*
+TODO: Fix preview error
 @Composable
 @Preview
 fun PreviewHomeContent() {
@@ -417,6 +426,7 @@ fun PreviewHomeContent() {
         )
     }
 }
+*/
 
 @Composable
 @Preview

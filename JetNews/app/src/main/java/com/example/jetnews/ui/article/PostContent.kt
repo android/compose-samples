@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.article
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,7 +30,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
@@ -51,6 +55,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -65,6 +70,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -72,45 +78,54 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.ThemedPreview
+import com.example.jetnews.ui.theme.JetnewsTheme
 
 private val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(post: Post, modifier: Modifier = Modifier) {
+fun PostContent(
+    post: Post,
+    modifier: Modifier = Modifier,
+    state: LazyListState = rememberLazyListState()
+) {
     LazyColumn(
-        modifier = modifier.padding(horizontal = defaultSpacerSize)
+        modifier = modifier.padding(horizontal = defaultSpacerSize),
+        state = state,
     ) {
+        postContentItems(post)
+    }
+}
+
+fun LazyListScope.postContentItems(post: Post) {
+    item {
+        Spacer(Modifier.height(defaultSpacerSize))
+        PostHeaderImage(post)
+    }
+    item {
+        Text(text = post.title, style = MaterialTheme.typography.h4)
+        Spacer(Modifier.height(8.dp))
+    }
+    post.subtitle?.let { subtitle ->
         item {
-            Spacer(Modifier.height(defaultSpacerSize))
-            PostHeaderImage(post)
-        }
-        item {
-            Text(text = post.title, style = MaterialTheme.typography.h4)
-            Spacer(Modifier.height(8.dp))
-        }
-        post.subtitle?.let { subtitle ->
-            item {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.body2,
-                        lineHeight = 20.sp
-                    )
-                }
-                Spacer(Modifier.height(defaultSpacerSize))
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.body2,
+                    lineHeight = 20.sp
+                )
             }
+            Spacer(Modifier.height(defaultSpacerSize))
         }
-        item {
-            PostMetadata(post.metadata)
-            Spacer(Modifier.height(24.dp))
-        }
-        items(post.paragraphs) {
-            Paragraph(paragraph = it)
-        }
-        item {
-            Spacer(Modifier.height(48.dp))
-        }
+    }
+    item {
+        PostMetadata(post.metadata)
+        Spacer(Modifier.height(24.dp))
+    }
+    items(post.paragraphs) {
+        Paragraph(paragraph = it)
+    }
+    item {
+        Spacer(Modifier.height(48.dp))
     }
 }
 
@@ -153,7 +168,13 @@ private fun PostMetadata(metadata: Metadata) {
 
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
+                    text = stringResource(
+                        id = R.string.article_post_min_read,
+                        formatArgs = arrayOf(
+                            metadata.date,
+                            metadata.readTimeMinutes
+                        )
+                    ),
                     style = typography.caption
                 )
             }
@@ -343,17 +364,12 @@ private val Colors.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
 @Preview("Post content")
+@Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPost() {
-    ThemedPreview {
-        PostContent(post = post3)
-    }
-}
-
-@Preview("Post content dark theme")
-@Composable
-fun PreviewPostDark() {
-    ThemedPreview(darkTheme = true) {
-        PostContent(post = post3)
+    JetnewsTheme {
+        Surface {
+            PostContent(post = post3)
+        }
     }
 }

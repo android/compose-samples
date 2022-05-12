@@ -76,7 +76,7 @@ object Graph {
         )
     }
 
-    private val episodeStore by lazy {
+    val episodeStore by lazy {
         EpisodeStore(
             episodesDao = database.episodesDao()
         )
@@ -99,7 +99,7 @@ object Graph {
 
     fun provide(context: Context) {
         okHttpClient = OkHttpClient.Builder()
-            .cache(Cache(File(context.cacheDir, "http_cache"), 20 * 1024 * 1024))
+            .cache(Cache(File(context.cacheDir, "http_cache"), (20 * 1024 * 1024).toLong()))
             .apply {
                 if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory())
             }

@@ -17,13 +17,13 @@
 package androidx.compose.samples.crane.base
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
@@ -63,12 +63,14 @@ fun SimpleUserInput(
 fun CraneUserInput(
     text: String,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = { },
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null,
     tint: Color = LocalContentColor.current
 ) {
     CraneBaseUserInput(
         modifier = modifier,
+        onClick = onClick,
         caption = caption,
         vectorImageId = vectorImageId,
         tintIcon = { text.isNotEmpty() },
@@ -78,7 +80,6 @@ fun CraneUserInput(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CraneEditableUserInput(
     hint: String,
@@ -86,34 +87,43 @@ fun CraneEditableUserInput(
     @DrawableRes vectorImageId: Int? = null,
     onInputChanged: (String) -> Unit
 ) {
-    var textFieldState by remember { mutableStateOf(TextFieldValue(text = hint)) }
-    val isHint = { textFieldState.text == hint }
-
+    var textFieldState by remember { mutableStateOf(TextFieldValue()) }
     CraneBaseUserInput(
         caption = caption,
-        tintIcon = { !isHint() },
-        showCaption = { !isHint() },
+        tintIcon = {
+            textFieldState.text.isNotEmpty()
+        },
+        showCaption = {
+            textFieldState.text.isNotEmpty()
+        },
         vectorImageId = vectorImageId
     ) {
         BasicTextField(
             value = textFieldState,
             onValueChange = {
                 textFieldState = it
-                if (!isHint()) onInputChanged(textFieldState.text)
+                onInputChanged(textFieldState.text)
             },
-            textStyle = if (isHint()) {
-                captionTextStyle.copy(color = LocalContentColor.current)
-            } else {
-                MaterialTheme.typography.body1.copy(color = LocalContentColor.current)
-            },
-            cursorBrush = SolidColor(LocalContentColor.current)
+            textStyle = MaterialTheme.typography.body1.copy(color = LocalContentColor.current),
+            cursorBrush = SolidColor(LocalContentColor.current),
+            decorationBox = { innerTextField ->
+                if (hint.isNotEmpty() && textFieldState.text.isEmpty()) {
+                    Text(
+                        text = hint,
+                        style = captionTextStyle.copy(color = LocalContentColor.current)
+                    )
+                }
+                innerTextField()
+            }
         )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CraneBaseUserInput(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = { },
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null,
     showCaption: () -> Boolean = { true },
@@ -121,7 +131,11 @@ private fun CraneBaseUserInput(
     tint: Color = LocalContentColor.current,
     content: @Composable () -> Unit
 ) {
-    Surface(modifier = modifier, color = MaterialTheme.colors.primaryVariant) {
+    Surface(
+        modifier = modifier,
+        onClick = onClick,
+        color = MaterialTheme.colors.primaryVariant
+    ) {
         Row(Modifier.padding(all = 12.dp)) {
             if (vectorImageId != null) {
                 Icon(

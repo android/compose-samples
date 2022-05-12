@@ -22,7 +22,7 @@ import com.example.compose.jetchat.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -32,18 +32,19 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.11.1'
+    id 'com.diffplug.spotless' version '6.5.2'
 }
 
 subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
+        if (!Libs.AndroidX.Compose.Material3.snapshot.isEmpty()) {
+            maven { url Urls.composeMaterial3SnapshotRepo }
+        }
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Urls.composeSnapshotRepo }
-            maven { url Urls.accompanistSnapshotRepo }
         }
     }
 
@@ -60,15 +61,15 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            // Treat all Kotlin warnings as errors
-            allWarningsAsErrors = true
+            // Treat all Kotlin warnings as errors (disabled by default)
+            allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
 
-            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
 
             // Enable experimental coroutines APIs, including Flow
-            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
-            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.FlowPreview'
-            freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+            freeCompilerArgs += '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
+            freeCompilerArgs += '-opt-in=kotlinx.coroutines.FlowPreview'
+            freeCompilerArgs += '-opt-in=kotlin.Experimental'
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"

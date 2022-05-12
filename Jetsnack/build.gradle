@@ -20,7 +20,7 @@ import com.example.jetsnack.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -29,14 +29,15 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.11.1'
+    id 'com.diffplug.spotless' version '6.5.2'
+    id 'com.android.test' version '7.3.0-alpha09' apply false
+    id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
 }
 
 subprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
@@ -48,12 +49,15 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            jvmTarget = '1.8'
-            allWarningsAsErrors = true
-            // Opt-in to experimental compose APIs
-            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-            // Enable experimental coroutines APIs, including collectAsState()
-            freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
+            // Treat all Kotlin warnings as errors (disabled by default)
+            allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
+
+            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
+            // Enable experimental coroutines APIs, including Flow
+            freeCompilerArgs += '-opt-in=kotlin.Experimental'
+
+            // Set JVM target to 1.8
+            jvmTarget = "1.8"
         }
     }
 

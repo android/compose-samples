@@ -27,13 +27,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -90,10 +97,7 @@ import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.insets.toPaddingValues
+import java.util.Locale
 import kotlinx.coroutines.launch
 
 private val FabSize = 56.dp
@@ -232,7 +236,7 @@ private fun CourseDescriptionHeader(
 @Composable
 private fun CourseDescriptionBody(course: Course) {
     Text(
-        text = course.subject.toUpperCase(),
+        text = course.subject.uppercase(Locale.getDefault()),
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
@@ -347,7 +351,7 @@ private fun LessonsSheet(
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
     val fabSize = with(LocalDensity.current) { FabSize.toPx() }
-    val fabSheetHeight = fabSize + LocalWindowInsets.current.systemBars.bottom
+    val fabSheetHeight = fabSize + WindowInsets.systemBars.getBottom(LocalDensity.current)
     val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
     val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
     val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
@@ -418,9 +422,9 @@ private fun Lessons(
             }
             LazyColumn(
                 state = scroll,
-                contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-                    top = false
-                )
+                contentPadding = WindowInsets.systemBars
+                    .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                    .asPaddingValues()
             ) {
                 items(lessons) { lesson ->
                     Lesson(lesson)

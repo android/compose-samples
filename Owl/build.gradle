@@ -20,7 +20,7 @@ import com.example.owl.buildsrc.Versions
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -29,7 +29,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.12.4'
+    id 'com.diffplug.spotless' version '6.5.2'
 }
 
 subprojects {
@@ -40,17 +40,16 @@ subprojects {
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
         }
-        if (Libs.Accompanist.version.endsWith("SNAPSHOT")) {
-            maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-        }
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            jvmTarget = '1.8'
-            allWarningsAsErrors = true
+            // Treat all Kotlin warnings as errors (disabled by default)
+            allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
             // Opt-in to experimental compose APIs
-            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
+
+            jvmTarget = '1.8'
         }
     }
 

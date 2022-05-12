@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
@@ -30,8 +29,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ViewWindowInsetObserver
 
 class ProfileFragment : Fragment() {
 
@@ -55,26 +52,19 @@ class ProfileFragment : Fragment() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        // Create a ViewWindowInsetObserver using this view, and call start() to
-        // start listening now. The WindowInsets instance is returned, allowing us to
-        // provide it to AmbientWindowInsets in our content below.
-        val windowInsets = ViewWindowInsetObserver(this).start()
-
         setContent {
             val userData by viewModel.userData.observeAsState()
 
-            CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
-                JetchatTheme {
-                    if (userData == null) {
-                        ProfileError()
-                    } else {
-                        ProfileScreen(
-                            userData = userData!!,
-                            onNavIconPressed = {
-                                activityViewModel.openDrawer()
-                            }
-                        )
-                    }
+            JetchatTheme {
+                if (userData == null) {
+                    ProfileError()
+                } else {
+                    ProfileScreen(
+                        userData = userData!!,
+                        onNavIconPressed = {
+                            activityViewModel.openDrawer()
+                        }
+                    )
                 }
             }
         }

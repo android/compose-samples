@@ -30,7 +30,7 @@ class ConversationUiState(
     val messages: List<Message> = _messages
 
     fun addMessage(msg: Message) {
-        _messages.add(msg)
+        _messages.add(0, msg) // Add to the beginning of the list
     }
 }
 

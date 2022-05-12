@@ -59,6 +59,8 @@ import com.example.compose.jetsurvey.util.supportWideScreen
 @Composable
 fun SurveyQuestionsScreen(
     questions: SurveyState.Questions,
+    shouldAskPermissions: Boolean,
+    onDoNotAskForPermissions: () -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDonePressed: () -> Unit,
     onBackPressed: () -> Unit
@@ -80,11 +82,15 @@ fun SurveyQuestionsScreen(
                 Question(
                     question = questionState.question,
                     answer = questionState.answer,
+                    shouldAskPermissions = shouldAskPermissions,
                     onAnswer = {
-                        questionState.answer = it
+                        if (it !is Answer.PermissionsDenied) {
+                            questionState.answer = it
+                        }
                         questionState.enableNext = true
                     },
                     onAction = onAction,
+                    onDoNotAskForPermissions = onDoNotAskForPermissions,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -164,12 +170,13 @@ private fun TopAppBarTitle(
         fontWeight = FontWeight.Bold
     )
     val totalStyle = MaterialTheme.typography.caption.toSpanStyle()
+    val questionCount = stringResource(R.string.question_count, totalQuestionsCount)
     val text = buildAnnotatedString {
         withStyle(style = indexStyle) {
             append("${questionIndex + 1}")
         }
         withStyle(style = totalStyle) {
-            append(stringResource(R.string.question_count, totalQuestionsCount))
+            append(questionCount)
         }
     }
     Text(
