@@ -56,6 +56,6 @@ val PreviewEpisodes = listOf(
         podcastUri = PreviewPodcasts[0].uri,
         title = "Episode 140: Bubbles!",
         summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur Tsurkan from the System UI team about... Bubbles!",
-        published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("PST"))
+        published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("-0800"))
     )
 )

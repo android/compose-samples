@@ -17,12 +17,23 @@
 package com.example.jetnews.ui
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -37,78 +48,74 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.example.jetnews.utils.WindowSize
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
 fun JetnewsApp(
     appContainer: AppContainer,
-    windowSize: WindowSize
+    widthSizeClass: WindowWidthSizeClass
 ) {
     JetnewsTheme {
-        ProvideWindowInsets {
-            val systemUiController = rememberSystemUiController()
-            val darkIcons = MaterialTheme.colors.isLight
-            SideEffect {
-                systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = darkIcons)
-            }
+        val systemUiController = rememberSystemUiController()
+        val darkIcons = MaterialTheme.colors.isLight
+        SideEffect {
+            systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = darkIcons)
+        }
 
-            val navController = rememberNavController()
-            val navigationActions = remember(navController) {
-                JetnewsNavigationActions(navController)
-            }
+        val navController = rememberNavController()
+        val navigationActions = remember(navController) {
+            JetnewsNavigationActions(navController)
+        }
 
-            val coroutineScope = rememberCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
 
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute =
-                navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute =
+            navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
-            val isExpandedScreen = windowSize == WindowSize.Expanded
-            val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
+        val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+        val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
-            ModalDrawer(
-                drawerContent = {
-                    AppDrawer(
+        ModalDrawer(
+            drawerContent = {
+                AppDrawer(
+                    currentRoute = currentRoute,
+                    navigateToHome = navigationActions.navigateToHome,
+                    navigateToInterests = navigationActions.navigateToInterests,
+                    closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
+                )
+            },
+            drawerState = sizeAwareDrawerState,
+            // Only enable opening the drawer via gestures if the screen is not expanded
+            gesturesEnabled = !isExpandedScreen
+        ) {
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .windowInsetsPadding(
+                        WindowInsets
+                            .navigationBars
+                            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    )
+            ) {
+                if (isExpandedScreen) {
+                    AppNavRail(
                         currentRoute = currentRoute,
                         navigateToHome = navigationActions.navigateToHome,
                         navigateToInterests = navigationActions.navigateToInterests,
-                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .navigationBarsPadding()
-                    )
-                },
-                drawerState = sizeAwareDrawerState,
-                // Only enable opening the drawer via gestures if the screen is not expanded
-                gesturesEnabled = !isExpandedScreen
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()
-                        .navigationBarsPadding(bottom = false)
-                ) {
-                    if (isExpandedScreen) {
-                        AppNavRail(
-                            currentRoute = currentRoute,
-                            navigateToHome = navigationActions.navigateToHome,
-                            navigateToInterests = navigationActions.navigateToInterests,
-                        )
-                    }
-                    JetnewsNavGraph(
-                        appContainer = appContainer,
-                        isExpandedScreen = isExpandedScreen,
-                        navController = navController,
-                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                     )
                 }
+                JetnewsNavGraph(
+                    appContainer = appContainer,
+                    isExpandedScreen = isExpandedScreen,
+                    navController = navController,
+                    openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                )
             }
         }
     }
@@ -138,10 +145,7 @@ private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState
  */
 @Composable
 fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp) =
-    rememberInsetsPaddingValues(
-        insets = LocalWindowInsets.current.systemBars,
-        applyTop = false,
-        applyEnd = false,
-        applyStart = false,
-        additionalTop = additionalTop
-    )
+    WindowInsets.systemBars
+        .only(WindowInsetsSides.Bottom)
+        .add(WindowInsets(top = additionalTop))
+        .asPaddingValues()

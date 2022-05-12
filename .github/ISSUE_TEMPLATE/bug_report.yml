@@ -1,0 +1,70 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "triage me"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: checkboxes
+    attributes:
+      label: Is there a StackOverflow question about this issue?
+      description: Please search [StackOverflow](https://stackoverflow.com/questions/tagged/android-jetpack) if an issue with an answer already exists for the bug you encountered.
+      options:
+      - label: I have searched StackOverflow
+        required: true
+  - type: checkboxes
+    attributes:
+      label: Is this an issue related to one of the samples?
+      description: Please confirm that this is an issue related to this sample repo. If this is a bug related to Compose, file an issue on the Compose [issue tracker](https://issuetracker.google.com/issues/new?component=612128) instead.
+      options:
+      - label: Yes, this is a specific issue related to this samples repo.
+        required: true
+  - type: dropdown
+    id: sample-app
+    attributes:
+      label: Sample app
+      description: What sample app did you encounter a bug on?
+      options:
+        - Crane
+        - JetNews
+        - Jetcaster
+        - Jetchat
+        - Jetsnack
+        - Jetsurvey
+        - Owl
+        - Rally
+        - Other (bug not related to sample app)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logcat output
+      description: Please copy and paste any relevant logcat output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

@@ -56,9 +56,10 @@ fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
                 onBackPressed = { onNavigationEvent(SignUpEvent.NavigateBack) }
             )
         },
-        content = {
+        content = { contentPadding ->
             SignInSignUpScreen(
                 onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
+                contentPadding = contentPadding,
                 modifier = Modifier.supportWideScreen()
             ) {
                 Column {

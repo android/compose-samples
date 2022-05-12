@@ -35,8 +35,11 @@ import java.time.Duration
 
 data class PlayerUiState(
     val title: String = "",
+    val subTitle: String = "",
     val duration: Duration? = null,
     val podcastName: String = "",
+    val author: String = "",
+    val summary: String = "",
     val podcastImageUrl: String = ""
 )
 
@@ -64,6 +67,7 @@ class PlayerViewModel(
                 title = episode.title,
                 duration = episode.duration,
                 podcastName = podcast.title,
+                summary = episode.summary ?: "",
                 podcastImageUrl = podcast.imageUrl ?: ""
             )
         }

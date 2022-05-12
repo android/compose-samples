@@ -15,10 +15,11 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
-    ext.compose_version = '1.1.1'
+    ext.kotlin_version = '1.6.21'
+    ext.compose_version = '1.2.0-beta01'
+    ext.compose_snapshot_version = ''
     ext.coroutines_version = '1.6.0'
-    ext.accompanist_version = '0.23.1'
+    ext.accompanist_version = '0.24.8-beta'
 
     repositories {
         google()
@@ -26,19 +27,24 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.3.0'
+    id 'com.diffplug.spotless' version '6.5.2'
 }
 
 subprojects {
     repositories {
         google()
         mavenCentral()
+
+        if (!compose_snapshot_version.isEmpty()) {
+            maven { url "https://androidx.dev/snapshots/builds/" +
+                    "${compose_snapshot_version}/artifacts/repository/" }
+        }
     }
 
     apply plugin: 'com.diffplug.spotless'
@@ -48,7 +54,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.44.0")
+            ktlint("0.45.2")
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }

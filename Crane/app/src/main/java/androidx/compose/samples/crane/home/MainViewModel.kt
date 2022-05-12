@@ -16,8 +16,8 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.samples.crane.calendar.model.DatesSelectedState
-import androidx.compose.samples.crane.data.DatesRepository
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.di.DefaultDispatcher
@@ -29,6 +29,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -37,13 +38,14 @@ const val MAX_PEOPLE = 4
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val destinationsRepository: DestinationsRepository,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-    datesRepository: DatesRepository
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    val shownSplash = mutableStateOf(SplashState.Shown)
     val hotels: List<ExploreModel> = destinationsRepository.hotels
     val restaurants: List<ExploreModel> = destinationsRepository.restaurants
-    val datesSelected: DatesSelectedState = datesRepository.datesSelected
+
+    val calendarState = CalendarState()
 
     private val _suggestedDestinations = MutableLiveData<List<ExploreModel>>()
     val suggestedDestinations: LiveData<List<ExploreModel>>
@@ -51,6 +53,12 @@ class MainViewModel @Inject constructor(
 
     init {
         _suggestedDestinations.value = destinationsRepository.destinations
+    }
+
+    fun onDaySelected(daySelected: LocalDate) {
+        viewModelScope.launch {
+            calendarState.setSelectedDay(daySelected)
+        }
     }
 
     fun updatePeople(people: Int) {

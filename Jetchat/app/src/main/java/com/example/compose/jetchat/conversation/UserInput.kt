@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -341,7 +342,7 @@ private fun InputSelectorButton(
     }
     IconButton(
         onClick = onClick,
-        modifier = backgroundModifier
+        modifier = Modifier.size(56.dp).then(backgroundModifier)
     ) {
         val tint = if (selected) {
             MaterialTheme.colorScheme.onSecondary

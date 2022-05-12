@@ -17,21 +17,20 @@
 package com.example.jetcaster.buildsrc
 
 object Versions {
-    const val ktlint = "0.44.0"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.23.1"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
+        const val version = "0.24.8-beta"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.6.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -71,7 +70,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.1"
+            const val version = "1.2.0-beta01"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -97,7 +96,7 @@ object Libs {
         }
 
         object Navigation {
-            const val navigation = "androidx.navigation:navigation-compose:2.4.1"
+            const val navigation = "androidx.navigation:navigation-compose:2.4.2"
         }
 
         object Test {
@@ -132,6 +131,6 @@ object Libs {
     }
 
     object Coil {
-        const val coilCompose = "io.coil-kt:coil-compose:1.4.0"
+        const val coilCompose = "io.coil-kt:coil-compose:2.0.0"
     }
 }

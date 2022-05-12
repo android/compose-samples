@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -72,7 +73,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.google.accompanist.insets.navigationBarsPadding
+import java.util.*
 
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
@@ -128,8 +129,12 @@ fun JetsnackBottomBar(
             itemCount = routes.size,
             indicator = { JetsnackBottomNavIndicator() },
             animSpec = springSpec,
-            modifier = Modifier.navigationBarsPadding(start = false, end = false)
+            modifier = Modifier.navigationBarsPadding()
         ) {
+            val configuration = LocalConfiguration.current
+            val currentLocale: Locale =
+                ConfigurationCompat.getLocales(configuration).get(0) ?: Locale.getDefault()
+
             tabs.forEach { section ->
                 val selected = section == currentSection
                 val tint by animateColorAsState(
@@ -140,21 +145,19 @@ fun JetsnackBottomBar(
                     }
                 )
 
+                val text = stringResource(section.title).uppercase(currentLocale)
+
                 JetsnackBottomNavigationItem(
                     icon = {
                         Icon(
                             imageVector = section.icon,
                             tint = tint,
-                            contentDescription = null
+                            contentDescription = text
                         )
                     },
                     text = {
                         Text(
-                            text = stringResource(section.title).uppercase(
-                                ConfigurationCompat.getLocales(
-                                    LocalConfiguration.current
-                                ).get(0)
-                            ),
+                            text = text,
                             color = tint,
                             style = MaterialTheme.typography.button,
                             maxLines = 1

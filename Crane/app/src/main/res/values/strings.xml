@@ -24,4 +24,25 @@
     <string name="click_label_select">select</string>
     <string name="state_descr_selected">Selected</string>
     <string name="state_descr_not_selected">Not selected</string>
+    <string name="screen_title_find_trips">Find Trips</string>
+    <string name="screen_title_my_trips">My Trips</string>
+    <string name="screen_title_saved_trips">Saved Trips</string>
+    <string name="screen_title_price_alerts">Price Alerts</string>
+    <string name="screen_title_my_account">My Account</string>
+    <string name="calendar_select_dates_title">Select Dates</string>
+    <string name="explore_flights_by_destination">Explore Flights by Destination</string>
+    <string name="explore_properties_by_destination">Explore Properties by Destination</string>
+    <string name="explore_restaurants_by_destination">Explore Restaurants by Destination</string>
+    <string name="input_select_location">Select Location</string>
+    <string name="input_select_time">Select Time</string>
+    <string name="select_destination_hint">Choose Destination</string>
+    <string name="select_destination_to_caption">To</string>
+    <string name="select_dates">Select Dates</string>
+    <string name="error_max_people">Error: We don\'t support more than %d people</string>
+    <plurals name="number_adults_selected">
+        <item quantity="one"> %d Adult%s</item>
+        <item quantity="other"> %d Adults%s</item>
+        <item quantity="two"> %d Adults%s</item>
+        <item quantity="many"> %d Adults%s</item>
+    </plurals>
 </resources>

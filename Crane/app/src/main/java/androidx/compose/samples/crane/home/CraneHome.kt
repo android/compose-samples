@@ -16,12 +16,17 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,15 +34,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.statusBarsPadding
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
@@ -48,9 +55,11 @@ enum class CraneScreen {
 
 @Composable
 fun CraneHome(
+    widthSize: WindowWidthSizeClass,
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: MainViewModel
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -59,17 +68,19 @@ fun CraneHome(
         drawerContent = {
             CraneDrawer()
         }
-    ) {
+    ) { contentPadding ->
         val scope = rememberCoroutineScope()
         CraneHomeContent(
-            modifier = modifier,
+            modifier = modifier.padding(contentPadding),
+            widthSize = widthSize,
             onExploreItemClicked = onExploreItemClicked,
             onDateSelectionClicked = onDateSelectionClicked,
             openDrawer = {
                 scope.launch {
                     scaffoldState.drawerState.open()
                 }
-            }
+            },
+            viewModel = viewModel
         )
     }
 }
@@ -77,11 +88,12 @@ fun CraneHome(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CraneHomeContent(
+    widthSize: WindowWidthSizeClass,
     onExploreItemClicked: OnExploreItemClicked,
     onDateSelectionClicked: () -> Unit,
     openDrawer: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = viewModel(),
+    viewModel: MainViewModel
 ) {
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
@@ -91,12 +103,14 @@ fun CraneHomeContent(
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
+        frontLayerShape = BottomSheetShape,
         frontLayerScrimColor = Color.Unspecified,
         appBar = {
             HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })
         },
         backLayerContent = {
             SearchContent(
+                widthSize,
                 tabSelected,
                 viewModel,
                 onPeopleChanged,
@@ -109,7 +123,8 @@ fun CraneHomeContent(
                 CraneScreen.Fly -> {
                     suggestedDestinations?.let { destinations ->
                         ExploreSection(
-                            title = "Explore Flights by Destination",
+                            widthSize = widthSize,
+                            title = stringResource(R.string.explore_flights_by_destination),
                             exploreList = destinations,
                             onItemClicked = onExploreItemClicked
                         )
@@ -117,14 +132,16 @@ fun CraneHomeContent(
                 }
                 CraneScreen.Sleep -> {
                     ExploreSection(
-                        title = "Explore Properties by Destination",
+                        widthSize = widthSize,
+                        title = stringResource(R.string.explore_properties_by_destination),
                         exploreList = viewModel.hotels,
                         onItemClicked = onExploreItemClicked
                     )
                 }
                 CraneScreen.Eat -> {
                     ExploreSection(
-                        title = "Explore Restaurants by Destination",
+                        widthSize = widthSize,
+                        title = stringResource(R.string.explore_restaurants_by_destination),
                         exploreList = viewModel.restaurants,
                         onItemClicked = onExploreItemClicked
                     )
@@ -142,7 +159,7 @@ private fun HomeTabBar(
     modifier: Modifier = Modifier
 ) {
     CraneTabBar(
-        modifier = modifier,
+        modifier = modifier.wrapContentWidth().sizeIn(maxWidth = 500.dp),
         onMenuClicked = openDrawer
     ) { tabBarModifier ->
         CraneTabs(
@@ -156,6 +173,7 @@ private fun HomeTabBar(
 
 @Composable
 private fun SearchContent(
+    widthSize: WindowWidthSizeClass,
     tabSelected: CraneScreen,
     viewModel: MainViewModel,
     onPeopleChanged: (Int) -> Unit,
@@ -164,11 +182,12 @@ private fun SearchContent(
 ) {
     // Reading datesSelected State from here instead of passing the String from the ViewModel
     // to cause a recomposition when the dates change.
-    val datesSelected = viewModel.datesSelected.toString()
+    val selectedDates = viewModel.calendarState.calendarUiState.value.selectedDatesFormatted
 
     when (tabSelected) {
         CraneScreen.Fly -> FlySearchContent(
-            datesSelected,
+            widthSize = widthSize,
+            datesSelected = selectedDates,
             searchUpdates = FlySearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onToDestinationChanged = { viewModel.toDestinationChanged(it) },
@@ -177,7 +196,8 @@ private fun SearchContent(
             )
         )
         CraneScreen.Sleep -> SleepSearchContent(
-            datesSelected,
+            widthSize = widthSize,
+            datesSelected = selectedDates,
             sleepUpdates = SleepSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,
@@ -185,7 +205,8 @@ private fun SearchContent(
             )
         )
         CraneScreen.Eat -> EatSearchContent(
-            datesSelected,
+            widthSize = widthSize,
+            datesSelected = selectedDates,
             eatUpdates = EatSearchContentUpdates(
                 onPeopleChanged = onPeopleChanged,
                 onDateSelectionClicked = onDateSelectionClicked,

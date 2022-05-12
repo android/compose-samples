@@ -63,8 +63,7 @@ fun SurveyQuestionsScreen(
     onDoNotAskForPermissions: () -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDonePressed: () -> Unit,
-    onBackPressed: () -> Unit,
-    openSettings: () -> Unit
+    onBackPressed: () -> Unit
 ) {
     val questionState = remember(questions.currentQuestionIndex) {
         questions.questionsState[questions.currentQuestionIndex]
@@ -91,7 +90,6 @@ fun SurveyQuestionsScreen(
                         questionState.enableNext = true
                     },
                     onAction = onAction,
-                    openSettings = openSettings,
                     onDoNotAskForPermissions = onDoNotAskForPermissions,
                     modifier = Modifier
                         .fillMaxSize()
@@ -172,12 +170,13 @@ private fun TopAppBarTitle(
         fontWeight = FontWeight.Bold
     )
     val totalStyle = MaterialTheme.typography.caption.toSpanStyle()
+    val questionCount = stringResource(R.string.question_count, totalQuestionsCount)
     val text = buildAnnotatedString {
         withStyle(style = indexStyle) {
             append("${questionIndex + 1}")
         }
         withStyle(style = totalStyle) {
-            append(stringResource(R.string.question_count, totalQuestionsCount))
+            append(questionCount)
         }
     }
     Text(
