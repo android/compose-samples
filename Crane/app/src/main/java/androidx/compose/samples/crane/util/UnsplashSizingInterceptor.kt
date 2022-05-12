@@ -16,28 +16,26 @@
 
 package androidx.compose.samples.crane.util
 
-import coil.annotation.ExperimentalCoilApi
 import coil.intercept.Interceptor
 import coil.request.ImageResult
-import coil.size.PixelSize
-import okhttp3.HttpUrl
+import coil.size.pxOrElse
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 /**
  * A Coil [Interceptor] which appends query params to Unsplash urls to request sized images.
  */
-@OptIn(ExperimentalCoilApi::class)
 object UnsplashSizingInterceptor : Interceptor {
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
         val data = chain.request.data
-        val size = chain.size
-        if (data is String &&
-            data.startsWith("https://images.unsplash.com/photo-") &&
-            size is PixelSize
+        val widthPx = chain.size.width.pxOrElse { -1 }
+        val heightPx = chain.size.height.pxOrElse { -1 }
+        if (widthPx > 0 && heightPx > 0 && data is String &&
+            data.startsWith("https://images.unsplash.com/photo-")
         ) {
-            val url = HttpUrl.get(data)
+            val url = data.toHttpUrl()
                 .newBuilder()
-                .addQueryParameter("w", size.width.toString())
-                .addQueryParameter("h", size.height.toString())
+                .addQueryParameter("w", widthPx.toString())
+                .addQueryParameter("h", heightPx.toString())
                 .build()
             val request = chain.request.newBuilder().data(url).build()
             return chain.proceed(request)

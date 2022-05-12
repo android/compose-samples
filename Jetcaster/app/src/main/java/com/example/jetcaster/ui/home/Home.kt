@@ -69,7 +69,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.discover.Discover
@@ -361,8 +361,8 @@ private fun FollowedPodcastCarouselItem(
                 .aspectRatio(1f)
         ) {
             if (podcastImageUrl != null) {
-                Image(
-                    painter = rememberImagePainter(data = podcastImageUrl),
+                AsyncImage(
+                    model = podcastImageUrl,
                     contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
