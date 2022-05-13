@@ -30,7 +30,12 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -111,7 +116,12 @@ fun MainScreen(
     onDateSelectionClicked: () -> Unit,
     mainViewModel: MainViewModel
 ) {
-    Surface(color = MaterialTheme.colors.primary) {
+    Surface(
+        modifier = Modifier.windowInsetsPadding(
+            WindowInsets.navigationBars.only(WindowInsetsSides.Start + WindowInsetsSides.End)
+        ),
+        color = MaterialTheme.colors.primary
+    ) {
         val transitionState = remember { MutableTransitionState(mainViewModel.shownSplash.value) }
         val transition = updateTransition(transitionState, label = "splashTransition")
         val splashAlpha by transition.animateFloat(
