@@ -112,14 +112,6 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
-
-    // TODO: Lint issues https://github.com/android/compose-samples/issues/800
-    // Lint fails to run for this sample and suggests disabling these specific checks. That at least
-    // lets us verify everything else is working, but we should figure out why the error is
-    // happening.
-    lintOptions {
-        disable "JvmStaticProvidesInObjectDetector", "FieldSiteTargetOnQualifierAnnotation", "ModuleCompanionObjects", "ModuleCompanionObjectsNotInModuleParent"
-    }
 }
 
 dependencies {
