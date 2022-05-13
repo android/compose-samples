@@ -18,7 +18,6 @@ package com.example.compose.jetchat.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +40,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -96,15 +96,12 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = {
             title = { },
             actions = {
                 // More icon
-                Icon(
-                    imageVector = Icons.Outlined.MoreVert,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                        .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .height(24.dp),
-                    contentDescription = stringResource(id = R.string.more_options)
-                )
+                IconButton(onClick = { functionalityNotAvailablePopupShown = true }) {
+                    Icon(
+                        imageVector = Icons.Outlined.MoreVert,
+                        contentDescription = stringResource(id = R.string.more_options)
+                    )
+                }
             }
         )
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
