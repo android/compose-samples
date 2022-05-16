@@ -11,7 +11,9 @@ on:
     paths:
       - '.github/workflows/Crane.yaml'
       - 'Crane/**'
-
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 env:
   SAMPLE_PATH: Crane
 

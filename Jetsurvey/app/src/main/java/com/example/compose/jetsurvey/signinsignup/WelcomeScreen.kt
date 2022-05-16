@@ -16,14 +16,16 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
@@ -38,16 +40,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
@@ -60,38 +57,33 @@ sealed class WelcomeEvent {
 
 @Composable
 fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
-    var brandingBottom by remember { mutableStateOf(0f) }
     var showBranding by remember { mutableStateOf(true) }
-    var heightWithBranding by remember { mutableStateOf(0) }
 
-    val currentOffsetHolder = remember { mutableStateOf(0f) }
-    currentOffsetHolder.value = if (showBranding) 0f else -brandingBottom
-    val currentOffsetHolderDp =
-        with(LocalDensity.current) { currentOffsetHolder.value.toDp() }
-    val heightDp = with(LocalDensity.current) { heightWithBranding.toDp() }
     Surface(modifier = Modifier.supportWideScreen()) {
-        val offset by animateDpAsState(targetValue = currentOffsetHolderDp)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .brandingPreferredHeight(showBranding, heightDp)
-                .offset(y = offset)
-                .onSizeChanged {
-                    if (showBranding) {
-                        heightWithBranding = it.height
-                    }
-                }
+                .verticalScroll(rememberScrollState())
         ) {
-            Branding(
+            Spacer(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .onGloballyPositioned {
-                        if (brandingBottom == 0f) {
-                            brandingBottom = it.boundsInParent().bottom
-                        }
-                    }
+                    .weight(1f, fill = showBranding)
+                    .animateContentSize()
             )
+
+            AnimatedVisibility(
+                showBranding,
+                Modifier.fillMaxWidth()
+            ) {
+                Branding()
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .weight(1f, fill = showBranding)
+                    .animateContentSize()
+            )
+
             SignInCreateAccount(
                 onEvent = onEvent,
                 onFocusChange = { focused -> showBranding = !focused },
@@ -100,19 +92,6 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
                     .padding(horizontal = 20.dp)
             )
         }
-    }
-}
-
-private fun Modifier.brandingPreferredHeight(
-    showBranding: Boolean,
-    heightDp: Dp
-): Modifier {
-    return if (!showBranding) {
-        this
-            .wrapContentHeight(unbounded = true)
-            .height(heightDp)
-    } else {
-        this
     }
 }
 

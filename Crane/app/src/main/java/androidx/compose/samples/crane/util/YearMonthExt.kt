@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package androidx.compose.samples.crane.calendar.model
+package androidx.compose.samples.crane.util
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.samples.crane.calendar.CALENDAR_STARTS_ON
+import java.time.YearMonth
+import java.time.temporal.WeekFields
 
-enum class DayOfWeek {
-    Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
-}
-
-enum class DaySelectedStatus {
-    NoSelected, Selected, NonClickable, FirstDay, LastDay, FirstLastDay
-}
-
-class CalendarDay(val value: String, status: DaySelectedStatus) {
-    var status by mutableStateOf(status)
+fun YearMonth.getNumberWeeks(weekFields: WeekFields = CALENDAR_STARTS_ON): Int {
+    val firstWeekNumber = this.atDay(1)[weekFields.weekOfMonth()]
+    val lastWeekNumber = this.atEndOfMonth()[weekFields.weekOfMonth()]
+    return lastWeekNumber - firstWeekNumber + 1 // Both weeks inclusive
 }
