@@ -123,7 +123,7 @@ object JetpackSurveyRepository : SurveyRepository {
 }
 
 interface SurveyRepository {
-    fun getSurvey() : Survey
+    fun getSurvey(): Survey
 
     fun getSurveyResult(answers: List<Answer<*>>): SurveyResult
 }
