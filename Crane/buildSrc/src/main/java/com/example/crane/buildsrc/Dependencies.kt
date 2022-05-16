@@ -17,12 +17,12 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.45.2"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
-    const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
+    const val ktLint = "com.pinterest:ktlint:${Versions.ktlint}"
 
     object GoogleMaps {
         const val composeMaps = "com.google.maps.android:maps-compose:2.1.0"
