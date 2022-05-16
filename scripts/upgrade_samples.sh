@@ -57,13 +57,13 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
     MADE_CHANGE=false;
     TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
-        if [[ $line == *"val version ="* ]] && $COMPOSE_BLOCK = true; then
+        if [[ $line == *"val version ="* && "$compose_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
             MADE_CHANGE=true;
-        elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
+        elif [[ $line == *"val snapshot ="* && "$snapshot_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
             MADE_CHANGE=true;
-        elif [[ $line == *"val ktlint ="* ]]; then
+        elif [[ $line == *"val ktlint ="* && "$ktlint_version" != "" ]]; then
             echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
             MADE_CHANGE=true;
         else
@@ -89,16 +89,16 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
     MADE_CHANGE=false;
     TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
-        if [[ $line == *"ext.compose_version ="* ]]; then
+        if [[ $line == *"ext.compose_version ="* && "$compose_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
             MADE_CHANGE=true;
-        elif [[ $line == *"ext.compose_snapshot_version ="* ]]; then
+        elif [[ $line == *"ext.compose_snapshot_version ="* && "$snapshot_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
             MADE_CHANGE=true;
-        elif [[ $line == *"'com.diffplug.spotless' version"* ]]; then
+        elif [[ $line == *"'com.diffplug.spotless' version"* && "$spotless_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'com.diffplug.spotless\' version \'$spotless_version\'/p"
             MADE_CHANGE=true;
-        elif [[ $line == *"ktlint(\""* ]]; then
+        elif [[ $line == *"ktlint(\""* && "$ktlint_version" != "" ]]; then
             echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
         else
             echo "$line";
