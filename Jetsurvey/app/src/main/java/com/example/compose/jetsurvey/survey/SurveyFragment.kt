@@ -94,10 +94,10 @@ class SurveyFragment : Fragment() {
         val picker = MaterialDatePicker.Builder.datePicker()
             .setSelection(date)
             .build()
-        activity?.let {
-            picker.show(it.supportFragmentManager, picker.toString())
-            picker.addOnPositiveButtonClickListener {
-                viewModel.onDatePicked(questionId, picker.selection)
+        picker.show(requireActivity().supportFragmentManager, picker.toString())
+        picker.addOnPositiveButtonClickListener {
+            picker.selection?.let { selectedDate ->
+                viewModel.onDatePicked(questionId, selectedDate)
             }
         }
     }
