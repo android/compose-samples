@@ -114,4 +114,10 @@ dependencies {
     implementation Libs.Accompanist.permissions
 
     implementation Libs.Coil.coilCompose
+
+    testImplementation Libs.junit
+    testImplementation Libs.AndroidX.Test.core
+    testImplementation Libs.AndroidX.Test.Ext.junit
+    testImplementation Libs.AndroidX.Test.Ext.truth
+    testImplementation Libs.Robolectric.robolectric
 }
