@@ -100,6 +100,7 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
             MADE_CHANGE=true;
         elif [[ $line == *"ktlint(\""* && "$ktlint_version" != "" ]]; then
             echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
+            MADE_CHANGE=true;
         else
             echo "$line";
         fi
