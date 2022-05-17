@@ -19,16 +19,21 @@ package com.example.reply.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MenuOpen
@@ -37,8 +42,11 @@ import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
@@ -57,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
@@ -176,7 +185,29 @@ fun ReplyAppContent(
                     modifier = Modifier.weight(1f),
                 )
             } else {
-                ReplyListOnlyContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
+                Box(modifier = Modifier.weight(1f)) {
+                    ReplyListOnlyContent(
+                        replyHomeUIState = replyHomeUIState,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    // When we have bottom navigation we show FAB at the bottom end.
+                    if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                        LargeFloatingActionButton(
+                            onClick =  { /*TODO*/ },
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp),
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = stringResource(id = R.string.edit),
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
+                }
             }
 
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
@@ -197,6 +228,18 @@ fun ReplyNavigationRail(
             onClick = onDrawerClicked,
             icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
         )
+        FloatingActionButton(
+            onClick =  { /*TODO*/ },
+            modifier = Modifier.padding(top = 18.dp, bottom = 40.dp),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = stringResource(id = R.string.edit),
+                modifier = Modifier.size(18.dp)
+            )
+        }
         NavigationRailItem(
             selected = true,
             onClick = { /*TODO*/ },
@@ -258,6 +301,7 @@ fun NavigationDrawerContent(
         modifier
             .wrapContentWidth()
             .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.inverseOnSurface)
             .padding(24.dp)
     ) {
@@ -281,6 +325,26 @@ fun NavigationDrawerContent(
             }
         }
 
+        ExtendedFloatingActionButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 22.dp, bottom = 48.dp),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = stringResource(id = R.string.edit),
+                modifier = Modifier.size(18.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.compose),
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+
+        }
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.INBOX,
             label = { Text(text = stringResource(id = R.string.tab_inbox), modifier = Modifier.padding(horizontal = 16.dp)) },

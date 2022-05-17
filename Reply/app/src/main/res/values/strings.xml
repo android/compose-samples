@@ -11,4 +11,7 @@
     <string name="search_replies">search replies</string>
     <string name="reply">Reply</string>
     <string name="reply_all">Reply All</string>
+
+    <string name="edit">Edit</string>
+    <string name="compose">Compose</string>
 </resources>
