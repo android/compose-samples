@@ -16,7 +16,7 @@
 
 ########################################################################
 #
-# Changes all samples to a new Compose version
+# Changes all samples to a new Compose, Spotless and ktlint versions
 #
 # Example: To run 
 #     ./scripts/upgrade_samples.sh
@@ -39,6 +39,12 @@ read compose_version;
 echo "Snapshot ID: (Blank for none)";
 read snapshot_version;
 
+echo "Version to change Spotless to (e.g 6.4.2): ";
+read spotless_version;
+
+echo "Version to change ktlint to (e.g 0.45.2): ";
+read ktlint_version;
+
 if [ -z "$snapshot_version" ]; then
     echo "Changing Compose version to $compose_version"
 else
@@ -51,11 +57,14 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
     MADE_CHANGE=false;
     TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
-        if [[ $line == *"val version ="* ]] && $COMPOSE_BLOCK = true; then
+        if [[ $line == *"val version ="* && "$compose_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
             MADE_CHANGE=true;
-        elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
+        elif [[ $line == *"val snapshot ="* && "$snapshot_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
+            MADE_CHANGE=true;
+        elif [[ $line == *"val ktlint ="* && "$ktlint_version" != "" ]]; then
+            echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
             MADE_CHANGE=true;
         else
             if [[ $line == *"object Compose {"* ]]; then
@@ -80,11 +89,17 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
     MADE_CHANGE=false;
     TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
-        if [[ $line == *"ext.compose_version ="* ]]; then
+        if [[ $line == *"ext.compose_version ="* && "$compose_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
             MADE_CHANGE=true;
-        elif [[ $line == *"ext.compose_snapshot_version ="* ]]; then
+        elif [[ $line == *"ext.compose_snapshot_version ="* && "$snapshot_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
+            MADE_CHANGE=true;
+        elif [[ $line == *"'com.diffplug.spotless' version"* && "$spotless_version" != "" ]]; then
+            echo "$line" | sed -En "s/\'.*'/\'com.diffplug.spotless\' version \'$spotless_version\'/p"
+            MADE_CHANGE=true;
+        elif [[ $line == *"ktlint(\""* && "$ktlint_version" != "" ]]; then
+            echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
             MADE_CHANGE=true;
         else
             echo "$line";
