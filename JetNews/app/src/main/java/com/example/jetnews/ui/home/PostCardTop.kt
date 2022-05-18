@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui.home
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +41,7 @@ import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.utils.CompletePreviews
 
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
@@ -91,33 +91,33 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
 }
 // TUTORIAL CONTENT ENDS HERE
 
-// Preview section
-
-@Preview("Default colors")
+/**
+ * Preview of the [PostCardTop] composable. Fake data is passed into the composable.
+ *
+ * Learn more about Preview features in the [documentation](https://d.android.com/jetpack/compose/tooling#preview)
+ */
+@Preview
 @Composable
-fun TutorialPreview() {
-    TutorialPreviewTemplate()
-}
-
-@Preview("Dark theme", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun TutorialPreviewDark() {
-    TutorialPreviewTemplate()
-}
-
-@Preview("Font scaling 1.5", fontScale = 1.5f)
-@Composable
-fun TutorialPreviewFontscale() {
-    TutorialPreviewTemplate()
-}
-
-@Composable
-fun TutorialPreviewTemplate() {
-    val post = posts.highlightedPost
-
+fun PostCardTopPreview() {
     JetnewsTheme {
         Surface {
-            PostCardTop(post)
+            PostCardTop(posts.highlightedPost)
+        }
+    }
+}
+
+/*
+ * These previews will only show up on Android Studio Dolphin and later.
+ * They showcase a feature called Multipreview Annotations.
+ *
+ * Read more in the [documentation](https://d.android.com/jetpack/compose/tooling#preview-multipreview)
+*/
+@CompletePreviews
+@Composable
+fun PostCardTopPreviews() {
+    JetnewsTheme {
+        Surface {
+            PostCardTop(posts.highlightedPost)
         }
     }
 }
