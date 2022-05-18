@@ -17,12 +17,12 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.45.2"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
-    const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
+    const val ktLint = "com.pinterest:ktlint:${Versions.ktlint}"
 
     const val coreLibraryDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
