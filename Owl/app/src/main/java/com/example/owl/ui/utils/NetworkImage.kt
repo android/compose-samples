@@ -59,7 +59,8 @@ object UnsplashSizingInterceptor : Interceptor {
         val widthPx = chain.size.width.pxOrElse { -1 }
         val heightPx = chain.size.height.pxOrElse { -1 }
         if (widthPx > 0 && heightPx > 0 && data is String &&
-            data.startsWith("https://images.unsplash.com/photo-")) {
+            data.startsWith("https://images.unsplash.com/photo-")
+        ) {
             val url = data.toHttpUrl()
                 .newBuilder()
                 .addQueryParameter("w", widthPx.toString())
