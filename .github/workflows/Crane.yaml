@@ -12,7 +12,7 @@ on:
       - '.github/workflows/Crane.yaml'
       - 'Crane/**'
 concurrency:
-  group: build-${{ github.ref }}
+  group: crane-build-${{ github.ref }}
   cancel-in-progress: true
 env:
   SAMPLE_PATH: Crane

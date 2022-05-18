@@ -12,7 +12,7 @@ on:
       - '.github/workflows/Jetchat.yaml'
       - 'Jetchat/**'
 concurrency:
-  group: build-${{ github.ref }}
+  group: jetchat-build-${{ github.ref }}
   cancel-in-progress: true
 env:
   SAMPLE_PATH: Jetchat
