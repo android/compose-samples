@@ -20,11 +20,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     defaultConfig {
         applicationId 'com.example.jetnews'
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
         versionName '1.0'
         vectorDrawables.useSupportLibrary = true
@@ -79,7 +79,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.0-rc02' // For Kotlin 1.6.10. Revert with rc03
+        kotlinCompilerExtensionVersion compose_version
     }
 
     packagingOptions {
@@ -89,7 +89,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     implementation "androidx.compose.runtime:runtime:$compose_version"
@@ -97,28 +96,29 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.animation:animation:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation "androidx.activity:activity-compose:1.4.0"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
 
-    implementation 'androidx.navigation:navigation-compose:2.4.0-rc01'
+    implementation 'androidx.navigation:navigation-compose:2.4.2'
 
-    implementation "androidx.window:window:1.0.0-rc01"
+    implementation "androidx.window:window:1.0.0"
 
     androidTestImplementation 'androidx.test:core:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
@@ -139,9 +139,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         // Treat all Kotlin warnings as errors (disabled by default)
         allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
 
-        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-        // Enable experimental coroutines APIs, including Flow
-        freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
 
         // Set JVM target to 1.8
         jvmTarget = "1.8"

@@ -11,7 +11,9 @@ on:
     paths:
       - '.github/workflows/Crane.yaml'
       - 'Crane/**'
-
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 env:
   SAMPLE_PATH: Crane
 
@@ -109,6 +111,8 @@ jobs:
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis

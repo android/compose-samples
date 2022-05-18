@@ -1,2 +1,11 @@
-include ':app'
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
 rootProject.name = "Jetsnack"
+include ':app'
+include ':benchmark'

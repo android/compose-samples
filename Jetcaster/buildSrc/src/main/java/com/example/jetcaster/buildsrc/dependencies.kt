@@ -17,28 +17,27 @@
 package com.example.jetcaster.buildsrc
 
 object Versions {
-    const val ktlint = "0.43.0"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.22.0-rc"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
+        const val version = "0.24.8-beta"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.6.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
     object Coroutines {
-        private const val version = "1.5.2"
+        private const val version = "1.6.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -56,7 +55,7 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.4.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
         const val palette = "androidx.palette:palette:1.0.0"
 
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
@@ -66,12 +65,12 @@ object Libs {
         }
 
         object Constraint {
-            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0"
         }
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.1.0-rc01"
+            const val version = "1.2.0-beta01"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -86,17 +85,18 @@ object Libs {
             const val materialIconsExtended = "androidx.compose.material:material-icons-extended:${version}"
 
             const val tooling = "androidx.compose.ui:ui-tooling:${version}"
+            const val toolingPreview = "androidx.compose.ui:ui-tooling-preview:${version}"
         }
 
         object Lifecycle {
-            private const val version = "2.4.0"
+            private const val version = "2.4.1"
             const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
 
         object Navigation {
-            const val navigation = "androidx.navigation:navigation-compose:2.4.0-rc01"
+            const val navigation = "androidx.navigation:navigation-compose:2.4.2"
         }
 
         object Test {
@@ -113,14 +113,14 @@ object Libs {
         }
 
         object Room {
-            private const val version = "2.4.0"
+            private const val version = "2.4.2"
             const val runtime = "androidx.room:room-runtime:${version}"
             const val ktx = "androidx.room:room-ktx:${version}"
             const val compiler = "androidx.room:room-compiler:${version}"
         }
 
         object Window {
-            const val window = "androidx.window:window:1.0.0-rc01"
+            const val window = "androidx.window:window:1.0.0"
         }
     }
 
@@ -131,6 +131,6 @@ object Libs {
     }
 
     object Coil {
-        const val coilCompose = "io.coil-kt:coil-compose:1.4.0"
+        const val coilCompose = "io.coil-kt:coil-compose:2.0.0"
     }
 }

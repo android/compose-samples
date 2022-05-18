@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,43 +35,39 @@ import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.home.addHomeGraph
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun JetsnackApp() {
-    ProvideWindowInsets {
-        JetsnackTheme {
-            val appState = rememberJetsnackAppState()
-            JetsnackScaffold(
-                bottomBar = {
-                    if (appState.shouldShowBottomBar) {
-                        JetsnackBottomBar(
-                            tabs = appState.bottomBarTabs,
-                            currentRoute = appState.currentRoute!!,
-                            navigateToRoute = appState::navigateToBottomBarRoute
-                        )
-                    }
-                },
-                snackbarHost = {
-                    SnackbarHost(
-                        hostState = it,
-                        modifier = Modifier.systemBarsPadding(),
-                        snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
-                    )
-                },
-                scaffoldState = appState.scaffoldState
-            ) { innerPaddingModifier ->
-                NavHost(
-                    navController = appState.navController,
-                    startDestination = MainDestinations.HOME_ROUTE,
-                    modifier = Modifier.padding(innerPaddingModifier)
-                ) {
-                    jetsnackNavGraph(
-                        onSnackSelected = appState::navigateToSnackDetail,
-                        upPress = appState::upPress
+    JetsnackTheme {
+        val appState = rememberJetsnackAppState()
+        JetsnackScaffold(
+            bottomBar = {
+                if (appState.shouldShowBottomBar) {
+                    JetsnackBottomBar(
+                        tabs = appState.bottomBarTabs,
+                        currentRoute = appState.currentRoute!!,
+                        navigateToRoute = appState::navigateToBottomBarRoute
                     )
                 }
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = it,
+                    modifier = Modifier.systemBarsPadding(),
+                    snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+                )
+            },
+            scaffoldState = appState.scaffoldState
+        ) { innerPaddingModifier ->
+            NavHost(
+                navController = appState.navController,
+                startDestination = MainDestinations.HOME_ROUTE,
+                modifier = Modifier.padding(innerPaddingModifier)
+            ) {
+                jetsnackNavGraph(
+                    onSnackSelected = appState::navigateToSnackDetail,
+                    upPress = appState::upPress
+                )
             }
         }
     }

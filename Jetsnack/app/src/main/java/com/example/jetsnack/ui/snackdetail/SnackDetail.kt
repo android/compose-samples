@@ -29,8 +29,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -48,7 +51,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -56,6 +58,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -74,8 +77,6 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.mirroringBackIcon
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 import kotlin.math.min
 
@@ -102,8 +103,8 @@ fun SnackDetail(
         val scroll = rememberScrollState(0)
         Header()
         Body(related, scroll)
-        Title(snack, scroll.value)
-        Image(snack.imageUrl, scroll.value)
+        Title(snack) { scroll.value }
+        Image(snack.imageUrl) { scroll.value }
         Up(upPress)
         CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
     }
@@ -227,7 +228,7 @@ private fun Body(
                     Spacer(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
-                            .navigationBarsPadding(start = false, end = false)
+                            .navigationBarsPadding()
                             .height(8.dp)
                     )
                 }
@@ -237,16 +238,20 @@ private fun Body(
 }
 
 @Composable
-private fun Title(snack: Snack, scroll: Int) {
+private fun Title(snack: Snack, scrollProvider: () -> Int) {
     val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
-    val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
+
     Column(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .heightIn(min = TitleHeight)
             .statusBarsPadding()
-            .graphicsLayer { translationY = offset }
+            .offset {
+                val scroll = scrollProvider()
+                val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
+                IntOffset(x = 0, y = offset.toInt())
+            }
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
         Spacer(Modifier.height(16.dp))
@@ -279,13 +284,15 @@ private fun Title(snack: Snack, scroll: Int) {
 @Composable
 private fun Image(
     imageUrl: String,
-    scroll: Int
+    scrollProvider: () -> Int
 ) {
     val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
-    val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
+    val collapseFractionProvider = {
+        (scrollProvider() / collapseRange).coerceIn(0f, 1f)
+    }
 
     CollapsingImageLayout(
-        collapseFraction = collapseFraction,
+        collapseFractionProvider = collapseFractionProvider,
         modifier = HzPadding.then(Modifier.statusBarsPadding())
     ) {
         SnackImage(
@@ -298,7 +305,7 @@ private fun Image(
 
 @Composable
 private fun CollapsingImageLayout(
-    collapseFraction: Float,
+    collapseFractionProvider: () -> Float,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -307,6 +314,8 @@ private fun CollapsingImageLayout(
         content = content
     ) { measurables, constraints ->
         check(measurables.size == 1)
+
+        val collapseFraction = collapseFractionProvider()
 
         val imageMaxSize = min(ExpandedImageSize.roundToPx(), constraints.maxWidth)
         val imageMinSize = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
@@ -337,7 +346,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .navigationBarsPadding(start = false, end = false)
+                    .navigationBarsPadding()
                     .then(HzPadding)
                     .heightIn(min = BottomBarHeight)
             ) {

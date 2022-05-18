@@ -16,59 +16,121 @@
 
 package androidx.compose.samples.crane.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.SimpleUserInput
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FlySearchContent(datesSelected: String, searchUpdates: FlySearchContentUpdates) {
-    CraneSearch {
-        PeopleUserInput(
-            titleSuffix = ", Economy",
-            onPeopleChanged = searchUpdates.onPeopleChanged
-        )
-        Spacer(Modifier.height(8.dp))
-        FromDestination()
-        Spacer(Modifier.height(8.dp))
-        ToDestinationUserInput(onToDestinationChanged = searchUpdates.onToDestinationChanged)
-        Spacer(Modifier.height(8.dp))
-        DatesUserInput(datesSelected, onDateSelectionClicked = searchUpdates.onDateSelectionClicked)
+fun FlySearchContent(
+    widthSize: WindowWidthSizeClass,
+    datesSelected: String,
+    searchUpdates: FlySearchContentUpdates
+) {
+
+    val columns = when (widthSize) {
+        WindowWidthSizeClass.Compact -> 1
+        WindowWidthSizeClass.Medium -> 2
+        WindowWidthSizeClass.Expanded -> 4
+        else -> 1
+    }
+
+    CraneSearch(
+        columns,
+        content = {
+            item {
+                PeopleUserInput(
+                    titleSuffix = ", Economy",
+                    onPeopleChanged = searchUpdates.onPeopleChanged
+                )
+            }
+            item {
+                FromDestination()
+            }
+            item {
+                ToDestinationUserInput(onToDestinationChanged = searchUpdates.onToDestinationChanged)
+            }
+            item {
+                DatesUserInput(datesSelected, onDateSelectionClicked = searchUpdates.onDateSelectionClicked)
+            }
+        }
+    )
+}
+
+@Composable
+fun SleepSearchContent(
+    widthSize: WindowWidthSizeClass,
+    datesSelected: String,
+    sleepUpdates: SleepSearchContentUpdates
+) {
+    val columns = when (widthSize) {
+        WindowWidthSizeClass.Compact -> 1
+        WindowWidthSizeClass.Medium -> 3
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 1
+    }
+    CraneSearch(
+        columns,
+        content = {
+            item {
+                PeopleUserInput(onPeopleChanged = { sleepUpdates.onPeopleChanged })
+            }
+            item {
+                DatesUserInput(datesSelected, onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
+            }
+            item {
+                SimpleUserInput(caption = stringResource(R.string.input_select_location), vectorImageId = R.drawable.ic_hotel)
+            }
+        }
+    )
+}
+
+@Composable
+fun EatSearchContent(
+    widthSize: WindowWidthSizeClass,
+    datesSelected: String,
+    eatUpdates: EatSearchContentUpdates
+) {
+    val columns = when (widthSize) {
+        WindowWidthSizeClass.Compact -> 1
+        WindowWidthSizeClass.Medium -> 2
+        WindowWidthSizeClass.Expanded -> 4
+        else -> 1
+    }
+    CraneSearch(columns) {
+        item {
+            PeopleUserInput(onPeopleChanged = eatUpdates.onPeopleChanged)
+        }
+        item {
+            DatesUserInput(datesSelected, onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
+        }
+        item {
+            SimpleUserInput(caption = stringResource(R.string.input_select_time), vectorImageId = R.drawable.ic_time)
+        }
+        item {
+            SimpleUserInput(caption = stringResource(R.string.input_select_location), vectorImageId = R.drawable.ic_restaurant)
+        }
     }
 }
 
 @Composable
-fun SleepSearchContent(datesSelected: String, sleepUpdates: SleepSearchContentUpdates) {
-    CraneSearch {
-        PeopleUserInput(onPeopleChanged = { sleepUpdates.onPeopleChanged })
-        Spacer(Modifier.height(8.dp))
-        DatesUserInput(datesSelected, onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
-        Spacer(Modifier.height(8.dp))
-        SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_hotel)
-    }
-}
-
-@Composable
-fun EatSearchContent(datesSelected: String, eatUpdates: EatSearchContentUpdates) {
-    CraneSearch {
-        PeopleUserInput(onPeopleChanged = { eatUpdates.onPeopleChanged })
-        Spacer(Modifier.height(8.dp))
-        DatesUserInput(datesSelected, onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
-        Spacer(Modifier.height(8.dp))
-        SimpleUserInput(caption = "Select Time", vectorImageId = R.drawable.ic_time)
-        Spacer(Modifier.height(8.dp))
-        SimpleUserInput(caption = "Select Location", vectorImageId = R.drawable.ic_restaurant)
-    }
-}
-
-@Composable
-private fun CraneSearch(content: @Composable () -> Unit) {
-    Column(Modifier.padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 12.dp)) {
-        content()
-    }
+private fun CraneSearch(
+    columns: Int,
+    content: LazyGridScope.() -> Unit
+) {
+    LazyVerticalGrid(
+        modifier = Modifier.padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 12.dp),
+        columns = GridCells.Fixed(columns),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        content = content
+    )
 }

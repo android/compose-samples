@@ -11,7 +11,9 @@ on:
     paths:
       - '.github/workflows/Jetsnack.yaml'
       - 'Jetsnack/**'
-
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 env:
   SAMPLE_PATH: Jetsnack
 

@@ -16,7 +16,12 @@
 
 package com.example.owl.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -37,27 +42,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.theme.BlueTheme
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsHeight
-import com.google.accompanist.insets.navigationBarsPadding
 import java.util.Locale
 
 @Composable
 fun OwlApp(finishActivity: () -> Unit) {
-    ProvideWindowInsets {
-        BlueTheme {
-            val tabs = remember { CourseTabs.values() }
-            val navController = rememberNavController()
-            Scaffold(
-                backgroundColor = MaterialTheme.colors.primarySurface,
-                bottomBar = { OwlBottomBar(navController = navController, tabs) }
-            ) { innerPaddingModifier ->
-                NavGraph(
-                    finishActivity = finishActivity,
-                    navController = navController,
-                    modifier = Modifier.padding(innerPaddingModifier)
-                )
-            }
+    BlueTheme {
+        val tabs = remember { CourseTabs.values() }
+        val navController = rememberNavController()
+        Scaffold(
+            backgroundColor = MaterialTheme.colors.primarySurface,
+            bottomBar = { OwlBottomBar(navController = navController, tabs) }
+        ) { innerPaddingModifier ->
+            NavGraph(
+                finishActivity = finishActivity,
+                navController = navController,
+                modifier = Modifier.padding(innerPaddingModifier)
+            )
         }
     }
 }
@@ -72,7 +72,9 @@ fun OwlBottomBar(navController: NavController, tabs: Array<CourseTabs>) {
     val routes = remember { CourseTabs.values().map { it.route } }
     if (currentRoute in routes) {
         BottomNavigation(
-            Modifier.navigationBarsHeight(additional = 56.dp)
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars.add(WindowInsets(bottom = 56.dp))
+            )
         ) {
             tabs.forEach { tab ->
                 BottomNavigationItem(

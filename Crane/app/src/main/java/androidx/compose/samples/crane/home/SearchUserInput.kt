@@ -35,7 +35,10 @@ import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
 enum class PeopleUserInputAnimationState { Valid, Invalid }
@@ -61,9 +64,10 @@ class PeopleUserInputState {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PeopleUserInput(
-    titleSuffix: String? = "",
+    titleSuffix: String = "",
     onPeopleChanged: (Int) -> Unit,
     peopleState: PeopleUserInputState = remember { PeopleUserInputState() }
 ) {
@@ -73,7 +77,7 @@ fun PeopleUserInput(
 
         val people = peopleState.people
         CraneUserInput(
-            text = if (people == 1) "$people Adult$titleSuffix" else "$people Adults$titleSuffix",
+            text = pluralStringResource(id = R.plurals.number_adults_selected, count = people, people, titleSuffix),
             vectorImageId = R.drawable.ic_person,
             tint = tint.value,
             onClick = {
@@ -83,7 +87,7 @@ fun PeopleUserInput(
         )
         if (transitionState.targetState == Invalid) {
             Text(
-                text = "Error: We don't support more than $MAX_PEOPLE people",
+                text = stringResource(id = R.string.error_max_people, MAX_PEOPLE),
                 style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary)
             )
         }
@@ -98,8 +102,8 @@ fun FromDestination() {
 @Composable
 fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
     CraneEditableUserInput(
-        hint = "Choose Destination",
-        caption = "To",
+        hint = stringResource(R.string.select_destination_hint),
+        caption = stringResource(R.string.select_destination_to_caption),
         vectorImageId = R.drawable.ic_plane,
         onInputChanged = onToDestinationChanged
     )
@@ -109,7 +113,7 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
 fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
     CraneUserInput(
         onClick = onDateSelectionClicked,
-        caption = if (datesSelected.isEmpty()) "Select Dates" else null,
+        caption = if (datesSelected.isEmpty()) stringResource(R.string.select_dates) else null,
         text = datesSelected,
         vectorImageId = R.drawable.ic_calendar
     )

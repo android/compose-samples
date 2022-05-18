@@ -8,7 +8,7 @@ For more information, please [read the documentation](https://developer.android.
 
 💻 Requirements
 ------------
-To try out these sample apps, you need to use [Android Studio Arctic Fox](https://developer.android.com/studio).
+To try out these sample apps, you need to use [Android Studio](https://developer.android.com/studio).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
@@ -30,7 +30,7 @@ project from Android Studio following the steps
 |  |  |
 | <br><img src="readme/rally.png" alt="Rally" width="240"></img>  <br><br>A Compose implementation of the Rally Material study, a financial app that focuses on data, charts, reusability and animations.<br><br>• Low complexity<br>• Material theming with a dark-only theme<br>• Custom layouts and reusable elements<br>• Charts and tables<br>• Animations<br>• Screenshot tests<br><br>**[> Browse](Rally/)** <br><br>  | <img src="readme/screenshots/Rally.png" width="320" alt="Rally sample demo">|
 |  |  |
-| <br><img src="readme/crane.png" alt="Crane" width="240"></img>  <br><br>A Compose implementation of the Crane Material study, a travel app that uses Material Design components and Material Theming to create a personalized, on-brand experience.<br><br>• Medium complexity<br>• Draggable UI elements<br>• Android Views inside Compose<br>• UI state handling<br>• UI Tests<br><br>**[> Browse](Crane/)** <br><br>  | <img src="readme/screenshots/Crane.png" width="320" alt="Crane sample demo">|
+| <br><img src="readme/crane.png" alt="Crane" width="240"></img>  <br><br>A Compose implementation of the Crane Material study, a travel app that uses Material Design components and Material Theming to create a personalized, on-brand experience.<br><br>• Medium complexity<br>• Draggable UI elements<br>• UI state handling<br>• UI Tests<br><br>**[> Browse](Crane/)** <br><br>  | <img src="readme/screenshots/Crane.png" width="320" alt="Crane sample demo">|
 |  |  |
 | <br><img src="readme/owl.png" alt="Owl" width="240"></img>  <br><br>A Compose implementation of the Owl Material study. The Owl brand uses bold color, shape, and typography to express its brand attributes: energy, daring, and fun.<br><br>• Medium complexity<br>• Material theming & light/dark themes<br>• Custom layout<br>• Animation<br><br>**[> Browse](Owl/)** <br><br>  | <img src="readme/screenshots/Owl.png" width="320" alt="Owl sample demo">|
 
@@ -45,6 +45,8 @@ project from Android Studio following the steps
 | <br><img src="readme/sunflower.png" alt="Sunflower" width="240"></img>  <br><br>A gardening app illustrating Android development best practices with Android Jetpack. The `compose` branch is partially built with Jetpack Compose.<br><br>• Compose working in an existing app: including integration with strings, resources, and themes and styles<br>• Integration with an existing architecture based on Jetpack libraries<br>• `CollapsingToolbarLayout` behavior implemented manually with Compose<br>• Showing [Snackbars](https://material.io/components/snackbars) with Compose<br><br>**[> Browse](https://goo.gle/sunflower-compose)** <br><br>  | <img src="readme/screenshots/Sunflower.png" width="320" alt="Sunflower sample demo">|
 |  |  |
 | <br><img src="readme/tivi.png" alt="Tivi" width="240"></img>  <br><br>A work-in-progress TV show tracking Android app, which connects to [Trakt.tv](https://www.trakt.tv).<br><br>• Entirely written in [Kotlin](https://kotlinlang.org) and uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html) throughout<br>• Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture): Room, Lifecycle, Navigation<br>• Uses [Hilt](https://dagger.dev/hilt) for dependency injection<br><br>**[> Browse](https://tivi.app)** <br><br>  | <img src="readme/screenshots/Tivi.jpg" width="320" alt="Tivi sample demo">|
+|  |  |
+| <br><img src="readme/nia.png" alt="Now in Android" width="240"></img>  <br><br>An app for keeping up to date with the latest news and developments in Android.<br><br>• [Jetpack Compose](https://developer.android.com/jetpack/compose) first app.<br>• Implements the recommended Android [Architecture Guidelines](https://developer.android.com/topic/architecture) <br>• Integrates [Jetpack Libraries](https://developer.android.com/jetpack) holistically in the context of a real world app<br><br>**[> Browse](https://github.com/android/nowinandroid)** <br><br>  | <img src="readme/screenshots/NiA.png" width="320" alt="Now In Android Github Repository">|
 
 ## License
 ```

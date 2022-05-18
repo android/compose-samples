@@ -63,21 +63,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -88,54 +88,27 @@ fun Question(
     onAnswer: (Answer<*>) -> Unit,
     onAction: (Int, SurveyActionType) -> Unit,
     onDoNotAskForPermissions: () -> Unit,
-    openSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (question.permissionsRequired.isEmpty()) {
         QuestionContent(question, answer, onAnswer, onAction, modifier)
     } else {
-        val permissionsContentModifier = modifier.padding(horizontal = 20.dp)
+        val multiplePermissionsState = rememberMultiplePermissionsState(
+            question.permissionsRequired
+        )
 
-        val multiplePermissionsState =
-            rememberMultiplePermissionsState(question.permissionsRequired)
-
-        when {
-            // If all permissions are granted, then show the question
-            multiplePermissionsState.allPermissionsGranted -> {
-                QuestionContent(question, answer, onAnswer, onAction, modifier)
-            }
-            // If user denied some permissions but a rationale should be shown or the user
-            // is going to be presented with the permission for the first time. Let's explain
-            // why we need the permission
-            multiplePermissionsState.shouldShowRationale ||
-                !multiplePermissionsState.permissionRequested ->
-                {
-                    if (!shouldAskPermissions) {
-                        PermissionsDenied(
-                            question.questionText,
-                            openSettings,
-                            permissionsContentModifier
-                        )
-                    } else {
-                        PermissionsRationale(
-                            question,
-                            multiplePermissionsState,
-                            onDoNotAskForPermissions,
-                            permissionsContentModifier
-                        )
-                    }
-                }
-            // If the criteria above hasn't been met, the user denied some permission.
-            else -> {
-                PermissionsDenied(question.questionText, openSettings, permissionsContentModifier)
-                // Trigger side-effect to not ask for permissions
-                LaunchedEffect(true) {
-                    onDoNotAskForPermissions()
-                }
-            }
+        if (multiplePermissionsState.allPermissionsGranted) {
+            QuestionContent(question, answer, onAnswer, onAction, modifier)
+        } else {
+            PermissionsRationale(
+                question,
+                multiplePermissionsState,
+                onDoNotAskForPermissions,
+                modifier.padding(horizontal = 20.dp)
+            )
         }
 
-        // If permissions are denied, inform the caller that can move to the next question
+        // If we cannot ask for permissions, inform the caller that can move to the next question
         if (!shouldAskPermissions) {
             LaunchedEffect(true) {
                 onAnswer(Answer.PermissionsDenied)
@@ -170,24 +143,6 @@ private fun PermissionsRationale(
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedButton(onClick = onDoNotAskForPermissions) {
             Text(stringResource(R.string.do_not_ask_permissions))
-        }
-    }
-}
-
-@Composable
-private fun PermissionsDenied(
-    @StringRes title: Int,
-    openSettings: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        Spacer(modifier = Modifier.height(32.dp))
-        QuestionTitle(title)
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(stringResource(R.string.permissions_denied))
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = openSettings) {
-            Text(stringResource(R.string.open_settings))
         }
     }
 }
@@ -463,6 +418,7 @@ private fun SingleChoiceIconQuestion(
         }
     }
 }
+
 @Composable
 private fun MultipleChoiceQuestion(
     possibleAnswer: PossibleAnswer.MultipleChoice,
@@ -629,7 +585,6 @@ private fun ActionQuestion(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun PhotoQuestion(
     questionId: Int,
@@ -649,13 +604,11 @@ private fun PhotoQuestion(
     ) {
         Column {
             if (answer != null && answer.result is SurveyActionResult.Photo) {
-                Image(
-                    painter = rememberImagePainter(
-                        data = answer.result.uri,
-                        builder = {
-                            crossfade(true)
-                        }
-                    ),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(answer.result.uri)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -688,6 +641,19 @@ private fun PhotoQuestion(
     }
 }
 
+/**
+ * Returns the start of today in milliseconds
+ */
+fun getDefaultDateInMillis(): Long {
+    val cal = Calendar.getInstance()
+    val year = cal.get(Calendar.YEAR)
+    val month = cal.get(Calendar.MONTH)
+    val date = cal.get(Calendar.DATE)
+    cal.clear()
+    cal.set(year, month, date)
+    return cal.timeInMillis
+}
+
 @Composable
 private fun DateQuestion(
     questionId: Int,
@@ -695,11 +661,17 @@ private fun DateQuestion(
     onAction: (Int, SurveyActionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val date = if (answer != null && answer.result is SurveyActionResult.Date) {
-        answer.result.date
+    val timestamp = if (answer != null && answer.result is SurveyActionResult.Date) {
+        answer.result.dateMillis
     } else {
-        SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(Date())
+        getDefaultDateInMillis()
     }
+
+    // All times are stored in UTC, so generate the display from UTC also
+    val dateFormat = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    val dateString = dateFormat.format(timestamp)
+
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
         colors = ButtonDefaults.buttonColors(
@@ -715,7 +687,7 @@ private fun DateQuestion(
 
     ) {
         Text(
-            text = date,
+            text = dateString,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1.8f)
@@ -823,8 +795,7 @@ fun QuestionPreview() {
             answer = null,
             onAnswer = {},
             onAction = { _, _ -> },
-            onDoNotAskForPermissions = {},
-            openSettings = {}
+            onDoNotAskForPermissions = {}
         )
     }
 }
