@@ -12,7 +12,7 @@ on:
       - '.github/workflows/Jetsnack.yaml'
       - 'Jetsnack/**'
 concurrency:
-  group: build-${{ github.ref }}
+  group: jetsnack-build-${{ github.ref }}
   cancel-in-progress: true
 env:
   SAMPLE_PATH: Jetsnack

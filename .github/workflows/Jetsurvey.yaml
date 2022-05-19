@@ -12,7 +12,7 @@ on:
       - '.github/workflows/Jetsurvey.yaml'
       - 'Jetsurvey/**'
 concurrency:
-  group: build-${{ github.ref }}
+  group: jetsurvey-build-${{ github.ref }}
   cancel-in-progress: true
 env:
   SAMPLE_PATH: Jetsurvey
