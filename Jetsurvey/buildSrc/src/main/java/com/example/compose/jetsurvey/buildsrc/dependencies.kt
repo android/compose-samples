@@ -27,7 +27,7 @@ object Libs {
     const val junit = "junit:junit:4.13.2"
 
     object Accompanist {
-        const val version = "0.24.8-beta"
+        const val version = "0.24.9-beta"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -61,7 +61,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-beta01"
+            const val version = "1.2.0-beta02"
 
             @get:JvmStatic
             val snapshotUrl: String
