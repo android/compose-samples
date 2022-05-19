@@ -12,7 +12,7 @@ on:
       - '.github/workflows/Jetcaster.yaml'
       - 'Jetcaster/**'
 concurrency:
-  group: build-${{ github.ref }}
+  group: jetcaster-build-${{ github.ref }}
   cancel-in-progress: true
 env:
   SAMPLE_PATH: Jetcaster
