@@ -45,6 +45,9 @@ read spotless_version;
 echo "Version to change ktlint to (e.g 0.45.2): ";
 read ktlint_version;
 
+echo "Version to change Accompanist to (e.g 0.24.9-beta): ";
+read accompanist_version;
+
 if [ -z "$snapshot_version" ]; then
     echo "Changing Compose version to $compose_version"
 else
@@ -54,6 +57,7 @@ fi
 # Change Dependencies.kt versions
 for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
     COMPOSE_BLOCK=false;
+    ACCOMPANIST_BLOCK=false;
     MADE_CHANGE=false;
     TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
@@ -63,14 +67,20 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
         elif [[ $line == *"val snapshot ="* && "$snapshot_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
             MADE_CHANGE=true;
+        elif [[ $line == *"val version ="* && "$accompanist_version" != "" ]] && $ACCOMPANIST_BLOCK = true; then
+            echo "$line" | sed -En 's/".*"/"'$accompanist_version'"/p'
+            MADE_CHANGE=true;
         elif [[ $line == *"val ktlint ="* && "$ktlint_version" != "" ]]; then
             echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
             MADE_CHANGE=true;
         else
             if [[ $line == *"object Compose {"* ]]; then
                 COMPOSE_BLOCK=true;
+            elif [[ $line == *"object Accompanist {"* ]]; then
+                ACCOMPANIST_BLOCK=true;
             elif [[ $line == *"}"* ]]; then
                 COMPOSE_BLOCK=false;
+                ACCOMPANIST_BLOCK=false;
             fi
             echo "$line";
         fi
@@ -94,6 +104,9 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
             MADE_CHANGE=true;
         elif [[ $line == *"ext.compose_snapshot_version ="* && "$snapshot_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
+            MADE_CHANGE=true;
+        elif [[ $line == *"ext.accompanist_version ="* && "$accompanist_version" != "" ]]; then
+            echo "$line" | sed -En "s/\'.*'/\'$accompanist_version\'/p"
             MADE_CHANGE=true;
         elif [[ $line == *"'com.diffplug.spotless' version"* && "$spotless_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'com.diffplug.spotless\' version \'$spotless_version\'/p"
