@@ -5,7 +5,7 @@
 Jetchat is a sample chat app built with [Jetpack Compose][compose].
 
 To try out this sample app, you need to use 
-[Android Studio Arctic Fox](https://developer.android.com/studio)
+[Android Studio Chipmunk](https://developer.android.com/studio)
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
