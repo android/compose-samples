@@ -16,8 +16,6 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     uses: android/compose-samples/.github/workflows/build-sample.yml@main
     with:
       name: JetNews
