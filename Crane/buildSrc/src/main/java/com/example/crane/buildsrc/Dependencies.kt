@@ -17,12 +17,12 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktLint = "0.45.2"
+    const val ktlint = "0.45.2"
 }
 
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
-    const val ktLint = "com.pinterest:ktlint:${Versions.ktLint}"
+    const val ktLint = "com.pinterest:ktlint:${Versions.ktlint}"
 
     const val coreLibraryDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
@@ -57,7 +57,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-beta01"
+            const val version = "1.2.0-beta02"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
@@ -100,7 +100,7 @@ object Libs {
     }
 
     object Hilt {
-        private const val version = "2.39"
+        private const val version = "2.42"
 
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
         const val android = "com.google.dagger:hilt-android:$version"

@@ -45,7 +45,7 @@ data class Question(
 enum class SurveyActionType { PICK_DATE, TAKE_PHOTO, SELECT_CONTACT }
 
 sealed class SurveyActionResult {
-    data class Date(val date: String) : SurveyActionResult()
+    data class Date(val dateMillis: Long) : SurveyActionResult()
     data class Photo(val uri: Uri) : SurveyActionResult()
     data class Contact(val contact: String) : SurveyActionResult()
 }

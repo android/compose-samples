@@ -25,9 +25,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlinx.coroutines.launch
 
 const val simpleDateFormatPattern = "EEE, MMM d"
@@ -76,13 +73,11 @@ class SurveyViewModel(
         _uiState.value = SurveyState.Result(surveyQuestions.surveyTitle, result)
     }
 
-    fun onDatePicked(questionId: Int, pickerSelection: Long?) {
-        val selectedDate = Date().apply {
-            time = pickerSelection ?: getCurrentDate(questionId)
-        }
-        val formattedDate =
-            SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(selectedDate)
-        updateStateWithActionResult(questionId, SurveyActionResult.Date(formattedDate))
+    fun onDatePicked(questionId: Int, pickerSelection: Long) {
+        updateStateWithActionResult(
+            questionId,
+            SurveyActionResult.Date(pickerSelection)
+        )
     }
 
     fun getCurrentDate(questionId: Int): Long {
@@ -129,21 +124,17 @@ class SurveyViewModel(
 
     private fun getSelectedDate(questionId: Int): Long {
         val latestState = _uiState.value
-        var ret = Date().time
         if (latestState != null && latestState is SurveyState.Questions) {
             val question =
                 latestState.questionsState.first { questionState ->
                     questionState.question.id == questionId
                 }
-            val answer: Answer.Action? = question.answer as Answer.Action?
+            val answer = question.answer as Answer.Action?
             if (answer != null && answer.result is SurveyActionResult.Date) {
-                val formatter = SimpleDateFormat(simpleDateFormatPattern, Locale.ENGLISH)
-                val formatted = formatter.parse(answer.result.date)
-                if (formatted is Date)
-                    ret = formatted.time
+                return answer.result.dateMillis
             }
         }
-        return ret
+        return getDefaultDateInMillis()
     }
 }
 
@@ -153,7 +144,7 @@ class SurveyViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveyViewModel::class.java)) {
-            return SurveyViewModel(SurveyRepository, photoUriManager) as T
+            return SurveyViewModel(JetpackSurveyRepository, photoUriManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

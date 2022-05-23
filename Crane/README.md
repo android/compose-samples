@@ -5,7 +5,7 @@ Studies built with [Jetpack Compose](https://developer.android.com/jetpack/compo
 The goal of the sample is to showcase Material components, draggable UI elements, Android Views
 inside Compose, and UI state handling.
 
-To try out this sample app, you need to use [Android Studio Arctic Fox](https://developer.android.com/studio).
+To try out this sample app, you need to use [Android Studio Chipmunk](https://developer.android.com/studio).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).

@@ -108,16 +108,22 @@ private val jetpackSurvey = Survey(
     questions = jetpackQuestions
 )
 
-object SurveyRepository {
+object JetpackSurveyRepository : SurveyRepository {
 
-    suspend fun getSurvey() = jetpackSurvey
+    override fun getSurvey() = jetpackSurvey
 
     @Suppress("UNUSED_PARAMETER")
-    fun getSurveyResult(answers: List<Answer<*>>): SurveyResult {
+    override fun getSurveyResult(answers: List<Answer<*>>): SurveyResult {
         return SurveyResult(
             library = "Compose",
             result = R.string.survey_result,
             description = R.string.survey_result_description
         )
     }
+}
+
+interface SurveyRepository {
+    fun getSurvey(): Survey
+
+    fun getSurveyResult(answers: List<Answer<*>>): SurveyResult
 }

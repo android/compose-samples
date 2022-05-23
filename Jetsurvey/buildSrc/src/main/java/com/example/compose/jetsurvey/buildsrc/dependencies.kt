@@ -24,10 +24,10 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
-    const val junit = "junit:junit:4.13"
+    const val junit = "junit:junit:4.13.2"
 
     object Accompanist {
-        const val version = "0.24.8-beta"
+        const val version = "0.24.9-beta"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -61,7 +61,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-beta01"
+            const val version = "1.2.0-beta02"
 
             @get:JvmStatic
             val snapshotUrl: String
@@ -92,12 +92,12 @@ object Libs {
 
         object Test {
             private const val version = "1.4.0"
-            const val core = "androidx.test:core:$version"
+            const val core = "androidx.test:core-ktx:$version"
             const val rules = "androidx.test:rules:$version"
 
             object Ext {
-                private const val version = "1.1.2"
-                const val junit = "androidx.test.ext:junit-ktx:$version"
+                const val junit = "androidx.test.ext:junit:1.1.3"
+                const val truth = "androidx.test.ext:truth:1.4.0"
             }
 
             const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
@@ -106,5 +106,9 @@ object Libs {
 
     object Coil {
         const val coilCompose = "io.coil-kt:coil-compose:2.0.0"
+    }
+
+    object Robolectric {
+        const val robolectric = "org.robolectric:robolectric:4.5.1"
     }
 }
