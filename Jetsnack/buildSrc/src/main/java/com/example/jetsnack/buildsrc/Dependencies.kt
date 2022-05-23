@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha09"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
 
     object Accompanist {
         const val version = "0.24.9-beta"
@@ -45,7 +45,6 @@ object Libs {
 
     object AndroidX {
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
-        const val profileInstaller = "androidx.profileinstaller:profileinstaller:1.2.0-alpha02"
 
         object Compose {
             const val snapshot = ""

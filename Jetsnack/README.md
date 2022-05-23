@@ -53,6 +53,8 @@ Domain types are modelled in the [model package](app/src/main/java/com/example/j
 
 Imagery is sourced from [Unsplash](https://unsplash.com/) and loaded using [coil-accompanist][coil-accompanist].
 
+## Baseline Profiles
+For [Baseline profiles](https://developer.android.com/topic/performance/baselineprofiles), see the [compose-latest](https://github.com/android/compose-samples/tree/compose-latest/Jetsnack) branch.
 
 ## License
 
