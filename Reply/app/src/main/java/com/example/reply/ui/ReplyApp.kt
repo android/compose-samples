@@ -61,6 +61,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +70,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reply.R
@@ -135,19 +139,26 @@ private fun ReplyNavigationWrapperUI(
     val scope = rememberCoroutineScope()
 
     val navController = rememberNavController()
+    val navigationActions = remember(navController) {
+        ReplyNavigationActions(navController)
+    }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    val selectedDestination = ReplyDestinations.INBOX
+    val selectedDestination =
+        navBackStackEntry?.destination?.route ?: ReplyDestinations.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
-        PermanentNavigationDrawer(drawerContent = { NavigationDrawerContent(selectedDestination) }) {
-            ReplyAppContent(navigationType, contentType, replyHomeUIState)
+        PermanentNavigationDrawer(drawerContent = {
+            NavigationDrawerContent(selectedDestination, navController)
+        }) {
+            RaplyNavGraph(navigationType, contentType, replyHomeUIState, navController,
+                selectedDestination)
         }
     } else {
         ModalNavigationDrawer(
             drawerContent = {
                 NavigationDrawerContent(
                     selectedDestination,
+                    navController,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -157,8 +168,8 @@ private fun ReplyNavigationWrapperUI(
             },
             drawerState = drawerState
         ) {
-            ReplyAppContent(
-                navigationType, contentType, replyHomeUIState,
+            RaplyNavGraph(
+                navigationType, contentType, replyHomeUIState, navController,
                 onDrawerClicked = {
                     scope.launch {
                         drawerState.open()
@@ -170,55 +181,63 @@ private fun ReplyNavigationWrapperUI(
 }
 
 @Composable
-fun ReplyAppContent(
+fun RaplyNavGraph(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
+    navController: NavHostController,
+    startDestination: String,
     onDrawerClicked: () -> Unit = {}
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            ReplyNavigationRail(
-                onDrawerClicked = onDrawerClicked
-            )
-        }
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-        ) {
-            if (contentType == ReplyContentType.LIST_AND_DETAIL) {
-                ReplyListAndDetailContent(
-                    replyHomeUIState = replyHomeUIState,
-                    modifier = Modifier.weight(1f),
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+    ) {
+        Row(modifier = Modifier.fillMaxSize()) {
+            AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
+                ReplyNavigationRail(
+                    onDrawerClicked = onDrawerClicked
                 )
-            } else {
-                Box(modifier = Modifier.weight(1f)) {
-                    ReplyListOnlyContent(
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.inverseOnSurface)
+            ) {
+                if (contentType == ReplyContentType.LIST_AND_DETAIL) {
+                    ReplyListAndDetailContent(
                         replyHomeUIState = replyHomeUIState,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.weight(1f),
                     )
-                    // When we have bottom navigation we show FAB at the bottom end.
-                    if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                        LargeFloatingActionButton(
-                            onClick =  { /*TODO*/ },
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(16.dp),
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = stringResource(id = R.string.edit),
-                                modifier = Modifier.size(28.dp)
-                            )
+                } else {
+                    Box(modifier = Modifier.weight(1f)) {
+                        ReplyListOnlyContent(
+                            replyHomeUIState = replyHomeUIState,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        // When we have bottom navigation we show FAB at the bottom end.
+                        if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                            LargeFloatingActionButton(
+                                onClick = { /*TODO*/ },
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp),
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = stringResource(id = R.string.edit),
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                ReplyBottomNavigationBar()
+                AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                    ReplyBottomNavigationBar()
+                }
             }
         }
     }
@@ -301,6 +320,7 @@ fun ReplyBottomNavigationBar() {
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,
+    navController: NavController,
     modifier: Modifier = Modifier,
     onDrawerClicked: () -> Unit = {}
 ) {

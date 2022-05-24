@@ -96,7 +96,7 @@ fun ReplyAppPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 700)
+@Preview(showBackground = true, widthDp = 700, heightDp = 500)
 @Composable
 fun ReplyAppPreviewTablet() {
     ReplyTheme {
