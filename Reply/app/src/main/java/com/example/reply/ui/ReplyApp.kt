@@ -68,15 +68,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reply.R
 import com.example.reply.ui.utils.DevicePosture
+import com.example.reply.ui.utils.EmptyComingSoon
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
@@ -148,17 +148,35 @@ private fun ReplyNavigationWrapperUI(
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(drawerContent = {
-            NavigationDrawerContent(selectedDestination, navController)
+            NavigationDrawerContent(
+                selectedDestination,
+                navigationActions.navigateToInbox,
+                navigationActions.navigateToDM,
+                navigationActions.navigateToArticles,
+                navigationActions.navigateToGroups,
+            )
         }) {
-            RaplyNavGraph(navigationType, contentType, replyHomeUIState, navController,
-                selectedDestination)
+            RaplyNavGraph(
+                navigationType,
+                contentType,
+                replyHomeUIState,
+                navController,
+                selectedDestination,
+                navigationActions.navigateToInbox,
+                navigationActions.navigateToDM,
+                navigationActions.navigateToArticles,
+                navigationActions.navigateToGroups
+            )
         }
     } else {
         ModalNavigationDrawer(
             drawerContent = {
                 NavigationDrawerContent(
                     selectedDestination,
-                    navController,
+                    navigationActions.navigateToInbox,
+                    navigationActions.navigateToDM,
+                    navigationActions.navigateToArticles,
+                    navigationActions.navigateToGroups,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -169,13 +187,20 @@ private fun ReplyNavigationWrapperUI(
             drawerState = drawerState
         ) {
             RaplyNavGraph(
-                navigationType, contentType, replyHomeUIState, navController,
-                onDrawerClicked = {
-                    scope.launch {
-                        drawerState.open()
-                    }
+                navigationType,
+                contentType,
+                replyHomeUIState,
+                navController,
+                selectedDestination,
+                navigationActions.navigateToInbox,
+                navigationActions.navigateToDM,
+                navigationActions.navigateToArticles,
+                navigationActions.navigateToGroups
+            ) {
+                scope.launch {
+                    drawerState.open()
                 }
-            )
+            }
         }
     }
 }
@@ -186,66 +211,106 @@ fun RaplyNavGraph(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navController: NavHostController,
-    startDestination: String,
+    selectedDestination: String,
+    navigateToInbox: () -> Unit,
+    navigateToDM: () -> Unit,
+    navigateToArticles: () -> Unit,
+    navigateToGroups: () -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-    ) {
-        Row(modifier = Modifier.fillMaxSize()) {
-            AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-                ReplyNavigationRail(
-                    onDrawerClicked = onDrawerClicked
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.inverseOnSurface)
+    Row(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
+            ReplyNavigationRail(
+                selectedDestination,
+                navigateToInbox,
+                navigateToDM,
+                navigateToArticles,
+                navigateToGroups,
+                onDrawerClicked
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.inverseOnSurface)
+        ) {
+            NavHost(
+                modifier = Modifier.weight(1f),
+                navController = navController,
+                startDestination = selectedDestination,
             ) {
-                if (contentType == ReplyContentType.LIST_AND_DETAIL) {
-                    ReplyListAndDetailContent(
-                        replyHomeUIState = replyHomeUIState,
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
-                    Box(modifier = Modifier.weight(1f)) {
-                        ReplyListOnlyContent(
-                            replyHomeUIState = replyHomeUIState,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        // When we have bottom navigation we show FAB at the bottom end.
-                        if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                            LargeFloatingActionButton(
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp),
-                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = stringResource(id = R.string.edit),
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
-                        }
-                    }
+                composable(ReplyDestinations.INBOX) {
+                    ReplyInboxScreen(contentType, replyHomeUIState, navigationType)
                 }
-
-                AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                    ReplyBottomNavigationBar()
+                composable(ReplyDestinations.DM) {
+                    EmptyComingSoon()
                 }
+                composable(ReplyDestinations.ARTICLES) {
+                    EmptyComingSoon()
+                }
+                composable(ReplyDestinations.GROUPS) {
+                    EmptyComingSoon()
+                }
+            }
+            AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                ReplyBottomNavigationBar(
+                    selectedDestination,
+                    navigateToInbox,
+                    navigateToDM,
+                    navigateToArticles,
+                    navigateToGroups
+                )
             }
         }
     }
 }
 
 @Composable
-@Preview
+private fun ReplyInboxScreen(
+    contentType: ReplyContentType,
+    replyHomeUIState: ReplyHomeUIState,
+    navigationType: ReplyNavigationType
+) {
+    if (contentType == ReplyContentType.LIST_AND_DETAIL) {
+        ReplyListAndDetailContent(
+            replyHomeUIState = replyHomeUIState,
+            modifier = Modifier.fillMaxSize(),
+        )
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            ReplyListOnlyContent(
+                replyHomeUIState = replyHomeUIState,
+                modifier = Modifier.fillMaxSize()
+            )
+            // When we have bottom navigation we show FAB at the bottom end.
+            if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                LargeFloatingActionButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(id = R.string.edit),
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
 fun ReplyNavigationRail(
+    selectedDestination: String,
+    navigateToInbox: () -> Unit,
+    navigateToDM: () -> Unit,
+    navigateToArticles: () -> Unit,
+    navigateToGroups: () -> Unit,
     onDrawerClicked: () -> Unit = {},
 ) {
     NavigationRail(modifier = Modifier.fillMaxHeight()) {
@@ -267,50 +332,55 @@ fun ReplyNavigationRail(
             )
         }
         NavigationRailItem(
-            selected = true,
-            onClick = { /*TODO*/ },
+            selected = selectedDestination == ReplyDestinations.INBOX,
+            onClick = navigateToInbox,
             icon =  { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
         NavigationRailItem(
-            selected = false,
-            onClick = {/*TODO*/ },
+            selected = selectedDestination == ReplyDestinations.ARTICLES,
+            onClick = navigateToArticles,
             icon =  { Icon(imageVector = Icons.Default.Article, stringResource(id = R.string.tab_article)) }
         )
         NavigationRailItem(
-            selected = false,
-            onClick = { /*TODO*/ },
+            selected = selectedDestination == ReplyDestinations.DM,
+            onClick = navigateToDM,
             icon =  { Icon(imageVector = Icons.Outlined.Chat, stringResource(id = R.string.tab_dm)) }
         )
         NavigationRailItem(
-            selected = false,
-            onClick = { /*TODO*/ },
+            selected = selectedDestination == ReplyDestinations.GROUPS,
+            onClick = navigateToGroups,
             icon =  { Icon(imageVector = Icons.Outlined.People, stringResource(id = R.string.tab_groups)) }
         )
     }
 }
 
 @Composable
-@Preview
-fun ReplyBottomNavigationBar() {
+fun ReplyBottomNavigationBar(
+    selectedDestination: String,
+    navigateToInbox: () -> Unit,
+    navigateToDM: () -> Unit,
+    navigateToArticles: () -> Unit,
+    navigateToGroups: () -> Unit
+) {
     NavigationBar(modifier = Modifier.fillMaxWidth()) {
        NavigationBarItem(
-           selected = true,
-           onClick = { /*TODO*/ },
+           selected = selectedDestination == ReplyDestinations.INBOX,
+           onClick = navigateToInbox,
            icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) }
        )
         NavigationBarItem(
-            selected = false,
-            onClick = { /*TODO*/ },
-            icon = { Icon(imageVector = Icons.Default.Article, contentDescription = stringResource(id = R.string.tab_inbox)) }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { /*TODO*/ },
+            selected = selectedDestination == ReplyDestinations.ARTICLES,
+            onClick = navigateToArticles,
             icon = { Icon(imageVector = Icons.Outlined.Chat, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
         NavigationBarItem(
-            selected = false,
-            onClick = { /*TODO*/ },
+            selected = selectedDestination == ReplyDestinations.DM,
+            onClick = navigateToDM,
+            icon = { Icon(imageVector = Icons.Default.Article, contentDescription = stringResource(id = R.string.tab_inbox)) }
+        )
+        NavigationBarItem(
+            selected = selectedDestination == ReplyDestinations.GROUPS,
+            onClick = navigateToGroups,
             icon = { Icon(imageVector = Icons.Outlined.Videocam, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
     }
@@ -320,12 +390,14 @@ fun ReplyBottomNavigationBar() {
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,
-    navController: NavController,
-    modifier: Modifier = Modifier,
+    navigateToInbox: () -> Unit,
+    navigateToDM: () -> Unit,
+    navigateToArticles: () -> Unit,
+    navigateToGroups: () -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     Column(
-        modifier
+        Modifier
             .wrapContentWidth()
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
@@ -333,7 +405,7 @@ fun NavigationDrawerContent(
             .padding(24.dp)
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -377,28 +449,28 @@ fun NavigationDrawerContent(
             label = { Text(text = stringResource(id = R.string.tab_inbox), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription =  stringResource(id = R.string.tab_inbox)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = navigateToInbox
         )
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.ARTICLES,
             label = { Text(text = stringResource(id = R.string.tab_article), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector =  Icons.Default.Article, contentDescription =  stringResource(id = R.string.tab_article)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = navigateToArticles
         )
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.DM,
             label = { Text(text = stringResource(id = R.string.tab_dm), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector =  Icons.Default.Chat, contentDescription =  stringResource(id = R.string.tab_dm)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = navigateToDM
         )
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.GROUPS,
             label = { Text(text = stringResource(id = R.string.tab_groups), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector =  Icons.Default.Article, contentDescription =  stringResource(id = R.string.tab_groups)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = navigateToGroups
         )
     }
 }

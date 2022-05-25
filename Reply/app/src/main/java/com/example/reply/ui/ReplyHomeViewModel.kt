@@ -24,6 +24,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.reply.data.Email
 import com.example.reply.data.EmailsRepository
 import com.example.reply.data.EmailsRepositoryImpl
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -31,11 +33,8 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     ViewModel() {
 
     // UI state exposed to the UI
-//    private val _uiState = MutableStateFlow(ReplyHomeUIState(loading = true))
-//    val uiState: StateFlow<ReplyHomeUIState> = _uiState
-
-    var uiState by mutableStateOf(ReplyHomeUIState(loading = true))
-        private set
+    private val _uiState = MutableStateFlow(ReplyHomeUIState(loading = true))
+    val uiState: StateFlow<ReplyHomeUIState> = _uiState
 
     init {
         observeEmails()
@@ -45,7 +44,6 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         viewModelScope.launch {
             emailsRepository.getAllEmails()
                 .catch { ex ->
-                    uiState = uiState.copy(loading = false,error = ex.message)
                     _uiState.value = ReplyHomeUIState(error = ex.message)
                 }
                 .collect { emails ->
