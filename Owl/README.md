@@ -46,6 +46,7 @@ Compose makes it simple to create a library of components and use them throughou
 
 #### [Utilities](app/src/main/java/com/example/owl/ui/utils/)
 Owl implements some utility functions of interest:
+* [Lazy layouts](https://developer.android.com/jetpack/compose/lists) - specifically LazyColumn and LazyRow, passing [item keys](https://developer.android.com/jetpack/compose/lists#item-keys) and using [`animateItemPlacement()`](https://developer.android.com/reference/kotlin/androidx/compose/foundation/lazy/LazyItemScope#(androidx.compose.ui.Modifier).animateItemPlacement(androidx.compose.animation.core.FiniteAnimationSpec)).
 * [Window insets](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/WindowInsets) are provided by the Compose Foundation library.
 * [NavGraph](app/src/main/java/com/example/owl/ui/NavGraph.kt) models navigation within the app using [Jetpack Navigation](https://developer.android.com/jetpack/compose/navigation).
 

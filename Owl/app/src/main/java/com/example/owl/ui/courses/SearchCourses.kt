@@ -19,6 +19,7 @@ package com.example.owl.ui.courses
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -57,7 +58,11 @@ fun SearchCourses(
     modifier: Modifier = Modifier
 ) {
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
-    LazyColumn(modifier = modifier.statusBarsPadding()) {
+    LazyColumn(
+        modifier = modifier
+            .statusBarsPadding()
+            .fillMaxHeight()
+    ) {
         item { AppBar(searchTerm, updateSearchTerm) }
         val filteredTopics = getTopics(searchTerm.text, topics)
         items(

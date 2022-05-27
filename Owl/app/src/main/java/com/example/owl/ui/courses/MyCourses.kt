@@ -51,7 +51,7 @@ fun MyCourses(
         }
         itemsIndexed(
             items = courses,
-            key = { index, course -> course.id }
+            key = { _, course -> course.id }
         ) { index, course ->
             MyCourse(
                 course = course,
