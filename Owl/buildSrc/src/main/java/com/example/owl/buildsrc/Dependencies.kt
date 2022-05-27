@@ -82,8 +82,6 @@ object Libs {
                 private const val version = "1.1.2"
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
-
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0"
         }
     }
 
