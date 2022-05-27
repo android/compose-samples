@@ -49,8 +49,15 @@ fun MyCourses(
         item {
             CoursesAppBar()
         }
-        itemsIndexed(courses) { index, course ->
-            MyCourse(course, index, selectCourse)
+        itemsIndexed(
+            items = courses,
+            key = { index, course -> course.id }
+        ) { index, course ->
+            MyCourse(
+                course = course,
+                index = index,
+                selectCourse = selectCourse
+            )
         }
     }
 }

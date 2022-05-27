@@ -50,6 +50,7 @@ import com.example.owl.model.Topic
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchCourses(
     topics: List<Topic>,
@@ -59,7 +60,10 @@ fun SearchCourses(
     LazyColumn(modifier = modifier.statusBarsPadding()) {
         item { AppBar(searchTerm, updateSearchTerm) }
         val filteredTopics = getTopics(searchTerm.text, topics)
-        items(filteredTopics) { topic ->
+        items(
+            items = filteredTopics,
+            key = { it.name }
+        ) { topic ->
             Text(
                 text = topic.name,
                 style = MaterialTheme.typography.h5,
@@ -73,6 +77,7 @@ fun SearchCourses(
                         bottom = 8.dp
                     )
                     .wrapContentWidth(Alignment.Start)
+                    .animateItemPlacement()
             )
         }
     }
