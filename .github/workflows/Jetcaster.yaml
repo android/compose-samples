@@ -11,69 +11,11 @@ on:
     paths:
       - '.github/workflows/Jetcaster.yaml'
       - 'Jetcaster/**'
-concurrency:
-  group: jetcaster-build-${{ github.ref }}
-  cancel-in-progress: true
-env:
-  SAMPLE_PATH: Jetcaster
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Copy CI gradle.properties
-        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties        
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
-      - name: Generate cache key
-        run: ./scripts/checksum.sh $SAMPLE_PATH checksum.txt
-
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches/modules-*
-            ~/.gradle/caches/jars-*
-            ~/.gradle/caches/build-cache-*
-          key: gradle-${{ hashFiles('checksum.txt') }}
-
-      - name: Check spotless
-        working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew spotlessCheck --stacktrace
-
-      - name: Check lint
-        working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew lintDebug --stacktrace
-
-      - name: Build debug
-        working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew assembleDebug --stacktrace
-
-      - name: Build release
-        working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew assembleRelease --stacktrace
-
-      - name: Run local tests
-        working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew testDebug --stacktrace
-
-      - name: Upload build outputs (APKs)
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-outputs
-          path: ${{ env.SAMPLE_PATH }}/app/build/outputs
-
-      - name: Upload build reports
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-reports
-          path: ${{ env.SAMPLE_PATH }}/app/build/reports
+    uses: android/compose-samples/.github/workflows/build-sample.yml@main
+    with:
+      name: Jetcaster
+      path: Jetcaster
