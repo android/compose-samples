@@ -11,4 +11,10 @@
     <string name="search_replies">search replies</string>
     <string name="reply">Reply</string>
     <string name="reply_all">Reply All</string>
+
+    <string name="edit">Edit</string>
+    <string name="compose">Compose</string>
+
+    <string name="empty_screen_title">Screen under construction</string>
+    <string name="empty_screen_subtitle">This screen is still under construction. This sample will help you learn about adaptive layouts in Jetpack Compose</string>
 </resources>
