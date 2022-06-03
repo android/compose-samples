@@ -74,7 +74,7 @@ the [documentation says](https://developers.google.com/maps/documentation/androi
 and include it in the `local.properties` file as follows:
 
 ```
-google.maps.key={insert_your_api_key_here}
+googleMapsKey={insert_your_api_key_here}
 ```
 
 When restricting the Key to Android apps, use `androidx.compose.samples.crane` as package name, and
