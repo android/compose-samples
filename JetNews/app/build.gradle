@@ -96,7 +96,7 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
+    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha12"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.animation:animation:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"

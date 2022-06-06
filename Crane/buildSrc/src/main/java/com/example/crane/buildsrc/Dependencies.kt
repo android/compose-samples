@@ -57,11 +57,11 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-beta02"
+            const val version = "1.2.0-beta03"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
-            const val materialWindow = "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
+            const val materialWindow = "androidx.compose.material3:material3-window-size-class:1.0.0-alpha12"
 
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
