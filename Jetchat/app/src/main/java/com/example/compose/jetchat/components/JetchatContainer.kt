@@ -54,17 +54,17 @@ import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
-fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
-    // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
+fun ColumnScope.JetchatContainer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
+    // Use windowInsetsTopHeight() to add a spacer which pushes the Container content
     // below the status bar (y-axis)
     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-    DrawerHeader()
+    ContainerHeader()
     DividerItem()
-    DrawerItemHeader("Chats")
+    ContainerItemHeader("Chats")
     ChatItem("composers", true) { onChatClicked("composers") }
     ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
     DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-    DrawerItemHeader("Recent Profiles")
+    ContainerItemHeader("Recent Profiles")
     ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
     ProfileItem("Taylor Brooks", colleagueProfile.photo) {
         onProfileClicked(colleagueProfile.userId)
@@ -72,7 +72,7 @@ fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked:
 }
 
 @Composable
-private fun DrawerHeader() {
+private fun ContainerHeader() {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
         JetchatIcon(
             contentDescription = null,
@@ -86,7 +86,7 @@ private fun DrawerHeader() {
     }
 }
 @Composable
-private fun DrawerItemHeader(text: String) {
+private fun ContainerItemHeader(text: String) {
     Box(
         modifier = Modifier
             .heightIn(min = 52.dp)
@@ -185,22 +185,22 @@ fun DividerItem(modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-fun DrawerPreview() {
+fun ContainerPreview() {
     JetchatTheme {
         Surface {
             Column {
-                JetchatDrawer({}, {})
+                JetchatContainer({}, {})
             }
         }
     }
 }
 @Composable
 @Preview
-fun DrawerPreviewDark() {
+fun ContainerPreviewDark() {
     JetchatTheme(isDarkTheme = true) {
         Surface {
             Column {
-                JetchatDrawer({}, {})
+                JetchatContainer({}, {})
             }
         }
     }
