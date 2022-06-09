@@ -115,7 +115,7 @@ private fun ReplyNavigationWrapperUI(
     }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val selectedDestination =
-        navBackStackEntry?.destination?.route ?: ReplyDestinations.INBOX
+        navBackStackEntry?.destination?.route ?: ReplyRouts.INBOX_ROUTE
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(drawerContent = {
