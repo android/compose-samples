@@ -54,7 +54,7 @@ import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
-fun ColumnScope.JetchatContainer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
+fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the Container content
     // below the status bar (y-axis)
     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
