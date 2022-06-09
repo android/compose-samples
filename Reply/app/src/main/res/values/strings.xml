@@ -17,4 +17,8 @@
 
     <string name="empty_screen_title">Screen under construction</string>
     <string name="empty_screen_subtitle">This screen is still under construction. This sample will help you learn about adaptive layouts in Jetpack Compose</string>
+
+    <string name="back_button">Back button</string>
+    <string name="more_options_button">More options</string>
+    <string name="messages">Messages</string>
 </resources>

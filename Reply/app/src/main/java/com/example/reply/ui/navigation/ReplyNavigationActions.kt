@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.reply.ui
+package com.example.reply.ui.navigation
 
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -24,6 +24,13 @@ object ReplyDestinations {
     const val ARTICLES = "Articles"
     const val DM = "DirectMessages"
     const val GROUPS = "Groups"
+    const val DETAIL = "Detail"
+    const val EMAIL_ID_KEY = "emailId"
+}
+
+object ReplyRouts {
+    const val HOME_ROUTE = "home_route"
+    const val INBOX_ROUTE = "inbox_route"
 }
 
 class ReplyNavigationActions(navController: NavHostController) {
@@ -68,5 +75,8 @@ class ReplyNavigationActions(navController: NavHostController) {
             launchSingleTop = true
             restoreState = true
         }
+    }
+    val navigateToDetail: (emailId: Long) -> Unit = { emailId ->
+        navController.navigate("${ReplyRouts.INBOX_ROUTE}/$emailId") {}
     }
 }

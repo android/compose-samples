@@ -26,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -33,11 +34,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
+import com.example.reply.ui.navigation.ReplyDestinations
+import com.example.reply.ui.navigation.ReplyNavigationActions
+import com.example.reply.ui.navigation.ReplyRouts
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.EmptyComingSoon
 import com.example.reply.ui.utils.ReplyContentType
@@ -49,7 +55,8 @@ import kotlinx.coroutines.launch
 fun ReplyApp(
     windowSize: WindowWidthSizeClass,
     foldingDevicePosture: DevicePosture,
-    replyHomeUIState: ReplyHomeUIState
+    replyHomeUIState: ReplyHomeUIState,
+    setSelectedEmail: (Long) -> Unit = {}
 ) {
     /**
      * This will help us select type of navigation and content type depending on window size and
@@ -88,7 +95,7 @@ fun ReplyApp(
         }
     }
 
-    ReplyNavigationWrapperUI(navigationType, contentType, replyHomeUIState)
+    ReplyNavigationWrapperUI(navigationType, contentType, replyHomeUIState, setSelectedEmail)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +103,8 @@ fun ReplyApp(
 private fun ReplyNavigationWrapperUI(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
-    replyHomeUIState: ReplyHomeUIState
+    replyHomeUIState: ReplyHomeUIState,
+    setSelectedEmail: (Long) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -119,7 +127,7 @@ private fun ReplyNavigationWrapperUI(
                 navigationActions.navigateToGroups,
             )
         }) {
-            ReplyNavGraph(
+            ReplyAppContent(
                 navigationType,
                 contentType,
                 replyHomeUIState,
@@ -128,7 +136,10 @@ private fun ReplyNavigationWrapperUI(
                 navigationActions.navigateToInbox,
                 navigationActions.navigateToDM,
                 navigationActions.navigateToArticles,
-                navigationActions.navigateToGroups
+                navigationActions.navigateToGroups,
+                { emailId ->
+                    setSelectedEmail.invoke(emailId)
+                }
             )
         }
     } else {
@@ -149,7 +160,7 @@ private fun ReplyNavigationWrapperUI(
             },
             drawerState = drawerState
         ) {
-            ReplyNavGraph(
+            ReplyAppContent(
                 navigationType,
                 contentType,
                 replyHomeUIState,
@@ -158,7 +169,13 @@ private fun ReplyNavigationWrapperUI(
                 navigationActions.navigateToInbox,
                 navigationActions.navigateToDM,
                 navigationActions.navigateToArticles,
-                navigationActions.navigateToGroups
+                navigationActions.navigateToGroups,
+                { emailId ->
+                    setSelectedEmail.invoke(emailId)
+                    if (contentType == ReplyContentType.LIST_ONLY) {
+                        navigationActions.navigateToDetail.invoke(emailId)
+                    }
+                }
             ) {
                 scope.launch {
                     drawerState.open()
@@ -170,7 +187,7 @@ private fun ReplyNavigationWrapperUI(
 
 
 @Composable
-fun ReplyNavGraph(
+fun ReplyAppContent(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
@@ -180,6 +197,7 @@ fun ReplyNavGraph(
     navigateToDM: () -> Unit,
     navigateToArticles: () -> Unit,
     navigateToGroups: () -> Unit,
+    navigateToDetail: (Long) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
@@ -190,7 +208,7 @@ fun ReplyNavGraph(
                 navigateToDM,
                 navigateToArticles,
                 navigateToGroups,
-                onDrawerClicked
+                onDrawerClicked,
             )
         }
         Column(
@@ -198,24 +216,15 @@ fun ReplyNavGraph(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            NavHost(
-                modifier = Modifier.weight(1f),
-                navController = navController,
-                startDestination = selectedDestination,
-            ) {
-                composable(ReplyDestinations.INBOX) {
-                    ReplyInboxScreen(contentType, replyHomeUIState, navigationType)
-                }
-                composable(ReplyDestinations.DM) {
-                    EmptyComingSoon()
-                }
-                composable(ReplyDestinations.ARTICLES) {
-                    EmptyComingSoon()
-                }
-                composable(ReplyDestinations.GROUPS) {
-                    EmptyComingSoon()
-                }
-            }
+            ReplyNavHost(
+                Modifier.weight(1f),
+                navController,
+                selectedDestination,
+                contentType,
+                replyHomeUIState,
+                navigationType,
+                navigateToDetail
+            )
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ReplyBottomNavigationBar(
                     selectedDestination,
@@ -228,3 +237,67 @@ fun ReplyNavGraph(
         }
     }
 }
+
+@Composable
+private fun ReplyNavHost(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    selectedDestination: String,
+    contentType: ReplyContentType,
+    replyHomeUIState: ReplyHomeUIState,
+    navigationType: ReplyNavigationType,
+    navigateToDetail: (Long) -> Unit
+) {
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = selectedDestination,
+    ) {
+        inboxGraph(
+            nestedGraphs = {
+                emailDetailGraph {
+                    ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) {
+                        navController.popBackStack()
+                    }
+                }
+            }
+        ) {
+            ReplyInboxScreen(contentType, replyHomeUIState, navigationType, navigateToDetail)
+        }
+        composable(ReplyDestinations.DM) {
+            EmptyComingSoon()
+        }
+        composable(ReplyDestinations.ARTICLES) {
+            EmptyComingSoon()
+        }
+        composable(ReplyDestinations.GROUPS) {
+            EmptyComingSoon()
+        }
+    }
+}
+
+fun NavGraphBuilder.inboxGraph(
+    nestedGraphs: NavGraphBuilder.() -> Unit,
+    content: @Composable () -> Unit
+) {
+    navigation(
+        route = ReplyRouts.INBOX_ROUTE,
+        startDestination = ReplyDestinations.INBOX
+    ) {
+        composable(ReplyDestinations.INBOX) {
+            content()
+        }
+       nestedGraphs()
+    }
+}
+
+fun NavGraphBuilder.emailDetailGraph(
+    content: @Composable () -> Unit,
+) {
+    composable(
+        route = "${ReplyRouts.INBOX_ROUTE}/{${ReplyDestinations.EMAIL_ID_KEY}}",
+    ) {
+        content()
+    }
+}
+

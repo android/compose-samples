@@ -48,10 +48,16 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
                 }
         }
     }
+
+    fun setSelectedEmail(emailId: Long) {
+        val email = uiState.value.emails.find { it.id == emailId }
+        _uiState.value = _uiState.value.copy(selectedEmail = email)
+    }
 }
 
 data class ReplyHomeUIState(
     val emails: List<Email> = emptyList(),
+    val selectedEmail: Email? = null,
     val loading: Boolean = false,
     val error: String? = null
 )

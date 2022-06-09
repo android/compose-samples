@@ -78,7 +78,9 @@ class MainActivity : ComponentActivity() {
                 val windowSize = calculateWindowSizeClass(this)
                 val devicePosture = devicePostureFlow.collectAsState().value
                 val uiState = viewModel.uiState.collectAsState().value
-                ReplyApp(windowSize.widthSizeClass, devicePosture, uiState)
+                ReplyApp(windowSize.widthSizeClass, devicePosture, uiState) { emailId ->
+                    viewModel.setSelectedEmail(emailId)
+                }
             }
         }
     }
@@ -91,7 +93,7 @@ fun ReplyAppPreview() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowWidthSizeClass.Compact,
-            foldingDevicePosture = DevicePosture.NormalPosture
+            foldingDevicePosture = DevicePosture.NormalPosture,
         )
     }
 }
