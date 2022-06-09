@@ -55,16 +55,16 @@ import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
 fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
-    // Use windowInsetsTopHeight() to add a spacer which pushes the Container content
+    // Use windowInsetsTopHeight() to add a spacer which pushes the Drawer content
     // below the status bar (y-axis)
     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-    ContainerHeader()
+    DrawerHeader()
     DividerItem()
-    ContainerItemHeader("Chats")
+    DrawerItemHeader("Chats")
     ChatItem("composers", true) { onChatClicked("composers") }
     ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
     DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-    ContainerItemHeader("Recent Profiles")
+    DrawerItemHeader("Recent Profiles")
     ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
     ProfileItem("Taylor Brooks", colleagueProfile.photo) {
         onProfileClicked(colleagueProfile.userId)
@@ -72,7 +72,7 @@ fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked:
 }
 
 @Composable
-private fun ContainerHeader() {
+private fun DrawerHeader() {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
         JetchatIcon(
             contentDescription = null,
@@ -86,7 +86,7 @@ private fun ContainerHeader() {
     }
 }
 @Composable
-private fun ContainerItemHeader(text: String) {
+private fun DrawerItemHeader(text: String) {
     Box(
         modifier = Modifier
             .heightIn(min = 52.dp)
@@ -104,7 +104,7 @@ private fun ContainerItemHeader(text: String) {
 @Composable
 private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
     val background = if (selected) {
-        Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+        Modifier.background(MaterialTheme.colorScheme.primaryDrawer)
     } else {
         Modifier
     }
@@ -185,22 +185,22 @@ fun DividerItem(modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-fun ContainerPreview() {
+fun DrawerPreview() {
     JetchatTheme {
         Surface {
             Column {
-                JetchatContainer({}, {})
+                JetchatDrawer({}, {})
             }
         }
     }
 }
 @Composable
 @Preview
-fun ContainerPreviewDark() {
+fun DrawerPreviewDark() {
     JetchatTheme(isDarkTheme = true) {
         Surface {
             Column {
-                JetchatContainer({}, {})
+                JetchatDrawer({}, {})
             }
         }
     }

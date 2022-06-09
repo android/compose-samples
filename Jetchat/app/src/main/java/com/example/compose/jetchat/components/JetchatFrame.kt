@@ -26,7 +26,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JetchatScaffold(
+fun JetchatFrame(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
@@ -36,7 +36,7 @@ fun JetchatScaffold(
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                JetchatContainer(
+                JetchatDrawer(
                     onProfileClicked = onProfileClicked,
                     onChatClicked = onChatClicked
                 )
