@@ -35,7 +35,7 @@ object ReplyRouts {
 
 class ReplyNavigationActions(navController: NavHostController) {
     val navigateToInbox: () -> Unit = {
-        navController.navigate(ReplyDestinations.INBOX) {
+        navController.navigate(ReplyRouts.INBOX_ROUTE) {
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items

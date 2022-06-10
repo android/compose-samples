@@ -219,7 +219,6 @@ fun ReplyAppContent(
             ReplyNavHost(
                 Modifier.weight(1f),
                 navController,
-                selectedDestination,
                 contentType,
                 replyHomeUIState,
                 navigationType,
@@ -242,7 +241,6 @@ fun ReplyAppContent(
 private fun ReplyNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    selectedDestination: String,
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
@@ -251,18 +249,26 @@ private fun ReplyNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = selectedDestination,
+        startDestination = ReplyRouts.INBOX_ROUTE,
     ) {
-        inboxGraph(
-            nestedGraphs = {
-                emailDetailGraph {
-                    ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) {
-                        navController.popBackStack()
-                    }
-                }
-            }
-        ) {
+//        inboxGraph(
+//            nestedGraphs = {
+//                emailDetailGraph {
+//                    ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) {
+//                        navController.popBackStack()
+//                    }
+//                }
+//            }
+//        ) {
+//            ReplyInboxScreen(contentType, replyHomeUIState, navigationType, navigateToDetail)
+//        }
+        composable(ReplyRouts.INBOX_ROUTE) {
             ReplyInboxScreen(contentType, replyHomeUIState, navigationType, navigateToDetail)
+        }
+        emailDetailGraph {
+            ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) {
+                navController.popBackStack()
+            }
         }
         composable(ReplyDestinations.DM) {
             EmptyComingSoon()

@@ -58,6 +58,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
+import com.example.reply.ui.components.ReplySearchBar
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 
@@ -127,7 +128,7 @@ fun ReplyListAndDetailContent(
     modifier: Modifier = Modifier,
     navigateToDetail: (Long) -> Unit
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         LazyColumn(modifier = modifier.weight(1f)) {
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
@@ -386,35 +387,4 @@ fun ReplyProfileImage(
         painter = painterResource(id = drawableResource),
         contentDescription = description,
     )
-}
-
-@Composable
-fun ReplySearchBar(modifier: Modifier = Modifier) {
-    Row(modifier = modifier
-        .fillMaxWidth()
-        .padding(16.dp)
-        .background(MaterialTheme.colorScheme.surface, CircleShape),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = stringResource(id = R.string.search),
-            modifier = Modifier.padding(start = 16.dp),
-            tint = MaterialTheme.colorScheme.outline
-        )
-        Text(text = stringResource(id = R.string.search_replies),
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.outline
-        )
-        ReplyProfileImage(
-            drawableResource = R.drawable.avatar_6,
-            description = stringResource(id = R.string.profile),
-            modifier = Modifier
-                .padding(12.dp)
-                .size(32.dp)
-        )
-    }
 }
