@@ -71,10 +71,10 @@ class SurveyFragment : Fragment() {
                             fadeIn() +
                                 slideInVertically(
                                     animationSpec =
-                                    tween(400 * 3),
+                                    tween(400),
                                     initialOffsetY = { fullWidth -> fullWidth }
                                 ) with
-                                fadeOut(animationSpec = tween(200 * 3))
+                                fadeOut(animationSpec = tween(200))
                         }
                     ) { targetState ->
                         // It's important to use targetState and not state, as its critical to ensure
