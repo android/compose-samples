@@ -21,18 +21,8 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
-
-// Reads the Google maps key that is used in the AndroidManifest
-Properties properties = new Properties()
-if (rootProject.file("local.properties").exists()) {
-    properties.load(rootProject.file("local.properties").newDataInputStream())
-}
-
-// For testing on CI, a key can also be provided via an environment variable.
-// The local.properties key takes precedence
-String systemGoogleMapsKey = System.getenv("GOOGLE_MAPS_KEY") ?: ""
-String googleMapsKey = properties.getProperty("google.maps.key", systemGoogleMapsKey)
 
 android {
     compileSdkVersion 32
@@ -50,8 +40,6 @@ android {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
             }
         }
-
-        manifestPlaceholders = [ googleMapsKey : googleMapsKey ]
     }
 
     signingConfigs {

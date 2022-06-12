@@ -13,6 +13,8 @@ You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
+The branch `compose-latest` is targetting the latest alpha versions of Compose. 
+
 🧬 Samples
 ------------
 
