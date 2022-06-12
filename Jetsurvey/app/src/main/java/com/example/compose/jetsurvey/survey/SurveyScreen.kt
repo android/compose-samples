@@ -17,11 +17,11 @@
 package com.example.compose.jetsurvey.survey
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,12 +57,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 import com.example.compose.jetsurvey.util.supportWideScreen
 
 private const val CONTENT_ANIMATION_DURATION = 500
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SurveyQuestionsScreen(
@@ -90,31 +92,27 @@ fun SurveyQuestionsScreen(
                 AnimatedContent(
                     targetState = questionState,
                     transitionSpec = {
-                        if (targetState.questionIndex > initialState.questionIndex) {
-                            // Going forwards in the survey: Set the initial offset to start
-                            // at the size of the content so it slides in from right to left, and
-                            // slides out from the left of the screen to -fullWidth
-                            slideInHorizontally(
-                                animationSpec = tween(CONTENT_ANIMATION_DURATION),
-                                initialOffsetX = { fullWidth -> fullWidth }
-                            ) with
-                                slideOutHorizontally(
-                                    animationSpec = tween(CONTENT_ANIMATION_DURATION),
-                                    targetOffsetX = { fullWidth -> -fullWidth }
-                                )
-                        } else {
-                            // Going back to the previous question in the set, we do the same
-                            // transition as above, but with different offsets - the inverse of
-                            // above, negative fullWidth to enter, and fullWidth to exit.
-                            slideInHorizontally(
-                                animationSpec = tween(CONTENT_ANIMATION_DURATION),
-                                initialOffsetX = { fullWidth -> -fullWidth }
-                            ) with
-                                slideOutHorizontally(
-                                    animationSpec = tween(CONTENT_ANIMATION_DURATION),
-                                    targetOffsetX = { fullWidth -> fullWidth }
-                                )
-                        }
+                        val animationSpec: TweenSpec<IntOffset> = tween(CONTENT_ANIMATION_DURATION)
+                        val direction =
+                            if (targetState.questionIndex > initialState.questionIndex) {
+                                // Going forwards in the survey: Set the initial offset to start
+                                // at the size of the content so it slides in from right to left, and
+                                // slides out from the left of the screen to -fullWidth
+                                AnimatedContentScope.SlideDirection.Left
+                            } else {
+                                // Going back to the previous question in the set, we do the same
+                                // transition as above, but with different offsets - the inverse of
+                                // above, negative fullWidth to enter, and fullWidth to exit.
+                                AnimatedContentScope.SlideDirection.Right
+                            }
+                        slideIntoContainer(
+                            towards = direction,
+                            animationSpec = animationSpec
+                        ) with
+                            slideOutOfContainer(
+                                towards = direction,
+                                animationSpec = animationSpec
+                            )
                     }
                 ) { targetState ->
                     Question(

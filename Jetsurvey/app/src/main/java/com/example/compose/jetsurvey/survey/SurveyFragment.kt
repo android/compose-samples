@@ -22,11 +22,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.with
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
@@ -68,12 +68,11 @@ class SurveyFragment : Fragment() {
                     AnimatedContent(
                         targetState = state,
                         transitionSpec = {
-                            fadeIn() +
-                                slideInVertically(
-                                    animationSpec =
-                                    tween(400),
-                                    initialOffsetY = { fullWidth -> fullWidth }
-                                ) with
+                            fadeIn() + slideIntoContainer(
+                                towards = AnimatedContentScope
+                                    .SlideDirection.Up,
+                                animationSpec = tween(600)
+                            ) with
                                 fadeOut(animationSpec = tween(200))
                         }
                     ) { targetState ->
