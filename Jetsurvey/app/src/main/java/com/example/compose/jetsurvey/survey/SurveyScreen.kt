@@ -16,7 +16,13 @@
 
 package com.example.compose.jetsurvey.survey
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,6 +62,8 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 import com.example.compose.jetsurvey.util.supportWideScreen
 
+private const val CONTENT_ANIMATION_DURATION = 500
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SurveyQuestionsScreen(
     questions: SurveyState.Questions,
@@ -79,22 +87,53 @@ fun SurveyQuestionsScreen(
                 )
             },
             content = { innerPadding ->
-                Question(
-                    question = questionState.question,
-                    answer = questionState.answer,
-                    shouldAskPermissions = shouldAskPermissions,
-                    onAnswer = {
-                        if (it !is Answer.PermissionsDenied) {
-                            questionState.answer = it
+                AnimatedContent(
+                    targetState = questionState,
+                    transitionSpec = {
+                        if (targetState.questionIndex > initialState.questionIndex) {
+                            // Going forwards in the survey: Set the initial offset to start
+                            // at the size of the content so it slides in from right to left, and
+                            // slides out from the left of the screen to -fullWidth
+                            slideInHorizontally(
+                                animationSpec = tween(CONTENT_ANIMATION_DURATION),
+                                initialOffsetX = { fullWidth -> fullWidth }
+                            ) with
+                                slideOutHorizontally(
+                                    animationSpec = tween(CONTENT_ANIMATION_DURATION),
+                                    targetOffsetX = { fullWidth -> -fullWidth }
+                                )
+                        } else {
+                            // Going back to the previous question in the set, we do the same
+                            // transition as above, but with different offsets - the inverse of
+                            // above, negative fullWidth to enter, and fullWidth to exit.
+                            slideInHorizontally(
+                                animationSpec = tween(CONTENT_ANIMATION_DURATION),
+                                initialOffsetX = { fullWidth -> -fullWidth }
+                            ) with
+                                slideOutHorizontally(
+                                    animationSpec = tween(CONTENT_ANIMATION_DURATION),
+                                    targetOffsetX = { fullWidth -> fullWidth }
+                                )
                         }
-                        questionState.enableNext = true
-                    },
-                    onAction = onAction,
-                    onDoNotAskForPermissions = onDoNotAskForPermissions,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
+                    }
+                ) { targetState ->
+                    Question(
+                        question = targetState.question,
+                        answer = targetState.answer,
+                        shouldAskPermissions = shouldAskPermissions,
+                        onAnswer = {
+                            if (it !is Answer.PermissionsDenied) {
+                                targetState.answer = it
+                            }
+                            targetState.enableNext = true
+                        },
+                        onAction = onAction,
+                        onDoNotAskForPermissions = onDoNotAskForPermissions,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    )
+                }
             },
             bottomBar = {
                 SurveyBottomBar(
