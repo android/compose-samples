@@ -47,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.home.OnExploreItemClicked
+import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.samples.crane.ui.crane_caption
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +68,7 @@ fun ExploreSection(
     exploreList: List<ExploreModel>,
     onItemClicked: OnExploreItemClicked
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = Color.White) {
+    Surface(modifier = modifier.fillMaxSize(), color = Color.White, shape = BottomSheetShape) {
         Column(modifier = Modifier.padding(start = 24.dp, top = 20.dp, end = 24.dp)) {
             Text(
                 text = title,
