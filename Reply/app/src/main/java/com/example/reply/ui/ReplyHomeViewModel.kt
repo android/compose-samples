@@ -53,11 +53,16 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         val email = uiState.value.emails.find { it.id == emailId }
         _uiState.value = _uiState.value.copy(selectedEmail = email)
     }
+
+    fun closeDetailScreen() {
+        _uiState.value = _uiState.value.copy(selectedEmail = null, showDetailScreen = false)
+    }
 }
 
 data class ReplyHomeUIState(
     val emails: List<Email> = emptyList(),
     val selectedEmail: Email? = null,
+    val showDetailScreen: Boolean = false,
     val loading: Boolean = false,
     val error: String? = null
 )

@@ -43,7 +43,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.example.reply.ui.navigation.ReplyDestinations
 import com.example.reply.ui.navigation.ReplyNavigationActions
-import com.example.reply.ui.navigation.ReplyRouts
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.EmptyComingSoon
 import com.example.reply.ui.utils.ReplyContentType
@@ -56,6 +55,7 @@ fun ReplyApp(
     windowSize: WindowWidthSizeClass,
     foldingDevicePosture: DevicePosture,
     replyHomeUIState: ReplyHomeUIState,
+    closeDetailScreen: () -> Unit = {},
     setSelectedEmail: (Long) -> Unit = {}
 ) {
     /**
@@ -95,7 +95,7 @@ fun ReplyApp(
         }
     }
 
-    ReplyNavigationWrapperUI(navigationType, contentType, replyHomeUIState, setSelectedEmail)
+    ReplyNavigationWrapperUI(navigationType, contentType, replyHomeUIState, closeDetailScreen, setSelectedEmail)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,6 +104,7 @@ private fun ReplyNavigationWrapperUI(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
+    closeDetailScreen: () -> Unit,
     setSelectedEmail: (Long) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -115,7 +116,7 @@ private fun ReplyNavigationWrapperUI(
     }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val selectedDestination =
-        navBackStackEntry?.destination?.route ?: ReplyRouts.INBOX_ROUTE
+        navBackStackEntry?.destination?.route ?: ReplyDestinations.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(drawerContent = {
@@ -137,6 +138,7 @@ private fun ReplyNavigationWrapperUI(
                 navigationActions.navigateToDM,
                 navigationActions.navigateToArticles,
                 navigationActions.navigateToGroups,
+                closeDetailScreen,
                 { emailId ->
                     setSelectedEmail.invoke(emailId)
                 }
@@ -170,6 +172,7 @@ private fun ReplyNavigationWrapperUI(
                 navigationActions.navigateToDM,
                 navigationActions.navigateToArticles,
                 navigationActions.navigateToGroups,
+                closeDetailScreen,
                 { emailId ->
                     setSelectedEmail.invoke(emailId)
                     if (contentType == ReplyContentType.LIST_ONLY) {
@@ -197,6 +200,7 @@ fun ReplyAppContent(
     navigateToDM: () -> Unit,
     navigateToArticles: () -> Unit,
     navigateToGroups: () -> Unit,
+    closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -222,6 +226,7 @@ fun ReplyAppContent(
                 contentType,
                 replyHomeUIState,
                 navigationType,
+                closeDetailScreen,
                 navigateToDetail
             )
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
@@ -244,31 +249,16 @@ private fun ReplyNavHost(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
+    closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = ReplyRouts.INBOX_ROUTE,
+        startDestination = ReplyDestinations.INBOX,
     ) {
-//        inboxGraph(
-//            nestedGraphs = {
-//                emailDetailGraph {
-//                    ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) {
-//                        navController.popBackStack()
-//                    }
-//                }
-//            }
-//        ) {
-//            ReplyInboxScreen(contentType, replyHomeUIState, navigationType, navigateToDetail)
-//        }
-        composable(ReplyRouts.INBOX_ROUTE) {
-            ReplyInboxScreen(contentType, replyHomeUIState, navigationType, navigateToDetail)
-        }
-        emailDetailGraph {
-            ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) {
-                navController.popBackStack()
-            }
+        composable(ReplyDestinations.INBOX) {
+            ReplyInboxScreen(contentType, replyHomeUIState, navigationType, closeDetailScreen, navigateToDetail)
         }
         composable(ReplyDestinations.DM) {
             EmptyComingSoon()
@@ -279,31 +269,6 @@ private fun ReplyNavHost(
         composable(ReplyDestinations.GROUPS) {
             EmptyComingSoon()
         }
-    }
-}
-
-fun NavGraphBuilder.inboxGraph(
-    nestedGraphs: NavGraphBuilder.() -> Unit,
-    content: @Composable () -> Unit
-) {
-    navigation(
-        route = ReplyRouts.INBOX_ROUTE,
-        startDestination = ReplyDestinations.INBOX
-    ) {
-        composable(ReplyDestinations.INBOX) {
-            content()
-        }
-       nestedGraphs()
-    }
-}
-
-fun NavGraphBuilder.emailDetailGraph(
-    content: @Composable () -> Unit,
-) {
-    composable(
-        route = "${ReplyRouts.INBOX_ROUTE}/{${ReplyDestinations.EMAIL_ID_KEY}}",
-    ) {
-        content()
     }
 }
 

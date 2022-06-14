@@ -16,6 +16,7 @@
 
 package com.example.reply.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,6 +68,7 @@ fun ReplyInboxScreen(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
+    closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
 ) {
     if (contentType == ReplyContentType.LIST_AND_DETAIL) {
@@ -80,6 +82,7 @@ fun ReplyInboxScreen(
             ReplyListOnlyContent(
                 replyHomeUIState = replyHomeUIState,
                 modifier = Modifier.fillMaxSize(),
+                closeDetailScreen,
                 navigateToDetail
             )
             // When we have bottom navigation we show FAB at the bottom end.
@@ -108,15 +111,25 @@ fun ReplyInboxScreen(
 fun ReplyListOnlyContent(
     replyHomeUIState: ReplyHomeUIState,
     modifier: Modifier = Modifier,
+    closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
-        item {
-            ReplySearchBar(modifier = Modifier.fillMaxWidth())
+    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.showDetailScreen) {
+        BackHandler {
+            closeDetailScreen.invoke()
         }
-        items(replyHomeUIState.emails) { email ->
-            ReplyEmailListItem(email = email) { emailId ->
-                navigateToDetail.invoke(emailId)
+        ReplyEmailDetail(email = replyHomeUIState.selectedEmail) {
+            closeDetailScreen.invoke()
+        }
+    } else {
+        LazyColumn(modifier = modifier) {
+            item {
+                ReplySearchBar(modifier = Modifier.fillMaxWidth())
+            }
+            items(replyHomeUIState.emails) { email ->
+                ReplyEmailListItem(email = email) { emailId ->
+                    navigateToDetail.invoke(emailId)
+                }
             }
         }
     }

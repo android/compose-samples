@@ -28,14 +28,9 @@ object ReplyDestinations {
     const val EMAIL_ID_KEY = "emailId"
 }
 
-object ReplyRouts {
-    const val HOME_ROUTE = "home_route"
-    const val INBOX_ROUTE = "inbox_route"
-}
-
 class ReplyNavigationActions(navController: NavHostController) {
     val navigateToInbox: () -> Unit = {
-        navController.navigate(ReplyRouts.INBOX_ROUTE) {
+        navController.navigate(ReplyDestinations.INBOX) {
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
@@ -77,6 +72,6 @@ class ReplyNavigationActions(navController: NavHostController) {
         }
     }
     val navigateToDetail: (emailId: Long) -> Unit = { emailId ->
-        navController.navigate("${ReplyRouts.INBOX_ROUTE}/$emailId") {}
+     //   navController.navigate("${ReplyRouts.INBOX_ROUTE}/$emailId") {}
     }
 }

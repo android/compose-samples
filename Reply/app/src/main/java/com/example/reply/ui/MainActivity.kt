@@ -78,7 +78,14 @@ class MainActivity : ComponentActivity() {
                 val windowSize = calculateWindowSizeClass(this)
                 val devicePosture = devicePostureFlow.collectAsState().value
                 val uiState = viewModel.uiState.collectAsState().value
-                ReplyApp(windowSize.widthSizeClass, devicePosture, uiState) { emailId ->
+                ReplyApp(
+                    windowSize.widthSizeClass,
+                    devicePosture,
+                    uiState,
+                    closeDetailScreen = {
+                        viewModel.closeDetailScreen()
+                    }
+                ) { emailId ->
                     viewModel.setSelectedEmail(emailId)
                 }
             }
