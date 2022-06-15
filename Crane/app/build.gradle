@@ -150,3 +150,7 @@ dependencies {
     androidTestImplementation Libs.Hilt.testing
     kaptAndroidTest Libs.Hilt.compiler
 }
+
+secrets {
+    defaultPropertiesFileName 'local.defaults.properties'
+}
