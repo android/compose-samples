@@ -137,12 +137,16 @@ fun CraneHomeContent(
                         AnimatedContentScope.SlideDirection.Left else AnimatedContentScope
                         .SlideDirection.Right
 
-                    slideIntoContainer(towards = direction,
-                        animationSpec = tween(600)) with
+                    slideIntoContainer(
+                        towards = direction,
+                        animationSpec = tween(600)
+                    ) with
                         slideOutOfContainer(
                             towards = direction,
                             animationSpec = tween(600)
-                        ) using SizeTransform(clip = false)
+                        ) using SizeTransform(clip = false, sizeAnimationSpec = { initialSize, targetSize ->
+                        tween(600, easing = EaseInOut)
+                    })
                 }
             ) { targetState ->
                 when (targetState) {
