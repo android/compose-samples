@@ -12,6 +12,7 @@ on:
       - '.github/workflows/Crane.yaml'
       - 'Crane/**'
   workflow_dispatch:
+
 env:
   SAMPLE_PATH: Crane
 
@@ -53,13 +54,13 @@ jobs:
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
-    - name: Inject Maps API Key
-      run: |
-        # Injecting the key directly into the manifest as secrets-gradle-plugin
-        # isn't picking up the key when creating a local.properties file here
-        sed -i -e "s,\${googleMapsKey},$GOOGLE_MAPS_KEY,g" ${{ env.SAMPLE_PATH }}/app/src/main/AndroidManifest.xml
-      env:
-        GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+      - name: Inject Maps API Key
+        run: |
+          # Injecting the key directly into the manifest as secrets-gradle-plugin
+          # isn't picking up the key when creating a local.properties file here
+          sed -i -e "s,\${googleMapsKey},$GOOGLE_MAPS_KEY,g" ${{ env.SAMPLE_PATH }}/app/src/main/AndroidManifest.xml
+        env:
+          GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
