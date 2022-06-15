@@ -119,6 +119,7 @@ private fun ReplyNavigationWrapperUI(
         navBackStackEntry?.destination?.route ?: ReplyDestinations.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        //TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
             NavigationDrawerContent(
                 selectedDestination,
@@ -203,6 +204,7 @@ fun ReplyAppContent(
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
+            //TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
             ReplyNavigationRail(
                 selectedDestination,
                 navigateToInbox,
