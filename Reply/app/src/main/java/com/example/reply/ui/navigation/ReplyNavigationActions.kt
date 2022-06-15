@@ -71,7 +71,4 @@ class ReplyNavigationActions(navController: NavHostController) {
             restoreState = true
         }
     }
-    val navigateToDetail: (emailId: Long) -> Unit = { emailId ->
-     //   navController.navigate("${ReplyRouts.INBOX_ROUTE}/$emailId") {}
-    }
 }

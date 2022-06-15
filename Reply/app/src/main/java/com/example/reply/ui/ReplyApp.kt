@@ -175,9 +175,6 @@ private fun ReplyNavigationWrapperUI(
                 closeDetailScreen,
                 { emailId ->
                     setSelectedEmail.invoke(emailId)
-                    if (contentType == ReplyContentType.LIST_ONLY) {
-                        navigationActions.navigateToDetail.invoke(emailId)
-                    }
                 }
             ) {
                 scope.launch {
