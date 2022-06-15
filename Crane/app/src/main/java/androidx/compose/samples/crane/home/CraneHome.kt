@@ -136,7 +136,9 @@ fun CraneHomeContent(
                     val direction = if (initialState.ordinal < targetState.ordinal)
                         AnimatedContentScope.SlideDirection.Left else AnimatedContentScope
                         .SlideDirection.Right
-                    slideIntoContainer(towards = direction, animationSpec = tween(600)) with
+
+                    slideIntoContainer(towards = direction,
+                        animationSpec = tween(600)) with
                         slideOutOfContainer(
                             towards = direction,
                             animationSpec = tween(600)
