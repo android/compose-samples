@@ -59,6 +59,7 @@
     <string name="videochat_desc">Start videochat</string>
     <string name="textfield_desc">Text input</string>
     <string name="not_available">Functionality currently not available</string>
+    <string name="not_available_popup">Functionality not available 🙈</string>
     <string name="not_available_subtitle">Grab a beverage and check back later!</string>
     <string name="attached_image">Attached image</string>
     <string name="search">Search</string>
