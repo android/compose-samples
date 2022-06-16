@@ -84,10 +84,11 @@ class MainActivity : ComponentActivity() {
                     uiState,
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
+                    },
+                    setSelectedEmail = { emailId ->
+                        viewModel.setSelectedEmail(emailId)
                     }
-                ) { emailId ->
-                    viewModel.setSelectedEmail(emailId)
-                }
+                )
             }
         }
     }

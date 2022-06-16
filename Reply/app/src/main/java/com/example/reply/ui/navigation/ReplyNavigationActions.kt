@@ -24,8 +24,6 @@ object ReplyDestinations {
     const val ARTICLES = "Articles"
     const val DM = "DirectMessages"
     const val GROUPS = "Groups"
-    const val DETAIL = "Detail"
-    const val EMAIL_ID_KEY = "emailId"
 }
 
 class ReplyNavigationActions(navController: NavHostController) {
