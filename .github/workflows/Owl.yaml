@@ -11,6 +11,8 @@ on:
     paths:
       - '.github/workflows/Owl.yaml'
       - 'Owl/**'
+  workflow_dispatch:
+
 env:
   SAMPLE_PATH: Owl
 

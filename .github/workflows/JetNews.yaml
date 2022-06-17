@@ -11,6 +11,8 @@ on:
     paths:
       - '.github/workflows/JetNews.yaml'
       - 'JetNews/**'
+  workflow_dispatch:
+
 env:
   SAMPLE_PATH: JetNews
 

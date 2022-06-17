@@ -11,6 +11,8 @@ on:
     paths:
       - '.github/workflows/Jetchat.yaml'
       - 'Jetchat/**'
+  workflow_dispatch:
+
 env:
   SAMPLE_PATH: Jetchat
 
