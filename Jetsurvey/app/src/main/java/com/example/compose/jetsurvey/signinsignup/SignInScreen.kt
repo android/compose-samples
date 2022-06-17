@@ -125,15 +125,20 @@ fun SignInContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         val passwordState = remember { PasswordState() }
+        val onSubmit = {
+            if (emailState.isValid && passwordState.isValid) {
+                onSignInSubmitted(emailState.text, passwordState.text)
+            }
+        }
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
             modifier = Modifier.focusRequester(focusRequester),
-            onImeAction = { onSignInSubmitted(emailState.text, passwordState.text) }
+            onImeAction = { onSubmit() }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { onSignInSubmitted(emailState.text, passwordState.text) },
+            onClick = { onSubmit() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp),
