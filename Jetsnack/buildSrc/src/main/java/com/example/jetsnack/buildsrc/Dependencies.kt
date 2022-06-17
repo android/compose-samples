@@ -47,8 +47,8 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.2.0-rc01"
+            const val snapshot = "8738550"
+            const val version = "1.2.0-rc02"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
