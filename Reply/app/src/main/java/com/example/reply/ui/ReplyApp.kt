@@ -38,10 +38,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.reply.ui.navigation.NavigationDrawerContent
+import com.example.reply.ui.navigation.ReplyBottomNavigationBar
 import com.example.reply.ui.navigation.ReplyDestinations
 import com.example.reply.ui.navigation.ReplyNavigationActions
+import com.example.reply.ui.navigation.ReplyNavigationRail
 import com.example.reply.ui.utils.DevicePosture
-import com.example.reply.ui.utils.EmptyComingSoon
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
