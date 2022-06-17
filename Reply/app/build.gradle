@@ -20,12 +20,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.example.reply"
         minSdk 21
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -69,8 +69,8 @@ dependencies {
 
     implementation "androidx.compose.ui:ui:$compose_version"
     //Material 3 imports
-    implementation 'androidx.compose.material3:material3:1.0.0-alpha10'
-    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
+    implementation 'androidx.compose.material3:material3:1.0.0-alpha13'
+    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha13"
 
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
