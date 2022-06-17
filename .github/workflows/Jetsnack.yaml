@@ -11,6 +11,7 @@ on:
     paths:
       - '.github/workflows/Jetsnack.yaml'
       - 'Jetsnack/**'
+  workflow_dispatch:
 
 jobs:
   build:
