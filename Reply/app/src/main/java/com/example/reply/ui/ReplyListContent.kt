@@ -148,7 +148,7 @@ fun ReplyListAndDetailContent(
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
             items(replyHomeUIState.emails) { email ->
-                ReplyEmailListItem(email = email, isSelected = replyHomeUIState.selectedEmail?.id  == email.id) {
+                ReplyEmailListItem(email = email, isListAndDetailLayout = true, isSelected = replyHomeUIState.selectedEmail?.id  == email.id) {
                     navigateToDetail.invoke(it)
                 }
             }
@@ -232,12 +232,14 @@ fun EmailDetailAppBar(
 @Composable
 fun ReplyEmailListItem(
     email: Email,
+    isListAndDetailLayout: Boolean = false,
     isSelected: Boolean = false,
     modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
     navigateToDetail: (Long) -> Unit
 ) {
+    val semanticsModifier = if (isListAndDetailLayout) modifier.semantics { selected = isSelected } else modifier
     Card(
-        modifier = modifier.clickable { navigateToDetail.invoke(email.id) }.semantics { selected = isSelected },
+        modifier = semanticsModifier.clickable { navigateToDetail.invoke(email.id) },
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
         )
