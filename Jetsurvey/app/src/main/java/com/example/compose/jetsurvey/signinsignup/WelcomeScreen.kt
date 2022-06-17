@@ -37,6 +37,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -139,7 +140,9 @@ private fun SignInCreateAccount(
     onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val emailState = remember { EmailState() }
+    val emailState by rememberSaveable(stateSaver = EmailStateSaver) {
+        mutableStateOf(EmailState())
+    }
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(

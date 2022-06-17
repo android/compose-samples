@@ -18,6 +18,7 @@ package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 
 open class TextFieldState(
@@ -55,3 +56,13 @@ open class TextFieldState(
         }
     }
 }
+
+fun textFieldStateSaver(state: TextFieldState) = listSaver<TextFieldState, Any>(
+    save = { listOf(it.text, it.isFocusedDirty) },
+    restore = {
+        state.apply {
+            text = it[0] as String
+            isFocusedDirty = it[1] as Boolean
+        }
+    }
+)
