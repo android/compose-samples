@@ -141,14 +141,15 @@ fun CraneHomeContent(
                         towards = direction,
                         animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
                     ) with
-                            slideOutOfContainer(
-                                towards = direction,
-                                animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
-                            ) using SizeTransform(
+                        slideOutOfContainer(
+                            towards = direction,
+                            animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
+                        ) using SizeTransform(
                         clip = false,
                         sizeAnimationSpec = { _, _ ->
                             tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
-                        })
+                        }
+                    )
                 }
             ) { targetState ->
                 when (targetState) {
