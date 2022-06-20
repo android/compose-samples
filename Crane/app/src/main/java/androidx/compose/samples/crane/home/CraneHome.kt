@@ -220,7 +220,7 @@ private fun SearchContent(
     // to cause a recomposition when the dates change.
     val selectedDates = viewModel.calendarState.calendarUiState.value.selectedDatesFormatted
     AnimatedContent(
-        tabSelected,
+        targetState = tabSelected,
         transitionSpec = {
             fadeIn(
                 animationSpec = tween(600, easing = EaseIn)
