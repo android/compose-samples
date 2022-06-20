@@ -139,15 +139,15 @@ fun CraneHomeContent(
 
                     slideIntoContainer(
                         towards = direction,
-                        animationSpec = tween(600)
+                        animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
                     ) with
                             slideOutOfContainer(
                                 towards = direction,
-                                animationSpec = tween(600)
+                                animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
                             ) using SizeTransform(
                         clip = false,
-                        sizeAnimationSpec = { initialSize, targetSize ->
-                            tween(600, easing = EaseInOut)
+                        sizeAnimationSpec = { _, _ ->
+                            tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
                         })
                 }
             ) { targetState ->
@@ -206,6 +206,7 @@ private fun HomeTabBar(
     }
 }
 
+private const val ANIMATED_CONTENT_ANIMATION_DURATION = 600
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
@@ -223,15 +224,15 @@ private fun SearchContent(
         targetState = tabSelected,
         transitionSpec = {
             fadeIn(
-                animationSpec = tween(600, easing = EaseIn)
+                animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseIn)
             ).with(
                 fadeOut(
-                    animationSpec = tween(600, easing = EaseOut)
+                    animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseOut)
                 )
             ).using(
                 SizeTransform(
                     sizeAnimationSpec = { _, _ ->
-                        tween(1000, easing = EaseInOut)
+                        tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
                     }
                 )
             )
