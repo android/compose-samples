@@ -131,7 +131,7 @@ fun CraneHomeContent(
         },
         frontLayerContent = {
             AnimatedContent(
-                tabSelected,
+                targetState = tabSelected,
                 transitionSpec = {
                     val direction = if (initialState.ordinal < targetState.ordinal)
                         AnimatedContentScope.SlideDirection.Left else AnimatedContentScope
@@ -141,12 +141,14 @@ fun CraneHomeContent(
                         towards = direction,
                         animationSpec = tween(600)
                     ) with
-                        slideOutOfContainer(
-                            towards = direction,
-                            animationSpec = tween(600)
-                        ) using SizeTransform(clip = false, sizeAnimationSpec = { initialSize, targetSize ->
-                        tween(600, easing = EaseInOut)
-                    })
+                            slideOutOfContainer(
+                                towards = direction,
+                                animationSpec = tween(600)
+                            ) using SizeTransform(
+                        clip = false,
+                        sizeAnimationSpec = { initialSize, targetSize ->
+                            tween(600, easing = EaseInOut)
+                        })
                 }
             ) { targetState ->
                 when (targetState) {
