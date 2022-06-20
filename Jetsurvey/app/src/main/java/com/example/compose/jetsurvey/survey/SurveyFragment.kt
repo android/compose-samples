@@ -71,9 +71,9 @@ class SurveyFragment : Fragment() {
                             fadeIn() + slideIntoContainer(
                                 towards = AnimatedContentScope
                                     .SlideDirection.Up,
-                                animationSpec = tween(600)
+                                animationSpec = tween(ANIMATION_SLIDE_IN_DURATION)
                             ) with
-                                fadeOut(animationSpec = tween(200))
+                                fadeOut(animationSpec = tween(ANIMATION_FADE_OUT_DURATION))
                         }
                     ) { targetState ->
                         // It's important to use targetState and not state, as its critical to ensure
@@ -131,5 +131,10 @@ class SurveyFragment : Fragment() {
     @Suppress("UNUSED_PARAMETER")
     private fun selectContact(questionId: Int) {
         // TODO: unsupported for now
+    }
+
+    companion object {
+        private const val ANIMATION_SLIDE_IN_DURATION = 600
+        private const val ANIMATION_FADE_OUT_DURATION = 200
     }
 }
