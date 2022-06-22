@@ -16,8 +16,10 @@
 
 package com.example.reply.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,16 +32,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,10 +54,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
+import com.example.reply.ui.components.ReplySearchBar
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 
@@ -60,18 +68,23 @@ import com.example.reply.ui.utils.ReplyNavigationType
 fun ReplyInboxScreen(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
-    navigationType: ReplyNavigationType
+    navigationType: ReplyNavigationType,
+    closeDetailScreen: () -> Unit,
+    navigateToDetail: (Long) -> Unit
 ) {
     if (contentType == ReplyContentType.LIST_AND_DETAIL) {
         ReplyListAndDetailContent(
             replyHomeUIState = replyHomeUIState,
             modifier = Modifier.fillMaxSize(),
+            navigateToDetail
         )
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
             ReplyListOnlyContent(
                 replyHomeUIState = replyHomeUIState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                closeDetailScreen,
+                navigateToDetail
             )
             // When we have bottom navigation we show FAB at the bottom end.
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
@@ -98,14 +111,27 @@ fun ReplyInboxScreen(
 @Composable
 fun ReplyListOnlyContent(
     replyHomeUIState: ReplyHomeUIState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    closeDetailScreen: () -> Unit,
+    navigateToDetail: (Long) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
-        item {
-            ReplySearchBar(modifier = Modifier.fillMaxWidth())
+    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.showDetailScreen) {
+        BackHandler {
+            closeDetailScreen.invoke()
         }
-        items(replyHomeUIState.emails) { email ->
-            ReplyEmailListItem(email = email)
+        ReplyEmailDetail(email = replyHomeUIState.selectedEmail) {
+            closeDetailScreen.invoke()
+        }
+    } else {
+        LazyColumn(modifier = modifier) {
+            item {
+                ReplySearchBar(modifier = Modifier.fillMaxWidth())
+            }
+            items(replyHomeUIState.emails) { email ->
+                ReplyEmailListItem(email = email) { emailId ->
+                    navigateToDetail.invoke(emailId)
+                }
+            }
         }
     }
 }
@@ -114,21 +140,90 @@ fun ReplyListOnlyContent(
 fun ReplyListAndDetailContent(
     replyHomeUIState: ReplyHomeUIState,
     modifier: Modifier = Modifier,
-    selectedItemIndex: Int = 0
+    navigateToDetail: (Long) -> Unit
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         LazyColumn(modifier = modifier.weight(1f)) {
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
             items(replyHomeUIState.emails) { email ->
-                ReplyEmailListItem(email = email)
+                ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id  == email.id) {
+                    navigateToDetail.invoke(it)
+                }
             }
         }
-        LazyColumn(modifier = modifier.weight(1f)) {
-            items(replyHomeUIState.emails[selectedItemIndex].threads) { email ->
-                ReplyEmailThreadItem(email = email)
+        ReplyEmailDetail(
+            modifier = Modifier.weight(1f),
+            isFullScreen = false,
+            email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()
+        ) {}
+    }
+}
+
+@Composable
+fun ReplyEmailDetail(
+    email: Email,
+    isFullScreen: Boolean = true,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    onBackPressed: () -> Unit
+) {
+    LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)) {
+        item { EmailDetailAppBar(email, isFullScreen) {
+            onBackPressed.invoke()
+        } }
+        items(email.threads) { email ->
+            ReplyEmailThreadItem(email = email)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmailDetailAppBar(
+    email: Email,
+    isFullScreen: Boolean,
+    onBackPressed: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        if (isFullScreen) {
+            FilledIconButton(
+                onClick = { onBackPressed.invoke() },
+                modifier = Modifier.padding(8.dp),
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = stringResource(id = R.string.back_button),
+                    modifier = Modifier.size(14.dp)
+                )
             }
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = if (isFullScreen) Alignment.CenterHorizontally else Alignment.Start
+        ) {
+            Text(text = email.subject, style = MaterialTheme.typography.titleMedium)
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = "${email.threads.size} ${stringResource(id = R.string.messages)}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.outline
+            )
+        }
+        IconButton(
+            onClick = { /*TODO*/ },
+        ) {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = stringResource(id = R.string.more_options_button))
         }
     }
 }
@@ -137,8 +232,18 @@ fun ReplyListAndDetailContent(
 @Composable
 fun ReplyEmailListItem(
     email: Email,
-    modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-    Card(modifier = modifier) {
+    isSelectable: Boolean = false,
+    isSelected: Boolean = false,
+    modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+    navigateToDetail: (Long) -> Unit
+) {
+    val semanticsModifier = if (isSelectable) modifier.semantics { selected = isSelected } else modifier
+    Card(
+        modifier = semanticsModifier.clickable { navigateToDetail.invoke(email.id) },
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -298,35 +403,4 @@ fun ReplyProfileImage(
         painter = painterResource(id = drawableResource),
         contentDescription = description,
     )
-}
-
-@Composable
-fun ReplySearchBar(modifier: Modifier = Modifier) {
-    Row(modifier = modifier
-        .fillMaxWidth()
-        .padding(16.dp)
-        .background(MaterialTheme.colorScheme.surface, CircleShape),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = stringResource(id = R.string.search),
-            modifier = Modifier.padding(start = 16.dp),
-            tint = MaterialTheme.colorScheme.outline
-        )
-        Text(text = stringResource(id = R.string.search_replies),
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.outline
-        )
-        ReplyProfileImage(
-            drawableResource = R.drawable.avatar_6,
-            description = stringResource(id = R.string.profile),
-            modifier = Modifier
-                .padding(12.dp)
-                .size(32.dp)
-        )
-    }
 }

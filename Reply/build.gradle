@@ -16,10 +16,10 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.6.20'
-        compose_version = '1.2.0-alpha08'
+        kotlin_version = '1.6.21'
+        compose_version = '1.2.0-rc01'
         coroutines_version = '1.6.0'
-        agp_version = "7.2.0-beta02"
+        agp_version = "7.2.1"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
