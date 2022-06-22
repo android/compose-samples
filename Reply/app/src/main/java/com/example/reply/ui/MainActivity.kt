@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
                     },
-                    setSelectedEmail = { emailId ->
+                    navigateToDetail = { emailId ->
                         viewModel.setSelectedEmail(emailId)
                     }
                 )

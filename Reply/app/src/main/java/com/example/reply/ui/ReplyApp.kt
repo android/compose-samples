@@ -40,9 +40,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reply.ui.navigation.NavigationDrawerContent
 import com.example.reply.ui.navigation.ReplyBottomNavigationBar
-import com.example.reply.ui.navigation.ReplyDestinations
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationRail
+import com.example.reply.ui.navigation.ReplyRoute
+import com.example.reply.ui.navigation.ReplyTopLevelDestination
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
@@ -55,7 +56,7 @@ fun ReplyApp(
     foldingDevicePosture: DevicePosture,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
-    setSelectedEmail: (Long) -> Unit = {}
+    navigateToDetail: (Long) -> Unit = {}
 ) {
     /**
      * This will help us select type of navigation and content type depending on window size and
@@ -94,7 +95,13 @@ fun ReplyApp(
         }
     }
 
-    ReplyNavigationWrapperUI(navigationType, contentType, replyHomeUIState, closeDetailScreen, setSelectedEmail)
+    ReplyNavigationWrapperUI(
+        navigationType = navigationType,
+        contentType = contentType,
+        replyHomeUIState = replyHomeUIState,
+        closeDetailScreen = closeDetailScreen,
+        navigateToDetail = navigateToDetail
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,7 +111,7 @@ private fun ReplyNavigationWrapperUI(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
-    setSelectedEmail: (Long) -> Unit
+    navigateToDetail: (Long) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -115,44 +122,33 @@ private fun ReplyNavigationWrapperUI(
     }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val selectedDestination =
-        navBackStackEntry?.destination?.route ?: ReplyDestinations.INBOX
+        navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         //TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
             NavigationDrawerContent(
-                selectedDestination,
-                navigationActions.navigateToInbox,
-                navigationActions.navigateToDM,
-                navigationActions.navigateToArticles,
-                navigationActions.navigateToGroups,
+                selectedDestination = selectedDestination,
+                navigateToTopLevelDestination = navigationActions::navigateTo,
             )
         }) {
             ReplyAppContent(
-                navigationType,
-                contentType,
-                replyHomeUIState,
-                navController,
-                selectedDestination,
-                navigationActions.navigateToInbox,
-                navigationActions.navigateToDM,
-                navigationActions.navigateToArticles,
-                navigationActions.navigateToGroups,
-                closeDetailScreen,
-                { emailId ->
-                    setSelectedEmail.invoke(emailId)
-                }
+                navigationType = navigationType,
+                contentType = contentType,
+                replyHomeUIState = replyHomeUIState,
+                navController = navController,
+                selectedDestination = selectedDestination,
+                navigateToTopLevelDestination = navigationActions::navigateTo,
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail
             )
         }
     } else {
         ModalNavigationDrawer(
             drawerContent = {
                 NavigationDrawerContent(
-                    selectedDestination,
-                    navigationActions.navigateToInbox,
-                    navigationActions.navigateToDM,
-                    navigationActions.navigateToArticles,
-                    navigationActions.navigateToGroups,
+                    selectedDestination = selectedDestination,
+                    navigateToTopLevelDestination = navigationActions::navigateTo,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -163,19 +159,14 @@ private fun ReplyNavigationWrapperUI(
             drawerState = drawerState
         ) {
             ReplyAppContent(
-                navigationType,
-                contentType,
-                replyHomeUIState,
-                navController,
-                selectedDestination,
-                navigationActions.navigateToInbox,
-                navigationActions.navigateToDM,
-                navigationActions.navigateToArticles,
-                navigationActions.navigateToGroups,
-                closeDetailScreen,
-                { emailId ->
-                    setSelectedEmail.invoke(emailId)
-                }
+                navigationType = navigationType,
+                contentType = contentType,
+                replyHomeUIState = replyHomeUIState,
+                navController = navController,
+                selectedDestination = selectedDestination,
+                navigateToTopLevelDestination = navigationActions::navigateTo,
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail
             ) {
                 scope.launch {
                     drawerState.open()
@@ -193,10 +184,7 @@ fun ReplyAppContent(
     replyHomeUIState: ReplyHomeUIState,
     navController: NavHostController,
     selectedDestination: String,
-    navigateToInbox: () -> Unit,
-    navigateToDM: () -> Unit,
-    navigateToArticles: () -> Unit,
-    navigateToGroups: () -> Unit,
+    navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit,
     onDrawerClicked: () -> Unit = {}
@@ -205,12 +193,9 @@ fun ReplyAppContent(
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
             //TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
             ReplyNavigationRail(
-                selectedDestination,
-                navigateToInbox,
-                navigateToDM,
-                navigateToArticles,
-                navigateToGroups,
-                onDrawerClicked,
+                selectedDestination = selectedDestination,
+                navigateToTopLevelDestination = navigateToTopLevelDestination,
+                onDrawerClicked =  onDrawerClicked,
             )
         }
         Column(
@@ -219,21 +204,18 @@ fun ReplyAppContent(
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
             ReplyNavHost(
-                Modifier.weight(1f),
-                navController,
-                contentType,
-                replyHomeUIState,
-                navigationType,
-                closeDetailScreen,
-                navigateToDetail
+                navController = navController,
+                contentType = contentType,
+                replyHomeUIState = replyHomeUIState,
+                navigationType = navigationType,
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail,
+                modifier = Modifier.weight(1f),
             )
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ReplyBottomNavigationBar(
-                    selectedDestination,
-                    navigateToInbox,
-                    navigateToDM,
-                    navigateToArticles,
-                    navigateToGroups
+                    selectedDestination = selectedDestination,
+                    navigateToTopLevelDestination = navigateToTopLevelDestination
                 )
             }
         }
@@ -242,29 +224,35 @@ fun ReplyAppContent(
 
 @Composable
 private fun ReplyNavHost(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long) -> Unit
+    navigateToDetail: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = ReplyDestinations.INBOX,
+        startDestination = ReplyRoute.INBOX,
     ) {
-        composable(ReplyDestinations.INBOX) {
-            ReplyInboxScreen(contentType, replyHomeUIState, navigationType, closeDetailScreen, navigateToDetail)
+        composable(ReplyRoute.INBOX) {
+            ReplyInboxScreen(
+                contentType = contentType,
+                replyHomeUIState = replyHomeUIState,
+                navigationType = navigationType,
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail
+            )
         }
-        composable(ReplyDestinations.DM) {
+        composable(ReplyRoute.DM) {
             EmptyComingSoon()
         }
-        composable(ReplyDestinations.ARTICLES) {
+        composable(ReplyRoute.ARTICLES) {
             EmptyComingSoon()
         }
-        composable(ReplyDestinations.GROUPS) {
+        composable(ReplyRoute.GROUPS) {
             EmptyComingSoon()
         }
     }
