@@ -20,8 +20,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -52,33 +54,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import com.example.reply.ui.utils.ReplyNavigationContentPosition
 
 
 @Composable
 fun ReplyNavigationRail(
     selectedDestination: String,
+    navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {},
 ) {
-    NavigationRail(modifier = Modifier.fillMaxHeight()) {
-        NavigationRailItem(
-            selected = false,
-            onClick = onDrawerClicked,
-            icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
-        )
-        FloatingActionButton(
-            onClick =  { /*TODO*/ },
-            modifier = Modifier.padding(top = 18.dp, bottom = 40.dp),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-        ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = stringResource(id = R.string.edit),
-                modifier = Modifier.size(18.dp)
+    NavigationRail(
+        modifier = Modifier.fillMaxHeight().padding(vertical = 24.dp),
+        header = {
+            NavigationRailItem(
+                selected = false,
+                onClick = onDrawerClicked,
+                icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
             )
+            FloatingActionButton(
+                onClick =  { /*TODO*/ },
+                modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(id = R.string.edit),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
-
+    ) {
+        if  (navigationContentPosition == ReplyNavigationContentPosition.BOTTOM
+            || navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
+                Spacer(modifier = Modifier.weight(0.4f))
+        }
         TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
             NavigationRailItem(
                 selected = selectedDestination == replyDestination.route,
@@ -90,6 +101,9 @@ fun ReplyNavigationRail(
                     )
                 }
             )
+        }
+        if  (navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -114,6 +128,7 @@ fun ReplyBottomNavigationBar(
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,
+    navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -123,7 +138,8 @@ fun NavigationDrawerContent(
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.inverseOnSurface)
-            .padding(24.dp)
+            .padding(16.dp)
+
     ) {
         Row(
             modifier = Modifier
@@ -149,7 +165,7 @@ fun NavigationDrawerContent(
             onClick = { /*TODO*/ },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 22.dp, bottom = 48.dp),
+                .padding(top = 8.dp, bottom = 40.dp),
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer
         ) {
@@ -163,7 +179,9 @@ fun NavigationDrawerContent(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
-
+        }
+        if  (navigationContentPosition == ReplyNavigationContentPosition.BOTTOM || navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
+            Spacer(modifier = Modifier.weight(0.4f))
         }
         TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
             NavigationDrawerItem(
@@ -173,6 +191,9 @@ fun NavigationDrawerContent(
                 colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
                 onClick = { navigateToTopLevelDestination.invoke(replyDestination)}
             )
+        }
+        if  (navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
