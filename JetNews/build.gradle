@@ -19,7 +19,7 @@ buildscript {
     ext.compose_version = '1.2.0-rc02'
     ext.compose_snapshot_version = '8738550'
     ext.coroutines_version = '1.6.0'
-    ext.accompanist_version = '0.24.11-rc'
+    ext.accompanist_version = '0.24.12-rc'
 
     repositories {
         google()
