@@ -29,7 +29,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -72,19 +74,23 @@ fun ReplyInboxScreen(
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
 ) {
+    val emailLazyListState = rememberLazyListState()
+
     if (contentType == ReplyContentType.LIST_AND_DETAIL) {
         ReplyListAndDetailContent(
             replyHomeUIState = replyHomeUIState,
+            emailLazyListState = emailLazyListState,
             modifier = Modifier.fillMaxSize(),
-            navigateToDetail
+            navigateToDetail = navigateToDetail
         )
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
             ReplyListOnlyContent(
                 replyHomeUIState = replyHomeUIState,
+                emailLazyListState = emailLazyListState,
                 modifier = Modifier.fillMaxSize(),
-                closeDetailScreen,
-                navigateToDetail
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail
             )
             // When we have bottom navigation we show FAB at the bottom end.
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
@@ -111,6 +117,7 @@ fun ReplyInboxScreen(
 @Composable
 fun ReplyListOnlyContent(
     replyHomeUIState: ReplyHomeUIState,
+    emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
@@ -123,7 +130,7 @@ fun ReplyListOnlyContent(
             closeDetailScreen.invoke()
         }
     } else {
-        LazyColumn(modifier = modifier) {
+        LazyColumn(modifier = modifier, state = emailLazyListState) {
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
@@ -139,11 +146,12 @@ fun ReplyListOnlyContent(
 @Composable
 fun ReplyListAndDetailContent(
     replyHomeUIState: ReplyHomeUIState,
+    emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     navigateToDetail: (Long) -> Unit
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        LazyColumn(modifier = modifier.weight(1f)) {
+        LazyColumn(modifier = modifier.weight(1f), state = emailLazyListState) {
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
