@@ -65,7 +65,7 @@ fun ReplyNavigationRail(
     onDrawerClicked: () -> Unit = {},
 ) {
     NavigationRail(
-        modifier = Modifier.fillMaxHeight().padding(vertical = 24.dp),
+        modifier = Modifier.fillMaxHeight(),
         header = {
             NavigationRailItem(
                 selected = false,
@@ -86,6 +86,7 @@ fun ReplyNavigationRail(
             }
         }
     ) {
+        //TODO ticket to support nav rail positioning out of box according to specs: b/232495216
         if  (navigationContentPosition == ReplyNavigationContentPosition.BOTTOM
             || navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
                 Spacer(modifier = Modifier.weight(0.4f))
