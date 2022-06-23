@@ -64,7 +64,7 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
         if [[ $line == *"val version ="* && "$compose_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
             MADE_CHANGE=true;
-        elif [[ $line == *"val snapshot ="* && "$snapshot_version" != "" ]] && $COMPOSE_BLOCK = true; then
+        elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
             MADE_CHANGE=true;
         elif [[ $line == *"val version ="* && "$accompanist_version" != "" ]] && $ACCOMPANIST_BLOCK = true; then
@@ -102,7 +102,7 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
         if [[ $line == *"ext.compose_version ="* && "$compose_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
             MADE_CHANGE=true;
-        elif [[ $line == *"ext.compose_snapshot_version ="* && "$snapshot_version" != "" ]]; then
+        elif [[ $line == *"ext.compose_snapshot_version ="* ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
             MADE_CHANGE=true;
         elif [[ $line == *"ext.accompanist_version ="* && "$accompanist_version" != "" ]]; then
