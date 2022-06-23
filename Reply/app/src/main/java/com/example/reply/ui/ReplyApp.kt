@@ -98,6 +98,10 @@ fun ReplyApp(
         }
     }
 
+    /**
+     * Content inside Navigation Rail/Drawer can also be positioned at top, bottom or center for
+     * ergonomics and reachability depending upon the height of the device.
+     */
     val navigationContentPosition = when (windowSize.heightSizeClass) {
         WindowHeightSizeClass.Compact -> {
              ReplyNavigationContentPosition.TOP

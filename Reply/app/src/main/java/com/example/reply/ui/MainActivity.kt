@@ -82,6 +82,7 @@ class MainActivity : ComponentActivity() {
                 val windowSize = calculateWindowSizeClass(this)
                 val devicePosture = devicePostureFlow.collectAsState().value
                 val uiState = viewModel.uiState.collectAsState().value
+
                 ReplyApp(
                     windowSize = windowSize,
                     foldingDevicePosture = devicePosture,
