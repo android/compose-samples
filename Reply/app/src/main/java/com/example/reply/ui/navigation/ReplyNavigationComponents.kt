@@ -50,9 +50,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.offset
 import com.example.reply.R
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 
@@ -66,46 +70,91 @@ fun ReplyNavigationRail(
 ) {
     NavigationRail(
         modifier = Modifier.fillMaxHeight(),
-        header = {
-            NavigationRailItem(
-                selected = false,
-                onClick = onDrawerClicked,
-                icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
-            )
-            FloatingActionButton(
-                onClick =  { /*TODO*/ },
-                modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(id = R.string.edit),
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
     ) {
-        //TODO ticket to support nav rail positioning out of box according to specs: b/232495216
-        if  (navigationContentPosition == ReplyNavigationContentPosition.BOTTOM
-            || navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
-                Spacer(modifier = Modifier.weight(0.4f))
-        }
-        TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
-            NavigationRailItem(
-                selected = selectedDestination == replyDestination.route,
-                onClick = { navigateToTopLevelDestination.invoke(replyDestination) },
-                icon = {
-                    Icon(
-                        imageVector = replyDestination.selectedIcon,
-                        contentDescription = stringResource(id = replyDestination.iconTextId)
+        //TODO remove custom nav rail positioning when NavRail component supports it. ticket : b/232495216
+        Layout(
+            content = {
+                Column(
+                    modifier = Modifier.layoutId("header"),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                ) {
+                    NavigationRailItem(
+                        selected = false,
+                        onClick = onDrawerClicked,
+                        icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
                     )
+                    FloatingActionButton(
+                        onClick =  { /*TODO*/ },
+                        modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = stringResource(id = R.string.edit),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp)) // NavigationRailHeaderPadding
+                    Spacer(Modifier.height(4.dp)) // NavigationRailVerticalPadding
                 }
-            )
-        }
-        if  (navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
-            Spacer(modifier = Modifier.weight(1f))
-        }
+
+                Column(
+                    modifier = Modifier.layoutId("content"),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                ) {
+                    TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
+                        NavigationRailItem(
+                            selected = selectedDestination == replyDestination.route,
+                            onClick = { navigateToTopLevelDestination.invoke(replyDestination) },
+                            icon = {
+                                Icon(
+                                    imageVector = replyDestination.selectedIcon,
+                                    contentDescription = stringResource(id = replyDestination.iconTextId)
+                                )
+                            }
+                        )
+                    }
+                }
+            },
+            measurePolicy = { measurables, constraints ->
+                lateinit var headerMeasurable: Measurable
+                lateinit var contentMeasurable: Measurable
+                measurables.forEach {
+                    when (it.layoutId) {
+                        "header" -> headerMeasurable = it
+                        "content" -> contentMeasurable = it
+                        else -> error("Unknown layoutId encountered!")
+                    }
+                }
+
+                val headerPlaceable = headerMeasurable.measure(constraints)
+                val contentPlaceable = contentMeasurable.measure(
+                    constraints.offset(vertical = -headerPlaceable.height)
+                )
+                layout(constraints.maxWidth, constraints.maxHeight) {
+                    // Place the header, this goes at the top
+                    headerPlaceable.placeRelative(0, 0)
+
+                    // Determine how much space is not taken up by the content
+                    val nonContentVerticalSpace = constraints.maxHeight - contentPlaceable.height
+
+                    val contentPlaceableY = when (navigationContentPosition) {
+                        // Figure out the place we want to place the content, with respect to the
+                        // parent (ignoring the header for now)
+                        ReplyNavigationContentPosition.TOP -> 0
+                        ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
+                        ReplyNavigationContentPosition.BOTTOM -> nonContentVerticalSpace
+                    }
+                        // And finally, make sure we don't overlap with the header.
+                        .coerceAtLeast(headerPlaceable.height)
+
+                    contentPlaceable.placeRelative(0, contentPlaceableY)
+                }
+            }
+        )
     }
 }
 
@@ -133,68 +182,105 @@ fun NavigationDrawerContent(
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
-    Column(
-        Modifier
-            .wrapContentWidth()
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-            .padding(16.dp)
+    //TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
+    Layout(
+        modifier = Modifier.padding(16.dp),
+        content = {
+            Column(
+                modifier = Modifier.layoutId("header"),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.app_name).uppercase(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    IconButton(onClick = onDrawerClicked) {
+                        Icon(
+                            imageVector = Icons.Default.MenuOpen,
+                            contentDescription = stringResource(id = R.string.navigation_drawer)
+                        )
+                    }
+                }
 
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = R.string.app_name).uppercase(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
+                ExtendedFloatingActionButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, bottom = 40.dp),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(id = R.string.edit),
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.compose),
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.layoutId("content"),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
+                    NavigationDrawerItem(
+                        selected = selectedDestination == replyDestination.route,
+                        label = { Text(text = stringResource(id = replyDestination.iconTextId), modifier = Modifier.padding(horizontal = 16.dp)) },
+                        icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription =  stringResource(id = replyDestination.iconTextId)) },
+                        colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+                        onClick = { navigateToTopLevelDestination.invoke(replyDestination)}
+                    )
+                }
+            }
+        },
+        measurePolicy = { measurables, constraints ->
+            lateinit var headerMeasurable: Measurable
+            lateinit var contentMeasurable: Measurable
+            measurables.forEach {
+                when (it.layoutId) {
+                    "header" -> headerMeasurable = it
+                    "content" -> contentMeasurable = it
+                    else -> error("Unknown layoutId encountered!")
+                }
+            }
+
+            val headerPlaceable = headerMeasurable.measure(constraints)
+            val contentPlaceable = contentMeasurable.measure(
+                constraints.offset(vertical = -headerPlaceable.height)
             )
-            IconButton(onClick = onDrawerClicked) {
-                Icon(
-                    imageVector = Icons.Default.MenuOpen,
-                    contentDescription = stringResource(id = R.string.navigation_drawer)
-                )
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                // Place the header, this goes at the top
+                headerPlaceable.placeRelative(0, 0)
+
+                // Determine how much space is not taken up by the content
+                val nonContentVerticalSpace = constraints.maxHeight - contentPlaceable.height
+
+                val contentPlaceableY = when (navigationContentPosition) {
+                    // Figure out the place we want to place the content, with respect to the
+                    // parent (ignoring the header for now)
+                    ReplyNavigationContentPosition.TOP -> 0
+                    ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
+                    ReplyNavigationContentPosition.BOTTOM -> nonContentVerticalSpace
+                }
+                    // And finally, make sure we don't overlap with the header.
+                    .coerceAtLeast(headerPlaceable.height)
+
+                contentPlaceable.placeRelative(0, contentPlaceableY)
             }
         }
-
-        ExtendedFloatingActionButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 40.dp),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-        ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = stringResource(id = R.string.edit),
-                modifier = Modifier.size(18.dp)
-            )
-            Text(
-                text = stringResource(id = R.string.compose),
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-        }
-        if  (navigationContentPosition == ReplyNavigationContentPosition.BOTTOM || navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
-            Spacer(modifier = Modifier.weight(0.4f))
-        }
-        TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
-            NavigationDrawerItem(
-                selected = selectedDestination == replyDestination.route,
-                label = { Text(text = stringResource(id = replyDestination.iconTextId), modifier = Modifier.padding(horizontal = 16.dp)) },
-                icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription =  stringResource(id = replyDestination.iconTextId)) },
-                colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-                onClick = { navigateToTopLevelDestination.invoke(replyDestination)}
-            )
-        }
-        if  (navigationContentPosition == ReplyNavigationContentPosition.CENTER) {
-            Spacer(modifier = Modifier.weight(1f))
-        }
-    }
+    )
 }

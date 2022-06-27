@@ -126,13 +126,39 @@ fun ReplyAppPreviewTablet() {
 }
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-@Preview(showBackground = true, widthDp = 1100)
+@Preview(showBackground = true, widthDp = 500, heightDp = 700)
+@Composable
+fun ReplyAppPreviewTabletPortrait() {
+    ReplyTheme {
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
+            windowSize = WindowSizeClass.calculateFromSize(DpSize(500.dp, 700.dp)),
+            foldingDevicePosture = DevicePosture.NormalPosture
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, widthDp = 1100, heightDp = 600)
 @Composable
 fun ReplyAppPreviewDesktop() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            windowSize = WindowSizeClass.calculateFromSize(DpSize(1100.dp, 800.dp)),
+            windowSize = WindowSizeClass.calculateFromSize(DpSize(1100.dp, 600.dp)),
+            foldingDevicePosture = DevicePosture.NormalPosture
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, widthDp = 600, heightDp = 1100)
+@Composable
+fun ReplyAppPreviewDesktopPortrait() {
+    ReplyTheme {
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
+            windowSize = WindowSizeClass.calculateFromSize(DpSize(600.dp, 1100.dp)),
             foldingDevicePosture = DevicePosture.NormalPosture
         )
     }

@@ -42,7 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
-import com.example.reply.ui.ReplyProfileImage
 
 @Composable
 fun ReplySearchBar(modifier: Modifier = Modifier) {
@@ -74,6 +73,7 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
         )
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +109,11 @@ fun EmailDetailAppBar(
             modifier = Modifier.weight(1f),
             horizontalAlignment = if (isFullScreen) Alignment.CenterHorizontally else Alignment.Start
         ) {
-            Text(text = email.subject, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = email.subject,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = "${email.threads.size} ${stringResource(id = R.string.messages)}",
