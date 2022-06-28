@@ -50,8 +50,7 @@ The branch `compose-latest` is targetting the latest alpha versions of Compose.
 |  |  |
 | <br><img src="readme/tivi.png" alt="Tivi" width="240"></img>  <br><br>A work-in-progress TV show tracking Android app, which connects to [Trakt.tv](https://www.trakt.tv).<br><br>• Entirely written in [Kotlin](https://kotlinlang.org) and uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html) throughout<br>• Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture): Room, Lifecycle, Navigation<br>• Uses [Hilt](https://dagger.dev/hilt) for dependency injection<br><br>**[> Browse](https://tivi.app)** <br><br>  | <img src="readme/screenshots/Tivi.jpg" width="320" alt="Tivi sample demo">|
 
-## High level features
-------------
+## High level features 
 
 Looking for a sample that has the following features?
 
