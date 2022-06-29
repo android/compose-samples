@@ -53,7 +53,7 @@ object Libs {
         object Compose {
             const val compilerVersion = "1.2.0"
             const val snapshot = ""
-            const val version = "1.2.0-rc02"
+            const val version = "1.2.0-rc03"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
