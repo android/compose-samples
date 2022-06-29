@@ -24,7 +24,7 @@ object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
 
     object Accompanist {
-        const val version = "0.24.12-rc"
+        const val version = "0.24.13-rc"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }
