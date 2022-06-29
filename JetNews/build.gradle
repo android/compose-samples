@@ -15,7 +15,8 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.6.21'
+    ext.kotlin_version = '1.7.0'
+    ext.compose_compiler_version = '1.2.0'
     ext.compose_version = '1.2.0-rc02'
     ext.compose_snapshot_version = ''
     ext.coroutines_version = '1.6.0'

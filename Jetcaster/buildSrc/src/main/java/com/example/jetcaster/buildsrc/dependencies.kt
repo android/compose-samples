@@ -30,7 +30,7 @@ object Libs {
     }
 
     object Kotlin {
-        private const val version = "1.6.21"
+        private const val version = "1.7.0"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -69,6 +69,7 @@ object Libs {
         }
 
         object Compose {
+            const val compilerVersion = "1.2.0"
             const val snapshot = ""
             const val version = "1.2.0-rc02"
 
@@ -113,7 +114,7 @@ object Libs {
         }
 
         object Room {
-            private const val version = "2.4.2"
+            private const val version = "2.5.0-alpha02"
             const val runtime = "androidx.room:room-runtime:${version}"
             const val ktx = "androidx.room:room-ktx:${version}"
             const val compiler = "androidx.room:room-compiler:${version}"
