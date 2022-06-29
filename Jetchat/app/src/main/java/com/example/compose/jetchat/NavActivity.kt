@@ -67,7 +67,7 @@ class NavActivity : AppCompatActivity() {
                         if (drawerOpen) {
                             // Open drawer and reset state in VM.
                             LaunchedEffect(Unit) {
-                                //wrap in try-finally to handle interruption whiles opening drawer
+                                // wrap in try-finally to handle interruption whiles opening drawer
                                 try {
                                     drawerState.open()
                                 } finally {
