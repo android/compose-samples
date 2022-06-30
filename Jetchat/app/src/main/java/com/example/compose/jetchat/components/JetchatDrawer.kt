@@ -55,7 +55,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
 fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
-    // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
+    // Use windowInsetsTopHeight() to add a spacer which pushes the Drawer content
     // below the status bar (y-axis)
     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
     DrawerHeader()
@@ -104,7 +104,7 @@ private fun DrawerItemHeader(text: String) {
 @Composable
 private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
     val background = if (selected) {
-        Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+        Modifier.background(MaterialTheme.colorScheme.primaryDrawer)
     } else {
         Modifier
     }
