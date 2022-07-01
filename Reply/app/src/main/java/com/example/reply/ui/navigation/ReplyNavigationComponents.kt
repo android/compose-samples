@@ -233,7 +233,9 @@ fun NavigationDrawerContent(
             }
 
             Column(
-                modifier = Modifier.layoutId("content"),
+                modifier = Modifier
+                    .layoutId("content")
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->

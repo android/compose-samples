@@ -92,7 +92,7 @@ private val replyLightColorScheme = lightColorScheme(
 
 @Composable
 fun ReplyTheme(
-    darkTheme: Boolean = false,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
