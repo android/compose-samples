@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,7 +158,6 @@ object LocalAccountsDataProvider {
      * Whether or not the given [Account.id] uid is an account owned by the current user.
      */
     fun isUserAccount(uid: Long): Boolean = allUserAccounts.any { it.uid == uid }
-
 
     /**
      * Get the contact of the current user with the given [accountId].

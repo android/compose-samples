@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ class AccountsRepositoryImpl : AccountsRepository {
     override fun getAllUserAccounts(): Flow<List<Account>> = flow {
         emit(LocalAccountsDataProvider.allUserAccounts)
     }
-
 
     override fun getContactAccountByUid(uid: Long): Flow<Account> = flow {
         emit(LocalAccountsDataProvider.getContactAccountByUid(uid))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,13 +48,14 @@ import com.example.reply.ui.navigation.ReplyRoute
 import com.example.reply.ui.navigation.ReplyTopLevelDestination
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
+import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyApp(
-    windowSize: WindowWidthSizeClass,
+    windowSize: WindowSizeClass,
     foldingDevicePosture: DevicePosture,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
@@ -68,7 +71,7 @@ fun ReplyApp(
     val navigationType: ReplyNavigationType
     val contentType: ReplyContentType
 
-    when (windowSize) {
+    when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
             contentType = ReplyContentType.LIST_ONLY
@@ -95,9 +98,29 @@ fun ReplyApp(
         }
     }
 
+    /**
+     * Content inside Navigation Rail/Drawer can also be positioned at top, bottom or center for
+     * ergonomics and reachability depending upon the height of the device.
+     */
+    val navigationContentPosition = when (windowSize.heightSizeClass) {
+        WindowHeightSizeClass.Compact -> {
+            ReplyNavigationContentPosition.TOP
+        }
+        WindowHeightSizeClass.Medium -> {
+            ReplyNavigationContentPosition.CENTER
+        }
+        WindowHeightSizeClass.Expanded -> {
+            ReplyNavigationContentPosition.BOTTOM
+        }
+        else -> {
+            ReplyNavigationContentPosition.TOP
+        }
+    }
+
     ReplyNavigationWrapperUI(
         navigationType = navigationType,
         contentType = contentType,
+        navigationContentPosition = navigationContentPosition,
         replyHomeUIState = replyHomeUIState,
         closeDetailScreen = closeDetailScreen,
         navigateToDetail = navigateToDetail
@@ -109,6 +132,7 @@ fun ReplyApp(
 private fun ReplyNavigationWrapperUI(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
+    navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
@@ -125,16 +149,18 @@ private fun ReplyNavigationWrapperUI(
         navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
-        //TODO check on custom width of PermanentNavigationDrawer: b/232495216
+        // TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
             NavigationDrawerContent(
                 selectedDestination = selectedDestination,
+                navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigationActions::navigateTo,
             )
         }) {
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
+                navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
                 selectedDestination = selectedDestination,
@@ -148,6 +174,7 @@ private fun ReplyNavigationWrapperUI(
             drawerContent = {
                 NavigationDrawerContent(
                     selectedDestination = selectedDestination,
+                    navigationContentPosition = navigationContentPosition,
                     navigateToTopLevelDestination = navigationActions::navigateTo,
                     onDrawerClicked = {
                         scope.launch {
@@ -161,6 +188,7 @@ private fun ReplyNavigationWrapperUI(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
+                navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
                 selectedDestination = selectedDestination,
@@ -176,11 +204,11 @@ private fun ReplyNavigationWrapperUI(
     }
 }
 
-
 @Composable
 fun ReplyAppContent(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
+    navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     navController: NavHostController,
     selectedDestination: String,
@@ -191,11 +219,12 @@ fun ReplyAppContent(
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            //TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
+            // TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
             ReplyNavigationRail(
                 selectedDestination = selectedDestination,
+                navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigateToTopLevelDestination,
-                onDrawerClicked =  onDrawerClicked,
+                onDrawerClicked = onDrawerClicked,
             )
         }
         Column(
@@ -257,4 +286,3 @@ private fun ReplyNavHost(
         }
     }
 }
-

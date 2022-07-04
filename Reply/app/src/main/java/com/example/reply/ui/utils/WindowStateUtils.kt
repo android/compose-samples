@@ -41,7 +41,7 @@ sealed interface DevicePosture {
 fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
     contract { returns(true) implies (foldFeature != null) }
     return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
-            foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
+        foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -51,14 +51,21 @@ fun isSeparating(foldFeature: FoldingFeature?): Boolean {
 }
 
 /**
- * Different type of navigation supported by app depending on size and state.
+ * Different type of navigation supported by app depending on device size and state.
  */
 enum class ReplyNavigationType {
     BOTTOM_NAVIGATION, NAVIGATION_RAIL, PERMANENT_NAVIGATION_DRAWER
 }
 
 /**
- * Content shown depending on size and state of device.
+ * Different position of navigation content inside Navigation Rail, Navigation Drawer depending on device size and state.
+ */
+enum class ReplyNavigationContentPosition {
+    TOP, CENTER, BOTTOM
+}
+
+/**
+ * App Content shown depending on device size and state.
  */
 enum class ReplyContentType {
     LIST_ONLY, LIST_AND_DETAIL

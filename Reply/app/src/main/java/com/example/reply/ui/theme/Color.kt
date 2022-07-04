@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ val replyLightOutline = Color(0xFF817567)
 val replyLightInverseOnSurface = Color(0xFFF9EFE6)
 val replyLightInverseSurface = Color(0xFF34302A)
 val replyLightPrimaryInverse = Color(0xFFFFB945)
-
 
 val replyDarkPrimary = Color(0xFFFFB945)
 val replyDarkOnPrimary = Color(0xFF452B00)
