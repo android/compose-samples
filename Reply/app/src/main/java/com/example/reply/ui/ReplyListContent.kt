@@ -168,7 +168,7 @@ fun ReplyListAndDetailContent(
     modifier: Modifier = Modifier,
     navigateToDetail: (Long) -> Unit
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(modifier = modifier) {
         LazyColumn(modifier = modifier.weight(1f), state = emailLazyListState) {
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
