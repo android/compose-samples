@@ -36,7 +36,10 @@ The sample provides usage of  material navigation components depending on screen
 * [`PermanentNavigationDrawer`](app/src/main/java/com/example/reply/ui/ReplyApp.kt#153) is used for large devices or desktops when we have enough space to show navigation drawer content always.
 * Depending upon the different size and state of device correct [navigation type](app/src/main/java/com/example/reply/ui/ReplyApp.kt#71) is chosen dynamically.
 
+
 <img src="screenshots/compact_medium_large_displays.png">
+
+
 
 
 #### [Material 3 Theming](app/src/main/java/com/example/reply/ui/theme)
@@ -46,14 +49,20 @@ Reply is using brand new Material 3 [colors](app/src/main/java/com/example/reply
 #### [Dynamic theming/Material You](app/src/main/java/com/example/reply/ui/theme/Theme.kt#100)
 On Android 12+ Reply supports Material You dynamic color, which extracts a custom color scheme from the device wallpaper. For older version of android it falls back to defined light and dark [color schemes](aapp/src/main/java/com/example/reply/ui/theme/Theme.kt#34)
 
+
 <img src="screenshots/dynamic_theming.png">
+
+
 
 
 #### [Inbox Screen](app/src/main/java/com/example/reply/ui/ReplyListContent.kt)
 Similar to navigation type, depending on device's size and state correct [content type](app/src/main/java/com/example/reply/ui/ReplyApp.kt#72) is chosen, we can have [Inbox only](app/src/main/java/com/example/reply/ui/ReplyListContent.kt#91) or [Inbox and thread detail](app/src/main/java/com/example/reply/ui/ReplyListContent.kt#83) together. The content in inbox screen
 is adaptive and is switched between list only or list and detail page depending on the screen size available.
 
+
 <img src="screenshots/medium_and_large_display.png">
+
+
 
 
 #### [FAB & Material 3 components](app/src/main/java/com/example/reply/ui/ReplyListContent.kt)
