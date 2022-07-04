@@ -124,7 +124,11 @@ fun EmailDetailAppBar(
         IconButton(
             onClick = { /*TODO*/ },
         ) {
-            Icon(imageVector = Icons.Default.MoreVert, contentDescription = stringResource(id = R.string.more_options_button))
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(id = R.string.more_options_button),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

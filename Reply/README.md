@@ -18,6 +18,7 @@ This sample showcases:
 ## Screenshots
 
 <img src="screenshots/reply.gif"/>
+<img src="screenshots/reply_medium_and_large_tablet.png">
 
 ## Features
 
@@ -31,10 +32,11 @@ real-time whenever fold state changes to help us adjust our UI accordingly.
 
 #### [Material 3 navigation components](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt)
 The sample provides usage of  material navigation components depending on screen size and states. These components also are part of material guidelines for canonical layouts to improve user experience and ergonomics.
-* [`BottomNavigationBar`](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt#162) for compact devices.
-* [`NavigationRail`](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt#70) for medium size devices. It is also used along with [`ModalNavigationDrawer`](app/src/main/java/com/example/reply/ui/ReplyApp.kt#73) when user want to see more content.
-* [`PermanentNavigationDrawer`](app/src/main/java/com/example/reply/ui/ReplyApp.kt#153) for large devices.
-* Depending upon the different size and state of device correct [navigation type](app/src/main/java/com/example/reply/ui/ReplyApp.kt#71) is chosen dynamically. 
+* [`BottomNavigationBar`](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt#162) is used for compact devices with maximum of 5 navigation destinations. 
+* [`NavigationRail`](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt#70) is used for medium size devices. It is also used along with [`ModalNavigationDrawer`](app/src/main/java/com/example/reply/ui/ReplyApp.kt#73) when user want to see more content.
+* [`PermanentNavigationDrawer`](app/src/main/java/com/example/reply/ui/ReplyApp.kt#153) is used for large devices or desktops when we have enough space to show navigation drawer content always.
+* Depending upon the different size and state of device correct [navigation type](app/src/main/java/com/example/reply/ui/ReplyApp.kt#71) is chosen dynamically.
+  <img src="screenshots/reply_3_screens.pmg">
 
 #### [Material 3 Theming](app/src/main/java/com/example/reply/ui/theme)
 Reply is using brand new Material 3 [colors](app/src/main/java/com/example/reply/ui/theme/Color.kt), [typography](app/src/main/java/com/example/reoly/ui/theme/Type.kt) and [theming](app/src/main/java/com/example/reply/ui/theme/Theme.kt). It also supports both [light and dark mode]((app/src/main/java/com/example/reply/ui/theme/Theme.kt#95)) depending on system settings.
@@ -42,9 +44,12 @@ Reply is using brand new Material 3 [colors](app/src/main/java/com/example/reply
 
 #### [Dynamic theming/Material You](app/src/main/java/com/example/reply/ui/theme/Theme.kt#100)
 On Android 12+ Reply supports Material You dynamic color, which extracts a custom color scheme from the device wallpaper. For older version of android it falls back to defined light and dark [color schemes](aapp/src/main/java/com/example/reply/ui/theme/Theme.kt#34)
+<img src="screenshots/dynamic_theming.pmg">
 
 #### [Inbox Screen](app/src/main/java/com/example/reply/ui/ReplyListContent.kt)
-Similar to navigation type, depending on device's size and state correct [content type](app/src/main/java/com/example/reply/ui/ReplyApp.kt#72) is chosen, we can have [Inbox only](app/src/main/java/com/example/reply/ui/ReplyListContent.kt#91) or [Inbox and thread detail](app/src/main/java/com/example/reply/ui/ReplyListContent.kt#83) together  
+Similar to navigation type, depending on device's size and state correct [content type](app/src/main/java/com/example/reply/ui/ReplyApp.kt#72) is chosen, we can have [Inbox only](app/src/main/java/com/example/reply/ui/ReplyListContent.kt#91) or [Inbox and thread detail](app/src/main/java/com/example/reply/ui/ReplyListContent.kt#83) together. The content in inbox screen
+is adaptive and is switched between list only or list and details page depending on the screen size available.
+<img src="screenshots/reply_small_and_large_tablet.pmg">
 
 #### [FAB & Material 3 components](app/src/main/java/com/example/reply/ui/ReplyListContent.kt)
 Reply is using all material 3 components including different type of FAB for different screen size and states.
@@ -52,7 +57,7 @@ Reply is using all material 3 components including different type of FAB for dif
 * [`FloatingActionButton`](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt#87) is used with Navigation rail for medium to large tablets.
 * [`ExtendedFloatingActionButton`](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt#214) is used in Navigation drawer for large devices.
 
-## [Data](app/src/main/java/com/example/reply/data)
+#### [Data](app/src/main/java/com/example/reply/data)
 Reply has static local data providers for [email](app/src/main/java/com/example/reply/data/local/LocalEmailsDataProvider.kt) and [account](app/src/main/java/com/example/reply/data/local/LocalAccountsDataProvider.kt) data. It is also using repository pattern where [EmailRepository](app/src/main/java/com/example/reply/data/EmailsRepository.kt) 
 emits the flow of email from local data that is used in [ReplyHomeViewModel](app/src/main/java/com/example/reply/ui/ReplyHomeViewModel.kt) to observe 
 it in view model scope. ViewModel expose this data to ReplyApp composable via [state flow](app/src/main/java/com/example/reply/ui/ReplyHomeViewModel.kt#34).

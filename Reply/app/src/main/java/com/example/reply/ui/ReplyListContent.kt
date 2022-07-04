@@ -51,6 +51,7 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,6 +78,20 @@ fun ReplyInboxScreen(
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long) -> Unit
 ) {
+    /**
+     * When moving from LIST page to LIST_AND_DETAIL page on screen expand, set first email selected as default
+     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
+     */
+    LaunchedEffect(key1 = contentType) {
+        if (contentType == ReplyContentType.LIST_AND_DETAIL && replyHomeUIState.selectedEmail == null) {
+            replyHomeUIState.emails.firstOrNull()?.let { firstEmail ->
+                navigateToDetail.invoke(firstEmail.id)
+            }
+        } else {
+            closeDetailScreen.invoke()
+        }
+    }
+
     val emailLazyListState = rememberLazyListState()
 
     if (contentType == ReplyContentType.LIST_AND_DETAIL) {
@@ -168,7 +183,7 @@ fun ReplyListAndDetailContent(
             modifier = Modifier.weight(1f),
             isFullScreen = false,
             email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()
-        ) {}
+        )
     }
 }
 
@@ -177,7 +192,7 @@ fun ReplyEmailDetail(
     email: Email,
     isFullScreen: Boolean = true,
     modifier: Modifier = Modifier.fillMaxSize(),
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit = {}
 ) {
     LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)) {
         item { EmailDetailAppBar(email, isFullScreen) {
