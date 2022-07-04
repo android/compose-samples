@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +109,6 @@ fun ReplyInboxScreen(
     }
 }
 
-
 @Composable
 fun ReplyListOnlyContent(
     replyHomeUIState: ReplyHomeUIState,
@@ -152,7 +151,7 @@ fun ReplyListAndDetailContent(
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
             items(replyHomeUIState.emails) { email ->
-                ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id  == email.id) {
+                ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id == email.id) {
                     navigateToDetail.invoke(it)
                 }
             }
@@ -173,9 +172,11 @@ fun ReplyEmailDetail(
     onBackPressed: () -> Unit = {}
 ) {
     LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)) {
-        item { EmailDetailAppBar(email, isFullScreen) {
-            onBackPressed.invoke()
-        } }
+        item {
+            EmailDetailAppBar(email, isFullScreen) {
+                onBackPressed.invoke()
+            }
+        }
         items(email.threads) { email ->
             ReplyEmailThreadItem(email = email)
         }

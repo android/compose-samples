@@ -41,7 +41,7 @@ sealed interface DevicePosture {
 fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
     contract { returns(true) implies (foldFeature != null) }
     return foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
-            foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
+        foldFeature.orientation == FoldingFeature.Orientation.VERTICAL
 }
 
 @OptIn(ExperimentalContracts::class)

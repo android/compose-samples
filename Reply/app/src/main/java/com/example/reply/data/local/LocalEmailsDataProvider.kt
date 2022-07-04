@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ object LocalEmailsDataProvider {
               Your update, 0.1.1, is now live on the Play Store and available for your alpha users to start testing.
               
               Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
-          """.trimIndent(),
+            """.trimIndent(),
             mailbox = MailboxType.TRASH,
             createAt = "3 hours ago",
         ),
@@ -55,7 +55,7 @@ object LocalEmailsDataProvider {
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
-                    "very quick to put together.",
+                "very quick to put together.",
             createAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
@@ -76,7 +76,7 @@ object LocalEmailsDataProvider {
             Hey, 
             
             Wanted to email and see what you thought of
-          """.trimIndent(),
+            """.trimIndent(),
             createAt = "3 hours ago",
             mailbox = MailboxType.DRAFTS
         ),
@@ -214,7 +214,7 @@ object LocalEmailsDataProvider {
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
-                    "very quick to put together.",
+                "very quick to put together.",
             createAt = "2 hours ago",
             mailbox = MailboxType.SENT,
             threads = threads.shuffled(),
@@ -237,7 +237,7 @@ object LocalEmailsDataProvider {
               Your update, 0.1.1, is now live on the Play Store and available for your alpha users to start testing.
               
               Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
-          """.trimIndent(),
+            """.trimIndent(),
             mailbox = MailboxType.TRASH,
             createAt = "3 hours ago",
             threads = threads.shuffled(),
@@ -251,7 +251,7 @@ object LocalEmailsDataProvider {
             Hey, 
             
             Wanted to email and see what you thought of
-          """.trimIndent(),
+            """.trimIndent(),
             createAt = "3 hours ago",
             mailbox = MailboxType.DRAFTS,
             threads = threads.shuffled(),
@@ -265,7 +265,7 @@ object LocalEmailsDataProvider {
             Looking for the best hiking trails in your area? TrailGo gets you on the path to the outdoors faster than you can pack a sandwich. 
             
             Whether you're an experienced hiker or just looking to get outside for the afternoon, there's a segment that suits you.
-          """.trimIndent(),
+            """.trimIndent(),
             createAt = "3 hours ago",
             mailbox = MailboxType.TRASH,
             threads = threads.shuffled(),
@@ -277,7 +277,7 @@ object LocalEmailsDataProvider {
             "Free money",
             """
             You've been selected as a winner in our latest raffle! To claim your prize, click on the link.
-          """.trimIndent(),
+            """.trimIndent(),
             createAt = "3 hours ago",
             mailbox = MailboxType.SPAM,
             threads = threads.shuffled(),
@@ -319,7 +319,6 @@ object LocalEmailsDataProvider {
         )
     }
 
-
     /**
      * Get a list of [EmailFolder]s by which [Email]s can be categorized.
      */
@@ -332,4 +331,3 @@ object LocalEmailsDataProvider {
         "Grocery coupons"
     )
 }
-

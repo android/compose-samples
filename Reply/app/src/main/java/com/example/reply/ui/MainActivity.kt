@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
         /**
          * Flow of [DevicePosture] that emits every time there's a change in the windowLayoutInfo
          */
-        val devicePostureFlow =  WindowInfoTracker.getOrCreate(this).windowLayoutInfo(this)
+        val devicePostureFlow = WindowInfoTracker.getOrCreate(this).windowLayoutInfo(this)
             .flowWithLifecycle(this.lifecycle)
             .map { layoutInfo ->
                 val foldingFeature =
@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                 ReplyApp(
                     windowSize = windowSize,
                     foldingDevicePosture = devicePosture,
-                    replyHomeUIState =  uiState,
+                    replyHomeUIState = uiState,
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
                     },

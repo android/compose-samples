@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,11 @@ import com.example.reply.data.Email
 
 @Composable
 fun ReplySearchBar(modifier: Modifier = Modifier) {
-    Row(modifier = modifier
-        .fillMaxWidth()
-        .padding(top = 24.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
-        .background(MaterialTheme.colorScheme.surface, CircleShape),
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+            .background(MaterialTheme.colorScheme.surface, CircleShape),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -57,7 +58,8 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(start = 16.dp),
             tint = MaterialTheme.colorScheme.outline
         )
-        Text(text = stringResource(id = R.string.search_replies),
+        Text(
+            text = stringResource(id = R.string.search_replies),
             modifier = Modifier
                 .weight(1f)
                 .padding(16.dp),
@@ -73,7 +75,6 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

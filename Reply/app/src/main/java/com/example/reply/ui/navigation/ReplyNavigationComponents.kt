@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,6 @@ import androidx.compose.ui.unit.offset
 import com.example.reply.R
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 
-
 @Composable
 fun ReplyNavigationRail(
     selectedDestination: String,
@@ -71,7 +70,7 @@ fun ReplyNavigationRail(
         modifier = Modifier.fillMaxHeight(),
         containerColor = MaterialTheme.colorScheme.inverseOnSurface
     ) {
-        //TODO remove custom nav rail positioning when NavRail component supports it. ticket : b/232495216
+        // TODO remove custom nav rail positioning when NavRail component supports it. ticket : b/232495216
         Layout(
             content = {
                 Column(
@@ -82,10 +81,10 @@ fun ReplyNavigationRail(
                     NavigationRailItem(
                         selected = false,
                         onClick = onDrawerClicked,
-                        icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
+                        icon = { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
                     )
                     FloatingActionButton(
-                        onClick =  { /*TODO*/ },
+                        onClick = { /*TODO*/ },
                         modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer
@@ -182,7 +181,7 @@ fun NavigationDrawerContent(
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
-    //TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
+    // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
     Layout(
         modifier = Modifier.background(MaterialTheme.colorScheme.inverseOnSurface).padding(16.dp),
         content = {
@@ -242,9 +241,9 @@ fun NavigationDrawerContent(
                     NavigationDrawerItem(
                         selected = selectedDestination == replyDestination.route,
                         label = { Text(text = stringResource(id = replyDestination.iconTextId), modifier = Modifier.padding(horizontal = 16.dp)) },
-                        icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription =  stringResource(id = replyDestination.iconTextId)) },
+                        icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription = stringResource(id = replyDestination.iconTextId)) },
                         colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-                        onClick = { navigateToTopLevelDestination.invoke(replyDestination)}
+                        onClick = { navigateToTopLevelDestination.invoke(replyDestination) }
                     )
                 }
             }

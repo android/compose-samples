@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,10 +104,10 @@ fun ReplyApp(
      */
     val navigationContentPosition = when (windowSize.heightSizeClass) {
         WindowHeightSizeClass.Compact -> {
-             ReplyNavigationContentPosition.TOP
+            ReplyNavigationContentPosition.TOP
         }
         WindowHeightSizeClass.Medium -> {
-           ReplyNavigationContentPosition.CENTER
+            ReplyNavigationContentPosition.CENTER
         }
         WindowHeightSizeClass.Expanded -> {
             ReplyNavigationContentPosition.BOTTOM
@@ -149,7 +149,7 @@ private fun ReplyNavigationWrapperUI(
         navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
-        //TODO check on custom width of PermanentNavigationDrawer: b/232495216
+        // TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
             NavigationDrawerContent(
                 selectedDestination = selectedDestination,
@@ -204,7 +204,6 @@ private fun ReplyNavigationWrapperUI(
     }
 }
 
-
 @Composable
 fun ReplyAppContent(
     navigationType: ReplyNavigationType,
@@ -220,12 +219,12 @@ fun ReplyAppContent(
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            //TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
+            // TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
             ReplyNavigationRail(
                 selectedDestination = selectedDestination,
                 navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigateToTopLevelDestination,
-                onDrawerClicked =  onDrawerClicked,
+                onDrawerClicked = onDrawerClicked,
             )
         }
         Column(
@@ -287,4 +286,3 @@ private fun ReplyNavHost(
         }
     }
 }
-
