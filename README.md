@@ -72,7 +72,7 @@ Looking for a sample that has the following features?
 * [Jetsurvey: AnimatedContent](https://github.com/android/compose-samples/pull/842)
 * [Jetcaster: Animated theme colors](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/Jetcaster/app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt)
 * [Owl: Transition - Topic Chip change](https://github.com/android/compose-samples/blob/5dd149f2a5d35527cb628972c6c058057233647f/Owl/app/src/main/java/com/example/owl/ui/onboarding/Onboarding.kt#L181)
-* [Jetsnack: Parallax Scroll](https://github.com/android/compose-samples/blob/e9f5d03ccc7de29165853914749fcf7af70de823/Jetsnack/app/src/main/java/com/example/jetsnack/ui/snackdetail/SnackDetail.kt)
+* [Jetsnack: Animating Bottom Barl](https://github.com/android/compose-samples/blob/main/Jetsnack/app/src/main/java/com/example/jetsnack/ui/home/Home.kt)
 * [Owl: Bottom Sheet transforming](https://github.com/android/compose-samples/blob/5dd149f2a5d35527cb628972c6c058057233647f/Owl/app/src/main/java/com/example/owl/ui/course/CourseDetails.kt)
 
 ### Text
