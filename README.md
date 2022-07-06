@@ -79,8 +79,8 @@ Looking for a sample that has the following features?
 * [Jetchat: Downloadable Fonts](https://github.com/android/compose-samples/pull/787)
 
 ### Large Screens
-* [JetCaster - Tabletop mode](https://github.com/android/compose-samples/blob/0f7d5958c57a83ecad10136da4d359ae07046d07/Jetcaster/app/src/main/java/com/example/jetcaster/ui/player/PlayerScreen.kt#L138)
-* [JetNews - Window Size Classes](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/JetNews/app/src/main/java/com/example/jetnews/ui/MainActivity.kt#L36)
+* [Jetcaster - Tabletop mode](https://github.com/android/compose-samples/blob/0f7d5958c57a83ecad10136da4d359ae07046d07/Jetcaster/app/src/main/java/com/example/jetcaster/ui/player/PlayerScreen.kt#L138)
+* [Jetnews - Window Size Classes](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/JetNews/app/src/main/java/com/example/jetnews/ui/MainActivity.kt#L36)
 * [Crane - Window Size Classes](https://github.com/android/compose-samples/blob/e7e8733f9b37d80cdc6e9e05dbabe24ccf20b38f/Crane/app/src/main/java/androidx/compose/samples/crane/home/MainActivity.kt#L72)
 
 
