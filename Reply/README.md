@@ -1,6 +1,6 @@
 # Reply sample
 
-This sample is a [Jetpack Compose][compose] implementation of [Reply][reply], a Material Design study for adaptive design.
+This sample is a [Jetpack Compose][compose] implementation of [Reply][reply], a material design study for adaptive design.
 
 To try out this sample app, you need to use 
 [Android Studio Canary](https://developer.android.com/studio).
