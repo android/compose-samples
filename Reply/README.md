@@ -25,9 +25,15 @@ This sample showcases:
 The [WindowSizeClass](https://developer.android.com/reference/kotlin/androidx/compose/material3/windowsizeclass/WindowSizeClass) allows us to get to know about current device size and configuration 
 and observe any changes in device size in case of orientation change or unfolding of device.
 
+<img src="screenshots/dynamic_size.gif"/>
+
+
 #### [Dynamic fold detection](app/src/main/java/com/example/reply/ui/MainActivity.kt#56)
 The [WindowLayoutInfo](https://developer.android.com/reference/kotlin/androidx/window/layout/WindowLayoutInfo) let us observe all display features including [Folding Postures](app/src/main/java/com/example/reply/ui/utils/WindowStateUtils.kt)
-real-time whenever fold state changes to help us adjust our UI accordingly. 
+real-time whenever fold state changes to help us adjust our UI accordingly.
+
+<img src="screenshots/fold_unfold.png">
+
 
 #### [Material 3 navigation components](app/src/main/java/com/example/reply/ui/navigation/ReplyNavigationComponents.kt)
 The sample provides usage of  material navigation components depending on screen size and states. These components also are part of material guidelines for canonical layouts to improve user experience and ergonomics.

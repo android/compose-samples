@@ -16,8 +16,10 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.6.21'
-        compose_version = '1.2.0-rc02'
+        kotlin_version = '1.7.0'
+        compose_version = '1.2.0-rc03'
+        compose_compiler_version = '1.2.0'
+        material3_version = "1.0.0-alpha14"
         coroutines_version = '1.6.0'
         agp_version = "7.2.1"
     }
