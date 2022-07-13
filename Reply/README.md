@@ -80,7 +80,7 @@ Reply is using all material 3 components including different type of FAB for dif
 #### [Data](app/src/main/java/com/example/reply/data)
 Reply has static local data providers for [email](app/src/main/java/com/example/reply/data/local/LocalEmailsDataProvider.kt) and [account](app/src/main/java/com/example/reply/data/local/LocalAccountsDataProvider.kt) data. It is also using repository pattern where [EmailRepository](app/src/main/java/com/example/reply/data/EmailsRepository.kt) 
 emits the flow of email from local data that is used in [ReplyHomeViewModel](app/src/main/java/com/example/reply/ui/ReplyHomeViewModel.kt) to observe 
-it in view model scope. ViewModel expose this data to ReplyApp composable via [state flow](app/src/main/java/com/example/reply/ui/ReplyHomeViewModel.kt#34).
+it in view model scope. The `ViewModel` exposes this data to ReplyApp composable via [state flow](app/src/main/java/com/example/reply/ui/ReplyHomeViewModel.kt#34).
 
 ## License
 ```
