@@ -15,10 +15,13 @@ This sample showcases:
 * Material navigation components
 * [Material 3 theming][materialtheming] & dynamic colors.
 
-## Screenshots
+## Design & Screenshots
 
 <img src="screenshots/reply.gif"/>
 
+<img src="screenshots/fold_unfold.png">
+
+<img src="screenshots/medium_and_large_display.png">
 ## Features
 
 #### [Dynamic window resizing](app/src/main/java/com/example/reply/ui/ReplyApp.kt#74)
