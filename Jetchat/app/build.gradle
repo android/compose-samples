@@ -22,12 +22,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "com.example.compose.jetchat"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -78,7 +78,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.compilerVersion
     }
 
     packagingOptions {
@@ -103,8 +103,6 @@ dependencies {
     implementation Libs.material3
 
     implementation Libs.AndroidX.Compose.layout
-    // TODO (M3): Remove this dependency when all components are available
-    implementation Libs.AndroidX.Compose.material
     implementation Libs.AndroidX.Compose.Material3.material3
     implementation Libs.AndroidX.Compose.materialIconsExtended
     implementation Libs.AndroidX.Compose.toolingPreview

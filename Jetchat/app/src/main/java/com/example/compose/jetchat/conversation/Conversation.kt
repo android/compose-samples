@@ -44,10 +44,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -404,7 +404,6 @@ fun DayHeader(dayString: String) {
 
 @Composable
 private fun RowScope.DayHeaderLine() {
-    // TODO (M3): No Divider, replace when available
     Divider(
         modifier = Modifier
             .weight(1f)

@@ -66,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -77,8 +78,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.window.layout.FoldingFeature
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
@@ -123,7 +124,6 @@ private fun PlayerScreen(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
@@ -374,19 +374,16 @@ private fun TopAppBar(onBackPress: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun PlayerImage(
     podcastImageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    Image(
-        painter = rememberImagePainter(
-            data = podcastImageUrl,
-            builder = {
-                crossfade(true)
-            }
-        ),
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(podcastImageUrl)
+            .crossfade(true)
+            .build(),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier

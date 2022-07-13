@@ -5,7 +5,7 @@
 Jetchat is a sample chat app built with [Jetpack Compose][compose].
 
 To try out this sample app, you need to use 
-[Android Studio Arctic Fox](https://developer.android.com/studio)
+[Android Studio Chipmunk](https://developer.android.com/studio)
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
@@ -55,6 +55,9 @@ Some composable state survives activity or process recreation, like `currentInpu
 
 ### Material Design 3 theming and Material You dynamic color
 Jetchat follows the [Material Design 3](https://m3.material.io) principles and uses the `MaterialTheme` composable and M3 components. On Android 12+ Jetchat supports Material You dynamic color, which extracts a custom color scheme from the device wallpaper. Jetchat uses a custom, branded color scheme as a fallback. It also implements custom typography using the Karla and Montserrat font families.
+
+### Nested scrolling interop
+Jetchat contains an example of how to use [`rememberNestedScrollInteropConnection()`](https://developer.android.com/reference/kotlin/androidx/compose/ui/platform/package-summary#rememberNestedScrollInteropConnection()) to achieve successful nested scroll interop between a View parent that implements `androidx.core.view.NestedScrollingParent3` and a Compose child. The example used here is a combination of a View parent `CoordinatorLayout` and a nested, Compose child `BoxWithConstraints` in [ProfileFragment](app/src/main/java/com/example/compose/jetchat/profile/ProfileFragment.kt). 
 
 ### UI tests
 In [androidTest](app/src/androidTest/java/com/example/compose/jetchat) you'll find a suite of UI tests that showcase interesting patterns in Compose:

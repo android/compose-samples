@@ -27,7 +27,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.owl.R
 import com.example.owl.model.courses
-import com.example.owl.ui.fakes.ProvideTestImageLoader
+import com.example.owl.ui.fakes.installTestImageLoader
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,19 +43,18 @@ class NavigationTest {
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private fun startActivity(startDestination: String? = null) {
+        installTestImageLoader()
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalOnBackPressedDispatcherOwner provides composeTestRule.activity
             ) {
-                ProvideTestImageLoader {
-                    if (startDestination == null) {
-                        NavGraph()
-                    } else {
-                        NavGraph(
-                            startDestination = startDestination,
-                            showOnboardingInitially = false
-                        )
-                    }
+                if (startDestination == null) {
+                    NavGraph()
+                } else {
+                    NavGraph(
+                        startDestination = startDestination,
+                        showOnboardingInitially = false
+                    )
                 }
             }
         }

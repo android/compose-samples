@@ -34,7 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -177,7 +177,6 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
 
 @Composable
 fun DividerItem(modifier: Modifier = Modifier) {
-    // TODO (M3): No Divider, replace when available
     Divider(
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)

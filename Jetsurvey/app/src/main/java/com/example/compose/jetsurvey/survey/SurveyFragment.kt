@@ -21,6 +21,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -41,6 +48,7 @@ class SurveyFragment : Fragment() {
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,20 +64,34 @@ class SurveyFragment : Fragment() {
             )
             setContent {
                 JetsurveyTheme {
-                    viewModel.uiState.observeAsState().value?.let { surveyState ->
-                        when (surveyState) {
+                    val state = viewModel.uiState.observeAsState().value ?: return@JetsurveyTheme
+                    AnimatedContent(
+                        targetState = state,
+                        transitionSpec = {
+                            fadeIn() + slideIntoContainer(
+                                towards = AnimatedContentScope
+                                    .SlideDirection.Up,
+                                animationSpec = tween(ANIMATION_SLIDE_IN_DURATION)
+                            ) with
+                                fadeOut(animationSpec = tween(ANIMATION_FADE_OUT_DURATION))
+                        }
+                    ) { targetState ->
+                        // It's important to use targetState and not state, as its critical to ensure
+                        // a successful lookup of all the incoming and outgoing content during
+                        // content transform.
+                        when (targetState) {
                             is SurveyState.Questions -> SurveyQuestionsScreen(
-                                questions = surveyState,
+                                questions = targetState,
                                 shouldAskPermissions = viewModel.askForPermissions,
                                 onAction = { id, action -> handleSurveyAction(id, action) },
                                 onDoNotAskForPermissions = { viewModel.doNotAskForPermissions() },
-                                onDonePressed = { viewModel.computeResult(surveyState) },
+                                onDonePressed = { viewModel.computeResult(targetState) },
                                 onBackPressed = {
                                     activity?.onBackPressedDispatcher?.onBackPressed()
                                 }
                             )
                             is SurveyState.Result -> SurveyResultScreen(
-                                result = surveyState,
+                                result = targetState,
                                 onDonePressed = {
                                     activity?.onBackPressedDispatcher?.onBackPressed()
                                 }
@@ -94,10 +116,10 @@ class SurveyFragment : Fragment() {
         val picker = MaterialDatePicker.Builder.datePicker()
             .setSelection(date)
             .build()
-        activity?.let {
-            picker.show(it.supportFragmentManager, picker.toString())
-            picker.addOnPositiveButtonClickListener {
-                viewModel.onDatePicked(questionId, picker.selection)
+        picker.show(requireActivity().supportFragmentManager, picker.toString())
+        picker.addOnPositiveButtonClickListener {
+            picker.selection?.let { selectedDate ->
+                viewModel.onDatePicked(questionId, selectedDate)
             }
         }
     }
@@ -109,5 +131,10 @@ class SurveyFragment : Fragment() {
     @Suppress("UNUSED_PARAMETER")
     private fun selectContact(questionId: Int) {
         // TODO: unsupported for now
+    }
+
+    companion object {
+        private const val ANIMATION_SLIDE_IN_DURATION = 600
+        private const val ANIMATION_FADE_OUT_DURATION = 200
     }
 }

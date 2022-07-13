@@ -23,12 +23,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId 'com.example.jetsnack'
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -82,7 +82,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.compilerVersion
     }
 
     packagingOptions {
@@ -100,7 +100,6 @@ dependencies {
     implementation Libs.Coroutines.core
 
     implementation Libs.AndroidX.coreKtx
-    implementation Libs.AndroidX.profileInstaller
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
     implementation Libs.AndroidX.Navigation.navigationCompose

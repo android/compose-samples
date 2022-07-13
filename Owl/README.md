@@ -3,7 +3,7 @@
 This sample is a [Jetpack Compose][compose] implementation of [Owl][owl], a Material Design study.
 
 To try out this sample app, you need to use 
-[Android Studio Arctic Fox](https://developer.android.com/studio).
+[Android Studio Chipmunk](https://developer.android.com/studio).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
@@ -26,7 +26,7 @@ The onboarding screen allows users to customize their experience by selecting to
 * [Topic chip](app/src/main/java/com/example/owl/ui/onboarding/Onboarding.kt#L171) with custom [selection animation](app/src/main/java/com/example/owl/ui/onboarding/Onboarding.kt#L157).
 
 #### [Courses Screen](app/src/main/java/com/example/owl/ui/courses)
-The courses screen displays featured and saved course and a search screen. Notable fetures:
+The courses screen displays featured and saved course and a search screen. Notable features:
 * Custom [`StaggeredVerticalGrid`](app/src/main/java/com/example/owl/ui/courses/FeaturedCourses.kt#L161) responsive to available size.
 * [`FeaturedCourse`](app/src/main/java/com/example/owl/ui/courses/FeaturedCourses.kt#L70) composable demonstrates usage of [`ConstraintLayout`](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary.html#ConstraintLayout(androidx.compose.ui.Modifier,%20kotlin.Function1)).
 
@@ -46,7 +46,8 @@ Compose makes it simple to create a library of components and use them throughou
 
 #### [Utilities](app/src/main/java/com/example/owl/ui/utils/)
 Owl implements some utility functions of interest:
-* [Window insets](https://goo.gle/compose-insets) will likely be provided by the Compose library at some point. Until then this demonstrates how it can be implemented.
+* [Lazy layouts](https://developer.android.com/jetpack/compose/lists) - specifically LazyColumn and LazyRow, passing [item keys](https://developer.android.com/jetpack/compose/lists#item-keys) and using [`animateItemPlacement()`](https://developer.android.com/reference/kotlin/androidx/compose/foundation/lazy/LazyItemScope#(androidx.compose.ui.Modifier).animateItemPlacement(androidx.compose.animation.core.FiniteAnimationSpec)).
+* [Window insets](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/WindowInsets) are provided by the Compose Foundation library.
 * [NavGraph](app/src/main/java/com/example/owl/ui/NavGraph.kt) models navigation within the app using [Jetpack Navigation](https://developer.android.com/jetpack/compose/navigation).
 
 ## Data

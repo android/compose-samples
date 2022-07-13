@@ -4,13 +4,13 @@ Jetnews is a sample news reading app, built with
 showcase the current UI capabilities of Compose.
 
 To try out this sample app, you need to use 
-[Android Studio Arctic Fox](https://developer.android.com/studio).
+[Android Studio Chipmunk](https://developer.android.com/studio).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
-Screenshots
------------
+## Screenshots
+
 <img src="screenshots/jetnews_demo.gif" alt="Screenshot">
 
 ## Features
@@ -33,7 +33,7 @@ Package [`com.example.jetnews.ui`][1]
 
 ### Main article list
 
-Package [`com.example.jetnews.ui.home`][3]
+Package [`com.example.jetnews.ui.home`][4]
 
 This screen shows how to create different custom Composable functions and combine them in a list
 that scrolls vertically and horizontally.
@@ -46,31 +46,31 @@ See how to:
 * Use `Shape` to round the corners of the images
 * Use elevation to make the `Card`s stand out from the background
 
-[3]: app/src/main/java/com/example/jetnews/ui/home
+[4]: app/src/main/java/com/example/jetnews/ui/home
 
 ### Article detail
 
-Package [`com.example.jetnews.ui.article`][4]
+Package [`com.example.jetnews.ui.article`][5]
 
 This screen dives into the Text API, showing how to use different fonts than the ones defined in
-[`Typograhy`][5]. It also adds a bottom appbar, with custom actions.
+[`Typograhy`][6]. It also adds a bottom appbar, with custom actions.
 
-[4]: app/src/main/java/com/example/jetnews/ui/article
-[5]: app/src/main/java/com/example/jetnews/ui/theme/Type.kt
+[5]: app/src/main/java/com/example/jetnews/ui/article
+[6]: app/src/main/java/com/example/jetnews/ui/theme/Type.kt
 
 ### Interests screen
 
-Package [`com.example.jetnews.ui.interests`][6]
+Package [`com.example.jetnews.ui.interests`][7]
 
 This screens shows how to use Tabs and switch content depending on the selected tab. It
-also includes a custom checkbox button, [SelectTopicButton][7]
+also includes a custom checkbox button, [SelectTopicButton][8]
 that uses a `Toggleable` composable function to provide
 the on/off behaviour and semantics, while drawing a custom UI. The UI of the button is partly
 drawn with low-level primitives and partly overlaying images. See also how to visualize
 on and off, light and dark version in the Android Studio Preview.
 
-[6]: app/src/main/java/com/example/jetnews/ui/interests
-[7]: app/src/main/java/com/example/jetnews/ui/interests/SelectTopicButton.kt
+[7]: app/src/main/java/com/example/jetnews/ui/interests
+[8]: app/src/main/java/com/example/jetnews/ui/interests/SelectTopicButton.kt
 
 ### Data
 
@@ -82,6 +82,20 @@ UI tests can be run on device/emulators or on JVM with Robolectric.
 
 * To run Instrumented tests use the "Instrumented tests" run configuration or run the `./gradlew connectedCheck` command.
 * To run tests with Robolectric use the "Robolectric tests" run configuration or run the `./gradlew testDebug` command.
+
+## Jetnews for every screen
+
+<img src="screenshots/jetnews_all_screens.png" alt="Screenshot">
+
+We recently updated Jetnews to enhance its behavior across all mobile devices, both big and small.
+Jetnews already had support for “traditional” mobile screens, so it was tempting to describe all of
+our changes as “adding large screen support.” While that is true, it misses the point of having
+adaptive UI. For example, if your app is running in split screen mode on a tablet, it shouldn't try
+to display “tablet UI” unless it actually has enough space for it. With all of these changes,
+Jetnews is working better than ever on large screens, but also on small screens too.
+
+Check out the blog post that explains all the changes in more details:
+https://medium.com/androiddevelopers/jetnews-for-every-screen-4d8e7927752
 
 ## License
 

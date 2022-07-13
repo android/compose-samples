@@ -6,7 +6,7 @@ Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The go
 showcase dynamic theming and full featured architecture.
 
 To try out this sample app, you need to use 
-[Android Studio Arctic Fox](https://developer.android.com/studio).
+[Android Studio Chipmunk](https://developer.android.com/studio).
 You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
@@ -55,8 +55,7 @@ Underneath, [`DominantColorState`](app/src/main/java/com/example/jetcaster/util/
 ### Others
 Some other notable things which are implemented:
 
-* [`WindowInsets`](https://developer.android.com/reference/kotlin/android/view/WindowInsets) support is provided by the [Accompanist Insets](https://google.github.io/accompanist/insets/) library.
-* Images are all provided from each podcast's RSS feed, and loaded using [Accompanist Coil](https://google.github.io/accompanist/coil/) library.
+* Images are all provided from each podcast's RSS feed, and loaded using [Coil][coil] library.
 
 ## Architecture
 The app is built in a Redux-style, where each UI 'screen' has its own [ViewModel][viewmodel], which exposes a single [StateFlow][stateflow] containing the entire view state. Each [ViewModel][viewmodel] is responsible for subscribing to any data streams required for the view, as well as exposing functions which allow the UI to send events.

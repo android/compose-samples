@@ -181,7 +181,7 @@ private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
     val transition = updateTransition(
         targetState = if (topicSelected) SelectionState.Selected else SelectionState.Unselected
     )
-    val corerRadius = transition.animateDp { state ->
+    val cornerRadius = transition.animateDp { state ->
         when (state) {
             SelectionState.Unselected -> 0.dp
             SelectionState.Selected -> 28.dp
@@ -200,7 +200,7 @@ private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
         }
     }
     return remember(transition) {
-        TopicChipTransition(corerRadius, selectedAlpha, checkScale)
+        TopicChipTransition(cornerRadius, selectedAlpha, checkScale)
     }
 }
 

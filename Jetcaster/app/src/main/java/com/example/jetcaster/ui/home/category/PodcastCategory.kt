@@ -57,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -68,8 +69,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.EpisodeToPodcast
@@ -144,7 +145,6 @@ private fun EpisodeList(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -168,13 +168,11 @@ fun EpisodeListItem(
         )
 
         // If we have an image Url, we can show it using Coil
-        Image(
-            painter = rememberImagePainter(
-                data = podcast.imageUrl,
-                builder = {
-                    crossfade(true)
-                }
-            ),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(podcast.imageUrl)
+                .crossfade(true)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -330,7 +328,6 @@ private fun CategoryPodcastRow(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun TopPodcastRowItem(
     podcastTitle: String,
@@ -349,13 +346,11 @@ private fun TopPodcastRowItem(
                 .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
-                Image(
-                    painter = rememberImagePainter(
-                        data = podcastImageUrl,
-                        builder = {
-                            crossfade(true)
-                        }
-                    ),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(podcastImageUrl)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

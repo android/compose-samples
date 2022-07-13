@@ -21,10 +21,10 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.2"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
 
     object Kotlin {
-        private const val version = "1.6.20"
+        private const val version = "1.7.0"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -51,8 +51,9 @@ object Libs {
         }
 
         object Compose {
+            const val compilerVersion = "1.2.0"
             const val snapshot = ""
-            const val version = "1.2.0-alpha08"
+            const val version = "1.2.0-rc03"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -82,12 +83,10 @@ object Libs {
                 private const val version = "1.1.2"
                 const val junit = "androidx.test.ext:junit-ktx:$version"
             }
-
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0"
         }
     }
 
     object Coil {
-        const val coilCompose = "io.coil-kt:coil-compose:1.4.0"
+        const val coilCompose = "io.coil-kt:coil-compose:2.0.0"
     }
 }

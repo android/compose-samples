@@ -16,6 +16,17 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -40,6 +51,7 @@ import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -84,7 +96,7 @@ fun CraneHome(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun CraneHomeContent(
     widthSize: WindowWidthSizeClass,
@@ -102,6 +114,7 @@ fun CraneHomeContent(
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
+        frontLayerShape = BottomSheetShape,
         frontLayerScrimColor = Color.Unspecified,
         appBar = {
             HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })
@@ -117,32 +130,55 @@ fun CraneHomeContent(
             )
         },
         frontLayerContent = {
-            when (tabSelected) {
-                CraneScreen.Fly -> {
-                    suggestedDestinations?.let { destinations ->
+            AnimatedContent(
+                targetState = tabSelected,
+                transitionSpec = {
+                    val direction = if (initialState.ordinal < targetState.ordinal)
+                        AnimatedContentScope.SlideDirection.Left else AnimatedContentScope
+                        .SlideDirection.Right
+
+                    slideIntoContainer(
+                        towards = direction,
+                        animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
+                    ) with
+                        slideOutOfContainer(
+                            towards = direction,
+                            animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
+                        ) using SizeTransform(
+                        clip = false,
+                        sizeAnimationSpec = { _, _ ->
+                            tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
+                        }
+                    )
+                }
+            ) { targetState ->
+                when (targetState) {
+                    CraneScreen.Fly -> {
+                        suggestedDestinations?.let { destinations ->
+                            ExploreSection(
+                                widthSize = widthSize,
+                                title = stringResource(R.string.explore_flights_by_destination),
+                                exploreList = destinations,
+                                onItemClicked = onExploreItemClicked
+                            )
+                        }
+                    }
+                    CraneScreen.Sleep -> {
                         ExploreSection(
                             widthSize = widthSize,
-                            title = stringResource(R.string.explore_flights_by_destination),
-                            exploreList = destinations,
+                            title = stringResource(R.string.explore_properties_by_destination),
+                            exploreList = viewModel.hotels,
                             onItemClicked = onExploreItemClicked
                         )
                     }
-                }
-                CraneScreen.Sleep -> {
-                    ExploreSection(
-                        widthSize = widthSize,
-                        title = stringResource(R.string.explore_properties_by_destination),
-                        exploreList = viewModel.hotels,
-                        onItemClicked = onExploreItemClicked
-                    )
-                }
-                CraneScreen.Eat -> {
-                    ExploreSection(
-                        widthSize = widthSize,
-                        title = stringResource(R.string.explore_restaurants_by_destination),
-                        exploreList = viewModel.restaurants,
-                        onItemClicked = onExploreItemClicked
-                    )
+                    CraneScreen.Eat -> {
+                        ExploreSection(
+                            widthSize = widthSize,
+                            title = stringResource(R.string.explore_restaurants_by_destination),
+                            exploreList = viewModel.restaurants,
+                            onItemClicked = onExploreItemClicked
+                        )
+                    }
                 }
             }
         }
@@ -157,7 +193,9 @@ private fun HomeTabBar(
     modifier: Modifier = Modifier
 ) {
     CraneTabBar(
-        modifier = modifier.wrapContentWidth().sizeIn(maxWidth = 500.dp),
+        modifier = modifier
+            .wrapContentWidth()
+            .sizeIn(maxWidth = 500.dp),
         onMenuClicked = openDrawer
     ) { tabBarModifier ->
         CraneTabs(
@@ -169,6 +207,8 @@ private fun HomeTabBar(
     }
 }
 
+private const val ANIMATED_CONTENT_ANIMATION_DURATION = 600
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
     widthSize: WindowWidthSizeClass,
@@ -181,36 +221,54 @@ private fun SearchContent(
     // Reading datesSelected State from here instead of passing the String from the ViewModel
     // to cause a recomposition when the dates change.
     val selectedDates = viewModel.calendarState.calendarUiState.value.selectedDatesFormatted
-
-    when (tabSelected) {
-        CraneScreen.Fly -> FlySearchContent(
-            widthSize = widthSize,
-            datesSelected = selectedDates,
-            searchUpdates = FlySearchContentUpdates(
-                onPeopleChanged = onPeopleChanged,
-                onToDestinationChanged = { viewModel.toDestinationChanged(it) },
-                onDateSelectionClicked = onDateSelectionClicked,
-                onExploreItemClicked = onExploreItemClicked
+    AnimatedContent(
+        targetState = tabSelected,
+        transitionSpec = {
+            fadeIn(
+                animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseIn)
+            ).with(
+                fadeOut(
+                    animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseOut)
+                )
+            ).using(
+                SizeTransform(
+                    sizeAnimationSpec = { _, _ ->
+                        tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
+                    }
+                )
             )
-        )
-        CraneScreen.Sleep -> SleepSearchContent(
-            widthSize = widthSize,
-            datesSelected = selectedDates,
-            sleepUpdates = SleepSearchContentUpdates(
-                onPeopleChanged = onPeopleChanged,
-                onDateSelectionClicked = onDateSelectionClicked,
-                onExploreItemClicked = onExploreItemClicked
+        },
+    ) { targetState ->
+        when (targetState) {
+            CraneScreen.Fly -> FlySearchContent(
+                widthSize = widthSize,
+                datesSelected = selectedDates,
+                searchUpdates = FlySearchContentUpdates(
+                    onPeopleChanged = onPeopleChanged,
+                    onToDestinationChanged = { viewModel.toDestinationChanged(it) },
+                    onDateSelectionClicked = onDateSelectionClicked,
+                    onExploreItemClicked = onExploreItemClicked
+                )
             )
-        )
-        CraneScreen.Eat -> EatSearchContent(
-            widthSize = widthSize,
-            datesSelected = selectedDates,
-            eatUpdates = EatSearchContentUpdates(
-                onPeopleChanged = onPeopleChanged,
-                onDateSelectionClicked = onDateSelectionClicked,
-                onExploreItemClicked = onExploreItemClicked
+            CraneScreen.Sleep -> SleepSearchContent(
+                widthSize = widthSize,
+                datesSelected = selectedDates,
+                sleepUpdates = SleepSearchContentUpdates(
+                    onPeopleChanged = onPeopleChanged,
+                    onDateSelectionClicked = onDateSelectionClicked,
+                    onExploreItemClicked = onExploreItemClicked
+                )
             )
-        )
+            CraneScreen.Eat -> EatSearchContent(
+                widthSize = widthSize,
+                datesSelected = selectedDates,
+                eatUpdates = EatSearchContentUpdates(
+                    onPeopleChanged = onPeopleChanged,
+                    onDateSelectionClicked = onDateSelectionClicked,
+                    onExploreItemClicked = onExploreItemClicked
+                )
+            )
+        }
     }
 }
 
