@@ -299,6 +299,8 @@ object LocalEmailsDataProvider {
             System.nanoTime(), // Unique ID generation.
             LocalAccountsDataProvider.getDefaultUserAccount(),
             createAt = "Just now",
+            subject = "Monthly hosting party",
+            body = "I would like to invite everyone to our monthly event hosting party"
         )
     }
 
@@ -316,6 +318,7 @@ object LocalEmailsDataProvider {
             isStarred = replyTo.isStarred,
             isImportant = replyTo.isImportant,
             createAt = "Just now",
+            body = "Responding to the above conversation."
         )
     }
 

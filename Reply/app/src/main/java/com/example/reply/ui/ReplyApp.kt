@@ -117,7 +117,7 @@ fun ReplyApp(
         }
     }
 
-    ReplyNavigationWrapperUI(
+    ReplyNavigationWrapper(
         navigationType = navigationType,
         contentType = contentType,
         navigationContentPosition = navigationContentPosition,
@@ -129,7 +129,7 @@ fun ReplyApp(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ReplyNavigationWrapperUI(
+private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     navigationContentPosition: ReplyNavigationContentPosition,
