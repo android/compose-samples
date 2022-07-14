@@ -1,4 +1,4 @@
-name: Jetchat
+name: Reply
 
 on:
   push:
