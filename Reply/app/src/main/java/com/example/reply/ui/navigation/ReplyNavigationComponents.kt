@@ -145,7 +145,6 @@ fun ReplyNavigationRail(
                         // parent (ignoring the header for now)
                         ReplyNavigationContentPosition.TOP -> 0
                         ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
-                        ReplyNavigationContentPosition.BOTTOM -> nonContentVerticalSpace
                     }
                         // And finally, make sure we don't overlap with the header.
                         .coerceAtLeast(headerPlaceable.height)
@@ -275,7 +274,6 @@ fun NavigationDrawerContent(
                     // parent (ignoring the header for now)
                     ReplyNavigationContentPosition.TOP -> 0
                     ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
-                    ReplyNavigationContentPosition.BOTTOM -> nonContentVerticalSpace
                 }
                     // And finally, make sure we don't overlap with the header.
                     .coerceAtLeast(headerPlaceable.height)

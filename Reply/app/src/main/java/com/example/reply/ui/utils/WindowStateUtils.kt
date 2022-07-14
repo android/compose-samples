@@ -61,7 +61,7 @@ enum class ReplyNavigationType {
  * Different position of navigation content inside Navigation Rail, Navigation Drawer depending on device size and state.
  */
 enum class ReplyNavigationContentPosition {
-    TOP, CENTER, BOTTOM
+    TOP, CENTER
 }
 
 /**

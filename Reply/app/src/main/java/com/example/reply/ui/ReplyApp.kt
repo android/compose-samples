@@ -106,11 +106,9 @@ fun ReplyApp(
         WindowHeightSizeClass.Compact -> {
             ReplyNavigationContentPosition.TOP
         }
-        WindowHeightSizeClass.Medium -> {
-            ReplyNavigationContentPosition.CENTER
-        }
+        WindowHeightSizeClass.Medium,
         WindowHeightSizeClass.Expanded -> {
-            ReplyNavigationContentPosition.BOTTOM
+            ReplyNavigationContentPosition.CENTER
         }
         else -> {
             ReplyNavigationContentPosition.TOP
