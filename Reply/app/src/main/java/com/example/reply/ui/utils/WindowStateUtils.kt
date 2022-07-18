@@ -68,5 +68,5 @@ enum class ReplyNavigationContentPosition {
  * App Content shown depending on device size and state.
  */
 enum class ReplyContentType {
-    LIST_ONLY, LIST_AND_DETAIL
+    SINGLE_PANE, DUAL_PANE
 }

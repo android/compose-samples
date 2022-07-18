@@ -61,18 +61,18 @@ fun ReplyInboxScreen(
      * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
      */
     LaunchedEffect(key1 = contentType) {
-        if (contentType == ReplyContentType.LIST_AND_DETAIL && replyHomeUIState.selectedEmail == null) {
+        if (contentType == ReplyContentType.DUAL_PANE && replyHomeUIState.selectedEmail == null) {
             replyHomeUIState.emails.firstOrNull()?.let { firstEmail ->
                 navigateToDetail.invoke(firstEmail.id)
             }
-        } else {
+        } else if (contentType == ReplyContentType.SINGLE_PANE) {
             closeDetailScreen.invoke()
         }
     }
 
     val emailLazyListState = rememberLazyListState()
 
-    if (contentType == ReplyContentType.LIST_AND_DETAIL) {
+    if (contentType == ReplyContentType.DUAL_PANE) {
         ReplyListAndDetailContent(
             replyHomeUIState = replyHomeUIState,
             emailLazyListState = emailLazyListState,

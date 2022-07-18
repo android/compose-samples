@@ -74,14 +74,14 @@ fun ReplyApp(
     when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
-            contentType = ReplyContentType.LIST_ONLY
+            contentType = ReplyContentType.SINGLE_PANE
         }
         WindowWidthSizeClass.Medium -> {
             navigationType = ReplyNavigationType.NAVIGATION_RAIL
             contentType = if (foldingDevicePosture != DevicePosture.NormalPosture) {
-                ReplyContentType.LIST_AND_DETAIL
+                ReplyContentType.DUAL_PANE
             } else {
-                ReplyContentType.LIST_ONLY
+                ReplyContentType.SINGLE_PANE
             }
         }
         WindowWidthSizeClass.Expanded -> {
@@ -90,11 +90,11 @@ fun ReplyApp(
             } else {
                 ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
             }
-            contentType = ReplyContentType.LIST_AND_DETAIL
+            contentType = ReplyContentType.DUAL_PANE
         }
         else -> {
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
-            contentType = ReplyContentType.LIST_ONLY
+            contentType = ReplyContentType.SINGLE_PANE
         }
     }
 
