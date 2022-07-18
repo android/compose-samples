@@ -23,6 +23,7 @@ object Versions {
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
+    const val timber = "com.jakewharton.timber:timber:4.7.1"
 
     object Accompanist {
         const val version = "0.24.13-rc"

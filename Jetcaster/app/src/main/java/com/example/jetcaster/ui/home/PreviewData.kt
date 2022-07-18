@@ -16,10 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
-import com.example.jetcaster.data.Category
-import com.example.jetcaster.data.Episode
-import com.example.jetcaster.data.Podcast
-import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.data.*
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -57,5 +54,23 @@ val PreviewEpisodes = listOf(
         title = "Episode 140: Bubbles!",
         summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur Tsurkan from the System UI team about... Bubbles!",
         published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("-0800"))
+    ),
+    Episode(
+        uri = "fakeUri://episode/2",
+        podcastUri = PreviewPodcasts[0].uri,
+        title = "Episode 141: More Bubbles!",
+        summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur Tsurkan from the System UI team about... More Bubbles!",
+        published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("-0800"))
     )
+)
+
+val PreviewEpisodesToPodcast = listOf(
+    EpisodeToPodcast().apply {
+        episode = PreviewEpisodes[0]
+        _podcasts = PreviewPodcasts
+    },
+    EpisodeToPodcast().apply {
+        episode = PreviewEpisodes[1]
+        _podcasts = PreviewPodcasts
+    }
 )

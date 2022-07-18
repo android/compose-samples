@@ -19,29 +19,12 @@ package com.example.jetcaster.ui.home.category
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
@@ -49,8 +32,6 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -68,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
@@ -77,49 +58,40 @@ import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.PreviewEpisodes
+import com.example.jetcaster.ui.home.PreviewEpisodesToPodcast
 import com.example.jetcaster.ui.home.PreviewPodcasts
+import com.example.jetcaster.ui.home.PreviewPodcastsWithExtraInfo
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
-import com.example.jetcaster.util.viewModelProviderFactoryOf
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
 fun PodcastCategory(
-    categoryId: Long,
+    modifier: Modifier = Modifier,
+    topPodcasts: List<PodcastWithExtraInfo>,
+    episodes: List<EpisodeToPodcast>,
     navigateToPlayer: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onTogglePodcastFollowed: (String) -> Unit
 ) {
-    /**
-     * CategoryEpisodeListViewModel requires the category as part of it's constructor, therefore
-     * we need to assist with it's instantiation with a custom factory and custom key.
-     */
-    val viewModel: PodcastCategoryViewModel = viewModel(
-        // We use a custom key, using the category parameter
-        key = "category_list_$categoryId",
-        factory = viewModelProviderFactoryOf { PodcastCategoryViewModel(categoryId) }
-    )
-
-    val viewState by viewModel.state.collectAsState()
-
     /**
      * TODO: reset scroll position when category changes
      */
     Column(modifier = modifier) {
-        CategoryPodcasts(viewState.topPodcasts, viewModel)
-        EpisodeList(viewState.episodes, navigateToPlayer)
+        CategoryPodcasts(topPodcasts = topPodcasts, onTogglePodcastFollowed = onTogglePodcastFollowed)
+        EpisodeList(episodes = episodes, navigateToPlayer = navigateToPlayer)
     }
 }
 
 @Composable
 private fun CategoryPodcasts(
     topPodcasts: List<PodcastWithExtraInfo>,
-    viewModel: PodcastCategoryViewModel
+    onTogglePodcastFollowed: (String) -> Unit
 ) {
     CategoryPodcastRow(
         podcasts = topPodcasts,
-        onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+        onTogglePodcastFollowed = onTogglePodcastFollowed,
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -146,7 +118,7 @@ private fun EpisodeList(
 }
 
 @Composable
-fun EpisodeListItem(
+private fun EpisodeListItem(
     episode: Episode,
     podcast: Podcast,
     onClick: (String) -> Unit,
@@ -345,6 +317,9 @@ private fun TopPodcastRowItem(
                 .aspectRatio(1f)
                 .align(Alignment.CenterHorizontally)
         ) {
+            val podcastImageModifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.medium)
             if (podcastImageUrl != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -353,9 +328,13 @@ private fun TopPodcastRowItem(
                         .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium),
+                    modifier = podcastImageModifier
+                )
+            } else {
+                Image(
+                    modifier = podcastImageModifier,
+                    painter = painterResource(id = R.drawable.ic_logo),
+                    contentDescription = "default pod cast image"
                 )
             }
 
@@ -382,7 +361,20 @@ private val MediumDateFormatter by lazy {
     DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 }
 
-@Preview
+@Preview(showBackground = true)
+@Composable
+fun PodcastCategoryPreview() {
+    JetcasterTheme {
+        PodcastCategory(
+            topPodcasts = PreviewPodcastsWithExtraInfo,
+            episodes = PreviewEpisodesToPodcast,
+            navigateToPlayer = {},
+            onTogglePodcastFollowed = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
 @Composable
 fun PreviewEpisodeListItem() {
     JetcasterTheme {
@@ -391,6 +383,17 @@ fun PreviewEpisodeListItem() {
             podcast = PreviewPodcasts[0],
             onClick = { },
             modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CategoryPodcastsPreview() {
+    JetcasterTheme {
+        CategoryPodcasts(
+            topPodcasts = PreviewPodcastsWithExtraInfo,
+            onTogglePodcastFollowed = {}
         )
     }
 }

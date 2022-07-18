@@ -56,11 +56,7 @@ import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.rounded.PlayCircleFilled
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,10 +73,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
+import com.example.jetcaster.ui.JetcasterAppState
+import com.example.jetcaster.ui.Screen
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
 import com.example.jetcaster.util.DevicePosture
@@ -91,11 +91,30 @@ import com.example.jetcaster.util.verticalGradientScrim
 import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 
+@Composable
+fun Player(
+    appState: JetcasterAppState,
+    devicePosture: StateFlow<DevicePosture>,
+    backStackEntry: NavBackStackEntry
+) {
+    val playerViewModel: PlayerViewModel = viewModel(
+        factory = PlayerViewModel.provideFactory(
+            owner = backStackEntry,
+            defaultArgs = backStackEntry.arguments
+        )
+    )
+    PlayerScreen(
+        playerViewModel,
+        devicePosture,
+        onBackPress = appState::navigateBack
+    )
+}
+
 /**
  * Stateful version of the Podcast player
  */
 @Composable
-fun PlayerScreen(
+private fun PlayerScreen(
     viewModel: PlayerViewModel,
     devicePosture: StateFlow<DevicePosture>,
     onBackPress: () -> Unit
@@ -125,7 +144,7 @@ private fun PlayerScreen(
 }
 
 @Composable
-fun PlayerContent(
+private fun PlayerContent(
     uiState: PlayerUiState,
     devicePosture: DevicePosture,
     onBackPress: () -> Unit

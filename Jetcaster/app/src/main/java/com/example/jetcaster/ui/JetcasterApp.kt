@@ -16,18 +16,19 @@
 
 package com.example.jetcaster.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.Home
-import com.example.jetcaster.ui.player.PlayerScreen
-import com.example.jetcaster.ui.player.PlayerViewModel
+import com.example.jetcaster.ui.player.Player
 import com.example.jetcaster.util.DevicePosture
 import kotlinx.coroutines.flow.StateFlow
 
@@ -37,25 +38,20 @@ fun JetcasterApp(
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
     if (appState.isOnline) {
-        NavHost(
-            navController = appState.navController,
-            startDestination = Screen.Home.route
-        ) {
-            composable(Screen.Home.route) { backStackEntry ->
-                Home(
-                    navigateToPlayer = { episodeUri ->
-                        appState.navigateToPlayer(episodeUri, backStackEntry)
-                    }
-                )
-            }
-            composable(Screen.Player.route) { backStackEntry ->
-                val playerViewModel: PlayerViewModel = viewModel(
-                    factory = PlayerViewModel.provideFactory(
-                        owner = backStackEntry,
-                        defaultArgs = backStackEntry.arguments
-                    )
-                )
-                PlayerScreen(playerViewModel, devicePosture, onBackPress = appState::navigateBack)
+        Scaffold(
+            scaffoldState = appState.scaffoldState
+        ) { padding ->
+            NavHost(
+                modifier = Modifier.padding(paddingValues = padding),
+                navController = appState.navController,
+                startDestination = Screen.Home.route
+            ) {
+                composable(Screen.Home.route) { backStackEntry ->
+                    Home(appState, backStackEntry)
+                }
+                composable(Screen.Player.route) { backStackEntry ->
+                    Player(appState, devicePosture, backStackEntry)
+                }
             }
         }
     } else {

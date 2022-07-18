@@ -49,4 +49,8 @@ class PodcastWithExtraInfo {
     }
 
     override fun hashCode(): Int = Objects.hash(podcast, lastEpisodeDate, isFollowed)
+
+    override fun toString(): String {
+        return "PodcastWithExtraInfo(podcast=$podcast, lastEpisodeDate=$lastEpisodeDate, isFollowed=$isFollowed)"
+    }
 }

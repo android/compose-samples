@@ -17,7 +17,9 @@
 package com.example.jetcaster
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.jetcaster.data.CategoryStore
 import com.example.jetcaster.data.EpisodeStore
 import com.example.jetcaster.data.PodcastStore
@@ -32,6 +34,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.LoggingEventListener
 import java.io.File
+import java.util.concurrent.Executors
 
 /**
  * A very simple global singleton dependency graph.
@@ -97,6 +100,12 @@ object Graph {
     private val ioDispatcher: CoroutineDispatcher
         get() = Dispatchers.IO
 
+    private val queryLogger = object: RoomDatabase.QueryCallback {
+        override fun onQuery(sqlQuery: String, bindArgs: List<Any?>) {
+            Log.d("Room","SQL Query: $sqlQuery SQL Args: $bindArgs")
+        }
+    }
+
     fun provide(context: Context) {
         okHttpClient = OkHttpClient.Builder()
             .cache(Cache(File(context.cacheDir, "http_cache"), (20 * 1024 * 1024).toLong()))
@@ -109,6 +118,7 @@ object Graph {
             // This is not recommended for normal apps, but the goal of this sample isn't to
             // showcase all of Room.
             .fallbackToDestructiveMigration()
+//            .setQueryCallback(queryLogger, Executors.newSingleThreadExecutor())
             .build()
     }
 }

@@ -16,48 +16,17 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabPosition
-import androidx.compose.material.TabRow
+import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,19 +38,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
+import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.ui.JetcasterAppState
+import com.example.jetcaster.ui.Screen
 import com.example.jetcaster.ui.home.discover.Discover
+import com.example.jetcaster.ui.home.discover.DiscoverViewModel
+import com.example.jetcaster.ui.home.discover.DiscoverViewState
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
-import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
-import com.example.jetcaster.util.ToggleFollowPodcastIconButton
-import com.example.jetcaster.util.contrastAgainst
-import com.example.jetcaster.util.quantityStringResource
-import com.example.jetcaster.util.rememberDominantColorState
-import com.example.jetcaster.util.verticalGradientScrim
+import com.example.jetcaster.util.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -90,28 +60,123 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
+
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Home(
-    navigateToPlayer: (String) -> Unit,
-    viewModel: HomeViewModel = viewModel()
+    appState: JetcasterAppState,
+    backStackEntry: NavBackStackEntry
 ) {
-    val viewState by viewModel.state.collectAsState()
-    Surface(Modifier.fillMaxSize()) {
-        HomeContent(
-            featuredPodcasts = viewState.featuredPodcasts,
-            isRefreshing = viewState.refreshing,
-            homeCategories = viewState.homeCategories,
-            selectedHomeCategory = viewState.selectedHomeCategory,
-            onCategorySelected = viewModel::onHomeCategorySelected,
-            onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
-            navigateToPlayer = navigateToPlayer,
-            modifier = Modifier.fillMaxSize()
-        )
+    val homeViewModel = viewModel<HomeViewModel>()
+    val homeViewState by homeViewModel.state.collectAsState()
+    val discoverViewViewModel = viewModel<DiscoverViewModel>()
+    val discoverViewState by discoverViewViewModel.state.collectAsState()
+
+    val errorState = homeViewModel.errorMessage.collectAsState(initial = null)
+
+    val surfaceColor = MaterialTheme.colors.surface
+    val featuredPagerState = rememberPagerState()
+
+    HomeScaffold(
+        dominantColorState = rememberDominantColorState { color ->
+            color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
+        },
+        dominantColorSourceUrl = homeViewState.featuredPodcasts.getOrNull(featuredPagerState.currentPage)?.podcast?.imageUrl,
+        appBarContent = {
+            val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
+            // Draw a scrim over the status bar which matches the app bar
+            Spacer(
+                Modifier
+                    .background(appBarColor)
+                    .fillMaxWidth()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
+            )
+            HomeAppBar(backgroundColor = appBarColor)
+        },
+        featuredPodcastsContent = {
+            AnimatedVisibility(
+                visible = homeViewState.featuredPodcasts.isNotEmpty(),
+            ) {
+                FollowedPodcasts(
+                    modifier = Modifier
+                        .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    items = homeViewState.featuredPodcasts,
+                    pagerState = featuredPagerState,
+                    onPodcastUnfollowed = homeViewModel::onPodcastUnfollowed
+                )
+
+            }
+        }
+    ) {
+        if (homeViewState.homeCategories.isNotEmpty()) {
+            HomeCategoryTabs(
+                categories = homeViewState.homeCategories,
+                selectedCategory = homeViewState.selectedHomeCategory,
+                onCategorySelected = homeViewModel::onHomeCategorySelected
+            )
+        }
+        when (homeViewState.selectedHomeCategory) {
+            HomeCategory.Library -> {
+                // TODO
+            }
+            HomeCategory.Discover -> {
+                Discover(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    navigateToPlayer = { episodeUri ->
+                        appState.navigateToPlayer(episodeUri, backStackEntry)
+                    },
+                    discoverViewState = discoverViewState,
+                    onCategorySelected = discoverViewViewModel::onCategorySelected,
+                    onTogglePodcastFollowed = discoverViewViewModel::onTogglePodcastFollowed
+                )
+            }
+        }
+    }
+    LaunchedEffect(key1 = errorState) {
+        snapshotFlow { errorState.value }
+            .collect { error ->
+                error?.let {
+                    appState.scaffoldState.snackbarHostState.showSnackbar(it)
+                }
+            }
     }
 }
 
 @Composable
-fun HomeAppBar(
+private fun HomeScaffold(
+    modifier: Modifier = Modifier,
+    dominantColorState: DominantColorState,
+    dominantColorSourceUrl: String? = null,
+    appBarContent: @Composable () -> Unit = {},
+    featuredPodcastsContent: @Composable () -> Unit = {},
+    mainContent: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+            .fillMaxSize()
+    ) {
+        appBarContent()
+        DynamicThemePrimaryColorsFromImage(
+            dominantColorState = dominantColorState,
+            content = featuredPodcastsContent
+        )
+        mainContent()
+    }
+    LaunchedEffect(dominantColorSourceUrl) {
+        if (dominantColorSourceUrl != null) {
+            dominantColorState.updateColorsFromImageUrl(dominantColorSourceUrl)
+        } else {
+            dominantColorState.reset()
+        }
+    }
+}
+
+@Composable
+private fun HomeAppBar(
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
@@ -124,6 +189,7 @@ fun HomeAppBar(
                 )
                 Icon(
                     painter = painterResource(R.drawable.ic_text_logo),
+                    tint = LocalContentColor.current,
                     contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .padding(start = 4.dp)
@@ -139,6 +205,7 @@ fun HomeAppBar(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Search,
+                        tint = LocalContentColor.current,
                         contentDescription = stringResource(R.string.cd_search)
                     )
                 }
@@ -147,6 +214,7 @@ fun HomeAppBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
+                        tint = LocalContentColor.current,
                         contentDescription = stringResource(R.string.cd_account)
                     )
                 }
@@ -154,117 +222,6 @@ fun HomeAppBar(
         },
         modifier = modifier
     )
-}
-
-@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
-@Composable
-fun HomeContent(
-    featuredPodcasts: List<PodcastWithExtraInfo>,
-    isRefreshing: Boolean,
-    selectedHomeCategory: HomeCategory,
-    homeCategories: List<HomeCategory>,
-    modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (String) -> Unit,
-    onCategorySelected: (HomeCategory) -> Unit,
-    navigateToPlayer: (String) -> Unit
-) {
-    Column(
-        modifier = modifier.windowInsetsPadding(
-            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-        )
-    ) {
-        // We dynamically theme this sub-section of the layout to match the selected
-        // 'top podcast'
-
-        val surfaceColor = MaterialTheme.colors.surface
-        val dominantColorState = rememberDominantColorState { color ->
-            // We want a color which has sufficient contrast against the surface color
-            color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
-        }
-
-        DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState()
-
-            val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
-                ?.podcast?.imageUrl
-
-            // When the selected image url changes, call updateColorsFromImageUrl() or reset()
-            LaunchedEffect(selectedImageUrl) {
-                if (selectedImageUrl != null) {
-                    dominantColorState.updateColorsFromImageUrl(selectedImageUrl)
-                } else {
-                    dominantColorState.reset()
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalGradientScrim(
-                        color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
-                        startYPercentage = 1f,
-                        endYPercentage = 0f
-                    )
-            ) {
-                val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
-
-                // Draw a scrim over the status bar which matches the app bar
-                Spacer(
-                    Modifier
-                        .background(appBarColor)
-                        .fillMaxWidth()
-                        .windowInsetsTopHeight(WindowInsets.statusBars)
-                )
-
-                HomeAppBar(
-                    backgroundColor = appBarColor,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                if (featuredPodcasts.isNotEmpty()) {
-                    Spacer(Modifier.height(16.dp))
-
-                    FollowedPodcasts(
-                        items = featuredPodcasts,
-                        pagerState = pagerState,
-                        onPodcastUnfollowed = onPodcastUnfollowed,
-                        modifier = Modifier
-                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-                }
-            }
-        }
-
-        if (isRefreshing) {
-            // TODO show a progress indicator or similar
-        }
-
-        if (homeCategories.isNotEmpty()) {
-            HomeCategoryTabs(
-                categories = homeCategories,
-                selectedCategory = selectedHomeCategory,
-                onCategorySelected = onCategorySelected
-            )
-        }
-
-        when (selectedHomeCategory) {
-            HomeCategory.Library -> {
-                // TODO
-            }
-            HomeCategory.Discover -> {
-                Discover(
-                    navigateToPlayer = navigateToPlayer,
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
-            }
-        }
-    }
 }
 
 @Composable
@@ -305,7 +262,7 @@ private fun HomeCategoryTabs(
 }
 
 @Composable
-fun HomeCategoryTabIndicator(
+private fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.onSurface
 ) {
@@ -319,7 +276,7 @@ fun HomeCategoryTabIndicator(
 
 @ExperimentalPagerApi // HorizontalPager is experimental
 @Composable
-fun FollowedPodcasts(
+private fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
@@ -328,7 +285,13 @@ fun FollowedPodcasts(
     HorizontalPager(
         count = items.size,
         state = pagerState,
-        modifier = modifier
+        modifier = Modifier
+            .verticalGradientScrim(
+                color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
+                startYPercentage = 1f,
+                endYPercentage = 0f
+            )
+            .then(modifier)
     ) { page ->
         val (podcast, lastEpisodeDate) = items[page]
         FollowedPodcastCarouselItem(
@@ -360,14 +323,21 @@ private fun FollowedPodcastCarouselItem(
                 .align(Alignment.CenterHorizontally)
                 .aspectRatio(1f)
         ) {
+            val podcastImageModifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.medium)
             if (podcastImageUrl != null) {
                 AsyncImage(
                     model = podcastImageUrl,
                     contentDescription = podcastTitle,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium),
+                    modifier = podcastImageModifier
+                )
+            } else {
+                Image(
+                    modifier = podcastImageModifier,
+                    painter = painterResource(id = R.drawable.ic_logo),
+                    contentDescription = "default pod cast image"
                 )
             }
 
@@ -410,26 +380,64 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
-/*
-TODO: Fix preview error
+@ExperimentalPagerApi
+@Preview(showBackground = true)
 @Composable
-@Preview
-fun PreviewHomeContent() {
+fun HomeScaffoldPreview() {
     JetcasterTheme {
-        HomeContent(
-            featuredPodcasts = PreviewPodcastsWithExtraInfo,
-            isRefreshing = false,
-            homeCategories = HomeCategory.values().asList(),
-            selectedHomeCategory = HomeCategory.Discover,
-            onCategorySelected = {},
-            onPodcastUnfollowed = {}
+        val surfaceColor = MaterialTheme.colors.surface
+
+        HomeScaffold(
+            dominantColorState = rememberDominantColorState { color ->
+                color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
+            },
+            appBarContent = {
+                HomeAppBar(backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.87f))
+            },
+            featuredPodcastsContent = {
+                FollowedPodcasts(
+                    modifier = Modifier
+                        .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    items = PreviewPodcastsWithExtraInfo,
+                    pagerState = rememberPagerState(),
+                    onPodcastUnfollowed = {}
+                )
+            },
+            mainContent = {
+                HomeCategoryTabs(
+                    categories = HomeCategory.values().asList(),
+                    selectedCategory = HomeCategory.Discover,
+                    onCategorySelected = {}
+                )
+                Discover(
+                    navigateToPlayer = {},
+                    discoverViewState = DiscoverViewState(
+                        categories = PreviewCategories,
+                        selectedCategory = PreviewCategories.getOrNull(0),
+                        selectedCategoryResentPodcasts = PreviewPodcastsWithExtraInfo,
+                        selectedCategoryEpisodes = listOf(
+                            EpisodeToPodcast().apply {
+                                episode = PreviewEpisodes[0]
+                                _podcasts = listOf(PreviewPodcastsWithExtraInfo[0].podcast)
+                            },
+                            EpisodeToPodcast().apply {
+                                episode = PreviewEpisodes[1]
+                                _podcasts = listOf(PreviewPodcastsWithExtraInfo[0].podcast)
+                            }
+                        )
+                    ),
+                    onTogglePodcastFollowed = {},
+                    onCategorySelected = {}
+                )
+            }
         )
     }
 }
-*/
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun PreviewPodcastCard() {
     JetcasterTheme {
         FollowedPodcastCarouselItem(

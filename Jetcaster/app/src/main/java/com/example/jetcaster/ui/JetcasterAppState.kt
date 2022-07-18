@@ -21,6 +21,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,13 +48,15 @@ sealed class Screen(val route: String) {
 @Composable
 fun rememberJetcasterAppState(
     navController: NavHostController = rememberNavController(),
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     context: Context = LocalContext.current
 ) = remember(navController, context) {
-    JetcasterAppState(navController, context)
+    JetcasterAppState(navController, scaffoldState, context)
 }
 
 class JetcasterAppState(
     val navController: NavHostController,
+    val scaffoldState: ScaffoldState,
     private val context: Context
 ) {
     var isOnline by mutableStateOf(checkIfOnline())
