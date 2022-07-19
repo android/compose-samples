@@ -354,11 +354,13 @@ private val MediumDateFormatter by lazy {
 @Composable
 fun PreviewEpisodeListItem() {
     JetcasterTheme {
-        EpisodeListItem(
-            episode = PreviewEpisodes[0],
-            podcast = PreviewPodcasts[0],
-            onClick = { },
-            modifier = Modifier.fillMaxWidth()
-        )
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onBackground) {
+            EpisodeListItem(
+                episode = PreviewEpisodes[0],
+                podcast = PreviewPodcasts[0],
+                onClick = { },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
