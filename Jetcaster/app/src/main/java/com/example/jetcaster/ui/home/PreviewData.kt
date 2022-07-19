@@ -20,6 +20,7 @@ import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
+import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -56,6 +57,7 @@ val PreviewEpisodes = listOf(
         podcastUri = PreviewPodcasts[0].uri,
         title = "Episode 140: Bubbles!",
         summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur Tsurkan from the System UI team about... Bubbles!",
-        published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("-0800"))
+        published = OffsetDateTime.of(2020, 6, 2, 9, 27, 0, 0, ZoneOffset.of("-0800")),
+        duration = Duration.ofMinutes(45)
     )
 )

@@ -64,10 +64,6 @@ object Libs {
             const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
 
-        object Constraint {
-            const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0"
-        }
-
         object Compose {
             const val compilerVersion = "1.2.0"
             const val snapshot = ""
