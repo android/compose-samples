@@ -26,7 +26,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JetchatScaffold(
+fun JetchatDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
