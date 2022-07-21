@@ -16,6 +16,7 @@
 
 package com.example.reply.ui
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,9 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -54,18 +58,19 @@ fun ReplyInboxScreen(
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
     /**
      * When moving from LIST page to LIST_AND_DETAIL page on screen expand, set first email selected as default
      * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
      */
+
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.DUAL_PANE && replyHomeUIState.selectedEmail == null) {
             replyHomeUIState.emails.firstOrNull()?.let { firstEmail ->
-                navigateToDetail.invoke(firstEmail.id)
+                navigateToDetail.invoke(firstEmail.id, ReplyContentType.DUAL_PANE)
             }
-        } else if (contentType == ReplyContentType.SINGLE_PANE) {
+        } else if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.showDetailScreenOnly) {
             closeDetailScreen.invoke()
         }
     }
@@ -115,9 +120,9 @@ fun ReplyListOnlyContent(
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.showDetailScreen) {
+    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.showDetailScreenOnly) {
         BackHandler {
             closeDetailScreen.invoke()
         }
@@ -131,7 +136,7 @@ fun ReplyListOnlyContent(
             }
             items(replyHomeUIState.emails) { email ->
                 ReplyEmailListItem(email = email) { emailId ->
-                    navigateToDetail.invoke(emailId)
+                    navigateToDetail.invoke(emailId, ReplyContentType.SINGLE_PANE)
                 }
             }
         }
@@ -143,7 +148,7 @@ fun ReplyListAndDetailContent(
     replyHomeUIState: ReplyHomeUIState,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
-    navigateToDetail: (Long) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
     Row(modifier = modifier) {
         LazyColumn(modifier = modifier.weight(1f), state = emailLazyListState) {
@@ -152,7 +157,7 @@ fun ReplyListAndDetailContent(
             }
             items(replyHomeUIState.emails) { email ->
                 ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id == email.id) {
-                    navigateToDetail.invoke(it)
+                    navigateToDetail.invoke(it, ReplyContentType.DUAL_PANE)
                 }
             }
         }

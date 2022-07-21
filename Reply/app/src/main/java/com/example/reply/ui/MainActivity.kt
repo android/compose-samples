@@ -88,8 +88,8 @@ class MainActivity : ComponentActivity() {
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
                     },
-                    navigateToDetail = { emailId ->
-                        viewModel.setSelectedEmail(emailId)
+                    navigateToDetail = { emailId, pane ->
+                        viewModel.setSelectedEmail(emailId, pane)
                     }
                 )
             }

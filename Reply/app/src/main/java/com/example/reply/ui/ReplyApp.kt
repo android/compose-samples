@@ -59,7 +59,7 @@ fun ReplyApp(
     foldingDevicePosture: DevicePosture,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
-    navigateToDetail: (Long) -> Unit = {}
+    navigateToDetail: (Long, ReplyContentType) -> Unit = {_,_ ->}
 ) {
     /**
      * This will help us select type of navigation and content type depending on window size and
@@ -133,7 +133,7 @@ private fun ReplyNavigationWrapper(
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -212,7 +212,7 @@ fun ReplyAppContent(
     selectedDestination: String,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long) -> Unit,
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
@@ -256,7 +256,7 @@ private fun ReplyNavHost(
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long) -> Unit,
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(

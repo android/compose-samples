@@ -21,6 +21,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.reply.data.Email
 import com.example.reply.data.EmailsRepository
 import com.example.reply.data.EmailsRepositoryImpl
+import com.example.reply.ui.utils.ReplyContentType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -49,20 +50,23 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         }
     }
 
-    fun setSelectedEmail(emailId: Long) {
+    fun setSelectedEmail(emailId: Long, contentType: ReplyContentType) {
         val email = uiState.value.emails.find { it.id == emailId }
-        _uiState.value = _uiState.value.copy(selectedEmail = email, showDetailScreen = true)
+        _uiState.value = _uiState.value.copy(
+            selectedEmail = email,
+            showDetailScreenOnly = contentType == ReplyContentType.SINGLE_PANE
+        )
     }
 
     fun closeDetailScreen() {
-        _uiState.value = _uiState.value.copy(selectedEmail = null, showDetailScreen = false)
+        _uiState.value = _uiState.value.copy(selectedEmail = null, showDetailScreenOnly = false)
     }
 }
 
 data class ReplyHomeUIState(
     val emails: List<Email> = emptyList(),
     val selectedEmail: Email? = null,
-    val showDetailScreen: Boolean = false,
+    val showDetailScreenOnly: Boolean = false,
     val loading: Boolean = false,
     val error: String? = null
 )
