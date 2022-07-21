@@ -59,7 +59,7 @@ fun ReplyApp(
     foldingDevicePosture: DevicePosture,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
-    navigateToDetail: (Long, ReplyContentType) -> Unit = {_,_ ->}
+    navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> }
 ) {
     /**
      * This will help us select type of navigation and content type depending on window size and
