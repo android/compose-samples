@@ -17,7 +17,7 @@
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.toMutableStateList
 import com.example.compose.jetchat.R
 
 class ConversationUiState(
@@ -25,8 +25,7 @@ class ConversationUiState(
     val channelMembers: Int,
     initialMessages: List<Message>
 ) {
-    private val _messages: MutableList<Message> =
-        mutableStateListOf(*initialMessages.toTypedArray())
+    private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
     val messages: List<Message> = _messages
 
     fun addMessage(msg: Message) {
