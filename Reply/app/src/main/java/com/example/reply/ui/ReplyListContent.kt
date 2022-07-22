@@ -57,16 +57,10 @@ fun ReplyInboxScreen(
     navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
     /**
-     * When moving from LIST page to LIST_AND_DETAIL page on screen expand, set first email selected as default
      * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
      */
-
     LaunchedEffect(key1 = contentType) {
-        if (contentType == ReplyContentType.DUAL_PANE && replyHomeUIState.selectedEmail == null) {
-            replyHomeUIState.emails.firstOrNull()?.let { firstEmail ->
-                navigateToDetail.invoke(firstEmail.id, ReplyContentType.DUAL_PANE)
-            }
-        } else if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.showDetailScreenOnly) {
+        if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
             closeDetailScreen.invoke()
         }
     }
@@ -74,7 +68,7 @@ fun ReplyInboxScreen(
     val emailLazyListState = rememberLazyListState()
 
     if (contentType == ReplyContentType.DUAL_PANE) {
-        ReplyListAndDetailContent(
+        ReplyDualPaneContent(
             replyHomeUIState = replyHomeUIState,
             emailLazyListState = emailLazyListState,
             modifier = Modifier.fillMaxSize(),
@@ -82,7 +76,7 @@ fun ReplyInboxScreen(
         )
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
-            ReplyListOnlyContent(
+            ReplySinglePaneContent(
                 replyHomeUIState = replyHomeUIState,
                 emailLazyListState = emailLazyListState,
                 modifier = Modifier.fillMaxSize(),
@@ -111,14 +105,14 @@ fun ReplyInboxScreen(
 }
 
 @Composable
-fun ReplyListOnlyContent(
+fun ReplySinglePaneContent(
     replyHomeUIState: ReplyHomeUIState,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.showDetailScreenOnly) {
+    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
         BackHandler {
             closeDetailScreen.invoke()
         }
@@ -140,7 +134,7 @@ fun ReplyListOnlyContent(
 }
 
 @Composable
-fun ReplyListAndDetailContent(
+fun ReplyDualPaneContent(
     replyHomeUIState: ReplyHomeUIState,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
