@@ -54,7 +54,8 @@ fun ReplyInboxScreen(
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long, ReplyContentType) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     /**
      * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
@@ -71,11 +72,11 @@ fun ReplyInboxScreen(
         ReplyDualPaneContent(
             replyHomeUIState = replyHomeUIState,
             emailLazyListState = emailLazyListState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             navigateToDetail = navigateToDetail
         )
     } else {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = modifier.fillMaxSize()) {
             ReplySinglePaneContent(
                 replyHomeUIState = replyHomeUIState,
                 emailLazyListState = emailLazyListState,

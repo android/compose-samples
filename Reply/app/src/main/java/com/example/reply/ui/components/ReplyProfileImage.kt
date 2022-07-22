@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 fun ReplyProfileImage(
     drawableResource: Int,
     description: String,
-    modifier: Modifier = Modifier.size(40.dp),
+    modifier: Modifier = Modifier
 ) {
     Image(
-        modifier = modifier.clip(CircleShape),
+        modifier = modifier.size(40.dp).clip(CircleShape),
         painter = painterResource(id = drawableResource),
         contentDescription = description,
     )

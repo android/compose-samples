@@ -204,6 +204,7 @@ private fun ReplyNavigationWrapper(
 
 @Composable
 fun ReplyAppContent(
+    modifier: Modifier = Modifier,
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     navigationContentPosition: ReplyNavigationContentPosition,
@@ -215,7 +216,7 @@ fun ReplyAppContent(
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(modifier = modifier.fillMaxSize()) {
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
             // TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
             ReplyNavigationRail(
@@ -270,7 +271,7 @@ private fun ReplyNavHost(
                 replyHomeUIState = replyHomeUIState,
                 navigationType = navigationType,
                 closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
             )
         }
         composable(ReplyRoute.DM) {

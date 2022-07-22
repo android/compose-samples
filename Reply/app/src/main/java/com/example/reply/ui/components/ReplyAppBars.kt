@@ -81,10 +81,11 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
 fun EmailDetailAppBar(
     email: Email,
     isFullScreen: Boolean,
+    modifier: Modifier = Modifier,
     onBackPressed: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(24.dp),
         verticalAlignment = Alignment.CenterVertically,

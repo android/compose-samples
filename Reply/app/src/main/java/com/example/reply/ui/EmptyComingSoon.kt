@@ -32,9 +32,11 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 
 @Composable
-fun EmptyComingSoon() {
+fun EmptyComingSoon(
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

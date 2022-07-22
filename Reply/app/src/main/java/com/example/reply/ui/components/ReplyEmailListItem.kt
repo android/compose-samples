@@ -48,10 +48,13 @@ fun ReplyEmailListItem(
     email: Email,
     isSelectable: Boolean = false,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+    modifier: Modifier = Modifier,
     navigateToDetail: (Long) -> Unit
 ) {
-    val semanticsModifier = if (isSelectable) modifier.semantics { selected = isSelected } else modifier
+    val semanticsModifier = if (isSelectable)
+        modifier
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .semantics { selected = isSelected } else modifier.padding(horizontal = 16.dp, vertical = 4.dp)
     Card(
         modifier = semanticsModifier.clickable { navigateToDetail.invoke(email.id) },
         colors = CardDefaults.cardColors(
