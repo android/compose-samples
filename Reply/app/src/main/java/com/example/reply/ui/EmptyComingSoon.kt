@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 
 @Composable
-@Preview
 fun EmptyComingSoon() {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -54,4 +53,10 @@ fun EmptyComingSoon() {
             color = MaterialTheme.colorScheme.outline
         )
     }
+}
+
+@Preview
+@Composable
+fun ComingSoonPreview() {
+    EmptyComingSoon()
 }

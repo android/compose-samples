@@ -163,7 +163,6 @@ object LocalAccountsDataProvider {
      * Get the contact of the current user with the given [accountId].
      */
     fun getContactAccountByUid(accountId: Long): Account {
-        return allUserContactAccounts.firstOrNull { it.id == accountId }
-            ?: allUserContactAccounts.first()
+        return allUserContactAccounts.first { it.id == accountId }
     }
 }

@@ -79,7 +79,7 @@ fun ReplyEmailListItem(
                         style = MaterialTheme.typography.labelMedium
                     )
                     Text(
-                        text = email.createAt,
+                        text = email.createdAt,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.outline
                     )

@@ -124,7 +124,7 @@ fun ReplySinglePaneContent(
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
-            items(replyHomeUIState.emails) { email ->
+            items(items = replyHomeUIState.emails, key = { it.id }) { email ->
                 ReplyEmailListItem(email = email) { emailId ->
                     navigateToDetail.invoke(emailId, ReplyContentType.SINGLE_PANE)
                 }
@@ -145,7 +145,7 @@ fun ReplyDualPaneContent(
             item {
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
-            items(replyHomeUIState.emails) { email ->
+            items(items = replyHomeUIState.emails, key = { it.id }) { email ->
                 ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id == email.id) {
                     navigateToDetail.invoke(it, ReplyContentType.DUAL_PANE)
                 }
@@ -172,7 +172,7 @@ fun ReplyEmailDetail(
                 onBackPressed.invoke()
             }
         }
-        items(email.threads) { email ->
+        items(items = email.threads, key = { it.id }) { email ->
             ReplyEmailThreadItem(email = email)
         }
     }
