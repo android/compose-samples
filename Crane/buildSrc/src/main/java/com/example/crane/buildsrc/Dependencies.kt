@@ -17,7 +17,7 @@
 package com.example.crane.buildsrc
 
 object Versions {
-    const val ktlint = "0.45.2"
+    const val ktlint = "0.46.1"
 }
 
 object Libs {
@@ -43,7 +43,7 @@ object Libs {
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
 
         object Coroutines {
-            private const val version = "1.6.0"
+            private const val version = "1.7.0"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
             const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
@@ -58,8 +58,8 @@ object Libs {
 
         object Compose {
             const val compilerVersion = "1.2.0"
-            const val snapshot = ""
-            const val version = "1.2.0-rc03"
+            const val snapshot = "8843244"
+            const val version = "1.2.0-SNAPSHOT"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"

@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.buildsrc
 
 object Versions {
-    const val ktlint = "0.45.2"
+    const val ktlint = "0.46.1"
 }
 
 object Libs {
@@ -27,7 +27,7 @@ object Libs {
     const val junit = "junit:junit:4.13.2"
 
     object Accompanist {
-        const val version = "0.24.13-rc"
+        const val version = "0.24.9-beta"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -61,8 +61,8 @@ object Libs {
 
         object Compose {
             const val compilerVersion = "1.2.0"
-            const val snapshot = ""
-            const val version = "1.2.0-rc03"
+            const val snapshot = "8843244"
+            const val version = "1.2.0-SNAPSHOT"
 
             @get:JvmStatic
             val snapshotUrl: String

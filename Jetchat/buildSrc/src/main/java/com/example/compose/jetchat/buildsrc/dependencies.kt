@@ -17,7 +17,7 @@
 package com.example.compose.jetchat.buildsrc
 
 object Versions {
-    const val ktlint = "0.45.2"
+    const val ktlint = "0.46.1"
 }
 
 object Libs {
@@ -52,8 +52,8 @@ object Libs {
 
         object Compose {
             const val compilerVersion = "1.2.0"
-            const val snapshot = ""
-            const val version = "1.2.0-rc03"
+            const val snapshot = "8843244"
+            const val version = "1.2.0-SNAPSHOT"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
