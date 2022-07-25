@@ -42,7 +42,7 @@ object LocalEmailsDataProvider {
             createdAt = "3 hours ago",
         ),
         Email(
-            id =5L,
+            id = 5L,
             sender = LocalAccountsDataProvider.getContactAccountByUid(13L),
             recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             subject = "Update to Your Itinerary",
@@ -60,7 +60,7 @@ object LocalEmailsDataProvider {
             mailbox = MailboxType.SENT
         ),
         Email(
-            id =7L,
+            id = 7L,
             sender = LocalAccountsDataProvider.getContactAccountByUid(9L),
             recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             subject = "Delivered",
@@ -214,7 +214,7 @@ object LocalEmailsDataProvider {
             recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             subject = "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
-                    "very quick to put together.",
+                "very quick to put together.",
             createdAt = "2 hours ago",
             mailbox = MailboxType.SENT,
             threads = threads.shuffled()
