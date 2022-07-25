@@ -10,14 +10,18 @@ buildscript {
         classpath(libs.kotlin.gradlePlugin)
 
         classpath(libs.versionsPlugin)
+        classpath(libs.updaterPlugin)
         classpath(libs.ktlintPlugin)
         classpath(libs.spotless.gradlePlugin)
     }
 }
 
+apply(plugin ="com.github.ben-manes.versions")
+apply(plugin ="nl.littlerobots.version-catalog-update")
+
 subprojects {
-    apply(plugin ="com.github.ben-manes.versions")
     apply(plugin ="org.jlleitschuh.gradle.ktlint")
+    apply(plugin ="com.diffplug.spotless")
 }
 
 tasks.register("clean", Delete::class) {
