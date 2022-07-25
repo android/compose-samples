@@ -29,11 +29,11 @@ object LocalEmailsDataProvider {
 
     private val threads = listOf(
         Email(
-            8L,
-            LocalAccountsDataProvider.getContactAccountByUid(13L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Your update on Google Play Store is live!",
-            """
+            id = 8L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(13L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Your update on Google Play Store is live!",
+            body = """
               Your update, 0.1.1, is now live on the Play Store and available for your alpha users to start testing.
               
               Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
@@ -42,37 +42,37 @@ object LocalEmailsDataProvider {
             createdAt = "3 hours ago",
         ),
         Email(
-            5L,
-            LocalAccountsDataProvider.getContactAccountByUid(13L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Update to Your Itinerary",
-            "",
+            id =5L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(13L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Update to Your Itinerary",
+            body = "",
             createdAt = "2 hours ago",
         ),
         Email(
-            6L,
-            LocalAccountsDataProvider.getContactAccountByUid(10L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Recipe to try",
+            id = 6L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(10L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
                 "very quick to put together.",
             createdAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
         Email(
-            7L,
-            LocalAccountsDataProvider.getContactAccountByUid(9L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Delivered",
-            "Your shoes should be waiting for you at home!",
+            id =7L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(9L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Delivered",
+            body = "Your shoes should be waiting for you at home!",
             createdAt = "2 hours ago",
         ),
         Email(
-            9L,
-            LocalAccountsDataProvider.getContactAccountByUid(10L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "(No subject)",
-            """
+            id = 9L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(10L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "(No subject)",
+            body = """
             Hey, 
             
             Wanted to email and see what you thought of
@@ -81,11 +81,11 @@ object LocalEmailsDataProvider {
             mailbox = MailboxType.DRAFTS
         ),
         Email(
-            1L,
-            LocalAccountsDataProvider.getContactAccountByUid(6L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Brunch this weekend?",
-            """
+            id = 1L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(6L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Brunch this weekend?",
+            body = """
                 I'll be in your neighborhood doing errands and was hoping to catch you for a coffee this Saturday. If you don't have anything scheduled, it would be great to see you! It feels like its been forever.
 
                 If we do get a chance to get together, remind me to tell you about Kim. She stopped over at the house to say hey to the kids and told me all about her trip to Mexico.
@@ -97,29 +97,29 @@ object LocalEmailsDataProvider {
             createdAt = "40 mins ago",
         ),
         Email(
-            2L,
-            LocalAccountsDataProvider.getContactAccountByUid(5L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Bonjour from Paris",
-            "Here are some great shots from my trip...",
-            listOf(
+            id = 2L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(5L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Bonjour from Paris",
+            body = "Here are some great shots from my trip...",
+            attachments = listOf(
                 EmailAttachment(R.drawable.paris_1, "Bridge in Paris"),
                 EmailAttachment(R.drawable.paris_2, "Bridge in Paris at night"),
                 EmailAttachment(R.drawable.paris_3, "City street in Paris"),
                 EmailAttachment(R.drawable.paris_4, "Street with bike in Paris")
             ),
-            true,
+            isImportant = true,
             createdAt = "1 hour ago",
         ),
     )
 
     val allEmails = mutableListOf(
         Email(
-            0L,
-            LocalAccountsDataProvider.getContactAccountByUid(9L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Package shipped!",
-            """
+            id = 0L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(9L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Package shipped!",
+            body = """
                 Cucumber Mask Facial has shipped.
 
                 Keep an eye out for a package to arrive between this Thursday and next Tuesday. If for any reason you don't receive your package before the end of next week, please reach out to us for details on your shipment.
@@ -131,11 +131,11 @@ object LocalEmailsDataProvider {
             threads = threads,
         ),
         Email(
-            1L,
-            LocalAccountsDataProvider.getContactAccountByUid(6L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Brunch this weekend?",
-            """
+            id = 1L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(6L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Brunch this weekend?",
+            body = """
                 I'll be in your neighborhood doing errands and was hoping to catch you for a coffee this Saturday. If you don't have anything scheduled, it would be great to see you! It feels like its been forever.
 
                 If we do get a chance to get together, remind me to tell you about Kim. She stopped over at the house to say hey to the kids and told me all about her trip to Mexico.
@@ -180,15 +180,15 @@ object LocalEmailsDataProvider {
             threads = threads.shuffled(),
         ),
         Email(
-            4L,
-            LocalAccountsDataProvider.getContactAccountByUid(11L),
-            listOf(
+            id = 4L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(11L),
+            recipients = listOf(
                 LocalAccountsDataProvider.getDefaultUserAccount(),
                 LocalAccountsDataProvider.getContactAccountByUid(8L),
                 LocalAccountsDataProvider.getContactAccountByUid(5L)
             ),
-            "Brazil trip",
-            """
+            subject = "Brazil trip",
+            body = """
                 Thought we might be able to go over some details about our upcoming vacation.
 
                 I've been doing a bit of research and have come across a few paces in Northern Brazil that I think we should check out. One, the north has some of the most predictable wind on the planet. I'd love to get out on the ocean and kitesurf for a couple of days if we're going to be anywhere near or around Taiba. I hear it's beautiful there and if you're up for it, I'd love to go. Other than that, I haven't spent too much time looking into places along our road trip route. I'm assuming we can find places to stay and things to do as we drive and find places we think look interesting. But... I know you're more of a planner, so if you have ideas or places in mind, lets jot some ideas down!
@@ -200,40 +200,40 @@ object LocalEmailsDataProvider {
             threads = threads.shuffled(),
         ),
         Email(
-            5L,
-            LocalAccountsDataProvider.getContactAccountByUid(13L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Update to Your Itinerary",
-            "",
+            id = 5L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(13L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Update to Your Itinerary",
+            body = "",
             createdAt = "2 hours ago",
-            threads = threads.shuffled(),
+            threads = threads.shuffled()
         ),
         Email(
-            6L,
-            LocalAccountsDataProvider.getContactAccountByUid(10L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Recipe to try",
+            id = 6L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(10L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
-                "very quick to put together.",
+                    "very quick to put together.",
             createdAt = "2 hours ago",
             mailbox = MailboxType.SENT,
-            threads = threads.shuffled(),
+            threads = threads.shuffled()
         ),
         Email(
-            7L,
-            LocalAccountsDataProvider.getContactAccountByUid(9L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Delivered",
-            "Your shoes should be waiting for you at home!",
+            id = 7L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(9L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Delivered",
+            body = "Your shoes should be waiting for you at home!",
             createdAt = "2 hours ago",
-            threads = threads.shuffled(),
+            threads = threads.shuffled()
         ),
         Email(
-            8L,
-            LocalAccountsDataProvider.getContactAccountByUid(13L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Your update on Google Play Store is live!",
-            """
+            id = 8L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(13L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Your update on Google Play Store is live!",
+            body = """
               Your update, 0.1.1, is now live on the Play Store and available for your alpha users to start testing.
               
               Your alpha testers will be automatically notified. If you'd rather send them a link directly, go to your Google Play Console and follow the instructions for obtaining an open alpha testing link.
@@ -243,11 +243,11 @@ object LocalEmailsDataProvider {
             threads = threads.shuffled(),
         ),
         Email(
-            9L,
-            LocalAccountsDataProvider.getContactAccountByUid(10L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "(No subject)",
-            """
+            id = 9L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(10L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "(No subject)",
+            body = """
             Hey, 
             
             Wanted to email and see what you thought of
@@ -257,11 +257,11 @@ object LocalEmailsDataProvider {
             threads = threads.shuffled(),
         ),
         Email(
-            10L,
-            LocalAccountsDataProvider.getContactAccountByUid(5L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Try a free TrailGo account",
-            """
+            id = 10L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(5L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Try a free TrailGo account",
+            body = """
             Looking for the best hiking trails in your area? TrailGo gets you on the path to the outdoors faster than you can pack a sandwich. 
             
             Whether you're an experienced hiker or just looking to get outside for the afternoon, there's a segment that suits you.
@@ -271,11 +271,11 @@ object LocalEmailsDataProvider {
             threads = threads.shuffled(),
         ),
         Email(
-            11L,
-            LocalAccountsDataProvider.getContactAccountByUid(5L),
-            listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
-            "Free money",
-            """
+            id = 11L,
+            sender = LocalAccountsDataProvider.getContactAccountByUid(5L),
+            recipients = listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
+            subject = "Free money",
+            body = """
             You've been selected as a winner in our latest raffle! To claim your prize, click on the link.
             """.trimIndent(),
             createdAt = "3 hours ago",
