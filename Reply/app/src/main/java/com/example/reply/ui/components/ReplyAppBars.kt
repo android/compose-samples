@@ -93,7 +93,7 @@ fun EmailDetailAppBar(
     ) {
         if (isFullScreen) {
             FilledIconButton(
-                onClick = { onBackPressed.invoke() },
+                onClick = onBackPressed,
                 modifier = Modifier.padding(8.dp),
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = MaterialTheme.colorScheme.surface,

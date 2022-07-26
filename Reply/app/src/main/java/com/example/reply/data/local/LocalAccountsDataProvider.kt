@@ -25,7 +25,7 @@ import com.example.reply.data.Account
  */
 object LocalAccountsDataProvider {
 
-    val allUserAccounts = mutableListOf(
+    val allUserAccounts = listOf(
         Account(
             id = 1L,
             uid = 0L,

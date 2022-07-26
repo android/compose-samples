@@ -113,7 +113,7 @@ object LocalEmailsDataProvider {
         ),
     )
 
-    val allEmails = mutableListOf(
+    val allEmails = listOf(
         Email(
             id = 0L,
             sender = LocalAccountsDataProvider.getContactAccountByUid(9L),

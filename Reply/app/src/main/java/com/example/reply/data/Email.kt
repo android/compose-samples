@@ -29,6 +29,6 @@ data class Email(
     var isImportant: Boolean = false,
     var isStarred: Boolean = false,
     var mailbox: MailboxType = MailboxType.INBOX,
-    var createdAt: String,
+    val createdAt: String,
     val threads: List<Email> = emptyList()
 )

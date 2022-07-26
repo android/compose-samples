@@ -62,7 +62,7 @@ fun ReplyInboxScreen(
      */
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
-            closeDetailScreen.invoke()
+            closeDetailScreen()
         }
     }
 
@@ -115,10 +115,10 @@ fun ReplySinglePaneContent(
 ) {
     if (replyHomeUIState.selectedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
         BackHandler {
-            closeDetailScreen.invoke()
+            closeDetailScreen()
         }
         ReplyEmailDetail(email = replyHomeUIState.selectedEmail) {
-            closeDetailScreen.invoke()
+            closeDetailScreen()
         }
     } else {
         LazyColumn(modifier = modifier, state = emailLazyListState) {
@@ -127,7 +127,7 @@ fun ReplySinglePaneContent(
             }
             items(items = replyHomeUIState.emails, key = { it.id }) { email ->
                 ReplyEmailListItem(email = email) { emailId ->
-                    navigateToDetail.invoke(emailId, ReplyContentType.SINGLE_PANE)
+                    navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
                 }
             }
         }
@@ -148,7 +148,7 @@ fun ReplyDualPaneContent(
             }
             items(items = replyHomeUIState.emails, key = { it.id }) { email ->
                 ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id == email.id) {
-                    navigateToDetail.invoke(it, ReplyContentType.DUAL_PANE)
+                    navigateToDetail(it, ReplyContentType.DUAL_PANE)
                 }
             }
         }
@@ -170,7 +170,7 @@ fun ReplyEmailDetail(
     LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)) {
         item {
             EmailDetailAppBar(email, isFullScreen) {
-                onBackPressed.invoke()
+                onBackPressed()
             }
         }
         items(items = email.threads, key = { it.id }) { email ->

@@ -74,7 +74,7 @@ fun ReplyNavigationRail(
         Layout(
             content = {
                 Column(
-                    modifier = Modifier.layoutId("header"),
+                    modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
                 ) {
@@ -100,14 +100,14 @@ fun ReplyNavigationRail(
                 }
 
                 Column(
-                    modifier = Modifier.layoutId("content"),
+                    modifier = Modifier.layoutId(LayoutType.CONTENT),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                         NavigationRailItem(
                             selected = selectedDestination == replyDestination.route,
-                            onClick = { navigateToTopLevelDestination.invoke(replyDestination) },
+                            onClick = { navigateToTopLevelDestination(replyDestination) },
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
@@ -123,8 +123,8 @@ fun ReplyNavigationRail(
                 lateinit var contentMeasurable: Measurable
                 measurables.forEach {
                     when (it.layoutId) {
-                        "header" -> headerMeasurable = it
-                        "content" -> contentMeasurable = it
+                        LayoutType.HEADER -> headerMeasurable = it
+                        LayoutType.CONTENT -> contentMeasurable = it
                         else -> error("Unknown layoutId encountered!")
                     }
                 }
@@ -165,7 +165,7 @@ fun ReplyBottomNavigationBar(
         TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
             NavigationBarItem(
                 selected = selectedDestination == replyDestination.route,
-                onClick = { navigateToTopLevelDestination.invoke(replyDestination) },
+                onClick = { navigateToTopLevelDestination(replyDestination) },
                 icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription = stringResource(id = replyDestination.iconTextId)) }
             )
         }
@@ -185,7 +185,7 @@ fun NavigationDrawerContent(
         modifier = Modifier.background(MaterialTheme.colorScheme.inverseOnSurface).padding(16.dp),
         content = {
             Column(
-                modifier = Modifier.layoutId("header"),
+                modifier = Modifier.layoutId(LayoutType.HEADER),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
             ) {
@@ -232,7 +232,7 @@ fun NavigationDrawerContent(
 
             Column(
                 modifier = Modifier
-                    .layoutId("content")
+                    .layoutId(LayoutType.CONTENT)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -242,7 +242,7 @@ fun NavigationDrawerContent(
                         label = { Text(text = stringResource(id = replyDestination.iconTextId), modifier = Modifier.padding(horizontal = 16.dp)) },
                         icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription = stringResource(id = replyDestination.iconTextId)) },
                         colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-                        onClick = { navigateToTopLevelDestination.invoke(replyDestination) }
+                        onClick = { navigateToTopLevelDestination(replyDestination) }
                     )
                 }
             }
@@ -252,8 +252,8 @@ fun NavigationDrawerContent(
             lateinit var contentMeasurable: Measurable
             measurables.forEach {
                 when (it.layoutId) {
-                    "header" -> headerMeasurable = it
-                    "content" -> contentMeasurable = it
+                    LayoutType.HEADER -> headerMeasurable = it
+                    LayoutType.CONTENT -> contentMeasurable = it
                     else -> error("Unknown layoutId encountered!")
                 }
             }
@@ -282,4 +282,8 @@ fun NavigationDrawerContent(
             }
         }
     )
+}
+
+enum class LayoutType {
+    HEADER, CONTENT
 }
