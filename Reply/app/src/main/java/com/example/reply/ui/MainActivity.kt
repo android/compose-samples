@@ -25,6 +25,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -78,8 +79,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             ReplyTheme {
                 val windowSize = calculateWindowSizeClass(this)
-                val devicePosture = devicePostureFlow.collectAsState().value
-                val uiState = viewModel.uiState.collectAsState().value
+                val devicePosture by devicePostureFlow.collectAsState()
+                val uiState by viewModel.uiState.collectAsState()
 
                 ReplyApp(
                     windowSize = windowSize,
