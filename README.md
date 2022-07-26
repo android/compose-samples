@@ -35,7 +35,8 @@ The branch `compose-latest` is targetting the latest alpha versions of Compose.
 | <br><img src="readme/crane.png" alt="Crane" width="240"></img>  <br><br>A Compose implementation of the Crane Material study, a travel app that uses Material Design components and Material Theming to create a personalized, on-brand experience.<br><br>• Medium complexity<br>• Draggable UI elements<br>• UI state handling<br>• UI Tests<br><br>**[> Browse](Crane/)** <br><br>  | <img src="readme/screenshots/Crane.png" width="320" alt="Crane sample demo">|
 |  |  |
 | <br><img src="readme/owl.png" alt="Owl" width="240"></img>  <br><br>A Compose implementation of the Owl Material study. The Owl brand uses bold color, shape, and typography to express its brand attributes: energy, daring, and fun.<br><br>• Medium complexity<br>• Material theming & light/dark themes<br>• Custom layout<br>• Animation<br><br>**[> Browse](Owl/)** <br><br>  | <img src="readme/screenshots/Owl.png" width="320" alt="Owl sample demo">|
-
+|  |  |
+| <br><img src="readme/reply.png" alt="Reply" width="240"></img>  <br><br>A compose implementation of the Reply material study, an email client app that focuses on adaptive design for mobile, tablets and foldables. It also showcases brand new Material design 3 theming, dynamic colors and navigation components.<br><br>• Medium complexity<br>• Adaptive UI for phones, tablet and desktops<br>• Foldable support<br>• Material 3 theming & Components<br>• Dynamic colors and Light/Dark theme support<br><br>**[> Browse](Reply/)** <br><br>  | <img src="readme/screenshots/Reply.png" width="320" alt="Reply sample demo">|
 
 🧬 Additional samples
 ------------
