@@ -26,6 +26,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://androidx.dev/snapshots/builds/8843244/artifacts/repository/" }
     }
 }
 rootProject.name = "Reply"
