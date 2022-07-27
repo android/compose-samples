@@ -34,6 +34,7 @@ body:
         - Jetsnack
         - Jetsurvey
         - Owl
+        - Reply
         - Rally
         - Other (bug not related to sample app)
     validations:
