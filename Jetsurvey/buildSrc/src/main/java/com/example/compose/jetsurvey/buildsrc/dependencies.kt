@@ -27,7 +27,7 @@ object Libs {
     const val junit = "junit:junit:4.13.2"
 
     object Accompanist {
-        const val version = "0.24.9-beta"
+        const val version = "0.25.0.compose-8843244-SNAPSHOT"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
