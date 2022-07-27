@@ -17,7 +17,7 @@
 package com.example.owl.buildsrc
 
 object Versions {
-    const val ktlint = "0.46.1"
+    const val ktlint = "0.45.2"
 }
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
