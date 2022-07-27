@@ -25,12 +25,12 @@ object Libs {
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     object Accompanist {
-        const val version = "0.25.0.compose-8843244-SNAPSHOT"
+        const val version = "0.25.0"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
     object Kotlin {
-        private const val version = "1.7.0"
+        private const val version = "1.7.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -69,9 +69,9 @@ object Libs {
         }
 
         object Compose {
-            const val compilerVersion = "1.2.0"
-            const val snapshot = "8843244"
-            const val version = "1.2.0-SNAPSHOT"
+            const val compilerVersion = "1.3.0-rc01"
+            const val snapshot = ""
+            const val version = "1.2.0"
 
             @get:JvmStatic
             val snapshotUrl: String
