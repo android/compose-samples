@@ -37,7 +37,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://androidx.dev/snapshots/builds/8843244/artifacts/repository/" }
     }
 
     apply plugin: 'com.diffplug.spotless'
@@ -51,3 +50,4 @@ subprojects {
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }
+}
