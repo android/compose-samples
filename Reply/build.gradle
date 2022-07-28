@@ -17,7 +17,7 @@
 buildscript {
     ext {
         kotlin_version = '1.7.0'
-        compose_version = '1.2.0-rc03'
+        compose_version = '1.2.0'
         compose_compiler_version = '1.2.0'
         material3_version = "1.0.0-alpha14"
         coroutines_version = '1.6.0'
@@ -30,7 +30,7 @@ plugins {
     id 'com.android.application' version "$agp_version" apply false
     id 'com.android.library' version "$agp_version" apply false
     id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
-    id 'com.diffplug.spotless' version '6.4.2'
+    id 'com.diffplug.spotless' version '6.7.0'
 }
 
 subprojects {
@@ -50,9 +50,4 @@ subprojects {
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }
-}
-
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }
