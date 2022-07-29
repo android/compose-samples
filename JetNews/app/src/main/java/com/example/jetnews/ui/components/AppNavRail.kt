@@ -17,28 +17,19 @@
 package com.example.jetnews.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.NavigationRail
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,86 +38,39 @@ import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun JetnewsNavRail(
-    modifier: Modifier = Modifier,
-    header: @Composable (ColumnScope.() -> Unit)? = null,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    NavigationRail(
-        modifier = modifier,
-        elevation = 0.dp,
-        header = header
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
 fun AppNavRail(
     currentRoute: String,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    JetnewsNavRail(
+    NavigationRail(
         header = {
-            JetnewsIcon(Modifier.padding(top = 8.dp))
+            Icon(
+                painterResource(R.drawable.ic_jetnews_logo),
+                null,
+                Modifier.padding(vertical = 12.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
         },
         modifier = modifier
     ) {
-        NavRailIcon(
-            icon = Icons.Filled.Home,
-            contentDescription = stringResource(id = R.string.cd_navigate_home),
-            isSelected = currentRoute == JetnewsDestinations.HOME_ROUTE,
-            action = navigateToHome
+        Spacer(Modifier.weight(1f))
+        NavigationRailItem(
+            selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
+            onClick = navigateToHome,
+            icon = { Icon(Icons.Filled.Home, stringResource(R.string.home_title)) },
+            label = { Text(stringResource(R.string.home_title)) },
+            alwaysShowLabel = false
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        NavRailIcon(
-            icon = Icons.Filled.ListAlt,
-            contentDescription = stringResource(id = R.string.cd_navigate_interests),
-            isSelected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
-            action = navigateToInterests
+        NavigationRailItem(
+            selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
+            onClick = navigateToInterests,
+            icon = { Icon(Icons.Filled.ListAlt, stringResource(R.string.interests_title)) },
+            label = { Text(stringResource(R.string.interests_title)) },
+            alwaysShowLabel = false
         )
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun NavRailIcon(
-    icon: ImageVector,
-    contentDescription: String,
-    isSelected: Boolean,
-    action: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val backgroundColor by animateColorAsState(
-        if (isSelected) {
-            MaterialTheme.colors.primary.copy(alpha = 0.12f)
-        } else {
-            Color.Transparent
-        }
-    )
-
-    Surface(
-        selected = isSelected,
-        color = backgroundColor,
-        onClick = action,
-        shape = CircleShape,
-        modifier = modifier.size(48.dp)
-    ) {
-        NavigationIcon(
-            icon = icon,
-            isSelected = isSelected,
-            contentDescription = contentDescription,
-            modifier = Modifier.size(32.dp)
-        )
+        Spacer(Modifier.weight(1f))
     }
 }
 

@@ -18,16 +18,16 @@ package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -48,6 +48,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.theme.JetnewsTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostCardPopular(
     post: Post,
@@ -55,11 +56,12 @@ fun PostCardPopular(
     modifier: Modifier = Modifier
 ) {
     Card(
+        onClick = { navigateToArticle(post.id) },
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier.size(280.dp, 240.dp)
+        modifier = modifier
+            .size(280.dp, 240.dp)
     ) {
-        Column(modifier = Modifier.clickable(onClick = { navigateToArticle(post.id) })) {
-
+        Column {
             Image(
                 painter = painterResource(post.imageId),
                 contentDescription = null, // decorative
@@ -72,7 +74,7 @@ fun PostCardPopular(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = post.title,
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.headlineSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -80,7 +82,7 @@ fun PostCardPopular(
                     text = post.metadata.author.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Text(
@@ -91,7 +93,7 @@ fun PostCardPopular(
                             post.metadata.readTimeMinutes
                         )
                     ),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
