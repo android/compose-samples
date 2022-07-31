@@ -186,7 +186,7 @@ fun EpisodeListItem(
 
         Text(
             text = episode.title,
-            maxLines = 2,
+//            maxLines = 2,
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.constrainAs(episodeTitle) {
                 linkTo(
@@ -197,7 +197,7 @@ fun EpisodeListItem(
                     bias = 0f
                 )
                 top.linkTo(parent.top, 16.dp)
-
+                height = preferredWrapContent
                 width = preferredWrapContent
             }
         )
@@ -207,7 +207,7 @@ fun EpisodeListItem(
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
-                maxLines = 2,
+//                maxLines = 2,
                 style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.constrainAs(podcastTitle) {
                     linkTo(
@@ -218,7 +218,7 @@ fun EpisodeListItem(
                         bias = 0f
                     )
                     top.linkTo(episodeTitle.bottom, 6.dp)
-
+                    height = preferredWrapContent
                     width = preferredWrapContent
                 }
             )
@@ -271,6 +271,7 @@ fun EpisodeListItem(
                         endMargin = 16.dp,
                         bias = 0f // float this towards the start
                     )
+                    width = preferredWrapContent
                 }
             )
 
