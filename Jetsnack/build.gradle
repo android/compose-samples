@@ -14,35 +14,31 @@
  * limitations under the License.
  */
 
-import com.example.jetsnack.buildsrc.Libs
-import com.example.jetsnack.buildsrc.Versions
-
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath Libs.androidGradlePlugin
-        classpath Libs.Kotlin.gradlePlugin
+        classpath libs.android.gradle
+        classpath libs.kotlin.gradle
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.7.0'
-    id 'com.android.test' version '7.2.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
+    alias libs.plugins.spotless
+    alias libs.plugins.android.test apply false
+    alias libs.plugins.kotlin.android apply false
 }
 
 subprojects {
     repositories {
         google()
         mavenCentral()
-
-        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
+        if (libs.versions.compose.version.get().endsWith("SNAPSHOT")) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
         }
-        if (Libs.Accompanist.version.endsWith("SNAPSHOT")) {
+        if (libs.versions.accompanist.get().endsWith("SNAPSHOT")) {
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
     }
@@ -68,7 +64,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint(Versions.ktlint).userData([android: "true"])
+            ktlint(libs.versions.ktlint.get()).userData([android: "true"])
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }

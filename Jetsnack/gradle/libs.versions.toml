@@ -1,0 +1,64 @@
+[versions]
+accompanist = "0.25.0"
+agp = "7.2.1"
+androidxcore = "1.7.0"
+coil = "2.0.0"
+compose-version = "1.2.0"
+compose-activity = "1.4.0"
+compose-constraintlayout = "1.0.0"
+compose-navigation = "2.4.2"
+compose-viewmodel = "2.4.1"
+coroutines = "1.6.0"
+junit = "4.13"
+kotlin = "1.7.0"
+ktlint = "0.45.2"
+
+androidx-test = "1.4.0"
+androidx-test-ext-junit = "1.1.2"
+androidx-test-espresso = "3.2.0"
+androidx-test-macrobenchmark = "1.1.0-beta04"
+androidx-test-uiautomator = "2.2.0"
+
+android-test = "7.2.1"
+kotlin-android = "1.6.21"
+spotless = "6.7.0"
+
+[libraries]
+accompanist-flowlayouts = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref  = "accompanist" }
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.require = "1.7.0" }
+androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity" }
+androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-viewmodel" }
+androidx-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+androidx-compose-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "compose-constraintlayout" }
+androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-version" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose-version" }
+androidx-compose-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose-version" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose-version" }
+androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose-version" }
+androidx-compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose-version" }
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose-version" }
+androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose-version" }
+androidx-compose-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-version" }
+androidx-compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-version" }
+androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-version" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
+androidx-test-espressocore = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-test-espresso" }
+androidx-test-junit = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-ext-junit" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "android-test" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref =  "kotlin-android" }
+kotlin-parcelize = { id = "kotlin-parcelize", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
