@@ -130,7 +130,8 @@ dependencies {
 
     // Robolectric dependencies
     testImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    // TODO: Bump to 4.6.* after https://github.com/robolectric/robolectric/issues/6593 is fixed
+    // TODO: Bump to latest after Espresso 3.5.0 goes stable
+    //  (due to https://github.com/robolectric/robolectric/issues/6593)
     testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
