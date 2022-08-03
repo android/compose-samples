@@ -186,7 +186,8 @@ fun EpisodeListItem(
 
         Text(
             text = episode.title,
-//            maxLines = 2,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.constrainAs(episodeTitle) {
                 linkTo(
@@ -207,7 +208,8 @@ fun EpisodeListItem(
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = podcast.title,
-//                maxLines = 2,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.constrainAs(podcastTitle) {
                     linkTo(
