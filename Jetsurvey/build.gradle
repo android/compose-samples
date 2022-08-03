@@ -13,56 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import com.example.compose.jetsurvey.buildsrc.Libs
-import com.example.compose.jetsurvey.buildsrc.Versions
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath Libs.androidGradlePlugin
-        classpath Libs.Kotlin.gradlePlugin
-    }
-}
-
 plugins {
-    id 'com.diffplug.spotless' version '6.7.0'
+    alias libs.plugins.android.application apply false
+    alias libs.plugins.kotlin.android apply false
+    alias libs.plugins.spotless apply false
+    alias libs.plugins.toml.checker
+    alias libs.plugins.toml.updater
 }
 
 subprojects {
     repositories {
         google()
         mavenCentral()
-
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Libs.AndroidX.Compose.snapshotUrl }
         }
         if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         }
-    }
 
-    apply plugin: 'com.diffplug.spotless'
-    spotless {
-        kotlin {
-            target '**/*.kt'
-            targetExclude("$buildDir/**/*.kt")
-            targetExclude('bin/**/*.kt')
-
-            ktlint(Versions.ktlint).userData([android: "true"])
-            licenseHeaderFile rootProject.file('spotless/copyright.kt')
-        }
     }
+    apply from: "${project.rootDir}/buildscripts/spotless.gradle"
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors (disabled by default)
             allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
 
-            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 
             // Enable experimental coroutines APIs, including Flow
             freeCompilerArgs += '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
@@ -74,3 +52,9 @@ subprojects {
         }
     }
 }
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+apply from: "${project.rootDir}/buildscripts/toml-updater-config.gradle"

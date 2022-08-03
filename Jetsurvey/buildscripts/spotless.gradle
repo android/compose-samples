@@ -1,0 +1,42 @@
+apply plugin: 'com.diffplug.spotless'
+spotless {
+
+    format 'text', {
+        target '**/AndroidManifest.xml', 'src/**/*.xml', '*.toml'
+        targetExclude '**/mergedManifests/**/AndroidManifest.xml',
+                '**/build/**/*.xml', '**/drawable*/*.xml', '**/mipmap*/*.xml'
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target '*.gradle'
+        greclipse()
+    }
+    format 'misc', {
+        target '*.md', '.gitignore'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    kotlin {
+        target '**/*.kt'
+        targetExclude("$buildDir/**/*.kt")
+        targetExclude('bin/**/*.kt')
+
+        ktlint("0.43.2").userData(['android': 'true', 'max_line_length': '120'])
+    }
+}
+
+
+task createSpotlessPreCommitHook() {
+    def gitHooksDirectory = new File("$project.rootDir/.git/hooks/")
+    if (!gitHooksDirectory.exists()) gitHooksDirectory.mkdirs()
+    new File("$project.rootDir/.git/hooks", "pre-commit").text = """
+    #!/bin/bash
+    echo "Running spotless check"
+    ./gradlew spotlessApply
+"""
+    "chmod +x .git/hooks/pre-commit".execute()
+}

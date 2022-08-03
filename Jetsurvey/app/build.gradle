@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.example.compose.jetsurvey.buildsrc.Libs
 
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
 }
 
 android {
-    compileSdkVersion 32
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.example.compose.jetsurvey"
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdk 26
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -45,24 +44,21 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            manifestPlaceholders = [usesCleartextTraffic:"true"]
         }
-
         release {
-            minifyEnabled true
+            manifestPlaceholders = [usesCleartextTraffic:"false"]
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
-
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '1.11'
     }
-
     buildFeatures {
         compose true
 
@@ -73,51 +69,48 @@ android {
         resValues false
         shaders false
     }
-
     composeOptions {
-        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.compilerVersion
+        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
     }
-
     packagingOptions {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
-
     lintOptions {
         abortOnError true
     }
 }
 
 dependencies {
-    implementation Libs.Kotlin.stdlib
-    implementation Libs.Coroutines.android
+    implementation libs.kotlin.stdlib
+    implementation libs.kotlinx.coroutines.android
 
-    implementation Libs.AndroidX.coreKtx
-    implementation Libs.AndroidX.appcompat
-    implementation Libs.AndroidX.Navigation.fragment
-    implementation Libs.AndroidX.Navigation.uiKtx
-    implementation Libs.AndroidX.Material.material
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.navigation.fragment
+    implementation libs.androidx.navigation.ui.ktx
 
-    implementation Libs.AndroidX.Lifecycle.viewmodel
-    implementation Libs.AndroidX.Lifecycle.viewModelCompose
+    implementation libs.androidx.lifecycle.viewModelCompose
 
-    implementation Libs.AndroidX.Activity.activityCompose
+    implementation libs.androidx.activity.compose
 
-    implementation Libs.AndroidX.Compose.layout
-    implementation Libs.AndroidX.Compose.material
-    implementation Libs.AndroidX.Compose.materialIconsExtended
-    implementation Libs.AndroidX.Compose.toolingPreview
-    implementation Libs.AndroidX.Compose.runtime
-    implementation Libs.AndroidX.Compose.runtimeLivedata
-    debugImplementation Libs.AndroidX.Compose.tooling
+    implementation libs.google.android.material
 
-    implementation Libs.Accompanist.permissions
+    implementation libs.androidx.compose.foundation.layout
+    implementation libs.androidx.compose.material
+    implementation libs.androidx.compose.material.iconsExtended
+    implementation libs.androidx.compose.ui.tooling.preview
+    implementation libs.androidx.compose.runtime
+    implementation libs.androidx.compose.runtime.livedata
+    debugImplementation libs.androidx.compose.ui.tooling
 
-    implementation Libs.Coil.coilCompose
+    implementation libs.accompanist.permissions
 
-    testImplementation Libs.junit
-    testImplementation Libs.AndroidX.Test.core
-    testImplementation Libs.AndroidX.Test.Ext.junit
-    testImplementation Libs.AndroidX.Test.Ext.truth
-    testImplementation Libs.Robolectric.robolectric
+    implementation libs.coil.kt.compose
+
+    testImplementation libs.junit
+    testImplementation libs.androidx.test.core
+    testImplementation libs.androidx.test.ext.junit
+    testImplementation libs.androidx.test.ext.truth
+    testImplementation libs.robolectric
 }
