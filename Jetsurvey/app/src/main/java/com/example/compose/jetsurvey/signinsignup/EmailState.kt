@@ -34,3 +34,5 @@ private fun emailValidationError(email: String): String {
 private fun isEmailValid(email: String): Boolean {
     return Pattern.matches(EMAIL_VALIDATION_REGEX, email)
 }
+
+val EmailStateSaver = textFieldStateSaver(EmailState())

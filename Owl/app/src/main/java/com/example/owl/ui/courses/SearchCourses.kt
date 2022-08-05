@@ -19,6 +19,7 @@ package com.example.owl.ui.courses
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -50,16 +51,24 @@ import com.example.owl.model.Topic
 import com.example.owl.model.topics
 import com.example.owl.ui.theme.BlueTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchCourses(
     topics: List<Topic>,
     modifier: Modifier = Modifier
 ) {
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
-    LazyColumn(modifier = modifier.statusBarsPadding()) {
+    LazyColumn(
+        modifier = modifier
+            .statusBarsPadding()
+            .fillMaxHeight()
+    ) {
         item { AppBar(searchTerm, updateSearchTerm) }
         val filteredTopics = getTopics(searchTerm.text, topics)
-        items(filteredTopics) { topic ->
+        items(
+            items = filteredTopics,
+            key = { it.name }
+        ) { topic ->
             Text(
                 text = topic.name,
                 style = MaterialTheme.typography.h5,
@@ -73,6 +82,7 @@ fun SearchCourses(
                         bottom = 8.dp
                     )
                     .wrapContentWidth(Alignment.Start)
+                    .animateItemPlacement()
             )
         }
     }

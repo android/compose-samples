@@ -21,7 +21,8 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
+    const val secretsGradlePlugin = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktlint}"
 
     const val coreLibraryDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
@@ -36,7 +37,7 @@ object Libs {
     }
 
     object Kotlin {
-        private const val version = "1.6.21"
+        private const val version = "1.7.0"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -56,12 +57,13 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.4.1"
 
         object Compose {
+            const val compilerVersion = "1.2.0"
             const val snapshot = ""
-            const val version = "1.2.0-beta02"
+            const val version = "1.2.0"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
-            const val materialWindow = "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
+            const val materialWindow = "androidx.compose.material3:material3-window-size-class:1.0.0-alpha12"
 
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

@@ -48,6 +48,9 @@ read ktlint_version;
 echo "Version to change Accompanist to (e.g 0.24.9-beta): ";
 read accompanist_version;
 
+echo "Version to change AGP to (e.g. 7.2.1): ";
+read androidGradlePlugin_version;
+
 if [ -z "$snapshot_version" ]; then
     echo "Changing Compose version to $compose_version"
 else
@@ -64,7 +67,7 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
         if [[ $line == *"val version ="* && "$compose_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
             MADE_CHANGE=true;
-        elif [[ $line == *"val snapshot ="* && "$snapshot_version" != "" ]] && $COMPOSE_BLOCK = true; then
+        elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
             MADE_CHANGE=true;
         elif [[ $line == *"val version ="* && "$accompanist_version" != "" ]] && $ACCOMPANIST_BLOCK = true; then
@@ -73,6 +76,9 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
         elif [[ $line == *"val ktlint ="* && "$ktlint_version" != "" ]]; then
             echo "$line" | sed -En 's/".*"/"'$ktlint_version'"/p'
             MADE_CHANGE=true;
+        elif [[ $line == *"val androidGradlePlugin ="* && "$androidGradlePlugin_version" != "" ]]; then
+                   echo "$line" | sed -En 's/".*"/"com.android.tools.build:gradle:'$androidGradlePlugin_version'"/p'
+                   MADE_CHANGE=true;
         else
             if [[ $line == *"object Compose {"* ]]; then
                 COMPOSE_BLOCK=true;
@@ -91,7 +97,7 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
     else
         rm $TEMP_FILENAME;
     fi
-    
+
 done
 
 # Change build.gradle versions
@@ -102,11 +108,14 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
         if [[ $line == *"ext.compose_version ="* && "$compose_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
             MADE_CHANGE=true;
-        elif [[ $line == *"ext.compose_snapshot_version ="* && "$snapshot_version" != "" ]]; then
+        elif [[ $line == *"ext.compose_snapshot_version ="* ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
             MADE_CHANGE=true;
         elif [[ $line == *"ext.accompanist_version ="* && "$accompanist_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$accompanist_version\'/p"
+            MADE_CHANGE=true;
+        elif [[ $line == *"ext.androidGradlePlugin_version ="* && "$androidGradlePlugin_version" != "" ]]; then
+            echo "$line" | sed -En "s/\'.*'/\'com.android.tools.build:gradle:$androidGradlePlugin_version\'/p"
             MADE_CHANGE=true;
         elif [[ $line == *"'com.diffplug.spotless' version"* && "$spotless_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'com.diffplug.spotless\' version \'$spotless_version\'/p"
@@ -125,4 +134,3 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
         rm $TEMP_FILENAME;
     fi
 done
-

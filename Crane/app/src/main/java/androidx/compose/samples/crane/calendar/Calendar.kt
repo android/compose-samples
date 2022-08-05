@@ -17,6 +17,7 @@
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseOutQuart
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -40,7 +41,6 @@ import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.calendar.model.CalendarUiState
 import androidx.compose.samples.crane.calendar.model.Month
 import androidx.compose.samples.crane.ui.CraneTheme
-import androidx.compose.samples.crane.util.EaseOutQuart
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview

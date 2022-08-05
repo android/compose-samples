@@ -26,11 +26,12 @@ buildscript {
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
         classpath Libs.Hilt.gradlePlugin
+        classpath Libs.secretsGradlePlugin
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.5.2'
+    id 'com.diffplug.spotless' version '6.7.0'
 }
 
 subprojects {

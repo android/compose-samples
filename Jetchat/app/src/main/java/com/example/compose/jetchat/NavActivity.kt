@@ -34,7 +34,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.compose.jetchat.components.JetchatScaffold
+import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.conversation.BackPressHandler
 import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.databinding.ContentMainBinding
@@ -67,8 +67,12 @@ class NavActivity : AppCompatActivity() {
                         if (drawerOpen) {
                             // Open drawer and reset state in VM.
                             LaunchedEffect(Unit) {
-                                drawerState.open()
-                                viewModel.resetOpenDrawerAction()
+                                // wrap in try-finally to handle interruption whiles opening drawer
+                                try {
+                                    drawerState.open()
+                                } finally {
+                                    viewModel.resetOpenDrawerAction()
+                                }
                             }
                         }
 
@@ -82,7 +86,7 @@ class NavActivity : AppCompatActivity() {
                             }
                         }
 
-                        JetchatScaffold(
+                        JetchatDrawer(
                             drawerState = drawerState,
                             onChatClicked = {
                                 findNavController().popBackStack(R.id.nav_home, false)

@@ -79,7 +79,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 
     packagingOptions {
@@ -96,7 +96,7 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha10"
+    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-alpha14"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.animation:animation:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
@@ -106,9 +106,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.activity:activity-ktx:1.4.0'
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.activity:activity-compose:1.4.0"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
@@ -130,7 +130,8 @@ dependencies {
 
     // Robolectric dependencies
     testImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    // TODO: Bump to 4.6.* after https://github.com/robolectric/robolectric/issues/6593 is fixed
+    // TODO: Bump to latest after Espresso 3.5.0 goes stable
+    //  (due to https://github.com/robolectric/robolectric/issues/6593)
     testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 

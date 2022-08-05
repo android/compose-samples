@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
@@ -33,7 +33,7 @@ jobs:
       - name: Generate cache key
         run: ./scripts/checksum.sh ${{ inputs.path }} checksum.txt
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches/modules-*
@@ -62,14 +62,14 @@ jobs:
         run: ./gradlew testDebug --stacktrace
 
       - name: Upload build outputs (APKs)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-outputs
           path: ${{ inputs.path }}/app/build/outputs
 
       - name: Upload build reports
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-reports
           path: ${{ inputs.path }}/app/build/reports

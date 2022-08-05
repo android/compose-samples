@@ -29,7 +29,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.5.2'
+    id 'com.diffplug.spotless' version '6.7.0'
 }
 
 subprojects {
@@ -37,7 +37,7 @@ subprojects {
         google()
         mavenCentral()
 
-        if (Libs.AndroidX.Compose.version.endsWith('SNAPSHOT')) {
+        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url Libs.AndroidX.Compose.snapshotUrl }
         }
         if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
