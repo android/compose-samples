@@ -36,6 +36,12 @@ fi
 echo "Version to change Compose to (e.g 1.2.0-alpha06): ";
 read compose_version;
 
+echo "Version to change Compose Compiler to (e.g 1.2.0): ";
+read compose_compiler_version;
+
+echo "Version to change Kotlin to (e.g 1.7.10): ";
+read kotlin_version;
+
 echo "Snapshot ID: (Blank for none)";
 read snapshot_version;
 
@@ -61,11 +67,18 @@ fi
 for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
     COMPOSE_BLOCK=false;
     ACCOMPANIST_BLOCK=false;
+    KOTLIN_BLOCK=false;
     MADE_CHANGE=false;
     TEMP_FILENAME="${DEPENDENCIES_FILE}_new";
     while IFS= read -r line; do
         if [[ $line == *"val version ="* && "$compose_version" != "" ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$compose_version'"/p'
+            MADE_CHANGE=true;
+        elif [[ $line == *"val compilerVersion ="* && "$compose_compiler_version" != "" ]] && $COMPOSE_BLOCK = true; then
+            echo "$line" | sed -En 's/".*"/"'$compose_compiler_version'"/p'
+            MADE_CHANGE=true;
+        elif [[ $line == *"val version ="* && "$kotlin_version" != "" ]] && $KOTLIN_BLOCK = true; then
+            echo "$line" | sed -En 's/".*"/"'$kotlin_version'"/p'
             MADE_CHANGE=true;
         elif [[ $line == *"val snapshot ="* ]] && $COMPOSE_BLOCK = true; then
             echo "$line" | sed -En 's/".*"/"'$snapshot_version'"/p'
@@ -84,9 +97,12 @@ for DEPENDENCIES_FILE in `find . -type f -iname "dependencies.kt"` ; do
                 COMPOSE_BLOCK=true;
             elif [[ $line == *"object Accompanist {"* ]]; then
                 ACCOMPANIST_BLOCK=true;
-            elif [[ $line == *"}"* ]]; then
+            elif [[ $line == *"object Kotlin {"* ]]; then
+                KOTLIN_BLOCK=true;
+            elif [[ $line == *"}"* ]] || [[ $line == *"object Coroutines {"* ]]; then
                 COMPOSE_BLOCK=false;
                 ACCOMPANIST_BLOCK=false;
+                KOTLIN_BLOCK=false;
             fi
             echo "$line";
         fi
@@ -107,6 +123,12 @@ for DEPENDENCIES_FILE in `find . -type f -iname "build.gradle"` ; do
     while IFS= read -r line; do
         if [[ $line == *"ext.compose_version ="* && "$compose_version" != "" ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$compose_version\'/p"
+            MADE_CHANGE=true;
+        elif [[ $line == *"ext.compose_compiler_version ="* && "$compose_compiler_version" != "" ]]; then
+            echo "$line" | sed -En "s/\'.*'/\'$compose_compiler_version\'/p"
+            MADE_CHANGE=true;
+        elif [[ $line == *"ext.kotlin_version ="* && "$kotlin_version" != "" ]]; then
+            echo "$line" | sed -En "s/\'.*'/\'$kotlin_version\'/p"
             MADE_CHANGE=true;
         elif [[ $line == *"ext.compose_snapshot_version ="* ]]; then
             echo "$line" | sed -En "s/\'.*'/\'$snapshot_version\'/p"
