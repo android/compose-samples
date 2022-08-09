@@ -163,8 +163,10 @@ fun HomeFeedWithArticleDetailsScreen(
             // Crossfade between different detail posts
             Crossfade(targetState = hasPostsUiState.selectedPost) { detailPost ->
                 // Get the lazy list state for this detail view
-                val detailLazyListState by derivedStateOf {
-                    articleDetailLazyListStates.getValue(detailPost.id)
+                val detailLazyListState by remember {
+                    derivedStateOf {
+                        articleDetailLazyListStates.getValue(detailPost.id)
+                    }
                 }
 
                 // Key against the post id to avoid sharing any state between different posts

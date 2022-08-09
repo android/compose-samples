@@ -22,7 +22,7 @@ object Versions {
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
     object Kotlin {
-        private const val version = "1.7.0"
+        private const val version = "1.7.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -45,9 +45,9 @@ object Libs {
             const val activityCompose = "androidx.activity:activity-compose:1.4.0"
         }
         object Compose {
-            const val compilerVersion = "1.2.0"
+            const val compilerVersion = "1.3.0-rc02"
             const val snapshot = ""
-            const val version = "1.2.0"
+            const val version = "1.3.0-alpha02"
 
             const val animation = "androidx.compose.animation:animation:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"

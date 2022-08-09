@@ -27,12 +27,12 @@ object Libs {
     const val junit = "junit:junit:4.13.2"
 
     object Accompanist {
-        const val version = "0.25.0"
+        const val version = "0.26.0-alpha"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
     object Kotlin {
-        private const val version = "1.7.0"
+        private const val version = "1.7.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -60,9 +60,9 @@ object Libs {
         }
 
         object Compose {
-            const val compilerVersion = "1.2.0"
+            const val compilerVersion = "1.3.0-rc02"
             const val snapshot = ""
-            const val version = "1.2.0"
+            const val version = "1.3.0-alpha02"
 
             @get:JvmStatic
             val snapshotUrl: String
