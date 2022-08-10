@@ -15,6 +15,7 @@
  */
 
 import com.example.jetsnack.buildsrc.Libs
+import com.example.jetsnack.buildsrc.Urls
 import com.example.jetsnack.buildsrc.Versions
 
 buildscript {
@@ -41,6 +42,9 @@ subprojects {
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
             maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
+        }
+        if (!Libs.AndroidX.Compose.compilerSnapshot.isEmpty()) {
+            maven { url Urls.composeCompilerSnapshotRepo }
         }
         if (Libs.Accompanist.version.endsWith("SNAPSHOT")) {
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
