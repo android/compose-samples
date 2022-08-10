@@ -176,6 +176,7 @@ fun ReplyBottomNavigationBar(
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,
+    isPermanentDrawer: Boolean = false,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
@@ -201,11 +202,13 @@ fun NavigationDrawerContent(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    IconButton(onClick = onDrawerClicked) {
-                        Icon(
-                            imageVector = Icons.Default.MenuOpen,
-                            contentDescription = stringResource(id = R.string.navigation_drawer)
-                        )
+                    if (isPermanentDrawer.not()) {
+                        IconButton(onClick = onDrawerClicked) {
+                            Icon(
+                                imageVector = Icons.Default.MenuOpen,
+                                contentDescription = stringResource(id = R.string.navigation_drawer)
+                            )
+                        }
                     }
                 }
 

@@ -151,6 +151,7 @@ private fun ReplyNavigationWrapper(
         PermanentNavigationDrawer(drawerContent = {
             NavigationDrawerContent(
                 selectedDestination = selectedDestination,
+                isPermanentDrawer = true,
                 navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigationActions::navigateTo,
             )
@@ -218,7 +219,6 @@ fun ReplyAppContent(
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            // TODO check on positioning of navigation rail depending on widnowSizeHeight and Material support.
             ReplyNavigationRail(
                 selectedDestination = selectedDestination,
                 navigationContentPosition = navigationContentPosition,
