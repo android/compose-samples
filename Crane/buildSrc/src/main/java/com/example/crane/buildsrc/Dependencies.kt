@@ -21,7 +21,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.2"
     const val secretsGradlePlugin = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
     const val ktLint = "com.pinterest:ktlint:${Versions.ktlint}"
 
@@ -41,12 +41,12 @@ object Libs {
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
+    }
 
-        object Coroutines {
-            private const val version = "1.6.0"
-            const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
-            const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
-        }
+    object Coroutines {
+        private const val version = "1.6.0"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
     object AndroidX {
@@ -57,9 +57,9 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.4.1"
 
         object Compose {
-            const val compilerVersion = "1.3.0-rc02"
+            const val compilerVersion = "1.3.0"
             const val snapshot = ""
-            const val version = "1.3.0-alpha02"
+            const val version = "1.3.0-alpha03"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
