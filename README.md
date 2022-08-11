@@ -1,5 +1,5 @@
 # Jetpack Compose Samples
-<img src="readme/samples_montage.gif" alt="Jetpack Compose Samples" width="1024" />
+<img src="readme/samples_montage.gif" alt="Jetpack Compose Samples" width="824" />
 
 This repository contains a set of individual Android Studio projects to help you learn about
 Compose in Android. Each sample demonstrates different use cases, complexity levels and APIs.
