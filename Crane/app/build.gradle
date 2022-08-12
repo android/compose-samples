@@ -25,11 +25,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         applicationId "androidx.compose.samples.crane"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -104,7 +104,7 @@ android {
 
 dependencies {
     implementation Libs.Kotlin.stdlib
-    implementation Libs.Kotlin.Coroutines.android
+    implementation Libs.Coroutines.android
     implementation Libs.GoogleMaps.maps
     implementation Libs.GoogleMaps.composeMaps
     constraints {
@@ -144,7 +144,7 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.espressoCore
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
-    androidTestImplementation Libs.Kotlin.Coroutines.test
+    androidTestImplementation Libs.Coroutines.test
     androidTestImplementation Libs.AndroidX.Compose.uiTest
     androidTestImplementation Libs.Hilt.android
     androidTestImplementation Libs.Hilt.testing

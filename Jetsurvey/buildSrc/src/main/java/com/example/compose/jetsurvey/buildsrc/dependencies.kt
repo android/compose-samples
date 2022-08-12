@@ -21,13 +21,13 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.2"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     const val junit = "junit:junit:4.13.2"
 
     object Accompanist {
-        const val version = "0.26.0-alpha"
+        const val version = "0.26.1-alpha"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
     }
 
@@ -60,9 +60,9 @@ object Libs {
         }
 
         object Compose {
-            const val compilerVersion = "1.3.0-rc02"
+            const val compilerVersion = "1.3.0"
             const val snapshot = ""
-            const val version = "1.3.0-alpha02"
+            const val version = "1.3.0-alpha03"
 
             @get:JvmStatic
             val snapshotUrl: String
