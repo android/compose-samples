@@ -127,5 +127,5 @@ object Urls {
     const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
         "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
     const val composeCompilerSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
-        "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
+        "${Libs.AndroidX.Compose.compilerSnapshot}/artifacts/repository/"
 }

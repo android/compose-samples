@@ -22,7 +22,7 @@ plugins {
 android {
     compileSdkVersion 32
     defaultConfig {
-        applicationId 'com.example.jetnews'
+        applicationId 'com.example.reply'
         minSdkVersion 21
         targetSdkVersion 32
         versionCode 1
@@ -48,6 +48,7 @@ android {
 
         release {
             minifyEnabled true
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 

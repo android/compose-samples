@@ -33,14 +33,12 @@ if [[ `git status --porcelain` ]]; then
     fi
 fi
 
-echo "Find Compose releases at: https://jetpad.corp.google.com/libraryreleases?groupId=androidx.compose.ui&artifactId=ui"
 echo "Version to change Compose to (e.g 1.2.0-alpha06): ";
 read compose_version;
 
 echo "Snapshot ID: (Blank for none)";
 read snapshot_version;
 
-echo "Find Compose Compiler releases at: https://jetpad.corp.google.com/groupreleases?groupId=androidx.compose.compiler"
 echo "Version to change Compose Compiler to (e.g 1.3.0): ";
 read compose_compiler_version;
 
