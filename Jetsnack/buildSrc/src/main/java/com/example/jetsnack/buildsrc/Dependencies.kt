@@ -21,16 +21,16 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.2"
 
     object Accompanist {
-        const val version = "0.25.0"
+        const val version = "0.25.1"
         const val systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayouts = "com.google.accompanist:accompanist-flowlayout:$version"
     }
 
     object Kotlin {
-        private const val version = "1.7.0"
+        private const val version = "1.7.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -47,9 +47,10 @@ object Libs {
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
 
         object Compose {
-            const val compilerVersion = "1.2.0"
+            const val compilerSnapshot = ""
+            const val compilerVersion = "1.3.0"
             const val snapshot = ""
-            const val version = "1.2.0"
+            const val version = "1.2.1"
 
             const val foundation = "androidx.compose.foundation:foundation:${version}"
             const val layout = "androidx.compose.foundation:foundation-layout:${version}"
@@ -104,4 +105,12 @@ object Libs {
     object Coil {
         const val coilCompose = "io.coil-kt:coil-compose:2.0.0"
     }
+}
+
+object Urls {
+    const val mavenCentralSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
+    const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
+            "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
+    const val composeCompilerSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
+            "${Libs.AndroidX.Compose.compilerSnapshot}/artifacts/repository/"
 }

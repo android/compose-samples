@@ -104,7 +104,7 @@ android {
 
 dependencies {
     implementation Libs.Kotlin.stdlib
-    implementation Libs.Kotlin.Coroutines.android
+    implementation Libs.Coroutines.android
     implementation Libs.GoogleMaps.maps
     implementation Libs.GoogleMaps.composeMaps
     constraints {
@@ -144,7 +144,7 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.espressoCore
     androidTestImplementation Libs.AndroidX.Test.rules
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
-    androidTestImplementation Libs.Kotlin.Coroutines.test
+    androidTestImplementation Libs.Coroutines.test
     androidTestImplementation Libs.AndroidX.Compose.uiTest
     androidTestImplementation Libs.Hilt.android
     androidTestImplementation Libs.Hilt.testing
