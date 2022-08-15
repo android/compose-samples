@@ -19,7 +19,6 @@ package androidx.compose.samples.crane.details
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.DestinationsRepository
-import androidx.compose.samples.crane.data.ExploreModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
