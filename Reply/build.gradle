@@ -40,7 +40,7 @@ buildscript {
 plugins {
     // Do not update until Ktlint 0.46.2 is released.
     // See https://github.com/pinterest/ktlint/pull/1525
-    id 'com.diffplug.spotless' version '6.7.0'
+    id 'com.diffplug.spotless' version '6.9.1'
 }
 
 subprojects {
