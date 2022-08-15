@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.details
 
 import androidx.compose.material.Surface
-import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.assertIsDisplayed
