@@ -24,10 +24,11 @@ class DestinationsRepository @Inject constructor(
     val destinations: List<ExploreModel> = destinationsLocalDataSource.craneDestinations
     val hotels: List<ExploreModel> = destinationsLocalDataSource.craneHotels
     val restaurants: List<ExploreModel> = destinationsLocalDataSource.craneRestaurants
+    val cities: List<City> = listCities
 
-    fun getDestination(cityName: String): ExploreModel? {
-        return destinationsLocalDataSource.craneDestinations.firstOrNull {
-            it.city.name == cityName
+    fun getDestination(cityName: String): City? {
+        return cities.firstOrNull {
+            it.name == cityName
         }
     }
 }

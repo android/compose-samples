@@ -19,6 +19,7 @@ package androidx.compose.samples.crane.details
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.VisibleForTesting
@@ -46,6 +47,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.samples.crane.base.Result
+import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
@@ -91,7 +93,10 @@ class DetailsActivity : ComponentActivity() {
             CraneTheme {
                 Surface {
                     DetailsScreen(
-                        onErrorLoading = { finish() },
+                        onErrorLoading = {
+                            Log.e("DetailsActivity", "Error loading screen")
+                            finish()
+                        },
                         modifier = Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
@@ -103,7 +108,7 @@ class DetailsActivity : ComponentActivity() {
 }
 
 private data class DetailsScreenUiState(
-    val exploreModel: ExploreModel? = null,
+    val city: City? = null,
     val isLoading: Boolean = false,
     val throwError: Boolean = false
 )
@@ -121,7 +126,7 @@ fun DetailsScreen(
         initialValue = DetailsScreenUiState(isLoading = true)
     ) {
         val cityDetailsResult = viewModel.cityDetails
-        value = if (cityDetailsResult is Result.Success<ExploreModel>) {
+        value = if (cityDetailsResult is Result.Success<City>) {
             DetailsScreenUiState(cityDetailsResult.data)
         } else {
             DetailsScreenUiState(throwError = true)
@@ -130,8 +135,8 @@ fun DetailsScreen(
 
     Crossfade(targetState = uiState, modifier) { currentUiState ->
         when {
-            currentUiState.exploreModel != null -> {
-                DetailsContent(currentUiState.exploreModel, Modifier.fillMaxSize())
+            currentUiState.city != null -> {
+                DetailsContent(currentUiState.city, Modifier.fillMaxSize())
             }
             currentUiState.isLoading -> {
                 Box(Modifier.fillMaxSize()) {
@@ -150,25 +155,19 @@ fun DetailsScreen(
 
 @Composable
 fun DetailsContent(
-    exploreModel: ExploreModel,
+    city: City,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.height(32.dp))
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = exploreModel.city.nameToDisplay,
+            text = city.nameToDisplay,
             style = MaterialTheme.typography.h4,
             textAlign = TextAlign.Center
         )
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = exploreModel.description,
-            style = MaterialTheme.typography.h6,
-            textAlign = TextAlign.Center
-        )
         Spacer(Modifier.height(16.dp))
-        CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
+        CityMapView(city.latitude, city.longitude)
     }
 }
 
