@@ -17,6 +17,7 @@
 package androidx.compose.samples.crane.details
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
@@ -47,7 +48,7 @@ class CityMapViewTests {
     @Inject
     lateinit var destinationsRepository: DestinationsRepository
 
-    private lateinit var cityDetails: ExploreModel
+    private lateinit var cityDetails: City
 
     private val city = MADRID
     private val testExploreModel = ExploreModel(city, "description", "imageUrl")
