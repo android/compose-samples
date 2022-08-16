@@ -13,7 +13,7 @@ You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
-The branch `compose-latest` is targetting the latest alpha versions of Compose. 
+The branch `compose-latest` is targetting the latest alpha versions of Compose.
 
 🧬 Samples
 ------------
@@ -38,6 +38,7 @@ The branch `compose-latest` is targetting the latest alpha versions of Compose.
 |  |  |
 | <br><img src="readme/reply.png" alt="Reply" width="240"></img>  <br><br>A compose implementation of the Reply material study, an email client app that focuses on adaptive design for mobile, tablets and foldables. It also showcases brand new Material design 3 theming, dynamic colors and navigation components.<br><br>• Medium complexity<br>• Adaptive UI for phones, tablet and desktops<br>• Foldable support<br>• Material 3 theming & Components<br>• Dynamic colors and Light/Dark theme support<br><br>**[> Browse](Reply/)** <br><br>  | <img src="readme/screenshots/Reply.png" width="320" alt="Reply sample demo">|
 
+
 🧬 Additional samples
 ------------
 
@@ -50,8 +51,10 @@ The branch `compose-latest` is targetting the latest alpha versions of Compose.
 | <br><img src="readme/sunflower.png" alt="Sunflower" width="240"></img>  <br><br>A gardening app illustrating Android development best practices with Android Jetpack. The `compose` branch is partially built with Jetpack Compose.<br><br>• Compose working in an existing app: including integration with strings, resources, and themes and styles<br>• Integration with an existing architecture based on Jetpack libraries<br>• `CollapsingToolbarLayout` behavior implemented manually with Compose<br>• Showing [Snackbars](https://material.io/components/snackbars) with Compose<br><br>**[> Browse](https://goo.gle/sunflower-compose)** <br><br>  | <img src="readme/screenshots/Sunflower.png" width="320" alt="Sunflower sample demo">|
 |  |  |
 | <br><img src="readme/tivi.png" alt="Tivi" width="240"></img>  <br><br>A work-in-progress TV show tracking Android app, which connects to [Trakt.tv](https://www.trakt.tv).<br><br>• Entirely written in [Kotlin](https://kotlinlang.org) and uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html) throughout<br>• Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture): Room, Lifecycle, Navigation<br>• Uses [Hilt](https://dagger.dev/hilt) for dependency injection<br><br>**[> Browse](https://tivi.app)** <br><br>  | <img src="readme/screenshots/Tivi.jpg" width="320" alt="Tivi sample demo">|
+|  |
+| <br> <br><br>Complete Crypto App Ui Design on jetpack compose,  app that focuses on crypto world and designed for mobile, tablets.<br><br>• Complete Ui of a crypto app which contain 6-7 screen <br>• Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture): Room, Lifecycle, Navigation<br>• Uses [Hilt](https://dagger.dev/hilt) for dependency injection<br><br>**[> Browse](https://tivi.app)** <br><br>  | <img src="readme/screenshots/Crypto.png" width="320" alt="Crypto App Ui">|
 
-## High level features 
+## High level features
 
 Looking for a sample that has the following features?
 
