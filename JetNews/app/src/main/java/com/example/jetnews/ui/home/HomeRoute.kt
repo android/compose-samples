@@ -80,7 +80,6 @@ fun HomeRoute(
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,

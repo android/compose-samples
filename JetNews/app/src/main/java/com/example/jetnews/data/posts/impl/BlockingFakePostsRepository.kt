@@ -31,7 +31,6 @@ import kotlinx.coroutines.withContext
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources synchronously.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class BlockingFakePostsRepository : PostsRepository {
 
     // for now, keep the favorites in memory
