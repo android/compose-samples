@@ -19,6 +19,7 @@ package com.example.jetcaster.ui.player
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,9 +35,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -56,40 +58,47 @@ import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
-import com.example.jetcaster.util.DevicePosture
 import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.contrastAgainst
+import com.example.jetcaster.util.isBookPosture
+import com.example.jetcaster.util.isSeparatingPosture
+import com.example.jetcaster.util.isTableTopPosture
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
+import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
+import com.google.accompanist.adaptive.TwoPane
+import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
 import java.time.Duration
-import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Stateful version of the Podcast player
@@ -97,12 +106,12 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
-    devicePosture: StateFlow<DevicePosture>,
+    windowSizeClass: WindowSizeClass,
+    displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    val devicePostureValue by devicePosture.collectAsStateWithLifecycle()
-    PlayerScreen(uiState, devicePostureValue, onBackPress)
+    PlayerScreen(uiState, windowSizeClass, displayFeatures, onBackPress)
 }
 
 /**
@@ -111,15 +120,16 @@ fun PlayerScreen(
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
-    devicePosture: DevicePosture,
+    windowSizeClass: WindowSizeClass,
+    displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier) {
         if (uiState.podcastName.isNotEmpty()) {
-            PlayerContent(uiState, devicePosture, onBackPress)
+            PlayerContent(uiState, windowSizeClass, displayFeatures, onBackPress)
         } else {
-            FullScreenLoading(modifier)
+            FullScreenLoading()
         }
     }
 }
@@ -127,45 +137,86 @@ private fun PlayerScreen(
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
-    devicePosture: DevicePosture,
-    onBackPress: () -> Unit
+    windowSizeClass: WindowSizeClass,
+    displayFeatures: List<DisplayFeature>,
+    onBackPress: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     PlayerDynamicTheme(uiState.podcastImageUrl) {
-        // As the Player UI content changes considerably when the device is in tabletop posture,
-        // we split the different UIs in different composables. For simpler UIs that don't change
-        // much, prefer one composable that makes decisions based on the mode instead.
-        when (devicePosture) {
-            is DevicePosture.TableTopPosture ->
-                PlayerContentTableTop(uiState, devicePosture, onBackPress)
-            is DevicePosture.BookPosture ->
-                PlayerContentBook(uiState, devicePosture, onBackPress)
-            is DevicePosture.SeparatingPosture ->
-                if (devicePosture.orientation == FoldingFeature.Orientation.HORIZONTAL) {
-                    PlayerContentTableTop(
-                        uiState,
-                        DevicePosture.TableTopPosture(devicePosture.hingePosition),
-                        onBackPress
-                    )
-                } else {
-                    PlayerContentBook(
-                        uiState,
-                        DevicePosture.BookPosture(devicePosture.hingePosition),
-                        onBackPress
+        val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+
+        // Use a two pane layout if there is a fold impacting layout (meaning it is separating
+        // or non-flat) or if we have a large enough width to show both.
+        if (
+            windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
+            isBookPosture(foldingFeature) ||
+            isTableTopPosture(foldingFeature) ||
+            isSeparatingPosture(foldingFeature)
+        ) {
+            // Determine if we are going to be using a vertical strategy (as if laying out
+            // both sides in a column). We want to do so if we are in a tabletop posture,
+            // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
+            val usingVerticalStrategy =
+                isTableTopPosture(foldingFeature) ||
+                    (
+                        isSeparatingPosture(foldingFeature) &&
+                            foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                        )
+
+            if (usingVerticalStrategy) {
+                TwoPane(
+                    first = {
+                        PlayerContentTableTopTop(uiState = uiState)
+                    },
+                    second = {
+                        PlayerContentTableTopBottom(uiState = uiState, onBackPress = onBackPress)
+                    },
+                    strategy = VerticalTwoPaneStrategy(splitFraction = 0.5f),
+                    displayFeatures = displayFeatures,
+                    modifier = modifier,
+                )
+            } else {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .verticalGradientScrim(
+                            color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                            startYPercentage = 1f,
+                            endYPercentage = 0f
+                        )
+                        .systemBarsPadding()
+                        .padding(horizontal = 8.dp)
+                ) {
+                    TopAppBar(onBackPress = onBackPress)
+                    TwoPane(
+                        first = {
+                            PlayerContentBookStart(uiState = uiState)
+                        },
+                        second = {
+                            PlayerContentBookEnd(uiState = uiState)
+                        },
+                        strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
+                        displayFeatures = displayFeatures
                     )
                 }
-            else ->
-                PlayerContentRegular(uiState, onBackPress)
+            }
+        } else {
+            PlayerContentRegular(uiState, onBackPress, modifier)
         }
     }
 }
 
+/**
+ * The UI for the top pane of a tabletop layout.
+ */
 @Composable
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalGradientScrim(
                 color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
@@ -200,152 +251,124 @@ private fun PlayerContentRegular(
     }
 }
 
+/**
+ * The UI for the top pane of a tabletop layout.
+ */
 @Composable
-private fun PlayerContentTableTop(
+private fun PlayerContentTableTopTop(
     uiState: PlayerUiState,
-    tableTopPosture: DevicePosture.TableTopPosture,
-    onBackPress: () -> Unit
+    modifier: Modifier = Modifier
 ) {
-    val hingePosition = with(LocalDensity.current) { tableTopPosture.hingePosition.top.toDp() }
-    val hingeHeight = with(LocalDensity.current) { tableTopPosture.hingePosition.height().toDp() }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Content for the top part of the screen
-        Column(
-            modifier = Modifier
-                .height(hingePosition)
-                .fillMaxWidth()
-                .verticalGradientScrim(
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
-                    startYPercentage = 1f,
-                    endYPercentage = 0f
-                )
-                .windowInsetsPadding(
-                    WindowInsets.systemBars.only(
-                        WindowInsetsSides.Horizontal + WindowInsetsSides.Top
-                    )
-                )
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            PlayerImage(uiState.podcastImageUrl)
-        }
-        // Space for the hinge
-        Spacer(modifier = Modifier.height(hingeHeight))
-        // Content for the table part of the screen
-        Column(
-            modifier = Modifier
-                .windowInsetsPadding(
-                    WindowInsets.systemBars.only(
-                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                    )
-                )
-                .padding(horizontal = 32.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TopAppBar(onBackPress = onBackPress)
-            PodcastDescription(
-                title = uiState.title,
-                podcastName = uiState.podcastName,
-                titleTextStyle = MaterialTheme.typography.h6
-            )
-            Spacer(modifier = Modifier.weight(0.5f))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(10f)
-            ) {
-                PlayerButtons(playerButtonSize = 92.dp, modifier = Modifier.padding(top = 8.dp))
-                PlayerSlider(uiState.duration)
-            }
-        }
-    }
-}
-
-@Composable
-private fun PlayerContentBook(
-    uiState: PlayerUiState,
-    bookPosture: DevicePosture.BookPosture,
-    onBackPress: () -> Unit
-) {
-    val hingePosition = with(LocalDensity.current) { bookPosture.hingePosition.left.toDp() }
-    val hingeWidth = with(LocalDensity.current) { bookPosture.hingePosition.width().toDp() }
-
+    // Content for the top part of the screen
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .fillMaxWidth()
             .verticalGradientScrim(
                 color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
                 startYPercentage = 1f,
                 endYPercentage = 0f
             )
-            .systemBarsPadding()
-            .padding(horizontal = 8.dp)
+            .windowInsetsPadding(
+                WindowInsets.systemBars.only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                )
+            )
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        PlayerImage(uiState.podcastImageUrl)
+    }
+}
+
+/**
+ * The UI for the bottom pane of a tabletop layout.
+ */
+@Composable
+private fun PlayerContentTableTopBottom(
+    uiState: PlayerUiState,
+    onBackPress: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Content for the table part of the screen
+    Column(
+        modifier = modifier
+            .windowInsetsPadding(
+                WindowInsets.systemBars.only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                )
+            )
+            .padding(horizontal = 32.dp, vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBar(onBackPress = onBackPress)
-
-        Row(modifier = Modifier.fillMaxSize()) {
-            // Content for the left part of the screen
-            PlayerContentBookLeft(hingePosition, uiState)
-            // Space for the hinge
-            Spacer(modifier = Modifier.width(hingeWidth))
-            // Content for the right part of the screen
-            PlayerContentBookRight(uiState)
-        }
-    }
-}
-
-@Composable
-private fun PlayerContentBookLeft(
-    hingePosition: Dp,
-    uiState: PlayerUiState
-) {
-    Column(
-        modifier = Modifier
-            .width(hingePosition)
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        PodcastDescription(
+            title = uiState.title,
+            podcastName = uiState.podcastName,
+            titleTextStyle = MaterialTheme.typography.h6
+        )
+        Spacer(modifier = Modifier.weight(0.5f))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.weight(10f)
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Spacer(modifier = Modifier.height(32.dp))
-            PodcastInformation(
-                uiState.title,
-                uiState.podcastName,
-                uiState.summary
-            )
+            PlayerButtons(playerButtonSize = 92.dp, modifier = Modifier.padding(top = 8.dp))
+            PlayerSlider(uiState.duration)
         }
     }
 }
 
+/**
+ * The UI for the start pane of a book layout.
+ */
 @Composable
-private fun PlayerContentBookRight(
-    uiState: PlayerUiState
+private fun PlayerContentBookStart(
+    uiState: PlayerUiState,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
+            .padding(
+                vertical = 8.dp,
+                horizontal = 16.dp
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-        PlayerImage(
-            podcastImageUrl = uiState.podcastImageUrl,
-            modifier = Modifier.weight(10f)
+        Spacer(modifier = Modifier.height(32.dp))
+        PodcastInformation(
+            uiState.title,
+            uiState.podcastName,
+            uiState.summary
         )
         Spacer(modifier = Modifier.height(32.dp))
-        PodcastDescription(uiState.title, uiState.podcastName)
-        Spacer(modifier = Modifier.height(32.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(10f)
-        ) {
-            PlayerSlider(uiState.duration)
-            PlayerButtons(Modifier.padding(vertical = 8.dp))
-        }
-        Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+/**
+ * The UI for the end pane of a book layout.
+ */
+@Composable
+private fun PlayerContentBookEnd(
+    uiState: PlayerUiState,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround,
+    ) {
+        PlayerImage(
+            podcastImageUrl = uiState.podcastImageUrl,
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .weight(1f)
+        )
+        PlayerSlider(uiState.duration)
+        PlayerButtons(Modifier.padding(vertical = 8.dp))
     }
 }
 
@@ -577,18 +600,25 @@ fun PlayerButtonsPreview() {
     }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(device = Devices.PHONE)
+@Preview(device = Devices.FOLDABLE)
+@Preview(device = Devices.TABLET)
+@Preview(device = Devices.DESKTOP)
 @Composable
 fun PlayerScreenPreview() {
     JetcasterTheme {
-        PlayerScreen(
-            PlayerUiState(
-                title = "Title",
-                duration = Duration.ofHours(2),
-                podcastName = "Podcast"
-            ),
-            devicePosture = DevicePosture.NormalPosture,
-            onBackPress = { }
-        )
+        BoxWithConstraints {
+            PlayerScreen(
+                PlayerUiState(
+                    title = "Title",
+                    duration = Duration.ofHours(2),
+                    podcastName = "Podcast"
+                ),
+                displayFeatures = emptyList(),
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
+                onBackPress = { }
+            )
+        }
     }
 }
