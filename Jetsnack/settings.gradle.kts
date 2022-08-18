@@ -12,10 +12,10 @@ dependencyResolutionManagement {
         mavenCentral()
     }
     versionCatalogs {
-        libs {
+        create("libs") {
             from(files("../global.libs.versions.toml"))
         }
     }
 }
+rootProject.name = "Jetsnack"
 include(":app")
-rootProject.name = "Jetsurvey"
