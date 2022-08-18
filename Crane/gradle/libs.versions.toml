@@ -102,6 +102,8 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 androidx-window = {module = "androidx.window:window", version.ref = "androidx-window"}
 
+core-jdk-desugaring = {module = "com.android.tools:desugar_jdk_libs", version.ref = "jdkDesugar"}
+
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 google-android-material = { module = "com.google.android.material:material", version.ref = "material" }
 

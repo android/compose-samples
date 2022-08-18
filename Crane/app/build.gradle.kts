@@ -67,12 +67,15 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     buildFeatures {
         compose = true
+
     }
 
     composeOptions {
@@ -126,6 +129,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test)
+    coreLibraryDesugaring(libs.core.jdk.desugaring)
 }
 
 secrets {

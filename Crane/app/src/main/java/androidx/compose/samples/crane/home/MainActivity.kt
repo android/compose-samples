@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(Routes.Calendar.route) {
-                        val parentEntry = remember {
+                        val parentEntry = remember(it) {
                             navController.getBackStackEntry(Routes.Home.route)
                         }
                         val parentViewModel = hiltViewModel<MainViewModel>(
