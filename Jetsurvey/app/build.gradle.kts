@@ -1,5 +1,3 @@
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -78,15 +76,3 @@ dependencies {
     testImplementation(libs.androidx.test.ext.truth)
     testImplementation(libs.robolectric)
 }
-
-ktlint {
-    android.set(true)
-    version.set("0.41.0")
-    ignoreFailures.set(false)
-    reporters {
-        reporter(ReporterType.PLAIN)
-        reporter(ReporterType.CHECKSTYLE)
-    }
-    outputToConsole.set(true)
-}
-

@@ -1,5 +1,3 @@
-import com.example.crane.buildsrc.Libs
-
 plugins {
     id("com.android.test")
     id("org.jetbrains.kotlin.android")
@@ -41,10 +39,10 @@ android {
 }
 
 dependencies {
-    implementation(Libs.AndroidX.Test.Ext.junit)
-    implementation(Libs.AndroidX.Test.espressoCore)
-    implementation(Libs.AndroidX.Test.uiAutomator)
-    implementation(Libs.AndroidX.Benchmark.macrobenchmark)
+    implementation(libs.androidx.test.ext.junit)
+    implementation(libs.androidx.test.espresso.core)
+    implementation(libs.androidx.test.uiautomator)
+    implementation(libs.androidx.benchmark.macrobenchmark)
 }
 
 androidComponents {
