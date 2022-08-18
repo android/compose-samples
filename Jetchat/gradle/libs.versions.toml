@@ -1,7 +1,7 @@
 [versions]
 androidGradlePlugin = "7.2.2"
 kotlin = "1.7.10"
-ktlint = "0.45.2"
+ktlint = "0.46.1"
 lint = "30.2.1"
 jdkDesugar = "1.1.5"
 junit = "4.13.2"
@@ -40,7 +40,7 @@ androidx-test-ext-truth = "1.4.0"
 androidx-test-espresso = "3.4.0"
 roboelectric = "4.5.1"
 
-spotless = "6.7.0"
+spotless = "6.9.1"
 secrets = "2.0.1"
 
 okhttp = "4.10.0"
