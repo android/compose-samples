@@ -1,6 +1,8 @@
 versionCatalogUpdate {
     sortByKey.set(true)
-
+    pin {
+        versions = ["jdkDesugar"]
+    }
     keep {
         // keep versions without any library or plugin reference
         keepUnusedVersions.set(true)
