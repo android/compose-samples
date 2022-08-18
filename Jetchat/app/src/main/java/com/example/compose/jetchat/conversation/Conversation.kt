@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.foundation.Image
@@ -56,7 +58,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarScrollState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -105,7 +107,7 @@ fun ConversationContent(
     val timeNow = stringResource(id = R.string.now)
 
     val scrollState = rememberLazyListState()
-    val topBarState = rememberTopAppBarScrollState()
+    val topBarState = rememberTopAppBarState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topBarState) }
     val scope = rememberCoroutineScope()
 

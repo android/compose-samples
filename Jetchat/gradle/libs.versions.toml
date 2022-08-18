@@ -105,6 +105,7 @@ androidx-window = {module = "androidx.window:window", version.ref = "androidx-wi
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 google-android-material = { module = "com.google.android.material:material", version.ref = "material" }
 
+
 junit = { module = "junit:junit", version.ref = "junit" }
 
 googlemaps-maps = "com.google.android.gms:play-services-maps:18.0.2"

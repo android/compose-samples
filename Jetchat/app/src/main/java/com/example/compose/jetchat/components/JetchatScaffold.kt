@@ -39,7 +39,9 @@ fun JetchatDrawer(
                 JetchatDrawer(
                     onProfileClicked = onProfileClicked,
                     onChatClicked = onChatClicked
-                )
+                ) {
+
+                }
             },
             content = content
         )
