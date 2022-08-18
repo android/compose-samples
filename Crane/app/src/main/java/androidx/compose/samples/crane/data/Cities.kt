@@ -113,3 +113,8 @@ val CRETE = City(
     latitude = "35.2401",
     longitude = "24.8093"
 )
+
+val listCities = listOf(
+    ROME, GRANADA, WASHINGTONDC, BARCELONA, CRETE, KHUMBUVALLEY, BIGSUR,
+    BALI, ASPEN, MADRID, NAPLES, DALLAS, CORDOBA, BIGSUR, MALDIVAS
+)

@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.details
 
 import androidx.compose.material.Surface
-import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.data.MADRID
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.test.assertIsDisplayed
@@ -32,7 +31,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class DetailsContentTests {
     private val city = MADRID
-    private val testExploreModel = ExploreModel(city, "description", "imageUrl")
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -42,7 +40,7 @@ class DetailsContentTests {
         composeTestRule.setContent {
             CraneTheme {
                 Surface {
-                    DetailsContent(exploreModel = testExploreModel)
+                    DetailsContent(city = city)
                 }
             }
         }
@@ -51,6 +49,5 @@ class DetailsContentTests {
     @Test
     fun detailsScreen_detailsDisplayed() {
         composeTestRule.onNodeWithText(city.nameToDisplay).assertIsDisplayed()
-        composeTestRule.onNodeWithText(testExploreModel.description).assertIsDisplayed()
     }
 }

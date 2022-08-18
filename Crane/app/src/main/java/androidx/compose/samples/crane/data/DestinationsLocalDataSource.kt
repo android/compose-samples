@@ -148,6 +148,11 @@ class DestinationsLocalDataSource @Inject constructor() {
             city = CRETE,
             description = "Nonstop - 1h 50m+",
             imageUrl = "https://images.unsplash.com/photo-1486575008575-27670acb58db?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
-        )
+        ),
+        ExploreModel(
+            city = NAPLES,
+            description = "1286 Restaurants",
+            imageUrl = "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?ixlib=rb-1.2.1&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
+        ),
     )
 }

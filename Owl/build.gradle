@@ -15,6 +15,7 @@
  */
 
 import com.example.owl.buildsrc.Libs
+import com.example.owl.buildsrc.Urls
 import com.example.owl.buildsrc.Versions
 
 buildscript {
@@ -38,7 +39,10 @@ subprojects {
         mavenCentral()
 
         if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
-            maven { url "https://androidx.dev/snapshots/builds/${Libs.AndroidX.Compose.snapshot}/artifacts/repository/" }
+            maven { url Urls.composeSnapshotRepo }
+        }
+        if (!Libs.AndroidX.Compose.compilerSnapshot.isEmpty()) {
+            maven { url Urls.composeCompilerSnapshotRepo }
         }
     }
 

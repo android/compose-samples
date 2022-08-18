@@ -207,7 +207,7 @@ private fun HomeTabBar(
     }
 }
 
-private const val ANIMATED_CONTENT_ANIMATION_DURATION = 600
+private const val ANIMATED_CONTENT_ANIMATION_DURATION = 300
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
