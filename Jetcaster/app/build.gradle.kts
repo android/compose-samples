@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,15 +18,18 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "androidx.compose.samples.crane"
+        applicationId = "com.example.jetcaster"
         minSdk = 21
         targetSdk = 32
         versionCode = 1
@@ -55,15 +58,6 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro")
         }
-
-        create("benchmark") {
-            initWith(getByName("release"))
-            signingConfig = signingConfigs.getByName("debug")
-            matchingFallbacks.add("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-benchmark-rules.pro")
-            isDebuggable = false
-        }
     }
 
     compileOptions {
@@ -80,6 +74,10 @@ android {
     }
 
     packagingOptions {
+        // The Rome library JARs embed some internal utils libraries in nested JARs.
+        // We don't need them so we exclude them in the final package.
+        excludes += "/*.jar"
+
         // Multiple dependency bring these files in. Exclude them to enable
         // our test APK to build (has no effect on our AARs)
         excludes += "/META-INF/AL2.0"
@@ -91,43 +89,37 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(libs.googlemaps.maps)
-    implementation(libs.googlemaps.compose)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.palette)
 
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.runtime)
+
+    implementation(libs.androidx.constraintlayout.compose)
+
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.materialWindow)
-    implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.runtime.livedata)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.window)
 
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.hilt.ext.compiler)
+    implementation(libs.accompanist.pager)
 
     implementation(libs.coil.kt.compose)
 
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.compose.ui.test)
-}
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp.logging)
 
-secrets {
-    defaultPropertiesFileName = "local.defaults.properties"
+    implementation(libs.rometools.rome)
+    implementation(libs.rometools.modules)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
+    kapt(libs.androidx.room.compiler)
 }
