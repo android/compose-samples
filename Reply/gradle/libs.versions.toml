@@ -31,7 +31,7 @@ androidxHiltNavigationCompose = "1.0.0"
 coil = "2.0.0"
 
 material = "1.6.0-alpha03"
-material3 = "1.0.0-alpha16"
+material3 = "1.0.0-alpha14"
 materialWindow = "1.0.0-alpha12"
 
 androidx-test = "1.4.0"
