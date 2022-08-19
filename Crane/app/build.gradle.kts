@@ -33,7 +33,12 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.compose.samples.crane.CustomTestRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+            }
+        }
     }
 
     signingConfigs {
@@ -136,6 +141,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
+    kaptAndroidTest(libs.hilt.compiler)
 }
 
 secrets {
