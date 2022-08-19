@@ -180,7 +180,7 @@ fun ErrorSnackbar(
                         TextButton(onClick = onDismiss) {
                             Text(
                                 text = stringResource(id = R.string.dismiss),
-                                //color = MaterialTheme.colorScheme.snackbarAction
+                                color = MaterialTheme.colorScheme.inversePrimary
                             )
                         }
                     }

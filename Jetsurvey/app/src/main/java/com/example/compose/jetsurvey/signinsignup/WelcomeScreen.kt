@@ -28,14 +28,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.surfaceIsLight
 import com.example.compose.jetsurvey.util.supportWideScreen
 
 sealed class WelcomeEvent {
@@ -122,9 +120,7 @@ private fun Branding(modifier: Modifier = Modifier) {
 @Composable
 private fun Logo(
     modifier: Modifier = Modifier,
-    // TODO: figure out theme
-    lightTheme: Boolean = true
-    //lightTheme: Boolean = MaterialTheme.colors.isLight
+    lightTheme: Boolean = surfaceIsLight()
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_logo_light
@@ -148,14 +144,13 @@ private fun SignInCreateAccount(
         mutableStateOf(EmailState())
     }
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = stringResource(id = R.string.sign_in_create_account),
-                style = MaterialTheme.typography.titleSmall,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 64.dp, bottom = 12.dp)
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.sign_in_create_account),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 64.dp, bottom = 12.dp)
+        )
         val onSubmit = {
             if (emailState.isValid) {
                 onEvent(WelcomeEvent.SignInSignUp(emailState.text))

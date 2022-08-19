@@ -17,6 +17,7 @@
 package com.example.compose.jetsurvey.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -92,7 +93,7 @@ fun JetsurveyTheme(
         DarkColors
     }
 
-    androidx.compose.material3.MaterialTheme(
+    MaterialTheme(
         colorScheme = colors,
         shapes = Shapes,
         typography = Typography,
@@ -100,13 +101,15 @@ fun JetsurveyTheme(
     )
 }
 
-// TODO Delete old theme
-/*
-val Colors.snackbarAction: Color
-    @Composable
-    get() = if (isLight) Purple300 else Purple700
-
-val Colors.progressIndicatorBackground: Color
-    @Composable
-    get() = if (isLight) Color.Black.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.24f)
- */
+@Composable
+fun surfaceIsLight(): Boolean {
+    return when (val surface = MaterialTheme.colorScheme.surface) {
+        LightColors.surface -> true
+        DarkColors.surface -> false
+        else -> {
+            // If surface is ever set to some other color, it was manually overridden locally and
+            // the calling site should determine the light/dark value itself
+            throw java.lang.IllegalStateException("Surface does not match known value: $surface")
+        }
+    }
+}

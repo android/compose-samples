@@ -36,8 +36,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -55,7 +53,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +61,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,6 +71,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.surfaceIsLight
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -166,15 +163,14 @@ private fun QuestionContent(
             QuestionTitle(question.questionText)
             Spacer(modifier = Modifier.height(24.dp))
             if (question.description != null) {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = stringResource(id = question.description),
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .fillParentMaxWidth()
-                            .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
-                    )
-                }
+                Text(
+                    text = stringResource(id = question.description),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
+                )
             }
             when (question.answer) {
                 is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
@@ -237,15 +233,11 @@ private fun QuestionContent(
 
 @Composable
 private fun QuestionTitle(@StringRes title: Int) {
-    // TODO figure out dark/light
-    val backgroundColor = Color.Red
-    /*
-    val backgroundColor = if (MaterialTheme.colors.isLight) {
+    val backgroundColor = if (surfaceIsLight()) {
         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
     } else {
         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
     }
-     */
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -681,9 +673,8 @@ private fun DateQuestion(
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
         colors = ButtonDefaults.buttonColors(
-            // TODO verify this color
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.onSecondary
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.87f),
         ),
         shape = MaterialTheme.shapes.small,
         modifier = modifier
@@ -711,9 +702,7 @@ private fun DateQuestion(
 @Composable
 private fun PhotoDefaultImage(
     modifier: Modifier = Modifier,
-    // TODO figure out light/dark
-    //lightTheme: Boolean = MaterialTheme.colors.isLight
-    lightTheme: Boolean = true
+    lightTheme: Boolean = surfaceIsLight()
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_selfie_light

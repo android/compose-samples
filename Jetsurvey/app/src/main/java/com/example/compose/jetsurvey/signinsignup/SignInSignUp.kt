@@ -31,8 +31,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Visibility
@@ -44,9 +42,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -136,12 +134,11 @@ fun Email(
             emailState.text = it
         },
         label = {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = stringResource(id = R.string.email),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.email),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -193,12 +190,11 @@ fun Password(
             },
         textStyle = MaterialTheme.typography.bodyMedium,
         label = {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
         },
         trailingIcon = {
             if (showPassword.value) {
@@ -261,13 +257,12 @@ fun OrSignInAsGuest(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = stringResource(id = R.string.or),
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.paddingFromBaseline(top = 25.dp)
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.or),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            modifier = Modifier.paddingFromBaseline(top = 25.dp)
+        )
         OutlinedButton(
             onClick = onSignedInAsGuest,
             modifier = Modifier
@@ -283,9 +278,11 @@ fun OrSignInAsGuest(
 @Composable
 fun SignInSignUpScreenPreview() {
     JetsurveyTheme {
-        SignInSignUpScreen(
-            onSignedInAsGuest = {},
-            content = {}
-        )
+        Surface {
+            SignInSignUpScreen(
+                onSignedInAsGuest = {},
+                content = {}
+            )
+        }
     }
 }
