@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -58,17 +59,19 @@ fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (Str
 Unit) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
-    Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-    DrawerHeader()
-    DividerItem()
-    DrawerItemHeader("Chats")
-    ChatItem("composers", true) { onChatClicked("composers") }
-    ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
-    DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-    DrawerItemHeader("Recent Profiles")
-    ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-    ProfileItem("Taylor Brooks", colleagueProfile.photo) {
-        onProfileClicked(colleagueProfile.userId)
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+        DrawerHeader()
+        DividerItem()
+        DrawerItemHeader("Chats")
+        ChatItem("composers", true) { onChatClicked("composers") }
+        ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
+        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+        DrawerItemHeader("Recent Profiles")
+        ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
+        ProfileItem("Taylor Brooks", colleagueProfile.photo) {
+            onProfileClicked(colleagueProfile.userId)
+        }
     }
 }
 
