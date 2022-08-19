@@ -36,12 +36,10 @@ fun JetchatDrawer(
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                JetchatDrawer(
+                JetchatDrawerContent(
                     onProfileClicked = onProfileClicked,
                     onChatClicked = onChatClicked
-                ) {
-
-                }
+                )
             },
             content = content
         )

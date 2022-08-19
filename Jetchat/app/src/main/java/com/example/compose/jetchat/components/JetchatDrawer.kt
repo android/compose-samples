@@ -54,7 +54,8 @@ import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
-fun ColumnScope.JetchatDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
+fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) ->
+Unit) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
@@ -189,7 +190,7 @@ fun DrawerPreview() {
     JetchatTheme {
         Surface {
             Column {
-                JetchatDrawer({}, {})
+                JetchatDrawerContent({}, {})
             }
         }
     }
@@ -200,7 +201,7 @@ fun DrawerPreviewDark() {
     JetchatTheme(isDarkTheme = true) {
         Surface {
             Column {
-                JetchatDrawer({}, {})
+                JetchatDrawerContent({}, {})
             }
         }
     }
