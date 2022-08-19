@@ -20,6 +20,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
 import androidx.compose.ui.unit.dp
 
-val Shapes = Shapes(
+// TODO Delete old shapes
+val OldShapes = Shapes(
+    small = RoundedCornerShape(12.dp)
+)
+
+// TODO Fix import
+val Shapes = androidx.compose.material3.Shapes(
     small = RoundedCornerShape(12.dp)
 )

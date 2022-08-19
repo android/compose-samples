@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -26,12 +27,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -108,7 +109,7 @@ private fun Branding(modifier: Modifier = Modifier) {
         )
         Text(
             text = stringResource(id = R.string.app_tagline),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 24.dp)
@@ -120,7 +121,9 @@ private fun Branding(modifier: Modifier = Modifier) {
 @Composable
 private fun Logo(
     modifier: Modifier = Modifier,
-    lightTheme: Boolean = MaterialTheme.colors.isLight
+    // TODO: figure out theme
+    lightTheme: Boolean = true
+    //lightTheme: Boolean = MaterialTheme.colors.isLight
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_logo_light
@@ -147,7 +150,7 @@ private fun SignInCreateAccount(
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.sign_in_create_account),
-                style = MaterialTheme.typography.subtitle2,
+                style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 64.dp, bottom = 12.dp)
             )
@@ -169,7 +172,7 @@ private fun SignInCreateAccount(
         ) {
             Text(
                 text = stringResource(id = R.string.user_continue),
-                style = MaterialTheme.typography.subtitle2
+                style = MaterialTheme.typography.titleSmall
             )
         }
         OrSignInAsGuest(
@@ -179,18 +182,11 @@ private fun SignInCreateAccount(
     }
 }
 
-@Preview(name = "Welcome light theme")
+@Preview(name = "Welcome light theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Welcome dark theme", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun WelcomeScreenPreview() {
     JetsurveyTheme {
-        WelcomeScreen {}
-    }
-}
-
-@Preview(name = "Welcome dark theme")
-@Composable
-fun WelcomeScreenPreviewDark() {
-    JetsurveyTheme(darkTheme = true) {
         WelcomeScreen {}
     }
 }

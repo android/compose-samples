@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -788,7 +788,7 @@ fun QuestionPreview() {
         ),
         description = R.string.select_one
     )
-    JetsurveyTheme {
+    JetsurveyThemeOld {
         Question(
             question = question,
             shouldAskPermissions = true,

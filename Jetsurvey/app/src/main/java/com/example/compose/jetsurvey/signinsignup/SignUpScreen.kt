@@ -37,7 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
 import com.example.compose.jetsurvey.util.supportWideScreen
 
 sealed class SignUpEvent {
@@ -126,7 +126,7 @@ fun SignUpContent(
 @Preview(widthDp = 1024)
 @Composable
 fun SignUpPreview() {
-    JetsurveyTheme {
+    JetsurveyThemeOld {
         SignUp {}
     }
 }

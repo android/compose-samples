@@ -47,7 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
 import com.example.compose.jetsurvey.theme.snackbarAction
 import com.example.compose.jetsurvey.util.supportWideScreen
 import kotlinx.coroutines.launch
@@ -196,7 +196,7 @@ fun ErrorSnackbar(
 @Preview(name = "Sign in light theme")
 @Composable
 fun SignInPreview() {
-    JetsurveyTheme {
+    JetsurveyThemeOld {
         SignIn {}
     }
 }
@@ -204,7 +204,7 @@ fun SignInPreview() {
 @Preview(name = "Sign in dark theme")
 @Composable
 fun SignInPreviewDark() {
-    JetsurveyTheme(darkTheme = true) {
+    JetsurveyThemeOld(darkTheme = true) {
         SignIn {}
     }
 }
