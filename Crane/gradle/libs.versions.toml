@@ -33,12 +33,11 @@ kotlin = "1.7.10"
 maps-compose = "2.5.3"
 material = "1.7.0-beta01"
 okhttp = "4.10.0"
-roboelectric = "4.5.1" 
+roboelectric = "4.5.1"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
 spotless = "6.9.1"
-
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
@@ -51,7 +50,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-macro", version.ref = "androidx-benchmark" }
-androidx-benchmark-macrobenchmark-junit4 = {module ="androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
+androidx-benchmark-macrobenchmark-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
