@@ -35,13 +35,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,7 +56,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
@@ -96,11 +95,10 @@ fun SignInSignUpScreen(
 @OptIn(ExperimentalMaterial3Api::class) // SmallTopAppBar is experimental in m3
 @Composable
 fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
-    SmallTopAppBar(
+    CenterAlignedTopAppBar(
         title = {
             Text(
                 text = topAppBarText,
-                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
@@ -110,7 +108,8 @@ fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
             IconButton(onClick = onBackPressed) {
                 Icon(
                     imageVector = Icons.Filled.ChevronLeft,
-                    contentDescription = stringResource(id = R.string.back)
+                    contentDescription = stringResource(id = R.string.back),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },

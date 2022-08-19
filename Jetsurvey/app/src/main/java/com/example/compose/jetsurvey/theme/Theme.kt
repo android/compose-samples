@@ -21,6 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -93,6 +97,18 @@ fun JetsurveyTheme(
         DarkColors
     }
 
+    val systemUiController = rememberSystemUiController()
+    DisposableEffect(systemUiController, useDarkTheme) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = !useDarkTheme
+        ) {
+            md_theme_dark_surface
+        }
+
+        onDispose {  }
+    }
+
     MaterialTheme(
         colorScheme = colors,
         shapes = Shapes,
@@ -102,14 +118,4 @@ fun JetsurveyTheme(
 }
 
 @Composable
-fun surfaceIsLight(): Boolean {
-    return when (val surface = MaterialTheme.colorScheme.surface) {
-        LightColors.surface -> true
-        DarkColors.surface -> false
-        else -> {
-            // If surface is ever set to some other color, it was manually overridden locally and
-            // the calling site should determine the light/dark value itself
-            throw java.lang.IllegalStateException("Surface does not match known value: $surface")
-        }
-    }
-}
+fun surfaceIsLight(): Boolean = MaterialTheme.colorScheme.surface.luminance() > 0.5f

@@ -112,6 +112,7 @@ dependencies {
     debugImplementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.Accompanist.permissions
+    implementation Libs.Accompanist.systemUiController
 
     implementation Libs.Coil.coilCompose
 

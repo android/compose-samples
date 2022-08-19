@@ -29,6 +29,7 @@ object Libs {
     object Accompanist {
         const val version = "0.25.1"
         const val permissions = "com.google.accompanist:accompanist-permissions:$version"
+        const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
 
     object Kotlin {
