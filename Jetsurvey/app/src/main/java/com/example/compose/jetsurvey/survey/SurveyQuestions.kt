@@ -233,22 +233,18 @@ private fun QuestionContent(
 
 @Composable
 private fun QuestionTitle(@StringRes title: Int) {
-    val backgroundColor = if (surfaceIsLight()) {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
-    } else {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
-    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = backgroundColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 shape = MaterialTheme.shapes.small
             )
     ) {
         Text(
             text = stringResource(id = title),
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.87f),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp, horizontal = 16.dp)
@@ -598,6 +594,7 @@ private fun PhotoQuestion(
     OutlinedButton(
         onClick = { onAction(questionId, SurveyActionType.TAKE_PHOTO) },
         modifier = modifier,
+        shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues()
     ) {
         Column {
@@ -786,14 +783,16 @@ fun QuestionPreview() {
         description = R.string.select_one
     )
     JetsurveyTheme {
-        Question(
-            question = question,
-            shouldAskPermissions = true,
-            answer = null,
-            onAnswer = {},
-            onAction = { _, _ -> },
-            onDoNotAskForPermissions = {}
-        )
+        Surface {
+            Question(
+                question = question,
+                shouldAskPermissions = true,
+                answer = null,
+                onAnswer = {},
+                onAction = { _, _ -> },
+                onDoNotAskForPermissions = {}
+            )
+        }
     }
 }
 
@@ -802,7 +801,9 @@ fun QuestionPreview() {
 @Composable
 fun PhotoQuestionPreview() {
     JetsurveyTheme {
-        PhotoQuestion(questionId = 1, answer = null, onAction = { _, _ -> })
+        Surface {
+            PhotoQuestion(questionId = 1, answer = null, onAction = { _, _ -> })
+        }
     }
 }
 
@@ -811,6 +812,8 @@ fun PhotoQuestionPreview() {
 @Composable
 fun DateQuestionPreview() {
     JetsurveyTheme {
-        DateQuestion(questionId = 1, answer = null, onAction = {_, _ -> })
+        Surface {
+            DateQuestion(questionId = 1, answer = null, onAction = {_, _ -> })
+        }
     }
 }

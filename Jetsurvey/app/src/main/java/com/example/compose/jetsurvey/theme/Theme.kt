@@ -22,7 +22,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -100,7 +99,7 @@ fun JetsurveyTheme(
     val systemUiController = rememberSystemUiController()
     DisposableEffect(systemUiController, useDarkTheme) {
         systemUiController.setSystemBarsColor(
-            color = Color.Transparent,
+            color = colors.surface,
             darkIcons = !useDarkTheme
         ) {
             md_theme_dark_surface

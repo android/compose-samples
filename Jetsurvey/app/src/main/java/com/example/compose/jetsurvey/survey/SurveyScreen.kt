@@ -52,9 +52,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
@@ -202,24 +199,18 @@ private fun TopAppBarTitle(
     totalQuestionsCount: Int,
     modifier: Modifier = Modifier
 ) {
-    val indexStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
-        fontWeight = FontWeight.Bold
-    )
-    val totalStyle = MaterialTheme.typography.bodySmall.toSpanStyle()
-    val questionCount = stringResource(R.string.question_count, totalQuestionsCount)
-    val text = buildAnnotatedString {
-        withStyle(style = indexStyle) {
-            append("${questionIndex + 1}")
-        }
-        withStyle(style = totalStyle) {
-            append(questionCount)
-        }
+    Row (modifier = modifier){
+        Text(
+            text = (questionIndex+1).toString(),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
+        Text(
+            text = stringResource(R.string.question_count, totalQuestionsCount),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        )
     }
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodySmall,
-        modifier = modifier
-    )
 }
 
 @Composable
@@ -274,7 +265,8 @@ private fun SurveyBottomBar(
     onDonePressed: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shadowElevation = 7.dp,
     ) {
 
         Row(
