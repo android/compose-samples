@@ -17,15 +17,9 @@
 package com.example.compose.jetsurvey.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Shapes
+import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
-// TODO Delete old shapes
-val OldShapes = Shapes(
-    small = RoundedCornerShape(12.dp)
-)
-
-// TODO Fix import
-val Shapes = androidx.compose.material3.Shapes(
+val Shapes = Shapes(
     small = RoundedCornerShape(12.dp)
 )

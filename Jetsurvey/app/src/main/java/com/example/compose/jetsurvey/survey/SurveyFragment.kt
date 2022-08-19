@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.android.material.datepicker.MaterialDatePicker
 
 class SurveyFragment : Fragment() {
@@ -63,8 +63,8 @@ class SurveyFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent {
-                JetsurveyThemeOld {
-                    val state = viewModel.uiState.observeAsState().value ?: return@JetsurveyThemeOld
+                JetsurveyTheme {
+                    val state = viewModel.uiState.observeAsState().value ?: return@JetsurveyTheme
                     AnimatedContent(
                         targetState = state,
                         transitionSpec = {

@@ -33,20 +33,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -60,12 +61,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 import com.example.compose.jetsurvey.util.supportWideScreen
 
 private const val CONTENT_ANIMATION_DURATION = 500
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
+// AnimatedContent is experimental, Scaffold is experimental in m3
 @Composable
 fun SurveyQuestionsScreen(
     questions: SurveyState.Questions,
@@ -145,6 +146,7 @@ fun SurveyQuestionsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
 fun SurveyResultScreen(
     result: SurveyState.Result,
@@ -177,7 +179,7 @@ private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifi
             Spacer(modifier = Modifier.height(44.dp))
             Text(
                 text = result.surveyResult.library,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.displaySmall,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
             Text(
@@ -185,12 +187,12 @@ private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifi
                     result.surveyResult.result,
                     result.surveyResult.library
                 ),
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(20.dp)
             )
             Text(
                 text = stringResource(result.surveyResult.description),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }
@@ -203,10 +205,10 @@ private fun TopAppBarTitle(
     totalQuestionsCount: Int,
     modifier: Modifier = Modifier
 ) {
-    val indexStyle = MaterialTheme.typography.caption.toSpanStyle().copy(
+    val indexStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
         fontWeight = FontWeight.Bold
     )
-    val totalStyle = MaterialTheme.typography.caption.toSpanStyle()
+    val totalStyle = MaterialTheme.typography.bodySmall.toSpanStyle()
     val questionCount = stringResource(R.string.question_count, totalQuestionsCount)
     val text = buildAnnotatedString {
         withStyle(style = indexStyle) {
@@ -218,7 +220,7 @@ private fun TopAppBarTitle(
     }
     Text(
         text = text,
-        style = MaterialTheme.typography.caption,
+        style = MaterialTheme.typography.bodySmall,
         modifier = modifier
     )
 }
@@ -263,7 +265,9 @@ private fun SurveyTopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
-            backgroundColor = MaterialTheme.colors.progressIndicatorBackground
+            // TODO set background properly
+            //trackColor =
+            //backgroundColor = MaterialTheme.colors.progressIndicatorBackground
         )
     }
 }
@@ -276,8 +280,7 @@ private fun SurveyBottomBar(
     onDonePressed: () -> Unit
 ) {
     Surface(
-        elevation = 7.dp,
-        modifier = Modifier.fillMaxWidth() // .border(1.dp, MaterialTheme.colors.primary)
+        modifier = Modifier.fillMaxWidth()
     ) {
 
         Row(

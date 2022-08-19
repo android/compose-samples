@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.survey
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -35,24 +36,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Slider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -63,6 +64,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,7 +74,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -167,7 +169,7 @@ private fun QuestionContent(
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = stringResource(id = question.description),
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .fillParentMaxWidth()
                             .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
@@ -235,11 +237,15 @@ private fun QuestionContent(
 
 @Composable
 private fun QuestionTitle(@StringRes title: Int) {
+    // TODO figure out dark/light
+    val backgroundColor = Color.Red
+    /*
     val backgroundColor = if (MaterialTheme.colors.isLight) {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.04f)
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
     } else {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.06f)
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
     }
+     */
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -250,7 +256,7 @@ private fun QuestionTitle(@StringRes title: Int) {
     ) {
         Text(
             text = stringResource(id = title),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp, horizontal = 16.dp)
@@ -287,14 +293,14 @@ private fun SingleChoiceQuestion(
             val optionSelected = text == selectedOption
 
             val answerBorderColor = if (optionSelected) {
-                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             } else {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
             }
             val answerBackgroundColor = if (optionSelected) {
-                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
             } else {
-                MaterialTheme.colors.background
+                MaterialTheme.colorScheme.background
             }
             Surface(
                 shape = MaterialTheme.shapes.small,
@@ -324,7 +330,7 @@ private fun SingleChoiceQuestion(
                         selected = optionSelected,
                         onClick = onClickHandle,
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = MaterialTheme.colors.primary
+                            selectedColor = MaterialTheme.colorScheme.primary
                         )
                     )
                 }
@@ -361,14 +367,14 @@ private fun SingleChoiceIconQuestion(
             }
             val optionSelected = text == selectedOption
             val answerBorderColor = if (optionSelected) {
-                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             } else {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
             }
             val answerBackgroundColor = if (optionSelected) {
-                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
             } else {
-                MaterialTheme.colors.background
+                MaterialTheme.colorScheme.background
             }
             Surface(
                 shape = MaterialTheme.shapes.small,
@@ -410,7 +416,7 @@ private fun SingleChoiceIconQuestion(
                         selected = optionSelected,
                         onClick = onClickHandle,
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = MaterialTheme.colors.primary
+                            selectedColor = MaterialTheme.colorScheme.primary
                         )
                     )
                 }
@@ -434,14 +440,14 @@ private fun MultipleChoiceQuestion(
                 mutableStateOf(selectedOption ?: false)
             }
             val answerBorderColor = if (checkedState) {
-                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             } else {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
             }
             val answerBackgroundColor = if (checkedState) {
-                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
             } else {
-                MaterialTheme.colors.background
+                MaterialTheme.colorScheme.background
             }
             Surface(
                 shape = MaterialTheme.shapes.small,
@@ -475,7 +481,7 @@ private fun MultipleChoiceQuestion(
                             onAnswerSelected(option.value, selected)
                         },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = MaterialTheme.colors.primary
+                            checkedColor = MaterialTheme.colorScheme.primary
                         ),
                     )
                 }
@@ -499,14 +505,14 @@ private fun MultipleChoiceIconQuestion(
                 mutableStateOf(selectedOption ?: false)
             }
             val answerBorderColor = if (checkedState) {
-                MaterialTheme.colors.primary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             } else {
-                MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
             }
             val answerBackgroundColor = if (checkedState) {
-                MaterialTheme.colors.primary.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
             } else {
-                MaterialTheme.colors.background
+                MaterialTheme.colorScheme.background
             }
             Surface(
                 shape = MaterialTheme.shapes.small,
@@ -547,7 +553,7 @@ private fun MultipleChoiceIconQuestion(
                             onAnswerSelected(option.value.second, selected)
                         },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = MaterialTheme.colors.primary
+                            checkedColor = MaterialTheme.colorScheme.primary
                         ),
                     )
                 }
@@ -675,15 +681,15 @@ private fun DateQuestion(
     Button(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.onPrimary,
-            contentColor = MaterialTheme.colors.onSecondary
+            // TODO verify this color
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+            contentColor = MaterialTheme.colorScheme.onSecondary
         ),
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .padding(vertical = 20.dp)
             .height(54.dp),
-        elevation = ButtonDefaults.elevation(0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
 
     ) {
         Text(
@@ -705,7 +711,9 @@ private fun DateQuestion(
 @Composable
 private fun PhotoDefaultImage(
     modifier: Modifier = Modifier,
-    lightTheme: Boolean = MaterialTheme.colors.isLight
+    // TODO figure out light/dark
+    //lightTheme: Boolean = MaterialTheme.colors.isLight
+    lightTheme: Boolean = true
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_selfie_light
@@ -747,7 +755,7 @@ private fun SliderQuestion(
     Row {
         Text(
             text = stringResource(id = possibleAnswer.startText),
-            style = MaterialTheme.typography.caption,
+            style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
@@ -755,7 +763,7 @@ private fun SliderQuestion(
         )
         Text(
             text = stringResource(id = possibleAnswer.neutralText),
-            style = MaterialTheme.typography.caption,
+            style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -763,7 +771,7 @@ private fun SliderQuestion(
         )
         Text(
             text = stringResource(id = possibleAnswer.endText),
-            style = MaterialTheme.typography.caption,
+            style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.End,
             modifier = Modifier
                 .fillMaxWidth()
@@ -788,7 +796,7 @@ fun QuestionPreview() {
         ),
         description = R.string.select_one
     )
-    JetsurveyThemeOld {
+    JetsurveyTheme {
         Question(
             question = question,
             shouldAskPermissions = true,
@@ -797,5 +805,23 @@ fun QuestionPreview() {
             onAction = { _, _ -> },
             onDoNotAskForPermissions = {}
         )
+    }
+}
+
+@Preview(name = "Photo Question Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Photo Question Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PhotoQuestionPreview() {
+    JetsurveyTheme {
+        PhotoQuestion(questionId = 1, answer = null, onAction = { _, _ -> })
+    }
+}
+
+@Preview(name = "Photo Question Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Photo Question Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun DateQuestionPreview() {
+    JetsurveyTheme {
+        DateQuestion(questionId = 1, answer = null, onAction = {_, _ -> })
     }
 }

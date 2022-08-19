@@ -26,7 +26,7 @@ import androidx.fragment.app.viewModels
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.Screen
 import com.example.compose.jetsurvey.navigate
-import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 /**
  * Fragment containing the sign up UI
@@ -55,7 +55,7 @@ class SignUpFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent {
-                JetsurveyThemeOld {
+                JetsurveyTheme {
                     SignUp(
                         onNavigationEvent = { event ->
                             when (event) {

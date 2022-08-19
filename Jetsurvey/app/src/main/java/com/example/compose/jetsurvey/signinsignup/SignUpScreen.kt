@@ -20,12 +20,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -37,7 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.theme.JetsurveyThemeOld
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.util.supportWideScreen
 
 sealed class SignUpEvent {
@@ -47,6 +48,7 @@ sealed class SignUpEvent {
     object NavigateBack : SignUpEvent()
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
 fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
     Scaffold(
@@ -107,7 +109,7 @@ fun SignUpContent(
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.terms_and_conditions),
-                style = MaterialTheme.typography.caption
+                style = MaterialTheme.typography.bodySmall
             )
         }
 
@@ -126,7 +128,7 @@ fun SignUpContent(
 @Preview(widthDp = 1024)
 @Composable
 fun SignUpPreview() {
-    JetsurveyThemeOld {
+    JetsurveyTheme {
         SignUp {}
     }
 }

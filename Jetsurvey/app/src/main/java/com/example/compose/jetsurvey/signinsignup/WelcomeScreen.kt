@@ -16,7 +16,8 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -182,8 +183,8 @@ private fun SignInCreateAccount(
     }
 }
 
-@Preview(name = "Welcome light theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "Welcome dark theme", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Welcome light theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Welcome dark theme", uiMode = UI_MODE_NIGHT_NO)
 @Composable
 fun WelcomeScreenPreview() {
     JetsurveyTheme {

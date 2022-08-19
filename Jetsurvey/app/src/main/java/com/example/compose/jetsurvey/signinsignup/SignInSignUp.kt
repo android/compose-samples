@@ -32,21 +32,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -64,13 +62,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun SignInSignUpScreen(
     onSignedInAsGuest: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -96,9 +95,10 @@ fun SignInSignUpScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // SmallTopAppBar is experimental in m3
 @Composable
 fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
-    TopAppBar(
+    SmallTopAppBar(
         title = {
             Text(
                 text = topAppBarText,
@@ -120,11 +120,10 @@ fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
         actions = {
             Spacer(modifier = Modifier.width(68.dp))
         },
-        backgroundColor = MaterialTheme.colors.surface,
-        elevation = 0.dp
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // OutlinedTextField is experimental in m3
 @Composable
 fun Email(
     emailState: TextFieldState = remember { EmailState() },
@@ -140,7 +139,7 @@ fun Email(
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.email),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         },
@@ -152,7 +151,7 @@ fun Email(
                     emailState.enableShowErrors()
                 }
             },
-        textStyle = MaterialTheme.typography.body2,
+        textStyle = MaterialTheme.typography.bodyMedium,
         isError = emailState.showErrors(),
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = imeAction,
@@ -168,6 +167,7 @@ fun Email(
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // OutlinedTextField is experimental in m3
 @Composable
 fun Password(
     label: String,
@@ -191,12 +191,12 @@ fun Password(
                     passwordState.enableShowErrors()
                 }
             },
-        textStyle = MaterialTheme.typography.body2,
+        textStyle = MaterialTheme.typography.bodyMedium,
         label = {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         },
@@ -247,7 +247,7 @@ fun TextFieldError(textError: String) {
         Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
-            style = LocalTextStyle.current.copy(color = MaterialTheme.colors.error)
+            color = MaterialTheme.colorScheme.error
         )
     }
 }
@@ -261,14 +261,12 @@ fun OrSignInAsGuest(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Surface {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = stringResource(id = R.string.or),
-                    style = MaterialTheme.typography.subtitle2,
-                    modifier = Modifier.paddingFromBaseline(top = 25.dp)
-                )
-            }
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Text(
+                text = stringResource(id = R.string.or),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.paddingFromBaseline(top = 25.dp)
+            )
         }
         OutlinedButton(
             onClick = onSignedInAsGuest,
@@ -284,8 +282,10 @@ fun OrSignInAsGuest(
 @Preview
 @Composable
 fun SignInSignUpScreenPreview() {
-    SignInSignUpScreen(
-        onSignedInAsGuest = {},
-        content = {}
-    )
+    JetsurveyTheme {
+        SignInSignUpScreen(
+            onSignedInAsGuest = {},
+            content = {}
+        )
+    }
 }

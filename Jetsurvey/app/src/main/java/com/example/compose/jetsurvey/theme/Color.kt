@@ -18,16 +18,6 @@ package com.example.compose.jetsurvey.theme
 
 import androidx.compose.ui.graphics.Color
 
-// TODO: Delete old colors
-val Purple300 = Color(0xFFCD52FC)
-val Purple600 = Color(0xFF9F00F4)
-val Purple700 = Color(0xFF8100EF)
-val Purple800 = Color(0xFF0000E1)
-
-val Red300 = Color(0xFFD00036)
-val Red800 = Color(0xFFEA6D7E)
-// End of old colors
-
 val md_theme_light_primary = Color(0xFF8307F0)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFEEDCFF)
