@@ -13,7 +13,7 @@ androidx-test = "1.4.0"
 androidx-test-espresso = "3.4.0"
 androidx-test-ext-junit = "1.1.3"
 androidx-test-ext-truth = "1.4.0"
-androidx-window = "1.0.0"
+androidx-window = "1.1.0-alpha03"
 androidxHiltNavigationCompose = "1.0.0"
 androix-test-uiautomator = "2.2.0"
 coil = "2.2.0"
@@ -21,22 +21,23 @@ compose = "1.2.1"
 compose-compiler = "1.3.0"
 compose-snapshot = "-"
 coroutines = "1.6.4"
-google-maps = "18.0.2"
-hilt = "2.42"
+google-maps = "18.1.0"
+hilt = "2.43.2"
 hiltExt = "1.0.0"
 jdkDesugar = "1.1.5"
 junit = "4.13.2"
 kotlin = "1.7.10"
-maps-compose = "2.1.0"
+maps-compose = "2.5.3"
 material = "1.7.0-beta01"
 material3 = "1.0.0-alpha16"
 materialWindow = "1.0.0-alpha16"
 okhttp = "4.10.0"
-roboelectric = "4.5.1"
+roboelectric = "4.5.1" 
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
 spotless = "6.9.1"
+
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
@@ -49,10 +50,10 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-macro", version.ref = "androidx-benchmark" }
-androidx-compose-animation = "androidx.compose.animation:animation:1.1.1"
-androidx-compose-foundation = "androidx.compose.foundation:foundation:1.2.0"
+androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
-androidx-compose-material = "androidx.compose.material:material:1.0.0"
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "materialWindow" }
@@ -64,7 +65,7 @@ androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-androidx-compose-ui-util = "androidx.compose.ui:ui-util:1.3.0-alpha03"
+androidx-compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose" }
 androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "compose" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraintlayout" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-corektx" }

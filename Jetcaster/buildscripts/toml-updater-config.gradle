@@ -1,7 +1,9 @@
 versionCatalogUpdate {
     sortByKey.set(true)
     pin {
-        versions = ["jdkDesugar"]
+        // TODO: Bump to latest after Espresso 3.5.0 goes stable
+        //  (due to https://github.com/robolectric/robolectric/issues/6593)
+        versions = ["jdkDesugar", "roboelectric"]
     }
     keep {
         // keep versions without any library or plugin reference
