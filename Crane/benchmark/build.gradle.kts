@@ -42,7 +42,7 @@ dependencies {
     implementation(libs.androidx.test.ext.junit)
     implementation(libs.androidx.test.espresso.core)
     implementation(libs.androidx.test.uiautomator)
-    implementation(libs.androidx.benchmark.macrobenchmark)
+    implementation(libs.androidx.benchmark.macrobenchmark.junit4)
 }
 
 androidComponents {

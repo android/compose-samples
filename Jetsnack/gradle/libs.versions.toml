@@ -4,6 +4,7 @@ androidGradlePlugin = "7.2.2"
 androidx-activity-compose = "1.5.1"
 androidx-appcompat = "1.5.0"
 androidx-benchmark = "1.1.0"
+androidx-benchmark-junit4 = "1.1.0-beta04"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.8.0"
 androidx-lifecycle-compose = "2.5.1"
@@ -50,6 +51,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-macro", version.ref = "androidx-benchmark" }
+androidx-benchmark-macrobenchmark-junit4 = {module ="androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
@@ -59,6 +61,7 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3", 
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "materialWindow" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
 androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 androidx-compose-ui-googlefonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "compose" }
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test", version.ref = "compose" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
