@@ -199,9 +199,9 @@ private fun TopAppBarTitle(
     totalQuestionsCount: Int,
     modifier: Modifier = Modifier
 ) {
-    Row (modifier = modifier){
+    Row(modifier = modifier) {
         Text(
-            text = (questionIndex+1).toString(),
+            text = (questionIndex + 1).toString(),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )

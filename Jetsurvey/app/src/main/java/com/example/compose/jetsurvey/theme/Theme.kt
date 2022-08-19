@@ -105,7 +105,7 @@ fun JetsurveyTheme(
             md_theme_dark_surface
         }
 
-        onDispose {  }
+        onDispose { }
     }
 
     MaterialTheme(

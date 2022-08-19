@@ -813,7 +813,7 @@ fun PhotoQuestionPreview() {
 fun DateQuestionPreview() {
     JetsurveyTheme {
         Surface {
-            DateQuestion(questionId = 1, answer = null, onAction = {_, _ -> })
+            DateQuestion(questionId = 1, answer = null, onAction = { _, _ -> })
         }
     }
 }
