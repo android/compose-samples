@@ -22,7 +22,7 @@ coil = "2.2.0"
 compileSdk = "33"
 compose = "1.2.1"
 compose-compiler = "1.3.0"
-# @keep compose-material3 alpha16 has open bug - https://buganizer.corp.google.com/issues/243130265
+# @pin compose-material3 alpha16 has open bug - https://buganizer.corp.google.com/issues/243130265
 compose-material3 = "1.0.0-alpha15"
 # @pin compose-material3 alpha16 has open bug - https://buganizer.corp.google.com/issues/243130265
 compose-materialWindow = "1.0.0-alpha15"
@@ -31,6 +31,7 @@ coroutines = "1.6.4"
 google-maps = "18.1.0"
 hilt = "2.43.2"
 hiltExt = "1.0.0"
+# @pin When updating to AGP 7.3.0-beta03 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "1.1.5"
 junit = "4.13.2"
 kotlin = "1.7.10"
@@ -39,6 +40,7 @@ material = "1.7.0-beta01"
 # @keep
 minSdk = "21"
 okhttp = "4.10.0"
+# @pin Bump to latest after Espresso 3.5.0 goes stable (due to https://github.com/robolectric/robolectric/issues/6593)
 roboelectric = "4.5.1"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
