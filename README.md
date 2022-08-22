@@ -84,6 +84,16 @@ Looking for a sample that has the following features?
 * [Jetnews - Window Size Classes](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/JetNews/app/src/main/java/com/example/jetnews/ui/MainActivity.kt#L36)
 * [Crane - Window Size Classes](https://github.com/android/compose-samples/blob/e7e8733f9b37d80cdc6e9e05dbabe24ccf20b38f/Crane/app/src/main/java/androidx/compose/samples/crane/home/MainActivity.kt#L72)
 
+## Updates
+
+To update dependencies to their new stable versions, run:
+
+```
+./scripts/updatesDeps.sh
+```
+
+To make any other manual updates to dependencies (ie add a new dependency or set an alpha version), update the `/scripts/libs.versions.toml` file with changes, and then run `duplicate_version_config.sh` to propogate the changes to all other samples. You can also update the  `toml-updater-config.gradle` file with changes that need to propogate to each sample. 
+
 
 ## License
 ```

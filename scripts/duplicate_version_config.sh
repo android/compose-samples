@@ -16,18 +16,15 @@
 
 ########################################################################
 #
-# Allows running of ./gradlew commands across all projects in
-# folders of the current directory.
+# Duplicates libs.versions.toml into each sample from master copy.
 #
 # Example: To run build over all projects run:
-#     ./scripts/gradlew_recursive.sh build
+#     ./scripts/duplicate_version_config.sh
 #
 ########################################################################
 
 set -xe
 
-# Crawl all gradlew files which indicate an Android project
-# You may edit this if your repo has a different project structure
 cp scripts/libs.versions.toml Crane/gradle/libs.versions.toml
 cp scripts/libs.versions.toml Jetcaster/gradle/libs.versions.toml
 cp scripts/libs.versions.toml Jetchat/gradle/libs.versions.toml
