@@ -22,8 +22,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.luminance
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
+const val stronglyDeemphasizedAlpha = 0.6f
+const val slightlyDeemphasizedAlpha = 0.87f
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -115,6 +117,3 @@ fun JetsurveyTheme(
         content = content,
     )
 }
-
-@Composable
-fun surfaceIsLight(): Boolean = MaterialTheme.colorScheme.surface.luminance() > 0.5f

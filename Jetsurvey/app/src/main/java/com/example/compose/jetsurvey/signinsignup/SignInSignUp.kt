@@ -60,6 +60,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
 @Composable
 fun SignInSignUpScreen(
@@ -92,7 +93,7 @@ fun SignInSignUpScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // SmallTopAppBar is experimental in m3
+@OptIn(ExperimentalMaterial3Api::class) // CenterAlignedTopAppBar is experimental in m3
 @Composable
 fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
     CenterAlignedTopAppBar(
@@ -136,7 +137,7 @@ fun Email(
             Text(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha)
             )
         },
         modifier = Modifier
@@ -192,7 +193,7 @@ fun Password(
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha)
             )
         },
         trailingIcon = {
@@ -259,7 +260,7 @@ fun OrSignInAsGuest(
         Text(
             text = stringResource(id = R.string.or),
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha),
             modifier = Modifier.paddingFromBaseline(top = 25.dp)
         )
         OutlinedButton(

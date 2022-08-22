@@ -45,6 +45,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -61,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,7 +73,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.example.compose.jetsurvey.theme.surfaceIsLight
+import com.example.compose.jetsurvey.theme.slightlyDeemphasizedAlpha
+import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -165,7 +168,8 @@ private fun QuestionContent(
             if (question.description != null) {
                 Text(
                     text = stringResource(id = question.description),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    color = MaterialTheme.colorScheme.onSurface
+                        .copy(alpha = stronglyDeemphasizedAlpha),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .fillParentMaxWidth()
@@ -244,7 +248,7 @@ private fun QuestionTitle(@StringRes title: Int) {
         Text(
             text = stringResource(id = title),
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.87f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = slightlyDeemphasizedAlpha),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp, horizontal = 16.dp)
@@ -671,7 +675,8 @@ private fun DateQuestion(
         onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.87f),
+            contentColor = MaterialTheme.colorScheme.onSurface
+                .copy(alpha = slightlyDeemphasizedAlpha),
         ),
         shape = MaterialTheme.shapes.small,
         modifier = modifier
@@ -699,9 +704,8 @@ private fun DateQuestion(
 @Composable
 private fun PhotoDefaultImage(
     modifier: Modifier = Modifier,
-    lightTheme: Boolean = surfaceIsLight()
 ) {
-    val assetId = if (lightTheme) {
+    val assetId = if (LocalContentColor.current.luminance() > 0.5f) {
         R.drawable.ic_selfie_light
     } else {
         R.drawable.ic_selfie_dark
