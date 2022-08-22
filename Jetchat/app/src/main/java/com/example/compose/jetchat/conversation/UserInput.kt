@@ -486,8 +486,7 @@ fun ExtendedSelectorInnerButton(
         containerColor = if (selected) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
         else Color.Transparent,
         disabledContainerColor = Color.Transparent,
-        contentColor = if (selected) MaterialTheme.colorScheme.onSurface
-        else MaterialTheme.colorScheme.onSurface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.74f)
     )
     TextButton(
