@@ -60,6 +60,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import com.example.compose.jetsurvey.theme.outlinedTextFieldColors
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
 @Composable
@@ -137,7 +138,6 @@ fun Email(
             Text(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha)
             )
         },
         modifier = Modifier
@@ -158,7 +158,8 @@ fun Email(
             onDone = {
                 onImeAction()
             }
-        )
+        ),
+        colors = outlinedTextFieldColors(),
     )
 
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -193,7 +194,6 @@ fun Password(
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha)
             )
         },
         trailingIcon = {
@@ -227,7 +227,8 @@ fun Password(
             onDone = {
                 onImeAction()
             }
-        )
+        ),
+        colors = outlinedTextFieldColors()
     )
 
     passwordState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -267,7 +268,7 @@ fun OrSignInAsGuest(
             onClick = onSignedInAsGuest,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 24.dp)
+                .padding(top = 20.dp, bottom = 24.dp),
         ) {
             Text(text = stringResource(id = R.string.sign_in_guest))
         }

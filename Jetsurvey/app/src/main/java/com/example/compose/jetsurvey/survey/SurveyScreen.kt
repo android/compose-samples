@@ -240,7 +240,7 @@ private fun SurveyTopAppBar(
                     Icons.Filled.Close,
                     contentDescription = stringResource(id = R.string.close),
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(0.6f)
+                    tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
                 )
             }
         }

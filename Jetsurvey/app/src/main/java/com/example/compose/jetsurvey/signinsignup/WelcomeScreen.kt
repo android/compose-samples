@@ -123,7 +123,7 @@ private fun Branding(modifier: Modifier = Modifier) {
 private fun Logo(
     modifier: Modifier = Modifier,
 ) {
-    val assetId = if (LocalContentColor.current.luminance() > 0.5f) {
+    val assetId = if (LocalContentColor.current.luminance() < 0.5f) {
         R.drawable.ic_logo_light
     } else {
         R.drawable.ic_logo_dark
@@ -147,7 +147,7 @@ private fun SignInCreateAccount(
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = stringResource(id = R.string.sign_in_create_account),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 64.dp, bottom = 12.dp)

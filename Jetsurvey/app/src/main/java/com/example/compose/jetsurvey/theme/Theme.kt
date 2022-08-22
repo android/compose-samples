@@ -17,7 +17,10 @@
 package com.example.compose.jetsurvey.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -86,6 +89,20 @@ private val DarkColors = darkColorScheme(
     inversePrimary = md_theme_dark_inversePrimary,
     surfaceTint = md_theme_dark_surfaceTint,
 )
+
+@OptIn(ExperimentalMaterial3Api::class) // outlinedTextFieldColors is experimental in m3
+@Composable
+fun outlinedTextFieldColors() : TextFieldColors =
+    TextFieldDefaults.outlinedTextFieldColors(
+        unfocusedLabelColor = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = stronglyDeemphasizedAlpha),
+        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = 0.38f),
+        focusedTrailingIconColor = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = stronglyDeemphasizedAlpha),
+        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = stronglyDeemphasizedAlpha),
+    )
 
 @Composable
 fun JetsurveyTheme(

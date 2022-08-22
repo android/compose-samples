@@ -60,7 +60,7 @@ val Typography = Typography(
         letterSpacing = 0.sp,
     ),
 
-// Headline Large - Montserrat 32/40 . 0px
+    // Headline Large - Montserrat 32/40 . 0px
     headlineLarge = TextStyle(
         fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.W400,
