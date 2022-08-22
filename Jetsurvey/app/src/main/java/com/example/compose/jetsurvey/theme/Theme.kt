@@ -92,7 +92,7 @@ private val DarkColors = darkColorScheme(
 
 @OptIn(ExperimentalMaterial3Api::class) // outlinedTextFieldColors is experimental in m3
 @Composable
-fun outlinedTextFieldColors() : TextFieldColors =
+fun outlinedTextFieldColors(): TextFieldColors =
     TextFieldDefaults.outlinedTextFieldColors(
         unfocusedLabelColor = MaterialTheme.colorScheme.onSurface
             .copy(alpha = stronglyDeemphasizedAlpha),
