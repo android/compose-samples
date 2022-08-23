@@ -1,5 +1,3 @@
-import com.example.crane.buildsrc.Libs
-
 plugins {
     id("com.android.test")
     id("org.jetbrains.kotlin.android")
@@ -7,7 +5,7 @@ plugins {
 
 android {
     namespace = "androidx.compose.samples.crane.benchmark"
-    compileSdk = 32
+    compileSdk = 33
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -20,7 +18,7 @@ android {
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 32
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,10 +39,10 @@ android {
 }
 
 dependencies {
-    implementation(Libs.AndroidX.Test.Ext.junit)
-    implementation(Libs.AndroidX.Test.espressoCore)
-    implementation(Libs.AndroidX.Test.uiAutomator)
-    implementation(Libs.AndroidX.Benchmark.macrobenchmark)
+    implementation(libs.androidx.test.ext.junit)
+    implementation(libs.androidx.test.espresso.core)
+    implementation(libs.androidx.test.uiautomator)
+    implementation(libs.androidx.benchmark.macrobenchmark.junit4)
 }
 
 androidComponents {
