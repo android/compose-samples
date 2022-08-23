@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -74,7 +75,7 @@ fun ReplyNavigationRail(
         Layout(
             content = {
                 Column(
-                    modifier = Modifier.layoutId(LayoutType.HEADER),
+                    modifier = Modifier.widthIn(max = 80.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
                 ) {
