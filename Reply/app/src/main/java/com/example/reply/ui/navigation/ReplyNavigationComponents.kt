@@ -73,9 +73,10 @@ fun ReplyNavigationRail(
     ) {
         // TODO remove custom nav rail positioning when NavRail component supports it. ticket : b/232495216
         Layout(
+            modifier = Modifier.widthIn(max = 80.dp),
             content = {
                 Column(
-                    modifier = Modifier.widthIn(max = 80.dp),
+                    modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
                 ) {
