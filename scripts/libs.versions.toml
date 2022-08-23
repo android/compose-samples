@@ -32,7 +32,7 @@ google-maps = "18.1.0"
 hilt = "2.43.2"
 hiltExt = "1.0.0"
 # @pin When updating to AGP 7.3.0-beta03 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
-jdkDesugar = "1.1.5"
+jdkDesugar = "1.2.0"
 junit = "4.13.2"
 kotlin = "1.7.10"
 maps-compose = "2.5.3"
