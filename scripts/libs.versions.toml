@@ -41,7 +41,7 @@ material = "1.7.0-beta01"
 minSdk = "21"
 okhttp = "4.10.0"
 # @pin Bump to latest after Espresso 3.5.0 goes stable (due to https://github.com/robolectric/robolectric/issues/6593)
-roboelectric = "4.5.1"
+roboelectric = "4.8.2"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
