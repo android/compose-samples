@@ -26,7 +26,7 @@
 
 set -xe
 
-./JetNews/gradlew -p ./Jetchat versionCatalogUpdate 
+./JetNews/gradlew -p ./JetNews versionCatalogUpdate 
 
 cp JetNews/gradle/libs.versions.toml scripts/libs.versions.toml
 ./scripts/duplicate_version_config.sh
