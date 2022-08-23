@@ -109,13 +109,14 @@ fun ReplyTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = replyColorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = replyColorScheme,
         typography = replyTypography,
+        shapes = shapes,
         content = content
     )
 }

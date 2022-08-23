@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -72,6 +73,7 @@ fun ReplyNavigationRail(
     ) {
         // TODO remove custom nav rail positioning when NavRail component supports it. ticket : b/232495216
         Layout(
+            modifier = Modifier.widthIn(max = 80.dp),
             content = {
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
@@ -176,6 +178,7 @@ fun ReplyBottomNavigationBar(
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,
+    isPermanentDrawer: Boolean = false,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
@@ -201,11 +204,13 @@ fun NavigationDrawerContent(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    IconButton(onClick = onDrawerClicked) {
-                        Icon(
-                            imageVector = Icons.Default.MenuOpen,
-                            contentDescription = stringResource(id = R.string.navigation_drawer)
-                        )
+                    if (isPermanentDrawer.not()) {
+                        IconButton(onClick = onDrawerClicked) {
+                            Icon(
+                                imageVector = Icons.Default.MenuOpen,
+                                contentDescription = stringResource(id = R.string.navigation_drawer)
+                            )
+                        }
                     }
                 }
 

@@ -2,5 +2,19 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base", ":dependencyDashboard"
+  ],
+  "packageRules": [
+    {
+      "groupName": "Androidx Lifecycle deps",
+      "matchPackagePatterns": ["androidx.lifecycle", "androidx.navigation:navigation-compose"]
+    },
+     {
+      "groupName": "Compose Dependencies",
+      "matchPackagePatterns": "^androidx\\..*compose\\."
+    },
+    {
+      "groupName": "Kotlin Dependencies",
+      "matchPackagePrefixes": ["org.jetbrains.kotlin"]
+    }
   ]
 }
