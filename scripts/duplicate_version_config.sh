@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2020 The Android Open Source Project
+# Copyright (C) 2022 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ cp scripts/libs.versions.toml Jetsnack/gradle/libs.versions.toml
 cp scripts/libs.versions.toml Jetsurvey/gradle/libs.versions.toml
 cp scripts/libs.versions.toml Owl/gradle/libs.versions.toml
 cp scripts/libs.versions.toml Reply/gradle/libs.versions.toml
-
 
 cp scripts/toml-updater-config.gradle Crane/buildscripts/toml-updater-config.gradle
 cp scripts/toml-updater-config.gradle Jetcaster/buildscripts/toml-updater-config.gradle
