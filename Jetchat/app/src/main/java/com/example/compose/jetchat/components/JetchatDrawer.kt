@@ -55,23 +55,21 @@ import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
-fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) ->
+fun ColumnScope.JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) ->
 Unit) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-        DrawerHeader()
-        DividerItem()
-        DrawerItemHeader("Chats")
-        ChatItem("composers", true) { onChatClicked("composers") }
-        ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
-        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-        DrawerItemHeader("Recent Profiles")
-        ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-        ProfileItem("Taylor Brooks", colleagueProfile.photo) {
-            onProfileClicked(colleagueProfile.userId)
-        }
+    Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+    DrawerHeader()
+    DividerItem()
+    DrawerItemHeader("Chats")
+    ChatItem("composers", true) { onChatClicked("composers") }
+    ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
+    DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+    DrawerItemHeader("Recent Profiles")
+    ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
+    ProfileItem("Taylor Brooks", colleagueProfile.photo) {
+        onProfileClicked(colleagueProfile.userId)
     }
 }
 
