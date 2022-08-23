@@ -59,7 +59,10 @@ fun FlySearchContent(
                 ToDestinationUserInput(onToDestinationChanged = searchUpdates.onToDestinationChanged)
             }
             item {
-                DatesUserInput(datesSelected, onDateSelectionClicked = searchUpdates.onDateSelectionClicked)
+                DatesUserInput(
+                    datesSelected,
+                    onDateSelectionClicked = searchUpdates.onDateSelectionClicked
+                )
             }
         }
     )
@@ -84,10 +87,16 @@ fun SleepSearchContent(
                 PeopleUserInput(onPeopleChanged = { sleepUpdates.onPeopleChanged })
             }
             item {
-                DatesUserInput(datesSelected, onDateSelectionClicked = sleepUpdates.onDateSelectionClicked)
+                DatesUserInput(
+                    datesSelected,
+                    onDateSelectionClicked = sleepUpdates.onDateSelectionClicked
+                )
             }
             item {
-                SimpleUserInput(caption = stringResource(R.string.input_select_location), vectorImageId = R.drawable.ic_hotel)
+                SimpleUserInput(
+                    caption = stringResource(R.string.input_select_location),
+                    vectorImageId = R.drawable.ic_hotel
+                )
             }
         }
     )
@@ -110,13 +119,22 @@ fun EatSearchContent(
             PeopleUserInput(onPeopleChanged = eatUpdates.onPeopleChanged)
         }
         item {
-            DatesUserInput(datesSelected, onDateSelectionClicked = eatUpdates.onDateSelectionClicked)
+            DatesUserInput(
+                datesSelected,
+                onDateSelectionClicked = eatUpdates.onDateSelectionClicked
+            )
         }
         item {
-            SimpleUserInput(caption = stringResource(R.string.input_select_time), vectorImageId = R.drawable.ic_time)
+            SimpleUserInput(
+                caption = stringResource(R.string.input_select_time),
+                vectorImageId = R.drawable.ic_time
+            )
         }
         item {
-            SimpleUserInput(caption = stringResource(R.string.input_select_location), vectorImageId = R.drawable.ic_restaurant)
+            SimpleUserInput(
+                caption = stringResource(R.string.input_select_location),
+                vectorImageId = R.drawable.ic_restaurant
+            )
         }
     }
 }
