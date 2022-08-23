@@ -49,8 +49,10 @@ fun JumpToBottom(
     modifier: Modifier = Modifier
 ) {
     // Show Jump to Bottom button
-    val transition = updateTransition(if (enabled) Visibility.VISIBLE else Visibility.GONE)
-    val bottomOffset by transition.animateDp() {
+    val transition = updateTransition(if (enabled) Visibility.VISIBLE else Visibility.GONE,
+        label = "JumpToBottom visibility animation"
+    )
+    val bottomOffset by transition.animateDp(label = "JumpToBottom offset animation") {
         if (it == Visibility.GONE) {
             (-32).dp
         } else {

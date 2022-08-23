@@ -18,7 +18,6 @@ package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -28,6 +27,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.conversation.ConversationUiState
@@ -49,6 +50,7 @@ class ConversationTest {
 
     private val themeIsDark = MutableStateFlow(false)
 
+    @OptIn(ExperimentalLifecycleComposeApi::class)
     @Before
     fun setUp() {
         // Launch the conversation screen
@@ -57,7 +59,7 @@ class ConversationTest {
             CompositionLocalProvider(
                 LocalBackPressedDispatcher provides onBackPressedDispatcher,
             ) {
-                JetchatTheme(isDarkTheme = themeIsDark.collectAsState(false).value) {
+                JetchatTheme(isDarkTheme = themeIsDark.collectAsStateWithLifecycle(false).value) {
                     ConversationContent(
                         uiState = conversationTestUiState,
                         navigateToProfile = { },
