@@ -16,10 +16,10 @@
 
 package com.example.jetnews.ui.interests
 
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 
 /**
@@ -28,14 +28,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
  * @param interestsViewModel ViewModel that handles the business logic of this screen
  * @param isExpandedScreen (state) true if the screen is expanded
  * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) state for screen Scaffold
+ * @param snackbarHostState (state) state for screen snackbar host
  */
 @Composable
 fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     val tabContent = rememberTabContent(interestsViewModel)
     val (currentSection, updateSection) = rememberSaveable {
@@ -48,6 +48,6 @@ fun InterestsRoute(
         isExpandedScreen = isExpandedScreen,
         onTabChange = updateSection,
         openDrawer = openDrawer,
-        scaffoldState = scaffoldState
+        snackbarHostState = snackbarHostState
     )
 }

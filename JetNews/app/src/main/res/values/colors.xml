@@ -13,7 +13,6 @@
   the License.
   -->
 <resources>
-    <color name="red700">#dd0d3e</color>
-    <color name="red900">#c20029</color>
-    <color name="status_bar">#ffffff</color>
+    <!-- Status bar -->
+    <color name="black30">#4D000000</color>
 </resources>

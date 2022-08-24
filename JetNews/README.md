@@ -41,10 +41,9 @@ that scrolls vertically and horizontally.
 See how to:
 
 * Use `Row`s and `Column`s to arrange the contents of the UI
-* Add an `AppBar`
-* Use `MaterialTypography` and opacity to style the text
-* Use `Shape` to round the corners of the images
-* Use elevation to make the `Card`s stand out from the background
+* Add a top app bar that elevates as the user scrolls
+* Use Material's `Typography` and `ColorScheme` to style the text
+* Use tonal elevation to make the `Card`s stand out from the background
 
 [4]: app/src/main/java/com/example/jetnews/ui/home
 
@@ -53,7 +52,7 @@ See how to:
 Package [`com.example.jetnews.ui.article`][5]
 
 This screen dives into the Text API, showing how to use different fonts than the ones defined in
-[`Typograhy`][6]. It also adds a bottom appbar, with custom actions.
+[`Typography`][6]. It also adds a bottom app bar, with custom actions.
 
 [5]: app/src/main/java/com/example/jetnews/ui/article
 [6]: app/src/main/java/com/example/jetnews/ui/theme/Type.kt
