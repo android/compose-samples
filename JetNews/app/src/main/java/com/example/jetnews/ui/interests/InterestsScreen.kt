@@ -25,30 +25,31 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,7 +63,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -106,8 +106,9 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param isExpandedScreen (state) true if the screen is expanded
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
  * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) the state for the screen's [Scaffold]
+ * @param snackbarHostState (state) the state for the screen's [Scaffold]
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InterestsScreen(
     tabContent: List<TabContent>,
@@ -115,31 +116,28 @@ fun InterestsScreen(
     isExpandedScreen: Boolean,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState
+    snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
-        scaffoldState = scaffoldState,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.cd_interests),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
-                navigationIcon = if (!isExpandedScreen) {
-                    {
+                navigationIcon = {
+                    if (!isExpandedScreen) {
                         IconButton(onClick = openDrawer) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_jetnews_logo),
                                 contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                                tint = MaterialTheme.colors.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
-                } else {
-                    null
                 },
                 actions = {
                     IconButton(
@@ -150,9 +148,7 @@ fun InterestsScreen(
                             contentDescription = stringResource(R.string.cd_search)
                         )
                     }
-                },
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp
+                }
             )
         }
     ) { innerPadding ->
@@ -223,7 +219,7 @@ private fun InterestScreenContent(
     Column(modifier) {
         InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
         Divider(
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
         )
         Box(modifier = Modifier.weight(1f)) {
             // display the current tab content which is a @Composable () -> Unit
@@ -238,7 +234,6 @@ private fun InterestScreenContent(
 private val tabContainerModifier = Modifier
     .fillMaxWidth()
     .wrapContentWidth(Alignment.CenterHorizontally)
-    .navigationBarsPadding()
 
 /**
  * Display a simple list of topics
@@ -287,7 +282,7 @@ private fun TabWithSections(
                 modifier = Modifier
                     .padding(16.dp)
                     .semantics { heading() },
-                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.titleMedium
             )
             InterestsAdaptiveContentLayout {
                 topics.forEach { topic ->
@@ -337,14 +332,14 @@ private fun TopicItem(
                 modifier = Modifier
                     .padding(16.dp)
                     .weight(1f), // Break line if the title is too long
-                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.titleMedium
             )
-            Spacer(Modifier.weight(0.01f))
+            Spacer(Modifier.width(16.dp))
             SelectTopicButton(selected = selected)
         }
         Divider(
             modifier = modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
         )
     }
 }
@@ -363,8 +358,7 @@ private fun InterestsTabRow(
         false -> {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
-                backgroundColor = MaterialTheme.colors.onPrimary,
-                contentColor = MaterialTheme.colors.primary
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
             }
@@ -372,8 +366,7 @@ private fun InterestsTabRow(
         true -> {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
-                backgroundColor = MaterialTheme.colors.onPrimary,
-                contentColor = MaterialTheme.colors.primary,
+                contentColor = MaterialTheme.colorScheme.primary,
                 edgePadding = 0.dp
             ) {
                 InterestsTabRowContent(
@@ -396,9 +389,9 @@ private fun InterestsTabRowContent(
 ) {
     tabContent.forEachIndexed { index, content ->
         val colorText = if (selectedTabIndex == index) {
-            MaterialTheme.colors.primary
+            MaterialTheme.colorScheme.primary
         } else {
-            MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
         }
         Tab(
             selected = selectedTabIndex == index,
@@ -408,7 +401,7 @@ private fun InterestsTabRowContent(
             Text(
                 text = stringResource(id = content.section.titleResId),
                 color = colorText,
-                style = MaterialTheme.typography.subtitle2,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = modifier.paddingFromBaseline(top = 20.dp)
             )
         }
@@ -506,7 +499,7 @@ fun PreviewInterestsScreenDrawer() {
             isExpandedScreen = false,
             onTabChange = updateSection,
             openDrawer = { },
-            scaffoldState = rememberScaffoldState()
+            snackbarHostState = SnackbarHostState()
         )
     }
 }
@@ -534,7 +527,7 @@ fun PreviewInterestsScreenNavRail() {
             isExpandedScreen = true,
             onTabChange = updateSection,
             openDrawer = { },
-            scaffoldState = rememberScaffoldState()
+            snackbarHostState = SnackbarHostState()
         )
     }
 }

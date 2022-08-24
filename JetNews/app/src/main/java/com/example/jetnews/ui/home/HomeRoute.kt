@@ -18,15 +18,17 @@ package com.example.jetnews.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.home.HomeScreenType.ArticleDetails
+import com.example.jetnews.ui.home.HomeScreenType.Feed
+import com.example.jetnews.ui.home.HomeScreenType.FeedWithArticleDetails
 
 /**
  * Displays the Home route.
@@ -36,14 +38,14 @@ import com.example.jetnews.ui.article.ArticleScreen
  * @param homeViewModel ViewModel that handles the business logic of this screen
  * @param isExpandedScreen (state) whether the screen is expanded
  * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) state for the [Scaffold] component on this screen
+ * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsState()
@@ -59,7 +61,7 @@ fun HomeRoute(
         onInteractWithArticleDetails = { homeViewModel.interactedWithArticleDetails(it) },
         onSearchInputChanged = { homeViewModel.onSearchInputChanged(it) },
         openDrawer = openDrawer,
-        scaffoldState = scaffoldState,
+        snackbarHostState = snackbarHostState,
     )
 }
 
@@ -78,9 +80,8 @@ fun HomeRoute(
  * @param onInteractWithArticleDetails (event) indicate that the article details were interacted
  * with
  * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) state for the [Scaffold] component on this screen
+ * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
@@ -93,7 +94,7 @@ fun HomeRoute(
     onInteractWithArticleDetails: (String) -> Unit,
     onSearchInputChanged: (String) -> Unit,
     openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState
+    snackbarHostState: SnackbarHostState
 ) {
     // Construct the lazy list states for the list and the details outside of deciding which one to
     // show. This allows the associated state to survive beyond that decision, and therefore
@@ -123,7 +124,7 @@ fun HomeRoute(
                 openDrawer = openDrawer,
                 homeListLazyListState = homeListLazyListState,
                 articleDetailLazyListStates = articleDetailLazyListStates,
-                scaffoldState = scaffoldState,
+                snackbarHostState = snackbarHostState,
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
@@ -137,7 +138,7 @@ fun HomeRoute(
                 onErrorDismiss = onErrorDismiss,
                 openDrawer = openDrawer,
                 homeListLazyListState = homeListLazyListState,
-                scaffoldState = scaffoldState,
+                snackbarHostState = snackbarHostState,
                 onSearchInputChanged = onSearchInputChanged,
             )
         }

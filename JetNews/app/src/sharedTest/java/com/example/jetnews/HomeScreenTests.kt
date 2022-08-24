@@ -17,8 +17,7 @@
 package com.example.jetnews
 
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -49,7 +48,6 @@ class HomeScreenTests {
         val snackbarHostState = SnackbarHostState()
         composeTestRule.setContent {
             JetnewsTheme {
-                val scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)
 
                 // When the Home screen receives data with an error
                 HomeFeedScreen(
@@ -65,7 +63,7 @@ class HomeScreenTests {
                     onErrorDismiss = {},
                     openDrawer = {},
                     homeListLazyListState = rememberLazyListState(),
-                    scaffoldState = scaffoldState,
+                    snackbarHostState = snackbarHostState,
                     onSearchInputChanged = {}
                 )
             }
@@ -76,7 +74,7 @@ class HomeScreenTests {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             // wait for the first a non-null `currentSnackbarData`
             val actualSnackbarText = snapshotFlow { snackbarHostState.currentSnackbarData }
-                .filterNotNull().first().message
+                .filterNotNull().first().visuals.message
             val expectedSnackbarText = InstrumentationRegistry.getInstrumentation()
                 .targetContext.resources.getString(R.string.load_error)
             assertEquals(expectedSnackbarText, actualSnackbarText)

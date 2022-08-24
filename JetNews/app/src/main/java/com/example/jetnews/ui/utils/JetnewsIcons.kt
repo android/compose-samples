@@ -16,18 +16,15 @@
 
 package com.example.jetnews.ui.utils
 
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.IconToggleButton
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,27 +46,24 @@ fun FavoriteButton(onClick: () -> Unit) {
 fun BookmarkButton(
     isBookmarked: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    contentAlpha: Float = ContentAlpha.high
+    modifier: Modifier = Modifier
 ) {
     val clickLabel = stringResource(
         if (isBookmarked) R.string.unbookmark else R.string.bookmark
     )
-    CompositionLocalProvider(LocalContentAlpha provides contentAlpha) {
-        IconToggleButton(
-            checked = isBookmarked,
-            onCheckedChange = { onClick() },
-            modifier = modifier.semantics {
-                // Use a custom click label that accessibility services can communicate to the user.
-                // We only want to override the label, not the actual action, so for the action we pass null.
-                this.onClick(label = clickLabel, action = null)
-            }
-        ) {
-            Icon(
-                imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                contentDescription = null // handled by click label of parent
-            )
+    IconToggleButton(
+        checked = isBookmarked,
+        onCheckedChange = { onClick() },
+        modifier = modifier.semantics {
+            // Use a custom click label that accessibility services can communicate to the user.
+            // We only want to override the label, not the actual action, so for the action we pass null.
+            this.onClick(label = clickLabel, action = null)
         }
+    ) {
+        Icon(
+            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+            contentDescription = null // handled by click label of parent
+        )
     }
 }
 
