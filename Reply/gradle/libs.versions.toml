@@ -45,7 +45,7 @@ roboelectric = "4.5.1"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
-spotless = "6.9.1"
+spotless = "6.10.0"
 # @keep
 targetSdk = "33"
 
