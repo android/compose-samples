@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JetchatAppBar(
     modifier: Modifier = Modifier,
@@ -50,24 +52,14 @@ fun JetchatAppBar(
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    val backgroundColor = lerp(
-        backgroundColors.containerColor(colorTransitionFraction = 0f).value,
-        backgroundColors.containerColor(colorTransitionFraction = 1f).value,
-        FastOutLinearInEasing.transform(scrollBehavior?.state?.overlappedFraction ?: 0f)
-    )
-
-    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent
-    )
-    Box(modifier = Modifier.background(backgroundColor)) {
+    val colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+    Box {
         CenterAlignedTopAppBar(
             modifier = modifier,
             actions = actions,
             title = title,
             scrollBehavior = scrollBehavior,
-            colors = foregroundColors,
+            colors = colors,
             navigationIcon = {
                 JetchatIcon(
                     contentDescription = stringResource(id = R.string.navigation_drawer_open),
@@ -81,6 +73,7 @@ fun JetchatAppBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun JetchatAppBarPreview() {
@@ -89,6 +82,7 @@ fun JetchatAppBarPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun JetchatAppBarPreviewDark() {

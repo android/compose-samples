@@ -44,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -104,8 +105,10 @@ fun ProfileScreen(
                 UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
             }
         }
+
+        val fabExtended by remember { derivedStateOf { scrollState.value == 0 } }
         ProfileFab(
-            extended = scrollState.value == 0,
+            extended = fabExtended,
             userIsMe = userData.isMe(),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
