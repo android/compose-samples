@@ -137,7 +137,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     // Robolectric dependencies
     // TODO: Replace when all samples use the same Material3 & Compose version
-    //implementation("androidx.compose.ui:ui-test-junit4:1.3.0-beta01")
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.robolectric)
 }
