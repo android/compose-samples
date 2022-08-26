@@ -60,7 +60,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.example.compose.jetsurvey.theme.outlinedTextFieldColors
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
 @Composable
@@ -159,7 +158,6 @@ fun Email(
                 onImeAction()
             }
         ),
-        colors = outlinedTextFieldColors(),
     )
 
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -228,7 +226,6 @@ fun Password(
                 onImeAction()
             }
         ),
-        colors = outlinedTextFieldColors()
     )
 
     passwordState.getError()?.let { error -> TextFieldError(textError = error) }

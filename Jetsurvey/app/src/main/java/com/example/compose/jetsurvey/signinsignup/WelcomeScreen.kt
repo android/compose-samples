@@ -122,8 +122,9 @@ private fun Branding(modifier: Modifier = Modifier) {
 @Composable
 private fun Logo(
     modifier: Modifier = Modifier,
+    lightTheme: Boolean = LocalContentColor.current.luminance() < 0.5f,
 ) {
-    val assetId = if (LocalContentColor.current.luminance() < 0.5f) {
+    val assetId = if (lightTheme) {
         R.drawable.ic_logo_light
     } else {
         R.drawable.ic_logo_dark

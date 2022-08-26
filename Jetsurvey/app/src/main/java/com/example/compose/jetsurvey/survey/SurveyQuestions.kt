@@ -704,8 +704,9 @@ private fun DateQuestion(
 @Composable
 private fun PhotoDefaultImage(
     modifier: Modifier = Modifier,
+    lightTheme: Boolean = LocalContentColor.current.luminance() < 0.5f,
 ) {
-    val assetId = if (LocalContentColor.current.luminance() < 0.5f) {
+    val assetId = if (lightTheme) {
         R.drawable.ic_selfie_light
     } else {
         R.drawable.ic_selfie_dark
