@@ -16,8 +16,8 @@
   -->
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Jetsurvey" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/status_bar_color</item>
+    <style name="Theme.Jetsurvey" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
