@@ -3,6 +3,7 @@
   "extends": [
     "config:base", ":dependencyDashboard"
   ],
+  "dependencyDashboardApproval": true,
   "packageRules": [
     {
       "groupName": "Androidx Lifecycle deps",

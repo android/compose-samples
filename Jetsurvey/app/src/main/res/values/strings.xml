@@ -21,19 +21,19 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_in_guest">SIGN IN AS GUEST</string>
+    <string name="sign_in_guest">Sign in as guest</string>
     <string name="sign_in_create_account">Sign in or create an account</string>
     <string name="or">or</string>
-    <string name="forgot_password">FORGOT PASSWORD?</string>
-    <string name="user_continue">CONTINUE</string>
-    <string name="create_account">CREATE ACCOUNT</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="user_continue">Continue</string>
+    <string name="create_account">Create account</string>
     <string name="terms_and_conditions">By continuing, you agree to our Terms of Service. We’ll
         handle your data according to our Privacy Policy.</string>
     <string name="feature_not_available">Feature not available</string>
-    <string name="dismiss">DISMISS</string>
-    <string name="next">NEXT</string>
-    <string name="previous">PREVIOUS</string>
-    <string name="done">DONE</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="done">Done</string>
     <string name="back">Back</string>
     <string name="close">Close</string>
     <string name="show_password">Show password</string>
