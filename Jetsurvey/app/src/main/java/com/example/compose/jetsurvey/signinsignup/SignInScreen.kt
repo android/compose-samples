@@ -16,6 +16,8 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,15 +26,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
-import com.example.compose.jetsurvey.theme.snackbarAction
 import com.example.compose.jetsurvey.util.supportWideScreen
 import kotlinx.coroutines.launch
 
@@ -59,7 +60,7 @@ sealed class SignInEvent {
     object NavigateBack : SignInEvent()
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
 fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
 
@@ -157,7 +158,6 @@ fun SignInContent(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ErrorSnackbar(
     snackbarHostState: SnackbarHostState,
@@ -171,16 +171,16 @@ fun ErrorSnackbar(
                 modifier = Modifier.padding(16.dp),
                 content = {
                     Text(
-                        text = data.message,
-                        style = MaterialTheme.typography.body2
+                        text = data.visuals.message,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 },
                 action = {
-                    data.actionLabel?.let {
+                    data.visuals.actionLabel?.let {
                         TextButton(onClick = onDismiss) {
                             Text(
                                 text = stringResource(id = R.string.dismiss),
-                                color = MaterialTheme.colors.snackbarAction
+                                color = MaterialTheme.colorScheme.inversePrimary
                             )
                         }
                     }
@@ -193,18 +193,11 @@ fun ErrorSnackbar(
     )
 }
 
-@Preview(name = "Sign in light theme")
+@Preview(name = "Sign in light theme", uiMode = UI_MODE_NIGHT_NO)
+@Preview(name = "Sign in dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SignInPreview() {
     JetsurveyTheme {
-        SignIn {}
-    }
-}
-
-@Preview(name = "Sign in dark theme")
-@Composable
-fun SignInPreviewDark() {
-    JetsurveyTheme(darkTheme = true) {
         SignIn {}
     }
 }
