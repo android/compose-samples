@@ -21,11 +21,6 @@ package com.example.jetnews.ui.home
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope.SlideDirection.Companion.Up
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -132,63 +127,63 @@ fun HomeRoute(
         }
     }) { targetHomeScreenType ->
         when (targetHomeScreenType) {
-        HomeScreenType.FeedWithArticleDetails -> {
-            HomeFeedWithArticleDetailsScreen(
-                uiState = uiState,
-                showTopAppBar = !isExpandedScreen,
-                onToggleFavorite = onToggleFavorite,
-                onSelectPost = onSelectPost,
-                onRefreshPosts = onRefreshPosts,
-                onErrorDismiss = onErrorDismiss,
-                onInteractWithList = onInteractWithFeed,
-                onInteractWithDetail = onInteractWithArticleDetails,
-                openDrawer = openDrawer,
-                homeListLazyListState = homeListLazyListState,
-                articleDetailLazyListStates = articleDetailLazyListStates,
-                snackbarHostState = snackbarHostState,
-                onSearchInputChanged = onSearchInputChanged,
-            )
-        }
-        HomeScreenType.Feed -> {
-            HomeFeedScreen(
-                uiState = uiState,
-                showTopAppBar = !isExpandedScreen,
-                onToggleFavorite = onToggleFavorite,
-                onSelectPost = onSelectPost,
-                onRefreshPosts = onRefreshPosts,
-                onErrorDismiss = onErrorDismiss,
-                openDrawer = openDrawer,
-                homeListLazyListState = homeListLazyListState,
-                snackbarHostState = snackbarHostState,
-                onSearchInputChanged = onSearchInputChanged,
-            )
-        }
-        HomeScreenType.ArticleDetails -> {
-            // Guaranteed by above condition for home screen type
-            check(uiState is HomeUiState.HasPosts)
-
-            ArticleScreen(
-                post = uiState.selectedPost,
-                isExpandedScreen = isExpandedScreen,
-                onBack = onInteractWithFeed,
-                isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
-                onToggleFavorite = {
-                    onToggleFavorite(uiState.selectedPost.id)
-                },
-                lazyListState = articleDetailLazyListStates.getValue(
-                    uiState.selectedPost.id
+            HomeScreenType.FeedWithArticleDetails -> {
+                HomeFeedWithArticleDetailsScreen(
+                    uiState = uiState,
+                    showTopAppBar = !isExpandedScreen,
+                    onToggleFavorite = onToggleFavorite,
+                    onSelectPost = onSelectPost,
+                    onRefreshPosts = onRefreshPosts,
+                    onErrorDismiss = onErrorDismiss,
+                    onInteractWithList = onInteractWithFeed,
+                    onInteractWithDetail = onInteractWithArticleDetails,
+                    openDrawer = openDrawer,
+                    homeListLazyListState = homeListLazyListState,
+                    articleDetailLazyListStates = articleDetailLazyListStates,
+                    snackbarHostState = snackbarHostState,
+                    onSearchInputChanged = onSearchInputChanged,
                 )
-            )
+            }
+            HomeScreenType.Feed -> {
+                HomeFeedScreen(
+                    uiState = uiState,
+                    showTopAppBar = !isExpandedScreen,
+                    onToggleFavorite = onToggleFavorite,
+                    onSelectPost = onSelectPost,
+                    onRefreshPosts = onRefreshPosts,
+                    onErrorDismiss = onErrorDismiss,
+                    openDrawer = openDrawer,
+                    homeListLazyListState = homeListLazyListState,
+                    snackbarHostState = snackbarHostState,
+                    onSearchInputChanged = onSearchInputChanged,
+                )
+            }
+            HomeScreenType.ArticleDetails -> {
+                // Guaranteed by above condition for home screen type
+                check(uiState is HomeUiState.HasPosts)
 
-            // If we are just showing the detail, have a back press switch to the list.
-            // This doesn't take anything more than notifying that we "interacted with the list"
-            // since that is what drives the display of the feed
-            BackHandler {
-                onInteractWithFeed()
+                ArticleScreen(
+                    post = uiState.selectedPost,
+                    isExpandedScreen = isExpandedScreen,
+                    onBack = onInteractWithFeed,
+                    isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
+                    onToggleFavorite = {
+                        onToggleFavorite(uiState.selectedPost.id)
+                    },
+                    lazyListState = articleDetailLazyListStates.getValue(
+                        uiState.selectedPost.id
+                    )
+                )
+
+                // If we are just showing the detail, have a back press switch to the list.
+                // This doesn't take anything more than notifying that we "interacted with the list"
+                // since that is what drives the display of the feed
+                BackHandler {
+                    onInteractWithFeed()
+                }
             }
         }
     }
-        }
 }
 
 /**
