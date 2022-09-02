@@ -31,7 +31,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -96,7 +95,7 @@ fun HomeRoute(
  * @param openDrawer (event) request opening the app drawer
  * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
