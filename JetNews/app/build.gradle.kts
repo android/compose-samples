@@ -17,6 +17,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    kotlin("kapt")
 }
 
 android {
@@ -121,6 +122,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.26.1-alpha")
 //    implementation(libs.accompanist.swiperefresh)
 //    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.ktx)

@@ -69,7 +69,8 @@ sealed interface HomeUiState {
         val isArticleOpen: Boolean,
         val favorites: Set<String>,
         override val isLoading: Boolean,
-        override val errorMessages: List<ErrorMessage>,
+        override val errorMessages:
+        List<ErrorMessage>,
         override val searchInput: String
     ) : HomeUiState
 }

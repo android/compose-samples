@@ -24,6 +24,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.ui.favorites.FavoritesRoute
+import com.example.jetnews.ui.favorites.FavoritesViewModel
 import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
@@ -59,6 +61,16 @@ fun JetnewsNavGraph(
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
+                isExpandedScreen = isExpandedScreen,
+                openDrawer = openDrawer
+            )
+        }
+        composable(JetnewsDestinations.FAVORITES_ROUTE){
+            val favoriteViewModel: FavoritesViewModel = viewModel(
+                factory = FavoritesViewModel.provideFactory(appContainer.favoritesRepository)
+            )
+            FavoritesRoute(
+                favoritesViewModel = favoriteViewModel,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer
             )

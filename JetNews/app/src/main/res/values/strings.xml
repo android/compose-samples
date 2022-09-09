@@ -56,4 +56,7 @@
     <string name="cd_navigate_home">Navigate to the home screen</string>
     <string name="cd_navigate_interests">Navigate to the interests screen</string>
 
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favorites</string>
+
 </resources>

@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 object JetnewsDestinations {
     const val HOME_ROUTE = "home"
     const val INTERESTS_ROUTE = "interests"
+    const val FAVORITES_ROUTE ="favorites"
 }
 
 /**
@@ -53,6 +54,15 @@ class JetnewsNavigationActions(navController: NavHostController) {
             }
             launchSingleTop = true
             restoreState = true
+        }
+    }
+    val navigateToFavorites: () -> Unit ={
+        navController.navigate(JetnewsDestinations.FAVORITES_ROUTE){
+            popUpTo(navController.graph.findStartDestination().id){
+                saveState = true
+            }
+            launchSingleTop =true
+            restoreState =true
         }
     }
 }

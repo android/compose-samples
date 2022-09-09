@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +46,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 fun AppDrawer(
     currentRoute: String,
     navigateToHome: () -> Unit,
+    navigateToFavorites: () -> Unit,
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit,
     modifier: Modifier = Modifier
@@ -65,6 +67,13 @@ fun AppDrawer(
             icon = { Icon(Icons.Filled.ListAlt, null) },
             selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             onClick = { navigateToInterests(); closeDrawer() },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+        )
+        NavigationDrawerItem(
+            label = { Text(stringResource(id = R.string.favorites_title)) },
+            selected = currentRoute == JetnewsDestinations.FAVORITES_ROUTE,
+            icon = {Icon(Icons.Filled.ThumbUpOffAlt,"Favorites")},
+            onClick = { navigateToFavorites(); closeDrawer() },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
     }
@@ -96,6 +105,7 @@ fun PreviewAppDrawer() {
             currentRoute = JetnewsDestinations.HOME_ROUTE,
             navigateToHome = {},
             navigateToInterests = {},
+            navigateToFavorites ={},
             closeDrawer = { }
         )
     }
