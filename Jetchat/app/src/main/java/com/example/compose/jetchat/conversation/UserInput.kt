@@ -62,6 +62,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +70,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -78,11 +80,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -211,7 +215,9 @@ private fun SelectorExpanded(
             InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
             InputSelector.MAP -> FunctionalityNotAvailablePanel()
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
-            else -> { throw NotImplementedError() }
+            else -> {
+                throw NotImplementedError()
+            }
         }
     }
 }
@@ -342,7 +348,9 @@ private fun InputSelectorButton(
     }
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(56.dp).then(backgroundModifier)
+        modifier = Modifier
+            .size(56.dp)
+            .then(backgroundModifier)
     ) {
         val tint = if (selected) {
             MaterialTheme.colorScheme.onSecondary
@@ -366,6 +374,7 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
 var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
+@OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
@@ -393,6 +402,7 @@ private fun UserInputText(
                     .height(64.dp)
                     .weight(1f)
                     .align(Alignment.Bottom)
+                    .semantics { testTagsAsResourceId = true }
             ) {
                 var lastFocusState by remember { mutableStateOf(false) }
                 BasicTextField(
@@ -407,7 +417,8 @@ private fun UserInputText(
                                 onTextFieldFocused(state.isFocused)
                             }
                             lastFocusState = state.isFocused
-                        },
+                        }
+                        .testTag("input"),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = keyboardType,
                         imeAction = ImeAction.Send
