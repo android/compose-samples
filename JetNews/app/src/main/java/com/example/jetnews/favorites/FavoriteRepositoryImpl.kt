@@ -20,10 +20,12 @@ class FavoriteRepositoryImpl(private val db: FavoritesDao,
     override fun observeFavoritePost(): Flow<FavoriteFeed> = favoritePost
 
     override suspend fun unFavoritePost(postId: String) {
+        withContext(context){
+            db.deleteFavoriteById(postId)
+        }
         db.collectFavorites().collectLatest {
             favoritePost.value = FavoriteFeed(favorite = it)
         }
-        db.deleteFavoriteById(postId)
     }
 
     override suspend fun fetchFavoritePosts(): Result<FavoriteFeed> {
