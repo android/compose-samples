@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import com.example.jetnews.model.Favorite
 
 @Composable
 fun FavoritesRoute(
@@ -20,12 +18,11 @@ fun FavoritesRoute(
 ){
 
     val favoritesUiState = favoritesViewModel.uiState.collectAsState()
-//    val (favoritesSavedUiState) = rememberSaveable{
-//        mutableStateOf(favoritesUiState.value)
-//    }
 
+    val uiActions = favoritesViewModel.uiActions.collectAsState()
 
     FavoritesScreen(
+        uiActions = uiActions.value,
         snackbarHostState = snackbarHostState,
         isExpandedScreen = isExpandedScreen,
         openDrawer = openDrawer,

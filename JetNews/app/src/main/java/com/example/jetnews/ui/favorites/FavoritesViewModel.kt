@@ -11,6 +11,8 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.favorites.FavoriteRepository
 import com.example.jetnews.ui.interests.InterestsViewModel
 import com.example.jetnews.utils.ErrorMessage
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -20,16 +22,21 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
     private val favoriteViewModelState = MutableStateFlow(FavoritesViewModelState(isLoading = false))
 
     init {
-        refreshFavorites()
+        //refreshFavorites()
        viewModelScope.launch {
-           favoriteRepository.observeFavoritePost().collectLatest {
-
-               refreshFavorites()
-               Log.d("FavoritesUiState", "INIT CALLED $it")
-               favoriteViewModelState.update { it.copy(unFavoriteId = it.unFavoriteId) }
+           favoriteRepository.observeFavoritePost()
+               .collectLatest {
+                   refreshFavorites()
            }
        }
     }
+
+
+    val uiActions = favoriteViewModelState.map {
+        it.uiActions
+    }.stateIn(viewModelScope,
+        SharingStarted.Eagerly,
+        favoriteViewModelState.value.uiActions)
 
     val uiState = favoriteViewModelState.map {
         it.toUiState()
@@ -37,7 +44,7 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
         SharingStarted.Eagerly,
         favoriteViewModelState.value.toUiState())
 
-    fun refreshFavorites(){
+    private fun refreshFavorites(){
         favoriteViewModelState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
@@ -61,7 +68,12 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
 
     fun unFavorite(postId: String){
         viewModelScope.launch {
+
             favoriteRepository.unFavoritePost(postId)
+
+            favoriteViewModelState.update {
+                it.copy(uiActions = FavoriteUiActions.Delete)
+            }
         }
     }
 

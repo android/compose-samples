@@ -17,10 +17,7 @@
 package com.example.jetnews.ui.utils
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ThumbUpOffAlt
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
@@ -37,6 +34,17 @@ fun FavoriteButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
             imageVector = Icons.Filled.ThumbUpOffAlt,
+            contentDescription = stringResource(R.string.cd_add_to_favorites)
+        )
+    }
+}
+
+
+@Composable
+fun UnFavoriteButton(onClick: () -> Unit) {
+    IconButton(onClick) {
+        Icon(
+            imageVector = Icons.Filled.ThumbUp,
             contentDescription = stringResource(R.string.cd_add_to_favorites)
         )
     }

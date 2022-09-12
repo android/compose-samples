@@ -25,11 +25,6 @@ sealed interface FavoritesUiState {
         override val searchInput: String
     ): FavoritesUiState
 
-    data class UnFavorite(
-        override val isLoading: Boolean =false,
-        override val errorMessages: List<ErrorMessage> = emptyList(),
-        override val searchInput: String =""
-    ) : FavoritesUiState
 
     /**
      * An internal representation of the favorites route state, in a raw form
@@ -50,8 +45,14 @@ data class FavoritesViewModelState(
     val isLoading: Boolean =false,
     val errorMessages: List<ErrorMessage> = emptyList(),
     val searchInput: String ="",
-    val unFavoriteId: String? =null
+    val uiActions: FavoriteUiActions = FavoriteUiActions.None
+    //val unFavoriteId: String? =null
 ){
+//    fun toUiActionState(): FavoriteActions{
+//        return
+//    }
+
+
     fun toUiState(): FavoritesUiState{
         return if((favoriteFeed == null)
             or(favoriteFeed?.favorite?.isEmpty() ==true) ){
@@ -60,9 +61,8 @@ data class FavoritesViewModelState(
                 errorMessages = errorMessages,
                 searchInput = searchInput
             )
-        } else if(unFavoriteId != null){
-            FavoritesUiState.UnFavorite()
-        } else{
+        }else{
+           // FavoritesUiState.UnFavorite()
             FavoritesUiState.HasFavorites(
                 favorites = favoriteFeed,
                 selectedPostId = selectedPostId,

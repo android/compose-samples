@@ -20,10 +20,12 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.model.Favorite
 import com.example.jetnews.ui.utils.FavoriteButton
+import com.example.jetnews.ui.utils.UnFavoriteButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    uiActions: FavoriteUiActions,
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     isExpandedScreen: Boolean,
@@ -68,55 +70,45 @@ fun FavoritesScreen(
         },
     ){
         val favScreenModifier = Modifier.padding(it)
+
+        LaunchedEffect(key1 = uiActions){
+            when(uiActions){
+                is FavoriteUiActions.Delete ->{
+                    val snackbarResult = snackbarHostState.showSnackbar(
+                        message = "No disappointed!",
+                    )
+                }
+                else -> {}
+            }
+
+
+        }
+
         if (favoriteState.isLoading){
             LoadingContent(favScreenModifier)
         }
 
-        when(favoriteState){
-            is FavoritesUiState.HasFavorites ->{
-                Log.d("FavoriteList", "$favoriteState --> hello")
-                favoriteState.favorites?.run {
-                    FavoriteList(favorites = favorite,
-                        modifier = favScreenModifier,
-                        onUnFavorite)
-                }
-
-            }
-            is FavoritesUiState.NoFavorites ->{
-                NoContent(favScreenModifier)
-            }
-            is FavoritesUiState.UnFavorite ->{
-
-                Log.d("Favorites.UnFavorite ", "This was called!!")
-
-                val successMessageTxt = "Post removed from favorite"
-//                snackbarHostState.showSnackbar("",
-//                    "", withDismissAction = false)
-
-                LaunchedEffect(successMessageTxt, snackbarHostState) {
-                    val snackbarResult = snackbarHostState.showSnackbar(
-                        message = successMessageTxt,
-                    )
-//                    if (snackbarResult == SnackbarResult.ActionPerformed) {
-//                        onRefreshPostsState()
-//                    }
-//                    // Once the message is displayed and dismissed, notify the ViewModel
-//                    onErrorDismissState(errorMessage.id)
-                }
-            }
-        }
-
+        ScreenContent(favoriteState, favScreenModifier, onUnFavorite)
     }
 }
 
 @Composable
-fun LoadingFavoriteContent(modifier: Modifier,
-                           favorite: List<Favorite>,
-                           isLoading: Boolean){
-//    val contentMap = mapOf<Boolean, Unit>(true to LoadingContent(),
-//        false to FavoriteList(favorites = favorite))
-//
-//    contentMap[isLoading]
+fun ScreenContent(favoriteState: FavoritesUiState, modifier: Modifier,
+                  onUnFavorite: (String) -> Unit){
+    when(favoriteState){
+        is FavoritesUiState.HasFavorites ->{
+            Log.d("FavoriteList", "$favoriteState --> hello")
+            favoriteState.favorites?.run {
+                FavoriteList(favorites = favorite,
+                    modifier = modifier,
+                    onUnFavorite)
+            }
+
+        }
+        is FavoritesUiState.NoFavorites ->{
+            NoContent(modifier = modifier)
+        }
+    }
 }
 
 @Composable
@@ -152,18 +144,22 @@ fun FavoriteList(favorites: List<Favorite>,
 
 @Composable
 fun FavoriteRow(favorite: Favorite, onUnFavorite: (String) -> Unit){
-    Row(verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween){
-        Image(painter = painterResource(id = favorite.imageThumbnailId),
-            contentDescription = null,
-            modifier = Modifier.padding(end = 20.dp, start = 20.dp)
-                .align(alignment = Alignment.CenterVertically) )
-        FavoriteItemColumn(title = favorite.title,
-            author = favorite.subtitle ?: "", timeCreated = "")
-        FavoriteButton {
-            //(TODO): Unfavored when clicked
-            onUnFavorite(favorite.id)
+    Column() {
+        Row(verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceBetween){
+            Image(painter = painterResource(id = favorite.imageThumbnailId),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 20.dp, start = 20.dp)
+                    .align(alignment = Alignment.Top) )
+            FavoriteItemColumn(title = favorite.title,
+                author = favorite.subtitle ?: "", timeCreated = "")
+            UnFavoriteButton {
+                //(TODO): Unfavored when clicked
+                onUnFavorite(favorite.id)
+            }
         }
+        Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp))
     }
 }
 
@@ -179,6 +175,5 @@ fun FavoriteItemColumn(title: String,
             Text(author)
             Text(timeCreated)
         }
-        Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp))
     }
 }
