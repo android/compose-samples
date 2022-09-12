@@ -1,5 +1,6 @@
 package com.example.jetnews.ui.favorites
 
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,11 +24,15 @@ fun FavoritesRoute(
 //        mutableStateOf(favoritesUiState.value)
 //    }
 
+
     FavoritesScreen(
         snackbarHostState = snackbarHostState,
         isExpandedScreen = isExpandedScreen,
         openDrawer = openDrawer,
-        favoriteState = favoritesUiState.value
+        favoriteState = favoritesUiState.value,
+        onUnFavorite = { postId ->
+            favoritesViewModel.unFavorite(postId)
+        }
     )
 
 }

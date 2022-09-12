@@ -16,8 +16,11 @@
 
 package com.example.jetnews.data.posts.impl
 
+import android.util.Log
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.db.FavoritesDao
 import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.addOrRemove
@@ -35,7 +38,7 @@ import kotlinx.coroutines.withContext
  * posts with resources after some delay in a background thread.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class FakePostsRepository : PostsRepository {
+class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepository {
 
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
@@ -72,6 +75,16 @@ class FakePostsRepository : PostsRepository {
             val set = favorites.value.toMutableSet()
             set.addOrRemove(postId)
             favorites.value = set.toSet()
+        }
+    }
+
+    override suspend fun toggleFavorite(favorite: Favorite) {
+
+        Log.d("toggleFavourite_", "$favorite")
+        withContext(Dispatchers.IO){
+            favoriteDb.insert(favorite)
+
+            Log.d("toggleFavourite", "$favorite")
         }
     }
 

@@ -86,6 +86,7 @@ fun ArticleScreen(
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
+    onClickFavorite: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
@@ -115,7 +116,10 @@ fun ArticleScreen(
                 if (!isExpandedScreen) {
                     BottomAppBar(
                         actions = {
-                            FavoriteButton(onClick = { showUnimplementedActionDialog = true })
+                            FavoriteButton(onClick = {
+                                //showUnimplementedActionDialog = true
+                                onClickFavorite()
+                            })
                             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
                             ShareButton(onClick = { sharePost(post, context) })
                             TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
@@ -249,7 +253,7 @@ fun PreviewArticleDrawer() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, false, {}, false, {})
+        ArticleScreen(post, false, {}, false, {}, {})
     }
 }
 
@@ -266,6 +270,6 @@ fun PreviewArticleNavRail() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, true, {}, false, {})
+        ArticleScreen(post, true, {}, false, {}, {})
     }
 }

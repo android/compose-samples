@@ -17,6 +17,7 @@
 package com.example.jetnews.data.interests.impl
 
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.db.FavoritesDao
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection

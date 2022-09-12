@@ -8,6 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.jetnews.data.Result
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 
 class FavoriteRepositoryImpl(private val db: FavoritesDao,
@@ -18,15 +20,16 @@ class FavoriteRepositoryImpl(private val db: FavoritesDao,
     override fun observeFavoritePost(): Flow<FavoriteFeed> = favoritePost
 
     override suspend fun unFavoritePost(postId: String) {
+        db.collectFavorites().collectLatest {
+            favoritePost.value = FavoriteFeed(favorite = it)
+        }
         db.deleteFavoriteById(postId)
-        val favorite = db.getFavorites()
-        favoritePost.value = FavoriteFeed(favorite = favorite)
     }
 
     override suspend fun fetchFavoritePosts(): Result<FavoriteFeed> {
-       return withContext(context){
+        return withContext(context){
            val favorites=  db.getFavorites()
-           Result.success(FavoriteFeed(favorites))
+           Result.Success(FavoriteFeed(favorites))
        }
     }
 

@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import com.example.jetnews.model.Favorite
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreenType.ArticleDetails
 import com.example.jetnews.ui.home.HomeScreenType.Feed
@@ -53,7 +54,12 @@ fun HomeRoute(
     HomeRoute(
         uiState = uiState,
         isExpandedScreen = isExpandedScreen,
-        onToggleFavorite = { homeViewModel.toggleFavourite(it) },
+        onClickFavorite ={
+                         homeViewModel.toggleFavourite(it)
+        },
+        onToggleFavorite = {
+            homeViewModel.toggleFavourite(it)
+                           },
         onSelectPost = { homeViewModel.selectArticle(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
         onErrorDismiss = { homeViewModel.errorShown(it) },
@@ -86,6 +92,7 @@ fun HomeRoute(
 fun HomeRoute(
     uiState: HomeUiState,
     isExpandedScreen: Boolean,
+    onClickFavorite: (Favorite) -> Unit,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -116,6 +123,7 @@ fun HomeRoute(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
                 onToggleFavorite = onToggleFavorite,
+                onClickFavorite = onClickFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
                 onErrorDismiss = onErrorDismiss,
@@ -150,6 +158,17 @@ fun HomeRoute(
                 post = uiState.selectedPost,
                 isExpandedScreen = isExpandedScreen,
                 onBack = onInteractWithFeed,
+                onClickFavorite ={
+                    val favorite = uiState.selectedPost.let {
+                        Favorite(
+                            id = it.id,
+                            title = it.title,
+                            subtitle = "${it.metadata.author.name} - ${it.metadata.date}",
+                            imageThumbnailId = it.imageThumbId
+                        )
+                    }
+                    onClickFavorite(favorite)
+                },
                 isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)

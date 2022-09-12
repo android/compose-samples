@@ -41,17 +41,18 @@ interface AppContainer {
  */
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
+    private val favoriteDao get() =  JetNewsDatabase.getDatabase(applicationContext).favoritesDao()
+
     override val postsRepository: PostsRepository by lazy {
-        FakePostsRepository()
+        FakePostsRepository(favoriteDao)
     }
 
     override val interestsRepository: InterestsRepository by lazy {
-        FakeInterestsRepository()
+       FakeInterestsRepository()
     }
 
     override val favoritesRepository: FavoriteRepository
        by lazy {
-           val db =  JetNewsDatabase.getDatabase(applicationContext).favoritesDao()
-           FavoriteRepositoryImpl(db)
+           FavoriteRepositoryImpl(favoriteDao)
        }
 }

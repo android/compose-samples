@@ -1,21 +1,34 @@
 package com.example.jetnews.ui.favorites
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.jetnews.R
+import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.favorites.FavoriteRepository
 import com.example.jetnews.ui.interests.InterestsViewModel
+import com.example.jetnews.utils.ErrorMessage
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 
 class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : ViewModel() {
 
-    private val favoriteViewModelState = MutableStateFlow(FavoritesViewModelState(isLoading = true))
+    private val favoriteViewModelState = MutableStateFlow(FavoritesViewModelState(isLoading = false))
 
     init {
         refreshFavorites()
+       viewModelScope.launch {
+           favoriteRepository.observeFavoritePost().collectLatest {
+
+               refreshFavorites()
+               Log.d("FavoritesUiState", "INIT CALLED $it")
+               favoriteViewModelState.update { it.copy(unFavoriteId = it.unFavoriteId) }
+           }
+       }
     }
 
     val uiState = favoriteViewModelState.map {
@@ -28,10 +41,29 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
         favoriteViewModelState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-          //  val result = postsRepository.getPostsFeed()
+            when(val result = favoriteRepository.fetchFavoritePosts()){
+                is Result.Success ->{
+                    favoriteViewModelState.update {
+                        it.copy(favoriteFeed = result.data, isLoading = false)
+                    }
+                }
+                is Result.Error ->{
+                    val msg = result.exception.message ?: "Failed to retrieve favorites"
+                    favoriteViewModelState.update {
+                        it.copy(errorMessages = listOf(ErrorMessage(
+                            id = UUID.randomUUID().mostSignificantBits,
+                            messageId = R.string.load_error)), isLoading = false)
+                    }
+                }
+            }
         }
     }
 
+    fun unFavorite(postId: String){
+        viewModelScope.launch {
+            favoriteRepository.unFavoritePost(postId)
+        }
+    }
 
     /**
      * Factory for InterestsViewModel that takes PostsRepository as a dependency

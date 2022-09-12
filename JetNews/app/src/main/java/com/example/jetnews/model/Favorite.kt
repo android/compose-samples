@@ -8,4 +8,5 @@ data class Favorite (
     @PrimaryKey
     val id: String,
     val title: String,
+    val imageThumbnailId: Int,
     val subtitle: String? = null,)

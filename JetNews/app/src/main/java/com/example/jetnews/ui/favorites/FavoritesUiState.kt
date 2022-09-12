@@ -1,5 +1,6 @@
 package com.example.jetnews.ui.favorites
 
+import android.util.Log
 import com.example.jetnews.model.FavoriteFeed
 import com.example.jetnews.ui.home.HomeUiState
 import com.example.jetnews.utils.ErrorMessage
@@ -24,6 +25,12 @@ sealed interface FavoritesUiState {
         override val searchInput: String
     ): FavoritesUiState
 
+    data class UnFavorite(
+        override val isLoading: Boolean =false,
+        override val errorMessages: List<ErrorMessage> = emptyList(),
+        override val searchInput: String =""
+    ) : FavoritesUiState
+
     /**
      * An internal representation of the favorites route state, in a raw form
      */
@@ -42,16 +49,20 @@ data class FavoritesViewModelState(
     val selectedPostId: String? =null,
     val isLoading: Boolean =false,
     val errorMessages: List<ErrorMessage> = emptyList(),
-    val searchInput: String =""
+    val searchInput: String ="",
+    val unFavoriteId: String? =null
 ){
     fun toUiState(): FavoritesUiState{
-        return if(favoriteFeed == null){
+        return if((favoriteFeed == null)
+            or(favoriteFeed?.favorite?.isEmpty() ==true) ){
             FavoritesUiState.NoFavorites(
                 isLoading = isLoading,
                 errorMessages = errorMessages,
                 searchInput = searchInput
             )
-        }else{
+        } else if(unFavoriteId != null){
+            FavoritesUiState.UnFavorite()
+        } else{
             FavoritesUiState.HasFavorites(
                 favorites = favoriteFeed,
                 selectedPostId = selectedPostId,

@@ -17,6 +17,7 @@
 package com.example.jetnews.data.posts
 
 import com.example.jetnews.data.Result
+import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import kotlinx.coroutines.flow.Flow
@@ -44,5 +45,11 @@ interface PostsRepository {
     /**
      * Toggle a postId to be a favorite or not.
      */
+    @Deprecated("Use new function")
     suspend fun toggleFavorite(postId: String)
+
+    /**
+     * Toggle a postId to be a favorite or not.
+     */
+    suspend fun toggleFavorite(favorite: Favorite)
 }

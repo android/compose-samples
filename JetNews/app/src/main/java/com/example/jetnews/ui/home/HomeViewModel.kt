@@ -16,12 +16,14 @@
 
 package com.example.jetnews.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.ErrorMessage
@@ -176,6 +178,15 @@ class HomeViewModel(
     fun toggleFavourite(postId: String) {
         viewModelScope.launch {
             postsRepository.toggleFavorite(postId)
+        }
+    }
+
+    /**
+     * Toggle favorite of a post
+     */
+    fun toggleFavourite(favorite: Favorite){
+        viewModelScope.launch {
+            postsRepository.toggleFavorite(favorite)
         }
     }
 

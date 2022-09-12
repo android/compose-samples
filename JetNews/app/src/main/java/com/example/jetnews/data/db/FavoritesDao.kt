@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.jetnews.model.Favorite
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoritesDao {
@@ -15,6 +16,10 @@ interface FavoritesDao {
 
     @Delete
     suspend fun delete(vararg favorites: Favorite)
+
+    @Query("SELECT * FROM favorites_table")
+    fun collectFavorites(): Flow<List<Favorite>>
+
 
     @Query("SELECT * FROM favorites_table")
     suspend fun getFavorites(): List<Favorite>

@@ -19,3 +19,5 @@ package com.example.jetnews.utils
 import androidx.annotation.StringRes
 
 data class ErrorMessage(val id: Long, @StringRes val messageId: Int)
+
+data class ErrorMsg(val id: Long, val message: String)

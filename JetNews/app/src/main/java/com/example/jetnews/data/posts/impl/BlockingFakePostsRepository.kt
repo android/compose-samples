@@ -17,7 +17,9 @@
 package com.example.jetnews.data.posts.impl
 
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.db.FavoritesDao
 import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.addOrRemove
@@ -58,5 +60,8 @@ class BlockingFakePostsRepository : PostsRepository {
         val set = favorites.value.toMutableSet()
         set.addOrRemove(postId)
         favorites.value = set
+    }
+
+    override suspend fun toggleFavorite(favorite: Favorite) {
     }
 }
