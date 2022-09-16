@@ -1,8 +1,8 @@
 package com.example.jetnews.ui.favorites
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.model.Favorite
-import com.example.jetnews.ui.utils.FavoriteButton
+import com.example.jetnews.model.Post
 import com.example.jetnews.ui.utils.UnFavoriteButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +30,7 @@ fun FavoritesScreen(
     openDrawer: () -> Unit,
     isExpandedScreen: Boolean,
     favoriteState: FavoritesUiState,
+    interactWithFavorite: (String) -> Unit,
     onUnFavorite: (String) -> Unit
 ){
 
@@ -80,28 +81,27 @@ fun FavoritesScreen(
                 }
                 else -> {}
             }
-
-
         }
 
         if (favoriteState.isLoading){
             LoadingContent(favScreenModifier)
         }
 
-        ScreenContent(favoriteState, favScreenModifier, onUnFavorite)
+        ScreenContent(favoriteState, favScreenModifier,
+            onUnFavorite, interactWithFavorite)
     }
 }
 
 @Composable
 fun ScreenContent(favoriteState: FavoritesUiState, modifier: Modifier,
-                  onUnFavorite: (String) -> Unit){
+                  onUnFavorite: (String) -> Unit,
+                  interactWithFavorite: (String) -> Unit){
     when(favoriteState){
         is FavoritesUiState.HasFavorites ->{
-            Log.d("FavoriteList", "$favoriteState --> hello")
-            favoriteState.favorites?.run {
+            favoriteState.favoriteFeed.run {
                 FavoriteList(favorites = favorite,
                     modifier = modifier,
-                    onUnFavorite)
+                    onUnFavorite, interactWithFavorite)
             }
 
         }
@@ -134,17 +134,22 @@ fun NoContent(modifier: Modifier){
 
 @Composable
 fun FavoriteList(favorites: List<Favorite>,
-                 modifier: Modifier, onUnFavorite: (String) -> Unit){
+                 modifier: Modifier, onUnFavorite: (String) -> Unit,
+                 interactWithFavorite: (String) -> Unit){
     LazyColumn(modifier = modifier){
         items(favorites){ favorite ->
-            FavoriteRow(favorite = favorite, onUnFavorite)
+            FavoriteRow(favorite = favorite,
+                onUnFavorite, interactWithFavorite)
         }
     }
 }
 
 @Composable
-fun FavoriteRow(favorite: Favorite, onUnFavorite: (String) -> Unit){
-    Column() {
+fun FavoriteRow(favorite: Favorite, onUnFavorite: (String) -> Unit,
+                interactWithFavorite: (String) -> Unit){
+    Column(Modifier.clickable{
+        interactWithFavorite.invoke(favorite.id)
+    }) {
         Row(verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween){
             Image(painter = painterResource(id = favorite.imageThumbnailId),

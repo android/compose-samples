@@ -28,7 +28,9 @@ data class Post(
     val paragraphs: List<Paragraph> = emptyList(),
     @DrawableRes val imageId: Int,
     @DrawableRes val imageThumbId: Int
-)
+){
+    fun toFavorite() = Favorite(id, title, imageThumbId,  subtitle)
+}
 
 data class Metadata(
     val author: PostAuthor,

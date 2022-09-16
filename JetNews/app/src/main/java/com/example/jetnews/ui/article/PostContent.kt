@@ -102,7 +102,8 @@ fun LazyListScope.postContentItems(post: Post) {
         Text(post.title, style = MaterialTheme.typography.headlineLarge)
         Spacer(Modifier.height(8.dp))
         if (post.subtitle != null) {
-            Text(post.subtitle, style = MaterialTheme.typography.bodyMedium)
+            Text(post.subtitle,
+                style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(defaultSpacerSize))
         }
     }

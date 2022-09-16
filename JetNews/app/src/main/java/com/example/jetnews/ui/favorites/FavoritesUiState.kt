@@ -2,7 +2,7 @@ package com.example.jetnews.ui.favorites
 
 import android.util.Log
 import com.example.jetnews.model.FavoriteFeed
-import com.example.jetnews.ui.home.HomeUiState
+import com.example.jetnews.model.Post
 import com.example.jetnews.utils.ErrorMessage
 
 /**
@@ -30,32 +30,33 @@ sealed interface FavoritesUiState {
      * An internal representation of the favorites route state, in a raw form
      */
     data class HasFavorites(
-        val favorites: FavoriteFeed? = null,
+        val selectedPost: Post?,
+        val favoriteFeed: FavoriteFeed,
         val selectedPostId: String? =null,
+        val isArticleOpen: Boolean,
         override val isLoading: Boolean =false,
         override val searchInput: String = "",
         override val errorMessages: List<ErrorMessage> = emptyList()
     ) : FavoritesUiState
 
+
 }
 
 data class FavoritesViewModelState(
-    val favoriteFeed : FavoriteFeed? = null,
+    val favoriteFeed : FavoriteFeed? =null,
     val selectedPostId: String? =null,
+    val posts: List<Post> = emptyList(),
     val isLoading: Boolean =false,
+    val selectedPost: Post? =null,
+    val isArticleOpen: Boolean = false,
     val errorMessages: List<ErrorMessage> = emptyList(),
     val searchInput: String ="",
     val uiActions: FavoriteUiActions = FavoriteUiActions.None
     //val unFavoriteId: String? =null
 ){
-//    fun toUiActionState(): FavoriteActions{
-//        return
-//    }
-
 
     fun toUiState(): FavoritesUiState{
-        return if((favoriteFeed == null)
-            or(favoriteFeed?.favorite?.isEmpty() ==true) ){
+        return if(favoriteFeed == null){
             FavoritesUiState.NoFavorites(
                 isLoading = isLoading,
                 errorMessages = errorMessages,
@@ -63,12 +64,15 @@ data class FavoritesViewModelState(
             )
         }else{
            // FavoritesUiState.UnFavorite()
+            Log.d("FavoritesUiState", "selectedPost => $selectedPost")
             FavoritesUiState.HasFavorites(
-                favorites = favoriteFeed,
+                favoriteFeed = favoriteFeed,
                 selectedPostId = selectedPostId,
                 isLoading = isLoading,
                 errorMessages = errorMessages,
                 searchInput = searchInput,
+                isArticleOpen = isArticleOpen,
+                selectedPost = selectedPost
             )
         }
     }

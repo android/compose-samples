@@ -101,7 +101,7 @@ fun HomeRoute(
     onInteractWithArticleDetails: (String) -> Unit,
     onSearchInputChanged: (String) -> Unit,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     // Construct the lazy list states for the list and the details outside of deciding which one to
     // show. This allows the associated state to survive beyond that decision, and therefore
@@ -136,6 +136,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
+
         HomeScreenType.Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
@@ -159,14 +160,7 @@ fun HomeRoute(
                 isExpandedScreen = isExpandedScreen,
                 onBack = onInteractWithFeed,
                 onClickFavorite ={
-                    val favorite = uiState.selectedPost.let {
-                        Favorite(
-                            id = it.id,
-                            title = it.title,
-                            subtitle = "${it.metadata.author.name} - ${it.metadata.date}",
-                            imageThumbnailId = it.imageThumbId
-                        )
-                    }
+                    val favorite = uiState.selectedPost.toFavorite()
                     onClickFavorite(favorite)
                 },
                 isFavorite = uiState.favorites.contains(uiState.selectedPost.id),

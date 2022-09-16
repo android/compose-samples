@@ -19,7 +19,8 @@ import java.util.*
 
 class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : ViewModel() {
 
-    private val favoriteViewModelState = MutableStateFlow(FavoritesViewModelState(isLoading = false))
+    private val favoriteViewModelState =
+        MutableStateFlow(FavoritesViewModelState(isLoading = false))
 
     init {
         //refreshFavorites()
@@ -31,9 +32,14 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
        }
     }
 
+    var isCalled = false
 
     val uiActions = favoriteViewModelState.map {
-        it.uiActions
+        if(isCalled){
+            isCalled =false
+            it.uiActions
+        }
+        FavoriteUiActions.None
     }.stateIn(viewModelScope,
         SharingStarted.Eagerly,
         favoriteViewModelState.value.uiActions)
@@ -74,6 +80,35 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
             favoriteViewModelState.update {
                 it.copy(uiActions = FavoriteUiActions.Delete)
             }
+        }
+    }
+
+    fun openArticleDetails(postId: String){
+
+        viewModelScope.launch {
+            val post = favoriteRepository.getSinglePost(postId)
+            when(post){
+                is Result.Success ->{
+                    favoriteViewModelState.update {
+                        it.copy(isArticleOpen = true,
+                            selectedPostId = postId,
+                            selectedPost = post.data)
+                    }
+                }
+                is Result.Error ->{
+                    // Show error!!
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Notify that the user interacted with the feed
+     */
+    fun interactedWithFeed() {
+        favoriteViewModelState.update {
+            it.copy(isArticleOpen = false)
         }
     }
 
