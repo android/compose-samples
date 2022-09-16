@@ -123,7 +123,6 @@ import kotlinx.coroutines.runBlocking
 fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
-    onClickFavorite: (Favorite) -> Unit,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -801,7 +800,7 @@ fun PreviewHomeListDetailScreen() {
             onInteractWithList = {},
             onInteractWithDetail = {},
             openDrawer = {},
-            onClickFavorite ={},
+            //onClickFavorite ={},
             homeListLazyListState = rememberLazyListState(),
             articleDetailLazyListStates = postsFeed.allPosts.associate { post ->
                 key(post.id) {

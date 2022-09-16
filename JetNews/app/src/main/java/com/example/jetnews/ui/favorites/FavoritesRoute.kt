@@ -1,6 +1,7 @@
 package com.example.jetnews.ui.favorites
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
@@ -32,8 +33,13 @@ fun FavoritesRoute(
             favoritesViewModel.unFavorite(it)
         },
         onInteractWithArticleDetails = {favoritesViewModel.openArticleDetails(it)},
-        onInteractWithFavorite = {},
+        onInteractWithFavorite = {
+                                 favoritesViewModel.interactedWithFeed()
+        },
         snackbarHostState = snackbarHostState,
+        onInteractWithFeed ={
+            favoritesViewModel.interactedWithFeed()
+        }
     )
 }
 
@@ -41,6 +47,7 @@ fun FavoritesRoute(
 fun FavoriteRoute(uiActions: FavoriteUiActions,
                   uiState: FavoritesUiState,
                   onUnFavorite: (String) -> Unit,
+                  onInteractWithFeed: () -> Unit,
                   onInteractWithArticleDetails: (String) -> Unit,
                   openDrawer: () -> Unit,
                   onToggleFavorite: (String) -> Unit,
@@ -82,6 +89,9 @@ fun FavoriteRoute(uiActions: FavoriteUiActions,
                 ),
                 onBack = onInteractWithFavorite
             )
+            BackHandler {
+                onInteractWithFeed()
+            }
         }
         FavoriteScreenType.Feed -> {
             FavoritesScreen(

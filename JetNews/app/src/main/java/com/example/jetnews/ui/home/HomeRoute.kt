@@ -123,7 +123,7 @@ fun HomeRoute(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
                 onToggleFavorite = onToggleFavorite,
-                onClickFavorite = onClickFavorite,
+               // onClickFavorite = onClickFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
                 onErrorDismiss = onErrorDismiss,

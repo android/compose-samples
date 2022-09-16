@@ -1,5 +1,6 @@
 package com.example.jetnews.ui.favorites
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 fun MaterDetailFavoriteScreen (
     modifier: Modifier,
     uiActions: FavoriteUiActions,
+    uiState: FavoritesUiState,
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     isExpandedScreen: Boolean,
@@ -26,5 +28,15 @@ fun MaterDetailFavoriteScreen (
             onUnFavorite,
             interactWithFavorite
         )
+
+//        Crossfade(targetState = uiState.){
+//
+//        }
+
     }
+}
+
+@Composable
+fun FavoriteList(){
+
 }
