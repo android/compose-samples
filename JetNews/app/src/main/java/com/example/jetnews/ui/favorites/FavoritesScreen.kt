@@ -72,15 +72,13 @@ fun FavoritesScreen(
     ){
         val favScreenModifier = Modifier.padding(it)
 
-        LaunchedEffect(key1 = uiActions){
-            when(uiActions){
-                is FavoriteUiActions.Delete ->{
-                    val snackbarResult = snackbarHostState.showSnackbar(
-                        message = "No disappointed!",
-                    )
-                }
-                else -> {}
+        when(uiActions){
+            is FavoriteUiActions.Delete ->{
+//                val snackbarResult = snackbarHostState.showSnackbar(
+//                    message = "No disappointed!",
+//                )
             }
+            else -> {}
         }
 
         if (favoriteState.isLoading){
@@ -158,7 +156,7 @@ fun FavoriteRow(favorite: Favorite, onUnFavorite: (String) -> Unit,
                     .padding(end = 20.dp, start = 20.dp)
                     .align(alignment = Alignment.Top) )
             FavoriteItemColumn(title = favorite.title,
-                author = favorite.subtitle ?: "", timeCreated = "")
+                author = "${favorite.subtitle}" ?: "", timeCreated = "")
             UnFavoriteButton {
                 //(TODO): Unfavored when clicked
                 onUnFavorite(favorite.id)

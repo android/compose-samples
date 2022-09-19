@@ -96,7 +96,6 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
-import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.article.postContentItems
@@ -145,10 +144,12 @@ fun HomeFeedWithArticleDetailsScreen(
         snackbarHostState = snackbarHostState,
         modifier = modifier,
     ) { hasPostsUiState, contentModifier ->
+
         val contentPadding = rememberContentPaddingForScreen(
             additionalTop = if (showTopAppBar) 0.dp else 8.dp,
             excludeTop = showTopAppBar
         )
+
         Row(contentModifier) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
@@ -722,7 +723,7 @@ fun PreviewHomeListDrawerScreen() {
                 favorites = emptySet(),
                 isLoading = false,
                 errorMessages = emptyList(),
-                searchInput = ""
+                searchInput = "",
             ),
             showTopAppBar = false,
             onToggleFavorite = {},

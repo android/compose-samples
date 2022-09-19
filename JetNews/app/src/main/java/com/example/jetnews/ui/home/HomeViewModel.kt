@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -88,6 +87,7 @@ private data class HomeViewModelState(
     val isLoading: Boolean = false,
     val errorMessages: List<ErrorMessage> = emptyList(),
     val searchInput: String = "",
+    val isFavorite: Boolean =false
 ) {
 
     /**
@@ -159,7 +159,10 @@ class HomeViewModel(
             val result = postsRepository.getPostsFeed()
             viewModelState.update {
                 when (result) {
-                    is Result.Success -> it.copy(postsFeed = result.data, isLoading = false)
+                    is Result.Success -> it.copy(
+                        postsFeed = result.data,
+                        favorites = postsRepository.getFavorites() ,
+                        isLoading = false)
                     is Result.Error -> {
                         val errorMessages = it.errorMessages + ErrorMessage(
                             id = UUID.randomUUID().mostSignificantBits,

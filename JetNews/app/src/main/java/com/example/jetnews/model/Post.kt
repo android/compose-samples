@@ -29,7 +29,8 @@ data class Post(
     @DrawableRes val imageId: Int,
     @DrawableRes val imageThumbId: Int
 ){
-    fun toFavorite() = Favorite(id, title, imageThumbId,  subtitle)
+    fun toFavorite() = Favorite(id, title, imageThumbId,
+        "${metadata.author.name} - ${metadata.date}")
 }
 
 data class Metadata(

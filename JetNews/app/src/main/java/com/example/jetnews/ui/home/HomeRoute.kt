@@ -116,8 +116,7 @@ fun HomeRoute(
         }
     }
 
-    val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
-    when (homeScreenType) {
+    when (getHomeScreenType(isExpandedScreen, uiState)) {
         HomeScreenType.FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
                 uiState = uiState,

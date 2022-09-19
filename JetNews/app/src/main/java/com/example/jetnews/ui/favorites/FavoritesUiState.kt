@@ -56,7 +56,7 @@ data class FavoritesViewModelState(
 ){
 
     fun toUiState(): FavoritesUiState{
-        return if(favoriteFeed == null){
+        return if(favoriteFeed == null || favoriteFeed.favorite.isEmpty()){
             FavoritesUiState.NoFavorites(
                 isLoading = isLoading,
                 errorMessages = errorMessages,

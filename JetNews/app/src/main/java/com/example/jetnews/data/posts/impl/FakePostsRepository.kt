@@ -27,8 +27,7 @@ import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -87,6 +86,14 @@ class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepositor
             Log.d("toggleFavourite", "$favorite")
         }
     }
+
+    override suspend fun getFavorites(): Set<String> {
+       return favoriteDb.getFavoritePostIds().toSet()
+    }
+
+//    override suspend fun isFavoritePost(postId: String): Boolean {
+//        return favoriteDb.findFavoritePostId(postId).last() == postId
+//    }
 
     // used to drive "random" failure in a predictable pattern, making the first request always
     // succeed

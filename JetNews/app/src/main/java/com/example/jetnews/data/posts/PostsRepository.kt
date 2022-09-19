@@ -52,4 +52,10 @@ interface PostsRepository {
      * Toggle a postId to be a favorite or not.
      */
     suspend fun toggleFavorite(favorite: Favorite)
+
+    /**
+     * Get all id of favorites
+     */
+    suspend fun getFavorites(): Set<String>
+
 }
