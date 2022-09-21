@@ -1,5 +1,6 @@
 package com.example.jetnews.favorites
 
+import android.util.Log
 import com.example.jetnews.data.db.FavoritesDao
 import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.FavoriteFeed
@@ -23,6 +24,7 @@ class FavoriteRepositoryImpl(private val db: FavoritesDao,
     init {
         GlobalScope.launch{
             db.collectFavorites().collectLatest {
+                Log.d("collectFavorites", "$it")
                 favoritePost.value = FavoriteFeed(favorite = it)
             }
         }

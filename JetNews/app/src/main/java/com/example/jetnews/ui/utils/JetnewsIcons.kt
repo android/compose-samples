@@ -30,10 +30,10 @@ import androidx.compose.ui.semantics.semantics
 import com.example.jetnews.R
 
 @Composable
-fun FavoriteButton(onClick: () -> Unit) {
+fun FavoriteButton(isFavorite: Boolean =false, onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
-            imageVector = Icons.Filled.ThumbUpOffAlt,
+            imageVector = if(isFavorite) Icons.Filled.ThumbUp else Icons.Filled.ThumbUpOffAlt,
             contentDescription = stringResource(R.string.cd_add_to_favorites)
         )
     }

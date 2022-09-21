@@ -24,6 +24,7 @@ import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.addOrRemove
+import com.example.jetnews.utils.suspendAddOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -72,14 +73,29 @@ class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepositor
     override suspend fun toggleFavorite(postId: String) {
         mutex.withLock {
             val set = favorites.value.toMutableSet()
-            set.addOrRemove(postId)
-            favorites.value = set.toSet()
+            withContext(Dispatchers.IO){
+                getPost(postId).run {
+                    when(this){
+                        is Result.Success ->{
+                            set.suspendAddOrRemove(postId, {
+
+                                favoriteDb.insert(data.toFavorite())
+                            }, {removedId ->
+                                favoriteDb.deleteFavoriteById(removedId)
+                            })
+                            favorites.value = set.toSet()
+                        }
+                        is Result.Error ->{
+                            // An error
+                        }
+                    }
+                }
+            }
         }
     }
 
     override suspend fun toggleFavorite(favorite: Favorite) {
 
-        Log.d("toggleFavourite_", "$favorite")
         withContext(Dispatchers.IO){
             favoriteDb.insert(favorite)
 

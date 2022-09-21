@@ -16,20 +16,21 @@
 
 package com.example.jetnews.ui.home
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import com.example.jetnews.model.Favorite
 import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.article.rememberBooleanState
 import com.example.jetnews.ui.home.HomeScreenType.ArticleDetails
 import com.example.jetnews.ui.home.HomeScreenType.Feed
 import com.example.jetnews.ui.home.HomeScreenType.FeedWithArticleDetails
+import kotlinx.coroutines.launch
 
 /**
  * Displays the Home route.
@@ -54,9 +55,6 @@ fun HomeRoute(
     HomeRoute(
         uiState = uiState,
         isExpandedScreen = isExpandedScreen,
-        onClickFavorite ={
-                         homeViewModel.toggleFavourite(it)
-        },
         onToggleFavorite = {
             homeViewModel.toggleFavourite(it)
                            },
@@ -88,11 +86,12 @@ fun HomeRoute(
  * @param openDrawer (event) request opening the app drawer
  * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
     isExpandedScreen: Boolean,
-    onClickFavorite: (Favorite) -> Unit,
+  //  onClickFavorite: (Favorite) -> Unit,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -107,6 +106,11 @@ fun HomeRoute(
     // show. This allows the associated state to survive beyond that decision, and therefore
     // we get to preserve the scroll throughout any changes to the content.
     val homeListLazyListState = rememberLazyListState()
+
+    val articleSnackbarHostState = remember{
+        SnackbarHostState()
+    }
+
     val articleDetailLazyListStates = when (uiState) {
         is HomeUiState.HasPosts -> uiState.postsFeed.allPosts
         is HomeUiState.NoPosts -> emptyList()
@@ -153,22 +157,27 @@ fun HomeRoute(
         HomeScreenType.ArticleDetails -> {
             // Guaranteed by above condition for home screen type
             check(uiState is HomeUiState.HasPosts)
-
+            Log.d("MyNNewTag",
+                "${uiState.favorites.contains(uiState.selectedPost.id)}")
             ArticleScreen(
                 post = uiState.selectedPost,
                 isExpandedScreen = isExpandedScreen,
                 onBack = onInteractWithFeed,
-                onClickFavorite ={
-                    val favorite = uiState.selectedPost.toFavorite()
-                    onClickFavorite(favorite)
-                },
                 isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)
                 },
                 lazyListState = articleDetailLazyListStates.getValue(
                     uiState.selectedPost.id
-                )
+                ),
+                snackbarHostState = articleSnackbarHostState,
+                snackbarVisibilityState = rememberBooleanState(),
+//                showSnackbar = {msg ->
+//                    scope.launch {
+//                        articleSnackbarHostState.showSnackbar(msg,
+//                             duration = SnackbarDuration.Short)
+//                    }
+//                }
             )
 
             // If we are just showing the detail, have a back press switch to the list.

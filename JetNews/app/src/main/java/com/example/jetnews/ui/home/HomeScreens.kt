@@ -341,6 +341,7 @@ private fun HomeScreenWithList(
         )
     }
 
+
     // Process one error message at a time and show them as Snackbars in the UI
     if (uiState.errorMessages.isNotEmpty()) {
         // Remember the errorMessage to display on the screen
@@ -653,7 +654,7 @@ private fun PostTopBar(
         modifier = modifier.padding(end = 16.dp)
     ) {
         Row(Modifier.padding(horizontal = 8.dp)) {
-            FavoriteButton(onClick = { /* Functionality not available */ })
+            FavoriteButton(onClick = onToggleFavorite)
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
             ShareButton(onClick = onSharePost)
             TextSettingsButton(onClick = { /* Functionality not available */ })

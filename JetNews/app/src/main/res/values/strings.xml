@@ -58,5 +58,8 @@
 
     <!-- Favorites Screen -->
     <string name="favorites_title">Favorites</string>
+    <string name="post_added_to_favorites_msg">Post added to favorites</string>
+    <string name="post_already_added_to_favorites_msg">Post already added to favorites</string>
+    <string name="post_removed_from_favorites_msg">Post removed from favorites</string>
 
 </resources>

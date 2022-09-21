@@ -32,18 +32,6 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
        }
     }
 
-    var isCalled = false
-
-    val uiActions = favoriteViewModelState.map {
-        if(isCalled){
-            isCalled =false
-            it.uiActions
-        }
-        FavoriteUiActions.None
-    }.stateIn(viewModelScope,
-        SharingStarted.Eagerly,
-        favoriteViewModelState.value.uiActions)
-
     val uiState = favoriteViewModelState.map {
         it.toUiState()
     }.stateIn(viewModelScope,

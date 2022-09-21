@@ -45,12 +45,12 @@ interface PostsRepository {
     /**
      * Toggle a postId to be a favorite or not.
      */
-    @Deprecated("Use new function")
     suspend fun toggleFavorite(postId: String)
 
     /**
      * Toggle a postId to be a favorite or not.
      */
+    @Deprecated("Use new function")
     suspend fun toggleFavorite(favorite: Favorite)
 
     /**

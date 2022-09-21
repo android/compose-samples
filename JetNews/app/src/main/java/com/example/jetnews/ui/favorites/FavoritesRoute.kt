@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.article.rememberBooleanState
 
 @Composable
 fun FavoritesRoute(
@@ -21,11 +22,7 @@ fun FavoritesRoute(
 
     val uiState = favoritesUiState.value
 
-    val uiActions = favoritesViewModel.uiActions.collectAsState().value
-
-    Log.d("FavoritesRoute", "uiActions: $uiActions")
-    FavoriteRoute(uiState = uiState,
-        uiActions = uiActions, openDrawer = openDrawer,
+     FavoriteRoute(uiState = uiState, openDrawer = openDrawer,
         isExpandedScreen = isExpandedScreen,
         onToggleFavorite = {
             favoritesViewModel.unFavorite(it)
@@ -44,8 +41,7 @@ fun FavoritesRoute(
 }
 
 @Composable
-fun FavoriteRoute(uiActions: FavoriteUiActions,
-                  uiState: FavoritesUiState,
+fun FavoriteRoute(uiState: FavoritesUiState,
                   onUnFavorite: (String) -> Unit,
                   onInteractWithFeed: () -> Unit,
                   onInteractWithArticleDetails: (String) -> Unit,
@@ -77,9 +73,9 @@ fun FavoriteRoute(uiActions: FavoriteUiActions,
                 post = post,
                 isExpandedScreen = isExpandedScreen,
                 //onBack = onInteractWithFeed,
-                onClickFavorite ={
-                    // onClickFavorite(favorite)
-                },
+//                onClickFavorite ={
+//                    // onClickFavorite(favorite)
+//                },
                 isFavorite = true,
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)
@@ -87,7 +83,8 @@ fun FavoriteRoute(uiActions: FavoriteUiActions,
                 lazyListState = articleDetailLazyListStates.getValue(
                     uiState.selectedPost.id
                 ),
-                onBack = onInteractWithFavorite
+                onBack = onInteractWithFavorite,
+                snackbarVisibilityState = rememberBooleanState()
             )
             BackHandler {
                 onInteractWithFeed()
@@ -95,7 +92,6 @@ fun FavoriteRoute(uiActions: FavoriteUiActions,
         }
         FavoriteScreenType.Feed -> {
             FavoritesScreen(
-                uiActions = uiActions, //.value,
                 snackbarHostState = snackbarHostState,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,

@@ -25,7 +25,6 @@ import com.example.jetnews.ui.utils.UnFavoriteButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    uiActions: FavoriteUiActions,
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     isExpandedScreen: Boolean,
@@ -71,15 +70,6 @@ fun FavoritesScreen(
         },
     ){
         val favScreenModifier = Modifier.padding(it)
-
-        when(uiActions){
-            is FavoriteUiActions.Delete ->{
-//                val snackbarResult = snackbarHostState.showSnackbar(
-//                    message = "No disappointed!",
-//                )
-            }
-            else -> {}
-        }
 
         if (favoriteState.isLoading){
             LoadingContent(favScreenModifier)
@@ -156,7 +146,7 @@ fun FavoriteRow(favorite: Favorite, onUnFavorite: (String) -> Unit,
                     .padding(end = 20.dp, start = 20.dp)
                     .align(alignment = Alignment.Top) )
             FavoriteItemColumn(title = favorite.title,
-                author = "${favorite.subtitle}" ?: "", timeCreated = "")
+                author = "${favorite.subtitle}", timeCreated = "")
             UnFavoriteButton {
                 //(TODO): Unfavored when clicked
                 onUnFavorite(favorite.id)

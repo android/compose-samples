@@ -20,7 +20,6 @@ fun MaterDetailFavoriteScreen (
 ){
     Row(modifier){
         FavoritesScreen(
-            uiActions,
             snackbarHostState ,
             openDrawer,
             isExpandedScreen ,

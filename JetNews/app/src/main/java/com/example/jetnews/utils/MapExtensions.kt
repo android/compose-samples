@@ -16,8 +16,27 @@
 
 package com.example.jetnews.utils
 
+import android.util.Log
+
 internal fun <E> MutableSet<E>.addOrRemove(element: E) {
     if (!add(element)) {
         remove(element)
+    }
+}
+
+
+internal suspend fun <E> MutableSet<E>.suspendAddOrRemove(element: E,
+                                                          onAdded: suspend (E) -> Unit,
+                                                          onRemoved: suspend (E) -> Unit) {
+
+    val isAdded = add(element)
+    Log.d("suspendAddOrRemove", "Added!!!! $isAdded")
+    if (!isAdded) {
+        if (remove(element)) {
+            onRemoved.invoke(element)
+        }
+    }else{
+        Log.d("suspendAddOrRemove", "Added!!!!")
+        onAdded(element)
     }
 }

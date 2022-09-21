@@ -19,6 +19,7 @@ package com.example.jetnews.ui.article
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,24 +30,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -61,11 +47,14 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -86,8 +75,11 @@ fun ArticleScreen(
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
-    onClickFavorite: () -> Unit,
     modifier: Modifier = Modifier,
+    snackbarVisibilityState: MutableState<Boolean>,
+    snackbarHostState: SnackbarHostState = remember{
+        SnackbarHostState()
+    },
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
@@ -95,9 +87,23 @@ fun ArticleScreen(
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
+
+    val snackbarMsg = stringResource(id = if(isFavorite)R.string.post_removed_from_favorites_msg
+    else R.string.post_added_to_favorites_msg)
+
+    LaunchedEffect(key1 = snackbarVisibilityState.value ){
+        launch {
+            if ( snackbarVisibilityState.value) {
+                snackbarHostState.showSnackbar(snackbarMsg)
+                snackbarVisibilityState.value = false
+            }
+        }
+    }
+
     Row(modifier.fillMaxSize()) {
         val context = LocalContext.current
         ArticleScreenContent(
+            snackbarHostState = snackbarHostState,
             post = post,
             // Allow opening the Drawer if the screen is not expanded
             navigationIconContent = {
@@ -114,20 +120,27 @@ fun ArticleScreen(
             // Show the bottom bar if the screen is not expanded
             bottomBarContent = {
                 if (!isExpandedScreen) {
+
+                 //   val state = remember{ mutableStateOf(isFavorite)}
+
                     BottomAppBar(
                         actions = {
-                            FavoriteButton(onClick = {
-                                //showUnimplementedActionDialog = true
-                                onClickFavorite()
+                            FavoriteButton(
+                                isFavorite = isFavorite,
+                                onClick = {
+                                    snackbarVisibilityState.value = true
+                                    onToggleFavorite()
                             })
-                            BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
+                            BookmarkButton(isBookmarked = isFavorite,
+                                onClick = onToggleFavorite)
                             ShareButton(onClick = { sharePost(post, context) })
                             TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
                         }
                     )
                 }
             },
-            lazyListState = lazyListState
+            lazyListState = lazyListState,
+          //  snackbarHostState = snackbarHostState
         )
     }
 }
@@ -145,11 +158,13 @@ private fun ArticleScreenContent(
     post: Post,
     navigationIconContent: @Composable () -> Unit = { },
     bottomBarContent: @Composable () -> Unit = { },
+    snackbarHostState: SnackbarHostState,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     Scaffold(
+        snackbarHost = { JetnewsSnackbarHost(hostState = snackbarHostState)},
         topBar = {
             TopAppBar(
                 title = post.publication?.name.orEmpty(),
@@ -159,6 +174,7 @@ private fun ArticleScreenContent(
         },
         bottomBar = bottomBarContent
     ) { innerPadding ->
+
         PostContent(
             post = post,
             modifier = Modifier
@@ -169,6 +185,9 @@ private fun ArticleScreenContent(
         )
     }
 }
+
+
+data class Food(val x: Int, val y: Long)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -224,6 +243,8 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     )
 }
 
+
+
 /**
  * Show a share sheet for a post
  *
@@ -253,8 +274,22 @@ fun PreviewArticleDrawer() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, false, {}, false, {}, {})
+        ArticleScreen(post, false, {}, false, {},
+            snackbarVisibilityState = rememberBooleanState(),
+           // snackbarHostState = SnackbarHostState(),
+            //showSnackbar = {msg ->},
+            snackbarHostState = SnackbarHostState()
+        )
     }
+}
+
+@Composable
+fun rememberBooleanState(): MutableState<Boolean>{
+    val state  = remember {
+        mutableStateOf(false)
+    }
+
+    return state
 }
 
 @Preview("Article screen navrail", device = Devices.PIXEL_C)
@@ -270,6 +305,9 @@ fun PreviewArticleNavRail() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, true, {}, false, {}, {})
+        ArticleScreen(post, true, {}, false, {},
+            snackbarVisibilityState = rememberBooleanState(),
+            //showSnackbar = {msg ->},
+            snackbarHostState = SnackbarHostState())
     }
 }

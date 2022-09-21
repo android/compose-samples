@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -143,6 +144,7 @@ class HomeViewModel(
         // Observe for favorite changes in the repo layer
         viewModelScope.launch {
             postsRepository.observeFavorites().collect { favorites ->
+                Log.d("HomeViewModel", "$favorites")
                 viewModelState.update { it.copy(favorites = favorites) }
             }
         }
