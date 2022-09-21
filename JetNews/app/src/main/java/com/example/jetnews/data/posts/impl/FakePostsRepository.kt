@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
 class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepository {
 
     // for now, store these in memory
-    private val favorites = MutableStateFlow<Set<String>>(setOf())
+    val favorites = MutableStateFlow<Set<String>>(setOf())
 
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
@@ -68,7 +68,13 @@ class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepositor
         }
     }
 
-    override fun observeFavorites(): Flow<Set<String>> = favorites
+    override suspend fun observeToggleFavorites(): Flow<Set<String>> = favorites
+
+    override fun observeFavorites(): Flow<Set<String>>{
+       return favoriteDb.collectFavorites()
+           .flowOn(Dispatchers.IO)
+           .map { list -> list.map { it.id }.toSet()}
+    }
 
     override suspend fun toggleFavorite(postId: String) {
         mutex.withLock {
@@ -78,7 +84,6 @@ class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepositor
                     when(this){
                         is Result.Success ->{
                             set.suspendAddOrRemove(postId, {
-
                                 favoriteDb.insert(data.toFavorite())
                             }, {removedId ->
                                 favoriteDb.deleteFavoriteById(removedId)

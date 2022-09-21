@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun HomeRoute(
+    hasUpdate: Boolean,
     homeViewModel: HomeViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,

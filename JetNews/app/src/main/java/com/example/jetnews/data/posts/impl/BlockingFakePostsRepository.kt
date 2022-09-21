@@ -55,7 +55,13 @@ class BlockingFakePostsRepository : PostsRepository {
         return Result.Success(posts)
     }
 
-    override fun observeFavorites(): Flow<Set<String>> = favorites
+    override suspend fun observeToggleFavorites(): Flow<Set<String>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeFavorites(): Flow<Set<String>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun toggleFavorite(postId: String) {
         val set = favorites.value.toMutableSet()

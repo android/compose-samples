@@ -72,10 +72,6 @@ fun FavoriteRoute(uiState: FavoritesUiState,
             ArticleScreen(
                 post = post,
                 isExpandedScreen = isExpandedScreen,
-                //onBack = onInteractWithFeed,
-//                onClickFavorite ={
-//                    // onClickFavorite(favorite)
-//                },
                 isFavorite = true,
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)

@@ -140,11 +140,15 @@ class HomeViewModel(
 
     init {
         refreshPosts()
+        refreshFavorites()
+    }
+
+    private fun refreshFavorites(){
 
         // Observe for favorite changes in the repo layer
         viewModelScope.launch {
             postsRepository.observeFavorites().collect { favorites ->
-                Log.d("HomeViewModel", "$favorites")
+                Log.d("HomeViewModel#1", "$favorites")
                 viewModelState.update { it.copy(favorites = favorites) }
             }
         }

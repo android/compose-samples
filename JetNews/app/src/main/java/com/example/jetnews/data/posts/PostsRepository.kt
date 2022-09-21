@@ -40,6 +40,12 @@ interface PostsRepository {
     /**
      * Observe the current favorites
      */
+    suspend fun observeToggleFavorites(): Flow<Set<String>>
+
+
+    /**
+     * Observe the current favorites
+     */
     fun observeFavorites(): Flow<Set<String>>
 
     /**
@@ -58,4 +64,11 @@ interface PostsRepository {
      */
     suspend fun getFavorites(): Set<String>
 
+
+
+    //   favoriteDb.collectFavorites().flowOn(Dispatchers.IO).collectLatest {
+    //            Log.d("observeFavorites", "observeFavorites --> $it")
+    //            favorites.value = it.map { fav -> fav.id }.toSet()
+    //        }
+    //        return favorites
 }
