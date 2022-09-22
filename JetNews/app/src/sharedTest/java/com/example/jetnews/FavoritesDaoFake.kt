@@ -5,7 +5,6 @@ import com.example.jetnews.model.Favorite
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 
 class FavoritesDaoFake( private val fakedb : HashMap<String, Favorite>) : FavoritesDao {
 
