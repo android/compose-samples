@@ -18,18 +18,30 @@ package com.example.jetnews
 
 import android.content.Context
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.db.JetNewsDatabase
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
+import com.example.jetnews.favorites.FavoriteRepository
+import com.example.jetnews.favorites.FavoriteRepositoryImpl
+import com.example.jetnews.model.Favorite
+import kotlinx.coroutines.Dispatchers
 
 class TestAppContainer(private val context: Context) : AppContainer {
 
+    private val fakeDatabase = hashMapOf<String, Favorite>()
+
     override val postsRepository: PostsRepository by lazy {
-        BlockingFakePostsRepository()
+        BlockingFakePostsRepository(fakeDatabase)
     }
 
     override val interestsRepository: InterestsRepository by lazy {
-        FakeInterestsRepository()
+      FakeInterestsRepository()
+    }
+
+
+    override val favoritesRepository: FavoriteRepository by lazy{
+        FavoriteRepositoryImpl(FavoritesDaoFake(fakeDatabase), Dispatchers.Unconfined)
     }
 }

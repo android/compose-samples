@@ -103,8 +103,6 @@ class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepositor
 
         withContext(Dispatchers.IO){
             favoriteDb.insert(favorite)
-
-            Log.d("toggleFavourite", "$favorite")
         }
     }
 

@@ -63,9 +63,7 @@ data class FavoritesViewModelState(
                 searchInput = searchInput
             )
         }else{
-           // FavoritesUiState.UnFavorite()
-            Log.d("FavoritesUiState", "selectedPost => $selectedPost")
-            FavoritesUiState.HasFavorites(
+           FavoritesUiState.HasFavorites(
                 favoriteFeed = favoriteFeed,
                 selectedPostId = selectedPostId,
                 isLoading = isLoading,

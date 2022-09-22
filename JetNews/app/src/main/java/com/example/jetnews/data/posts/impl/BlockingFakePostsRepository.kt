@@ -27,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
 /**
@@ -35,10 +35,12 @@ import kotlinx.coroutines.withContext
  * posts with resources synchronously.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class BlockingFakePostsRepository : PostsRepository {
+class BlockingFakePostsRepository(val favDb: HashMap<String, Favorite> = HashMap<String, Favorite>()) : PostsRepository {
 
     // for now, keep the favorites in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
+
+    private val favoriteIdSet = mutableSetOf<String>()
 
     override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
@@ -55,15 +57,22 @@ class BlockingFakePostsRepository : PostsRepository {
         return Result.Success(posts)
     }
 
-    override suspend fun observeToggleFavorites(): Flow<Set<String>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun observeToggleFavorites(): Flow<Set<String>> = favorites
 
-    override fun observeFavorites(): Flow<Set<String>> {
-        TODO("Not yet implemented")
+    override fun observeFavorites(): Flow<Set<String>> = flow{
+        emit(favoriteIdSet)
     }
 
     override suspend fun toggleFavorite(postId: String) {
+        print("toggleFavorite => ------------>")
+        val post = posts.allPosts.find { it.id == postId}
+        post?.run {
+            favDb[postId] = toFavorite()
+        }
+        favoriteIdSet.addAll(favDb
+            .values
+            .map { it.id }.toSet())
+
         val set = favorites.value.toMutableSet()
         set.addOrRemove(postId)
         favorites.value = set

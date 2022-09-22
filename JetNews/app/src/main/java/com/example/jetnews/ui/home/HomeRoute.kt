@@ -158,8 +158,6 @@ fun HomeRoute(
         HomeScreenType.ArticleDetails -> {
             // Guaranteed by above condition for home screen type
             check(uiState is HomeUiState.HasPosts)
-            Log.d("MyNNewTag",
-                "${uiState.favorites.contains(uiState.selectedPost.id)}")
             ArticleScreen(
                 post = uiState.selectedPost,
                 isExpandedScreen = isExpandedScreen,

@@ -66,8 +66,6 @@ fun FavoriteRoute(uiState: FavoritesUiState,
     when(favoriteType){
         FavoriteScreenType.FavoriteDetails -> {
             check(uiState is FavoritesUiState.HasFavorites)
-            Log.d("FavoriteScreenType", "FavoriteScreenType ----> ${uiState.selectedPost}")
-
             val post = uiState.selectedPost ?: return
             ArticleScreen(
                 post = post,
@@ -99,7 +97,6 @@ fun FavoriteRoute(uiState: FavoritesUiState,
             )
         }
         FavoriteScreenType.FavoriteWithDetails ->{
-            Log.d("FavoriteScreenType", "FavoriteScreenType ---->")
         }
     }
 

@@ -16,17 +16,29 @@
 
 package com.example.jetnews
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToString
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.jetnews.data.db.JetNewsDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
@@ -35,11 +47,15 @@ class JetnewsTests {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    private lateinit var jetDb: JetNewsDatabase
+
     @Before
     fun setUp() {
-        // Using targetContext as the Context of the instrumentation code
+
         composeTestRule.launchJetNewsApp(ApplicationProvider.getApplicationContext())
+
     }
+
 
     @Test
     fun app_launches() {
@@ -69,5 +85,42 @@ class JetnewsTests {
         ).performClick()
         composeTestRule.onNodeWithText("Interests").performClick()
         composeTestRule.onNodeWithText("Topics").assertExists()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun app_openFavorites() = runTest{
+        composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
+        composeTestRule.onNodeWithContentDescription("Add to favorites").assertExists()
+        composeTestRule.onNodeWithContentDescription("Add to favorites").performClick()
+        composeTestRule.onNodeWithContentDescription("Navigate up").performClick()
+        composeTestRule.onNodeWithContentDescription(
+            label = "Open navigation drawer",
+            useUnmergedTree = true
+        ).performClick()
+        composeTestRule.onNodeWithText("Favorites").performClick()
+
+        composeTestRule.onNodeWithText("Dagger in Kotlin: Gotchas and Optimizations",
+            substring =true)
+            .assertExists()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun app_openFavorite_details() {
+
+        composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
+        composeTestRule.onNodeWithContentDescription("Add to favorites").performClick()
+        composeTestRule.onNodeWithContentDescription("Navigate up").performClick()
+        composeTestRule.onNodeWithText("Favorites").performClick()
+
+        composeTestRule.onNodeWithText("Dagger in Kotlin: Gotchas and Optimizations",
+            substring =true)
+            .performClick()
+
+        composeTestRule.onNodeWithText("Dagger in Kotlin: Gotchas and Optimizations",
+            substring =true)
+            .assertExists()
+        composeTestRule.onNodeWithContentDescription("Add to favorites").assertExists()
     }
 }

@@ -1,16 +1,13 @@
 package com.example.jetnews.favorites
 
-import android.util.Log
+import com.example.jetnews.data.Result
 import com.example.jetnews.data.db.FavoritesDao
-import com.example.jetnews.model.Favorite
+import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.FavoriteFeed
+import com.example.jetnews.model.Post
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import com.example.jetnews.data.Result
-import com.example.jetnews.data.posts.impl.posts
-import com.example.jetnews.model.Post
-import com.example.jetnews.model.PostsFeed
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -24,7 +21,6 @@ class FavoriteRepositoryImpl(private val db: FavoritesDao,
     init {
         GlobalScope.launch{
             db.collectFavorites().collectLatest {
-                Log.d("collectFavorites", "$it")
                 favoritePost.value = FavoriteFeed(favorite = it)
             }
         }
