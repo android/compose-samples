@@ -11,10 +11,8 @@ class FavoritesDaoFake( private val fakedb : HashMap<String, Favorite>) : Favori
 
     override suspend fun insert(favorite: Favorite) {
         // Simulate insertion to db
-        runBlocking {
-            delay(1_000)
-            fakedb[favorite.id] =favorite
-        }
+        delay(1_000)
+        fakedb[favorite.id] =favorite
     }
 
     override suspend fun delete(vararg favorites: Favorite) {
