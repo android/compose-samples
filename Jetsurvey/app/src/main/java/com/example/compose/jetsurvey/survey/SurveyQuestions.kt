@@ -23,6 +23,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -79,7 +80,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -729,19 +732,21 @@ private fun SliderQuestion(
         mutableStateOf(answer?.answerValue ?: possibleAnswer.defaultValue)
     }
     Row(modifier = modifier) {
-
-        Slider(
-            value = sliderPosition,
-            onValueChange = {
-                sliderPosition = it
-                onAnswerSelected(it)
-            },
-            valueRange = possibleAnswer.range,
-            steps = possibleAnswer.steps,
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp)
-        )
+        // TODO: Remove extra Box after https://issuetracker.google.com/248164773 is fixed
+        Box(Modifier.weight(1f)) {
+            Slider(
+                value = sliderPosition,
+                onValueChange = {
+                    sliderPosition = it
+                    onAnswerSelected(it)
+                },
+                valueRange = possibleAnswer.range,
+                steps = possibleAnswer.steps,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+            )
+        }
+        
     }
     Row {
         Text(
