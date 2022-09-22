@@ -99,12 +99,7 @@ class FakePostsRepository(private val favoriteDb: FavoritesDao) : PostsRepositor
         }
     }
 
-    override suspend fun toggleFavorite(favorite: Favorite) {
 
-        withContext(Dispatchers.IO){
-            favoriteDb.insert(favorite)
-        }
-    }
 
     override suspend fun getFavorites(): Set<String> {
        return favoriteDb.getFavoritePostIds().toSet()

@@ -54,21 +54,8 @@ interface PostsRepository {
     suspend fun toggleFavorite(postId: String)
 
     /**
-     * Toggle a postId to be a favorite or not.
-     */
-    @Deprecated("Use new function")
-    suspend fun toggleFavorite(favorite: Favorite)
-
-    /**
      * Get all id of favorites
      */
     suspend fun getFavorites(): Set<String>
 
-
-
-    //   favoriteDb.collectFavorites().flowOn(Dispatchers.IO).collectLatest {
-    //            Log.d("observeFavorites", "observeFavorites --> $it")
-    //            favorites.value = it.map { fav -> fav.id }.toSet()
-    //        }
-    //        return favorites
 }

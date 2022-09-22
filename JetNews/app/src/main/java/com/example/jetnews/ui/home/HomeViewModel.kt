@@ -190,15 +190,6 @@ class HomeViewModel(
     }
 
     /**
-     * Toggle favorite of a post
-     */
-    fun toggleFavourite(favorite: Favorite){
-        viewModelScope.launch {
-            postsRepository.toggleFavorite(favorite)
-        }
-    }
-
-    /**
      * Selects the given article to view more information about it.
      */
     fun selectArticle(postId: String) {

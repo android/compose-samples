@@ -35,7 +35,7 @@ import kotlinx.coroutines.withContext
  * posts with resources synchronously.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class BlockingFakePostsRepository(val favDb: HashMap<String, Favorite> = HashMap<String, Favorite>()) : PostsRepository {
+class BlockingFakePostsRepository(private val favDb: HashMap<String, Favorite> = HashMap<String, Favorite>()) : PostsRepository {
 
     // for now, keep the favorites in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
@@ -76,9 +76,6 @@ class BlockingFakePostsRepository(val favDb: HashMap<String, Favorite> = HashMap
         val set = favorites.value.toMutableSet()
         set.addOrRemove(postId)
         favorites.value = set
-    }
-
-    override suspend fun toggleFavorite(favorite: Favorite) {
     }
 
     override suspend fun getFavorites(): Set<String> {
