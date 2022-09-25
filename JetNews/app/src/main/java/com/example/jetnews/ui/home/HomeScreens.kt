@@ -654,7 +654,7 @@ private fun PostTopBar(
         modifier = modifier.padding(end = 16.dp)
     ) {
         Row(Modifier.padding(horizontal = 8.dp)) {
-            FavoriteButton(onClick = onToggleFavorite)
+            FavoriteButton(isFavorite = isFavorite,onClick = onToggleFavorite)
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
             ShareButton(onClick = onSharePost)
             TextSettingsButton(onClick = { /* Functionality not available */ })

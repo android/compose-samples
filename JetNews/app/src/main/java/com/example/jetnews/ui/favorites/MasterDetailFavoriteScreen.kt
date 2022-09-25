@@ -7,30 +7,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun MaterDetailFavoriteScreen (
+fun MasterDetailFavoriteScreen (
     modifier: Modifier,
-    uiActions: FavoriteUiActions,
+    isShowTopbar: Boolean,
     uiState: FavoritesUiState,
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     isExpandedScreen: Boolean,
-    favoriteState: FavoritesUiState,
     onUnFavorite: (String) -> Unit,
     interactWithFavorite: (String) -> Unit
 ){
     Row(modifier){
-        FavoritesScreen(
+        FavoriteScreenList(
+            isShowTopbar = isShowTopbar,
             snackbarHostState ,
             openDrawer,
             isExpandedScreen ,
-            favoriteState ,
-            onUnFavorite,
-            interactWithFavorite
+            uiState,
+            hasPostsContent = { uiState, modifier ->
+
+//                Crossfade(targetState = uiState.selectedPost){ selectedPost ->
+//
+//                }
+
+            }
         )
 
-//        Crossfade(targetState = uiState.){
-//
-//        }
 
     }
 }

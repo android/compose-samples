@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.article.rememberBooleanState
 
@@ -89,14 +90,25 @@ fun FavoriteRoute(uiState: FavoritesUiState,
                 snackbarHostState = snackbarHostState,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
-                favoriteState = uiState,
+                uiState = uiState,
                 onUnFavorite = { postId ->
                     onUnFavorite(postId)
                 },
-                interactWithFavorite = onInteractWithArticleDetails
+                interactWithFavorite = onInteractWithArticleDetails,
+                isShowTopbar = true
             )
         }
         FavoriteScreenType.FavoriteWithDetails ->{
+            MasterDetailFavoriteScreen(
+                isShowTopbar = !isExpandedScreen,
+                snackbarHostState = snackbarHostState,
+                openDrawer = openDrawer,
+                uiState = uiState,
+                onUnFavorite = onUnFavorite,
+                interactWithFavorite = onInteractWithArticleDetails,
+                isExpandedScreen = isExpandedScreen,
+                modifier = Modifier
+            )
         }
     }
 

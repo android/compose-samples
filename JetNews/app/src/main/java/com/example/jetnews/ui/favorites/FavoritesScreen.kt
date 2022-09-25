@@ -25,12 +25,35 @@ import com.example.jetnews.ui.utils.UnFavoriteButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    isShowTopbar: Boolean,
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     isExpandedScreen: Boolean,
-    favoriteState: FavoritesUiState,
+    uiState: FavoritesUiState,
     interactWithFavorite: (String) -> Unit,
     onUnFavorite: (String) -> Unit
+){
+    FavoriteScreenList(isShowTopbar, snackbarHostState, openDrawer,
+        isExpandedScreen, uiState, hasPostsContent = { hasFavoriteState, favModifier ->
+            hasFavoriteState.favoriteFeed.run {
+                FavoriteList(favorites = favorite,
+                    modifier = favModifier,
+                    onUnFavorite, interactWithFavorite)
+            }
+        })
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FavoriteScreenList( isShowTopbar: Boolean,
+                        snackbarHostState: SnackbarHostState,
+                        openDrawer: () -> Unit,
+                        isExpandedScreen: Boolean,
+                        uiState: FavoritesUiState,
+                        hasPostsContent: @Composable (
+                            uiState: FavoritesUiState.HasFavorites,
+                            modifier : Modifier
+                        ) -> Unit
 ){
 
     Scaffold(
@@ -38,63 +61,52 @@ fun FavoritesScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.favorites_title),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    if (!isExpandedScreen) {
-                        IconButton(onClick = openDrawer) {
+            if(isShowTopbar){
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.favorites_title),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    navigationIcon = {
+                        if (!isExpandedScreen) {
+                            IconButton(onClick = openDrawer) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_jetnews_logo),
+                                    contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = { /* TODO: Open search */ }
+                        ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_jetnews_logo),
-                                contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                                tint = MaterialTheme.colorScheme.primary
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = stringResource(R.string.cd_search)
                             )
                         }
                     }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { /* TODO: Open search */ }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = stringResource(R.string.cd_search)
-                        )
-                    }
-                }
-            )
-        },
-    ){
-        val favScreenModifier = Modifier.padding(it)
-
-        if (favoriteState.isLoading){
-            LoadingContent(favScreenModifier)
-        }
-
-        ScreenContent(favoriteState, favScreenModifier,
-            onUnFavorite, interactWithFavorite)
-    }
-}
-
-@Composable
-fun ScreenContent(favoriteState: FavoritesUiState, modifier: Modifier,
-                  onUnFavorite: (String) -> Unit,
-                  interactWithFavorite: (String) -> Unit){
-    when(favoriteState){
-        is FavoritesUiState.HasFavorites ->{
-            favoriteState.favoriteFeed.run {
-                FavoriteList(favorites = favorite,
-                    modifier = modifier,
-                    onUnFavorite, interactWithFavorite)
+                )
             }
+        },
+    ){ padding ->
+        val favModifier = Modifier.padding(padding)
 
+        if (uiState.isLoading){
+            LoadingContent(favModifier)
         }
-        is FavoritesUiState.NoFavorites ->{
-            NoContent(modifier = modifier)
+
+        when(uiState){
+            is FavoritesUiState.HasFavorites ->{
+                hasPostsContent(uiState, favModifier)
+            }
+            is FavoritesUiState.NoFavorites ->{
+                NoContent(modifier = favModifier)
+            }
         }
     }
 }

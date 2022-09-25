@@ -83,6 +83,7 @@ fun JetnewsApp(
                         currentRoute = currentRoute,
                         navigateToHome = navigationActions.navigateToHome,
                         navigateToInterests = navigationActions.navigateToInterests,
+                        navigateToFavorites = navigationActions.navigateToFavorites,
                     )
                 }
                 JetnewsNavGraph(

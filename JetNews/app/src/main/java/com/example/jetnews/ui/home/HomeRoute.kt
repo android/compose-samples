@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun HomeRoute(
-    hasUpdate: Boolean,
     homeViewModel: HomeViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
@@ -92,7 +91,6 @@ fun HomeRoute(
 fun HomeRoute(
     uiState: HomeUiState,
     isExpandedScreen: Boolean,
-  //  onClickFavorite: (Favorite) -> Unit,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -127,7 +125,6 @@ fun HomeRoute(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
                 onToggleFavorite = onToggleFavorite,
-               // onClickFavorite = onClickFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
                 onErrorDismiss = onErrorDismiss,

@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material3.Icon
@@ -42,6 +43,7 @@ fun AppNavRail(
     currentRoute: String,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
+    navigateToFavorites: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavigationRail(
@@ -70,6 +72,14 @@ fun AppNavRail(
             label = { Text(stringResource(R.string.interests_title)) },
             alwaysShowLabel = false
         )
+        NavigationRailItem(
+            selected = currentRoute == JetnewsDestinations.FAVORITES_ROUTE,
+            onClick = navigateToFavorites,
+            icon = { Icon(Icons.Filled.Favorite, stringResource(R.string.favorites_title)) },
+            label = { Text(stringResource(R.string.favorites_title)) },
+            alwaysShowLabel = false
+        )
+
         Spacer(Modifier.weight(1f))
     }
 }
@@ -83,6 +93,7 @@ fun PreviewAppNavRail() {
             currentRoute = JetnewsDestinations.HOME_ROUTE,
             navigateToHome = {},
             navigateToInterests = {},
+            navigateToFavorites = {},
         )
     }
 }

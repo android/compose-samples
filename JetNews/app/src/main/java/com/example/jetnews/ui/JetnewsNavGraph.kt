@@ -51,7 +51,6 @@ fun JetnewsNavGraph(
             )
 
             HomeRoute(
-                hasUpdate = false,
                 homeViewModel = homeViewModel,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer
@@ -73,7 +72,7 @@ fun JetnewsNavGraph(
             )
             FavoritesRoute(
                 favoritesViewModel = favoriteViewModel,
-                isExpandedScreen = isExpandedScreen,
+                isExpandedScreen = true,
                 openDrawer = openDrawer
             )
         }
