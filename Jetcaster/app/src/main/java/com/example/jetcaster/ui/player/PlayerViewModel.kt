@@ -29,9 +29,9 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.jetcaster.Graph
 import com.example.jetcaster.data.EpisodeStore
 import com.example.jetcaster.data.PodcastStore
+import java.time.Duration
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.time.Duration
 
 data class PlayerUiState(
     val title: String = "",

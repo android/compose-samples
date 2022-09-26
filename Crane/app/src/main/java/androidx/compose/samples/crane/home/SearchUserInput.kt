@@ -77,7 +77,12 @@ fun PeopleUserInput(
 
         val people = peopleState.people
         CraneUserInput(
-            text = pluralStringResource(id = R.plurals.number_adults_selected, count = people, people, titleSuffix),
+            text = pluralStringResource(
+                id = R.plurals.number_adults_selected,
+                count = people,
+                people,
+                titleSuffix
+            ),
             vectorImageId = R.drawable.ic_person,
             tint = tint.value,
             onClick = {
@@ -87,7 +92,10 @@ fun PeopleUserInput(
         )
         if (transitionState.targetState == Invalid) {
             Text(
-                text = stringResource(id = R.string.error_max_people, MAX_PEOPLE),
+                text = stringResource(
+                    id = R.string.error_max_people,
+                    MAX_PEOPLE
+                ),
                 style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary)
             )
         }

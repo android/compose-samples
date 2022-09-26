@@ -56,7 +56,9 @@ fun FlySearchContent(
                 FromDestination()
             }
             item {
-                ToDestinationUserInput(onToDestinationChanged = searchUpdates.onToDestinationChanged)
+                ToDestinationUserInput(
+                    onToDestinationChanged = searchUpdates.onToDestinationChanged
+                )
             }
             item {
                 DatesUserInput(

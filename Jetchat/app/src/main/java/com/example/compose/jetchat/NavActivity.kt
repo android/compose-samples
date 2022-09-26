@@ -64,7 +64,8 @@ class NavActivity : AppCompatActivity() {
                     ) {
                         val drawerState = rememberDrawerState(initialValue = Closed)
 
-                        val drawerOpen by viewModel.drawerShouldBeOpened.collectAsStateWithLifecycle()
+                        val drawerOpen by viewModel.drawerShouldBeOpened
+                            .collectAsStateWithLifecycle()
                         if (drawerOpen) {
                             // Open drawer and reset state in VM.
                             LaunchedEffect(Unit) {
@@ -120,7 +121,7 @@ class NavActivity : AppCompatActivity() {
      */
     private fun findNavController(): NavController {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment // Long lines
         return navHostFragment.navController
     }
 }

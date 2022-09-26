@@ -149,7 +149,13 @@ private fun getOffsetAndSize(
 
 internal const val DURATION_MILLIS_PER_DAY = 150
 
-private fun normalize(x: Float, inMin: Float, inMax: Float, outMin: Float = 0f, outMax: Float = 1f): Float {
+private fun normalize(
+    x: Float,
+    inMin: Float,
+    inMax: Float,
+    outMin: Float = 0f,
+    outMax: Float = 1f
+): Float {
     val outRange = outMax - outMin
     val inRange = inMax - inMin
     return (x - inMin) * outRange / inRange + outMin

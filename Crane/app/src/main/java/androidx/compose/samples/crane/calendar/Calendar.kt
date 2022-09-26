@@ -87,7 +87,12 @@ fun Calendar(
         contentPadding = contentPadding
     ) {
         calendarState.listMonths.forEach { month ->
-            itemsCalendarMonth(calendarUiState, onDayClicked, { selectedAnimationPercentage.value }, month)
+            itemsCalendarMonth(
+                calendarUiState,
+                onDayClicked,
+                { selectedAnimationPercentage.value },
+                month
+            )
         }
 
         item(key = "bottomSpacer") {
@@ -126,12 +131,20 @@ private fun LazyListScope.itemsCalendarMonth(
     // need scrolling. The format of the key is ${year/month/weekNumber}. Thus,
     // the key for the fourth week of December 2020 is "2020/12/4"
     itemsIndexed(month.weeks, key = { index, _ ->
-        month.yearMonth.year.toString() + "/" + month.yearMonth.month.value + "/" + (index + 1).toString()
+        month.yearMonth.year.toString() +
+            "/" +
+            month.yearMonth.month.value +
+            "/" +
+            (index + 1).toString()
     }) { _, week ->
         val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
         val currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
-        if (calendarUiState.hasSelectedPeriodOverlap(currentDay, currentDay.plusDays(6))) {
+        if (calendarUiState.hasSelectedPeriodOverlap(
+                currentDay,
+                currentDay.plusDays(6)
+            )
+        ) {
             WeekSelectionPill(
                 state = calendarUiState,
                 currentWeekStart = currentDay,

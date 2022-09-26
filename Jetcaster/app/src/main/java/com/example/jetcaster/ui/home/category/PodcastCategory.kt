@@ -317,7 +317,8 @@ private fun CategoryPodcastRow(
         modifier = modifier,
         contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 24.dp)
     ) {
-        itemsIndexed(items = podcasts) { index: Int, (podcast, _, isFollowed): PodcastWithExtraInfo ->
+        itemsIndexed(items = podcasts) { index: Int,
+            (podcast, _, isFollowed): PodcastWithExtraInfo ->
             TopPodcastRowItem(
                 podcastTitle = podcast.title,
                 podcastImageUrl = podcast.imageUrl,
