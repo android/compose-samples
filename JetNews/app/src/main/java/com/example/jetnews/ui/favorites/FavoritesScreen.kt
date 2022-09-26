@@ -1,6 +1,5 @@
 package com.example.jetnews.ui.favorites
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,7 +17,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.model.Favorite
-import com.example.jetnews.model.Post
 import com.example.jetnews.ui.utils.UnFavoriteButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +33,7 @@ fun FavoritesScreen(
     FavoriteScreenList(isShowTopbar, snackbarHostState, openDrawer,
         isExpandedScreen, uiState, hasPostsContent = { hasFavoriteState, favModifier ->
             hasFavoriteState.favoriteFeed.run {
-                FavoriteList(favorites = favorite,
+                FavoriteList(favorites = favorites,
                     modifier = favModifier,
                     onUnFavorite, interactWithFavorite)
             }

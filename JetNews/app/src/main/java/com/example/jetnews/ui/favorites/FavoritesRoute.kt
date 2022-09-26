@@ -1,6 +1,5 @@
 package com.example.jetnews.ui.favorites
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
@@ -23,6 +22,10 @@ fun FavoritesRoute(
 
     val uiState = favoritesUiState.value
 
+    var firstTime by remember {
+        mutableStateOf(false)
+    }
+
      FavoriteRoute(uiState = uiState, openDrawer = openDrawer,
         isExpandedScreen = isExpandedScreen,
         onToggleFavorite = {
@@ -37,7 +40,11 @@ fun FavoritesRoute(
         snackbarHostState = snackbarHostState,
         onInteractWithFeed ={
             favoritesViewModel.interactedWithFeed()
-        }
+        }, onOpenFirstPost = {
+            if(isExpandedScreen){
+                favoritesViewModel.openArticleDetails()
+            }
+         }
     )
 }
 
@@ -50,13 +57,14 @@ fun FavoriteRoute(uiState: FavoritesUiState,
                   onToggleFavorite: (String) -> Unit,
                   isExpandedScreen: Boolean,
                   onInteractWithFavorite: () -> Unit,
+                  onOpenFirstPost: () -> Unit,
                   snackbarHostState: SnackbarHostState){
     val favoriteType = getFavoriteScreenType(
         isExpandedScreen = isExpandedScreen,
         uiState = uiState)
 
     val articleDetailLazyListStates = when(uiState){
-        is FavoritesUiState.HasFavorites -> uiState.favoriteFeed.favorite
+        is FavoritesUiState.HasFavorites -> uiState.favoriteFeed.favorites
         is FavoritesUiState.NoFavorites -> emptyList()
     }.associate{
         key(it.id) {
@@ -99,15 +107,19 @@ fun FavoriteRoute(uiState: FavoritesUiState,
             )
         }
         FavoriteScreenType.FavoriteWithDetails ->{
+
             MasterDetailFavoriteScreen(
                 isShowTopbar = !isExpandedScreen,
                 snackbarHostState = snackbarHostState,
                 openDrawer = openDrawer,
-                uiState = uiState,
+                uiState =  uiState,
                 onUnFavorite = onUnFavorite,
                 interactWithFavorite = onInteractWithArticleDetails,
                 isExpandedScreen = isExpandedScreen,
-                modifier = Modifier
+                modifier = Modifier,
+                onToggleFavorite = onToggleFavorite,
+                onInteractWithList =onInteractWithFavorite,
+                onOpenFirstPost = onOpenFirstPost
             )
         }
     }

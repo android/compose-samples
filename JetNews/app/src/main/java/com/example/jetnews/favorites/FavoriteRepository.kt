@@ -16,4 +16,5 @@ interface FavoriteRepository {
 
     suspend fun getSinglePost(postId: String?): Result<Post>
 
+    suspend fun getFirstPost(): Flow<Result<Post?>>
 }

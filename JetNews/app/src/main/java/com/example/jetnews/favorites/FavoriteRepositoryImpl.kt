@@ -6,9 +6,7 @@ import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.FavoriteFeed
 import com.example.jetnews.model.Post
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 
 @OptIn(DelicateCoroutinesApi::class)
 class FavoriteRepositoryImpl(private val db: FavoritesDao,
@@ -21,7 +19,7 @@ class FavoriteRepositoryImpl(private val db: FavoritesDao,
     init {
         GlobalScope.launch{
             db.collectFavorites().collectLatest {
-                favoritePost.value = FavoriteFeed(favorite = it)
+                favoritePost.value = FavoriteFeed(favorites = it)
             }
         }
     }
@@ -34,6 +32,17 @@ class FavoriteRepositoryImpl(private val db: FavoritesDao,
                 Result.Error(IllegalArgumentException("Post not found"))
             } else {
                 Result.Success(post)
+            }
+        }
+    }
+
+    override suspend fun getFirstPost(): Flow<Result<Post?>> {
+        return db.getFirstFavorite().flowOn(Dispatchers.IO).map { favorite ->
+            if(favorite == null){
+                Result.Error(IllegalArgumentException("Favorite post is empty"))
+            } else {
+                val data = posts.allPosts.find { it.id == favorite.id }
+                Result.Success(data)
             }
         }
     }

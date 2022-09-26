@@ -9,4 +9,6 @@ data class Favorite (
     val id: String,
     val title: String,
     val imageThumbnailId: Int,
-    val subtitle: String? = null,)
+    val subtitle: String? = null,){
+
+}

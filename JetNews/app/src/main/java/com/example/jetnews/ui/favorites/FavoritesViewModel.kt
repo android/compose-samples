@@ -22,14 +22,36 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
     private val favoriteViewModelState =
         MutableStateFlow(FavoritesViewModelState(isLoading = false))
 
+
     init {
-        //refreshFavorites()
+
+        print("MyNeWData => NEW POST")
+
        viewModelScope.launch {
            favoriteRepository.observeFavoritePost()
                .collectLatest {
                    refreshFavorites()
            }
        }
+
+        viewModelScope.launch {
+
+
+            favoriteRepository.getFirstPost().collectLatest { result ->
+                print("MyNeWData => $result")
+                when(result){
+                    is Result.Success ->{
+                        favoriteViewModelState.update {
+                            it.copy(selectedPost = result.data)
+                        }
+                    }
+                    is Result.Error ->{
+                        // An error occurs while getting post
+                    }
+                }
+            }
+        }
+
     }
 
     val uiState = favoriteViewModelState.map {
@@ -65,29 +87,27 @@ class FavoritesViewModel(private val favoriteRepository: FavoriteRepository) : V
 
             favoriteRepository.unFavoritePost(postId)
 
-            favoriteViewModelState.update {
-                it.copy(uiActions = FavoriteUiActions.Delete)
-            }
+//            favoriteViewModelState.update {
+//                it.copy(uiActions = FavoriteUiActions.Delete)
+//            }
         }
     }
 
-    fun openArticleDetails(postId: String){
-
+    fun openArticleDetails(postId: String? = null){
         viewModelScope.launch {
-            val post = favoriteRepository.getSinglePost(postId)
-            when(post){
+
+            when(val result = favoriteRepository.getSinglePost(postId)){
                 is Result.Success ->{
                     favoriteViewModelState.update {
                         it.copy(isArticleOpen = true,
                             selectedPostId = postId,
-                            selectedPost = post.data)
+                            selectedPost = result.data)
                     }
                 }
                 is Result.Error ->{
                     // Show error!!
                 }
             }
-
         }
     }
 

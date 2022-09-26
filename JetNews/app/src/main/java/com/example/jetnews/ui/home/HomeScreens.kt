@@ -642,7 +642,7 @@ private fun submitSearch(
  * Top bar for a Post when displayed next to the Home feed
  */
 @Composable
-private fun PostTopBar(
+fun PostTopBar(
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
     onSharePost: () -> Unit,

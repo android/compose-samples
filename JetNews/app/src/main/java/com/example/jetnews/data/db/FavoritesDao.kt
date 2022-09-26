@@ -30,4 +30,8 @@ interface FavoritesDao {
 
     @Query("SELECT id FROM favorites_table")
     suspend fun getFavoritePostIds(): List<String>
+
+    @Query("SELECT * FROM favorites_table ORDER BY id DESC LIMIT 1")
+    fun getFirstFavorite(): Flow<Favorite?>
+
 }

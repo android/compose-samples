@@ -1,6 +1,6 @@
 package com.example.jetnews.ui.favorites
 
-import android.util.Log
+import com.example.jetnews.model.Favorite
 import com.example.jetnews.model.FavoriteFeed
 import com.example.jetnews.model.Post
 import com.example.jetnews.utils.ErrorMessage
@@ -33,6 +33,7 @@ sealed interface FavoritesUiState {
         val selectedPost: Post?,
         val favoriteFeed: FavoriteFeed,
         val selectedPostId: String? =null,
+        val favoriteKeys: Set<String>,
         val isArticleOpen: Boolean,
         override val isLoading: Boolean =false,
         override val searchInput: String = "",
@@ -50,13 +51,12 @@ data class FavoritesViewModelState(
     val selectedPost: Post? =null,
     val isArticleOpen: Boolean = false,
     val errorMessages: List<ErrorMessage> = emptyList(),
-    val searchInput: String ="",
-    val uiActions: FavoriteUiActions = FavoriteUiActions.None
+    val searchInput: String =""
     //val unFavoriteId: String? =null
 ){
 
     fun toUiState(): FavoritesUiState{
-        return if(favoriteFeed == null || favoriteFeed.favorite.isEmpty()){
+        return if(favoriteFeed == null || favoriteFeed.favorites.isEmpty()){
             FavoritesUiState.NoFavorites(
                 isLoading = isLoading,
                 errorMessages = errorMessages,
@@ -70,7 +70,8 @@ data class FavoritesViewModelState(
                 errorMessages = errorMessages,
                 searchInput = searchInput,
                 isArticleOpen = isArticleOpen,
-                selectedPost = selectedPost
+                selectedPost = selectedPost,
+               favoriteKeys = favoriteFeed.favorites.map { it.id }.toSet()
             )
         }
     }
