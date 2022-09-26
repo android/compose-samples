@@ -18,7 +18,7 @@
 #
 # Verifies samples build, lint error free and are formatted correctly.
 #
-# Example: ./scripts/verify_famples.sh
+# Example: ./scripts/verify_samples.sh
 #
 ########################################################################
 
