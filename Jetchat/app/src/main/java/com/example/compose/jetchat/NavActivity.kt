@@ -121,7 +121,7 @@ class NavActivity : AppCompatActivity() {
      */
     private fun findNavController(): NavController {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment // Long lines
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
     }
 }
