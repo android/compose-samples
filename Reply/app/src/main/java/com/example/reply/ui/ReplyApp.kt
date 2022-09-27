@@ -26,6 +26,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -40,7 +42,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.reply.ui.navigation.NavigationDrawerContent
+import com.example.reply.ui.navigation.ModalNavigationDrawerContent
+import com.example.reply.ui.navigation.PermanentNavigationDrawerContent
 import com.example.reply.ui.navigation.ReplyBottomNavigationBar
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationRail
@@ -149,9 +152,8 @@ private fun ReplyNavigationWrapper(
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         // TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
-            NavigationDrawerContent(
+            PermanentNavigationDrawerContent(
                 selectedDestination = selectedDestination,
-                isPermanentDrawer = true,
                 navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigationActions::navigateTo,
             )
@@ -171,7 +173,7 @@ private fun ReplyNavigationWrapper(
     } else {
         ModalNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent(
+                ModalNavigationDrawerContent(
                     selectedDestination = selectedDestination,
                     navigationContentPosition = navigationContentPosition,
                     navigateToTopLevelDestination = navigationActions::navigateTo,
