@@ -67,5 +67,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: test-reports
+          name: test-reports-owl-${{ matrix.api-level }}
           path: ${{ env.SAMPLE_PATH }}/app/build/reports
