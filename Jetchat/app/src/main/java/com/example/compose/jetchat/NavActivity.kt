@@ -25,13 +25,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.compose.jetchat.components.JetchatDrawer
@@ -46,7 +47,7 @@ import kotlinx.coroutines.launch
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,7 +64,7 @@ class NavActivity : AppCompatActivity() {
                     ) {
                         val drawerState = rememberDrawerState(initialValue = Closed)
 
-                        val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
+                        val drawerOpen by viewModel.drawerShouldBeOpened.collectAsStateWithLifecycle()
                         if (drawerOpen) {
                             // Open drawer and reset state in VM.
                             LaunchedEffect(Unit) {
