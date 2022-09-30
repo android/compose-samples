@@ -16,6 +16,7 @@
 
 package com.example.reply.ui
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
@@ -47,6 +49,9 @@ import com.example.reply.ui.components.ReplyEmailThreadItem
 import com.example.reply.ui.components.ReplySearchBar
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
+import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
+import com.google.accompanist.adaptive.TwoPane
+import com.google.accompanist.adaptive.calculateDisplayFeatures
 
 @Composable
 fun ReplyInboxScreen(
@@ -70,12 +75,18 @@ fun ReplyInboxScreen(
     val emailLazyListState = rememberLazyListState()
 
     if (contentType == ReplyContentType.DUAL_PANE) {
-        ReplyDualPaneContent(
-            replyHomeUIState = replyHomeUIState,
-            emailLazyListState = emailLazyListState,
-            modifier = modifier.fillMaxSize(),
-            navigateToDetail = navigateToDetail
+        TwoPane(
+            first = { ReplyEmailList(emails = replyHomeUIState.emails, emailLazyListState = emailLazyListState, navigateToDetail = navigateToDetail) },
+            second = { ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) },
+            strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
+            displayFeatures = calculateDisplayFeatures(activity = LocalContext.current as Activity)
         )
+//        ReplyDualPaneContent(
+//            replyHomeUIState = replyHomeUIState,
+//            emailLazyListState = emailLazyListState,
+//            modifier = modifier.fillMaxSize(),
+//            navigateToDetail = navigateToDetail
+//        )
     } else {
         Box(modifier = modifier.fillMaxSize()) {
             ReplySinglePaneContent(
@@ -122,14 +133,29 @@ fun ReplySinglePaneContent(
             closeDetailScreen()
         }
     } else {
-        LazyColumn(modifier = modifier, state = emailLazyListState) {
-            item {
-                ReplySearchBar(modifier = Modifier.fillMaxWidth())
-            }
-            items(items = replyHomeUIState.emails, key = { it.id }) { email ->
-                ReplyEmailListItem(email = email) { emailId ->
-                    navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
-                }
+       ReplyEmailList(
+           emails = replyHomeUIState.emails,
+           emailLazyListState = emailLazyListState,
+           modifier = modifier,
+           navigateToDetail = navigateToDetail
+       )
+    }
+}
+
+@Composable
+fun ReplyEmailList(
+    emails: List<Email>,
+    emailLazyListState: LazyListState,
+    modifier: Modifier = Modifier,
+    navigateToDetail: (Long, ReplyContentType) -> Unit
+) {
+    LazyColumn(modifier = modifier, state = emailLazyListState) {
+        item {
+            ReplySearchBar(modifier = Modifier.fillMaxWidth())
+        }
+        items(items = emails, key = { it.id }) { email ->
+            ReplyEmailListItem(email = email) { emailId ->
+                navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
             }
         }
     }
@@ -158,7 +184,7 @@ fun ReplyDualPaneContent(
             }
         }
         ReplyEmailDetail(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).padding(top = 16.dp),
             isFullScreen = false,
             email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()
         )
@@ -172,7 +198,7 @@ fun ReplyEmailDetail(
     modifier: Modifier = Modifier.fillMaxSize(),
     onBackPressed: () -> Unit = {}
 ) {
-    LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)) {
+    LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface).padding(top = 16.dp)) {
         item {
             EmailDetailAppBar(email, isFullScreen) {
                 onBackPressed()

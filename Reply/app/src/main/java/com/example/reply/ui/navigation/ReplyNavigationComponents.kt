@@ -201,7 +201,7 @@ fun PermanentNavigationDrawerContent(
             content = {
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
                 ) {
                     Text(

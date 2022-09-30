@@ -30,7 +30,6 @@
 
     <string name="back_button">Back</string>
     <string name="more_options_button">More options</string>
-    <string name="delete_button">Delete</string>
     <string name="messages">Messages</string>
     <string name="four_hours_ago">4 hrs ago</string>
 </resources>

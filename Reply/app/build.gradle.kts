@@ -106,6 +106,7 @@ dependencies {
     // downgrading to 14 for now until NavRail and Drawer are fixed
     implementation("androidx.compose.material3:material3:1.0.0-beta03")
     implementation(libs.androidx.compose.materialWindow)
+    implementation(libs.accompanist.adaptive)
     implementation(libs.androidx.compose.material.iconsExtended)
 
     implementation(libs.androidx.lifecycle.runtime)

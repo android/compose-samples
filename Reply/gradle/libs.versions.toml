@@ -3,7 +3,7 @@
 # Do not add a dependency to an individual sample, edit the global version instead.
 #####
 [versions]
-accompanist = "0.25.1"
+accompanist = "0.26.2-beta"
 androidGradlePlugin = "7.2.2"
 androidx-activity-compose = "1.5.1"
 androidx-appcompat = "1.5.0"
@@ -54,6 +54,7 @@ secrets = "2.0.1"
 targetSdk = "33"
 
 [libraries]
+accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }

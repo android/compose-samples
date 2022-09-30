@@ -139,15 +139,6 @@ fun EmailDetailAppBar(
                 onClick = { /*TODO*/ },
             ) {
                 Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.delete_button),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            IconButton(
-                onClick = { /*TODO*/ },
-            ) {
-                Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = stringResource(id = R.string.more_options_button),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
