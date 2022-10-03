@@ -64,7 +64,8 @@ class NavActivity : AppCompatActivity() {
                     ) {
                         val drawerState = rememberDrawerState(initialValue = Closed)
 
-                        val drawerOpen by viewModel.drawerShouldBeOpened.collectAsStateWithLifecycle()
+                        val drawerOpen by viewModel.drawerShouldBeOpened
+                            .collectAsStateWithLifecycle()
                         if (drawerOpen) {
                             // Open drawer and reset state in VM.
                             LaunchedEffect(Unit) {

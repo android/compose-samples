@@ -78,12 +78,18 @@ fun ReplyNavigationRail(
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                    // NavigationRailVerticalPadding
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     NavigationRailItem(
                         selected = false,
                         onClick = onDrawerClicked,
-                        icon = { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = stringResource(id = R.string.navigation_drawer)
+                            )
+                        }
                     )
                     FloatingActionButton(
                         onClick = { /*TODO*/ },
@@ -104,7 +110,8 @@ fun ReplyNavigationRail(
                 Column(
                     modifier = Modifier.layoutId(LayoutType.CONTENT),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                    // NavigationRailVerticalPadding
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                         NavigationRailItem(
@@ -113,7 +120,8 @@ fun ReplyNavigationRail(
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(id = replyDestination.iconTextId)
+                                    contentDescription =
+                                    stringResource(id = replyDestination.iconTextId)
                                 )
                             }
                         )
@@ -168,7 +176,12 @@ fun ReplyBottomNavigationBar(
             NavigationBarItem(
                 selected = selectedDestination == replyDestination.route,
                 onClick = { navigateToTopLevelDestination(replyDestination) },
-                icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription = stringResource(id = replyDestination.iconTextId)) }
+                icon = {
+                    Icon(
+                        imageVector = replyDestination.selectedIcon,
+                        contentDescription = stringResource(id = replyDestination.iconTextId)
+                    )
+                }
             )
         }
     }
@@ -183,9 +196,12 @@ fun NavigationDrawerContent(
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
-    // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
+    // TODO remove custom nav drawer content positioning
+    // when NavDrawer component supports it. ticket : b/232495216
     Layout(
-        modifier = Modifier.background(MaterialTheme.colorScheme.inverseOnSurface).padding(16.dp),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(16.dp),
         content = {
             Column(
                 modifier = Modifier.layoutId(LayoutType.HEADER),
@@ -244,9 +260,22 @@ fun NavigationDrawerContent(
                 TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                     NavigationDrawerItem(
                         selected = selectedDestination == replyDestination.route,
-                        label = { Text(text = stringResource(id = replyDestination.iconTextId), modifier = Modifier.padding(horizontal = 16.dp)) },
-                        icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription = stringResource(id = replyDestination.iconTextId)) },
-                        colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+                        label = {
+                            Text(
+                                text = stringResource(id = replyDestination.iconTextId),
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = replyDestination.selectedIcon,
+                                contentDescription =
+                                stringResource(id = replyDestination.iconTextId)
+                            )
+                        },
+                        colors = NavigationDrawerItemDefaults.colors(
+                            unselectedContainerColor = Color.Transparent
+                        ),
                         onClick = { navigateToTopLevelDestination(replyDestination) }
                     )
                 }

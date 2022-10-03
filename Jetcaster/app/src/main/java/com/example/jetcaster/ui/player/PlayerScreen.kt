@@ -88,8 +88,8 @@ import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
 import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Stateful version of the Podcast player

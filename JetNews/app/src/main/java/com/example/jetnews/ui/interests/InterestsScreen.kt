@@ -75,8 +75,8 @@ import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.theme.JetnewsTheme
-import kotlinx.coroutines.runBlocking
 import kotlin.math.max
+import kotlinx.coroutines.runBlocking
 
 enum class Sections(@StringRes val titleResId: Int) {
     Topics(R.string.interests_section_topics),
@@ -133,7 +133,9 @@ fun InterestsScreen(
                         IconButton(onClick = openDrawer) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_jetnews_logo),
-                                contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                                contentDescription = stringResource(
+                                    R.string.cd_open_navigation_drawer
+                                ),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -153,7 +155,10 @@ fun InterestsScreen(
         }
     ) { innerPadding ->
         val screenModifier = Modifier.padding(innerPadding)
-        InterestScreenContent(currentSection, isExpandedScreen, onTabChange, tabContent, screenModifier)
+        InterestScreenContent(
+            currentSection, isExpandedScreen,
+            onTabChange, tabContent, screenModifier
+        )
     }
 }
 
