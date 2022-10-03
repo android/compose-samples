@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+@file:Suppress("ktlint:max-line-length") // String constants read better
 package androidx.compose.samples.crane.data
 
 import javax.inject.Inject
@@ -26,7 +27,6 @@ private const val DEFAULT_IMAGE_WIDTH = "250"
  */
 @Singleton
 class DestinationsLocalDataSource @Inject constructor() {
-
     val craneRestaurants = listOf(
         ExploreModel(
             city = NAPLES,

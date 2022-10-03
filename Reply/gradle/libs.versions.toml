@@ -1,5 +1,9 @@
+#####
+# This file is duplicated to individual samples from the global scripts/libs.versions.toml
+# Do not add a dependency to an individual sample, edit the global version instead.
+#####
 [versions]
-accompanist = "0.26.3-beta"
+accompanist = "0.26.4-beta"
 androidGradlePlugin = "7.3.0"
 androidx-activity-compose = "1.5.1"
 androidx-appcompat = "1.5.0"
@@ -8,6 +12,7 @@ androidx-benchmark-junit4 = "1.1.0-beta04"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.8.0"
 androidx-lifecycle-compose = "2.5.1"
+androidx-lifecycle-runtime-compose = "2.6.0-alpha02" # merge with above when not alpha
 androidx-navigation = "2.5.1"
 androidx-palette = "1.0.0"
 androidx-test = "1.4.0"
@@ -45,7 +50,6 @@ robolectric = "4.5.1"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
-spotless = "6.9.1"
 # @keep
 targetSdk = "33"
 
@@ -84,6 +88,7 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-compose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle-compose" }
@@ -123,4 +128,3 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 secrets-gradlePlugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secrets" }
-spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }

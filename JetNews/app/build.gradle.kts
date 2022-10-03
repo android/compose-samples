@@ -97,7 +97,6 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
-    // TODO: Replace when all samples use the same Material3 & Compose version
     implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.material.iconsExtended)
@@ -136,7 +135,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     // Robolectric dependencies
-    // TODO: Replace when all samples use the same Material3 & Compose version
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.robolectric)
 }

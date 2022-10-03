@@ -111,7 +111,10 @@ internal fun Day(
     val selected = calendarState.isDateInSelectedPeriod(day)
     DayContainer(
         modifier = modifier.semantics {
-            text = AnnotatedString("${month.month.name.lowercase().capitalize(Locale.current)} ${day.dayOfMonth} ${month.year}")
+            text = AnnotatedString(
+                "${month.month.name.lowercase().capitalize(Locale.current)} " +
+                    "${day.dayOfMonth} ${month.year}"
+            )
             dayStatusProperty = selected
         },
         selected = selected,

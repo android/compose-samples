@@ -54,7 +54,10 @@ class MainActivity : ComponentActivity() {
                     isBookPosture(foldingFeature) ->
                         DevicePosture.BookPosture(foldingFeature.bounds)
                     isSeparatingPosture(foldingFeature) ->
-                        DevicePosture.SeparatingPosture(foldingFeature.bounds, foldingFeature.orientation)
+                        DevicePosture.SeparatingPosture(
+                            foldingFeature.bounds,
+                            foldingFeature.orientation
+                        )
                     else -> DevicePosture.NormalPosture
                 }
             }

@@ -746,7 +746,6 @@ private fun SliderQuestion(
                     .padding(horizontal = 16.dp)
             )
         }
-        
     }
     Row {
         Text(

@@ -42,3 +42,12 @@ cp scripts/toml-updater-config.gradle Jetsnack/buildscripts/toml-updater-config.
 cp scripts/toml-updater-config.gradle Jetsurvey/buildscripts/toml-updater-config.gradle
 cp scripts/toml-updater-config.gradle Owl/buildscripts/toml-updater-config.gradle
 cp scripts/toml-updater-config.gradle Reply/buildscripts/toml-updater-config.gradle
+
+cp scripts/init.gradle.kts Crane/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts Jetcaster/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts Jetchat/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts JetNews/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts Jetsnack/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts Jetsurvey/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts Owl/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts Reply/buildscripts/init.gradle.kts

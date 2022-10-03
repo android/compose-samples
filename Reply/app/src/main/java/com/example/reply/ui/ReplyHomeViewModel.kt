@@ -48,7 +48,10 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
                     /**
                      * We set first email selected by default for first App launch in large-screens
                      */
-                    _uiState.value = ReplyHomeUIState(emails = emails, selectedEmail = emails.first())
+                    _uiState.value = ReplyHomeUIState(
+                        emails = emails,
+                        selectedEmail = emails.first()
+                    )
                 }
         }
     }
