@@ -16,16 +16,12 @@
 
 ########################################################################
 #
-# Verifies samples build, lint error free and are formatted correctly.
+# Automatically apply code formatting to samples
 #
-# Example: ./scripts/verify_samples.sh
+# Example: ./scripts/format.sh
 #
 ########################################################################
 
 set -xe
 
-./scripts/gradlew_recursive.sh assembleDebug
-./scripts/gradlew_recursive.sh lintDebug
-if ! ./scripts/gradlew_recursive.sh --init-script buildscripts/init.gradle.kts spotlessCheck ; then
-    echo "Formatting error. Try running scripts/format.sh"
-fi
+./scripts/gradlew_recursive.sh --init-script buildscripts/init.gradle.kts spotlessApply

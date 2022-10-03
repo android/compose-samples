@@ -58,7 +58,8 @@ fun ReplyInboxScreen(
     modifier: Modifier = Modifier
 ) {
     /**
-     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
+     * When moving from LIST_AND_DETAIL page to LIST page clear the selection
+     * and user should see LIST screen.
      */
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
@@ -147,7 +148,11 @@ fun ReplyDualPaneContent(
                 ReplySearchBar(modifier = Modifier.fillMaxWidth())
             }
             items(items = replyHomeUIState.emails, key = { it.id }) { email ->
-                ReplyEmailListItem(email = email, isSelectable = true, isSelected = replyHomeUIState.selectedEmail?.id == email.id) {
+                ReplyEmailListItem(
+                    email = email,
+                    isSelectable = true,
+                    isSelected = replyHomeUIState.selectedEmail?.id == email.id
+                ) {
                     navigateToDetail(it, ReplyContentType.DUAL_PANE)
                 }
             }

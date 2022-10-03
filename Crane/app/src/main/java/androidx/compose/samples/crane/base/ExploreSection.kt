@@ -103,7 +103,8 @@ fun ExploreSection(
                         GridItemSpan(maxLineSpan)
                     }) {
                         Spacer(
-                            modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars)
+                            modifier = Modifier
+                                .windowInsetsBottomHeight(WindowInsets.navigationBars)
                         )
                     }
                 }

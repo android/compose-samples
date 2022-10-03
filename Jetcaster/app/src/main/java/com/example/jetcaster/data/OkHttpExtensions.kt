@@ -16,13 +16,13 @@
 
 package com.example.jetcaster.data
 
+import java.io.IOException
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
-import java.io.IOException
-import kotlin.coroutines.resumeWithException
 
 /**
  * Suspending wrapper around an OkHttp [Call], using [Call.enqueue].

@@ -41,9 +41,9 @@ jobs:
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
 
-      - name: Check spotless
+      - name: Check formatting
         working-directory: ${{ inputs.path }}
-        run: ./gradlew spotlessCheck --stacktrace
+        run: ./gradlew --init-script buildscripts/init.gradle.kts spotlessCheck --stacktrace
 
       - name: Check lint
         working-directory: ${{ inputs.path }}

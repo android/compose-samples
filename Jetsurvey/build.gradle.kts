@@ -27,7 +27,6 @@ buildscript {
     dependencies {
         classpath(libs.android.gradlePlugin)
         classpath(libs.kotlin.gradlePlugin)
-        classpath(libs.spotless.gradlePlugin)
     }
 }
 
@@ -35,17 +34,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-    }
-
-    pluginManager.apply("com.diffplug.spotless")
-    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-        kotlin {
-            target("**/*.kt")
-            targetExclude("$buildDir/**/*.kt")
-            targetExclude("bin/**/*.kt")
-
-            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
-        }
     }
 }
 

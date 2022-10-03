@@ -40,8 +40,16 @@ fun SelectTopicButton(
     selected: Boolean = false
 ) {
     val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
-    val iconColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
-    val borderColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+    val iconColor = if (selected) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+    val borderColor = if (selected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+    }
     val backgroundColor = if (selected) {
         MaterialTheme.colorScheme.primary
     } else {
