@@ -153,8 +153,10 @@ class ConversationTest {
     }
 
     private fun findJumpToBottom() =
-        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.jumpBottom),
-            useUnmergedTree = true)
+        composeTestRule.onNodeWithText(
+            composeTestRule.activity.getString(R.string.jumpBottom),
+            useUnmergedTree = true
+        )
 
     private fun openEmojiSelector() =
         composeTestRule
