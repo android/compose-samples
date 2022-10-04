@@ -42,6 +42,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.window.layout.DisplayFeature
+import androidx.window.layout.FoldingFeature
 import com.example.reply.ui.navigation.ModalNavigationDrawerContent
 import com.example.reply.ui.navigation.PermanentNavigationDrawerContent
 import com.example.reply.ui.navigation.ReplyBottomNavigationBar
@@ -53,13 +55,15 @@ import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import com.example.reply.ui.utils.ReplyNavigationType
+import com.example.reply.ui.utils.isBookPosture
+import com.example.reply.ui.utils.isSeparating
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyApp(
     windowSize: WindowSizeClass,
-    foldingDevicePosture: DevicePosture,
+    displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
     navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> }
@@ -67,12 +71,26 @@ fun ReplyApp(
     /**
      * This will help us select type of navigation and content type depending on window size and
      * fold state of the device.
-     *
-     * In the state of folding device If it's half fold in BookPosture we want to avoid content
-     * at the crease/hinge
      */
     val navigationType: ReplyNavigationType
     val contentType: ReplyContentType
+
+    /**
+     * We are using display's folding features to map the device postures a fold is in.
+     * In the state of folding device If it's half fold in BookPosture we want to avoid content
+     * at the crease/hinge
+     */
+    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+
+    val foldingDevicePosture = when {
+        isBookPosture(foldingFeature) ->
+            DevicePosture.BookPosture(foldingFeature.bounds)
+
+        isSeparating(foldingFeature) ->
+            DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
+
+        else -> DevicePosture.NormalPosture
+    }
 
     when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {

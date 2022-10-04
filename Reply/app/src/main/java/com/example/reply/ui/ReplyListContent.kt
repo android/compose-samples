@@ -63,8 +63,7 @@ fun ReplyInboxScreen(
     modifier: Modifier = Modifier
 ) {
     /**
-     * When moving from LIST_AND_DETAIL page to LIST page clear the selection
-     * and user should see LIST screen.
+     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
      */
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
@@ -76,17 +75,22 @@ fun ReplyInboxScreen(
 
     if (contentType == ReplyContentType.DUAL_PANE) {
         TwoPane(
-            first = { ReplyEmailList(emails = replyHomeUIState.emails, emailLazyListState = emailLazyListState, navigateToDetail = navigateToDetail) },
-            second = { ReplyEmailDetail(email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()) },
+            first = {
+                ReplyEmailList(
+                    emails = replyHomeUIState.emails,
+                    emailLazyListState = emailLazyListState,
+                    navigateToDetail = navigateToDetail
+                )
+            },
+            second = {
+                ReplyEmailDetail(
+                    email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first(),
+                    isFullScreen = false
+                )
+             },
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
             displayFeatures = calculateDisplayFeatures(activity = LocalContext.current as Activity)
         )
-//        ReplyDualPaneContent(
-//            replyHomeUIState = replyHomeUIState,
-//            emailLazyListState = emailLazyListState,
-//            modifier = modifier.fillMaxSize(),
-//            navigateToDetail = navigateToDetail
-//        )
     } else {
         Box(modifier = modifier.fillMaxSize()) {
             ReplySinglePaneContent(
@@ -158,36 +162,6 @@ fun ReplyEmailList(
                 navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
             }
         }
-    }
-}
-
-@Composable
-fun ReplyDualPaneContent(
-    replyHomeUIState: ReplyHomeUIState,
-    emailLazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-    navigateToDetail: (Long, ReplyContentType) -> Unit
-) {
-    Row(modifier = modifier) {
-        LazyColumn(modifier = modifier.weight(1f), state = emailLazyListState) {
-            item {
-                ReplySearchBar(modifier = Modifier.fillMaxWidth())
-            }
-            items(items = replyHomeUIState.emails, key = { it.id }) { email ->
-                ReplyEmailListItem(
-                    email = email,
-                    isSelectable = true,
-                    isSelected = replyHomeUIState.selectedEmail?.id == email.id
-                ) {
-                    navigateToDetail(it, ReplyContentType.DUAL_PANE)
-                }
-            }
-        }
-        ReplyEmailDetail(
-            modifier = Modifier.weight(1f).padding(top = 16.dp),
-            isFullScreen = false,
-            email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()
-        )
     }
 }
 
