@@ -23,8 +23,18 @@
 #
 ########################################################################
 
-read -p "Enter compose version e.g. 1.3.0: " compose_ver
-read -p "Enter snapshot ID: " snapshot
+if [ -z "$1" ]; then
+    read -p "Enter compose version e.g. 1.3.0: " compose_ver
+else
+    echo "Using compose version: $1"
+    compose_ver=$1
+fi
+if [ -z "$2" ]; then
+    read -p "Enter snapshot ID: " snapshot
+else 
+    echo "Using compose snapshot: $2"
+    snapshot=$2
+fi
 export COMPOSE_SNAPSHOT_ID=$snapshot
 
 # Switch version to SNAPSHOT
