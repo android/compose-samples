@@ -34,6 +34,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "JetNews"
 include(":app")
-
+rootProject.name = "Jetsurvey"
