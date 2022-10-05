@@ -84,6 +84,12 @@ Looking for a sample that has the following features?
 * [Jetnews - Window Size Classes](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/JetNews/app/src/main/java/com/example/jetnews/ui/MainActivity.kt#L36)
 * [Crane - Window Size Classes](https://github.com/android/compose-samples/blob/e7e8733f9b37d80cdc6e9e05dbabe24ccf20b38f/Crane/app/src/main/java/androidx/compose/samples/crane/home/MainActivity.kt#L72)
 
+## Formatting
+
+To automatically format all samples: Run `./scripts/format.sh`
+To check one sample for errors: Navigate to the sample folder and run `./gradlew --init-script buildscripts/init.gradle.kts spotlessCheck`
+To format one sample: Navigate to the sample folder and run `./gradlew --init-script buildscripts/init.gradle.kts spotlessApply`
+
 ## Updates
 
 To update dependencies to their new stable versions, run:
