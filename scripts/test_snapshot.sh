@@ -22,6 +22,7 @@
 #     ./scripts/test_snapshot.sh
 #
 ########################################################################
+set -e
 
 if [ -z "$1" ]; then
     read -p "Enter compose version e.g. 1.3.0: " compose_ver
@@ -44,7 +45,7 @@ sed -i '' -e 's/^compose = ".*"/compose = "'$compose_ver'-SNAPSHOT"/g' ./scripts
 # Copy to all samples and verify
 ./scripts/duplicate_version_config.sh
 ./scripts/verify_samples.sh
-./scripts/gradlew_recursive testDebug --stacktrace
+./scripts/gradlew_recursive.sh testDebug --stacktrace
 
 # Undo all changes
 mv ./scripts/libs.versions.toml.tmp ./scripts/libs.versions.toml
