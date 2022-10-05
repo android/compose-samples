@@ -37,10 +37,6 @@ jobs:
           CI_COMPOSE_VERSION: ${{ inputs.composeVersion }}
           CI_COMPOSE_SNAPSHOT: ${{ inputs.snapshotID }}
 
-      - name: Run local tests
-        working-directory: ${{ inputs.path }}
-        run: ./gradlew testDebug --stacktrace
-
       - name: Upload build reports
         if: always()
         uses: actions/upload-artifact@v3

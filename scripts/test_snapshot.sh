@@ -44,6 +44,7 @@ sed -i '' -e 's/^compose = ".*"/compose = "'$compose_ver'-SNAPSHOT"/g' ./scripts
 # Copy to all samples and verify
 ./scripts/duplicate_version_config.sh
 ./scripts/verify_samples.sh
+./scripts/gradlew_recursive testDebug --stacktrace
 
 # Undo all changes
 mv ./scripts/libs.versions.toml.tmp ./scripts/libs.versions.toml
