@@ -3,7 +3,7 @@
 # Do not add a dependency to an individual sample, edit the global version instead.
 #####
 [versions]
-accompanist = "0.26.4-beta"
+accompanist = "0.26.5-rc"
 androidGradlePlugin = "7.3.0"
 androidx-activity-compose = "1.5.1"
 androidx-appcompat = "1.5.0"
