@@ -22,7 +22,7 @@
 #     ./scripts/test_snapshot.sh
 #
 ########################################################################
-set -e
+set -xe
 
 if [ -z "$1" ]; then
     read -p "Enter compose version e.g. 1.3.0: " compose_ver
@@ -40,7 +40,11 @@ export COMPOSE_SNAPSHOT_ID=$snapshot
 
 # Switch version to SNAPSHOT
 cp ./scripts/libs.versions.toml ./scripts/libs.versions.toml.tmp
-sed -i '' -e 's/^compose = ".*"/compose = "'$compose_ver'-SNAPSHOT"/g' ./scripts/libs.versions.toml
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' -e 's/^compose = ".*"/compose = "'$compose_ver'-SNAPSHOT"/g' ./scripts/libs.versions.toml
+else
+    sed -i -e 's/^compose = ".*"/compose = "'$compose_ver'-SNAPSHOT"/g' ./scripts/libs.versions.toml
+fi
 
 # Copy to all samples and verify
 ./scripts/duplicate_version_config.sh
