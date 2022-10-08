@@ -217,6 +217,9 @@ fun Password(
             PasswordVisualTransformation()
         },
         isError = passwordState.showErrors(),
+        supportingText = {
+            passwordState.getError()?.let { error -> TextFieldError(textError = error) }
+        },
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = imeAction,
             keyboardType = KeyboardType.Password
@@ -227,8 +230,6 @@ fun Password(
             }
         ),
     )
-
-    passwordState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
 /**

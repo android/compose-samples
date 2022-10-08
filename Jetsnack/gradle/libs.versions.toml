@@ -28,9 +28,9 @@ compileSdk = "33"
 compose = "1.3.0-rc01"
 compose-compiler = "1.3.2"
 # @pin to be updated manually - check JetChat tests
-compose-material3 = "1.0.0-beta03"
+compose-material3 = "1.0.0-rc01"
 # @pin to be updated manually - check JetChat tests
-compose-materialWindow = "1.0.0-beta03"
+compose-materialWindow = "1.0.0-rc01"
 compose-snapshot = "-"
 coroutines = "1.6.4"
 google-maps = "18.1.0"
