@@ -64,11 +64,11 @@ Using the example of the home screen in the [`com.example.jetcaster.ui.home`](ap
 
  - The ViewModel is implemented as [`HomeViewModel`][homevm], which exposes a `StateFlow<HomeViewState>` for the UI to observe.
  - [`HomeViewState`][homevm] contains the complete view state for the home screen as an [`@Immutable`](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable) `data class`.
- - The Home Compose UI in [`Home.kt`][homeui] uses [`HomeViewModel`][homevm], and observes it's [`HomeViewState`][homevm] as Compose [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State), using [`collectAsState()`](https://developer.android.com/reference/kotlin/androidx/compose/package-summary#collectasstate):
+ - The Home Compose UI in [`Home.kt`][homeui] uses [`HomeViewModel`][homevm], and observes it's [`HomeViewState`][homevm] as Compose [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State), using [`collectAsStateWithLifecycle()`](https://developer.android.com/reference/kotlin/androidx/compose/package-summary#collectasstate):
 
 ``` kotlin
 val viewModel: HomeViewModel = viewModel()
-val viewState by viewModel.state.collectAsState()
+val viewState by viewModel.state.collectAsStateWithLifecycle()
 ```
 
 This pattern is used across the different screens:

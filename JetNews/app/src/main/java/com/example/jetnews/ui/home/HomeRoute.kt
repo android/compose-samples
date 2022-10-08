@@ -21,10 +21,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreenType.ArticleDetails
 import com.example.jetnews.ui.home.HomeScreenType.Feed
@@ -40,6 +41,7 @@ import com.example.jetnews.ui.home.HomeScreenType.FeedWithArticleDetails
  * @param openDrawer (event) request opening the app drawer
  * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel,
@@ -48,7 +50,7 @@ fun HomeRoute(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     // UiState of the HomeScreen
-    val uiState by homeViewModel.uiState.collectAsState()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
     HomeRoute(
         uiState = uiState,

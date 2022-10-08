@@ -30,22 +30,24 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabPosition
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.ui.home.category.PodcastCategory
 import com.example.jetcaster.ui.theme.Keyline1
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Discover(
     navigateToPlayer: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: DiscoverViewModel = viewModel()
-    val viewState by viewModel.state.collectAsState()
+    val viewState by viewModel.state.collectAsStateWithLifecycle()
 
     val selectedCategory = viewState.selectedCategory
 
