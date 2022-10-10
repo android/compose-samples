@@ -56,7 +56,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +67,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
@@ -90,12 +91,13 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Home(
     navigateToPlayer: (String) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
-    val viewState by viewModel.state.collectAsState()
+    val viewState by viewModel.state.collectAsStateWithLifecycle()
     Surface(Modifier.fillMaxSize()) {
         HomeContent(
             featuredPodcasts = viewState.featuredPodcasts,

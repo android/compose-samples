@@ -49,7 +49,6 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -68,6 +67,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -85,6 +86,7 @@ import com.example.jetcaster.util.viewModelProviderFactoryOf
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun PodcastCategory(
     categoryId: Long,
@@ -101,7 +103,7 @@ fun PodcastCategory(
         factory = viewModelProviderFactoryOf { PodcastCategoryViewModel(categoryId) }
     )
 
-    val viewState by viewModel.state.collectAsState()
+    val viewState by viewModel.state.collectAsStateWithLifecycle()
 
     /**
      * TODO: reset scroll position when category changes

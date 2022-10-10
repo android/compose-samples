@@ -40,7 +40,7 @@ private val initialMessages = listOf(
     ),
     Message(
         "Taylor Brooks",
-        "@aliconors Take a look at the `Flow.collectAsState()` APIs",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
         "8:05 PM"
     ),
     Message(
