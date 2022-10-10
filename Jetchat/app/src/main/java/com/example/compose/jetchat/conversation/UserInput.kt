@@ -129,7 +129,9 @@ fun UserInput(
         BackPressHandler(onBackPressed = dismissKeyboard)
     }
 
-    var textState by remember { mutableStateOf(TextFieldValue()) }
+    var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue())
+    }
 
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
