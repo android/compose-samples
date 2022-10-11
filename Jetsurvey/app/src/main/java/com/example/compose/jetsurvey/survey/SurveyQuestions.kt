@@ -23,7 +23,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -732,20 +731,18 @@ private fun SliderQuestion(
         mutableStateOf(answer?.answerValue ?: possibleAnswer.defaultValue)
     }
     Row(modifier = modifier) {
-        // TODO: Remove extra Box after https://issuetracker.google.com/248164773 is fixed
-        Box(Modifier.weight(1f)) {
-            Slider(
-                value = sliderPosition,
-                onValueChange = {
-                    sliderPosition = it
-                    onAnswerSelected(it)
-                },
-                valueRange = possibleAnswer.range,
-                steps = possibleAnswer.steps,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            )
-        }
+        Slider(
+            value = sliderPosition,
+            onValueChange = {
+                sliderPosition = it
+                onAnswerSelected(it)
+            },
+            valueRange = possibleAnswer.range,
+            steps = possibleAnswer.steps,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .weight(1f)
+        )
     }
     Row {
         Text(
