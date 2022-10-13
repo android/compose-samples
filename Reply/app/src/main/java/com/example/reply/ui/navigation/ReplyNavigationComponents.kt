@@ -86,7 +86,12 @@ fun ReplyNavigationRail(
                     NavigationRailItem(
                         selected = false,
                         onClick = onDrawerClicked,
-                        icon = { Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(id = R.string.navigation_drawer)) }
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = stringResource(id = R.string.navigation_drawer)
+                            )
+                        }
                     )
                     FloatingActionButton(
                         onClick = { /*TODO*/ },
@@ -116,7 +121,9 @@ fun ReplyNavigationRail(
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(id = replyDestination.iconTextId)
+                                    contentDescription = stringResource(
+                                        id = replyDestination.iconTextId
+                                    )
                                 )
                             }
                         )
@@ -171,7 +178,12 @@ fun ReplyBottomNavigationBar(
             NavigationBarItem(
                 selected = selectedDestination == replyDestination.route,
                 onClick = { navigateToTopLevelDestination(replyDestination) },
-                icon = { Icon(imageVector = replyDestination.selectedIcon, contentDescription = stringResource(id = replyDestination.iconTextId)) }
+                icon = {
+                    Icon(
+                        imageVector = replyDestination.selectedIcon,
+                        contentDescription = stringResource(id = replyDestination.iconTextId)
+                    )
+                }
             )
         }
     }
@@ -242,10 +254,14 @@ fun PermanentNavigationDrawerContent(
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(id = replyDestination.iconTextId)
+                                    contentDescription = stringResource(
+                                        id = replyDestination.iconTextId
+                                    )
                                 )
                             },
-                            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent)
+                            ,
                             onClick = { navigateToTopLevelDestination(replyDestination) }
                         )
                     }
@@ -369,10 +385,14 @@ fun ModalNavigationDrawerContent(
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(id = replyDestination.iconTextId)
+                                    contentDescription = stringResource(
+                                        id = replyDestination.iconTextId
+                                    )
                                 )
                             },
-                            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent
+                            ),
                             onClick = { navigateToTopLevelDestination(replyDestination) }
                         )
                     }
