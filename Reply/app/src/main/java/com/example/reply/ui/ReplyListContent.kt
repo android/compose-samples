@@ -85,7 +85,7 @@ fun ReplyInboxScreen(
                     email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first(),
                     isFullScreen = false
                 )
-             },
+            },
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
             displayFeatures = displayFeatures
         )
@@ -135,12 +135,12 @@ fun ReplySinglePaneContent(
             closeDetailScreen()
         }
     } else {
-       ReplyEmailList(
-           emails = replyHomeUIState.emails,
-           emailLazyListState = emailLazyListState,
-           modifier = modifier,
-           navigateToDetail = navigateToDetail
-       )
+        ReplyEmailList(
+            emails = replyHomeUIState.emails,
+            emailLazyListState = emailLazyListState,
+            modifier = modifier,
+            navigateToDetail = navigateToDetail
+        )
     }
 }
 

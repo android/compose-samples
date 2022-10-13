@@ -32,7 +32,9 @@ fun ReplyProfileImage(
     modifier: Modifier = Modifier
 ) {
     Image(
-        modifier = modifier.size(40.dp).clip(CircleShape),
+        modifier = modifier
+            .size(40.dp)
+            .clip(CircleShape),
         painter = painterResource(id = drawableResource),
         contentDescription = description,
     )

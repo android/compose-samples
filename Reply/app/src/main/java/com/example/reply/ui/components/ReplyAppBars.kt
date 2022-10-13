@@ -94,7 +94,8 @@ fun EmailDetailAppBar(
         title = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = if (isFullScreen) Alignment.CenterHorizontally else Alignment.Start
+                horizontalAlignment = if (isFullScreen) Alignment.CenterHorizontally
+                else Alignment.Start
             ) {
                 Text(
                     text = email.subject,

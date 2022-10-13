@@ -81,7 +81,7 @@ fun ReplyNavigationRail(
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     NavigationRailItem(
                         selected = false,
@@ -112,7 +112,7 @@ fun ReplyNavigationRail(
                 Column(
                     modifier = Modifier.layoutId(LayoutType.CONTENT),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                         NavigationRailItem(
@@ -206,7 +206,7 @@ fun PermanentNavigationDrawerContent(
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
                         modifier = Modifier
@@ -260,8 +260,8 @@ fun PermanentNavigationDrawerContent(
                                 )
                             },
                             colors = NavigationDrawerItemDefaults.colors(
-                                unselectedContainerColor = Color.Transparent)
-                            ,
+                                unselectedContainerColor = Color.Transparent
+                            ),
                             onClick = { navigateToTopLevelDestination(replyDestination) }
                         )
                     }
@@ -305,7 +305,6 @@ fun PermanentNavigationDrawerContent(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalNavigationDrawerContent(
@@ -324,7 +323,7 @@ fun ModalNavigationDrawerContent(
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // NavigationRailVerticalPadding
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -435,7 +434,6 @@ fun ModalNavigationDrawerContent(
         )
     }
 }
-
 
 enum class LayoutType {
     HEADER, CONTENT
