@@ -101,10 +101,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    //Material 3 imports
-    //implementation(libs.androidx.compose.material3)
-    // downgrading to 14 for now until NavRail and Drawer are fixed
-    implementation("androidx.compose.material3:material3:1.0.0-alpha15")
+    // custom declaration for latest versions of material 3 and adaptive accompanist
+    implementation("androidx.compose.material3:material3:1.0.0-rc01")
+    implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
+
     implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.material.iconsExtended)
 

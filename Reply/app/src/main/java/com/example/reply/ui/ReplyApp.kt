@@ -40,7 +40,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.reply.ui.navigation.NavigationDrawerContent
+import androidx.window.layout.DisplayFeature
+import androidx.window.layout.FoldingFeature
+import com.example.reply.ui.navigation.ModalNavigationDrawerContent
+import com.example.reply.ui.navigation.PermanentNavigationDrawerContent
 import com.example.reply.ui.navigation.ReplyBottomNavigationBar
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationRail
@@ -50,13 +53,15 @@ import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import com.example.reply.ui.utils.ReplyNavigationType
+import com.example.reply.ui.utils.isBookPosture
+import com.example.reply.ui.utils.isSeparating
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyApp(
     windowSize: WindowSizeClass,
-    foldingDevicePosture: DevicePosture,
+    displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
     navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> }
@@ -64,12 +69,26 @@ fun ReplyApp(
     /**
      * This will help us select type of navigation and content type depending on window size and
      * fold state of the device.
-     *
-     * In the state of folding device If it's half fold in BookPosture we want to avoid content
-     * at the crease/hinge
      */
     val navigationType: ReplyNavigationType
     val contentType: ReplyContentType
+
+    /**
+     * We are using display's folding features to map the device postures a fold is in.
+     * In the state of folding device If it's half fold in BookPosture we want to avoid content
+     * at the crease/hinge
+     */
+    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+
+    val foldingDevicePosture = when {
+        isBookPosture(foldingFeature) ->
+            DevicePosture.BookPosture(foldingFeature.bounds)
+
+        isSeparating(foldingFeature) ->
+            DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
+
+        else -> DevicePosture.NormalPosture
+    }
 
     when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
@@ -118,6 +137,7 @@ fun ReplyApp(
     ReplyNavigationWrapper(
         navigationType = navigationType,
         contentType = contentType,
+        displayFeatures = displayFeatures,
         navigationContentPosition = navigationContentPosition,
         replyHomeUIState = replyHomeUIState,
         closeDetailScreen = closeDetailScreen,
@@ -130,6 +150,7 @@ fun ReplyApp(
 private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
+    displayFeatures: List<DisplayFeature>,
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
@@ -149,9 +170,8 @@ private fun ReplyNavigationWrapper(
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         // TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
-            NavigationDrawerContent(
+            PermanentNavigationDrawerContent(
                 selectedDestination = selectedDestination,
-                isPermanentDrawer = true,
                 navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigationActions::navigateTo,
             )
@@ -159,6 +179,7 @@ private fun ReplyNavigationWrapper(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
+                displayFeatures = displayFeatures,
                 navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
@@ -171,7 +192,7 @@ private fun ReplyNavigationWrapper(
     } else {
         ModalNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent(
+                ModalNavigationDrawerContent(
                     selectedDestination = selectedDestination,
                     navigationContentPosition = navigationContentPosition,
                     navigateToTopLevelDestination = navigationActions::navigateTo,
@@ -187,6 +208,7 @@ private fun ReplyNavigationWrapper(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
+                displayFeatures = displayFeatures,
                 navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
@@ -208,6 +230,7 @@ fun ReplyAppContent(
     modifier: Modifier = Modifier,
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
+    displayFeatures: List<DisplayFeature>,
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     navController: NavHostController,
@@ -234,6 +257,7 @@ fun ReplyAppContent(
             ReplyNavHost(
                 navController = navController,
                 contentType = contentType,
+                displayFeatures = displayFeatures,
                 replyHomeUIState = replyHomeUIState,
                 navigationType = navigationType,
                 closeDetailScreen = closeDetailScreen,
@@ -254,6 +278,7 @@ fun ReplyAppContent(
 private fun ReplyNavHost(
     navController: NavHostController,
     contentType: ReplyContentType,
+    displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
@@ -270,6 +295,7 @@ private fun ReplyNavHost(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
                 navigationType = navigationType,
+                displayFeatures = displayFeatures,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
             )
