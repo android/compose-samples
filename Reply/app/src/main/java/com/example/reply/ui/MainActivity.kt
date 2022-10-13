@@ -29,20 +29,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.window.layout.DisplayFeature
-import androidx.window.layout.FoldingFeature
-import androidx.window.layout.WindowInfoTracker
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ReplyTheme
-import com.example.reply.ui.utils.DevicePosture
-import com.example.reply.ui.utils.isBookPosture
-import com.example.reply.ui.utils.isSeparating
 import com.google.accompanist.adaptive.calculateDisplayFeatures
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 class MainActivity : ComponentActivity() {
 

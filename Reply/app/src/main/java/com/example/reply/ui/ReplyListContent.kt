@@ -16,11 +16,9 @@
 
 package com.example.reply.ui
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,9 +36,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.DisplayFeature
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.components.EmailDetailAppBar
@@ -51,13 +49,13 @@ import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
-import com.google.accompanist.adaptive.calculateDisplayFeatures
 
 @Composable
 fun ReplyInboxScreen(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
+    displayFeatures: List<DisplayFeature>,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     modifier: Modifier = Modifier
@@ -89,7 +87,7 @@ fun ReplyInboxScreen(
                 )
              },
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
-            displayFeatures = calculateDisplayFeatures(activity = LocalContext.current as Activity)
+            displayFeatures = displayFeatures
         )
     } else {
         Box(modifier = modifier.fillMaxSize()) {
@@ -172,7 +170,11 @@ fun ReplyEmailDetail(
     modifier: Modifier = Modifier.fillMaxSize(),
     onBackPressed: () -> Unit = {}
 ) {
-    LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface).padding(top = 16.dp)) {
+    LazyColumn(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(top = 16.dp)
+    ) {
         item {
             EmailDetailAppBar(email, isFullScreen) {
                 onBackPressed()

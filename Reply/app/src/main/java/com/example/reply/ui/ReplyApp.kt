@@ -26,8 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -139,6 +137,7 @@ fun ReplyApp(
     ReplyNavigationWrapper(
         navigationType = navigationType,
         contentType = contentType,
+        displayFeatures = displayFeatures,
         navigationContentPosition = navigationContentPosition,
         replyHomeUIState = replyHomeUIState,
         closeDetailScreen = closeDetailScreen,
@@ -151,6 +150,7 @@ fun ReplyApp(
 private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
+    displayFeatures: List<DisplayFeature>,
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
@@ -179,6 +179,7 @@ private fun ReplyNavigationWrapper(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
+                displayFeatures = displayFeatures,
                 navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
@@ -207,6 +208,7 @@ private fun ReplyNavigationWrapper(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
+                displayFeatures = displayFeatures,
                 navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
@@ -228,6 +230,7 @@ fun ReplyAppContent(
     modifier: Modifier = Modifier,
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
+    displayFeatures: List<DisplayFeature>,
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     navController: NavHostController,
@@ -254,6 +257,7 @@ fun ReplyAppContent(
             ReplyNavHost(
                 navController = navController,
                 contentType = contentType,
+                displayFeatures = displayFeatures,
                 replyHomeUIState = replyHomeUIState,
                 navigationType = navigationType,
                 closeDetailScreen = closeDetailScreen,
@@ -274,6 +278,7 @@ fun ReplyAppContent(
 private fun ReplyNavHost(
     navController: NavHostController,
     contentType: ReplyContentType,
+    displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
@@ -290,6 +295,7 @@ private fun ReplyNavHost(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
                 navigationType = navigationType,
+                displayFeatures = displayFeatures,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
             )
