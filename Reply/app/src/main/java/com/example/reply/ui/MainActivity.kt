@@ -30,18 +30,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.window.layout.FoldingFeature
-import androidx.window.layout.WindowInfoTracker
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ReplyTheme
-import com.example.reply.ui.utils.DevicePosture
-import com.example.reply.ui.utils.isBookPosture
-import com.example.reply.ui.utils.isSeparating
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import com.google.accompanist.adaptive.calculateDisplayFeatures
 
 class MainActivity : ComponentActivity() {
 
@@ -51,41 +42,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /**
-         * Flow of [DevicePosture] that emits every time there's a change in the windowLayoutInfo
-         */
-        val devicePostureFlow = WindowInfoTracker.getOrCreate(this).windowLayoutInfo(this)
-            .flowWithLifecycle(this.lifecycle)
-            .map { layoutInfo ->
-                val foldingFeature =
-                    layoutInfo.displayFeatures
-                        .filterIsInstance<FoldingFeature>()
-                        .firstOrNull()
-                when {
-                    isBookPosture(foldingFeature) ->
-                        DevicePosture.BookPosture(foldingFeature.bounds)
-
-                    isSeparating(foldingFeature) ->
-                        DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
-
-                    else -> DevicePosture.NormalPosture
-                }
-            }
-            .stateIn(
-                scope = lifecycleScope,
-                started = SharingStarted.Eagerly,
-                initialValue = DevicePosture.NormalPosture
-            )
-
         setContent {
             ReplyTheme {
                 val windowSize = calculateWindowSizeClass(this)
-                val devicePosture by devicePostureFlow.collectAsStateWithLifecycle()
+                val displayFeatures = calculateDisplayFeatures(this)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 ReplyApp(
                     windowSize = windowSize,
-                    foldingDevicePosture = devicePosture,
+                    displayFeatures = displayFeatures,
                     replyHomeUIState = uiState,
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
@@ -107,7 +72,7 @@ fun ReplyAppPreview() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(400.dp, 900.dp)),
-            foldingDevicePosture = DevicePosture.NormalPosture,
+            displayFeatures = emptyList(),
         )
     }
 }
@@ -120,7 +85,7 @@ fun ReplyAppPreviewTablet() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(700.dp, 500.dp)),
-            foldingDevicePosture = DevicePosture.NormalPosture
+            displayFeatures = emptyList(),
         )
     }
 }
@@ -133,7 +98,7 @@ fun ReplyAppPreviewTabletPortrait() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(500.dp, 700.dp)),
-            foldingDevicePosture = DevicePosture.NormalPosture
+            displayFeatures = emptyList(),
         )
     }
 }
@@ -146,7 +111,7 @@ fun ReplyAppPreviewDesktop() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(1100.dp, 600.dp)),
-            foldingDevicePosture = DevicePosture.NormalPosture
+            displayFeatures = emptyList(),
         )
     }
 }
@@ -159,7 +124,7 @@ fun ReplyAppPreviewDesktopPortrait() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(600.dp, 1100.dp)),
-            foldingDevicePosture = DevicePosture.NormalPosture
+            displayFeatures = emptyList(),
         )
     }
 }

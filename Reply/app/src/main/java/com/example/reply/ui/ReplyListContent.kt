@@ -19,7 +19,6 @@ package com.example.reply.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.DisplayFeature
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.components.EmailDetailAppBar
@@ -47,19 +47,21 @@ import com.example.reply.ui.components.ReplyEmailThreadItem
 import com.example.reply.ui.components.ReplySearchBar
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
+import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
+import com.google.accompanist.adaptive.TwoPane
 
 @Composable
 fun ReplyInboxScreen(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
+    displayFeatures: List<DisplayFeature>,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     /**
-     * When moving from LIST_AND_DETAIL page to LIST page clear the selection
-     * and user should see LIST screen.
+     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
      */
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
@@ -70,11 +72,22 @@ fun ReplyInboxScreen(
     val emailLazyListState = rememberLazyListState()
 
     if (contentType == ReplyContentType.DUAL_PANE) {
-        ReplyDualPaneContent(
-            replyHomeUIState = replyHomeUIState,
-            emailLazyListState = emailLazyListState,
-            modifier = modifier.fillMaxSize(),
-            navigateToDetail = navigateToDetail
+        TwoPane(
+            first = {
+                ReplyEmailList(
+                    emails = replyHomeUIState.emails,
+                    emailLazyListState = emailLazyListState,
+                    navigateToDetail = navigateToDetail
+                )
+            },
+            second = {
+                ReplyEmailDetail(
+                    email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first(),
+                    isFullScreen = false
+                )
+            },
+            strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
+            displayFeatures = displayFeatures
         )
     } else {
         Box(modifier = modifier.fillMaxSize()) {
@@ -122,46 +135,31 @@ fun ReplySinglePaneContent(
             closeDetailScreen()
         }
     } else {
-        LazyColumn(modifier = modifier, state = emailLazyListState) {
-            item {
-                ReplySearchBar(modifier = Modifier.fillMaxWidth())
-            }
-            items(items = replyHomeUIState.emails, key = { it.id }) { email ->
-                ReplyEmailListItem(email = email) { emailId ->
-                    navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
-                }
-            }
-        }
+        ReplyEmailList(
+            emails = replyHomeUIState.emails,
+            emailLazyListState = emailLazyListState,
+            modifier = modifier,
+            navigateToDetail = navigateToDetail
+        )
     }
 }
 
 @Composable
-fun ReplyDualPaneContent(
-    replyHomeUIState: ReplyHomeUIState,
+fun ReplyEmailList(
+    emails: List<Email>,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-    Row(modifier = modifier) {
-        LazyColumn(modifier = modifier.weight(1f), state = emailLazyListState) {
-            item {
-                ReplySearchBar(modifier = Modifier.fillMaxWidth())
-            }
-            items(items = replyHomeUIState.emails, key = { it.id }) { email ->
-                ReplyEmailListItem(
-                    email = email,
-                    isSelectable = true,
-                    isSelected = replyHomeUIState.selectedEmail?.id == email.id
-                ) {
-                    navigateToDetail(it, ReplyContentType.DUAL_PANE)
-                }
+    LazyColumn(modifier = modifier, state = emailLazyListState) {
+        item {
+            ReplySearchBar(modifier = Modifier.fillMaxWidth())
+        }
+        items(items = emails, key = { it.id }) { email ->
+            ReplyEmailListItem(email = email) { emailId ->
+                navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
             }
         }
-        ReplyEmailDetail(
-            modifier = Modifier.weight(1f),
-            isFullScreen = false,
-            email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first()
-        )
     }
 }
 
@@ -172,7 +170,11 @@ fun ReplyEmailDetail(
     modifier: Modifier = Modifier.fillMaxSize(),
     onBackPressed: () -> Unit = {}
 ) {
-    LazyColumn(modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)) {
+    LazyColumn(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(top = 16.dp)
+    ) {
         item {
             EmailDetailAppBar(email, isFullScreen) {
                 onBackPressed()
