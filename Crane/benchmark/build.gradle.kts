@@ -39,6 +39,9 @@ android {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+
     implementation(libs.androidx.test.ext.junit)
     implementation(libs.androidx.test.espresso.core)
     implementation(libs.androidx.test.uiautomator)
