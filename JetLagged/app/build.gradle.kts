@@ -93,6 +93,9 @@ android {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
