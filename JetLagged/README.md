@@ -13,7 +13,7 @@ Features:
 * Graphics: Custom Paths, Gradients, AGSL shaders
 * Animations
 
-![JetLagged Screenshot](/screenshots/JetLagged_Full.png)
+![JetLagged Screenshot](screenshots/JetLagged_Full.png)
 
 ## License
 
