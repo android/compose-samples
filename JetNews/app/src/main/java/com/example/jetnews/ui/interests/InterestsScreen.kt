@@ -51,7 +51,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -69,6 +68,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
@@ -166,15 +167,16 @@ fun InterestsScreen(
  * Remembers the content for each tab on the Interests screen
  * gathering application data from [InterestsViewModel]
  */
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
     // UiState of the InterestsScreen
-    val uiState by interestsViewModel.uiState.collectAsState()
+    val uiState by interestsViewModel.uiState.collectAsStateWithLifecycle()
 
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
-        val selectedTopics by interestsViewModel.selectedTopics.collectAsState()
+        val selectedTopics by interestsViewModel.selectedTopics.collectAsStateWithLifecycle()
         TabWithSections(
             sections = uiState.topics,
             selectedTopics = selectedTopics,
@@ -183,7 +185,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
     }
 
     val peopleSection = TabContent(Sections.People) {
-        val selectedPeople by interestsViewModel.selectedPeople.collectAsState()
+        val selectedPeople by interestsViewModel.selectedPeople.collectAsStateWithLifecycle()
         TabWithTopics(
             topics = uiState.people,
             selectedTopics = selectedPeople,
@@ -192,7 +194,8 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
     }
 
     val publicationSection = TabContent(Sections.Publications) {
-        val selectedPublications by interestsViewModel.selectedPublications.collectAsState()
+        val selectedPublications by interestsViewModel.selectedPublications
+            .collectAsStateWithLifecycle()
         TabWithTopics(
             topics = uiState.publications,
             selectedTopics = selectedPublications,

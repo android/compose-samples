@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -108,7 +107,7 @@ fun ConversationContent(
 
     val scrollState = rememberLazyListState()
     val topBarState = rememberTopAppBarState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topBarState) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val scope = rememberCoroutineScope()
 
     Surface(modifier = modifier) {
@@ -148,8 +147,6 @@ fun ConversationContent(
                 channelMembers = uiState.channelMembers,
                 onNavIconPressed = onNavIconPressed,
                 scrollBehavior = scrollBehavior,
-                // Use statusBarsPadding() to move the app bar content below the status bar
-                modifier = Modifier.statusBarsPadding(),
             )
         }
     }

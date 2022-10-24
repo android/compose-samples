@@ -79,7 +79,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -729,7 +731,6 @@ private fun SliderQuestion(
         mutableStateOf(answer?.answerValue ?: possibleAnswer.defaultValue)
     }
     Row(modifier = modifier) {
-
         Slider(
             value = sliderPosition,
             onValueChange = {
@@ -739,8 +740,8 @@ private fun SliderQuestion(
             valueRange = possibleAnswer.range,
             steps = possibleAnswer.steps,
             modifier = Modifier
-                .weight(1f)
                 .padding(horizontal = 16.dp)
+                .weight(1f)
         )
     }
     Row {

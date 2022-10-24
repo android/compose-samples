@@ -19,6 +19,7 @@ package com.example.compose.jetchat.components
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -36,10 +37,12 @@ fun JetchatDrawer(
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                JetchatDrawerContent(
-                    onProfileClicked = onProfileClicked,
-                    onChatClicked = onChatClicked
-                )
+                ModalDrawerSheet {
+                    JetchatDrawerContent(
+                        onProfileClicked = onProfileClicked,
+                        onChatClicked = onChatClicked
+                    )
+                }
             },
             content = content
         )

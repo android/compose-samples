@@ -53,7 +53,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -70,6 +69,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
@@ -86,13 +87,14 @@ import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Cart(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
-    val orderLines by viewModel.orderLines.collectAsState()
+    val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
     Cart(
         orderLines = orderLines,

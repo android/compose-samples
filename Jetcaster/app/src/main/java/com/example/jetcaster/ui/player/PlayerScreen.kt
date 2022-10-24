@@ -59,7 +59,6 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +76,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -94,6 +95,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Stateful version of the Podcast player
  */
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
@@ -101,7 +103,7 @@ fun PlayerScreen(
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    val devicePostureValue by devicePosture.collectAsState()
+    val devicePostureValue by devicePosture.collectAsStateWithLifecycle()
     PlayerScreen(uiState, devicePostureValue, onBackPress)
 }
 

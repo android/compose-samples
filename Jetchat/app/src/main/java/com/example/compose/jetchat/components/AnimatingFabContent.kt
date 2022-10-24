@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.util.lerp
 import kotlin.math.roundToInt
@@ -42,7 +43,7 @@ fun AnimatingFabContent(
     extended: Boolean = true
 ) {
     val currentState = if (extended) ExpandableFabStates.Extended else ExpandableFabStates.Collapsed
-    val transition = updateTransition(currentState)
+    val transition = updateTransition(currentState, "fab_transition")
 
     val textOpacity by transition.animateFloat(
         transitionSpec = {
@@ -58,9 +59,10 @@ fun AnimatingFabContent(
                     durationMillis = (transitionDuration / 12f * 5).roundToInt() // 5 / 12 frames
                 )
             }
-        }
-    ) { progress ->
-        if (progress == ExpandableFabStates.Collapsed) {
+        },
+        label = "fab_text_opacity"
+    ) { state ->
+        if (state == ExpandableFabStates.Collapsed) {
             0f
         } else {
             1f
@@ -79,15 +81,17 @@ fun AnimatingFabContent(
                     durationMillis = transitionDuration
                 )
             }
-        }
-    ) { progress ->
-        if (progress == ExpandableFabStates.Collapsed) {
+        },
+        label = "fab_width_factor"
+    ) { state ->
+        if (state == ExpandableFabStates.Collapsed) {
             0f
         } else {
             1f
         }
     }
-    // Using functions instead of Floats here can improve performance, preventing recompositions.
+    // Deferring reads using lambdas instead of Floats here can improve performance,
+    // preventing recompositions.
     IconAndTextRow(
         icon,
         text,
@@ -101,7 +105,7 @@ fun AnimatingFabContent(
 private fun IconAndTextRow(
     icon: @Composable () -> Unit,
     text: @Composable () -> Unit,
-    opacityProgress: () -> Float, // Functions instead of Floats, to slightly improve performance
+    opacityProgress: () -> Float, // Lambdas instead of Floats, to defer read
     widthProgress: () -> Float,
     modifier: Modifier
 ) {
@@ -109,7 +113,7 @@ private fun IconAndTextRow(
         modifier = modifier,
         content = {
             icon()
-            Box(modifier = Modifier.alpha(opacityProgress())) {
+            Box(modifier = Modifier.graphicsLayer { alpha = opacityProgress() }) {
                 text()
             }
         }

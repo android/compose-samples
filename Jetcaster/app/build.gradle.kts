@@ -87,6 +87,10 @@ android {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
@@ -105,6 +109,7 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.window)
