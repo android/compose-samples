@@ -43,13 +43,11 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -323,9 +321,6 @@ private fun SingleChoiceQuestion(
                     RadioButton(
                         selected = optionSelected,
                         onClick = onClickHandle,
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = MaterialTheme.colorScheme.primary
-                        )
                     )
                 }
             }
@@ -409,9 +404,6 @@ private fun SingleChoiceIconQuestion(
                     RadioButton(
                         selected = optionSelected,
                         onClick = onClickHandle,
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = MaterialTheme.colorScheme.primary
-                        )
                     )
                 }
             }
@@ -474,9 +466,6 @@ private fun MultipleChoiceQuestion(
                             checkedState = selected
                             onAnswerSelected(option.value, selected)
                         },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = MaterialTheme.colorScheme.primary
-                        ),
                     )
                 }
             }
@@ -546,9 +535,6 @@ private fun MultipleChoiceIconQuestion(
                             checkedState = selected
                             onAnswerSelected(option.value.second, selected)
                         },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = MaterialTheme.colorScheme.primary
-                        ),
                     )
                 }
             }
