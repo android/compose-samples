@@ -3,7 +3,7 @@
 This sample is a [Jetpack Compose][compose] implementation of [Reply][reply], a material design study for adaptive design.
 
 To try out this sample app, you need to use 
-[Android Studio Canary](https://developer.android.com/studio).
+[Android Studio](https://developer.android.com/studio).
 [Resizeable Emulator](https://developer.android.com/about/versions/12/12L/get#resizable-emulator)
 You can clone this repository or import the
 project from Android Studio following the steps
