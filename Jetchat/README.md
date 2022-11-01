@@ -21,6 +21,8 @@ This sample showcases:
 * Material Design 3 theming and Material You dynamic color
 * UI tests
 
+## Screenshots
+
 <img src="screenshots/jetchat.gif"/>
 
 ### Status: 🚧 In progress
