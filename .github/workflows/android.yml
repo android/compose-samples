@@ -1,0 +1,40 @@
+name: Update Versions / Dependencies
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Copy CI gradle.properties
+      run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Update dependencies
+      run: ./scripts/updateDeps.sh
+    - name: Duplicate version configuration
+      run: ./scripts/duplicate_version_config.sh
+    - name: Verify samples
+      run: ./scripts/verify_samples.sh
+    - name: Create pull request
+      id: cpr
+      uses: peter-evans/create-pull-request@v4
+      with:
+        token: ${{ secrets.PAT }}
+        commit-message: 🤖 Update Dependencies
+        committer: GitHub <noreply@github.com>
+        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: bot-update-deps
+        delete-branch: true
+        title: '🤖 Update Dependencies'
+        body: Updated depedencies
