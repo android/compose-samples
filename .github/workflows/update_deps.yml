@@ -21,8 +21,6 @@ jobs:
       run: ./scripts/updateDeps.sh
     - name: Duplicate version configuration
       run: ./scripts/duplicate_version_config.sh
-    - name: Verify samples
-      run: ./scripts/verify_samples.sh
     - name: Create pull request
       id: cpr
       uses: peter-evans/create-pull-request@v4
