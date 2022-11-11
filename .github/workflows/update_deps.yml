@@ -17,8 +17,6 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
     - name: Update dependencies
       run: ./scripts/updateDeps.sh
     - name: Duplicate version configuration
