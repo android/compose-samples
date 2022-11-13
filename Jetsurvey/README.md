@@ -12,7 +12,7 @@ project from Android Studio following the steps
 
 Screenshots
 -----------
- <img src="screenshots/survey.gif" width="425"/>
+ <img src="screenshots/screenshots.png" width="425"/>
 
 ## Features
 

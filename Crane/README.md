@@ -12,7 +12,7 @@ project from Android Studio following the steps
 
 ## Screenshots
 
-<img src="screenshots/crane.gif"/>
+<img src="screenshots/screenshots.png"/>
 
 ## Features
 

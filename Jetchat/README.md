@@ -23,7 +23,7 @@ This sample showcases:
 
 ## Screenshots
 
-<img src="screenshots/jetchat.gif"/>
+<img src="screenshots/screenshots.png"/>
 
 ### Status: 🚧 In progress
 

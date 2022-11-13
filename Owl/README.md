@@ -16,7 +16,7 @@ This sample showcases:
 
 ## Screenshots
 
-<img src="screenshots/owl.gif"/>
+<img src="screenshots/screenshots.png"/>
 
 ## Features
 

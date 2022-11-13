@@ -13,7 +13,9 @@ Features:
 * Graphics: Custom Paths, Gradients, AGSL shaders
 * Animations
 
-<img src="screenshots/JetLagged_Full.png" alt="JetLagged" width="200"/>
+## Screenshots
+
+<img src="screenshots/screenshots.png" alt="JetLagged" width="200"/>
 
 ## License
 
