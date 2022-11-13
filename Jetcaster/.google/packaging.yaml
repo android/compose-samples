@@ -18,7 +18,7 @@
 # End users may safely ignore this file. It has no relevance to other systems.
 ---
 status:       PUBLISHED
-technologies: [Android, JetpackCompose]
+technologies: [Android, JetpackCompose, Coroutines]
 categories:
     - AndroidArchitectureUILayer
     - JetpackComposeDesignSystems
@@ -26,6 +26,7 @@ categories:
 languages:    [Kotlin]
 solutions:
     - Mobile
+    - Flow
     - JetpackRoom
     - JetpackLifecycle
     - JetpackNavigation
