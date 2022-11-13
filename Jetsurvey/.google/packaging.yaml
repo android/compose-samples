@@ -20,6 +20,7 @@
 status:       PUBLISHED
 technologies: [Android, JetpackCompose]
 categories:
+    - AndroidArchitectureUIEvents
     - JetpackComposeDesignSystems
     - JetpackComposeTextAndInput
     - JetpackComposeAnimation

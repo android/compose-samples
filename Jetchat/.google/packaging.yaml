@@ -22,6 +22,7 @@ technologies: [Android, JetpackCompose]
 categories:
     - AndroidArchitectureUILayer
     - AndroidArchitectureStateProduction
+    - AndroidArchitectureUIEvents
     - JetpackComposeArchitectureAndState
     - JetpackComposeDesignSystems
     - JetpackComposeAnimation
