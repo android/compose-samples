@@ -10,9 +10,9 @@ You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
-Screenshots
------------
- <img src="screenshots/screenshots.png" width="425"/>
+## Screenshots
+
+<img src="screenshots/screenshots.png"/>
 
 ## Features
 

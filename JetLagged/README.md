@@ -15,7 +15,7 @@ Features:
 
 ## Screenshots
 
-<img src="screenshots/screenshots.png" alt="JetLagged" width="200"/>
+<img src="screenshots/screenshots.png" alt="JetLagged"/>
 
 ## License
 
