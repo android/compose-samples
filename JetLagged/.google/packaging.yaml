@@ -18,8 +18,11 @@
 # End users may safely ignore this file. It has no relevance to other systems.
 ---
 status:       PUBLISHED
-technologies: [Android]
-categories:   [Compose]
+technologies: [Android, JetpackCompose]
+categories:
+    - JetpackComposeGraphics
+    - JetpackComposeLayouts
+    - JetpackComposeAnimation
 languages:    [Kotlin]
 solutions:    [Mobile]
 github:       android/compose-samples

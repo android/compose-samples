@@ -19,7 +19,7 @@ most of the app's architecture has been implemented, as well as the data layer, 
 
 ## Screenshots
 
-<img src="docs/jetcaster.gif"/>
+<img src="docs/screenshots.png"/>
 
 ## Features
 

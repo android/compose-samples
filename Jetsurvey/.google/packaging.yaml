@@ -18,10 +18,18 @@
 # End users may safely ignore this file. It has no relevance to other systems.
 ---
 status:       PUBLISHED
-technologies: [Android]
-categories:   [Compose]
+technologies: [Android, JetpackCompose]
+categories:
+    - AndroidArchitectureUIEvents
+    - JetpackComposeDesignSystems
+    - JetpackComposeTextAndInput
+    - JetpackComposeAnimation
 languages:    [Kotlin]
-solutions:    [Mobile]
+solutions:
+    - JetpackHilt
+    - JetpackLifecycle
+    - JetpackNavigation
+    - JetpackFragment
 github:       android/compose-samples
 level:        BEGINNER
 apiRefs:

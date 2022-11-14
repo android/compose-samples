@@ -14,7 +14,9 @@ This sample showcases:
 * Custom layout
 * Animation
 
-<img src="screenshots/jetsnack.gif"/>
+## Screenshots
+
+<img src="screenshots/screenshots.png"/>
 
 ### Status: 🚧 In progress 🚧
 
