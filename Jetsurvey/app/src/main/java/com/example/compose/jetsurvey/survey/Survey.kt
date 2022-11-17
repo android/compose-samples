@@ -17,6 +17,7 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
 data class SurveyResult(
@@ -50,11 +51,14 @@ sealed class SurveyActionResult {
     data class Contact(val contact: String) : SurveyActionResult()
 }
 
+data class TextOption(@StringRes val textRes: Int)
+data class TextIconOption(@StringRes val textRes: Int, @DrawableRes val iconRes: Int)
+
 sealed class PossibleAnswer {
-    data class SingleChoice(val optionsStringRes: List<Int>) : PossibleAnswer()
-    data class SingleChoiceIcon(val optionsStringIconRes: List<Pair<Int, Int>>) : PossibleAnswer()
-    data class MultipleChoice(val optionsStringRes: List<Int>) : PossibleAnswer()
-    data class MultipleChoiceIcon(val optionsStringIconRes: List<Pair<Int, Int>>) : PossibleAnswer()
+    data class SingleChoice(val options: List<TextOption>) : PossibleAnswer()
+    data class SingleChoiceIcon(val options: List<TextIconOption>) : PossibleAnswer()
+    data class MultipleChoice(val options: List<TextOption>) : PossibleAnswer()
+    data class MultipleChoiceIcon(val options: List<TextIconOption>) : PossibleAnswer()
     data class Action(
         @StringRes val label: Int,
         val actionType: SurveyActionType

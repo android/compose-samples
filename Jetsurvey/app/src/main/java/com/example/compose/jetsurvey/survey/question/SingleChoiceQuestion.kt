@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
 import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.survey.TextOption
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
@@ -49,7 +50,7 @@ fun SingleChoiceQuestion(
     onAnswerSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = possibleAnswer.optionsStringRes.associateBy { stringResource(id = it) }
+    val options = possibleAnswer.options.associateBy { stringResource(it.textRes) }
 
     val radioOptions = options.keys.toList()
 
@@ -65,7 +66,7 @@ fun SingleChoiceQuestion(
         radioOptions.forEach { text ->
             val onClickHandle = {
                 onOptionSelected(text)
-                options[text]?.let { onAnswerSelected(it) }
+                options[text]?.let { onAnswerSelected(it.textRes) }
                 Unit
             }
             val optionSelected = text == selectedOption
@@ -121,10 +122,10 @@ fun SingleChoiceQuestionPreview() {
             SingleChoiceQuestion(
                 possibleAnswer = PossibleAnswer.SingleChoice(
                     listOf(
-                        R.string.star_trek,
-                        R.string.social_network,
-                        R.string.back_to_future,
-                        R.string.outbreak
+                        TextOption(R.string.star_trek),
+                        TextOption(R.string.social_network),
+                        TextOption(R.string.back_to_future),
+                        TextOption(R.string.outbreak)
                     )
                 ),
                 answer = null,

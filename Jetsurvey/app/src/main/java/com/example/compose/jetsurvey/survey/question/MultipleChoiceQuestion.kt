@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
 import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.survey.TextOption
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
@@ -51,11 +52,11 @@ fun MultipleChoiceQuestion(
     onAnswerSelected: (Int, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = possibleAnswer.optionsStringRes.associateBy { stringResource(id = it) }
+    val options = possibleAnswer.options.associateBy { stringResource(it.textRes) }
     Column(modifier = modifier) {
         for (option in options) {
             var checkedState by remember(answer) {
-                val selectedOption = answer?.answersStringRes?.contains(option.value)
+                val selectedOption = answer?.answersStringRes?.contains(option.value.textRes)
                 mutableStateOf(selectedOption ?: false)
             }
             val answerBorderColor = if (checkedState) {
@@ -84,7 +85,7 @@ fun MultipleChoiceQuestion(
                         .clickable(
                             onClick = {
                                 checkedState = !checkedState
-                                onAnswerSelected(option.value, checkedState)
+                                onAnswerSelected(option.value.textRes, checkedState)
                             }
                         )
                         .padding(vertical = 16.dp, horizontal = 16.dp),
@@ -97,7 +98,7 @@ fun MultipleChoiceQuestion(
                         checked = checkedState,
                         onCheckedChange = { selected ->
                             checkedState = selected
-                            onAnswerSelected(option.value, selected)
+                            onAnswerSelected(option.value.textRes, selected)
                         },
                     )
                 }
@@ -115,10 +116,10 @@ fun MultipleChoiceQuestionPreview() {
             MultipleChoiceQuestion(
                 possibleAnswer = PossibleAnswer.MultipleChoice(
                     listOf(
-                        R.string.star_trek,
-                        R.string.social_network,
-                        R.string.back_to_future,
-                        R.string.outbreak
+                        TextOption(R.string.star_trek),
+                        TextOption(R.string.social_network),
+                        TextOption(R.string.back_to_future),
+                        TextOption(R.string.outbreak)
                     )
                 ),
                 answer = null,
