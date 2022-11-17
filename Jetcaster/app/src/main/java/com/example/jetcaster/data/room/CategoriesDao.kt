@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
  * [Room] DAO for [Category] related operations.
  */
 @Dao
-abstract class CategoriesDao: BaseDao<Category> {
+abstract class CategoriesDao : BaseDao<Category> {
     @Query(
         """
         SELECT categories.* FROM categories

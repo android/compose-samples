@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.Flow
  * [Room] DAO for [Episode] related operations.
  */
 @Dao
-abstract class EpisodesDao: BaseDao<Episode> {
+abstract class EpisodesDao : BaseDao<Episode> {
 
     @Query(
         """
