@@ -19,6 +19,8 @@ package com.example.compose.jetsurvey.survey.question
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +30,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -50,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
 import com.example.compose.jetsurvey.survey.AnswerOption
+import com.example.compose.jetsurvey.survey.PossibleAnswer
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 /**
@@ -69,11 +73,12 @@ fun SingleChoiceQuestion(
 ) {
     Column(modifier.selectableGroup()) {
         options.forEach { option ->
-            SingleChoiceAnswer(
+            Answer(
                 text = stringResource(option.textRes),
                 painter = option.iconRes?.let { painterResource(it) },
                 selected = option.textRes == answer?.answer,
                 onOptionSelected = { onAnswerSelected(option.textRes) },
+                isSingleChoice = true,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
@@ -81,11 +86,34 @@ fun SingleChoiceQuestion(
 }
 
 @Composable
-private fun SingleChoiceAnswer(
+fun MultipleChoiceQuestion(
+    possibleAnswer: PossibleAnswer.MultipleChoice,
+    answer: Answer.MultipleChoice?,
+    onAnswerSelected: (Int, Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier) {
+        possibleAnswer.options.forEach { option ->
+            val selected = answer?.answersStringRes?.contains(option.textRes) ?: false
+            Answer(
+                text = stringResource(option.textRes),
+                painter = option.iconRes?.let { painterResource(it) },
+                selected = selected,
+                onOptionSelected = { onAnswerSelected(option.textRes, !selected) },
+                isSingleChoice = false,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun Answer(
     text: String,
     painter: Painter?,
     selected: Boolean,
     onOptionSelected: () -> Unit,
+    isSingleChoice: Boolean,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -103,11 +131,18 @@ private fun SingleChoiceAnswer(
                 MaterialTheme.colorScheme.outline
             }
         ),
-        modifier = modifier.selectable(selected) { onOptionSelected() }
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(
+                    if (isSingleChoice) {
+                        Modifier.selectable(selected, onClick = onOptionSelected)
+                    } else {
+                        Modifier.clickable(onClick = onOptionSelected)
+                    }
+                )
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -122,7 +157,13 @@ private fun SingleChoiceAnswer(
                 Spacer(Modifier.width(8.dp))
             }
             Text(text, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-            RadioButton(selected, onClick = null, Modifier.padding(8.dp))
+            Box(Modifier.padding(8.dp)) {
+                if (isSingleChoice) {
+                    RadioButton(selected, onClick = null)
+                } else {
+                    Checkbox(selected, onCheckedChange = null)
+                }
+            }
         }
     }
 }
@@ -130,27 +171,38 @@ private fun SingleChoiceAnswer(
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SingleChoiceAnswerPreview(
-    @PreviewParameter(SelectedProvider::class, limit = 2) selected: Boolean
+private fun AnswerPreview(
+    @PreviewParameter(PreviewDataProvider::class, limit = 4) previewData: PreviewData
 ) {
     JetsurveyTheme {
-        SingleChoiceAnswer(
+        Answer(
             text = "Preview",
             painter = painterResource(id = R.drawable.frag),
-            selected = selected,
+            selected = previewData.selected,
+            isSingleChoice = previewData.isSingleChoice,
             onOptionSelected = { }
         )
     }
 }
 
-private class SelectedProvider : PreviewParameterProvider<Boolean> {
-    override val values = sequenceOf(false, true)
+private data class PreviewData(
+    val selected: Boolean,
+    val isSingleChoice: Boolean
+)
+
+private class PreviewDataProvider : PreviewParameterProvider<PreviewData> {
+    override val values = sequenceOf(
+        PreviewData(selected = false, isSingleChoice = true),
+        PreviewData(selected = true, isSingleChoice = true),
+        PreviewData(selected = false, isSingleChoice = false),
+        PreviewData(selected = true, isSingleChoice = false),
+    )
 }
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SingleChoiceQuestionPreview() {
+private fun SingleChoiceIconQuestionPreview() {
     var selectedAnswer: Answer.SingleChoice? by remember {
         mutableStateOf(Answer.SingleChoice(R.string.bugchaos))
     }
@@ -172,7 +224,7 @@ fun SingleChoiceQuestionPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SingleChoiceQuestionPreview2() {
+private fun SingleChoiceQuestionPreview() {
     var selectedAnswer: Answer.SingleChoice? by remember {
         mutableStateOf(Answer.SingleChoice(R.string.bugchaos))
     }
