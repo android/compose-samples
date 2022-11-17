@@ -18,13 +18,16 @@ package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,13 +39,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.AnswerOption
 import com.example.compose.jetsurvey.survey.PossibleAnswer
-import com.example.compose.jetsurvey.survey.TextOption
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
@@ -75,23 +80,32 @@ fun MultipleChoiceQuestion(
                     width = 1.dp,
                     color = answerBorderColor
                 ),
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 4.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(answerBackgroundColor)
                         .clickable(
                             onClick = {
                                 checkedState = !checkedState
                                 onAnswerSelected(option.value.textRes, checkedState)
                             }
                         )
+                        .background(answerBackgroundColor)
                         .padding(vertical = 16.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    option.value.iconRes?.let { iconRes ->
+                        Image(
+                            painter = painterResource(id = iconRes),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(56.dp)
+                                .height(56.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                        )
+                    }
                     Text(text = option.key)
 
                     Checkbox(
@@ -110,16 +124,40 @@ fun MultipleChoiceQuestion(
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
+fun MultipleChoiceIconQuestionPreview() {
+    JetsurveyTheme {
+        Surface {
+            MultipleChoiceQuestion(
+                possibleAnswer = PossibleAnswer.MultipleChoice(
+                    listOf(
+                        AnswerOption(R.string.spark, R.drawable.spark),
+                        AnswerOption(R.string.lenz, R.drawable.lenz),
+                        AnswerOption(R.string.bugchaos, R.drawable.bug_of_chaos),
+                        AnswerOption(R.string.frag, R.drawable.frag)
+                    )
+                ),
+                answer = null,
+                onAnswerSelected = { _, _ -> }
+            )
+        }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
 fun MultipleChoiceQuestionPreview() {
     JetsurveyTheme {
         Surface {
             MultipleChoiceQuestion(
                 possibleAnswer = PossibleAnswer.MultipleChoice(
                     listOf(
-                        TextOption(R.string.star_trek),
-                        TextOption(R.string.social_network),
-                        TextOption(R.string.back_to_future),
-                        TextOption(R.string.outbreak)
+                        AnswerOption(R.string.read),
+                        AnswerOption(R.string.work_out),
+                        AnswerOption(R.string.draw),
+                        AnswerOption(R.string.play_games),
+                        AnswerOption(R.string.dance),
+                        AnswerOption(R.string.watch_movies)
                     )
                 ),
                 answer = null,
