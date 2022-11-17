@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
 import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.survey.TextIconOption
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 /**
@@ -66,15 +68,15 @@ fun SingleChoiceIconQuestion(
     onAnswerSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = possibleAnswer.optionsStringIconRes
+    val options = possibleAnswer.options
 
-    Column(modifier) {
-        options.forEach { (imgRes, textRes) ->
+    Column(modifier.selectableGroup()) {
+        options.forEach { option ->
             SingleChoiceIconAnswer(
-                text = stringResource(textRes),
-                painter = painterResource(imgRes),
-                selected = textRes == answer?.answer,
-                onOptionSelected = { onAnswerSelected(textRes) },
+                text = stringResource(option.textRes),
+                painter = painterResource(option.iconRes),
+                selected = option.textRes == answer?.answer,
+                onOptionSelected = { onAnswerSelected(option.textRes) },
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
@@ -164,10 +166,10 @@ fun SingleChoiceIconQuestionPreview() {
             SingleChoiceIconQuestion(
                 possibleAnswer = PossibleAnswer.SingleChoiceIcon(
                     listOf(
-                        Pair(R.drawable.spark, R.string.spark),
-                        Pair(R.drawable.lenz, R.string.lenz),
-                        Pair(R.drawable.bug_of_chaos, R.string.bugchaos),
-                        Pair(R.drawable.frag, R.string.frag)
+                        TextIconOption(R.string.spark, R.drawable.spark),
+                        TextIconOption(R.string.lenz, R.drawable.lenz),
+                        TextIconOption(R.string.bugchaos, R.drawable.bug_of_chaos),
+                        TextIconOption(R.string.frag, R.drawable.frag)
                     )
                 ),
                 answer = selectedAnswer,

@@ -30,13 +30,13 @@ private val jetpackQuestions = mutableListOf(
         id = 1,
         questionText = R.string.in_my_free_time,
         answer = MultipleChoice(
-            optionsStringRes = listOf(
-                R.string.read,
-                R.string.work_out,
-                R.string.draw,
-                R.string.play_games,
-                R.string.dance,
-                R.string.watch_movies
+            options = listOf(
+                TextOption(R.string.read),
+                TextOption(R.string.work_out),
+                TextOption(R.string.draw),
+                TextOption(R.string.play_games),
+                TextOption(R.string.dance),
+                TextOption(R.string.watch_movies)
             )
         ),
         description = R.string.select_all
@@ -45,11 +45,11 @@ private val jetpackQuestions = mutableListOf(
         id = 2,
         questionText = R.string.pick_superhero,
         answer = PossibleAnswer.SingleChoiceIcon(
-            optionsStringIconRes = listOf(
-                Pair(R.drawable.spark, R.string.spark),
-                Pair(R.drawable.lenz, R.string.lenz),
-                Pair(R.drawable.bug_of_chaos, R.string.bugchaos),
-                Pair(R.drawable.frag, R.string.frag)
+            options = listOf(
+                TextIconOption(R.string.spark, R.drawable.spark),
+                TextIconOption(R.string.lenz, R.drawable.lenz),
+                TextIconOption(R.string.bugchaos, R.drawable.bug_of_chaos),
+                TextIconOption(R.string.frag, R.drawable.frag)
             )
         ),
         description = R.string.select_one
@@ -59,10 +59,10 @@ private val jetpackQuestions = mutableListOf(
         questionText = R.string.favourite_movie,
         answer = SingleChoice(
             listOf(
-                R.string.star_trek,
-                R.string.social_network,
-                R.string.back_to_future,
-                R.string.outbreak
+                TextOption(R.string.star_trek),
+                TextOption(R.string.social_network),
+                TextOption(R.string.back_to_future),
+                TextOption(R.string.outbreak)
             )
         ),
         description = R.string.select_one

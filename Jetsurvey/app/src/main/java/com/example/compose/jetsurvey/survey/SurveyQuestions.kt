@@ -232,11 +232,11 @@ fun QuestionPreview() {
         id = 2,
         questionText = R.string.pick_superhero,
         answer = PossibleAnswer.SingleChoice(
-            optionsStringRes = listOf(
-                R.string.spark,
-                R.string.lenz,
-                R.string.bugchaos,
-                R.string.frag
+            options = listOf(
+                TextOption(R.string.spark),
+                TextOption(R.string.lenz),
+                TextOption(R.string.bugchaos),
+                TextOption(R.string.frag)
             )
         ),
         description = R.string.select_one

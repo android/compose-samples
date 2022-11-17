@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
 import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.survey.TextIconOption
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
@@ -56,11 +57,11 @@ fun MultipleChoiceIconQuestion(
     onAnswerSelected: (Int, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = possibleAnswer.optionsStringIconRes.associateBy { stringResource(id = it.second) }
+    val options = possibleAnswer.options.associateBy { stringResource(it.textRes) }
     Column(modifier = modifier) {
         for (option in options) {
             var checkedState by remember(answer) {
-                val selectedOption = answer?.answersStringRes?.contains(option.value.second)
+                val selectedOption = answer?.answersStringRes?.contains(option.value.textRes)
                 mutableStateOf(selectedOption ?: false)
             }
             val answerBorderColor = if (checkedState) {
@@ -87,7 +88,7 @@ fun MultipleChoiceIconQuestion(
                         .clickable(
                             onClick = {
                                 checkedState = !checkedState
-                                onAnswerSelected(option.value.second, checkedState)
+                                onAnswerSelected(option.value.textRes, checkedState)
                             }
                         )
                         .background(answerBackgroundColor)
@@ -96,7 +97,7 @@ fun MultipleChoiceIconQuestion(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
-                        painter = painterResource(id = option.value.first),
+                        painter = painterResource(id = option.value.iconRes),
                         contentDescription = null,
                         modifier = Modifier
                             .width(56.dp)
@@ -109,7 +110,7 @@ fun MultipleChoiceIconQuestion(
                         checked = checkedState,
                         onCheckedChange = { selected ->
                             checkedState = selected
-                            onAnswerSelected(option.value.second, selected)
+                            onAnswerSelected(option.value.textRes, selected)
                         },
                     )
                 }
@@ -127,10 +128,10 @@ fun MultipleChoiceIconQuestionPreview() {
             MultipleChoiceIconQuestion(
                 possibleAnswer = PossibleAnswer.MultipleChoiceIcon(
                     listOf(
-                        Pair(R.drawable.spark, R.string.spark),
-                        Pair(R.drawable.lenz, R.string.lenz),
-                        Pair(R.drawable.bug_of_chaos, R.string.bugchaos),
-                        Pair(R.drawable.frag, R.string.frag)
+                        TextIconOption(R.string.spark, R.drawable.spark),
+                        TextIconOption(R.string.lenz, R.drawable.lenz),
+                        TextIconOption(R.string.bugchaos, R.drawable.bug_of_chaos),
+                        TextIconOption(R.string.frag, R.drawable.frag)
                     )
                 ),
                 answer = null,
