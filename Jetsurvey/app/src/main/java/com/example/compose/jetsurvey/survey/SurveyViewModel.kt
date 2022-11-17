@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.compose.jetsurvey.util.getDefaultDateInMillis
 import kotlinx.coroutines.launch
 
 const val simpleDateFormatPattern = "EEE, MMM d"
