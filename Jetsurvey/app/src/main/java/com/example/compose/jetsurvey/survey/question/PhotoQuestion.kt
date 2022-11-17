@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey.survey
+package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -49,6 +49,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.SurveyActionResult
+import com.example.compose.jetsurvey.survey.SurveyActionType
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
@@ -125,8 +128,8 @@ private fun PhotoDefaultImage(
     )
 }
 
-@Preview(name = "Photo Question Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Photo Question Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PhotoQuestionPreview() {
     JetsurveyTheme {

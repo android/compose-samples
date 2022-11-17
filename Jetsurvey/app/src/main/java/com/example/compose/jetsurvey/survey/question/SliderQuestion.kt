@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey.survey
+package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -36,6 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.PossibleAnswer
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
@@ -92,8 +94,8 @@ fun SliderQuestion(
     }
 }
 
-@Preview(name = "Slider Question Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Slider Question Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SliderQuestionPreview() {
     JetsurveyTheme {

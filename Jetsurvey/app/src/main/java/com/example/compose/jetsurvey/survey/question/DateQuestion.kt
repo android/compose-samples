@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey.survey
+package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -33,6 +33,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.SurveyActionResult
+import com.example.compose.jetsurvey.survey.SurveyActionType
+import com.example.compose.jetsurvey.survey.simpleDateFormatPattern
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.slightlyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.getDefaultDateInMillis
@@ -88,8 +92,8 @@ fun DateQuestion(
     }
 }
 
-@Preview(name = "Photo Question Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Photo Question Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun DateQuestionPreview() {
     JetsurveyTheme {

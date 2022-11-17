@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey.survey
+package com.example.compose.jetsurvey.survey.question
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun SingleChoiceQuestion(
@@ -77,8 +83,7 @@ fun SingleChoiceQuestion(
             Surface(
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(
-                    width = 1.dp,
-                    color = answerBorderColor
+                    width = 1.dp, color = answerBorderColor
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
@@ -86,8 +91,7 @@ fun SingleChoiceQuestion(
                     modifier = Modifier
                         .fillMaxWidth()
                         .selectable(
-                            selected = optionSelected,
-                            onClick = onClickHandle
+                            selected = optionSelected, onClick = onClickHandle
                         )
                         .background(answerBackgroundColor)
                         .padding(vertical = 16.dp, horizontal = 16.dp),
@@ -104,6 +108,28 @@ fun SingleChoiceQuestion(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun SingleChoiceQuestionPreview() {
+    JetsurveyTheme {
+        Surface {
+            SingleChoiceQuestion(
+                possibleAnswer = PossibleAnswer.SingleChoice(
+                    listOf(
+                        R.string.star_trek,
+                        R.string.social_network,
+                        R.string.back_to_future,
+                        R.string.outbreak
+                    )
+                ),
+                answer = null,
+                onAnswerSelected = {}
+            )
         }
     }
 }

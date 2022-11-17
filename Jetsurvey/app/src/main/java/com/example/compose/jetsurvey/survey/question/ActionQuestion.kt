@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey.survey
+package com.example.compose.jetsurvey.survey.question
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.survey.SurveyActionType
 
 @Composable
 fun ActionQuestion(

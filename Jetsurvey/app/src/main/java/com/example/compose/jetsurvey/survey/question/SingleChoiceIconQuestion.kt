@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetsurvey.survey
+package com.example.compose.jetsurvey.survey.question
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,7 +40,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.survey.Answer
+import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun SingleChoiceIconQuestion(
@@ -120,6 +126,28 @@ fun SingleChoiceIconQuestion(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun SingleChoiceIconQuestionPreview() {
+    JetsurveyTheme {
+        Surface {
+            SingleChoiceIconQuestion(
+                possibleAnswer = PossibleAnswer.SingleChoiceIcon(
+                    listOf(
+                        Pair(R.drawable.spark, R.string.spark),
+                        Pair(R.drawable.lenz, R.string.lenz),
+                        Pair(R.drawable.bug_of_chaos, R.string.bugchaos),
+                        Pair(R.drawable.frag, R.string.frag)
+                    )
+                ),
+                answer = null,
+                onAnswerSelected = {}
+            )
         }
     }
 }
