@@ -17,12 +17,8 @@
 package com.example.jetcaster.data.room
 
 import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
 import com.example.jetcaster.data.Episode
 import com.example.jetcaster.data.EpisodeToPodcast
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +27,7 @@ import kotlinx.coroutines.flow.Flow
  * [Room] DAO for [Episode] related operations.
  */
 @Dao
-abstract class EpisodesDao {
+abstract class EpisodesDao: BaseDao<Episode> {
 
     @Query(
         """
@@ -69,25 +65,4 @@ abstract class EpisodesDao {
 
     @Query("SELECT COUNT(*) FROM episodes")
     abstract suspend fun count(): Int
-
-    /**
-     * The following methods should really live in a base interface. Unfortunately the Kotlin
-     * Compiler which we need to use for Compose doesn't work with that.
-     * TODO: remove this once we move to a more recent Kotlin compiler
-     */
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(entity: Episode): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertAll(vararg entity: Episode)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertAll(entities: Collection<Episode>)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun update(entity: Episode)
-
-    @Delete
-    abstract suspend fun delete(entity: Episode): Int
 }
