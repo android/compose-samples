@@ -16,8 +16,10 @@
 
 package com.example.jetnews.utils
 
-internal fun <E> MutableSet<E>.addOrRemove(element: E) {
+internal fun <E> Set<E>.addOrRemove(element: E): Set<E> {
+    this as MutableSet
     if (!add(element)) {
         remove(element)
     }
+    return this.toSet()
 }
