@@ -62,12 +62,10 @@ sealed class PossibleAnswer {
     ) : PossibleAnswer()
 
     data class Slider(
-        val range: ClosedFloatingPointRange<Float>,
-        val steps: Int,
         @StringRes val startText: Int,
         @StringRes val endText: Int,
         @StringRes val neutralText: Int,
-        val defaultValue: Float = 5.5f
+        val defaultValue: Float = 3f
     ) : PossibleAnswer()
 }
 
