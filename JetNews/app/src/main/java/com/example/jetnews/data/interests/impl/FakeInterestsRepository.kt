@@ -77,7 +77,6 @@ class FakeInterestsRepository : InterestsRepository {
     private val selectedPeople = MutableStateFlow(setOf<String>())
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
-
     override suspend fun getTopics(): Result<List<InterestSection>> {
         return Result.Success(topics)
     }
