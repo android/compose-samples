@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
 /**
@@ -55,8 +56,6 @@ class BlockingFakePostsRepository : PostsRepository {
     override fun observeFavorites(): Flow<Set<String>> = favorites
 
     override suspend fun toggleFavorite(postId: String) {
-        val set = favorites.value.toMutableSet()
-        set.addOrRemove(postId)
-        favorites.value = set
+        favorites.update { it.addOrRemove(postId) }
     }
 }

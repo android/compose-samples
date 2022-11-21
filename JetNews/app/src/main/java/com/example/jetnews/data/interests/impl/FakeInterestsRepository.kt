@@ -24,8 +24,7 @@ import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.flow.update
 
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
@@ -78,9 +77,6 @@ class FakeInterestsRepository : InterestsRepository {
     private val selectedPeople = MutableStateFlow(setOf<String>())
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
-    // Used to make suspend functions that read and update state safe to call from any thread
-    private val mutex = Mutex()
-
     override suspend fun getTopics(): Result<List<InterestSection>> {
         return Result.Success(topics)
     }
@@ -94,26 +90,20 @@ class FakeInterestsRepository : InterestsRepository {
     }
 
     override suspend fun toggleTopicSelection(topic: TopicSelection) {
-        mutex.withLock {
-            val set = selectedTopics.value.toMutableSet()
-            set.addOrRemove(topic)
-            selectedTopics.value = set
+        selectedTopics.update {
+            it.addOrRemove(topic)
         }
     }
 
     override suspend fun togglePersonSelected(person: String) {
-        mutex.withLock {
-            val set = selectedPeople.value.toMutableSet()
-            set.addOrRemove(person)
-            selectedPeople.value = set
+        selectedPeople.update {
+            it.addOrRemove(person)
         }
     }
 
     override suspend fun togglePublicationSelected(publication: String) {
-        mutex.withLock {
-            val set = selectedPublications.value.toMutableSet()
-            set.addOrRemove(publication)
-            selectedPublications.value = set
+        selectedPublications.update {
+            it.addOrRemove(publication)
         }
     }
 
