@@ -19,8 +19,6 @@ package com.example.compose.jetsurvey.survey
 import android.os.Build
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.PossibleAnswer.Action
-import com.example.compose.jetsurvey.survey.PossibleAnswer.MultipleChoice
-import com.example.compose.jetsurvey.survey.PossibleAnswer.SingleChoice
 import com.example.compose.jetsurvey.survey.SurveyActionType.PICK_DATE
 import com.example.compose.jetsurvey.survey.SurveyActionType.TAKE_PHOTO
 
@@ -29,14 +27,14 @@ private val jetpackQuestions = mutableListOf(
     Question(
         id = 1,
         questionText = R.string.in_my_free_time,
-        answer = MultipleChoice(
-            optionsStringRes = listOf(
-                R.string.read,
-                R.string.work_out,
-                R.string.draw,
-                R.string.play_games,
-                R.string.dance,
-                R.string.watch_movies
+        answer = PossibleAnswer.MultipleChoice(
+            options = listOf(
+                AnswerOption(R.string.read),
+                AnswerOption(R.string.work_out),
+                AnswerOption(R.string.draw),
+                AnswerOption(R.string.play_games),
+                AnswerOption(R.string.dance),
+                AnswerOption(R.string.watch_movies)
             )
         ),
         description = R.string.select_all
@@ -44,12 +42,12 @@ private val jetpackQuestions = mutableListOf(
     Question(
         id = 2,
         questionText = R.string.pick_superhero,
-        answer = PossibleAnswer.SingleChoiceIcon(
-            optionsStringIconRes = listOf(
-                Pair(R.drawable.spark, R.string.spark),
-                Pair(R.drawable.lenz, R.string.lenz),
-                Pair(R.drawable.bug_of_chaos, R.string.bugchaos),
-                Pair(R.drawable.frag, R.string.frag)
+        answer = PossibleAnswer.SingleChoice(
+            options = listOf(
+                AnswerOption(R.string.spark, R.drawable.spark),
+                AnswerOption(R.string.lenz, R.drawable.lenz),
+                AnswerOption(R.string.bugchaos, R.drawable.bug_of_chaos),
+                AnswerOption(R.string.frag, R.drawable.frag)
             )
         ),
         description = R.string.select_one
@@ -57,12 +55,12 @@ private val jetpackQuestions = mutableListOf(
     Question(
         id = 7,
         questionText = R.string.favourite_movie,
-        answer = SingleChoice(
+        answer = PossibleAnswer.SingleChoice(
             listOf(
-                R.string.star_trek,
-                R.string.social_network,
-                R.string.back_to_future,
-                R.string.outbreak
+                AnswerOption(R.string.star_trek),
+                AnswerOption(R.string.social_network),
+                AnswerOption(R.string.back_to_future),
+                AnswerOption(R.string.outbreak)
             )
         ),
         description = R.string.select_one

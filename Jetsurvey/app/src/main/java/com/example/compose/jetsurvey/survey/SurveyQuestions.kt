@@ -38,9 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.question.ActionQuestion
-import com.example.compose.jetsurvey.survey.question.MultipleChoiceIconQuestion
 import com.example.compose.jetsurvey.survey.question.MultipleChoiceQuestion
-import com.example.compose.jetsurvey.survey.question.SingleChoiceIconQuestion
 import com.example.compose.jetsurvey.survey.question.SingleChoiceQuestion
 import com.example.compose.jetsurvey.survey.question.SliderQuestion
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
@@ -147,32 +145,12 @@ private fun QuestionContent(
             }
             when (question.answer) {
                 is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
-                    possibleAnswer = question.answer,
-                    answer = answer as Answer.SingleChoice?,
-                    onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-                is PossibleAnswer.SingleChoiceIcon -> SingleChoiceIconQuestion(
-                    possibleAnswer = question.answer,
+                    options = question.answer.options,
                     answer = answer as Answer.SingleChoice?,
                     onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
-                    possibleAnswer = question.answer,
-                    answer = answer as Answer.MultipleChoice?,
-                    onAnswerSelected = { newAnswer, selected ->
-                        // create the answer if it doesn't exist or
-                        // update it based on the user's selection
-                        if (answer == null) {
-                            onAnswer(Answer.MultipleChoice(setOf(newAnswer)))
-                        } else {
-                            onAnswer(answer.withAnswerSelected(newAnswer, selected))
-                        }
-                    },
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-                is PossibleAnswer.MultipleChoiceIcon -> MultipleChoiceIconQuestion(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.MultipleChoice?,
                     onAnswerSelected = { newAnswer, selected ->
@@ -232,11 +210,11 @@ fun QuestionPreview() {
         id = 2,
         questionText = R.string.pick_superhero,
         answer = PossibleAnswer.SingleChoice(
-            optionsStringRes = listOf(
-                R.string.spark,
-                R.string.lenz,
-                R.string.bugchaos,
-                R.string.frag
+            options = listOf(
+                AnswerOption(R.string.spark),
+                AnswerOption(R.string.lenz),
+                AnswerOption(R.string.bugchaos),
+                AnswerOption(R.string.frag)
             )
         ),
         description = R.string.select_one
