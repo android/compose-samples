@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.question.ActionQuestion
+import com.example.compose.jetsurvey.survey.question.GroupingQuestion
 import com.example.compose.jetsurvey.survey.question.MultipleChoiceQuestion
 import com.example.compose.jetsurvey.survey.question.SingleChoiceQuestion
 import com.example.compose.jetsurvey.survey.question.SliderQuestion
@@ -150,6 +151,7 @@ private fun QuestionContent(
                     onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.MultipleChoice?,
@@ -164,6 +166,7 @@ private fun QuestionContent(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 is PossibleAnswer.Action -> ActionQuestion(
                     questionId = question.id,
                     possibleAnswer = question.answer,
@@ -171,10 +174,18 @@ private fun QuestionContent(
                     onAction = onAction,
                     modifier = Modifier.fillParentMaxWidth()
                 )
+
                 is PossibleAnswer.Slider -> SliderQuestion(
                     possibleAnswer = question.answer,
                     answer = answer as Answer.Slider?,
                     onAnswerSelected = { onAnswer(Answer.Slider(it)) },
+                    modifier = Modifier.fillParentMaxWidth()
+                )
+
+                is PossibleAnswer.Group -> GroupingQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.Group?,
+                    onAnswerReady = { onAnswer(Answer.Group(it)) },
                     modifier = Modifier.fillParentMaxWidth()
                 )
             }

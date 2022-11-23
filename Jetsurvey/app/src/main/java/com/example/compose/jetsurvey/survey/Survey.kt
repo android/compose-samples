@@ -17,8 +17,10 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
+import androidx.annotation.ArrayRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.example.compose.jetsurvey.survey.question.Badge
 
 data class SurveyResult(
     val library: String,
@@ -69,6 +71,11 @@ sealed class PossibleAnswer {
         @StringRes val neutralText: Int,
         val defaultValue: Float = 5.5f
     ) : PossibleAnswer()
+
+    data class Group(
+        @ArrayRes val items: Int,
+        @ArrayRes val groups: Int
+    ): PossibleAnswer()
 }
 
 sealed class Answer<T : PossibleAnswer> {
@@ -79,6 +86,7 @@ sealed class Answer<T : PossibleAnswer> {
 
     data class Action(val result: SurveyActionResult) : Answer<PossibleAnswer.Action>()
     data class Slider(val answerValue: Float) : Answer<PossibleAnswer.Slider>()
+    data class Group(val answerGrouping: Map<String, List<Badge>>): Answer<PossibleAnswer.Group>()
 }
 
 /**

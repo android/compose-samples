@@ -72,6 +72,14 @@ private val jetpackQuestions = mutableListOf(
         description = R.string.select_date
     ),
     Question(
+        id = 5,
+        questionText = R.string.group_food,
+        answer = PossibleAnswer.Group(
+            items = R.array.food_items,
+            groups = R.array.food_frequency_groups
+        )
+    ),
+    Question(
         id = 4,
         questionText = R.string.selfies,
         answer = PossibleAnswer.Slider(

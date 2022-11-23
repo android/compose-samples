@@ -38,6 +38,7 @@
     <string name="close">Close</string>
     <string name="show_password">Show password</string>
     <string name="hide_password">Hide password</string>
+    <string name="drop_zone_placeholder">Drop here!</string>
 
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
@@ -81,6 +82,23 @@
     <string name="social_network">The social network</string>
     <string name="back_to_future">Back to the future</string>
     <string name="outbreak">Outbreak</string>
+
+    <!-- question 7-->
+    <string name="group_food">Group the following food items in terms of frequency of consumption?</string>
+    <string-array name="food_frequency_groups">
+        <item>Everyday</item>
+        <item>Once a week</item>
+        <item>Once a month</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="food_items">
+        <item>Pizza</item>
+        <item>Biryani</item>
+        <item>Fried rice</item>
+        <item>Sandwich</item>
+        <item>Steak</item>
+        <item>BBQ</item>
+    </string-array>
 
     <string name="survey_result">Congratulations, you are %s</string>
     <string name="survey_result_description">You are a curious developer, always willing to try
