@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.compose.jetsurvey.survey.question.components
 
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -43,8 +59,7 @@ fun Draggable(
     CompositionLocalProvider(
         LocalDragTargetInfo provides state
     ) {
-        Box(modifier = modifier.fillMaxSize())
-        {
+        Box(modifier = modifier.fillMaxSize()) {
             content()
             if (state.isDragging) {
                 var targetSize by remember {
@@ -53,17 +68,18 @@ fun Draggable(
                 var currentPosition by remember {
                     mutableStateOf(Offset.Zero)
                 }
-                Box(modifier = Modifier
-                    .onGloballyPositioned {
-                        currentPosition = it.windowToLocal(state.dragPosition)
-                        targetSize = it.size
-                    }
-                    .graphicsLayer {
-                        val offset = (currentPosition + state.dragOffset)
-                        alpha = if (targetSize == IntSize.Zero) 0f else 1f
-                        translationX = offset.x.minus(targetSize.center.x)
-                        translationY = offset.y.minus(targetSize.center.y)
-                    }
+                Box(
+                    modifier = Modifier
+                        .onGloballyPositioned {
+                            currentPosition = it.windowToLocal(state.dragPosition)
+                            targetSize = it.size
+                        }
+                        .graphicsLayer {
+                            val offset = (currentPosition + state.dragOffset)
+                            alpha = if (targetSize == IntSize.Zero) 0f else 1f
+                            translationX = offset.x.minus(targetSize.center.x)
+                            translationY = offset.y.minus(targetSize.center.y)
+                        }
                 ) {
                     state.draggableComposable?.invoke(false)
                 }
@@ -97,35 +113,35 @@ fun <T> DragTarget(
         state.dataToTransfer = item
     }
 
-    Box(modifier = modifier
-        .onGloballyPositioned {
-            currentPosition = it.positionInWindow()
-        }
-        .pointerInput(Unit) {
-            detectDragGestures(
-                onDragStart = {
-                    isItemDragging = true
-                    state.isDragging = true
-                    state.dragPosition = currentPosition + it
-                    state.draggableComposable = content
-                    state.hasDragEnd = false
-
-                }, onDrag = { change, dragAmount ->
-                    change.consume()
-                    state.dragOffset += Offset(dragAmount.x, dragAmount.y)
-                }, onDragEnd = {
-                    state.hasDragEnd = true
-                    state.isDragging = false
-                    state.dragOffset = Offset.Zero
-                    isItemDragging = false
-                    hasItemDraggingEnd = true
-                }, onDragCancel = {
-                    state.dragOffset = Offset.Zero
-                    state.isDragging = false
-                    isItemDragging = false
-                }
-            )
-        }
+    Box(
+        modifier = modifier
+            .onGloballyPositioned {
+                currentPosition = it.positionInWindow()
+            }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isItemDragging = true
+                        state.isDragging = true
+                        state.dragPosition = currentPosition + it
+                        state.draggableComposable = content
+                        state.hasDragEnd = false
+                    }, onDrag = { change, dragAmount ->
+                        change.consume()
+                        state.dragOffset += Offset(dragAmount.x, dragAmount.y)
+                    }, onDragEnd = {
+                        state.hasDragEnd = true
+                        state.isDragging = false
+                        state.dragOffset = Offset.Zero
+                        isItemDragging = false
+                        hasItemDraggingEnd = true
+                    }, onDragCancel = {
+                        state.dragOffset = Offset.Zero
+                        state.isDragging = false
+                        isItemDragging = false
+                    }
+                )
+            }
     ) {
         content(isItemDragging)
     }
@@ -135,7 +151,10 @@ fun <T> DragTarget(
 fun DropZone(
     modifier: Modifier = Modifier,
     isDropZone: Boolean = true,
-    content: @Composable BoxScope.(isDraggingInDropZone: Boolean, hasDragEndInDropZone: Boolean) -> Unit
+    content: @Composable BoxScope.(
+        isDraggingInDropZone: Boolean,
+        hasDragEndInDropZone: Boolean
+    ) -> Unit
 ) {
     val state = LocalDragTargetInfo.current
     val dragPosition = state.dragPosition
@@ -153,9 +172,9 @@ fun DropZone(
             .onGloballyPositioned {
                 it.boundsInWindow().let { rect ->
                     if (isDropZone) {
-                        //TODO check for bug when drops at the edge of zone
-                        isItemInTheDropZone = rect.contains(dragPosition + dragOffset)
-                                && !rect.contains(dragPosition)
+                        // TODO check for bug when drops at the edge of zone
+                        isItemInTheDropZone = rect.contains(dragPosition + dragOffset) &&
+                            !rect.contains(dragPosition)
                     }
                 }
             }
