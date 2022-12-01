@@ -27,6 +27,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -109,9 +110,7 @@ fun <T> DragTarget(
         onItemDropped(item)
     }
 
-    if (isItemDragging) {
-        state.dataToTransfer = item
-    }
+    val updatingItem by rememberUpdatedState(item)
 
     Box(
         modifier = modifier
@@ -121,6 +120,7 @@ fun <T> DragTarget(
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
+                        state.dataToTransfer = updatingItem
                         isItemDragging = true
                         state.isDragging = true
                         state.dragPosition = currentPosition + it
