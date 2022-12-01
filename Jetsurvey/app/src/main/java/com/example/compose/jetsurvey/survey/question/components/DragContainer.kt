@@ -52,7 +52,7 @@ class DragTargetInfo<T> {
 val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo<Any?>() }
 
 @Composable
-fun Draggable(
+fun DragContainer(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {

@@ -182,10 +182,10 @@ private fun QuestionContent(
                     modifier = Modifier.fillParentMaxWidth()
                 )
 
-                is PossibleAnswer.Group -> GroupingQuestion(
+                is PossibleAnswer.Grouping -> GroupingQuestion(
                     possibleAnswer = question.answer,
-                    answer = answer as Answer.Group?,
-                    onAnswerReady = { onAnswer(Answer.Group(it)) },
+                    answer = answer as Answer.Grouping?,
+                    onAnswerReady = { onAnswer(Answer.Grouping(it)) },
                     modifier = Modifier.fillParentMaxWidth()
                 )
             }

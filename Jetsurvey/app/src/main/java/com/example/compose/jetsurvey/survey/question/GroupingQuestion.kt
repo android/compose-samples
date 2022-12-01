@@ -16,6 +16,7 @@
 
 package com.example.compose.jetsurvey.survey.question
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,27 +36,32 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.Answer
 import com.example.compose.jetsurvey.survey.PossibleAnswer
 import com.example.compose.jetsurvey.survey.question.components.DragTarget
-import com.example.compose.jetsurvey.survey.question.components.Draggable
+import com.example.compose.jetsurvey.survey.question.components.DragContainer
 import com.example.compose.jetsurvey.survey.question.components.DropZone
 import com.example.compose.jetsurvey.survey.question.components.LocalDragTargetInfo
 import com.example.compose.jetsurvey.survey.question.components.OverflowContainer
+import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 const val STARTING_ZONE_BADGE_GROUP = "Placeholder"
 
 @Composable
 fun GroupingQuestion(
-    possibleAnswer: PossibleAnswer.Group,
-    answer: Answer.Group?,
+    possibleAnswer: PossibleAnswer.Grouping,
+    answer: Answer.Grouping?,
     onAnswerReady: (Map<String, List<Badge>>) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,22 +74,27 @@ fun GroupingQuestion(
             // Make sure no group name uses reserved name
             .filter { it != STARTING_ZONE_BADGE_GROUP }
             .distinct()
-    var groupAnswer by remember {
+    var groupingAnswer by rememberSaveable {
         mutableStateOf(
             answer?.answerGrouping ?: mapOf()
         )
     }
-    val onGroupAnswer: (Pair<String, List<Badge>>) -> Unit = { it ->
-        groupAnswer = groupAnswer.plus(it)
+    val onGroupingAnswer: (Pair<String, List<Badge>>) -> Unit = { it ->
+        groupingAnswer = groupingAnswer.plus(it)
     }
-    Draggable(modifier.fillMaxSize()) {
+    DragContainer(modifier.fillMaxSize()) {
         Column {
-            BadgeGroupStartingZone(initialBadgeList, groupAnswer, onGroupAnswer, onAnswerReady)
+            BadgeGroupStartingZone(
+                initialBadgeList,
+                groupingAnswer,
+                onGroupingAnswer,
+                onAnswerReady
+            )
             badgeGroupList.forEach { badgeGroup ->
                 BadgeGroupDropZone(
                     badgeGroup = badgeGroup,
-                    groupAnswer = groupAnswer,
-                    onGroupAnswer = onGroupAnswer,
+                    groupAnswer = groupingAnswer,
+                    onGroupAnswer = onGroupingAnswer,
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
             }
@@ -122,9 +133,9 @@ private fun BadgeGroupStartingZone(
     DropZone(modifier = modifier, isDropZone = false) { _, _ ->
         if (badgeList.isNotEmpty()) {
             BadgeContainer(
-                items = badgeList,
+                badges = badgeList,
                 contentPadding = PaddingValues(16.dp),
-                onItemDropped = onItemDropped
+                onBadgeDropped = onItemDropped
             )
         }
     }
@@ -142,7 +153,7 @@ private fun BadgeGroupDropZone(
             groupAnswer[badgeGroup] ?: emptyList()
         )
     }
-    val onItemDropped: (Badge) -> Unit = {
+    val onBadgeDropped: (Badge) -> Unit = {
         badgeList = badgeList.minus(it)
     }
 
@@ -175,9 +186,9 @@ private fun BadgeGroupDropZone(
                 DropZonePlaceholder(isDraggingInDropZone)
             } else {
                 BadgeContainer(
-                    items = badgeList,
+                    badges = badgeList,
                     contentPadding = PaddingValues(8.dp),
-                    onItemDropped = onItemDropped,
+                    onBadgeDropped = onBadgeDropped,
                     modifier = Modifier
                         .border(
                             shape = MaterialTheme.shapes.small,
@@ -203,8 +214,8 @@ private fun BadgeGroupDropZone(
 
 @Composable
 private fun BadgeContainer(
-    items: List<Badge>,
-    onItemDropped: (Badge) -> Unit,
+    badges: List<Badge>,
+    onBadgeDropped: (Badge) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues()
 ) {
@@ -212,10 +223,10 @@ private fun BadgeContainer(
         modifier = modifier,
         contentPadding = contentPadding,
     ) {
-        items.forEach { badge ->
+        badges.forEach { badge ->
             DraggableBadge(
                 badge = badge,
-                onItemDropped = onItemDropped,
+                onBadgeDropped = onBadgeDropped,
             )
         }
     }
@@ -245,18 +256,25 @@ private fun DropZonePlaceholder(isInDropZone: Boolean, modifier: Modifier = Modi
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = stringResource(R.string.drop_zone_placeholder))
+        Text(
+            text = stringResource(R.string.drop_zone_placeholder),
+            color = if (isInDropZone) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            }
+        )
     }
 }
 
 @Composable
 private fun DraggableBadge(
     badge: Badge,
-    onItemDropped: (Badge) -> Unit,
+    onBadgeDropped: (Badge) -> Unit,
     modifier: Modifier = Modifier
 ) {
     DragTarget(
-        onItemDropped = onItemDropped,
+        onItemDropped = onBadgeDropped,
         item = badge,
         modifier = modifier
     ) { isItemDragged ->
@@ -277,5 +295,94 @@ private fun DraggableBadge(
                 modifier = Modifier.padding(8.dp)
             )
         }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun DraggableBadgePreview() {
+    val badgeNameSample = stringArrayResource(R.array.food_items)[0]
+    JetsurveyTheme {
+        DraggableBadge(badge = Badge(id = 0, text = badgeNameSample), onBadgeDropped = {})
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun BadgeContainerPreview() {
+    val badges =
+        stringArrayResource(R.array.food_items).mapIndexed { index, item -> Badge(index, item) }
+
+    JetsurveyTheme {
+        BadgeContainer(badges = badges, onBadgeDropped = {})
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun BadgeGroupStartingZonePreview() {
+    val badges =
+        stringArrayResource(R.array.food_items).mapIndexed { index, item -> Badge(index, item) }
+
+    JetsurveyTheme {
+        BadgeGroupStartingZone(
+            initialBadgeList = badges,
+            groupAnswer = mapOf(),
+            onGroupAnswer = {},
+            onAnswerReady = {}
+        )
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun BadgeGroupDropZonePreview() {
+    val badgeGroup =
+        stringArrayResource(R.array.food_frequency_groups)[0]
+
+    JetsurveyTheme {
+        BadgeGroupDropZone(
+            badgeGroup = badgeGroup,
+            groupAnswer = mapOf(),
+            onGroupAnswer = {},
+        )
+    }
+}
+
+class DropZonePreviewParameterProvider : PreviewParameterProvider<Boolean> {
+    override val values = sequenceOf(
+        true,
+        false
+    )
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun DropZonePlaceholderPreview(
+    @PreviewParameter(DropZonePreviewParameterProvider::class) isInDropZone: Boolean
+) {
+    JetsurveyTheme {
+        DropZonePlaceholder(isInDropZone = isInDropZone)
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun GroupingQuestionPreview() {
+    JetsurveyTheme {
+        GroupingQuestion(
+            possibleAnswer = PossibleAnswer.Grouping(
+                items = R.array.food_items,
+                groups = R.array.food_frequency_groups
+            ),
+            answer = Answer.Grouping(mapOf()),
+            onAnswerReady = {}
+        )
     }
 }

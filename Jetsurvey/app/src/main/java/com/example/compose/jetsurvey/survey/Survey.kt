@@ -72,7 +72,10 @@ sealed class PossibleAnswer {
         val defaultValue: Float = 5.5f
     ) : PossibleAnswer()
 
-    data class Group(
+    /**
+     * Requires user to completely divide the [items] up between the various distinct [groups].
+     */
+    data class Grouping(
         @ArrayRes val items: Int,
         @ArrayRes val groups: Int
     ) : PossibleAnswer()
@@ -86,7 +89,7 @@ sealed class Answer<T : PossibleAnswer> {
 
     data class Action(val result: SurveyActionResult) : Answer<PossibleAnswer.Action>()
     data class Slider(val answerValue: Float) : Answer<PossibleAnswer.Slider>()
-    data class Group(val answerGrouping: Map<String, List<Badge>>) : Answer<PossibleAnswer.Group>()
+    data class Grouping(val answerGrouping: Map<String, List<Badge>>) : Answer<PossibleAnswer.Grouping>()
 }
 
 /**

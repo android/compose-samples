@@ -84,7 +84,7 @@
     <string name="outbreak">Outbreak</string>
 
     <!-- question 7-->
-    <string name="group_food">Group the following food items in terms of frequency of consumption?</string>
+    <string name="group_food">Group the following food items in terms of frequency of consumption:</string>
     <string-array name="food_frequency_groups">
         <item>Everyday</item>
         <item>Once a week</item>
