@@ -136,7 +136,11 @@ private fun Answer(
             .clip(MaterialTheme.shapes.small)
             .then(
                 if (isSingleChoice) {
-                    Modifier.selectable(selected, onClick = onOptionSelected, role = Role.RadioButton)
+                    Modifier.selectable(
+                        selected,
+                        onClick = onOptionSelected,
+                        role = Role.RadioButton
+                    )
                 } else {
                     Modifier.clickable(onClick = onOptionSelected)
                 }
