@@ -32,7 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.ui.CraneTheme
@@ -87,7 +87,12 @@ fun CraneEditableUserInput(
     @DrawableRes vectorImageId: Int? = null,
     onInputChanged: (String) -> Unit
 ) {
-    var textFieldState by remember { mutableStateOf(TextFieldValue()) }
+
+    var textFieldState by rememberSaveable(stateSaver = TextFieldValue.Companion.Saver) {
+        mutableStateOf(
+            TextFieldValue()
+        )
+    }
     CraneBaseUserInput(
         caption = caption,
         tintIcon = {
