@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -51,31 +50,27 @@ class ConversationFragment : Fragment() {
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
         setContent {
-            CompositionLocalProvider(
-                LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher
-            ) {
-                JetchatTheme {
-                    ConversationContent(
-                        uiState = exampleUiState,
-                        navigateToProfile = { user ->
-                            // Click callback
-                            val bundle = bundleOf("userId" to user)
-                            findNavController().navigate(
-                                R.id.nav_profile,
-                                bundle
-                            )
-                        },
-                        onNavIconPressed = {
-                            activityViewModel.openDrawer()
-                        },
-                        // Add padding so that we are inset from any navigation bars
-                        modifier = Modifier.windowInsetsPadding(
-                            WindowInsets
-                                .navigationBars
-                                .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+            JetchatTheme {
+                ConversationContent(
+                    uiState = exampleUiState,
+                    navigateToProfile = { user ->
+                        // Click callback
+                        val bundle = bundleOf("userId" to user)
+                        findNavController().navigate(
+                            R.id.nav_profile,
+                            bundle
                         )
+                    },
+                    onNavIconPressed = {
+                        activityViewModel.openDrawer()
+                    },
+                    // Add padding so that we are inset from any navigation bars
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets
+                            .navigationBars
+                            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                     )
-                }
+                )
             }
         }
     }
