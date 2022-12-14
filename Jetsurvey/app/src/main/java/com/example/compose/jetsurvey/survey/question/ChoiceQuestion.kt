@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -132,17 +133,22 @@ private fun Answer(
             }
         ),
         modifier = modifier
+            .clip(MaterialTheme.shapes.small)
+            .then(
+                if (isSingleChoice) {
+                    Modifier.selectable(
+                        selected,
+                        onClick = onOptionSelected,
+                        role = Role.RadioButton
+                    )
+                } else {
+                    Modifier.clickable(onClick = onOptionSelected)
+                }
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(
-                    if (isSingleChoice) {
-                        Modifier.selectable(selected, onClick = onOptionSelected)
-                    } else {
-                        Modifier.clickable(onClick = onOptionSelected)
-                    }
-                )
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
