@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -95,9 +96,7 @@ private fun PermissionsRationale(
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        Spacer(modifier = Modifier.height(32.dp))
         QuestionTitle(question.questionText)
-        Spacer(modifier = Modifier.height(32.dp))
         val rationaleId =
             question.permissionsRationaleText ?: R.string.permissions_rationale
         Text(stringResource(id = rationaleId))
@@ -129,19 +128,9 @@ private fun QuestionContent(
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(32.dp))
             QuestionTitle(question.questionText)
-            Spacer(modifier = Modifier.height(24.dp))
             if (question.description != null) {
-                Text(
-                    text = stringResource(id = question.description),
-                    color = MaterialTheme.colorScheme.onSurface
-                        .copy(alpha = stronglyDeemphasizedAlpha),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
-                )
+                QuestionDescription(question.description)
             }
             when (question.answer) {
                 is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
@@ -183,7 +172,24 @@ private fun QuestionContent(
 }
 
 @Composable
-private fun QuestionTitle(@StringRes title: Int) {
+fun QuestionDescription(
+    @StringRes description: Int,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = stringResource(id = description),
+        color = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = stronglyDeemphasizedAlpha),
+        style = MaterialTheme.typography.bodySmall,
+        modifier = modifier
+            .wrapContentHeight()
+            .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
+    )
+}
+
+@Composable
+fun QuestionTitle(@StringRes title: Int) {
+    Spacer(modifier = Modifier.height(32.dp))
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,6 +207,7 @@ private fun QuestionTitle(@StringRes title: Int) {
                 .padding(vertical = 24.dp, horizontal = 16.dp)
         )
     }
+    Spacer(modifier = Modifier.height(24.dp))
 }
 
 @Preview
