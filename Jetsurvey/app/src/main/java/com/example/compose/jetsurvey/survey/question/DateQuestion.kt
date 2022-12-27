@@ -17,6 +17,7 @@
 package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,9 +34,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.compose.jetsurvey.survey.Answer
-import com.example.compose.jetsurvey.survey.SurveyActionResult
-import com.example.compose.jetsurvey.survey.SurveyActionType
+import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.survey.QuestionWrapper
 import com.example.compose.jetsurvey.survey.simpleDateFormatPattern
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.slightlyDeemphasizedAlpha
@@ -46,49 +46,49 @@ import java.util.TimeZone
 
 @Composable
 fun DateQuestion(
-    questionId: Int,
-    answer: Answer.Action?,
-    onAction: (Int, SurveyActionType) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    @StringRes titleResourceId: Int,
+    @StringRes directionResourceId: Int,
+    dateInMillis: Long?,
+    onClick: () -> Unit,
 ) {
-    val timestamp = if (answer != null && answer.result is SurveyActionResult.Date) {
-        answer.result.dateMillis
-    } else {
-        getDefaultDateInMillis()
-    }
-
-    // All times are stored in UTC, so generate the display from UTC also
-    val dateFormat = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault())
-    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-    val dateString = dateFormat.format(timestamp)
-
-    Button(
-        onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
-                .copy(alpha = slightlyDeemphasizedAlpha),
-        ),
-        shape = MaterialTheme.shapes.small,
-        modifier = modifier
-            .padding(vertical = 20.dp)
-            .height(54.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-
+    QuestionWrapper(
+        modifier = modifier,
+        titleResourceId = titleResourceId,
+        directionResourceId = directionResourceId,
     ) {
-        Text(
-            text = dateString,
+        // All times are stored in UTC, so generate the display from UTC also
+        val dateFormat = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val dateString = dateFormat.format(dateInMillis ?: getDefaultDateInMillis())
+
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
+                    .copy(alpha = slightlyDeemphasizedAlpha),
+            ),
+            shape = MaterialTheme.shapes.small,
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1.8f)
-        )
-        Icon(
-            imageVector = Icons.Filled.ArrowDropDown,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.2f)
-        )
+                .padding(vertical = 20.dp)
+                .height(54.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)),
+        ) {
+            Text(
+                text = dateString,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1.8f)
+            )
+            Icon(
+                imageVector = Icons.Filled.ArrowDropDown,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.2f)
+            )
+        }
     }
 }
 
@@ -98,7 +98,12 @@ fun DateQuestion(
 fun DateQuestionPreview() {
     JetsurveyTheme {
         Surface {
-            DateQuestion(questionId = 1, answer = null, onAction = { _, _ -> })
+            DateQuestion(
+                titleResourceId = R.string.takeaway,
+                directionResourceId = R.string.select_date,
+                dateInMillis = 1672560000000, // 2023-01-01
+                onClick = {},
+            )
         }
     }
 }

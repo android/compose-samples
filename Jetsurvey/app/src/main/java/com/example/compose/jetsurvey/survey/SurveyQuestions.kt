@@ -19,216 +19,72 @@ package com.example.compose.jetsurvey.survey
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.survey.question.ActionQuestion
-import com.example.compose.jetsurvey.survey.question.MultipleChoiceQuestion
-import com.example.compose.jetsurvey.survey.question.SingleChoiceQuestion
-import com.example.compose.jetsurvey.survey.question.SliderQuestion
-import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.slightlyDeemphasizedAlpha
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.MultiplePermissionsState
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@OptIn(ExperimentalPermissionsApi::class)
+/**
+ * Creates a Column that is vertically scrollable and contains the title, the directions (if a
+ * string resource is passed), and the content
+ */
 @Composable
-fun Question(
-    question: Question,
-    answer: Answer<*>?,
-    shouldAskPermissions: Boolean,
-    onAnswer: (Answer<*>) -> Unit,
-    onAction: (Int, SurveyActionType) -> Unit,
-    onDoNotAskForPermissions: () -> Unit,
-    modifier: Modifier = Modifier
+fun QuestionWrapper(
+    modifier: Modifier = Modifier,
+    @StringRes titleResourceId: Int,
+    @StringRes directionResourceId: Int? = null,
+    content: @Composable () -> Unit,
 ) {
-    if (question.permissionsRequired.isEmpty()) {
-        QuestionContent(question, answer, onAnswer, onAction, modifier)
-    } else {
-        val multiplePermissionsState = rememberMultiplePermissionsState(
-            question.permissionsRequired
-        )
-
-        if (multiplePermissionsState.allPermissionsGranted) {
-            QuestionContent(question, answer, onAnswer, onAction, modifier)
-        } else {
-            PermissionsRationale(
-                question,
-                multiplePermissionsState,
-                onDoNotAskForPermissions,
-                modifier.padding(horizontal = 20.dp)
-            )
-        }
-
-        // If we cannot ask for permissions, inform the caller that can move to the next question
-        if (!shouldAskPermissions) {
-            LaunchedEffect(true) {
-                onAnswer(Answer.PermissionsDenied)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun PermissionsRationale(
-    question: Question,
-    multiplePermissionsState: MultiplePermissionsState,
-    onDoNotAskForPermissions: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        Spacer(modifier = Modifier.height(32.dp))
-        QuestionTitle(question.questionText)
-        Spacer(modifier = Modifier.height(32.dp))
-        val rationaleId =
-            question.permissionsRationaleText ?: R.string.permissions_rationale
-        Text(stringResource(id = rationaleId))
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = {
-                multiplePermissionsState.launchMultiplePermissionRequest()
-            }
-        ) {
-            Text(stringResource(R.string.request_permissions))
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedButton(onClick = onDoNotAskForPermissions) {
-            Text(stringResource(R.string.do_not_ask_permissions))
-        }
-    }
-}
-
-@Composable
-private fun QuestionContent(
-    question: Question,
-    answer: Answer<*>?,
-    onAnswer: (Answer<*>) -> Unit,
-    onAction: (Int, SurveyActionType) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+    Column(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
-        item {
-            Spacer(modifier = Modifier.height(32.dp))
-            QuestionTitle(question.questionText)
-            Spacer(modifier = Modifier.height(24.dp))
-            if (question.description != null) {
-                Text(
-                    text = stringResource(id = question.description),
-                    color = MaterialTheme.colorScheme.onSurface
-                        .copy(alpha = stronglyDeemphasizedAlpha),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .padding(bottom = 18.dp, start = 8.dp, end = 8.dp)
-                )
-            }
-            when (question.answer) {
-                is PossibleAnswer.SingleChoice -> SingleChoiceQuestion(
-                    options = question.answer.options,
-                    answer = answer as Answer.SingleChoice?,
-                    onAnswerSelected = { answer -> onAnswer(Answer.SingleChoice(answer)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                is PossibleAnswer.MultipleChoice -> MultipleChoiceQuestion(
-                    possibleAnswer = question.answer,
-                    answer = answer as Answer.MultipleChoice?,
-                    onAnswerSelected = { newAnswer, selected ->
-                        // create the answer if it doesn't exist or
-                        // update it based on the user's selection
-                        if (answer == null) {
-                            onAnswer(Answer.MultipleChoice(setOf(newAnswer)))
-                        } else {
-                            onAnswer(answer.withAnswerSelected(newAnswer, selected))
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                is PossibleAnswer.Action -> ActionQuestion(
-                    questionId = question.id,
-                    possibleAnswer = question.answer,
-                    answer = answer as Answer.Action?,
-                    onAction = onAction,
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-                is PossibleAnswer.Slider -> SliderQuestion(
-                    possibleAnswer = question.answer,
-                    answer = answer as Answer.Slider?,
-                    onAnswerSelected = { onAnswer(Answer.Slider(it)) },
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-            }
+        Spacer(Modifier.height(32.dp))
+        QuestionTitle(titleResourceId)
+        directionResourceId?.let {
+            QuestionDirections(it)
         }
+
+        content()
     }
 }
 
 @Composable
-private fun QuestionTitle(@StringRes title: Int) {
-    Row(
+fun QuestionTitle(@StringRes title: Int) {
+    Text(
+        text = stringResource(id = title),
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = slightlyDeemphasizedAlpha),
         modifier = Modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.inverseOnSurface,
                 shape = MaterialTheme.shapes.small
             )
-    ) {
-        Text(
-            text = stringResource(id = title),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = slightlyDeemphasizedAlpha),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 16.dp)
-        )
-    }
+            .padding(vertical = 24.dp, horizontal = 16.dp)
+    )
 }
 
-@Preview
 @Composable
-fun QuestionPreview() {
-    val question = Question(
-        id = 2,
-        questionText = R.string.pick_superhero,
-        answer = PossibleAnswer.SingleChoice(
-            options = listOf(
-                AnswerOption(R.string.spark),
-                AnswerOption(R.string.lenz),
-                AnswerOption(R.string.bugchaos),
-                AnswerOption(R.string.frag)
-            )
-        ),
-        description = R.string.select_one
+fun QuestionDirections(@StringRes directionsResourceId: Int) {
+    Text(
+        text = stringResource(id = directionsResourceId),
+        color = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = stronglyDeemphasizedAlpha),
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 18.dp, horizontal = 8.dp)
     )
-    JetsurveyTheme {
-        Surface {
-            Question(
-                question = question,
-                shouldAskPermissions = true,
-                answer = null,
-                onAnswer = {},
-                onAction = { _, _ -> },
-                onDoNotAskForPermissions = {}
-            )
-        }
-    }
 }

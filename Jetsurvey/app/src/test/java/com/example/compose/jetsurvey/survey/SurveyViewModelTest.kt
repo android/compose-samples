@@ -18,7 +18,7 @@ package com.example.compose.jetsurvey.survey
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,42 +31,34 @@ class SurveyViewModelTest {
     @Before
     fun setUp() {
         viewModel = SurveyViewModel(
-            TestSurveyRepository(),
             PhotoUriManager(ApplicationProvider.getApplicationContext())
         )
     }
 
     @Test
-    fun onDatePicked_storesValueCorrectly() {
-        // Select a date
-        val initialDateMilliseconds = 0L
-        viewModel.onDatePicked(dateQuestionId, initialDateMilliseconds)
+    fun onFreeTimeResponse() {
+        val answerOne = 0
+        val answerTwo = 99
 
-        // Get the stored date
-        val newDateMilliseconds = viewModel.getCurrentDate(dateQuestionId)
+        // Starts empty, next disabled
+        Truth.assertThat(viewModel.freeTimeResponse).isEmpty()
+        Truth.assertThat(viewModel.isNextEnabled.value).isFalse()
 
-        // Verify they're identical
-        assertThat(newDateMilliseconds).isEqualTo(initialDateMilliseconds)
+        // Add two arbitrary values
+        viewModel.onFreeTimeResponse(true, answerOne)
+        viewModel.onFreeTimeResponse(true, answerTwo)
+        Truth.assertThat(viewModel.freeTimeResponse).containsExactly(answerOne, answerTwo)
+        Truth.assertThat(viewModel.isNextEnabled.value).isTrue()
+
+        // Remove one value
+        viewModel.onFreeTimeResponse(false, answerTwo)
+        Truth.assertThat(viewModel.freeTimeResponse).containsExactly(answerOne)
+        Truth.assertThat(viewModel.isNextEnabled.value).isTrue()
+
+        // Remove the last value
+        viewModel.onFreeTimeResponse(false, answerOne)
+        Truth.assertThat(viewModel.freeTimeResponse).isEmpty()
+        Truth.assertThat(viewModel.isNextEnabled.value).isFalse()
     }
-}
 
-const val dateQuestionId = 1
-class TestSurveyRepository : SurveyRepository {
-
-    private val testSurvey = Survey(
-        title = -1,
-        questions = listOf(
-            Question(
-                id = dateQuestionId,
-                questionText = -1,
-                answer = PossibleAnswer.Action(label = -1, SurveyActionType.PICK_DATE)
-            )
-        )
-    )
-
-    override fun getSurvey() = testSurvey
-
-    override fun getSurveyResult(answers: List<Answer<*>>): SurveyResult {
-        TODO("Not yet implemented")
-    }
 }

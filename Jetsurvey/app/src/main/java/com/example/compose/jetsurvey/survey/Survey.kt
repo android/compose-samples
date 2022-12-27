@@ -17,83 +17,102 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.example.compose.jetsurvey.R
+import com.example.compose.jetsurvey.survey.question.DateQuestion
+import com.example.compose.jetsurvey.survey.question.MultipleChoiceQuestion
+import com.example.compose.jetsurvey.survey.question.PhotoQuestion
+import com.example.compose.jetsurvey.survey.question.SingleChoiceQuestion
+import com.example.compose.jetsurvey.survey.question.SliderQuestion
+import com.example.compose.jetsurvey.survey.question.Superhero
 
-data class SurveyResult(
-    val library: String,
-    @StringRes val result: Int,
-    @StringRes val description: Int
-)
-
-data class Survey(
-    @StringRes val title: Int,
-    val questions: List<Question>
-)
-
-data class Question(
-    val id: Int,
-    @StringRes val questionText: Int,
-    val answer: PossibleAnswer,
-    @StringRes val description: Int? = null,
-    val permissionsRequired: List<String> = emptyList(),
-    @StringRes val permissionsRationaleText: Int? = null
-)
-
-/**
- * Type of supported actions for a survey
- */
-enum class SurveyActionType { PICK_DATE, TAKE_PHOTO, SELECT_CONTACT }
-
-sealed class SurveyActionResult {
-    data class Date(val dateMillis: Long) : SurveyActionResult()
-    data class Photo(val uri: Uri) : SurveyActionResult()
-    data class Contact(val contact: String) : SurveyActionResult()
+@Composable
+fun FreeTimeQuestion(
+    modifier: Modifier = Modifier,
+    selectedAnswers: List<Int>,
+    onOptionSelected: (selected: Boolean, answer: Int) -> Unit,
+) {
+    MultipleChoiceQuestion(
+        modifier = modifier,
+        titleResourceId = R.string.in_my_free_time,
+        directionResourceId = R.string.select_all,
+        possibleAnswers = listOf(
+            R.string.read,
+            R.string.work_out,
+            R.string.draw,
+            R.string.play_games,
+            R.string.dance,
+            R.string.watch_movies,
+        ),
+        selectedAnswers = selectedAnswers,
+        onOptionSelected = onOptionSelected,
+    )
 }
 
-data class AnswerOption(@StringRes val textRes: Int, @DrawableRes val iconRes: Int? = null)
-
-sealed class PossibleAnswer {
-    data class SingleChoice(val options: List<AnswerOption>) : PossibleAnswer()
-    data class MultipleChoice(val options: List<AnswerOption>) : PossibleAnswer()
-    data class Action(
-        @StringRes val label: Int,
-        val actionType: SurveyActionType
-    ) : PossibleAnswer()
-
-    data class Slider(
-        val range: ClosedFloatingPointRange<Float>,
-        val steps: Int,
-        @StringRes val startText: Int,
-        @StringRes val endText: Int,
-        @StringRes val neutralText: Int,
-        val defaultValue: Float = 5.5f
-    ) : PossibleAnswer()
+@Composable
+fun SuperheroQuestion(
+    modifier: Modifier = Modifier,
+    selectedAnswer: Superhero?,
+    onOptionSelected: (Superhero) -> Unit,
+) {
+    SingleChoiceQuestion(
+        modifier = modifier,
+        titleResourceId = R.string.pick_superhero,
+        directionResourceId = R.string.select_one,
+        possibleAnswers = listOf(
+            Superhero(R.string.spark, R.drawable.spark),
+            Superhero(R.string.lenz, R.drawable.lenz),
+            Superhero(R.string.bugchaos, R.drawable.bug_of_chaos),
+            Superhero(R.string.frag, R.drawable.frag),
+        ),
+        selectedAnswer = selectedAnswer,
+        onOptionSelected = onOptionSelected,
+    )
 }
 
-sealed class Answer<T : PossibleAnswer> {
-    object PermissionsDenied : Answer<Nothing>()
-    data class SingleChoice(@StringRes val answer: Int) : Answer<PossibleAnswer.SingleChoice>()
-    data class MultipleChoice(val answersStringRes: Set<Int>) :
-        Answer<PossibleAnswer.MultipleChoice>()
-
-    data class Action(val result: SurveyActionResult) : Answer<PossibleAnswer.Action>()
-    data class Slider(val answerValue: Float) : Answer<PossibleAnswer.Slider>()
+@Composable
+fun TakeawayQuestion(
+    modifier: Modifier = Modifier,
+    dateInMillis: Long?,
+    onClick: () -> Unit,
+) {
+    DateQuestion(
+        modifier = modifier,
+        titleResourceId = R.string.takeaway,
+        directionResourceId = R.string.select_date,
+        dateInMillis = dateInMillis,
+        onClick = onClick,
+    )
 }
 
-/**
- * Add or remove an answer from the list of selected answers depending on whether the answer was
- * selected or deselected.
- */
-fun Answer.MultipleChoice.withAnswerSelected(
-    @StringRes answer: Int,
-    selected: Boolean
-): Answer.MultipleChoice {
-    val newStringRes = answersStringRes.toMutableSet()
-    if (!selected) {
-        newStringRes.remove(answer)
-    } else {
-        newStringRes.add(answer)
-    }
-    return Answer.MultipleChoice(newStringRes)
+@Composable
+fun FeelingAboutSelfiesQuestion(
+    modifier: Modifier = Modifier,
+    value: Float?,
+    onValueChange: (Float) -> Unit,
+) {
+    SliderQuestion(
+        modifier = modifier,
+        titleResourceId = R.string.selfies,
+        value = value,
+        onValueChange = onValueChange,
+        startTextResource = R.string.strongly_dislike,
+        neutralTextResource = R.string.neutral,
+        endTextResource = R.string.strongly_like,
+    )
+}
+
+@Composable
+fun TakeSelfieQuestion(
+    modifier: Modifier = Modifier,
+    imageUri: Uri?,
+    onClick: () -> Unit,
+) {
+    PhotoQuestion(
+        modifier = modifier,
+        titleResourceId = R.string.selfie_skills,
+        imageUri = imageUri,
+        onClick = onClick,
+    )
 }
