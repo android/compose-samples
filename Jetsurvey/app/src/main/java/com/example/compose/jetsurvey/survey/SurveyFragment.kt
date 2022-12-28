@@ -218,6 +218,6 @@ class SurveyFragment : Fragment() {
     }
 
     companion object {
-        private const val CONTENT_ANIMATION_DURATION = 500
+        private const val CONTENT_ANIMATION_DURATION = 300
     }
 }
