@@ -53,8 +53,10 @@ fun QuestionWrapper(
         Spacer(Modifier.height(32.dp))
         QuestionTitle(titleResourceId)
         directionResourceId?.let {
+            Spacer(Modifier.height(18.dp))
             QuestionDirections(it)
         }
+        Spacer(Modifier.height(18.dp))
 
         content()
     }
@@ -85,6 +87,6 @@ fun QuestionDirections(@StringRes directionsResourceId: Int) {
         style = MaterialTheme.typography.bodySmall,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 18.dp, horizontal = 8.dp)
+            .padding(horizontal = 8.dp)
     )
 }
