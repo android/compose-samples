@@ -60,5 +60,4 @@ class SurveyViewModelTest {
         Truth.assertThat(viewModel.freeTimeResponse).isEmpty()
         Truth.assertThat(viewModel.isNextEnabled.value).isFalse()
     }
-
 }
