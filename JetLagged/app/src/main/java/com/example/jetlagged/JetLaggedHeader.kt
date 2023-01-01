@@ -34,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -49,7 +50,9 @@ fun JetLaggedHeader(modifier: Modifier = Modifier) {
     Box(
         modifier.height(150.dp)
     ) {
-        Row(modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars)) {
             IconButton(
                 onClick = { },
             ) {
@@ -62,8 +65,7 @@ fun JetLaggedHeader(modifier: Modifier = Modifier) {
             Text(
                 stringResource(R.string.jetlagged_app_heading),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .fillMaxWidth(),
                 style = TitleBarStyle,
                 textAlign = TextAlign.Start
             )
