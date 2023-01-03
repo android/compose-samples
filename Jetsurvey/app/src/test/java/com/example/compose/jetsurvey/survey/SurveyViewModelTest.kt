@@ -42,22 +42,22 @@ class SurveyViewModelTest {
 
         // Starts empty, next disabled
         Truth.assertThat(viewModel.freeTimeResponse).isEmpty()
-        Truth.assertThat(viewModel.isNextEnabled.value).isFalse()
+        Truth.assertThat(viewModel.isNextEnabled).isFalse()
 
         // Add two arbitrary values
         viewModel.onFreeTimeResponse(true, answerOne)
         viewModel.onFreeTimeResponse(true, answerTwo)
         Truth.assertThat(viewModel.freeTimeResponse).containsExactly(answerOne, answerTwo)
-        Truth.assertThat(viewModel.isNextEnabled.value).isTrue()
+        Truth.assertThat(viewModel.isNextEnabled).isTrue()
 
         // Remove one value
         viewModel.onFreeTimeResponse(false, answerTwo)
         Truth.assertThat(viewModel.freeTimeResponse).containsExactly(answerOne)
-        Truth.assertThat(viewModel.isNextEnabled.value).isTrue()
+        Truth.assertThat(viewModel.isNextEnabled).isTrue()
 
         // Remove the last value
         viewModel.onFreeTimeResponse(false, answerOne)
         Truth.assertThat(viewModel.freeTimeResponse).isEmpty()
-        Truth.assertThat(viewModel.isNextEnabled.value).isFalse()
+        Truth.assertThat(viewModel.isNextEnabled).isFalse()
     }
 }
