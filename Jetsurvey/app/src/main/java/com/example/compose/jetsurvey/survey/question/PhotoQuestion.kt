@@ -56,10 +56,10 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun PhotoQuestion(
-    modifier: Modifier = Modifier,
     @StringRes titleResourceId: Int,
     imageUri: Uri?,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val iconResource = if (imageUri != null) {
         Icons.Filled.SwapHoriz
@@ -68,8 +68,8 @@ fun PhotoQuestion(
     }
 
     QuestionWrapper(
-        modifier = modifier,
         titleResourceId = titleResourceId,
+        modifier = modifier,
     ) {
 
         OutlinedButton(
@@ -146,10 +146,10 @@ fun PhotoQuestionPreview() {
     JetsurveyTheme {
         Surface {
             PhotoQuestion(
-                modifier = Modifier.padding(16.dp),
                 titleResourceId = R.string.selfie_skills,
                 imageUri = null,
                 onClick = {},
+                modifier = Modifier.padding(16.dp),
             )
         }
     }

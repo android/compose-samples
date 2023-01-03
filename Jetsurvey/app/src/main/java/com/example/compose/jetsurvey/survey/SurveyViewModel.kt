@@ -19,8 +19,6 @@ package com.example.compose.jetsurvey.survey
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.compose.jetsurvey.survey.question.Superhero
@@ -66,23 +64,19 @@ class SurveyViewModel(
     val selfieUriResponse: Uri?
         get() = _selfieUriResponse.value
 
-    // ----- Survey status exposed as LiveData -----
+    // ----- Survey status exposed as State -----
 
-    private val _isSurveyComplete = MutableLiveData(false)
-    val isSurveyComplete: LiveData<Boolean>
-        get() = _isSurveyComplete
+    private val _isSurveyComplete = mutableStateOf(false)
+    val isSurveyComplete: Boolean
+        get() = _isSurveyComplete.value
 
-    private val _surveyScreenData = MutableLiveData<SurveyScreenData>()
-    val surveyScreenData: LiveData<SurveyScreenData>
-        get() = _surveyScreenData
+    private val _surveyScreenData = mutableStateOf(createSurveyScreenData())
+    val surveyScreenData: SurveyScreenData?
+        get() = _surveyScreenData.value
 
-    private val _isNextEnabled = MutableLiveData(false)
-    val isNextEnabled: LiveData<Boolean>
-        get() = _isNextEnabled
-
-    init {
-        updateSurveyScreenData()
-    }
+    private val _isNextEnabled = mutableStateOf(false)
+    val isNextEnabled: Boolean
+        get() = _isNextEnabled.value
 
     /**
      * Returns true if the ViewModel handled the back press (i.e., it went back one question)
@@ -109,7 +103,7 @@ class SurveyViewModel(
     private fun changeQuestion(newQuestionIndex: Int) {
         questionIndex = newQuestionIndex
         _isNextEnabled.value = getIsNextEnabled()
-        updateSurveyScreenData()
+        _surveyScreenData.value = createSurveyScreenData()
     }
 
     fun onDonePressed() {
@@ -154,8 +148,8 @@ class SurveyViewModel(
         }
     }
 
-    private fun updateSurveyScreenData() {
-        _surveyScreenData.value = SurveyScreenData(
+    private fun createSurveyScreenData(): SurveyScreenData {
+        return SurveyScreenData(
             questionIndex = questionIndex,
             questionCount = questionOrder.size,
             shouldShowPreviousButton = questionIndex > 0,

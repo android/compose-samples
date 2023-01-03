@@ -41,7 +41,6 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun SliderQuestion(
-    modifier: Modifier = Modifier,
     @StringRes titleResourceId: Int,
     value: Float?,
     onValueChange: (Float) -> Unit,
@@ -50,13 +49,14 @@ fun SliderQuestion(
     @StringRes startTextResource: Int,
     @StringRes neutralTextResource: Int,
     @StringRes endTextResource: Int,
+    modifier: Modifier = Modifier,
 ) {
     var sliderPosition by remember {
         mutableStateOf(value ?: ((valueRange.endInclusive - valueRange.start) / 2))
     }
     QuestionWrapper(
-        modifier = modifier,
         titleResourceId = titleResourceId,
+        modifier = modifier,
     ) {
 
         Row {

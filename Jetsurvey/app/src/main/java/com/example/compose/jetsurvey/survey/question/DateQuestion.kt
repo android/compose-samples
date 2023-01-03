@@ -46,16 +46,16 @@ import java.util.TimeZone
 
 @Composable
 fun DateQuestion(
-    modifier: Modifier = Modifier,
     @StringRes titleResourceId: Int,
-    @StringRes directionResourceId: Int,
+    @StringRes directionsResourceId: Int,
     dateInMillis: Long?,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     QuestionWrapper(
-        modifier = modifier,
         titleResourceId = titleResourceId,
-        directionResourceId = directionResourceId,
+        directionsResourceId = directionsResourceId,
+        modifier = modifier,
     ) {
         // All times are stored in UTC, so generate the display from UTC also
         val dateFormat = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault())
@@ -100,7 +100,7 @@ fun DateQuestionPreview() {
         Surface {
             DateQuestion(
                 titleResourceId = R.string.takeaway,
-                directionResourceId = R.string.select_date,
+                directionsResourceId = R.string.select_date,
                 dateInMillis = 1672560000000, // 2023-01-01
                 onClick = {},
             )

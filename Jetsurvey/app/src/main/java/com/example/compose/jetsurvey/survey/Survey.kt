@@ -29,14 +29,13 @@ import com.example.compose.jetsurvey.survey.question.Superhero
 
 @Composable
 fun FreeTimeQuestion(
-    modifier: Modifier = Modifier,
     selectedAnswers: List<Int>,
     onOptionSelected: (selected: Boolean, answer: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     MultipleChoiceQuestion(
-        modifier = modifier,
         titleResourceId = R.string.in_my_free_time,
-        directionResourceId = R.string.select_all,
+        directionsResourceId = R.string.select_all,
         possibleAnswers = listOf(
             R.string.read,
             R.string.work_out,
@@ -47,19 +46,19 @@ fun FreeTimeQuestion(
         ),
         selectedAnswers = selectedAnswers,
         onOptionSelected = onOptionSelected,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun SuperheroQuestion(
-    modifier: Modifier = Modifier,
     selectedAnswer: Superhero?,
     onOptionSelected: (Superhero) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     SingleChoiceQuestion(
-        modifier = modifier,
         titleResourceId = R.string.pick_superhero,
-        directionResourceId = R.string.select_one,
+        directionsResourceId = R.string.select_one,
         possibleAnswers = listOf(
             Superhero(R.string.spark, R.drawable.spark),
             Superhero(R.string.lenz, R.drawable.lenz),
@@ -68,51 +67,52 @@ fun SuperheroQuestion(
         ),
         selectedAnswer = selectedAnswer,
         onOptionSelected = onOptionSelected,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun TakeawayQuestion(
-    modifier: Modifier = Modifier,
     dateInMillis: Long?,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     DateQuestion(
-        modifier = modifier,
         titleResourceId = R.string.takeaway,
-        directionResourceId = R.string.select_date,
+        directionsResourceId = R.string.select_date,
         dateInMillis = dateInMillis,
         onClick = onClick,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun FeelingAboutSelfiesQuestion(
-    modifier: Modifier = Modifier,
     value: Float?,
     onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     SliderQuestion(
-        modifier = modifier,
         titleResourceId = R.string.selfies,
         value = value,
         onValueChange = onValueChange,
         startTextResource = R.string.strongly_dislike,
         neutralTextResource = R.string.neutral,
         endTextResource = R.string.strongly_like,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun TakeSelfieQuestion(
-    modifier: Modifier = Modifier,
     imageUri: Uri?,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     PhotoQuestion(
-        modifier = modifier,
         titleResourceId = R.string.selfie_skills,
         imageUri = imageUri,
         onClick = onClick,
+        modifier = modifier,
     )
 }

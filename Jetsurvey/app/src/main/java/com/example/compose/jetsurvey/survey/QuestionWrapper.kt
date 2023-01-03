@@ -35,14 +35,19 @@ import com.example.compose.jetsurvey.theme.slightlyDeemphasizedAlpha
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
 /**
- * Creates a Column that is vertically scrollable and contains the title, the directions (if a
- * string resource is passed), and the content
+ * A scrollable container with the question's title, direction, and dynamic content.
+ *
+ * @param titleResourceId String resource to use for the question's title
+ * @param modifier Modifier to apply to the entire wrapper
+ * @param directionsResourceId String resource to use for the question's directions; the direction
+ * UI will be omitted if null is passed
+ * @param content Composable to display after the title and option directions
  */
 @Composable
 fun QuestionWrapper(
-    modifier: Modifier = Modifier,
     @StringRes titleResourceId: Int,
-    @StringRes directionResourceId: Int? = null,
+    modifier: Modifier = Modifier,
+    @StringRes directionsResourceId: Int? = null,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -52,7 +57,7 @@ fun QuestionWrapper(
     ) {
         Spacer(Modifier.height(32.dp))
         QuestionTitle(titleResourceId)
-        directionResourceId?.let {
+        directionsResourceId?.let {
             Spacer(Modifier.height(18.dp))
             QuestionDirections(it)
         }
@@ -63,12 +68,15 @@ fun QuestionWrapper(
 }
 
 @Composable
-fun QuestionTitle(@StringRes title: Int) {
+private fun QuestionTitle(
+    @StringRes title: Int,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = stringResource(id = title),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = slightlyDeemphasizedAlpha),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.inverseOnSurface,
@@ -79,13 +87,16 @@ fun QuestionTitle(@StringRes title: Int) {
 }
 
 @Composable
-fun QuestionDirections(@StringRes directionsResourceId: Int) {
+private fun QuestionDirections(
+    @StringRes directionsResourceId: Int,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = stringResource(id = directionsResourceId),
         color = MaterialTheme.colorScheme.onSurface
             .copy(alpha = stronglyDeemphasizedAlpha),
         style = MaterialTheme.typography.bodySmall,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
     )

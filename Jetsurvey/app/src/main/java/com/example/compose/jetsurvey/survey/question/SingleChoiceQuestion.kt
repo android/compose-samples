@@ -51,17 +51,17 @@ import com.example.compose.jetsurvey.survey.QuestionWrapper
 
 @Composable
 fun SingleChoiceQuestion(
-    modifier: Modifier = Modifier,
     @StringRes titleResourceId: Int,
-    @StringRes directionResourceId: Int,
+    @StringRes directionsResourceId: Int,
     possibleAnswers: List<Superhero>,
     selectedAnswer: Superhero?,
     onOptionSelected: (Superhero) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     QuestionWrapper(
-        modifier = modifier.selectableGroup(),
         titleResourceId = titleResourceId,
-        directionResourceId = directionResourceId,
+        directionsResourceId = directionsResourceId,
+        modifier = modifier.selectableGroup(),
     ) {
         possibleAnswers.forEach {
             val selected = it == selectedAnswer
@@ -78,11 +78,11 @@ fun SingleChoiceQuestion(
 
 @Composable
 fun RadioButtonWithImageRow(
-    modifier: Modifier = Modifier,
     text: String,
     @DrawableRes imageResourceId: Int,
     selected: Boolean,
     onOptionSelected: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -143,7 +143,7 @@ fun SingleChoiceQuestionPreview() {
 
     SingleChoiceQuestion(
         titleResourceId = R.string.pick_superhero,
-        directionResourceId = R.string.select_one,
+        directionsResourceId = R.string.select_one,
         possibleAnswers = possibleAnswers,
         selectedAnswer = selectedAnswer,
         onOptionSelected = { selectedAnswer = it },

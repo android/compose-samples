@@ -41,17 +41,17 @@ import com.example.compose.jetsurvey.survey.QuestionWrapper
 
 @Composable
 fun MultipleChoiceQuestion(
-    modifier: Modifier = Modifier,
     @StringRes titleResourceId: Int,
-    @StringRes directionResourceId: Int,
+    @StringRes directionsResourceId: Int,
     possibleAnswers: List<Int>,
     selectedAnswers: List<Int>,
     onOptionSelected: (selected: Boolean, answer: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     QuestionWrapper(
         modifier = modifier,
         titleResourceId = titleResourceId,
-        directionResourceId = directionResourceId,
+        directionsResourceId = directionsResourceId,
     ) {
         possibleAnswers.forEach {
             val selected = selectedAnswers.contains(it)
@@ -67,10 +67,10 @@ fun MultipleChoiceQuestion(
 
 @Composable
 fun CheckboxRow(
-    modifier: Modifier = Modifier,
     text: String,
     selected: Boolean,
     onOptionSelected: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -112,7 +112,7 @@ fun MultipleChoiceQuestionPreview() {
     val selectedAnswers = remember { mutableStateListOf(R.string.work_out) }
     MultipleChoiceQuestion(
         titleResourceId = R.string.in_my_free_time,
-        directionResourceId = R.string.select_all,
+        directionsResourceId = R.string.select_all,
         possibleAnswers = possibleAnswers,
         selectedAnswers = selectedAnswers,
         onOptionSelected = { _, _ -> }

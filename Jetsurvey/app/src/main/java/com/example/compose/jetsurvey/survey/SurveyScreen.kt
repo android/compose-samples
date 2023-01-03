@@ -90,19 +90,17 @@ fun SurveyQuestionsScreen(
 @OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
 fun SurveyResultScreen(
-    title: String,
-    subtitle: String,
-    description: String,
-    onDonePressed: () -> Unit
+    onDonePressed: () -> Unit,
 ) {
+
     Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
                 SurveyResult(
-                    title = title,
-                    subtitle = subtitle,
-                    description = description,
+                    title = stringResource(R.string.survey_result_title),
+                    subtitle = stringResource(R.string.survey_result_subtitle),
+                    description = stringResource(R.string.survey_result_description),
                     modifier = modifier
                 )
             },

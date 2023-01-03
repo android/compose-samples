@@ -31,13 +31,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.with
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -76,24 +74,14 @@ class SurveyFragment : Fragment() {
 
             setContent {
                 JetsurveyTheme {
-                    val isSurveyComplete by viewModel.isSurveyComplete.observeAsState(false)
 
-                    if (isSurveyComplete) {
-                        // Note, results are hardcoded for this demo; in a complete app, you'd
-                        // likely send the survey responses to a backend to determine the
-                        // result and then pass them here.
-                        SurveyResultScreen(
-                            title = stringResource(R.string.survey_result_title),
-                            subtitle = stringResource(R.string.survey_result_subtitle),
-                            description = stringResource(R.string.survey_result_description),
-                            onDonePressed = {
-                                activity?.onBackPressedDispatcher?.onBackPressed()
-                            }
-                        )
+                    if (viewModel.isSurveyComplete) {
+                        SurveyResultScreen {
+                            activity?.onBackPressedDispatcher?.onBackPressed()
+                        }
                     } else {
-                        val surveyScreenData = viewModel.surveyScreenData.observeAsState().value
+                        val surveyScreenData = viewModel.surveyScreenData
                             ?: return@JetsurveyTheme
-                        val isNextEnabled = viewModel.isNextEnabled.observeAsState().value ?: false
                         var shouldInterceptBackPresses by remember { mutableStateOf(true) }
 
                         BackHandler {
@@ -104,7 +92,7 @@ class SurveyFragment : Fragment() {
 
                         SurveyQuestionsScreen(
                             surveyScreenData = surveyScreenData,
-                            isNextEnabled = isNextEnabled,
+                            isNextEnabled = viewModel.isNextEnabled,
                             onClosePressed = {
                                 shouldInterceptBackPresses = false
                                 activity?.onBackPressedDispatcher?.onBackPressed()
@@ -138,39 +126,36 @@ class SurveyFragment : Fragment() {
                                 when (targetState.surveyQuestion) {
                                     SurveyQuestion.FREE_TIME -> {
                                         FreeTimeQuestion(
-                                            modifier,
-                                            viewModel.freeTimeResponse,
-                                        ) { selected, answer ->
-                                            viewModel.onFreeTimeResponse(selected, answer)
-                                        }
+                                            selectedAnswers = viewModel.freeTimeResponse,
+                                            onOptionSelected = viewModel::onFreeTimeResponse,
+                                            modifier = modifier,
+                                        )
                                     }
 
                                     SurveyQuestion.SUPERHERO -> SuperheroQuestion(
-                                        modifier,
-                                        viewModel.superheroResponse,
-                                    ) { superhero ->
-                                        viewModel.onSuperheroResponse(superhero)
-                                    }
+                                        selectedAnswer = viewModel.superheroResponse,
+                                        onOptionSelected = viewModel::onSuperheroResponse,
+                                        modifier = modifier,
+                                    )
 
                                     SurveyQuestion.LAST_TAKEAWAY -> TakeawayQuestion(
-                                        modifier,
                                         dateInMillis = viewModel.takeawayResponse,
-                                        onClick = { showTakeawayDatePicker() }
+                                        onClick = ::showTakeawayDatePicker,
+                                        modifier = modifier,
                                     )
 
                                     SurveyQuestion.FEELING_ABOUT_SELFIES ->
                                         FeelingAboutSelfiesQuestion(
-                                            modifier = modifier,
                                             value = viewModel.feelingAboutSelfiesResponse,
-                                            onValueChange = { feeling ->
-                                                viewModel.onFeelingAboutSelfiesResponse(feeling)
-                                            }
+                                            onValueChange =
+                                            viewModel::onFeelingAboutSelfiesResponse,
+                                            modifier = modifier,
                                         )
 
                                     SurveyQuestion.TAKE_SELFIE -> TakeSelfieQuestion(
-                                        modifier = modifier,
                                         imageUri = viewModel.selfieUriResponse,
-                                        onClick = { takeSelfie() }
+                                        onClick = ::takeSelfie,
+                                        modifier = modifier,
                                     )
                                 }
                             }
