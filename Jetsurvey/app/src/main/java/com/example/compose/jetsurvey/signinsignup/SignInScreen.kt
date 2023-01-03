@@ -53,16 +53,14 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.util.supportWideScreen
 import kotlinx.coroutines.launch
 
-sealed class SignInEvent {
-    data class SignIn(val email: String, val password: String) : SignInEvent()
-    object SignUp : SignInEvent()
-    object SignInAsGuest : SignInEvent()
-    object NavigateBack : SignInEvent()
-}
-
 @OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
-fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
+fun SignInScreen(
+    email: String?,
+    onSignInSubmitted: (email: String, password: String) -> Unit,
+    onSignInAsGuest: () -> Unit,
+    onNavUp: () -> Unit,
+) {
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -74,20 +72,19 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
         topBar = {
             SignInSignUpTopAppBar(
                 topAppBarText = stringResource(id = R.string.sign_in),
-                onBackPressed = { onNavigationEvent(SignInEvent.NavigateBack) }
+                onNavUp = onNavUp,
             )
         },
         content = { contentPadding ->
             SignInSignUpScreen(
                 modifier = Modifier.supportWideScreen(),
                 contentPadding = contentPadding,
-                onSignedInAsGuest = { onNavigationEvent(SignInEvent.SignInAsGuest) }
+                onSignInAsGuest = onSignInAsGuest,
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     SignInContent(
-                        onSignInSubmitted = { email, password ->
-                            onNavigationEvent(SignInEvent.SignIn(email, password))
-                        }
+                        email = email,
+                        onSignInSubmitted = onSignInSubmitted,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     TextButton(
@@ -119,12 +116,13 @@ fun SignIn(onNavigationEvent: (SignInEvent) -> Unit) {
 
 @Composable
 fun SignInContent(
+    email: String?,
     onSignInSubmitted: (email: String, password: String) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
         val emailState by rememberSaveable(stateSaver = EmailStateSaver) {
-            mutableStateOf(EmailState())
+            mutableStateOf(EmailState(email))
         }
         Email(emailState, onImeAction = { focusRequester.requestFocus() })
 
@@ -198,6 +196,11 @@ fun ErrorSnackbar(
 @Composable
 fun SignInPreview() {
     JetsurveyTheme {
-        SignIn {}
+        SignInScreen(
+            email = null,
+            onSignInSubmitted = { _, _ -> },
+            onSignInAsGuest = {},
+            onNavUp = {},
+        )
     }
 }

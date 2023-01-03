@@ -34,7 +34,7 @@ class SurveyViewModel(
         SurveyQuestion.SUPERHERO,
         SurveyQuestion.LAST_TAKEAWAY,
         SurveyQuestion.FEELING_ABOUT_SELFIES,
-        SurveyQuestion.TAKE_SELFIE
+        SurveyQuestion.TAKE_SELFIE,
     )
 
     private var questionIndex = 0
@@ -60,15 +60,11 @@ class SurveyViewModel(
     val feelingAboutSelfiesResponse: Float?
         get() = _feelingAboutSelfiesResponse.value
 
-    private val _selfieUriResponse = mutableStateOf<Uri?>(null)
-    val selfieUriResponse: Uri?
-        get() = _selfieUriResponse.value
+    private val _selfieUri = mutableStateOf<Uri?>(null)
+    val selfieUri
+        get() = _selfieUri.value
 
     // ----- Survey status exposed as State -----
-
-    private val _isSurveyComplete = mutableStateOf(false)
-    val isSurveyComplete: Boolean
-        get() = _isSurveyComplete.value
 
     private val _surveyScreenData = mutableStateOf(createSurveyScreenData())
     val surveyScreenData: SurveyScreenData?
@@ -106,8 +102,9 @@ class SurveyViewModel(
         _surveyScreenData.value = createSurveyScreenData()
     }
 
-    fun onDonePressed() {
-        _isSurveyComplete.value = true
+    fun onDonePressed(onSurveyComplete: () -> Unit) {
+        // Here is where you could validate that the requirements of the survey are complete
+        onSurveyComplete()
     }
 
     fun onFreeTimeResponse(selected: Boolean, answer: Int) {
@@ -135,16 +132,19 @@ class SurveyViewModel(
     }
 
     fun onSelfieResponse(uri: Uri) {
-        _selfieUriResponse.value = uri
+        _selfieUri.value = uri
         _isNextEnabled.value = getIsNextEnabled()
     }
+
+    fun getNewSelfieUri() = photoUriManager.buildNewUri()
+
     private fun getIsNextEnabled(): Boolean {
         return when (questionOrder[questionIndex]) {
             SurveyQuestion.FREE_TIME -> _freeTimeResponse.isNotEmpty()
             SurveyQuestion.SUPERHERO -> _superheroResponse.value != null
             SurveyQuestion.LAST_TAKEAWAY -> _takeawayResponse.value != null
             SurveyQuestion.FEELING_ABOUT_SELFIES -> _feelingAboutSelfiesResponse.value != null
-            SurveyQuestion.TAKE_SELFIE -> _selfieUriResponse.value != null
+            SurveyQuestion.TAKE_SELFIE -> _selfieUri.value != null
         }
     }
 
@@ -156,11 +156,6 @@ class SurveyViewModel(
             shouldShowDoneButton = questionIndex == questionOrder.size - 1,
             surveyQuestion = questionOrder[questionIndex],
         )
-    }
-
-    fun getUriToSaveImage(): Uri? {
-        uri = photoUriManager.buildNewUri()
-        return uri
     }
 }
 

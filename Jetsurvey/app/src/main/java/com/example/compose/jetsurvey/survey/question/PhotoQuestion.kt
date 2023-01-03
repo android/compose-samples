@@ -18,6 +18,8 @@ package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -58,14 +60,26 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 fun PhotoQuestion(
     @StringRes titleResourceId: Int,
     imageUri: Uri?,
-    onClick: () -> Unit,
+    getNewImageUri: () -> Uri,
+    onPhotoTaken: (Uri) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val iconResource = if (imageUri != null) {
+    val hasPhoto = imageUri != null
+    val iconResource = if (hasPhoto) {
         Icons.Filled.SwapHoriz
     } else {
         Icons.Filled.AddAPhoto
     }
+    var newImageUri: Uri? = null
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) {
+                onPhotoTaken(newImageUri!!)
+            }
+        }
+    )
 
     QuestionWrapper(
         titleResourceId = titleResourceId,
@@ -73,12 +87,15 @@ fun PhotoQuestion(
     ) {
 
         OutlinedButton(
-            onClick = onClick,
+            onClick = {
+                newImageUri = getNewImageUri()
+                cameraLauncher.launch(newImageUri)
+            },
             shape = MaterialTheme.shapes.small,
             contentPadding = PaddingValues()
         ) {
             Column {
-                if (imageUri != null) {
+                if (hasPhoto) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(imageUri)
@@ -109,7 +126,7 @@ fun PhotoQuestion(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(
-                            id = if (imageUri != null) {
+                            id = if (hasPhoto) {
                                 R.string.retake_photo
                             } else {
                                 R.string.add_photo
@@ -147,8 +164,9 @@ fun PhotoQuestionPreview() {
         Surface {
             PhotoQuestion(
                 titleResourceId = R.string.selfie_skills,
-                imageUri = null,
-                onClick = {},
+                imageUri = Uri.parse("https://example.bogus/wow"),
+                getNewImageUri = { Uri.EMPTY },
+                onPhotoTaken = {},
                 modifier = Modifier.padding(16.dp),
             )
         }

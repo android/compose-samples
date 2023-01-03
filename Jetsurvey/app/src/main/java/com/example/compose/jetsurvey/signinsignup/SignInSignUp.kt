@@ -64,7 +64,7 @@ import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
 @Composable
 fun SignInSignUpScreen(
-    onSignedInAsGuest: () -> Unit,
+    onSignInAsGuest: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     content: @Composable () -> Unit
@@ -84,7 +84,7 @@ fun SignInSignUpScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
             OrSignInAsGuest(
-                onSignedInAsGuest = onSignedInAsGuest,
+                onSignInAsGuest = onSignInAsGuest,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
@@ -95,7 +95,10 @@ fun SignInSignUpScreen(
 
 @OptIn(ExperimentalMaterial3Api::class) // CenterAlignedTopAppBar is experimental in m3
 @Composable
-fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
+fun SignInSignUpTopAppBar(
+    topAppBarText: String,
+    onNavUp: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -106,7 +109,7 @@ fun SignInSignUpTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
             )
         },
         navigationIcon = {
-            IconButton(onClick = onBackPressed) {
+            IconButton(onClick = onNavUp) {
                 Icon(
                     imageVector = Icons.Filled.ChevronLeft,
                     contentDescription = stringResource(id = R.string.back),
@@ -249,7 +252,7 @@ fun TextFieldError(textError: String) {
 
 @Composable
 fun OrSignInAsGuest(
-    onSignedInAsGuest: () -> Unit,
+    onSignInAsGuest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -263,7 +266,7 @@ fun OrSignInAsGuest(
             modifier = Modifier.paddingFromBaseline(top = 25.dp)
         )
         OutlinedButton(
-            onClick = onSignedInAsGuest,
+            onClick = onSignInAsGuest,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp, bottom = 24.dp),
@@ -279,7 +282,7 @@ fun SignInSignUpScreenPreview() {
     JetsurveyTheme {
         Surface {
             SignInSignUpScreen(
-                onSignedInAsGuest = {},
+                onSignInAsGuest = {},
                 content = {}
             )
         }

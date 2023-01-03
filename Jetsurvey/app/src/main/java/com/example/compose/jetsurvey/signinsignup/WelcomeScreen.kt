@@ -53,13 +53,11 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.supportWideScreen
 
-sealed class WelcomeEvent {
-    data class SignInSignUp(val email: String) : WelcomeEvent()
-    object SignInAsGuest : WelcomeEvent()
-}
-
 @Composable
-fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
+fun WelcomeScreen(
+    onSignInSignUp: (email: String) -> Unit,
+    onSignInAsGuest: () -> Unit,
+) {
     var showBranding by remember { mutableStateOf(true) }
 
     Surface(modifier = Modifier.supportWideScreen()) {
@@ -88,7 +86,8 @@ fun WelcomeScreen(onEvent: (WelcomeEvent) -> Unit) {
             )
 
             SignInCreateAccount(
-                onEvent = onEvent,
+                onSignInSignUp = onSignInSignUp,
+                onSignInAsGuest = onSignInAsGuest,
                 onFocusChange = { focused -> showBranding = !focused },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,7 +137,8 @@ private fun Logo(
 
 @Composable
 private fun SignInCreateAccount(
-    onEvent: (WelcomeEvent) -> Unit,
+    onSignInSignUp: (email: String) -> Unit,
+    onSignInAsGuest: () -> Unit,
     onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -155,7 +155,7 @@ private fun SignInCreateAccount(
         )
         val onSubmit = {
             if (emailState.isValid) {
-                onEvent(WelcomeEvent.SignInSignUp(emailState.text))
+                onSignInSignUp(emailState.text)
             } else {
                 emailState.enableShowErrors()
             }
@@ -174,7 +174,7 @@ private fun SignInCreateAccount(
             )
         }
         OrSignInAsGuest(
-            onSignedInAsGuest = { onEvent(WelcomeEvent.SignInAsGuest) },
+            onSignInAsGuest = onSignInAsGuest,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -185,6 +185,9 @@ private fun SignInCreateAccount(
 @Composable
 fun WelcomeScreenPreview() {
     JetsurveyTheme {
-        WelcomeScreen {}
+        WelcomeScreen(
+            onSignInSignUp = {},
+            onSignInAsGuest = {},
+        )
     }
 }
