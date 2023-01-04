@@ -3,13 +3,13 @@
 # Do not add a dependency to an individual sample, edit the global version instead.
 #####
 [versions]
-accompanist = "0.27.0"
+accompanist = "0.28.0"
 androidGradlePlugin = "7.3.1"
 androidx-activity-compose = "1.6.1"
 androidx-appcompat = "1.5.1"
 androidx-benchmark = "1.1.0"
 androidx-benchmark-junit4 = "1.1.0-beta04"
-androidx-compose-bom = "2022.11.00"
+androidx-compose-bom = "2022.12.00"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.9.0"
 androidx-lifecycle-compose = "2.5.1"
@@ -17,8 +17,8 @@ androidx-lifecycle-runtime-compose = "2.6.0-alpha03"
 androidx-navigation = "2.5.3"
 androidx-palette = "1.0.0"
 androidx-test = "1.5.0"
-androidx-test-espresso = "3.5.0"
-androidx-test-ext-junit = "1.1.4"
+androidx-test-espresso = "3.5.1"
+androidx-test-ext-junit = "1.1.5"
 androidx-test-ext-truth = "1.4.0"
 androidx-window = "1.1.0-alpha04"
 androidxHiltNavigationCompose = "1.0.0"
@@ -32,17 +32,17 @@ coroutines = "1.6.4"
 google-maps = "18.1.0"
 hilt = "2.43.2"
 hiltExt = "1.0.0"
-# @pin When updating to AGP 7.3.0-beta03 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
-jdkDesugar = "1.1.5"
+# @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
+jdkDesugar = "1.2.2"
 junit = "4.13.2"
 # @pin update when updating Compose Compiler
 kotlin = "1.7.20"
 maps-compose = "2.5.3"
-material = "1.8.0-alpha02"
+material = "1.8.0-beta01"
 # @keep
 minSdk = "21"
 okhttp = "4.10.0"
-robolectric = "4.9.1"
+robolectric = "4.9.2"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
@@ -101,7 +101,7 @@ androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core",
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "androidx-test-ext-truth" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
-androidx-test-runner = "androidx.test:runner:1.5.1"
+androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
