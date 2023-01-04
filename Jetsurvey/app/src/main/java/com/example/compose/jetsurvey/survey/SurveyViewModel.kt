@@ -39,9 +39,6 @@ class SurveyViewModel(
 
     private var questionIndex = 0
 
-    // Uri used to save photos taken with the camera
-    private var uri: Uri? = null
-
     // ----- Responses exposed as State -----
 
     private val _freeTimeResponse = mutableStateListOf<Int>()
