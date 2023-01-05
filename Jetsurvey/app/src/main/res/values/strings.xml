@@ -40,7 +40,6 @@
     <string name="hide_password">Hide password</string>
 
     <!-- survey-->
-    <string name="which_jetpack_library">Which Jetpack library are you?</string>
     <string name="question_count">\u00A0of %d</string>
     <string name="select_one">Select one.</string>
     <string name="select_all">Select all that apply.</string>
@@ -64,7 +63,6 @@
 
     <!-- question 3  -->
     <string name="takeaway">When was the last time you ordered takeaway because you couldn\'t be bothered to cook?</string>
-    <string name="pick_date">Pick a date</string>
 
     <!-- question 4-->
     <string name="selfies">How do you feel about selfies 🤳?</string>
@@ -73,27 +71,12 @@
     <string name="selfie_skills">Show off your selfie skills!</string>
     <string name="add_photo">ADD PHOTO</string>
     <string name="retake_photo">RETAKE PHOTO</string>
-    <string name="selfie_permissions">Taking a selfie requires this app to have access to your device storage.</string>
 
-    <!-- question 6-->
-    <string name="favourite_movie">What\'s your favourite movie?</string>
-    <string name="star_trek">Star Trek</string>
-    <string name="social_network">The social network</string>
-    <string name="back_to_future">Back to the future</string>
-    <string name="outbreak">Outbreak</string>
-
-    <string name="survey_result">Congratulations, you are %s</string>
+    <string name="survey_result_title">Compose</string>
+    <string name="survey_result_subtitle">Congratulations, you are Compose</string>
     <string name="survey_result_description">You are a curious developer, always willing to try
-        something new. You want to stay up to date with the trends to Compose is your middle name</string>
+        something new. You want to stay up to date with the trends to Compose is your middle name.</string>
     <string name="strongly_dislike">Strongly\nDislike</string>
     <string name="strongly_like">Strongly\nLike</string>
     <string name="neutral">Neutral</string>
-
-    <!-- Permissions-->
-    <string name="permissions_rationale">This question requires some permissions. Please grant them.</string>
-    <string name="permissions_denied">Permissions were denied. Unfortunately, this question is not available at the moment. Please continue with the survey or grant access to the permissions on the Settings screen.</string>
-    <string name="request_permissions">OK!</string>
-    <string name="do_not_ask_permissions">Nope 🙅</string>
-    <string name="open_settings">Open Settings</string>
-
 </resources>

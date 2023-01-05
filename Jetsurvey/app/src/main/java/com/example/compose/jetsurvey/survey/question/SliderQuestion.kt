@@ -17,7 +17,7 @@
 package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -36,30 +36,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.survey.Answer
-import com.example.compose.jetsurvey.survey.PossibleAnswer
+import com.example.compose.jetsurvey.survey.QuestionWrapper
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun SliderQuestion(
-    possibleAnswer: PossibleAnswer.Slider,
-    answer: Answer.Slider?,
-    onAnswerSelected: (Float) -> Unit,
-    modifier: Modifier = Modifier
+    @StringRes titleResourceId: Int,
+    value: Float?,
+    onValueChange: (Float) -> Unit,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    steps: Int = 3,
+    @StringRes startTextResource: Int,
+    @StringRes neutralTextResource: Int,
+    @StringRes endTextResource: Int,
+    modifier: Modifier = Modifier,
 ) {
     var sliderPosition by remember {
-        mutableStateOf(answer?.answerValue ?: possibleAnswer.defaultValue)
+        mutableStateOf(value ?: ((valueRange.endInclusive - valueRange.start) / 2))
     }
-    Column(modifier = modifier) {
+    QuestionWrapper(
+        titleResourceId = titleResourceId,
+        modifier = modifier,
+    ) {
+
         Row {
             Slider(
                 value = sliderPosition,
                 onValueChange = {
                     sliderPosition = it
-                    onAnswerSelected(it)
+                    onValueChange(it)
                 },
-                valueRange = possibleAnswer.range,
-                steps = possibleAnswer.steps,
+                valueRange = valueRange,
+                steps = steps,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
@@ -67,7 +75,7 @@ fun SliderQuestion(
         }
         Row {
             Text(
-                text = stringResource(id = possibleAnswer.startText),
+                text = stringResource(id = startTextResource),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
@@ -75,7 +83,7 @@ fun SliderQuestion(
                     .weight(1.8f)
             )
             Text(
-                text = stringResource(id = possibleAnswer.neutralText),
+                text = stringResource(id = neutralTextResource),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -83,7 +91,7 @@ fun SliderQuestion(
                     .weight(1.8f)
             )
             Text(
-                text = stringResource(id = possibleAnswer.endText),
+                text = stringResource(id = endTextResource),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.End,
                 modifier = Modifier
@@ -101,15 +109,12 @@ fun SliderQuestionPreview() {
     JetsurveyTheme {
         Surface {
             SliderQuestion(
-                possibleAnswer = PossibleAnswer.Slider(
-                    range = 1f..10f,
-                    steps = 3,
-                    startText = R.string.strongly_dislike,
-                    endText = R.string.strongly_like,
-                    neutralText = R.string.neutral
-                ),
-                answer = Answer.Slider(5f),
-                onAnswerSelected = {}
+                titleResourceId = R.string.selfies,
+                value = 0.4f,
+                onValueChange = {},
+                startTextResource = R.string.strongly_dislike,
+                endTextResource = R.string.strongly_like,
+                neutralTextResource = R.string.neutral
             )
         }
     }

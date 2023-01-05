@@ -17,8 +17,8 @@ androidx-lifecycle-runtime-compose = "2.6.0-alpha03"
 androidx-navigation = "2.5.3"
 androidx-palette = "1.0.0"
 androidx-test = "1.5.0"
-androidx-test-espresso = "3.5.0"
-androidx-test-ext-junit = "1.1.4"
+androidx-test-espresso = "3.5.1"
+androidx-test-ext-junit = "1.1.5"
 androidx-test-ext-truth = "1.4.0"
 androidx-window = "1.1.0-alpha04"
 androidxHiltNavigationCompose = "1.0.0"
@@ -42,7 +42,7 @@ material = "1.8.0-beta01"
 # @keep
 minSdk = "21"
 okhttp = "4.10.0"
-robolectric = "4.9.1"
+robolectric = "4.9.2"
 rome = "1.18.0"
 room = "2.5.0-alpha02"
 secrets = "2.0.1"
@@ -101,7 +101,7 @@ androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core",
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "androidx-test-ext-truth" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
-androidx-test-runner = "androidx.test:runner:1.5.1"
+androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }

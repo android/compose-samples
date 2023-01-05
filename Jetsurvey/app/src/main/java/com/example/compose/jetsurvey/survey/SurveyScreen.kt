@@ -16,15 +16,9 @@
 
 package com.example.compose.jetsurvey.survey
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.with
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +30,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,92 +43,43 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.supportWideScreen
 
-private const val CONTENT_ANIMATION_DURATION = 500
-
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
-// AnimatedContent is experimental, Scaffold is experimental in m3
+@OptIn(ExperimentalMaterial3Api::class)
+// Scaffold is experimental in m3
 @Composable
 fun SurveyQuestionsScreen(
-    questions: SurveyState.Questions,
-    shouldAskPermissions: Boolean,
-    onDoNotAskForPermissions: () -> Unit,
-    onAction: (Int, SurveyActionType) -> Unit,
+    surveyScreenData: SurveyScreenData,
+    isNextEnabled: Boolean,
+    onClosePressed: () -> Unit,
+    onPreviousPressed: () -> Unit,
+    onNextPressed: () -> Unit,
     onDonePressed: () -> Unit,
-    onBackPressed: () -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
-    val questionState = remember(questions.currentQuestionIndex) {
-        questions.questionsState[questions.currentQuestionIndex]
-    }
 
     Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             topBar = {
                 SurveyTopAppBar(
-                    questionIndex = questionState.questionIndex,
-                    totalQuestionsCount = questionState.totalQuestionsCount,
-                    onBackPressed = onBackPressed
+                    questionIndex = surveyScreenData.questionIndex,
+                    totalQuestionsCount = surveyScreenData.questionCount,
+                    onClosePressed = onClosePressed,
                 )
             },
-            content = { innerPadding ->
-                AnimatedContent(
-                    targetState = questionState,
-                    transitionSpec = {
-                        val animationSpec: TweenSpec<IntOffset> = tween(CONTENT_ANIMATION_DURATION)
-                        val direction =
-                            if (targetState.questionIndex > initialState.questionIndex) {
-                                // Going forwards in the survey: Set the initial offset to start
-                                // at the size of the content so it slides in from right to left, and
-                                // slides out from the left of the screen to -fullWidth
-                                AnimatedContentScope.SlideDirection.Left
-                            } else {
-                                // Going back to the previous question in the set, we do the same
-                                // transition as above, but with different offsets - the inverse of
-                                // above, negative fullWidth to enter, and fullWidth to exit.
-                                AnimatedContentScope.SlideDirection.Right
-                            }
-                        slideIntoContainer(
-                            towards = direction,
-                            animationSpec = animationSpec
-                        ) with
-                            slideOutOfContainer(
-                                towards = direction,
-                                animationSpec = animationSpec
-                            )
-                    }
-                ) { targetState ->
-                    Question(
-                        question = targetState.question,
-                        answer = targetState.answer,
-                        shouldAskPermissions = shouldAskPermissions,
-                        onAnswer = {
-                            if (it !is Answer.PermissionsDenied) {
-                                targetState.answer = it
-                            }
-                            targetState.enableNext = true
-                        },
-                        onAction = onAction,
-                        onDoNotAskForPermissions = onDoNotAskForPermissions,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    )
-                }
-            },
+            content = content,
             bottomBar = {
                 SurveyBottomBar(
-                    questionState = questionState,
-                    onPreviousPressed = { questions.currentQuestionIndex-- },
-                    onNextPressed = { questions.currentQuestionIndex++ },
+                    shouldShowPreviousButton = surveyScreenData.shouldShowPreviousButton,
+                    shouldShowDoneButton = surveyScreenData.shouldShowDoneButton,
+                    isNextButtonEnabled = isNextEnabled,
+                    onPreviousPressed = onPreviousPressed,
+                    onNextPressed = onNextPressed,
                     onDonePressed = onDonePressed
                 )
             }
@@ -144,18 +90,23 @@ fun SurveyQuestionsScreen(
 @OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
 fun SurveyResultScreen(
-    result: SurveyState.Result,
-    onDonePressed: () -> Unit
+    onDonePressed: () -> Unit,
 ) {
+
     Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
             content = { innerPadding ->
                 val modifier = Modifier.padding(innerPadding)
-                SurveyResult(result = result, modifier = modifier)
+                SurveyResult(
+                    title = stringResource(R.string.survey_result_title),
+                    subtitle = stringResource(R.string.survey_result_subtitle),
+                    description = stringResource(R.string.survey_result_description),
+                    modifier = modifier
+                )
             },
             bottomBar = {
                 OutlinedButton(
-                    onClick = { onDonePressed() },
+                    onClick = onDonePressed,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 24.dp)
@@ -168,25 +119,27 @@ fun SurveyResultScreen(
 }
 
 @Composable
-private fun SurveyResult(result: SurveyState.Result, modifier: Modifier = Modifier) {
+private fun SurveyResult(
+    title: String,
+    subtitle: String,
+    description: String,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(44.dp))
             Text(
-                text = result.surveyResult.library,
+                text = title,
                 style = MaterialTheme.typography.displaySmall,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
             Text(
-                text = stringResource(
-                    result.surveyResult.result,
-                    result.surveyResult.library
-                ),
+                text = subtitle,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(20.dp)
             )
             Text(
-                text = stringResource(result.surveyResult.description),
+                text = description,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
@@ -214,36 +167,36 @@ private fun TopAppBarTitle(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // CenterAlignedTopAppBar is experimental in m3
 @Composable
-private fun SurveyTopAppBar(
+fun SurveyTopAppBar(
     questionIndex: Int,
     totalQuestionsCount: Int,
-    onBackPressed: () -> Unit
+    onClosePressed: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            TopAppBarTitle(
-                questionIndex = questionIndex,
-                totalQuestionsCount = totalQuestionsCount,
-                modifier = Modifier
-                    .padding(vertical = 20.dp)
-                    .align(Alignment.Center)
-            )
 
-            IconButton(
-                onClick = onBackPressed,
-                modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 20.dp)
-                    .fillMaxWidth()
-            ) {
-                Icon(
-                    Icons.Filled.Close,
-                    contentDescription = stringResource(id = R.string.close),
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
+        CenterAlignedTopAppBar(
+            title = {
+                TopAppBarTitle(
+                    questionIndex = questionIndex,
+                    totalQuestionsCount = totalQuestionsCount,
                 )
+            },
+            actions = {
+                IconButton(
+                    onClick = onClosePressed,
+                    modifier = Modifier.padding(4.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.close),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
+                    )
+                }
             }
-        }
+        )
+
         val animatedProgress by animateFloatAsState(
             targetValue = (questionIndex + 1) / totalQuestionsCount.toFloat(),
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -259,8 +212,10 @@ private fun SurveyTopAppBar(
 }
 
 @Composable
-private fun SurveyBottomBar(
-    questionState: QuestionState,
+fun SurveyBottomBar(
+    shouldShowPreviousButton: Boolean,
+    shouldShowDoneButton: Boolean,
+    isNextButtonEnabled: Boolean,
     onPreviousPressed: () -> Unit,
     onNextPressed: () -> Unit,
     onDonePressed: () -> Unit
@@ -275,7 +230,7 @@ private fun SurveyBottomBar(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
-            if (questionState.showPrevious) {
+            if (shouldShowPreviousButton) {
                 OutlinedButton(
                     modifier = Modifier
                         .weight(1f)
@@ -286,13 +241,13 @@ private fun SurveyBottomBar(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
             }
-            if (questionState.showDone) {
+            if (shouldShowDoneButton) {
                 Button(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
                     onClick = onDonePressed,
-                    enabled = questionState.enableNext
+                    enabled = isNextButtonEnabled,
                 ) {
                     Text(text = stringResource(id = R.string.done))
                 }
@@ -302,7 +257,7 @@ private fun SurveyBottomBar(
                         .weight(1f)
                         .height(48.dp),
                     onClick = onNextPressed,
-                    enabled = questionState.enableNext
+                    enabled = isNextButtonEnabled,
                 ) {
                     Text(text = stringResource(id = R.string.next))
                 }
