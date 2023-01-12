@@ -76,7 +76,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
@@ -95,7 +94,6 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Stateful version of the Podcast player
  */
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
