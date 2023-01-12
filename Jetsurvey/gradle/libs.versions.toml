@@ -4,7 +4,7 @@
 #####
 [versions]
 accompanist = "0.28.0"
-androidGradlePlugin = "7.3.1"
+androidGradlePlugin = "7.4.0"
 androidx-activity-compose = "1.6.1"
 androidx-appcompat = "1.5.1"
 androidx-benchmark = "1.1.0"
@@ -116,7 +116,7 @@ hilt-ext-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hil
 hilt-gradlePlugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
