@@ -68,7 +68,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -167,7 +166,6 @@ fun InterestsScreen(
  * Remembers the content for each tab on the Interests screen
  * gathering application data from [InterestsViewModel]
  */
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
     // UiState of the InterestsScreen

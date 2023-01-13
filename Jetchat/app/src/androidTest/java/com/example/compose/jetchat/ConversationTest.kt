@@ -27,7 +27,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
@@ -50,7 +49,6 @@ class ConversationTest {
 
     private val themeIsDark = MutableStateFlow(false)
 
-    @OptIn(ExperimentalLifecycleComposeApi::class)
     @Before
     fun setUp() {
         // Launch the conversation screen

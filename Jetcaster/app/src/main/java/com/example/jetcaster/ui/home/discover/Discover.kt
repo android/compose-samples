@@ -33,14 +33,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.ui.home.category.PodcastCategory
 import com.example.jetcaster.ui.theme.Keyline1
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Discover(
     navigateToPlayer: (String) -> Unit,
