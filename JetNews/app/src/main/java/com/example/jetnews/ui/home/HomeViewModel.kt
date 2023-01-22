@@ -28,7 +28,6 @@ import com.example.jetnews.utils.ErrorMessage
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -127,7 +126,7 @@ class HomeViewModel(
 
     // UI state exposed to the UI
     val uiState = viewModelState
-        .map { it.toUiState() }
+        .map(HomeViewModelState::toUiState)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

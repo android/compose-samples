@@ -22,26 +22,22 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
 /**
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources after some delay in a background thread.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class FakePostsRepository : PostsRepository {
 
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
     // Used to make suspend functions that read and update state safe to call from any thread
-    private val mutex = Mutex()
 
     override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
@@ -68,10 +64,8 @@ class FakePostsRepository : PostsRepository {
     override fun observeFavorites(): Flow<Set<String>> = favorites
 
     override suspend fun toggleFavorite(postId: String) {
-        mutex.withLock {
-            val set = favorites.value.toMutableSet()
-            set.addOrRemove(postId)
-            favorites.value = set.toSet()
+        favorites.update {
+            it.addOrRemove(postId)
         }
     }
 
