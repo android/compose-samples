@@ -22,12 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.pxOrElse
 import com.example.owl.ui.theme.compositedOnSurface
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import com.example.owl.R
 
 /**
  * A wrapper around [AsyncImage], setting a default [contentScale] and showing
@@ -44,7 +46,7 @@ fun NetworkImage(
     AsyncImage(
         model = url,
         contentDescription = contentDescription,
-        placeholder = ColorPainter(placeholderColor),
+        placeholder = painterResource(R.drawable.photo_architecture),
         modifier = modifier,
         contentScale = contentScale
     )
