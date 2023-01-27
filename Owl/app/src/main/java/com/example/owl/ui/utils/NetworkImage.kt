@@ -26,9 +26,9 @@ import coil.compose.AsyncImage
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.pxOrElse
+import com.example.owl.R
 import com.example.owl.ui.theme.compositedOnSurface
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import com.example.owl.R
 
 /**
  * A wrapper around [AsyncImage], setting a default [contentScale] and showing
