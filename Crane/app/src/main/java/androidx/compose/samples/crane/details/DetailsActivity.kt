@@ -67,6 +67,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
@@ -227,17 +228,20 @@ fun MapViewContainer(
         MapUiSettings(zoomControlsEnabled = false)
     }
 
+       val coroutineExceptionHandler = CoroutineExceptionHandler {
+            _, _ ->
+    }
     val animationScope = rememberCoroutineScope()
     Column {
         ZoomControls(
             onZoomIn = {
-                animationScope.launch {
+                animationScope.launch(coroutineExceptionHandler) {
                     cameraPositionState.animate(CameraUpdateFactory.zoomIn())
                     onZoomChanged?.invoke()
                 }
             },
             onZoomOut = {
-                animationScope.launch {
+                animationScope.launch(coroutineExceptionHandler) {
                     cameraPositionState.animate(CameraUpdateFactory.zoomOut())
                     onZoomChanged?.invoke()
                 }
