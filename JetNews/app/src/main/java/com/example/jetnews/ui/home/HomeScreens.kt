@@ -671,6 +671,7 @@ private fun HomeTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? =
         TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
 ) {
+    val context = LocalContext.current
     val title = stringResource(id = R.string.app_name)
     CenterAlignedTopAppBar(
         title = {
@@ -692,7 +693,13 @@ private fun HomeTopAppBar(
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO: Open search */ }) {
+            IconButton(onClick = {
+                Toast.makeText(
+                    context,
+                    "Search is not yet implemented in this configuration",
+                    Toast.LENGTH_LONG
+                ).show()
+            }) {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = stringResource(R.string.cd_search)
