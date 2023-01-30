@@ -4,7 +4,7 @@
 #####
 [versions]
 accompanist = "0.28.0"
-androidGradlePlugin = "7.3.1"
+androidGradlePlugin = "7.4.0"
 androidx-activity-compose = "1.6.1"
 androidx-appcompat = "1.6.0"
 androidx-benchmark = "1.1.0"
@@ -12,8 +12,8 @@ androidx-benchmark-junit4 = "1.1.0-beta04"
 androidx-compose-bom = "2023.01.00"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.9.0"
-androidx-lifecycle-compose = "2.6.0-alpha04"
-androidx-lifecycle-runtime-compose = "2.6.0-alpha04"
+androidx-lifecycle-compose = "2.6.0-alpha05"
+androidx-lifecycle-runtime-compose = "2.6.0-alpha05"
 androidx-navigation = "2.5.3"
 androidx-palette = "1.0.0"
 androidx-test = "1.5.0"
@@ -38,7 +38,7 @@ junit = "4.13.2"
 # @pin update when updating Compose Compiler
 kotlin = "1.7.20"
 maps-compose = "2.5.3"
-material = "1.8.0-rc01"
+material = "1.9.0-alpha01"
 # @keep
 minSdk = "21"
 okhttp = "4.10.0"
@@ -84,7 +84,7 @@ androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constr
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-corektx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
-androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-compose" }
+androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha04"
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
