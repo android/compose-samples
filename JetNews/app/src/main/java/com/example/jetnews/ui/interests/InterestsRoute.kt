@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,14 +27,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
  * Stateful composable that displays the Navigation route for the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param isExpandedScreen (state) true if the screen is expanded
+ * @param showNavRail (state) true if the navigation rail is being shown
+ * @param widthSizeClass (state) the [WindowWidthSizeClass] of the app.
  * @param openDrawer (event) request opening the app drawer
  * @param snackbarHostState (state) state for screen snackbar host
  */
 @Composable
 fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
-    isExpandedScreen: Boolean,
+    showNavRail: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
     openDrawer: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
@@ -45,7 +48,8 @@ fun InterestsRoute(
     InterestsScreen(
         tabContent = tabContent,
         currentSection = currentSection,
-        isExpandedScreen = isExpandedScreen,
+        showDrawerIcon = !showNavRail,
+        widthSizeClass = widthSizeClass,
         onTabChange = updateSection,
         openDrawer = openDrawer,
         snackbarHostState = snackbarHostState

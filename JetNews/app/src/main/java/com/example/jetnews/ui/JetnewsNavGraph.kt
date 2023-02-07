@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,7 +33,8 @@ import com.example.jetnews.ui.interests.InterestsViewModel
 @Composable
 fun JetnewsNavGraph(
     appContainer: AppContainer,
-    isExpandedScreen: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
+    showNavRail: Boolean,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit = {},
@@ -49,7 +51,7 @@ fun JetnewsNavGraph(
             )
             HomeRoute(
                 homeViewModel = homeViewModel,
-                isExpandedScreen = isExpandedScreen,
+                widthSizeClass = widthSizeClass,
                 openDrawer = openDrawer
             )
         }
@@ -59,7 +61,8 @@ fun JetnewsNavGraph(
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
-                isExpandedScreen = isExpandedScreen,
+                showNavRail = showNavRail,
+                widthSizeClass = widthSizeClass,
                 openDrawer = openDrawer
             )
         }

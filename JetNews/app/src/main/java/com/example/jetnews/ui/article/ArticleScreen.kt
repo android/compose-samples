@@ -72,7 +72,6 @@ import kotlinx.coroutines.runBlocking
  * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
- * @param showNavigationIcon (state) if the navigation icon should be shown
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
@@ -82,7 +81,6 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun ArticleScreen(
     post: Post,
-    isExpandedScreen: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
@@ -100,28 +98,23 @@ fun ArticleScreen(
             post = post,
             // Allow opening the Drawer if the screen is not expanded
             navigationIconContent = {
-                if (!isExpandedScreen) {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_up),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-            },
-            // Show the bottom bar if the screen is not expanded
-            bottomBarContent = {
-                if (!isExpandedScreen) {
-                    BottomAppBar(
-                        actions = {
-                            FavoriteButton(onClick = { showUnimplementedActionDialog = true })
-                            BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
-                            ShareButton(onClick = { sharePost(post, context) })
-                            TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
-                        }
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.cd_navigate_up),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
+            },
+            bottomBarContent = {
+                BottomAppBar(
+                    actions = {
+                        FavoriteButton(onClick = { showUnimplementedActionDialog = true })
+                        BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
+                        ShareButton(onClick = { sharePost(post, context) })
+                        TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
+                    }
+                )
             },
             lazyListState = lazyListState
         )
@@ -249,23 +242,6 @@ fun PreviewArticleDrawer() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, false, {}, false, {})
-    }
-}
-
-@Preview("Article screen navrail", device = Devices.PIXEL_C)
-@Preview(
-    "Article screen navrail (dark)",
-    uiMode = UI_MODE_NIGHT_YES,
-    device = Devices.PIXEL_C
-)
-@Preview("Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
-@Composable
-fun PreviewArticleNavRail() {
-    JetnewsTheme {
-        val post = runBlocking {
-            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
-        }
-        ArticleScreen(post, true, {}, false, {})
+        ArticleScreen(post, {}, false, {})
     }
 }

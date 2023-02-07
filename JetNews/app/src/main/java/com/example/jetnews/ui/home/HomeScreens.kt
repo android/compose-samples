@@ -122,6 +122,7 @@ import kotlinx.coroutines.runBlocking
 fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
+    showDrawerIcon: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -138,6 +139,7 @@ fun HomeFeedWithArticleDetailsScreen(
     HomeScreenWithList(
         uiState = uiState,
         showTopAppBar = showTopAppBar,
+        showDrawerIcon = showDrawerIcon,
         onRefreshPosts = onRefreshPosts,
         onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
@@ -226,6 +228,7 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
 fun HomeFeedScreen(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
+    showDrawerIcon: Boolean,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -240,6 +243,7 @@ fun HomeFeedScreen(
     HomeScreenWithList(
         uiState = uiState,
         showTopAppBar = showTopAppBar,
+        showDrawerIcon = showDrawerIcon,
         onRefreshPosts = onRefreshPosts,
         onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
@@ -278,6 +282,7 @@ fun HomeFeedScreen(
 private fun HomeScreenWithList(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
+    showDrawerIcon: Boolean,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
     openDrawer: () -> Unit,
@@ -296,6 +301,7 @@ private fun HomeScreenWithList(
             if (showTopAppBar) {
                 HomeTopAppBar(
                     openDrawer = openDrawer,
+                    showDrawerIcon = showDrawerIcon,
                     topAppBarState = topAppBarState
                 )
             }
@@ -666,6 +672,7 @@ private fun PostTopBar(
 @Composable
 private fun HomeTopAppBar(
     openDrawer: () -> Unit,
+    showDrawerIcon: Boolean,
     modifier: Modifier = Modifier,
     topAppBarState: TopAppBarState = rememberTopAppBarState(),
     scrollBehavior: TopAppBarScrollBehavior? =
@@ -684,12 +691,14 @@ private fun HomeTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = openDrawer) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_jetnews_logo),
-                    contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            if (showDrawerIcon) {
+                IconButton(onClick = openDrawer) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_jetnews_logo),
+                        contentDescription = stringResource(R.string.cd_open_navigation_drawer),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         },
         actions = {
@@ -731,6 +740,7 @@ fun PreviewHomeListDrawerScreen() {
                 searchInput = ""
             ),
             showTopAppBar = false,
+            showDrawerIcon = true,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
@@ -767,6 +777,7 @@ fun PreviewHomeListNavRailScreen() {
                 searchInput = ""
             ),
             showTopAppBar = true,
+            showDrawerIcon = false,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},
@@ -799,6 +810,7 @@ fun PreviewHomeListDetailScreen() {
                 searchInput = ""
             ),
             showTopAppBar = true,
+            showDrawerIcon = false,
             onToggleFavorite = {},
             onSelectPost = {},
             onRefreshPosts = {},

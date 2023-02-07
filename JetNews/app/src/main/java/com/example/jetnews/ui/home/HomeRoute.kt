@@ -20,6 +20,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -36,14 +37,14 @@ import com.example.jetnews.ui.home.HomeScreenType.FeedWithArticleDetails
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
- * @param isExpandedScreen (state) whether the screen is expanded
+ * @param widthSizeClass (state) the [WindowWidthSizeClass] of the app.
  * @param openDrawer (event) request opening the app drawer
  * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel,
-    isExpandedScreen: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
     openDrawer: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
@@ -52,7 +53,7 @@ fun HomeRoute(
 
     HomeRoute(
         uiState = uiState,
-        isExpandedScreen = isExpandedScreen,
+        widthSizeClass = widthSizeClass,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
         onSelectPost = { homeViewModel.selectArticle(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
@@ -71,7 +72,7 @@ fun HomeRoute(
  * This composable is not coupled to any specific state management.
  *
  * @param uiState (state) the data to show on the screen
- * @param isExpandedScreen (state) whether the screen is expanded
+ * @param widthSizeClass (state) the [WindowWidthSizeClass] of the app.
  * @param onToggleFavorite (event) toggles favorite for a post
  * @param onSelectPost (event) indicate that a post was selected
  * @param onRefreshPosts (event) request a refresh of posts
@@ -85,7 +86,7 @@ fun HomeRoute(
 @Composable
 fun HomeRoute(
     uiState: HomeUiState,
-    isExpandedScreen: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
     onToggleFavorite: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -109,12 +110,15 @@ fun HomeRoute(
         }
     }
 
-    val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
+    val homeScreenType = getHomeScreenType(widthSizeClass, uiState)
+    val showTopAppBar = widthSizeClass < WindowWidthSizeClass.Expanded
+    val showDrawerIcon = widthSizeClass == WindowWidthSizeClass.Compact
     when (homeScreenType) {
         HomeScreenType.FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
                 uiState = uiState,
-                showTopAppBar = !isExpandedScreen,
+                showTopAppBar = showTopAppBar,
+                showDrawerIcon = showDrawerIcon,
                 onToggleFavorite = onToggleFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
@@ -131,7 +135,8 @@ fun HomeRoute(
         HomeScreenType.Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
-                showTopAppBar = !isExpandedScreen,
+                showTopAppBar = showTopAppBar,
+                showDrawerIcon = showDrawerIcon,
                 onToggleFavorite = onToggleFavorite,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
@@ -148,7 +153,6 @@ fun HomeRoute(
 
             ArticleScreen(
                 post = uiState.selectedPost,
-                isExpandedScreen = isExpandedScreen,
                 onBack = onInteractWithFeed,
                 isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
                 onToggleFavorite = {
@@ -184,25 +188,24 @@ private enum class HomeScreenType {
 }
 
 /**
- * Returns the current [HomeScreenType] to display, based on whether or not the screen is expanded
+ * Returns the current [HomeScreenType] to display, based on the [WindowWidthSizeClass]
  * and the [HomeUiState].
  */
 @Composable
 private fun getHomeScreenType(
-    isExpandedScreen: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
     uiState: HomeUiState
-): HomeScreenType = when (isExpandedScreen) {
-    false -> {
-        when (uiState) {
-            is HomeUiState.HasPosts -> {
-                if (uiState.isArticleOpen) {
-                    HomeScreenType.ArticleDetails
-                } else {
-                    HomeScreenType.Feed
-                }
+): HomeScreenType = if (widthSizeClass >= WindowWidthSizeClass.Expanded) {
+    HomeScreenType.FeedWithArticleDetails
+} else {
+    when (uiState) {
+        is HomeUiState.HasPosts -> {
+            if (uiState.isArticleOpen) {
+                HomeScreenType.ArticleDetails
+            } else {
+                HomeScreenType.Feed
             }
-            is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
+        is HomeUiState.NoPosts -> HomeScreenType.Feed
     }
-    true -> HomeScreenType.FeedWithArticleDetails
 }

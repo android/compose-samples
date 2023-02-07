@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,6 +52,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +71,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
@@ -105,7 +110,8 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
  * @param currentSection (state) the current tab to display, must be in [tabContent]
- * @param isExpandedScreen (state) true if the screen is expanded
+ * @param showDrawerIcon (state) true if the drawer icon should be shown.
+ * @param widthSizeClass (state) the [WindowWidthSizeClass] of the app.
  * @param onTabChange (event) request a change in [currentSection] to another tab from [tabContent]
  * @param openDrawer (event) request opening the app drawer
  * @param snackbarHostState (state) the state for the screen's [Scaffold]
@@ -115,7 +121,8 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 fun InterestsScreen(
     tabContent: List<TabContent>,
     currentSection: Sections,
-    isExpandedScreen: Boolean,
+    showDrawerIcon: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
     snackbarHostState: SnackbarHostState
@@ -132,7 +139,7 @@ fun InterestsScreen(
                     )
                 },
                 navigationIcon = {
-                    if (!isExpandedScreen) {
+                    if (showDrawerIcon) {
                         IconButton(onClick = openDrawer) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_jetnews_logo),
@@ -165,8 +172,11 @@ fun InterestsScreen(
     ) { innerPadding ->
         val screenModifier = Modifier.padding(innerPadding)
         InterestScreenContent(
-            currentSection, isExpandedScreen,
-            onTabChange, tabContent, screenModifier
+            currentSection = currentSection,
+            showScrollableTabs = widthSizeClass == WindowWidthSizeClass.Expanded,
+            updateSection = onTabChange,
+            tabContent = tabContent,
+            modifier = screenModifier
         )
     }
 }
@@ -225,14 +235,19 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
 @Composable
 private fun InterestScreenContent(
     currentSection: Sections,
-    isExpandedScreen: Boolean,
+    showScrollableTabs: Boolean,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
     modifier: Modifier = Modifier
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column(modifier) {
-        InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
+        InterestsTabRow(
+            selectedTabIndex = selectedTabIndex,
+            updateSection = updateSection,
+            tabContent = tabContent,
+            showScrollableTabs = showScrollableTabs,
+        )
         Divider(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
         )
@@ -367,9 +382,9 @@ private fun InterestsTabRow(
     selectedTabIndex: Int,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
-    isExpandedScreen: Boolean
+    showScrollableTabs: Boolean
 ) {
-    when (isExpandedScreen) {
+    when (showScrollableTabs) {
         false -> {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
@@ -508,14 +523,19 @@ fun PreviewInterestsScreenDrawer() {
             mutableStateOf(tabContent.first().section)
         }
 
-        InterestsScreen(
-            tabContent = tabContent,
-            currentSection = currentSection,
-            isExpandedScreen = false,
-            onTabChange = updateSection,
-            openDrawer = { },
-            snackbarHostState = SnackbarHostState()
-        )
+        BoxWithConstraints {
+            @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+            val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight))
+            InterestsScreen(
+                tabContent = tabContent,
+                currentSection = currentSection,
+                showDrawerIcon = true,
+                widthSizeClass = windowSizeClass.widthSizeClass,
+                onTabChange = updateSection,
+                openDrawer = { },
+                snackbarHostState = SnackbarHostState()
+            )
+        }
     }
 }
 
@@ -536,14 +556,19 @@ fun PreviewInterestsScreenNavRail() {
             mutableStateOf(tabContent.first().section)
         }
 
-        InterestsScreen(
-            tabContent = tabContent,
-            currentSection = currentSection,
-            isExpandedScreen = true,
-            onTabChange = updateSection,
-            openDrawer = { },
-            snackbarHostState = SnackbarHostState()
-        )
+        BoxWithConstraints {
+            @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+            val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight))
+            InterestsScreen(
+                tabContent = tabContent,
+                currentSection = currentSection,
+                showDrawerIcon = false,
+                widthSizeClass = windowSizeClass.widthSizeClass,
+                onTabChange = updateSection,
+                openDrawer = { },
+                snackbarHostState = SnackbarHostState()
+            )
+        }
     }
 }
 

@@ -60,8 +60,8 @@ fun JetnewsApp(
         val currentRoute =
             navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
-        val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
-        val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
+        val showNavRail = widthSizeClass >= WindowWidthSizeClass.Medium
+        val sizeAwareDrawerState = rememberSizeAwareDrawerState(showNavRail)
 
         ModalNavigationDrawer(
             drawerContent = {
@@ -73,11 +73,11 @@ fun JetnewsApp(
                 )
             },
             drawerState = sizeAwareDrawerState,
-            // Only enable opening the drawer via gestures if the screen is not expanded
-            gesturesEnabled = !isExpandedScreen
+            // Only enable opening the drawer via gestures if not showing the nav rail
+            gesturesEnabled = !showNavRail
         ) {
             Row {
-                if (isExpandedScreen) {
+                if (showNavRail) {
                     AppNavRail(
                         currentRoute = currentRoute,
                         navigateToHome = navigationActions.navigateToHome,
@@ -86,7 +86,8 @@ fun JetnewsApp(
                 }
                 JetnewsNavGraph(
                     appContainer = appContainer,
-                    isExpandedScreen = isExpandedScreen,
+                    widthSizeClass = widthSizeClass,
+                    showNavRail = showNavRail,
                     navController = navController,
                     openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                 )
@@ -100,10 +101,10 @@ fun JetnewsApp(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState {
+private fun rememberSizeAwareDrawerState(showNavRail: Boolean): DrawerState {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    return if (!isExpandedScreen) {
+    return if (!showNavRail) {
         // If we want to allow showing the drawer, we use a real, remembered drawer
         // state defined above
         drawerState
