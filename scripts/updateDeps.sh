@@ -16,7 +16,7 @@
 
 ########################################################################
 #
-# Updates dependencies using Jetchat as the source of truth (then copies Jetchat's 
+# Updates dependencies using JetNews as the source of truth (then copies JetNews's 
 # output into each sample)
 #
 # Example: To run build over all projects run:
