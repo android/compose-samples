@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
@@ -87,7 +86,6 @@ import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Cart(
     onSnackClick: (Long) -> Unit,

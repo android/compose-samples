@@ -67,7 +67,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -91,7 +90,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Home(
     navigateToPlayer: (String) -> Unit,

@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.interests
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -68,7 +70,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -119,6 +120,7 @@ fun InterestsScreen(
     openDrawer: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
+    val context = LocalContext.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -144,7 +146,13 @@ fun InterestsScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* TODO: Open search */ }
+                        onClick = {
+                            Toast.makeText(
+                                context,
+                                "Search is not yet implemented in this configuration",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Search,
@@ -167,7 +175,6 @@ fun InterestsScreen(
  * Remembers the content for each tab on the Interests screen
  * gathering application data from [InterestsViewModel]
  */
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
     // UiState of the InterestsScreen

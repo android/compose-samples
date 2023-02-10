@@ -67,7 +67,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -86,7 +85,6 @@ import com.example.jetcaster.util.viewModelProviderFactoryOf
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun PodcastCategory(
     categoryId: Long,
