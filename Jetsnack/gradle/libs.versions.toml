@@ -30,12 +30,14 @@ compose-compiler = "1.4.0"
 compose-snapshot = "-"
 coroutines = "1.6.4"
 google-maps = "18.1.0"
+gradle-versions = "0.43.0"
 hilt = "2.43.2"
 hiltExt = "1.0.0"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "1.2.2"
 junit = "4.13.2"
 kotlin = "1.8.0"
+ksp = "1.8.0-1.0.9"
 maps-compose = "2.5.3"
 material = "1.9.0-alpha01"
 # @keep
@@ -45,6 +47,7 @@ robolectric = "4.9.2"
 rome = "1.18.0"
 room = "2.5.0"
 secrets = "2.0.1"
+version-catalog-update = "0.7.0"
 # @keep
 targetSdk = "33"
 
@@ -54,7 +57,6 @@ accompanist-pager = { module = "com.google.accompanist:accompanist-pager", versi
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
-android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -112,9 +114,7 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltExt" }
-hilt-gradlePlugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 junit = { module = "junit:junit", version.ref = "junit" }
-kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
@@ -123,4 +123,15 @@ okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
-secrets-gradlePlugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secrets" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
+version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }

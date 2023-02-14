@@ -24,10 +24,6 @@ buildscript {
             maven { url = uri("https://androidx.dev/snapshots/builds/${libs.versions.compose.snapshot.get()}/artifacts/repository/") }
         }
     }
-    dependencies {
-        classpath(libs.android.gradlePlugin)
-        classpath(libs.kotlin.gradlePlugin)
-    }
 }
 
 subprojects {
@@ -37,9 +33,10 @@ subprojects {
     }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove when updating to Gradle 8.1 (https://github.com/gradle/gradle/issues/22797)
 plugins {
-    id("com.github.ben-manes.versions") version "0.43.0"
-    id("nl.littlerobots.version-catalog-update") version "0.7.0"
+    alias(libs.plugins.gradle.versions)
+    alias(libs.plugins.version.catalog.update)
 }
 
 apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")
