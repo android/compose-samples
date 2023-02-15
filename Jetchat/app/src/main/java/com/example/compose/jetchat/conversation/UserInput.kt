@@ -344,7 +344,7 @@ private fun InputSelectorButton(
     }
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(56.dp).then(backgroundModifier)
+        modifier = Modifier.then(backgroundModifier)
     ) {
         val tint = if (selected) {
             MaterialTheme.colorScheme.onSecondary
@@ -354,7 +354,7 @@ private fun InputSelectorButton(
         Icon(
             icon,
             tint = tint,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp).size(56.dp),
             contentDescription = description
         )
     }
