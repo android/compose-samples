@@ -17,8 +17,6 @@
 package com.example.compose.jetsurvey
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,20 +26,11 @@ import com.example.compose.jetsurvey.Destinations.SIGN_UP_ROUTE
 import com.example.compose.jetsurvey.Destinations.SURVEY_RESULTS_ROUTE
 import com.example.compose.jetsurvey.Destinations.SURVEY_ROUTE
 import com.example.compose.jetsurvey.Destinations.WELCOME_ROUTE
-import com.example.compose.jetsurvey.signinsignup.SignInScreen
-import com.example.compose.jetsurvey.signinsignup.SignInViewModel
-import com.example.compose.jetsurvey.signinsignup.SignInViewModelFactory
-import com.example.compose.jetsurvey.signinsignup.SignUpScreen
-import com.example.compose.jetsurvey.signinsignup.SignUpViewModel
-import com.example.compose.jetsurvey.signinsignup.SignUpViewModelFactory
-import com.example.compose.jetsurvey.signinsignup.WelcomeScreen
-import com.example.compose.jetsurvey.signinsignup.WelcomeViewModel
-import com.example.compose.jetsurvey.signinsignup.WelcomeViewModelFactory
-import com.example.compose.jetsurvey.survey.PhotoUriManager
+import com.example.compose.jetsurvey.signinsignup.SignInRoute
+import com.example.compose.jetsurvey.signinsignup.SignUpRoute
+import com.example.compose.jetsurvey.signinsignup.WelcomeRoute
 import com.example.compose.jetsurvey.survey.SurveyResultScreen
 import com.example.compose.jetsurvey.survey.SurveyRoute
-import com.example.compose.jetsurvey.survey.SurveyViewModel
-import com.example.compose.jetsurvey.survey.SurveyViewModelFactory
 
 object Destinations {
     const val WELCOME_ROUTE = "welcome"
@@ -60,72 +49,52 @@ fun JetsurveyNavHost(
         startDestination = WELCOME_ROUTE,
     ) {
         composable(WELCOME_ROUTE) {
-            val welcomeViewModel: WelcomeViewModel = viewModel(factory = WelcomeViewModelFactory())
-            WelcomeScreen(
-                onSignInSignUp = { email ->
-                    welcomeViewModel.handleContinue(
-                        email = email,
-                        onNavigateToSignIn = {
-                            navController.navigate("signin/$it")
-                        },
-                        onNavigateToSignUp = {
-                            navController.navigate("signup/$it")
-                        },
-                    )
+            WelcomeRoute(
+                onNavigateToSignIn = {
+                    navController.navigate("signin/$it")
+                },
+                onNavigateToSignUp = {
+                    navController.navigate("signup/$it")
                 },
                 onSignInAsGuest = {
-                    welcomeViewModel.signInAsGuest {
-                        navController.navigate(SURVEY_ROUTE)
-                    }
+                    navController.navigate(SURVEY_ROUTE)
                 },
             )
         }
 
         composable(SIGN_IN_ROUTE) {
-            val signInViewModel: SignInViewModel = viewModel(factory = SignInViewModelFactory())
             val startingEmail = it.arguments?.getString("email")
-            SignInScreen(
+            SignInRoute(
                 email = startingEmail,
-                onSignInSubmitted = { email, password ->
-                    signInViewModel.signIn(email, password) {
-                        navController.navigate(SURVEY_ROUTE)
-                    }
+                onSignInSubmitted = {
+                    navController.navigate(SURVEY_ROUTE)
                 },
                 onSignInAsGuest = {
-                    signInViewModel.signInAsGuest {
-                        navController.navigate(SURVEY_ROUTE)
-                    }
+                    navController.navigate(SURVEY_ROUTE)
                 },
                 onNavUp = navController::navigateUp,
             )
         }
 
         composable(SIGN_UP_ROUTE) {
-            val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
             val startingEmail = it.arguments?.getString("email")
-            SignUpScreen(
+            SignUpRoute(
                 email = startingEmail,
-                onSignUpSubmitted = { email, password ->
-                    signUpViewModel.signUp(email, password) {
-                        navController.navigate(SURVEY_ROUTE)
-                    }
+                onSignUpSubmitted = {
+                    navController.navigate(SURVEY_ROUTE)
                 },
                 onSignInAsGuest = {
-                    signUpViewModel.signInAsGuest {
-                        navController.navigate(SURVEY_ROUTE)
-                    }
+                    navController.navigate(SURVEY_ROUTE)
                 },
                 onNavUp = navController::navigateUp,
             )
         }
 
         composable(SURVEY_ROUTE) {
-            val surveyViewModel: SurveyViewModel = viewModel(
-                factory = SurveyViewModelFactory(PhotoUriManager(LocalContext.current))
-            )
             SurveyRoute(
-                viewModel = surveyViewModel,
-                onSurveyComplete = { navController.navigate(SURVEY_RESULTS_ROUTE) },
+                onSurveyComplete = {
+                    navController.navigate(SURVEY_RESULTS_ROUTE)
+                },
                 onNavUp = navController::navigateUp,
             )
         }

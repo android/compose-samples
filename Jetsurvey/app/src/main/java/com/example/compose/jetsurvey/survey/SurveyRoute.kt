@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 
 private const val CONTENT_ANIMATION_DURATION = 300
@@ -42,10 +43,13 @@ private const val CONTENT_ANIMATION_DURATION = 300
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SurveyRoute(
-    viewModel: SurveyViewModel,
     onSurveyComplete: () -> Unit,
     onNavUp: () -> Unit,
 ) {
+    val viewModel: SurveyViewModel = viewModel(
+        factory = SurveyViewModelFactory(PhotoUriManager(LocalContext.current))
+    )
+
     val surveyScreenData = viewModel.surveyScreenData ?: return
 
     BackHandler {
