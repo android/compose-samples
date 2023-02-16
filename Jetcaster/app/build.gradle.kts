@@ -99,6 +99,7 @@ dependencies {
 
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
@@ -110,6 +111,7 @@ dependencies {
 
     implementation(libs.androidx.window)
 
+    implementation(libs.accompanist.adaptive)
     implementation(libs.accompanist.pager)
 
     implementation(libs.coil.kt.compose)
