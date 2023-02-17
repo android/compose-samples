@@ -14,24 +14,6 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-
-        if (!libs.versions.compose.snapshot.get().endsWith("SNAPSHOT")) {
-            maven { url = uri("https://androidx.dev/snapshots/builds/${libs.versions.compose.snapshot.get()}/artifacts/repository/") }
-        }
-    }
-}
-
-subprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove when updating to Gradle 8.1 (https://github.com/gradle/gradle/issues/22797)
 plugins {
     alias(libs.plugins.gradle.versions)

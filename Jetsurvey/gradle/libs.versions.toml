@@ -27,7 +27,6 @@ coil = "2.2.0"
 # @keep
 compileSdk = "33"
 compose-compiler = "1.4.0"
-compose-snapshot = "-"
 coroutines = "1.6.4"
 google-maps = "18.1.0"
 gradle-versions = "0.43.0"
