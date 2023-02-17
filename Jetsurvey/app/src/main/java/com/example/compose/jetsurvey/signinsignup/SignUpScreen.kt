@@ -39,34 +39,31 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.supportWideScreen
 
-sealed class SignUpEvent {
-    object SignIn : SignUpEvent()
-    data class SignUp(val email: String, val password: String) : SignUpEvent()
-    object SignInAsGuest : SignUpEvent()
-    object NavigateBack : SignUpEvent()
-}
-
 @OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
-fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
+fun SignUpScreen(
+    email: String?,
+    onSignUpSubmitted: (email: String, password: String) -> Unit,
+    onSignInAsGuest: () -> Unit,
+    onNavUp: () -> Unit,
+) {
     Scaffold(
         topBar = {
             SignInSignUpTopAppBar(
                 topAppBarText = stringResource(id = R.string.create_account),
-                onBackPressed = { onNavigationEvent(SignUpEvent.NavigateBack) }
+                onNavUp = onNavUp,
             )
         },
         content = { contentPadding ->
             SignInSignUpScreen(
-                onSignedInAsGuest = { onNavigationEvent(SignUpEvent.SignInAsGuest) },
+                onSignInAsGuest = onSignInAsGuest,
                 contentPadding = contentPadding,
                 modifier = Modifier.supportWideScreen()
             ) {
                 Column {
                     SignUpContent(
-                        onSignUpSubmitted = { email, password ->
-                            onNavigationEvent(SignUpEvent.SignUp(email, password))
-                        }
+                        email = email,
+                        onSignUpSubmitted = onSignUpSubmitted
                     )
                 }
             }
@@ -76,12 +73,13 @@ fun SignUp(onNavigationEvent: (SignUpEvent) -> Unit) {
 
 @Composable
 fun SignUpContent(
+    email: String?,
     onSignUpSubmitted: (email: String, password: String) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         val passwordFocusRequest = remember { FocusRequester() }
         val confirmationPasswordFocusRequest = remember { FocusRequester() }
-        val emailState = remember { EmailState() }
+        val emailState = remember { EmailState(email) }
         Email(emailState, onImeAction = { passwordFocusRequest.requestFocus() })
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -126,6 +124,11 @@ fun SignUpContent(
 @Composable
 fun SignUpPreview() {
     JetsurveyTheme {
-        SignUp {}
+        SignUpScreen(
+            email = null,
+            onSignUpSubmitted = { _, _ -> },
+            onSignInAsGuest = {},
+            onNavUp = {},
+        )
     }
 }
