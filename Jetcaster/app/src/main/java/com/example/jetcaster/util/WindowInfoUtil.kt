@@ -16,30 +16,9 @@
 
 package com.example.jetcaster.util
 
-import android.graphics.Rect
 import androidx.window.layout.FoldingFeature
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
-
-/**
- * Information about the posture of the device
- */
-sealed interface DevicePosture {
-    object NormalPosture : DevicePosture
-
-    data class TableTopPosture(
-        val hingePosition: Rect
-    ) : DevicePosture
-
-    data class BookPosture(
-        val hingePosition: Rect
-    ) : DevicePosture
-
-    data class SeparatingPosture(
-        val hingePosition: Rect,
-        var orientation: FoldingFeature.Orientation
-    ) : DevicePosture
-}
 
 @OptIn(ExperimentalContracts::class)
 fun isTableTopPosture(foldFeature: FoldingFeature?): Boolean {

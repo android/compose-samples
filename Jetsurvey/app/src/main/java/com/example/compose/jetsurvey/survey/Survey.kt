@@ -106,13 +106,15 @@ fun FeelingAboutSelfiesQuestion(
 @Composable
 fun TakeSelfieQuestion(
     imageUri: Uri?,
-    onClick: () -> Unit,
+    getNewImageUri: () -> Uri,
+    onPhotoTaken: (Uri) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     PhotoQuestion(
         titleResourceId = R.string.selfie_skills,
         imageUri = imageUri,
-        onClick = onClick,
+        getNewImageUri = getNewImageUri,
+        onPhotoTaken = onPhotoTaken,
         modifier = modifier,
     )
 }
