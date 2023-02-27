@@ -35,7 +35,8 @@ hiltExt = "1.0.0"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "1.2.2"
 junit = "4.13.2"
-kotlin = "1.8.10"
+# @pin Update in conjuction with Compose Compiler
+kotlin = "1.8.0"
 ksp = "1.8.0-1.0.9"
 maps-compose = "2.5.3"
 material = "1.9.0-alpha02"
