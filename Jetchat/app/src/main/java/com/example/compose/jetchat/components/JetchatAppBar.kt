@@ -19,6 +19,7 @@
 package com.example.compose.jetchat.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,21 +44,23 @@ fun JetchatAppBar(
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    CenterAlignedTopAppBar(
-        modifier = modifier,
-        actions = actions,
-        title = title,
-        scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            JetchatIcon(
-                contentDescription = stringResource(id = R.string.navigation_drawer_open),
-                modifier = Modifier
-                    .size(64.dp)
-                    .clickable(onClick = onNavIconPressed)
-                    .padding(16.dp)
-            )
-        }
-    )
+    Box {
+        CenterAlignedTopAppBar(
+            modifier = modifier,
+            actions = actions,
+            title = title,
+            scrollBehavior = scrollBehavior,
+            navigationIcon = {
+                JetchatIcon(
+                    contentDescription = stringResource(id = R.string.navigation_drawer_open),
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clickable(onClick = onNavIconPressed)
+                        .padding(16.dp)
+                )
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
