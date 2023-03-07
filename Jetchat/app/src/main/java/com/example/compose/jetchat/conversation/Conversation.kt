@@ -19,7 +19,6 @@
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,16 +27,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -53,6 +52,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -110,48 +111,49 @@ fun ConversationContent(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val scope = rememberCoroutineScope()
 
-    Surface(modifier = modifier) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-            ) {
-                Messages(
-                    messages = uiState.messages,
-                    navigateToProfile = navigateToProfile,
-                    modifier = Modifier.weight(1f),
-                    scrollState = scrollState
-                )
-                UserInput(
-                    onMessageSent = { content ->
-                        uiState.addMessage(
-                            Message(authorMe, content, timeNow)
-                        )
-                    },
-                    resetScroll = {
-                        scope.launch {
-                            scrollState.scrollToItem(0)
-                        }
-                    },
-                    // Use navigationBarsPadding() imePadding() and , to move the input panel above both the
-                    // navigation bar, and on-screen keyboard (IME)
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .imePadding(),
-                )
-            }
-            // Channel name bar floats above the messages
+    Scaffold(
+        topBar = {
             ChannelNameBar(
                 channelName = uiState.channelName,
                 channelMembers = uiState.channelMembers,
                 onNavIconPressed = onNavIconPressed,
                 scrollBehavior = scrollBehavior,
             )
+        },
+        // Exclude ime and navigation bar padding so this can be added by the UserInput composable
+        contentWindowInsets = ScaffoldDefaults
+            .contentWindowInsets
+            .exclude(WindowInsets.navigationBars)
+            .exclude(WindowInsets.ime),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) { paddingValues ->
+        Column(Modifier.fillMaxSize().padding(paddingValues)) {
+            Messages(
+                messages = uiState.messages,
+                navigateToProfile = navigateToProfile,
+                modifier = Modifier.weight(1f),
+                scrollState = scrollState
+            )
+            UserInput(
+                onMessageSent = { content ->
+                    uiState.addMessage(
+                        Message(authorMe, content, timeNow)
+                    )
+                },
+                resetScroll = {
+                    scope.launch {
+                        scrollState.scrollToItem(0)
+                    }
+                },
+                // let this element handle the padding so that the elevation is shown behind the
+                // navigation bar
+                modifier = Modifier.navigationBarsPadding().imePadding()
+            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelNameBar(
     channelName: String,
@@ -224,11 +226,6 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
-            // Add content padding so that the content can be scrolled (y-axis)
-            // below the status bar + app bar
-            // TODO: Get height from somewhere
-            contentPadding =
-            WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize()
@@ -500,7 +497,7 @@ fun ConversationPreview() {
 
 @Preview
 @Composable
-fun channelBarPrev() {
+fun ChannelBarPrev() {
     JetchatTheme {
         ChannelNameBar(channelName = "composers", channelMembers = 52)
     }
@@ -513,5 +510,3 @@ fun DayHeaderPrev() {
 }
 
 private val JumpToBottomThreshold = 56.dp
-
-private fun ScrollState.atBottom(): Boolean = value == 0

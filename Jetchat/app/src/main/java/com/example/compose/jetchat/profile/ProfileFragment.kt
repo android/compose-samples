@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,6 +79,8 @@ class ProfileFragment : Fragment() {
 
                 JetchatTheme {
                     JetchatAppBar(
+                        // Reset the minimum bounds that are passed to the root of a compose tree
+                        modifier = Modifier.wrapContentSize(),
                         onNavIconPressed = { activityViewModel.openDrawer() },
                         title = { },
                         actions = {
