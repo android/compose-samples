@@ -54,13 +54,16 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -86,6 +89,7 @@ import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -159,7 +163,7 @@ fun HomeAppBar(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
-    featuredPodcasts: List<PodcastWithExtraInfo>,
+    featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
@@ -177,6 +181,7 @@ fun HomeContent(
         // 'top podcast'
 
         val surfaceColor = MaterialTheme.colors.surface
+        val appBarColor = surfaceColor.copy(alpha = 0.87f)
         val dominantColorState = rememberDominantColorState { color ->
             // We want a color which has sufficient contrast against the surface color
             color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
@@ -206,8 +211,6 @@ fun HomeContent(
                         endYPercentage = 0f
                     )
             ) {
-                val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
-
                 // Draw a scrim over the status bar which matches the app bar
                 Spacer(
                     Modifier
@@ -320,7 +323,7 @@ fun HomeCategoryTabIndicator(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FollowedPodcasts(
-    items: List<PodcastWithExtraInfo>,
+    items: PersistentList<PodcastWithExtraInfo>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
@@ -334,7 +337,6 @@ fun FollowedPodcasts(
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
             podcastTitle = podcast.title,
-            lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
             modifier = Modifier
                 .padding(4.dp)
@@ -348,7 +350,7 @@ private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
     podcastTitle: String? = null,
-    lastEpisodeDate: OffsetDateTime? = null,
+    //lastEpisodeDate: OffsetDateTime? = null,
     onUnfollowedClick: () -> Unit,
 ) {
     Column(
@@ -378,6 +380,7 @@ private fun FollowedPodcastCarouselItem(
             )
         }
 
+        val lastEpisodeDate = OffsetDateTime.now()
         if (lastEpisodeDate != null) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
