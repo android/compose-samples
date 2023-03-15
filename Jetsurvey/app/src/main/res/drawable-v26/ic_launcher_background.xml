@@ -21,8 +21,5 @@
       android:pathData="M0,0h108v108H0z"
       android:fillColor="#FFF"
       android:fillType="evenOdd"/>
-  <path
-      android:pathData="M68,57.07L52.572,70 46,61.954v-9.77l7.714,9.483L68,49z"
-      android:fillColor="#000"
-      android:fillType="evenOdd"/>
+
 </vector>
