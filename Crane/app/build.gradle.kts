@@ -35,6 +35,8 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.compose.samples.crane.CustomTestRunner"
+        manifestPlaceholders["MAPS_API_KEY"] =  ""
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
