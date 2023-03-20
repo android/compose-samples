@@ -16,10 +16,10 @@
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="110dp"
-    android:height="110dp"
-    android:viewportWidth="110"
-    android:viewportHeight="110">
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
   <path
       android:pathData="M65,43.524L71.5,43.524L74.859,46.859L85.281,57.281L106.125,78.125L77.776,106.473L36.089,64.786L43.176,57.699L48.5,55.999L41,47.5L45.5,43.524L49.5,39.499L56,45.999L58,43.999L65,43.524Z">
     <aapt:attr name="android:fillColor">
