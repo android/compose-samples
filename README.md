@@ -4,7 +4,7 @@
 This repository contains a set of individual Android Studio projects to help you learn about
 Compose in Android. Each sample demonstrates different use cases, complexity levels and APIs.
 
-For more information, please [read the documentation](https://developer.android.com/jetpack/compose)
+For more information, please [read the documentation](https://developer.android.com/jetpack/compose).
 
 💻 Requirements
 ------------
