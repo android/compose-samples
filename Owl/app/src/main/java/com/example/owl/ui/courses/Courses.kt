@@ -16,11 +16,11 @@
 
 package com.example.owl.ui.courses
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TopAppBar
@@ -31,8 +31,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -75,28 +77,34 @@ fun NavGraphBuilder.courses(
         SearchCourses(topics, modifier)
     }
 }
-
+@Preview
 @Composable
 fun CoursesAppBar() {
     TopAppBar(
         elevation = 0.dp,
         modifier = Modifier.height(80.dp)
     ) {
-        Image(
+        val context = LocalContext.current
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.CenterVertically),
-            painter = painterResource(id = R.drawable.ic_lockup_white),
-            contentDescription = null
-        )
-        IconButton(
-            modifier = Modifier.align(Alignment.CenterVertically),
-            onClick = { /* todo */ }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = stringResource(R.string.label_profile)
+                .fillMaxWidth()) {
+            Image(
+                modifier = Modifier
+                    .padding(16.dp),
+                painter = painterResource(id = R.drawable.ic_lockup_white),
+                contentDescription = null
             )
+            IconButton(
+                onClick = {
+                    Toast.makeText(context, "Clicked on Account", Toast.LENGTH_SHORT).show()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.label_profile)
+                )
+            }
         }
     }
 }
