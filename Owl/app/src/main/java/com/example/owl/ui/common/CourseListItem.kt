@@ -137,7 +137,10 @@ private fun CourseListItemPreview(darkTheme: Boolean) {
     BlueTheme(darkTheme) {
         CourseListItem(
             course = courses.first(),
-            onClick = {}
+            onClick = {},
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(288.dp, 80.dp),
         )
     }
 }
