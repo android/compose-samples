@@ -53,7 +53,7 @@ Owl implements some utility functions of interest:
 ## Data
 Domain types are modelled in the [model package](app/src/main/java/com/example/owl/model), each containing static sample data exposed using fake `Repo`s objects.
 
-Imagery is sourced from [Unsplash](https://unsplash.com/) and [Pravatar](https://pravatar.cc/) and loaded using [coil-accompanist][coil-accompanist].
+Imagery is sourced from [Unsplash](https://unsplash.com/) and [Pravatar](https://pravatar.cc/) and loaded using [coil][coil].
 
 
 ## License
@@ -76,4 +76,4 @@ limitations under the License.
 [compose]: https://developer.android.com/jetpack/compose
 [owl]: https://material.io/design/material-studies/owl.html
 [materialtheming]: https://material.io/design/material-theming/overview.html#material-theming
-[coil-accompanist]: https://google.github.io/accompanist/coil/
+[coil]: https://coil-kt.github.io/coil/
