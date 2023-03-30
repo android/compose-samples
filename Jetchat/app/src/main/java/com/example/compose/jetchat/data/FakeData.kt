@@ -50,17 +50,17 @@ private val initialMessages = listOf(
     ),
     Message(
         "John Glenn",
-        "Compose newbie as well $EMOJI_FLAMINGO, have you looked at the JetNews sample? Most blog posts end up " +
-                "out of date pretty fast but this sample is always up to date and deals with async " +
-                "data loading (it's faked but the same idea applies) $EMOJI_POINTS" +
-                "https://goo.gle/jetnews",
+        "Compose newbie as well $EMOJI_FLAMINGO, have you looked at the JetNews sample? " +
+                "Most blog posts end up out of date pretty fast but this sample is always up to " +
+                "date and deals with async data loading (it's faked but the same idea " +
+                "applies) $EMOJI_POINTS https://goo.gle/jetnews",
         "8:04 PM"
     ),
     Message(
         "me",
-        "Compose newbie: I’ve scourged the internet for tutorials about async data loading " +
-                "but haven’t found any good ones $EMOJI_MELTING $EMOJI_CLOUDS. What’s the recommended way to load async " +
-                "data and emit composable widgets?",
+        "Compose newbie: I’ve scourged the internet for tutorials about async data " +
+                "loading but haven’t found any good ones $EMOJI_MELTING $EMOJI_CLOUDS. " +
+                "What’s the recommended way to load async data and emit composable widgets?",
         "8:03 PM"
     )
 )
