@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,9 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -82,10 +86,6 @@ import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -156,7 +156,7 @@ fun HomeAppBar(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
     featuredPodcasts: List<PodcastWithExtraInfo>,
@@ -317,7 +317,7 @@ fun HomeCategoryTabIndicator(
     )
 }
 
-@ExperimentalPagerApi // HorizontalPager is experimental
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
@@ -326,7 +326,7 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
-        count = items.size,
+        pageCount = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->

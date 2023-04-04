@@ -112,7 +112,6 @@ dependencies {
     implementation(libs.androidx.window)
 
     implementation(libs.accompanist.adaptive)
-    implementation(libs.accompanist.pager)
 
     implementation(libs.coil.kt.compose)
 
