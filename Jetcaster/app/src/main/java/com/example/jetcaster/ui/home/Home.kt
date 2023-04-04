@@ -335,6 +335,7 @@ fun FollowedPodcasts(
             podcastImageUrl = podcast.imageUrl,
             podcastTitle = podcast.title,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
+            lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxHeight()
@@ -347,7 +348,7 @@ private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
     podcastTitle: String? = null,
-    // lastEpisodeDate: OffsetDateTime? = null,
+    lastEpisodeDateText: String? = null,
     onUnfollowedClick: () -> Unit,
 ) {
     Column(
@@ -377,11 +378,10 @@ private fun FollowedPodcastCarouselItem(
             )
         }
 
-        val lastEpisodeDate = OffsetDateTime.now()
-        if (lastEpisodeDate != null) {
+        if (lastEpisodeDateText != null) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = lastUpdated(lastEpisodeDate),
+                    text = lastEpisodeDateText,
                     style = MaterialTheme.typography.caption,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
