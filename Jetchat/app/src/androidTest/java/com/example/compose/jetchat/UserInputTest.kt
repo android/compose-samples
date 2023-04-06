@@ -17,7 +17,6 @@
 package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -35,7 +34,6 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
-import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import org.junit.Before
@@ -55,20 +53,14 @@ class UserInputTest {
 
     @Before
     fun setUp() {
-
         // Launch the conversation screen
-        val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
         composeTestRule.setContent {
-            CompositionLocalProvider(
-                LocalBackPressedDispatcher provides onBackPressedDispatcher
-            ) {
-                JetchatTheme {
-                    ConversationContent(
-                        uiState = exampleUiState,
-                        navigateToProfile = { },
-                        onNavIconPressed = { }
-                    )
-                }
+            JetchatTheme {
+                ConversationContent(
+                    uiState = exampleUiState,
+                    navigateToProfile = { },
+                    onNavIconPressed = { }
+                )
             }
         }
     }

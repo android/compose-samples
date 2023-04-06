@@ -27,8 +27,8 @@ jobs:
       with:
         token: ${{ secrets.PAT }}
         commit-message: 🤖 Update Dependencies
-        committer: GitHub <noreply@github.com>
-        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+        committer: compose-devrel-github-bot <compose-devrel-github-bot@google.com>
+        author: compose-devrel-github-bot <compose-devrel-github-bot@google.com>
         signoff: false
         branch: bot-update-deps
         delete-branch: true

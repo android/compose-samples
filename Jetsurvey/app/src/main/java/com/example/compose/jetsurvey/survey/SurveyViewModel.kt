@@ -17,125 +17,142 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.example.compose.jetsurvey.util.getDefaultDateInMillis
-import kotlinx.coroutines.launch
+import com.example.compose.jetsurvey.survey.question.Superhero
 
 const val simpleDateFormatPattern = "EEE, MMM d"
 
 class SurveyViewModel(
-    private val surveyRepository: SurveyRepository,
     private val photoUriManager: PhotoUriManager
 ) : ViewModel() {
 
-    private val _uiState = MutableLiveData<SurveyState>()
-    val uiState: LiveData<SurveyState>
-        get() = _uiState
+    private val questionOrder: List<SurveyQuestion> = listOf(
+        SurveyQuestion.FREE_TIME,
+        SurveyQuestion.SUPERHERO,
+        SurveyQuestion.LAST_TAKEAWAY,
+        SurveyQuestion.FEELING_ABOUT_SELFIES,
+        SurveyQuestion.TAKE_SELFIE,
+    )
 
-    var askForPermissions by mutableStateOf(true)
-        private set
+    private var questionIndex = 0
 
-    private lateinit var surveyInitialState: SurveyState
+    // ----- Responses exposed as State -----
 
-    // Uri used to save photos taken with the camera
-    private var uri: Uri? = null
+    private val _freeTimeResponse = mutableStateListOf<Int>()
+    val freeTimeResponse: List<Int>
+        get() = _freeTimeResponse
 
-    init {
-        viewModelScope.launch {
-            val survey = surveyRepository.getSurvey()
+    private val _superheroResponse = mutableStateOf<Superhero?>(null)
+    val superheroResponse: Superhero?
+        get() = _superheroResponse.value
 
-            // Create the default questions state based on the survey questions
-            val questions: List<QuestionState> = survey.questions.mapIndexed { index, question ->
-                val showPrevious = index > 0
-                val showDone = index == survey.questions.size - 1
-                QuestionState(
-                    question = question,
-                    questionIndex = index,
-                    totalQuestionsCount = survey.questions.size,
-                    showPrevious = showPrevious,
-                    showDone = showDone
-                )
-            }
-            surveyInitialState = SurveyState.Questions(survey.title, questions)
-            _uiState.value = surveyInitialState
+    private val _takeawayResponse = mutableStateOf<Long?>(null)
+    val takeawayResponse: Long?
+        get() = _takeawayResponse.value
+
+    private val _feelingAboutSelfiesResponse = mutableStateOf<Float?>(null)
+    val feelingAboutSelfiesResponse: Float?
+        get() = _feelingAboutSelfiesResponse.value
+
+    private val _selfieUri = mutableStateOf<Uri?>(null)
+    val selfieUri
+        get() = _selfieUri.value
+
+    // ----- Survey status exposed as State -----
+
+    private val _surveyScreenData = mutableStateOf(createSurveyScreenData())
+    val surveyScreenData: SurveyScreenData?
+        get() = _surveyScreenData.value
+
+    private val _isNextEnabled = mutableStateOf(false)
+    val isNextEnabled: Boolean
+        get() = _isNextEnabled.value
+
+    /**
+     * Returns true if the ViewModel handled the back press (i.e., it went back one question)
+     */
+    fun onBackPressed(): Boolean {
+        if (questionIndex == 0) {
+            return false
+        }
+        changeQuestion(questionIndex - 1)
+        return true
+    }
+
+    fun onPreviousPressed() {
+        if (questionIndex == 0) {
+            throw IllegalStateException("onPreviousPressed when on question 0")
+        }
+        changeQuestion(questionIndex - 1)
+    }
+
+    fun onNextPressed() {
+        changeQuestion(questionIndex + 1)
+    }
+
+    private fun changeQuestion(newQuestionIndex: Int) {
+        questionIndex = newQuestionIndex
+        _isNextEnabled.value = getIsNextEnabled()
+        _surveyScreenData.value = createSurveyScreenData()
+    }
+
+    fun onDonePressed(onSurveyComplete: () -> Unit) {
+        // Here is where you could validate that the requirements of the survey are complete
+        onSurveyComplete()
+    }
+
+    fun onFreeTimeResponse(selected: Boolean, answer: Int) {
+        if (selected) {
+            _freeTimeResponse.add(answer)
+        } else {
+            _freeTimeResponse.remove(answer)
+        }
+        _isNextEnabled.value = getIsNextEnabled()
+    }
+
+    fun onSuperheroResponse(superhero: Superhero) {
+        _superheroResponse.value = superhero
+        _isNextEnabled.value = getIsNextEnabled()
+    }
+
+    fun onTakeawayResponse(timestamp: Long) {
+        _takeawayResponse.value = timestamp
+        _isNextEnabled.value = getIsNextEnabled()
+    }
+
+    fun onFeelingAboutSelfiesResponse(feeling: Float) {
+        _feelingAboutSelfiesResponse.value = feeling
+        _isNextEnabled.value = getIsNextEnabled()
+    }
+
+    fun onSelfieResponse(uri: Uri) {
+        _selfieUri.value = uri
+        _isNextEnabled.value = getIsNextEnabled()
+    }
+
+    fun getNewSelfieUri() = photoUriManager.buildNewUri()
+
+    private fun getIsNextEnabled(): Boolean {
+        return when (questionOrder[questionIndex]) {
+            SurveyQuestion.FREE_TIME -> _freeTimeResponse.isNotEmpty()
+            SurveyQuestion.SUPERHERO -> _superheroResponse.value != null
+            SurveyQuestion.LAST_TAKEAWAY -> _takeawayResponse.value != null
+            SurveyQuestion.FEELING_ABOUT_SELFIES -> _feelingAboutSelfiesResponse.value != null
+            SurveyQuestion.TAKE_SELFIE -> _selfieUri.value != null
         }
     }
 
-    fun computeResult(surveyQuestions: SurveyState.Questions) {
-        val answers = surveyQuestions.questionsState.mapNotNull { it.answer }
-        val result = surveyRepository.getSurveyResult(answers)
-        _uiState.value = SurveyState.Result(surveyQuestions.surveyTitle, result)
-    }
-
-    fun onDatePicked(questionId: Int, pickerSelection: Long) {
-        updateStateWithActionResult(
-            questionId,
-            SurveyActionResult.Date(pickerSelection)
+    private fun createSurveyScreenData(): SurveyScreenData {
+        return SurveyScreenData(
+            questionIndex = questionIndex,
+            questionCount = questionOrder.size,
+            shouldShowPreviousButton = questionIndex > 0,
+            shouldShowDoneButton = questionIndex == questionOrder.size - 1,
+            surveyQuestion = questionOrder[questionIndex],
         )
-    }
-
-    fun getCurrentDate(questionId: Int): Long {
-        return getSelectedDate(questionId)
-    }
-
-    fun getUriToSaveImage(): Uri? {
-        uri = photoUriManager.buildNewUri()
-        return uri
-    }
-
-    fun onImageSaved() {
-        uri?.let { uri ->
-            getLatestQuestionId()?.let { questionId ->
-                updateStateWithActionResult(questionId, SurveyActionResult.Photo(uri))
-            }
-        }
-    }
-
-    // TODO: Ideally this should be stored in the database
-    fun doNotAskForPermissions() {
-        askForPermissions = false
-    }
-
-    private fun updateStateWithActionResult(questionId: Int, result: SurveyActionResult) {
-        val latestState = _uiState.value
-        if (latestState != null && latestState is SurveyState.Questions) {
-            val question =
-                latestState.questionsState.first { questionState ->
-                    questionState.question.id == questionId
-                }
-            question.answer = Answer.Action(result)
-            question.enableNext = true
-        }
-    }
-
-    private fun getLatestQuestionId(): Int? {
-        val latestState = _uiState.value
-        if (latestState != null && latestState is SurveyState.Questions) {
-            return latestState.questionsState[latestState.currentQuestionIndex].question.id
-        }
-        return null
-    }
-
-    private fun getSelectedDate(questionId: Int): Long {
-        val latestState = _uiState.value
-        if (latestState != null && latestState is SurveyState.Questions) {
-            val question =
-                latestState.questionsState.first { questionState ->
-                    questionState.question.id == questionId
-                }
-            val answer = question.answer as Answer.Action?
-            if (answer != null && answer.result is SurveyActionResult.Date) {
-                return answer.result.dateMillis
-            }
-        }
-        return getDefaultDateInMillis()
     }
 }
 
@@ -145,8 +162,24 @@ class SurveyViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveyViewModel::class.java)) {
-            return SurveyViewModel(JetpackSurveyRepository, photoUriManager) as T
+            return SurveyViewModel(photoUriManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+
+enum class SurveyQuestion {
+    FREE_TIME,
+    SUPERHERO,
+    LAST_TAKEAWAY,
+    FEELING_ABOUT_SELFIES,
+    TAKE_SELFIE,
+}
+
+data class SurveyScreenData(
+    val questionIndex: Int,
+    val questionCount: Int,
+    val shouldShowPreviousButton: Boolean,
+    val shouldShowDoneButton: Boolean,
+    val surveyQuestion: SurveyQuestion,
+)

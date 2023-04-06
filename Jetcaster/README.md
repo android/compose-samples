@@ -23,11 +23,18 @@ most of the app's architecture has been implemented, as well as the data layer, 
 
 ## Features
 
-This sample contains 1 screen so far: the home screen. It is split into sub-screens for easy re-use:
+This sample contains 2 screens so far: the home screen, and a player screen.
+
+The home screen is split into sub-screens for easy re-use:
 
 - __Home__, allowing the user to see their followed podcasts (top carousel), and navigate between 'Your Library' and 'Discover'
-  - __Discover__, allowing the user to browse podcast categories
-    - __Podcast Category__, allowing the user to see a list of recent episodes for podcasts in a given category.
+- __Discover__, allowing the user to browse podcast categories
+- __Podcast Category__, allowing the user to see a list of recent episodes for podcasts in a given category.
+
+The player screen displays media controls and the currently "playing" podcast (the sample currently doesn't actually play any media).
+The player screen layout is adapting to different form factors, including a tabletop layout on foldable devices:
+
+<img src="docs/tabletop.png"/>
 
 ### Dynamic theming
 The home screen currently implements dynamic theming, using the artwork of the currently selected podcast from the carousel to  update the  `primary` and `onPrimary` [colors](https://developer.android.com/reference/kotlin/androidx/compose/material/Colors). You can see it in action in the screenshots above: as the carousel item is changed, the background gradient is updated to match the artwork.

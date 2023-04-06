@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
@@ -126,7 +127,7 @@ fun UserInput(
 
     // Intercept back navigation if there's a InputSelector visible
     if (currentInputSelector != InputSelector.NONE) {
-        BackPressHandler(onBackPressed = dismissKeyboard)
+        BackHandler(onBack = dismissKeyboard)
     }
 
     var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -344,7 +345,7 @@ private fun InputSelectorButton(
     }
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(56.dp).then(backgroundModifier)
+        modifier = Modifier.then(backgroundModifier)
     ) {
         val tint = if (selected) {
             MaterialTheme.colorScheme.onSecondary
@@ -354,7 +355,7 @@ private fun InputSelectorButton(
         Icon(
             icon,
             tint = tint,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp).size(56.dp),
             contentDescription = description
         )
     }

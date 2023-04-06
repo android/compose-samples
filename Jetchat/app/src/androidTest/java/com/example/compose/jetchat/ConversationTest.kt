@@ -17,7 +17,6 @@
 package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -27,12 +26,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.conversation.ConversationUiState
-import com.example.compose.jetchat.conversation.LocalBackPressedDispatcher
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,22 +47,16 @@ class ConversationTest {
 
     private val themeIsDark = MutableStateFlow(false)
 
-    @OptIn(ExperimentalLifecycleComposeApi::class)
     @Before
     fun setUp() {
         // Launch the conversation screen
         composeTestRule.setContent {
-            val onBackPressedDispatcher = composeTestRule.activity.onBackPressedDispatcher
-            CompositionLocalProvider(
-                LocalBackPressedDispatcher provides onBackPressedDispatcher,
-            ) {
-                JetchatTheme(isDarkTheme = themeIsDark.collectAsStateWithLifecycle(false).value) {
-                    ConversationContent(
-                        uiState = conversationTestUiState,
-                        navigateToProfile = { },
-                        onNavIconPressed = { }
-                    )
-                }
+            JetchatTheme(isDarkTheme = themeIsDark.collectAsStateWithLifecycle(false).value) {
+                ConversationContent(
+                    uiState = conversationTestUiState,
+                    navigateToProfile = { },
+                    onNavIconPressed = { }
+                )
             }
         }
     }

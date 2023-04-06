@@ -9,6 +9,7 @@ project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
 Features:
+* Medium complexity
 * Custom Layouts
 * Graphics: Custom Paths, Gradients, AGSL shaders
 * Animations

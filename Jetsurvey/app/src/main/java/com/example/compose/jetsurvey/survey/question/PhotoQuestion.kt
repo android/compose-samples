@@ -17,6 +17,10 @@
 package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,63 +53,87 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.survey.Answer
-import com.example.compose.jetsurvey.survey.SurveyActionResult
-import com.example.compose.jetsurvey.survey.SurveyActionType
+import com.example.compose.jetsurvey.survey.QuestionWrapper
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 @Composable
 fun PhotoQuestion(
-    questionId: Int,
-    answer: Answer.Action?,
-    onAction: (Int, SurveyActionType) -> Unit,
-    modifier: Modifier = Modifier
+    @StringRes titleResourceId: Int,
+    imageUri: Uri?,
+    getNewImageUri: () -> Uri,
+    onPhotoTaken: (Uri) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val resource = if (answer != null) {
+    val hasPhoto = imageUri != null
+    val iconResource = if (hasPhoto) {
         Icons.Filled.SwapHoriz
     } else {
         Icons.Filled.AddAPhoto
     }
-    OutlinedButton(
-        onClick = { onAction(questionId, SurveyActionType.TAKE_PHOTO) },
+    var newImageUri: Uri? = null
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) {
+                onPhotoTaken(newImageUri!!)
+            }
+        }
+    )
+
+    QuestionWrapper(
+        titleResourceId = titleResourceId,
         modifier = modifier,
-        shape = MaterialTheme.shapes.small,
-        contentPadding = PaddingValues()
     ) {
-        Column {
-            if (answer != null && answer.result is SurveyActionResult.Photo) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(answer.result.uri)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
+
+        OutlinedButton(
+            onClick = {
+                newImageUri = getNewImageUri()
+                cameraLauncher.launch(newImageUri)
+            },
+            shape = MaterialTheme.shapes.small,
+            contentPadding = PaddingValues()
+        ) {
+            Column {
+                if (hasPhoto) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUri)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(96.dp)
+                            .aspectRatio(4 / 3f)
+                    )
+                } else {
+                    PhotoDefaultImage(
+                        modifier = Modifier.padding(
+                            horizontal = 86.dp,
+                            vertical = 74.dp
+                        )
+                    )
+                }
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(96.dp)
-                        .aspectRatio(4 / 3f)
-                )
-            } else {
-                PhotoDefaultImage(modifier = Modifier.padding(horizontal = 86.dp, vertical = 74.dp))
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.BottomCenter)
-                    .padding(vertical = 26.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(imageVector = resource, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(
-                        id = if (answer != null) {
-                            R.string.retake_photo
-                        } else {
-                            R.string.add_photo
-                        }
+                        .wrapContentSize(Alignment.BottomCenter)
+                        .padding(vertical = 26.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = iconResource, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(
+                            id = if (hasPhoto) {
+                                R.string.retake_photo
+                            } else {
+                                R.string.add_photo
+                            }
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -134,7 +162,13 @@ private fun PhotoDefaultImage(
 fun PhotoQuestionPreview() {
     JetsurveyTheme {
         Surface {
-            PhotoQuestion(questionId = 1, answer = null, onAction = { _, _ -> })
+            PhotoQuestion(
+                titleResourceId = R.string.selfie_skills,
+                imageUri = Uri.parse("https://example.bogus/wow"),
+                getNewImageUri = { Uri.EMPTY },
+                onPhotoTaken = {},
+                modifier = Modifier.padding(16.dp),
+            )
         }
     }
 }
