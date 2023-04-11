@@ -119,10 +119,15 @@ private data class HomeViewModelState(
  * ViewModel that handles the business logic of the Home screen
  */
 class HomeViewModel(
-    private val postsRepository: PostsRepository
+    private val postsRepository: PostsRepository,
+    preSelectedPostId: String?
 ) : ViewModel() {
 
-    private val viewModelState = MutableStateFlow(HomeViewModelState(isLoading = true))
+    private val viewModelState = MutableStateFlow(
+        HomeViewModelState(isLoading = true,
+                           selectedPostId = preSelectedPostId,
+                           isArticleOpen = preSelectedPostId != null)
+    )
 
     // UI state exposed to the UI
     val uiState = viewModelState
@@ -231,10 +236,11 @@ class HomeViewModel(
     companion object {
         fun provideFactory(
             postsRepository: PostsRepository,
+            preSelectedPostId: String? = null
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return HomeViewModel(postsRepository) as T
+                return HomeViewModel(postsRepository, preSelectedPostId) as T
             }
         }
     }

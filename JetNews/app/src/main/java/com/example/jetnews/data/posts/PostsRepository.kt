@@ -42,6 +42,11 @@ interface PostsRepository {
     fun observeFavorites(): Flow<Set<String>>
 
     /**
+     * Observe the posts feed.
+     */
+    fun observePostsFeed(): Flow<PostsFeed?>
+
+    /**
      * Toggle a postId to be a favorite or not.
      */
     suspend fun toggleFavorite(postId: String)

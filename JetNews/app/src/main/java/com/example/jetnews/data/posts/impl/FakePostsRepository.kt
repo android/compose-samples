@@ -37,6 +37,8 @@ class FakePostsRepository : PostsRepository {
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
+    private val postsFeed = MutableStateFlow<PostsFeed?>(null)
+
     // Used to make suspend functions that read and update state safe to call from any thread
 
     override suspend fun getPost(postId: String?): Result<Post> {
@@ -56,12 +58,14 @@ class FakePostsRepository : PostsRepository {
             if (shouldRandomlyFail()) {
                 Result.Error(IllegalStateException())
             } else {
+                postsFeed.update { posts }
                 Result.Success(posts)
             }
         }
     }
 
     override fun observeFavorites(): Flow<Set<String>> = favorites
+    override fun observePostsFeed(): Flow<PostsFeed?> = postsFeed
 
     override suspend fun toggleFavorite(postId: String) {
         favorites.update {

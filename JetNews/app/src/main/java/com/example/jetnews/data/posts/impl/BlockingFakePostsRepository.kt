@@ -38,6 +38,8 @@ class BlockingFakePostsRepository : PostsRepository {
     // for now, keep the favorites in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
+    private val postsFeed = MutableStateFlow<PostsFeed?>(null)
+
     override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(Dispatchers.IO) {
             val post = posts.allPosts.find { it.id == postId }
@@ -50,10 +52,12 @@ class BlockingFakePostsRepository : PostsRepository {
     }
 
     override suspend fun getPostsFeed(): Result<PostsFeed> {
+        postsFeed.update { posts }
         return Result.Success(posts)
     }
 
     override fun observeFavorites(): Flow<Set<String>> = favorites
+    override fun observePostsFeed(): Flow<PostsFeed?> = postsFeed
 
     override suspend fun toggleFavorite(postId: String) {
         favorites.update { it.addOrRemove(postId) }

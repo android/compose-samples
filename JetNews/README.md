@@ -71,6 +71,23 @@ on and off, light and dark version in the Android Studio Preview.
 [7]: app/src/main/java/com/example/jetnews/ui/interests
 [8]: app/src/main/java/com/example/jetnews/ui/interests/SelectTopicButton.kt
 
+### AppWidget powered by Glance
+
+Package [`com.example.jetnews.glance`][0]
+
+This package shows how to use Glance and write compose style code for AppWidgets.
+
+See how to:
+* Use `Row`, `Column`, `LazyColumn` to arrange the contents of the UI
+* Use an repository from your existing app to load data for the widget and perform updates
+* Use a `CoroutineWorker` to periodically load the data to refresh the widget
+* Use `androidx.glance:glance-material3` library to create a custom color scheme with `GlanceTheme`
+and use dynamic colors when supported
+* Tint `Image`s to match the color scheme
+* Launch an activity on click
+
+[9]: app/src/main/java/com/example/jetnews/glance
+
 ### Data
 
 The data in the sample is static, held in the `com.example.jetnews.data` package.

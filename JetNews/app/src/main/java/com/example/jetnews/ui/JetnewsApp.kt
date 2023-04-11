@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun JetnewsApp(
     appContainer: AppContainer,
-    widthSizeClass: WindowWidthSizeClass
+    widthSizeClass: WindowWidthSizeClass,
 ) {
     JetnewsTheme {
         val navController = rememberNavController()

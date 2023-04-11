@@ -23,11 +23,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
+import com.example.jetnews.JetnewsApplication.Companion.JETNEWS_APP_URI
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
+
+const val POST_ID = "postId"
 
 @Composable
 fun JetnewsNavGraph(
@@ -36,21 +40,32 @@ fun JetnewsNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit = {},
-    startDestination: String = JetnewsDestinations.HOME_ROUTE
+    startDestination: String = JetnewsDestinations.HOME_ROUTE,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(JetnewsDestinations.HOME_ROUTE) {
+        composable(
+            route = JetnewsDestinations.HOME_ROUTE,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern =
+                        "$JETNEWS_APP_URI/${JetnewsDestinations.HOME_ROUTE}?$POST_ID={$POST_ID}"
+                }
+            )
+        ) { navBackStackEntry ->
             val homeViewModel: HomeViewModel = viewModel(
-                factory = HomeViewModel.provideFactory(appContainer.postsRepository)
+                factory = HomeViewModel.provideFactory(
+                    postsRepository = appContainer.postsRepository,
+                    preSelectedPostId = navBackStackEntry.arguments?.getString(POST_ID)
+                )
             )
             HomeRoute(
                 homeViewModel = homeViewModel,
                 isExpandedScreen = isExpandedScreen,
-                openDrawer = openDrawer
+                openDrawer = openDrawer,
             )
         }
         composable(JetnewsDestinations.INTERESTS_ROUTE) {

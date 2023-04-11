@@ -30,10 +30,28 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="developer.android.com"
+                    android:pathPrefix="/jetnews"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".glance.JetnewsGlanceAppWidgetReceiver"
+            android:exported="false"
+            android:enabled="@bool/glance_appwidget_available">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jetnews_glance_appwidget_info" />
+        </receiver>
     </application>
 </manifest>
