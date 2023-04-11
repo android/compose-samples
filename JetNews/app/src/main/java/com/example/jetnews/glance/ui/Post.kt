@@ -64,6 +64,7 @@ private fun Context.authorReadTimeString(author: String, readTimeMinutes: Int) =
         .format(author, readTimeMinutes)
 
 private fun openPostDetails(context: Context, post: Post): Action {
+    // actionStartActivity is the preferred way to start activities.
     return actionStartActivity(
         Intent(
             Intent.ACTION_VIEW,

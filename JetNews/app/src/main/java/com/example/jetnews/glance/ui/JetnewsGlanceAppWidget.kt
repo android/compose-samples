@@ -65,7 +65,9 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         val postsRepository = application.container.postsRepository
 
         // Load data needed to render the composable.
-        // The repository can return cached results here if it already has fresh data.
+        // The widget is configured to refresh periodically using the "android:updatePeriodMillis"
+        // configuration, and during each refresh, the data is loaded here.
+        // The repository can internally return cached results here if it already has fresh data.
         val initialPostsFeed = withContext(Dispatchers.IO) {
             postsRepository.getPostsFeed().successOr(null)
         }
@@ -109,6 +111,8 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
                 .cornerRadius(24.dp)
         ) {
             Header(modifier = GlanceModifier.fillMaxWidth())
+            // Set key for each size so that the onToggleBookmark lambda is called only once for the
+            // active size.
             key(LocalSize.current) {
                 Body(
                     modifier = GlanceModifier.fillMaxWidth(),
