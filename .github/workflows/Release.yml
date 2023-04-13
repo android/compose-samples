@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: 'zulu'
 
       - name: Build all projects
         run: ./scripts/gradlew_recursive.sh assembleDebug
