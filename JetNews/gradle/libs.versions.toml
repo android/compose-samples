@@ -4,7 +4,7 @@
 #####
 [versions]
 accompanist = "0.28.0"
-androidGradlePlugin = "8.0.0-rc01"
+androidGradlePlugin = "8.0.0"
 androidx-activity-compose = "1.7.0"
 androidx-appcompat = "1.6.1"
 androidx-benchmark = "1.1.0"
