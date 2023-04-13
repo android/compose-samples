@@ -22,6 +22,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
+    namespace = "com.example.compose.jetchat"
 
     defaultConfig {
         applicationId = "com.example.compose.jetchat"
@@ -58,8 +59,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {

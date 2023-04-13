@@ -23,6 +23,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
+    namespace = "com.example.jetsnack"
 
     defaultConfig {
         applicationId = "com.example.jetsnack"

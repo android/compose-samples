@@ -22,6 +22,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
+    namespace = "com.example.compose.jetsurvey"
 
     defaultConfig {
         applicationId = "com.example.compose.jetsurvey"
