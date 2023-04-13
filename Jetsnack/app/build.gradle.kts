@@ -85,7 +85,7 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
-    packagingOptions {
+    packaging.resources {
         // Multiple dependency bring these files in. Exclude them to enable
         // our test APK to build (has no effect on our AARs)
         excludes += "/META-INF/AL2.0"

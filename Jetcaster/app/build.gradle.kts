@@ -65,13 +65,14 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
-    packagingOptions {
+    packaging.resources {
         // The Rome library JARs embed some internal utils libraries in nested JARs.
         // We don't need them so we exclude them in the final package.
         excludes += "/*.jar"
