@@ -16,8 +16,7 @@
   -->
 <!-- Added as workaround for https://github.com/android/android-test/issues/1412 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="androidx.compose.samples.crane">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
 
