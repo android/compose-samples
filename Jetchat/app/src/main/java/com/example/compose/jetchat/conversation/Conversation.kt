@@ -101,7 +101,8 @@ fun ConversationContent(
     uiState: ConversationUiState,
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onNavIconPressed: () -> Unit = { }
+    onNavIconPressed: () -> Unit = { },
+    onMessageSent: (String) -> Unit
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -135,11 +136,7 @@ fun ConversationContent(
                 scrollState = scrollState
             )
             UserInput(
-                onMessageSent = { content ->
-                    uiState.addMessage(
-                        Message(authorMe, content, timeNow)
-                    )
-                },
+                onMessageSent = { content -> onMessageSent(content) },
                 resetScroll = {
                     scope.launch {
                         scrollState.scrollToItem(0)
@@ -490,7 +487,8 @@ fun ConversationPreview() {
     JetchatTheme {
         ConversationContent(
             uiState = exampleUiState,
-            navigateToProfile = { }
+            navigateToProfile = { },
+            onMessageSent = { }
         )
     }
 }

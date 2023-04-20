@@ -55,7 +55,8 @@ class ConversationTest {
                 ConversationContent(
                     uiState = conversationTestUiState,
                     navigateToProfile = { },
-                    onNavIconPressed = { }
+                    onNavIconPressed = { },
+                    onMessageSent = { },
                 )
             }
         }
