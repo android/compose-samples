@@ -17,8 +17,15 @@
 package com.example.compose.jetchat
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.compose.jetchat.conversation.ConversationUiState
+import com.example.compose.jetchat.conversation.Message
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * Used to communicate between screens.
@@ -34,5 +41,48 @@ class MainViewModel : ViewModel() {
 
     fun resetOpenDrawerAction() {
         _drawerShouldBeOpened.value = false
+    }
+
+    //----------Below code added for OpenAI integration-------------
+    var uiState = ConversationUiState(
+        initialMessages = listOf(Message("bot", "Welcome to JetchatGPT!", "8:07 pm")),
+        channelName = "#jetchatgpt",
+        channelMembers = 2
+    )
+    private var openAIWrapper = OpenAIWrapper()
+
+    fun onMessageSent(content: String) {
+        // add user message to chat history
+        addMessage("me", content)
+
+        // fetch openai response and add to chat history
+        viewModelScope.launch {
+            // if user message contains "image" keyword, target image endpoint, otherwise target chat endpoint
+            if (content.contains("image", ignoreCase = true)) {
+                addMessage(
+                    "bot",
+                    content = "Generated image:",
+                    imageUrl = openAIWrapper.imageURL(content)
+                )
+            } else {
+                addMessage("bot", openAIWrapper.chat(content))
+            }
+        }
+    }
+
+    private fun addMessage(author: String, content: String, imageUrl: String? = null) {
+        // calculate message timestamp
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+        val timeNow = dateFormat.format(currentTime)
+
+        val message = Message(
+            author = author,
+            content = content,
+            timestamp = timeNow,
+            imageUrl = imageUrl
+        )
+
+        uiState.addMessage(message)
     }
 }

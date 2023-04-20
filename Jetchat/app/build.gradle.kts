@@ -97,6 +97,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.google.android.material)
+    implementation(libs.openai)
+    implementation(libs.ktor.client.okhttp)
 
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.material3)
@@ -106,6 +108,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.googlefonts)
+    implementation(libs.coil.kt.compose)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 

@@ -46,7 +46,7 @@ class ConversationFragment : Fragment() {
         setContent {
             JetchatTheme {
                 ConversationContent(
-                    uiState = exampleUiState,
+                    uiState = activityViewModel.uiState,
                     navigateToProfile = { user ->
                         // Click callback
                         val bundle = bundleOf("userId" to user)
@@ -57,7 +57,8 @@ class ConversationFragment : Fragment() {
                     },
                     onNavIconPressed = {
                         activityViewModel.openDrawer()
-                    }
+                    },
+                    onMessageSent = activityViewModel::onMessageSent
                 )
             }
         }
