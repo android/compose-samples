@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.googlefonts)
+    implementation(libs.coil.kt.compose)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 

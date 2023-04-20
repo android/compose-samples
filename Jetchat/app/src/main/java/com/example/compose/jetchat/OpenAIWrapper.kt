@@ -56,4 +56,13 @@ class OpenAIWrapper {
 
         return chatResponse
     }
+
+    suspend fun imageURL(prompt: String): String {
+        val imageRequest = ImageCreation(prompt)
+
+        // OpenAI network request
+        val images: List<ImageURL> = openAI.imageURL(imageRequest)
+
+        return if (images.isEmpty()) "" else images[0].url
+    }
 }

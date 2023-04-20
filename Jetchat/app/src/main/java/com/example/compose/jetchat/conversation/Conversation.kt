@@ -69,6 +69,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -80,6 +81,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
@@ -433,19 +435,37 @@ fun ChatItemBubble(
         }
 
         message.image?.let {
-            Spacer(modifier = Modifier.height(4.dp))
-            Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape
-            ) {
+            ImageMessage(backgroundBubbleColor) { modifier, contentScale, contentDescription ->
                 Image(
-                    painter = painterResource(it),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
-                    contentDescription = stringResource(id = R.string.attached_image)
+                    modifier = modifier,
+                    painter = painterResource(id = it),
+                    contentScale = contentScale,
+                    contentDescription = contentDescription
                 )
             }
         }
+
+        message.imageUrl?.let {
+            ImageMessage(backgroundBubbleColor) { modifier, contentScale, contentDescription ->
+                Image(
+                    modifier = modifier,
+                    painter = rememberAsyncImagePainter(it),
+                    contentScale = contentScale,
+                    contentDescription = contentDescription
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ImageMessage(backgroundBubbleColor: Color, imageContent: @Composable (Modifier, ContentScale, String) -> Unit) {
+    Spacer(modifier = Modifier.height(4.dp))
+    Surface(
+        color = backgroundBubbleColor,
+        shape = ChatBubbleShape
+    ) {
+        imageContent(Modifier.size(300.dp), ContentScale.Fit, stringResource(id = R.string.attached_image))
     }
 }
 

@@ -57,11 +57,20 @@ class MainViewModel : ViewModel() {
 
         // fetch openai response and add to chat history
         viewModelScope.launch {
-            addMessage("bot", openAIWrapper.chat(content))
+            // if user message contains "image" keyword, target image endpoint, otherwise target chat endpoint
+            if (content.contains("image", ignoreCase = true)) {
+                addMessage(
+                    "bot",
+                    content = "Generated image:",
+                    imageUrl = openAIWrapper.imageURL(content)
+                )
+            } else {
+                addMessage("bot", openAIWrapper.chat(content))
+            }
         }
     }
 
-    private fun addMessage(author: String, content: String) {
+    private fun addMessage(author: String, content: String, imageUrl: String? = null) {
         // calculate message timestamp
         val currentTime = Calendar.getInstance().time
         val dateFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
@@ -70,7 +79,8 @@ class MainViewModel : ViewModel() {
         val message = Message(
             author = author,
             content = content,
-            timestamp = timeNow
+            timestamp = timeNow,
+            imageUrl = imageUrl
         )
 
         uiState.addMessage(message)
