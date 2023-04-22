@@ -18,6 +18,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import TypingBubbleAnimation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -104,7 +105,8 @@ fun ConversationContent(
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
-    onMessageSent: (String) -> Unit
+    onMessageSent: (String) -> Unit,
+    botIsTyping: Boolean
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -135,7 +137,8 @@ fun ConversationContent(
                 messages = uiState.messages,
                 navigateToProfile = navigateToProfile,
                 modifier = Modifier.weight(1f),
-                scrollState = scrollState
+                scrollState = scrollState,
+                botIsTyping = botIsTyping
             )
             UserInput(
                 onMessageSent = { content -> onMessageSent(content) },
@@ -216,6 +219,7 @@ fun Messages(
     messages: List<Message>,
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
+    botIsTyping: Boolean,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
@@ -229,6 +233,19 @@ fun Messages(
                 .testTag(ConversationTestTag)
                 .fillMaxSize()
         ) {
+            if (botIsTyping) {
+                item {
+                    MessageLayout(
+                        onAuthorClick = { name -> navigateToProfile(name) },
+                        msg = Message("bot", "", ""),
+                        isUserMe = false,
+                        isFirstMessageByAuthor = true,
+                        isLastMessageByAuthor = true
+                    ) {
+                        TypingBubbleAnimation(Modifier.width(50.dp).padding(vertical = 10.dp))
+                    }
+                }
+            }
             for (index in messages.indices) {
                 val prevAuthor = messages.getOrNull(index - 1)?.author
                 val nextAuthor = messages.getOrNull(index + 1)?.author
@@ -294,6 +311,20 @@ fun Message(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean
 ) {
+    MessageLayout(onAuthorClick, msg, isUserMe, isFirstMessageByAuthor, isLastMessageByAuthor) {
+        ChatItemBubble(msg, isUserMe, authorClicked = onAuthorClick)
+    }
+}
+
+@Composable
+fun MessageLayout(
+    onAuthorClick: (String) -> Unit,
+    msg: Message,
+    isUserMe: Boolean,
+    isFirstMessageByAuthor: Boolean,
+    isLastMessageByAuthor: Boolean,
+    content: @Composable () -> Unit,
+) {
     val borderColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -323,31 +354,30 @@ fun Message(
         }
         AuthorAndTextMessage(
             msg = msg,
-            isUserMe = isUserMe,
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
-            authorClicked = onAuthorClick,
             modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f)
-        )
+        ) {
+            content()
+        }
     }
 }
 
 @Composable
 fun AuthorAndTextMessage(
     msg: Message,
-    isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    authorClicked: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
     Column(modifier = modifier) {
         if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
-        ChatItemBubble(msg, isUserMe, authorClicked = authorClicked)
+        content()
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
             Spacer(modifier = Modifier.height(8.dp))
@@ -508,7 +538,8 @@ fun ConversationPreview() {
         ConversationContent(
             uiState = exampleUiState,
             navigateToProfile = { },
-            onMessageSent = { }
+            onMessageSent = { },
+            botIsTyping = false
         )
     }
 }

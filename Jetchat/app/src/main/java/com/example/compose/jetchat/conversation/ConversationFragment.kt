@@ -58,7 +58,8 @@ class ConversationFragment : Fragment() {
                     onNavIconPressed = {
                         activityViewModel.openDrawer()
                     },
-                    onMessageSent = activityViewModel::onMessageSent
+                    onMessageSent = activityViewModel::onMessageSent,
+                    botIsTyping = activityViewModel.botIsTyping
                 )
             }
         }

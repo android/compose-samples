@@ -16,6 +16,9 @@
 
 package com.example.compose.jetchat
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.compose.jetchat.conversation.ConversationUiState
@@ -50,22 +53,41 @@ class MainViewModel : ViewModel() {
         channelMembers = 2
     )
     private var openAIWrapper = OpenAIWrapper()
+    var botIsTyping by mutableStateOf(false)
+        private set
 
     fun onMessageSent(content: String) {
         // add user message to chat history
         addMessage("me", content)
 
+        // start typing animation while request loads
+        botIsTyping = true
+
         // fetch openai response and add to chat history
         viewModelScope.launch {
             // if user message contains "image" keyword, target image endpoint, otherwise target chat endpoint
             if (content.contains("image", ignoreCase = true)) {
-                addMessage(
-                    "bot",
-                    content = "Generated image:",
+                var responseContent: String
+                var imageUrl: String? = null
+
+                try {
                     imageUrl = openAIWrapper.imageURL(content)
-                )
+                    responseContent = "Generated image:"
+                } catch (e: Exception) {
+                    responseContent = "Sorry, there was an error processing your request: ${e.message}"
+                }
+
+                botIsTyping = false
+                addMessage(author = "bot", content = responseContent, imageUrl = imageUrl)
             } else {
-                addMessage("bot", openAIWrapper.chat(content))
+                val chatResponse = try {
+                    openAIWrapper.chat(content)
+                } catch (e: Exception) {
+                    "Sorry, there was an error processing your request: ${e.message}"
+                }
+
+                botIsTyping = false
+                addMessage(author = "bot", content = chatResponse)
             }
         }
     }
