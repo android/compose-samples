@@ -141,6 +141,8 @@ fun ConversationContent(
                 botIsTyping = botIsTyping
             )
             UserInput(
+                channelName = uiState.channelName,
+                botIsTyping = botIsTyping,
                 onMessageSent = { content -> onMessageSent(content) },
                 resetScroll = {
                     scope.launch {
@@ -252,17 +254,6 @@ fun Messages(
                 val content = messages[index]
                 val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
-
-                // Hardcode day dividers for simplicity
-                if (index == messages.size - 1) {
-                    item {
-                        DayHeader("20 Aug")
-                    }
-                } else if (index == 2) {
-                    item {
-                        DayHeader("Today")
-                    }
-                }
 
                 item {
                     Message(

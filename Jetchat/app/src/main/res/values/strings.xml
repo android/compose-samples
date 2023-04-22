@@ -34,7 +34,7 @@
     <string name="author_me">me</string>
     <string name="now">8:30 PM</string>
     <string name="members">%d members</string>
-    <string name="textfield_hint">Message #composers</string>
+    <string name="textfield_hint">Message %s</string>
     <string name="emojis_label">Emojis</string>
     <string name="stickers_label">Stickers</string>
 

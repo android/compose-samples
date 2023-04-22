@@ -112,12 +112,14 @@ enum class EmojiStickerSelector {
 @Preview
 @Composable
 fun UserInputPreview() {
-    UserInput(onMessageSent = {})
+    UserInput(onMessageSent = {}, channelName = "", botIsTyping = false)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
+    channelName: String,
+    botIsTyping: Boolean,
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
@@ -140,6 +142,7 @@ fun UserInput(
     Surface(tonalElevation = 2.dp) {
         Column(modifier = modifier) {
             UserInputText(
+                channelName = channelName,
                 textFieldValue = textState,
                 onTextChanged = { textState = it },
                 // Only show the keyboard if there's no input selector and text field has focus
@@ -156,7 +159,7 @@ fun UserInput(
             )
             UserInputSelector(
                 onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = textState.text.isNotBlank(),
+                sendMessageEnabled = textState.text.isNotBlank() && !botIsTyping,
                 onMessageSent = {
                     onMessageSent(textState.text)
                     // Reset text field and close keyboard
@@ -372,6 +375,7 @@ var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
+    channelName: String,
     keyboardType: KeyboardType = KeyboardType.Text,
     onTextChanged: (TextFieldValue) -> Unit,
     textFieldValue: TextFieldValue,
@@ -427,7 +431,7 @@ private fun UserInputText(
                         modifier = Modifier
                             .align(Alignment.CenterStart)
                             .padding(start = 32.dp),
-                        text = stringResource(id = R.string.textfield_hint),
+                        text = stringResource(id = R.string.textfield_hint, channelName),
                         style = MaterialTheme.typography.bodyLarge.copy(color = disableContentColor)
                     )
                 }
