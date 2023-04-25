@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,9 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -82,10 +86,6 @@ import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -93,7 +93,7 @@ import java.time.OffsetDateTime
 @Composable
 fun Home(
     navigateToPlayer: (String) -> Unit,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
     Surface(Modifier.fillMaxSize()) {
@@ -113,7 +113,7 @@ fun Home(
 @Composable
 fun HomeAppBar(
     backgroundColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         title = {
@@ -156,7 +156,9 @@ fun HomeAppBar(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
+@OptIn(
+    ExperimentalFoundationApi::class
+) // HorizontalPager is experimental
 @Composable
 fun HomeContent(
     featuredPodcasts: List<PodcastWithExtraInfo>,
@@ -166,7 +168,7 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
     onCategorySelected: (HomeCategory) -> Unit,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (String) -> Unit,
 ) {
     Column(
         modifier = modifier.windowInsetsPadding(
@@ -255,6 +257,7 @@ fun HomeContent(
             HomeCategory.Library -> {
                 // TODO
             }
+
             HomeCategory.Discover -> {
                 Discover(
                     navigateToPlayer = navigateToPlayer,
@@ -272,7 +275,7 @@ private fun HomeCategoryTabs(
     categories: List<HomeCategory>,
     selectedCategory: HomeCategory,
     onCategorySelected: (HomeCategory) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
     val indicator = @Composable { tabPositions: List<TabPosition> ->
@@ -307,7 +310,7 @@ private fun HomeCategoryTabs(
 @Composable
 fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.onSurface
+    color: Color = MaterialTheme.colors.onSurface,
 ) {
     Spacer(
         modifier
@@ -317,7 +320,7 @@ fun HomeCategoryTabIndicator(
     )
 }
 
-@ExperimentalPagerApi // HorizontalPager is experimental
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FollowedPodcasts(
     items: List<PodcastWithExtraInfo>,
@@ -326,7 +329,7 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
-        count = items.size,
+        pageCount = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->
@@ -405,11 +408,11 @@ private fun lastUpdated(updated: OffsetDateTime): String {
             val weeks = days / 7
             quantityStringResource(R.plurals.updated_weeks_ago, weeks, weeks)
         }
+
         days > 0 -> quantityStringResource(R.plurals.updated_days_ago, days, days)
         else -> stringResource(R.string.updated_today)
     }
 }
-
 /*
 TODO: Fix preview error
 @Composable
@@ -422,7 +425,8 @@ fun PreviewHomeContent() {
             homeCategories = HomeCategory.values().asList(),
             selectedHomeCategory = HomeCategory.Discover,
             onCategorySelected = {},
-            onPodcastUnfollowed = {}
+            onPodcastUnfollowed = {},
+            navigateToPlayer = {}
         )
     }
 }
