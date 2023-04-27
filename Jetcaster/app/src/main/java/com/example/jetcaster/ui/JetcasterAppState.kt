@@ -35,7 +35,9 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -65,7 +67,9 @@ class JetcasterAppState(
 
 
     init {
-        checkIfOnline { isOnline = it }
+        MainScope().launch {
+            checkIfOnline().collect { isOnline = it }
+        }
     }
 
     fun navigateToPlayer(episodeUri: String, from: NavBackStackEntry) {
@@ -80,32 +84,28 @@ class JetcasterAppState(
         navController.popBackStack()
     }
 
-    private fun checkIfOnline(onChangeOnline: (Boolean) -> Unit) {
-        MainScope().launch {
-            val isAvailable = MutableStateFlow(true)
+    private fun checkIfOnline(): Flow<Boolean> {
+        return callbackFlow {
             val connectivityManager = getSystemService(context, ConnectivityManager::class.java)
             val connectivityCallback = object : ConnectivityManager.NetworkCallback() {
                 override fun onLost(network: Network) {
                     super.onLost(network)
-                    isAvailable.value = false
+                    trySend(false)
                 }
 
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                    isAvailable.value = true
+                    trySend(true)
                 }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 connectivityManager?.registerDefaultNetworkCallback(connectivityCallback)
             } else {
                 val networkRequest = NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                    .build()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
                 connectivityManager?.registerNetworkCallback(networkRequest, connectivityCallback)
             }
-            isAvailable.collect {
-                onChangeOnline(it)
-            }
+            awaitClose { connectivityManager?.unregisterNetworkCallback(connectivityCallback) }
         }
     }
 }
