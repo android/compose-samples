@@ -35,7 +35,7 @@ import com.example.jetcaster.ui.player.PlayerViewModel
 fun JetcasterApp(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
-    appState: JetcasterAppState = rememberJetcasterAppState()
+    appState: JetcasterAppState = rememberJetcasterAppState(),
 ) {
     if (appState.isOnline) {
         NavHost(
@@ -65,18 +65,18 @@ fun JetcasterApp(
             }
         }
     } else {
-        OfflineDialog { appState.refreshOnline() }
+        OfflineDialog()
     }
 }
 
 @Composable
-fun OfflineDialog(onRetry: () -> Unit) {
+fun OfflineDialog() {
     AlertDialog(
         onDismissRequest = {},
         title = { Text(text = stringResource(R.string.connection_error_title)) },
         text = { Text(text = stringResource(R.string.connection_error_message)) },
         confirmButton = {
-            TextButton(onClick = onRetry) {
+            TextButton(onClick = {}) {
                 Text(stringResource(R.string.retry_label))
             }
         }

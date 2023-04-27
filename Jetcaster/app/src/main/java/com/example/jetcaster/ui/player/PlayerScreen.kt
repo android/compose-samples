@@ -96,6 +96,7 @@ import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.example.jetcaster.util.rememberDominantColorState
+import com.example.jetcaster.util.secondsToPlayerDuration
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
@@ -110,7 +111,7 @@ fun PlayerScreen(
     viewModel: PlayerViewModel,
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
 ) {
     val uiState = viewModel.uiState
     PlayerScreen(uiState, windowSizeClass, displayFeatures, onBackPress)
@@ -125,7 +126,7 @@ private fun PlayerScreen(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(modifier) {
         if (uiState.podcastName.isNotEmpty()) {
@@ -142,7 +143,7 @@ fun PlayerContent(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     PlayerDynamicTheme(uiState.podcastImageUrl) {
         val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
@@ -160,10 +161,10 @@ fun PlayerContent(
             // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
             val usingVerticalStrategy =
                 isTableTopPosture(foldingFeature) ||
-                    (
-                        isSeparatingPosture(foldingFeature) &&
-                            foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
-                        )
+                        (
+                                isSeparatingPosture(foldingFeature) &&
+                                        foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                                )
 
             if (usingVerticalStrategy) {
                 TwoPane(
@@ -215,7 +216,7 @@ fun PlayerContent(
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
     onBackPress: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -259,7 +260,7 @@ private fun PlayerContentRegular(
 @Composable
 private fun PlayerContentTableTopTop(
     uiState: PlayerUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Content for the top part of the screen
     Column(
@@ -289,7 +290,7 @@ private fun PlayerContentTableTopTop(
 private fun PlayerContentTableTopBottom(
     uiState: PlayerUiState,
     onBackPress: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Content for the table part of the screen
     Column(
@@ -325,7 +326,7 @@ private fun PlayerContentTableTopBottom(
 @Composable
 private fun PlayerContentBookStart(
     uiState: PlayerUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -354,7 +355,7 @@ private fun PlayerContentBookStart(
 @Composable
 private fun PlayerContentBookEnd(
     uiState: PlayerUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -402,7 +403,7 @@ private fun TopAppBar(onBackPress: () -> Unit) {
 @Composable
 private fun PlayerImage(
     podcastImageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -423,7 +424,7 @@ private fun PlayerImage(
 private fun PodcastDescription(
     title: String,
     podcastName: String,
-    titleTextStyle: TextStyle = MaterialTheme.typography.h5
+    titleTextStyle: TextStyle = MaterialTheme.typography.h5,
 ) {
     Text(
         text = title,
@@ -484,7 +485,7 @@ private fun PlayerSlider(episodeDuration: Duration?) {
             Row(Modifier.fillMaxWidth()) {
                 Text(text = "0s")
                 Spacer(modifier = Modifier.weight(1f))
-                Text("${episodeDuration.seconds}s")
+                Text(secondsToPlayerDuration(episodeDuration.seconds))
             }
         }
     }
@@ -494,7 +495,7 @@ private fun PlayerSlider(episodeDuration: Duration?) {
 private fun PlayerButtons(
     modifier: Modifier = Modifier,
     playerButtonSize: Dp = 72.dp,
-    sideButtonSize: Dp = 48.dp
+    sideButtonSize: Dp = 48.dp,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -551,7 +552,7 @@ private fun PlayerButtons(
 @Composable
 private fun PlayerDynamicTheme(
     podcastImageUrl: String,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val surfaceColor = MaterialTheme.colors.surface
     val dominantColorState = rememberDominantColorState(

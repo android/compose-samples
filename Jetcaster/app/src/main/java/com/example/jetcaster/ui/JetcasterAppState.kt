@@ -18,7 +18,9 @@ package com.example.jetcaster.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
 import androidx.compose.runtime.Composable
@@ -32,6 +34,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 /**
  * List of screens for [JetcasterApp]
@@ -46,20 +51,21 @@ sealed class Screen(val route: String) {
 @Composable
 fun rememberJetcasterAppState(
     navController: NavHostController = rememberNavController(),
-    context: Context = LocalContext.current
+    context: Context = LocalContext.current,
 ) = remember(navController, context) {
     JetcasterAppState(navController, context)
 }
 
 class JetcasterAppState(
     val navController: NavHostController,
-    private val context: Context
+    private val context: Context,
 ) {
-    var isOnline by mutableStateOf(checkIfOnline())
+    var isOnline by mutableStateOf(true)
         private set
 
-    fun refreshOnline() {
-        isOnline = checkIfOnline()
+
+    init {
+        checkIfOnline { isOnline = it }
     }
 
     fun navigateToPlayer(episodeUri: String, from: NavBackStackEntry) {
@@ -74,16 +80,32 @@ class JetcasterAppState(
         navController.popBackStack()
     }
 
-    @Suppress("DEPRECATION")
-    private fun checkIfOnline(): Boolean {
-        val cm = getSystemService(context, ConnectivityManager::class.java)
+    private fun checkIfOnline(onChangeOnline: (Boolean) -> Unit) {
+        MainScope().launch {
+            val isAvailable = MutableStateFlow(true)
+            val connectivityManager = getSystemService(context, ConnectivityManager::class.java)
+            val connectivityCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    isAvailable.value = false
+                }
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val capabilities = cm?.getNetworkCapabilities(cm.activeNetwork) ?: return false
-            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-        } else {
-            cm?.activeNetworkInfo?.isConnectedOrConnecting == true
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    isAvailable.value = true
+                }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                connectivityManager?.registerDefaultNetworkCallback(connectivityCallback)
+            } else {
+                val networkRequest = NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .build()
+                connectivityManager?.registerNetworkCallback(networkRequest, connectivityCallback)
+            }
+            isAvailable.collect {
+                onChangeOnline(it)
+            }
         }
     }
 }
