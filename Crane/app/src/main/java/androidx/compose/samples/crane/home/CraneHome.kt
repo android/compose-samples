@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.EaseIn
@@ -44,9 +43,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneDrawer
@@ -99,7 +96,8 @@ fun CraneHome(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -140,10 +138,12 @@ fun CraneHomeContent(
             )
         },
         frontLayerContent = {
-            HorizontalPager(pageCount = craneScreenValues.size,
-                state = pagerState) { page ->
+            HorizontalPager(
+                pageCount = craneScreenValues.size,
+                state = pagerState
+            ) { page ->
                 when (craneScreenValues[page]) {
-                    CraneScreen.Fly-> {
+                    CraneScreen.Fly -> {
                         suggestedDestinations?.let { destinations ->
                             ExploreSection(
                                 widthSize = widthSize,
