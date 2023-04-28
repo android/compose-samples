@@ -44,7 +44,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
@@ -123,7 +122,8 @@ fun CraneHomeContent(
         appBar = {
             HomeTabBar(openDrawer, craneScreenValues[pagerState.currentPage], onTabSelected = {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(it.ordinal)
+                    pagerState.animateScrollToPage(it.ordinal, animationSpec = tween(
+                        TAB_SWITCH_ANIM_DURATION))
                 }
             })
         },
@@ -197,7 +197,7 @@ private fun HomeTabBar(
     }
 }
 
-private const val ANIMATED_CONTENT_ANIMATION_DURATION = 300
+private const val TAB_SWITCH_ANIM_DURATION = 300
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
@@ -215,15 +215,15 @@ private fun SearchContent(
         targetState = tabSelected,
         transitionSpec = {
             fadeIn(
-                animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseIn)
+                animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseIn)
             ).with(
                 fadeOut(
-                    animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseOut)
+                    animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseOut)
                 )
             ).using(
                 SizeTransform(
                     sizeAnimationSpec = { _, _ ->
-                        tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
+                        tween(TAB_SWITCH_ANIM_DURATION, easing = EaseInOut)
                     }
                 )
             )
