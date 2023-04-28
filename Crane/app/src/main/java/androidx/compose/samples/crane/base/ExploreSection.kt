@@ -29,9 +29,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -71,19 +71,19 @@ fun ExploreSection(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
-                    items(exploreList.size) { exploreItemIndex ->
+                    itemsIndexed(exploreList) {  _, exploreItem ->
                         when (widthSize) {
                             WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
                                 ExploreItemColumn(
                                     modifier = Modifier.fillMaxWidth(),
-                                    item = exploreList[exploreItemIndex],
+                                    item = exploreItem,
                                     onItemClicked = onItemClicked
                                 )
                             }
                             else -> {
                                 ExploreItemRow(
                                     modifier = Modifier.fillMaxWidth(),
-                                    item = exploreList[exploreItemIndex],
+                                    item = exploreItem,
                                     onItemClicked = onItemClicked
                                 )
                             }
