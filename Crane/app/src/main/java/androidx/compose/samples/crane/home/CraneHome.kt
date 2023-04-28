@@ -122,8 +122,12 @@ fun CraneHomeContent(
         appBar = {
             HomeTabBar(openDrawer, craneScreenValues[pagerState.currentPage], onTabSelected = {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(it.ordinal, animationSpec = tween(
-                        TAB_SWITCH_ANIM_DURATION))
+                    pagerState.animateScrollToPage(
+                        it.ordinal,
+                        animationSpec = tween(
+                            TAB_SWITCH_ANIM_DURATION
+                        )
+                    )
                 }
             })
         },
