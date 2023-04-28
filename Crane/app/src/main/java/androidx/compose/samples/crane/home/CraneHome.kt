@@ -27,10 +27,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -96,7 +99,9 @@ fun CraneHome(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun CraneHomeContent(
     widthSize: WindowWidthSizeClass,
@@ -109,20 +114,25 @@ fun CraneHomeContent(
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    var tabSelected by rememberSaveable { mutableStateOf(CraneScreen.Fly) }
-
+    val pagerState = rememberPagerState(initialPage = CraneScreen.Fly.ordinal)
+    val coroutineScope = rememberCoroutineScope()
+    val craneScreenValues = CraneScreen.values()
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
         frontLayerShape = BottomSheetShape,
         frontLayerScrimColor = Color.Unspecified,
         appBar = {
-            HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })
+            HomeTabBar(openDrawer, craneScreenValues[pagerState.currentPage], onTabSelected = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(it.ordinal)
+                }
+            })
         },
         backLayerContent = {
             SearchContent(
                 widthSize,
-                tabSelected,
+                craneScreenValues[pagerState.currentPage],
                 viewModel,
                 onPeopleChanged,
                 onDateSelectionClicked,
@@ -130,30 +140,10 @@ fun CraneHomeContent(
             )
         },
         frontLayerContent = {
-            AnimatedContent(
-                targetState = tabSelected,
-                transitionSpec = {
-                    val direction = if (initialState.ordinal < targetState.ordinal)
-                        AnimatedContentScope.SlideDirection.Left else AnimatedContentScope
-                        .SlideDirection.Right
-
-                    slideIntoContainer(
-                        towards = direction,
-                        animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
-                    ) with
-                        slideOutOfContainer(
-                            towards = direction,
-                            animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
-                        ) using SizeTransform(
-                        clip = false,
-                        sizeAnimationSpec = { _, _ ->
-                            tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
-                        }
-                    )
-                }
-            ) { targetState ->
-                when (targetState) {
-                    CraneScreen.Fly -> {
+            HorizontalPager(pageCount = craneScreenValues.size,
+                state = pagerState) { page ->
+                when (craneScreenValues[page]) {
+                    CraneScreen.Fly-> {
                         suggestedDestinations?.let { destinations ->
                             ExploreSection(
                                 widthSize = widthSize,

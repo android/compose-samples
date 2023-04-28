@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.base
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -55,10 +58,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter.State.Loading
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExploreSection(
     widthSize: WindowWidthSizeClass,
@@ -75,30 +80,30 @@ fun ExploreSection(
             )
             Spacer(Modifier.height(8.dp))
 
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(200.dp),
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Adaptive(200.dp),
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
-                    items(exploreList) { exploreItem ->
+                    items(exploreList.size) { exploreItemIndex ->
                         when (widthSize) {
                             WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
                                 ExploreItemColumn(
                                     modifier = Modifier.fillMaxWidth(),
-                                    item = exploreItem,
+                                    item = exploreList[exploreItemIndex],
                                     onItemClicked = onItemClicked
                                 )
                             }
                             else -> {
                                 ExploreItemRow(
                                     modifier = Modifier.fillMaxWidth(),
-                                    item = exploreItem,
+                                    item = exploreList[exploreItemIndex],
                                     onItemClicked = onItemClicked
                                 )
                             }
                         }
                     }
-                    item(span = {
+                    /*item(span = {
                         // Span the whole bottom row of grid items to add space at the bottom of the grid.
                         GridItemSpan(maxLineSpan)
                     }) {
@@ -106,7 +111,7 @@ fun ExploreSection(
                             modifier = Modifier
                                 .windowInsetsBottomHeight(WindowInsets.navigationBars)
                         )
-                    }
+                    }*/
                 }
             )
         }
@@ -182,31 +187,15 @@ private fun ExploreItemRow(
 
 @Composable
 private fun ExploreImage(item: ExploreModel) {
-    Box {
-        val painter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(item.imageUrl)
-                .crossfade(true)
-                .build()
-        )
-
-        if (painter.state is Loading) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_crane_logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(36.dp)
-                    .align(Alignment.Center),
-            )
-        }
-
-        Image(
-            painter = painter,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(item.imageUrl)
+            .crossfade(true)
+            .build(),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize(),
+    )
 }
 
 @Composable
@@ -214,7 +203,7 @@ private fun ExploreImageContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Surface(modifier.aspectRatio(1f), RoundedCornerShape(4.dp)) {
+    Surface(modifier.wrapContentHeight().fillMaxWidth(), RoundedCornerShape(4.dp)) {
         content()
     }
 }
