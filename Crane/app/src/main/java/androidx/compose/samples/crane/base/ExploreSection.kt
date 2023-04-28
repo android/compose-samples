@@ -71,7 +71,7 @@ fun ExploreSection(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
-                    itemsIndexed(exploreList) {  _, exploreItem ->
+                    itemsIndexed(exploreList) { _, exploreItem ->
                         when (widthSize) {
                             WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
                                 ExploreItemColumn(
