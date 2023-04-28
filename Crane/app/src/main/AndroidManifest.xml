@@ -16,8 +16,7 @@
   ~
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="androidx.compose.samples.crane">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
@@ -43,7 +42,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${googleMapsKey}" />
+            android:value="${MAPS_API_KEY}" />
 
         <activity
             android:name=".home.MainActivity"

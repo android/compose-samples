@@ -14,8 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jetcaster">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Uses ACCESS_NETWORK_STATE to check if the device is connected to internet or not -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
