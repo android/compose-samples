@@ -22,25 +22,14 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/toolbar_compose_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="@android:color/transparent"
-            app:statusBarScrim="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/toolbar_compose_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

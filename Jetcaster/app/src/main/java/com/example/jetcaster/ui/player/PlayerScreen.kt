@@ -16,7 +16,9 @@
 
 package com.example.jetcaster.ui.player
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -416,6 +418,7 @@ private fun PlayerImage(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PodcastDescription(
     title: String,
@@ -426,7 +429,7 @@ private fun PodcastDescription(
         text = title,
         style = titleTextStyle,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        modifier = Modifier.basicMarquee()
     )
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
