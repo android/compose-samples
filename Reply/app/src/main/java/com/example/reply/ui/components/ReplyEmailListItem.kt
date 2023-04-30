@@ -16,24 +16,33 @@
 
 package com.example.reply.ui.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.selected
@@ -42,82 +51,120 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.reply.data.Email
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+  ExperimentalFoundationApi::class,
+  ExperimentalAnimationApi::class
+)
 @Composable
 fun ReplyEmailListItem(
-    email: Email,
-    isSelectable: Boolean = false,
-    isSelected: Boolean = false,
-    modifier: Modifier = Modifier,
-    navigateToDetail: (Long) -> Unit
+  email: Email,
+  navigateToDetail: (Long) -> Unit,
+  swapSelection: (Long) -> Unit,
+  modifier: Modifier = Modifier,
+  isOpened: Boolean = false,
+  isSelected: Boolean = false,
 ) {
-    val semanticsModifier =
-        if (isSelectable)
-            modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-                .semantics { selected = isSelected }
-        else modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-    Card(
-        modifier = semanticsModifier.clickable { navigateToDetail(email.id) },
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.surfaceVariant
-        )
+  Card(
+    modifier = modifier
+      .padding(horizontal = 16.dp, vertical = 4.dp)
+      .semantics { selected = isSelected }
+      .clip(CardDefaults.shape)
+      .combinedClickable(
+        onClick = { navigateToDetail(email.id) },
+        onLongClick = { swapSelection(email.id) }
+      )
+      .clip(CardDefaults.shape),
+    colors = CardDefaults.cardColors(
+      containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+      else if (isOpened) MaterialTheme.colorScheme.secondaryContainer
+      else MaterialTheme.colorScheme.surfaceVariant
+    )
+  ) {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(20.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ReplyProfileImage(
-                    drawableResource = email.sender.avatar,
-                    description = email.sender.fullName,
-                )
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = email.sender.firstName,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    Text(
-                        text = email.createdAt,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                }
-                IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.StarBorder,
-                        contentDescription = "Favorite",
-                        tint = MaterialTheme.colorScheme.outline
-                    )
-                }
-            }
-
-            Text(
-                text = email.subject,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                else MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+      Row(modifier = Modifier.fillMaxWidth()) {
+        val clickModifier = Modifier.clickable(
+          interactionSource = remember { MutableInteractionSource() },
+          indication = null
+        ) { swapSelection(email.id) }
+        AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
+          if (selected) {
+            SelectedProfileImage(clickModifier)
+          } else {
+            ReplyProfileImage(
+              email.sender.avatar,
+              email.sender.fullName,
+              clickModifier
             )
-            Text(
-                text = email.body,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                overflow = TextOverflow.Ellipsis
-            )
+          }
         }
+
+        Column(
+          modifier = Modifier
+            .weight(1f)
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+          verticalArrangement = Arrangement.Center
+        ) {
+          Text(
+            text = email.sender.firstName,
+            style = MaterialTheme.typography.labelMedium
+          )
+          Text(
+            text = email.createdAt,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.outline
+          )
+        }
+        IconButton(
+          onClick = { /*TODO*/ },
+          modifier = Modifier
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surface)
+        ) {
+          Icon(
+            imageVector = Icons.Default.StarBorder,
+            contentDescription = "Favorite",
+            tint = MaterialTheme.colorScheme.outline
+          )
+        }
+      }
+
+      Text(
+        text = email.subject,
+        style = MaterialTheme.typography.bodyLarge,
+        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+        else MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+      )
+      Text(
+        text = email.body,
+        style = MaterialTheme.typography.bodyMedium,
+        maxLines = 2,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        overflow = TextOverflow.Ellipsis
+      )
     }
+  }
+}
+
+@Composable
+fun SelectedProfileImage(modifier: Modifier = Modifier) {
+  Box(
+    modifier
+      .size(40.dp)
+      .clip(CircleShape)
+      .background(MaterialTheme.colorScheme.primary)
+  ) {
+    Icon(
+      Icons.Default.Check,
+      contentDescription = null,
+      modifier = Modifier
+        .size(24.dp)
+        .align(Alignment.Center),
+      tint = MaterialTheme.colorScheme.onPrimary
+    )
+  }
 }
