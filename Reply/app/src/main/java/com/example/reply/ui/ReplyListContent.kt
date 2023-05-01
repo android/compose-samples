@@ -58,161 +58,163 @@ import com.google.accompanist.adaptive.TwoPane
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyInboxScreen(
-  contentType: ReplyContentType,
-  replyHomeUIState: ReplyHomeUIState,
-  navigationType: ReplyNavigationType,
-  displayFeatures: List<DisplayFeature>,
-  closeDetailScreen: () -> Unit,
-  navigateToDetail: (Long, ReplyContentType) -> Unit,
-  modifier: Modifier = Modifier
+    contentType: ReplyContentType,
+    replyHomeUIState: ReplyHomeUIState,
+    navigationType: ReplyNavigationType,
+    displayFeatures: List<DisplayFeature>,
+    closeDetailScreen: () -> Unit,
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-  /**
-   * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
-   */
-  LaunchedEffect(key1 = contentType) {
-    if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
-      closeDetailScreen()
-    }
-  }
-
-  var selectedEmailIds by remember { mutableStateOf(setOf<Long>()) }
-  val swapEmailSelection = { id: Long ->
-    if (selectedEmailIds.contains(id))
-      selectedEmailIds -= id
-    else selectedEmailIds += id
-  }
-  val emailLazyListState = rememberLazyListState()
-
-  // TODO: Show top app bar over full width of app when in multi-select mode
-
-  if (contentType == ReplyContentType.DUAL_PANE) {
-    TwoPane(
-      first = {
-        ReplyEmailList(
-          emails = replyHomeUIState.emails,
-          openedEmail = replyHomeUIState.openedEmail,
-          selectedEmailIds = selectedEmailIds,
-          swapEmailSelection = swapEmailSelection,
-          emailLazyListState = emailLazyListState,
-          navigateToDetail = navigateToDetail
-        )
-      },
-      second = {
-        ReplyEmailDetail(
-          email = replyHomeUIState.openedEmail ?: replyHomeUIState.emails.first(),
-          isFullScreen = false
-        )
-      },
-      strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
-      displayFeatures = displayFeatures
-    )
-  } else {
-    Box(modifier = modifier.fillMaxSize()) {
-      ReplySinglePaneContent(
-        replyHomeUIState = replyHomeUIState,
-        selectedEmailIds = selectedEmailIds,
-        swapEmailSelection = swapEmailSelection,
-        emailLazyListState = emailLazyListState,
-        modifier = Modifier.fillMaxSize(),
-        closeDetailScreen = closeDetailScreen,
-        navigateToDetail = navigateToDetail
-      )
-      // When we have bottom navigation we show FAB at the bottom end.
-      if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-        LargeFloatingActionButton(
-          onClick = { /*TODO*/ },
-          modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(16.dp),
-          containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-          contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-        ) {
-          Icon(
-            imageVector = Icons.Default.Edit,
-            contentDescription = stringResource(id = R.string.edit),
-            modifier = Modifier.size(28.dp)
-          )
+    /**
+     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
+     */
+    LaunchedEffect(key1 = contentType) {
+        if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
+            closeDetailScreen()
         }
-      }
     }
-  }
+
+    var selectedEmailIds by remember { mutableStateOf(setOf<Long>()) }
+    val swapEmailSelection = { id: Long ->
+        if (selectedEmailIds.contains(id))
+            selectedEmailIds -= id
+        else selectedEmailIds += id
+    }
+    val emailLazyListState = rememberLazyListState()
+
+    // TODO: Show top app bar over full width of app when in multi-select mode
+
+    if (contentType == ReplyContentType.DUAL_PANE) {
+        TwoPane(
+            first = {
+                ReplyEmailList(
+                    emails = replyHomeUIState.emails,
+                    openedEmail = replyHomeUIState.openedEmail,
+                    selectedEmailIds = selectedEmailIds,
+                    swapEmailSelection = swapEmailSelection,
+                    emailLazyListState = emailLazyListState,
+                    navigateToDetail = navigateToDetail
+                )
+            },
+            second = {
+                ReplyEmailDetail(
+                    email = replyHomeUIState.openedEmail ?: replyHomeUIState.emails.first(),
+                    isFullScreen = false
+                )
+            },
+            strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
+            displayFeatures = displayFeatures
+        )
+    } else {
+        Box(modifier = modifier.fillMaxSize()) {
+            ReplySinglePaneContent(
+                replyHomeUIState = replyHomeUIState,
+                selectedEmailIds = selectedEmailIds,
+                swapEmailSelection = swapEmailSelection,
+                emailLazyListState = emailLazyListState,
+                modifier = Modifier.fillMaxSize(),
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail
+            )
+            // When we have bottom navigation we show FAB at the bottom end.
+            if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                LargeFloatingActionButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(id = R.string.edit),
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun ReplySinglePaneContent(
-  replyHomeUIState: ReplyHomeUIState,
-  selectedEmailIds: Set<Long>,
-  swapEmailSelection: (Long) -> Unit,
-  emailLazyListState: LazyListState,
-  modifier: Modifier = Modifier,
-  closeDetailScreen: () -> Unit,
-  navigateToDetail: (Long, ReplyContentType) -> Unit
+    replyHomeUIState: ReplyHomeUIState,
+    selectedEmailIds: Set<Long>,
+    swapEmailSelection: (Long) -> Unit,
+    emailLazyListState: LazyListState,
+    modifier: Modifier = Modifier,
+    closeDetailScreen: () -> Unit,
+    navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-  if (replyHomeUIState.openedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
-    BackHandler {
-      closeDetailScreen()
+    if (replyHomeUIState.openedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
+        BackHandler {
+            closeDetailScreen()
+        }
+        ReplyEmailDetail(email = replyHomeUIState.openedEmail) {
+            closeDetailScreen()
+        }
+    } else {
+        ReplyEmailList(
+            emails = replyHomeUIState.emails,
+            openedEmail = replyHomeUIState.openedEmail,
+            selectedEmailIds = selectedEmailIds,
+            swapEmailSelection = swapEmailSelection,
+            emailLazyListState = emailLazyListState,
+            modifier = modifier,
+            navigateToDetail = navigateToDetail
+        )
     }
-    ReplyEmailDetail(email = replyHomeUIState.openedEmail) {
-      closeDetailScreen()
-    }
-  } else {
-    ReplyEmailList(
-      emails = replyHomeUIState.emails,
-      openedEmail = replyHomeUIState.openedEmail,
-      selectedEmailIds = selectedEmailIds,
-      swapEmailSelection = swapEmailSelection,
-      emailLazyListState = emailLazyListState,
-      modifier = modifier,
-      navigateToDetail = navigateToDetail
-    )
-  }
 }
 
 @Composable
 fun ReplyEmailList(
-  emails: List<Email>,
-  openedEmail: Email?,
-  selectedEmailIds: Set<Long>,
-  swapEmailSelection: (Long) -> Unit,
-  emailLazyListState: LazyListState,
-  modifier: Modifier = Modifier,
-  navigateToDetail: (Long, ReplyContentType) -> Unit
+    emails: List<Email>,
+    openedEmail: Email?,
+    selectedEmailIds: Set<Long>,
+    swapEmailSelection: (Long) -> Unit,
+    emailLazyListState: LazyListState,
+    modifier: Modifier = Modifier,
+    navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-  LazyColumn(modifier = modifier, state = emailLazyListState) {
-    item {
-      ReplySearchBar(modifier = Modifier.fillMaxWidth())
+    LazyColumn(modifier = modifier, state = emailLazyListState) {
+        item {
+            ReplySearchBar(modifier = Modifier.fillMaxWidth())
+        }
+        items(items = emails, key = { it.id }) { email ->
+            ReplyEmailListItem(
+                email = email,
+                navigateToDetail = { emailId ->
+                    navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
+                },
+                swapSelection = swapEmailSelection,
+                isOpened = openedEmail?.id == email.id,
+                isSelected = selectedEmailIds.contains(email.id)
+            )
+        }
     }
-    items(items = emails, key = { it.id }) { email ->
-      ReplyEmailListItem(
-        email = email,
-        navigateToDetail = { emailId -> navigateToDetail(emailId, ReplyContentType.SINGLE_PANE) },
-        swapSelection = swapEmailSelection,
-        isOpened = openedEmail?.id == email.id,
-        isSelected = selectedEmailIds.contains(email.id)
-      )
-    }
-  }
 }
 
 @Composable
 fun ReplyEmailDetail(
-  email: Email,
-  isFullScreen: Boolean = true,
-  modifier: Modifier = Modifier.fillMaxSize(),
-  onBackPressed: () -> Unit = {}
+    email: Email,
+    isFullScreen: Boolean = true,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    onBackPressed: () -> Unit = {}
 ) {
-  LazyColumn(
-    modifier = modifier
-      .background(MaterialTheme.colorScheme.inverseOnSurface)
-      .padding(top = 16.dp)
-  ) {
-    item {
-      EmailDetailAppBar(email, isFullScreen) {
-        onBackPressed()
-      }
+    LazyColumn(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(top = 16.dp)
+    ) {
+        item {
+            EmailDetailAppBar(email, isFullScreen) {
+                onBackPressed()
+            }
+        }
+        items(items = email.threads, key = { it.id }) { email ->
+            ReplyEmailThreadItem(email = email)
+        }
     }
-    items(items = email.threads, key = { it.id }) { email ->
-      ReplyEmailThreadItem(email = email)
-    }
-  }
 }

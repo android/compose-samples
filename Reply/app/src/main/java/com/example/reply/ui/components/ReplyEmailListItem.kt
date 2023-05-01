@@ -52,119 +52,119 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.data.Email
 
 @OptIn(
-  ExperimentalFoundationApi::class,
-  ExperimentalAnimationApi::class
+    ExperimentalFoundationApi::class,
+    ExperimentalAnimationApi::class
 )
 @Composable
 fun ReplyEmailListItem(
-  email: Email,
-  navigateToDetail: (Long) -> Unit,
-  swapSelection: (Long) -> Unit,
-  modifier: Modifier = Modifier,
-  isOpened: Boolean = false,
-  isSelected: Boolean = false,
+    email: Email,
+    navigateToDetail: (Long) -> Unit,
+    swapSelection: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    isOpened: Boolean = false,
+    isSelected: Boolean = false,
 ) {
-  Card(
-    modifier = modifier
-      .padding(horizontal = 16.dp, vertical = 4.dp)
-      .semantics { selected = isSelected }
-      .clip(CardDefaults.shape)
-      .combinedClickable(
-        onClick = { navigateToDetail(email.id) },
-        onLongClick = { swapSelection(email.id) }
-      )
-      .clip(CardDefaults.shape),
-    colors = CardDefaults.cardColors(
-      containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-      else if (isOpened) MaterialTheme.colorScheme.secondaryContainer
-      else MaterialTheme.colorScheme.surfaceVariant
-    )
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(20.dp)
-    ) {
-      Row(modifier = Modifier.fillMaxWidth()) {
-        val clickModifier = Modifier.clickable(
-          interactionSource = remember { MutableInteractionSource() },
-          indication = null
-        ) { swapSelection(email.id) }
-        AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
-          if (selected) {
-            SelectedProfileImage(clickModifier)
-          } else {
-            ReplyProfileImage(
-              email.sender.avatar,
-              email.sender.fullName,
-              clickModifier
+    Card(
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .semantics { selected = isSelected }
+            .clip(CardDefaults.shape)
+            .combinedClickable(
+                onClick = { navigateToDetail(email.id) },
+                onLongClick = { swapSelection(email.id) }
             )
-          }
-        }
-
+            .clip(CardDefaults.shape),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+            else if (isOpened) MaterialTheme.colorScheme.secondaryContainer
+            else MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
         Column(
-          modifier = Modifier
-            .weight(1f)
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-          verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
         ) {
-          Text(
-            text = email.sender.firstName,
-            style = MaterialTheme.typography.labelMedium
-          )
-          Text(
-            text = email.createdAt,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.outline
-          )
-        }
-        IconButton(
-          onClick = { /*TODO*/ },
-          modifier = Modifier
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surface)
-        ) {
-          Icon(
-            imageVector = Icons.Default.StarBorder,
-            contentDescription = "Favorite",
-            tint = MaterialTheme.colorScheme.outline
-          )
-        }
-      }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                val clickModifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { swapSelection(email.id) }
+                AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
+                    if (selected) {
+                        SelectedProfileImage(clickModifier)
+                    } else {
+                        ReplyProfileImage(
+                            email.sender.avatar,
+                            email.sender.fullName,
+                            clickModifier
+                        )
+                    }
+                }
 
-      Text(
-        text = email.subject,
-        style = MaterialTheme.typography.bodyLarge,
-        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-        else MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-      )
-      Text(
-        text = email.body,
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = 2,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        overflow = TextOverflow.Ellipsis
-      )
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = email.sender.firstName,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Text(
+                        text = email.createdAt,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                IconButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.StarBorder,
+                        contentDescription = "Favorite",
+                        tint = MaterialTheme.colorScheme.outline
+                    )
+                }
+            }
+
+            Text(
+                text = email.subject,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+            )
+            Text(
+                text = email.body,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 2,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
-  }
 }
 
 @Composable
 fun SelectedProfileImage(modifier: Modifier = Modifier) {
-  Box(
-    modifier
-      .size(40.dp)
-      .clip(CircleShape)
-      .background(MaterialTheme.colorScheme.primary)
-  ) {
-    Icon(
-      Icons.Default.Check,
-      contentDescription = null,
-      modifier = Modifier
-        .size(24.dp)
-        .align(Alignment.Center),
-      tint = MaterialTheme.colorScheme.onPrimary
-    )
-  }
+    Box(
+        modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+    ) {
+        Icon(
+            Icons.Default.Check,
+            contentDescription = null,
+            modifier = Modifier
+                .size(24.dp)
+                .align(Alignment.Center),
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
+    }
 }
