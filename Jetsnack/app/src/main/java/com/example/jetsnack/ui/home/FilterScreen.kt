@@ -268,7 +268,6 @@ fun SortOption(
         }
     }
 }
-
 @Preview("filter screen")
 @Composable
 fun FilterScreenPreview() {
