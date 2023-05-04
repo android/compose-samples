@@ -268,8 +268,11 @@ fun SortOption(
         }
     }
 }
+
 @Preview("filter screen")
 @Composable
 fun FilterScreenPreview() {
-    FilterScreen(onDismiss = {})
+    JetsnackTheme {
+        FilterScreen(onDismiss = {})
+    }
 }
