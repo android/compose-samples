@@ -90,6 +90,7 @@ dependencies {
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.collections.immutable)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.palette)
@@ -113,7 +114,6 @@ dependencies {
     implementation(libs.androidx.window)
 
     implementation(libs.accompanist.adaptive)
-    implementation(libs.accompanist.pager)
 
     implementation(libs.coil.kt.compose)
 

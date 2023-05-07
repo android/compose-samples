@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,9 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -82,13 +86,10 @@ import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun Home(
@@ -156,10 +157,10 @@ fun HomeAppBar(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class) // HorizontalPager is experimental
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
-    featuredPodcasts: List<PodcastWithExtraInfo>,
+    featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
@@ -177,6 +178,7 @@ fun HomeContent(
         // 'top podcast'
 
         val surfaceColor = MaterialTheme.colors.surface
+        val appBarColor = surfaceColor.copy(alpha = 0.87f)
         val dominantColorState = rememberDominantColorState { color ->
             // We want a color which has sufficient contrast against the surface color
             color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
@@ -206,8 +208,6 @@ fun HomeContent(
                         endYPercentage = 0f
                     )
             ) {
-                val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
-
                 // Draw a scrim over the status bar which matches the app bar
                 Spacer(
                     Modifier
@@ -317,16 +317,16 @@ fun HomeCategoryTabIndicator(
     )
 }
 
-@ExperimentalPagerApi // HorizontalPager is experimental
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FollowedPodcasts(
-    items: List<PodcastWithExtraInfo>,
+    items: PersistentList<PodcastWithExtraInfo>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
-        count = items.size,
+        pageCount = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->
@@ -334,8 +334,8 @@ fun FollowedPodcasts(
         FollowedPodcastCarouselItem(
             podcastImageUrl = podcast.imageUrl,
             podcastTitle = podcast.title,
-            lastEpisodeDate = lastEpisodeDate,
             onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
+            lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxHeight()
@@ -348,7 +348,7 @@ private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
     podcastImageUrl: String? = null,
     podcastTitle: String? = null,
-    lastEpisodeDate: OffsetDateTime? = null,
+    lastEpisodeDateText: String? = null,
     onUnfollowedClick: () -> Unit,
 ) {
     Column(
@@ -378,10 +378,10 @@ private fun FollowedPodcastCarouselItem(
             )
         }
 
-        if (lastEpisodeDate != null) {
+        if (lastEpisodeDateText != null) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = lastUpdated(lastEpisodeDate),
+                    text = lastEpisodeDateText,
                     style = MaterialTheme.typography.caption,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
