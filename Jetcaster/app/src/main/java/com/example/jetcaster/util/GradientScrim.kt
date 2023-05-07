@@ -104,6 +104,9 @@ private data class VerticalGradientElement(
         node.onDraw = createOnDraw()
     }
 
+    /**
+     * Allow this custom modifier to be inspected in the layout inspector
+     **/
     override fun InspectorInfo.inspectableProperties() {
         name = "verticalGradientScrim"
         properties["color"] = color
