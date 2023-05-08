@@ -35,10 +35,6 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -64,6 +60,7 @@ fun ReplyInboxScreen(
     displayFeatures: List<DisplayFeature>,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
+    toggleSelectedEmail: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     /**
@@ -75,12 +72,6 @@ fun ReplyInboxScreen(
         }
     }
 
-    var selectedEmailIds by remember { mutableStateOf(setOf<Long>()) }
-    val swapEmailSelection = { id: Long ->
-        if (selectedEmailIds.contains(id))
-            selectedEmailIds -= id
-        else selectedEmailIds += id
-    }
     val emailLazyListState = rememberLazyListState()
 
     // TODO: Show top app bar over full width of app when in multi-select mode
@@ -91,8 +82,8 @@ fun ReplyInboxScreen(
                 ReplyEmailList(
                     emails = replyHomeUIState.emails,
                     openedEmail = replyHomeUIState.openedEmail,
-                    selectedEmailIds = selectedEmailIds,
-                    swapEmailSelection = swapEmailSelection,
+                    selectedEmailIds = replyHomeUIState.selectedEmails,
+                    toggleEmailSelection = toggleSelectedEmail,
                     emailLazyListState = emailLazyListState,
                     navigateToDetail = navigateToDetail
                 )
@@ -110,8 +101,7 @@ fun ReplyInboxScreen(
         Box(modifier = modifier.fillMaxSize()) {
             ReplySinglePaneContent(
                 replyHomeUIState = replyHomeUIState,
-                selectedEmailIds = selectedEmailIds,
-                swapEmailSelection = swapEmailSelection,
+                toggleEmailSelection = toggleSelectedEmail,
                 emailLazyListState = emailLazyListState,
                 modifier = Modifier.fillMaxSize(),
                 closeDetailScreen = closeDetailScreen,
@@ -141,8 +131,7 @@ fun ReplyInboxScreen(
 @Composable
 fun ReplySinglePaneContent(
     replyHomeUIState: ReplyHomeUIState,
-    selectedEmailIds: Set<Long>,
-    swapEmailSelection: (Long) -> Unit,
+    toggleEmailSelection: (Long) -> Unit,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     closeDetailScreen: () -> Unit,
@@ -159,8 +148,8 @@ fun ReplySinglePaneContent(
         ReplyEmailList(
             emails = replyHomeUIState.emails,
             openedEmail = replyHomeUIState.openedEmail,
-            selectedEmailIds = selectedEmailIds,
-            swapEmailSelection = swapEmailSelection,
+            selectedEmailIds = replyHomeUIState.selectedEmails,
+            toggleEmailSelection = toggleEmailSelection,
             emailLazyListState = emailLazyListState,
             modifier = modifier,
             navigateToDetail = navigateToDetail
@@ -173,7 +162,7 @@ fun ReplyEmailList(
     emails: List<Email>,
     openedEmail: Email?,
     selectedEmailIds: Set<Long>,
-    swapEmailSelection: (Long) -> Unit,
+    toggleEmailSelection: (Long) -> Unit,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     navigateToDetail: (Long, ReplyContentType) -> Unit
@@ -188,7 +177,7 @@ fun ReplyEmailList(
                 navigateToDetail = { emailId ->
                     navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
                 },
-                swapSelection = swapEmailSelection,
+                toggleSelection = toggleEmailSelection,
                 isOpened = openedEmail?.id == email.id,
                 isSelected = selectedEmailIds.contains(email.id)
             )

@@ -56,6 +56,9 @@ class MainActivity : ComponentActivity() {
                     },
                     navigateToDetail = { emailId, pane ->
                         viewModel.setOpenedEmail(emailId, pane)
+                    },
+                    toggleSelectedEmail = { emailId ->
+                        viewModel.toggleSelectedEmail(emailId)
                     }
                 )
             }

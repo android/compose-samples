@@ -59,7 +59,7 @@ import com.example.reply.data.Email
 fun ReplyEmailListItem(
     email: Email,
     navigateToDetail: (Long) -> Unit,
-    swapSelection: (Long) -> Unit,
+    toggleSelection: (Long) -> Unit,
     modifier: Modifier = Modifier,
     isOpened: Boolean = false,
     isSelected: Boolean = false,
@@ -71,7 +71,7 @@ fun ReplyEmailListItem(
             .clip(CardDefaults.shape)
             .combinedClickable(
                 onClick = { navigateToDetail(email.id) },
-                onLongClick = { swapSelection(email.id) }
+                onLongClick = { toggleSelection(email.id) }
             )
             .clip(CardDefaults.shape),
         colors = CardDefaults.cardColors(
@@ -89,7 +89,7 @@ fun ReplyEmailListItem(
                 val clickModifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ) { swapSelection(email.id) }
+                ) { toggleSelection(email.id) }
                 AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
                     if (selected) {
                         SelectedProfileImage(clickModifier)

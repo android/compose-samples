@@ -67,6 +67,14 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         )
     }
 
+    fun toggleSelectedEmail(emailId: Long) {
+        val currentSelection = uiState.value.selectedEmails
+        _uiState.value = _uiState.value.copy(
+            selectedEmails = if (currentSelection.contains(emailId))
+                currentSelection.minus(emailId) else currentSelection.plus(emailId)
+        )
+    }
+
     fun closeDetailScreen() {
         _uiState.value = _uiState
             .value.copy(
@@ -78,6 +86,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
 
 data class ReplyHomeUIState(
     val emails: List<Email> = emptyList(),
+    val selectedEmails: Set<Long> = emptySet(),
     val openedEmail: Email? = null,
     val isDetailOnlyOpen: Boolean = false,
     val loading: Boolean = false,
