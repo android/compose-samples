@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +51,7 @@ import com.example.reply.ui.utils.ReplyNavigationType
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyInboxScreen(
     contentType: ReplyContentType,
@@ -58,6 +60,7 @@ fun ReplyInboxScreen(
     displayFeatures: List<DisplayFeature>,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
+    toggleSelectedEmail: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     /**
@@ -71,18 +74,23 @@ fun ReplyInboxScreen(
 
     val emailLazyListState = rememberLazyListState()
 
+    // TODO: Show top app bar over full width of app when in multi-select mode
+
     if (contentType == ReplyContentType.DUAL_PANE) {
         TwoPane(
             first = {
                 ReplyEmailList(
                     emails = replyHomeUIState.emails,
+                    openedEmail = replyHomeUIState.openedEmail,
+                    selectedEmailIds = replyHomeUIState.selectedEmails,
+                    toggleEmailSelection = toggleSelectedEmail,
                     emailLazyListState = emailLazyListState,
                     navigateToDetail = navigateToDetail
                 )
             },
             second = {
                 ReplyEmailDetail(
-                    email = replyHomeUIState.selectedEmail ?: replyHomeUIState.emails.first(),
+                    email = replyHomeUIState.openedEmail ?: replyHomeUIState.emails.first(),
                     isFullScreen = false
                 )
             },
@@ -93,6 +101,7 @@ fun ReplyInboxScreen(
         Box(modifier = modifier.fillMaxSize()) {
             ReplySinglePaneContent(
                 replyHomeUIState = replyHomeUIState,
+                toggleEmailSelection = toggleSelectedEmail,
                 emailLazyListState = emailLazyListState,
                 modifier = Modifier.fillMaxSize(),
                 closeDetailScreen = closeDetailScreen,
@@ -122,21 +131,25 @@ fun ReplyInboxScreen(
 @Composable
 fun ReplySinglePaneContent(
     replyHomeUIState: ReplyHomeUIState,
+    toggleEmailSelection: (Long) -> Unit,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-    if (replyHomeUIState.selectedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
+    if (replyHomeUIState.openedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
         BackHandler {
             closeDetailScreen()
         }
-        ReplyEmailDetail(email = replyHomeUIState.selectedEmail) {
+        ReplyEmailDetail(email = replyHomeUIState.openedEmail) {
             closeDetailScreen()
         }
     } else {
         ReplyEmailList(
             emails = replyHomeUIState.emails,
+            openedEmail = replyHomeUIState.openedEmail,
+            selectedEmailIds = replyHomeUIState.selectedEmails,
+            toggleEmailSelection = toggleEmailSelection,
             emailLazyListState = emailLazyListState,
             modifier = modifier,
             navigateToDetail = navigateToDetail
@@ -147,6 +160,9 @@ fun ReplySinglePaneContent(
 @Composable
 fun ReplyEmailList(
     emails: List<Email>,
+    openedEmail: Email?,
+    selectedEmailIds: Set<Long>,
+    toggleEmailSelection: (Long) -> Unit,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     navigateToDetail: (Long, ReplyContentType) -> Unit
@@ -156,9 +172,15 @@ fun ReplyEmailList(
             ReplySearchBar(modifier = Modifier.fillMaxWidth())
         }
         items(items = emails, key = { it.id }) { email ->
-            ReplyEmailListItem(email = email) { emailId ->
-                navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
-            }
+            ReplyEmailListItem(
+                email = email,
+                navigateToDetail = { emailId ->
+                    navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
+                },
+                toggleSelection = toggleEmailSelection,
+                isOpened = openedEmail?.id == email.id,
+                isSelected = selectedEmailIds.contains(email.id)
+            )
         }
     }
 }
