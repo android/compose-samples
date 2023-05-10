@@ -43,9 +43,9 @@ import androidx.window.layout.DisplayFeature
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.components.EmailDetailAppBar
+import com.example.reply.ui.components.ReplyDockedSearchBar
 import com.example.reply.ui.components.ReplyEmailListItem
 import com.example.reply.ui.components.ReplyEmailThreadItem
-import com.example.reply.ui.components.ReplySearchBar
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
@@ -167,20 +167,34 @@ fun ReplyEmailList(
     modifier: Modifier = Modifier,
     navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-    LazyColumn(modifier = modifier, state = emailLazyListState) {
-        item {
-            ReplySearchBar(modifier = Modifier.fillMaxWidth())
-        }
-        items(items = emails, key = { it.id }) { email ->
-            ReplyEmailListItem(
-                email = email,
-                navigateToDetail = { emailId ->
-                    navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
-                },
-                toggleSelection = toggleEmailSelection,
-                isOpened = openedEmail?.id == email.id,
-                isSelected = selectedEmailIds.contains(email.id)
-            )
+    Box(modifier = modifier) {
+        ReplyDockedSearchBar(
+            emails = emails,
+            onSearchItemSelected = { searchedEmail ->
+                navigateToDetail(searchedEmail.id, ReplyContentType.SINGLE_PANE)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+
+        LazyColumn(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 80.dp),
+            state = emailLazyListState
+        ) {
+            items(items = emails, key = { it.id }) { email ->
+                ReplyEmailListItem(
+                    email = email,
+                    navigateToDetail = { emailId ->
+                        navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
+                    },
+                    toggleSelection = toggleEmailSelection,
+                    isOpened = openedEmail?.id == email.id,
+                    isSelected = selectedEmailIds.contains(email.id)
+                )
+            }
         }
     }
 }
