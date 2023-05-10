@@ -150,9 +150,15 @@ fun ReplyDockedSearchBar(
                 }
             }
         } else if (query.isNotEmpty()) {
-            Text(text = stringResource(id = R.string.no_item_found), modifier = Modifier.padding(16.dp))
+            Text(
+                text = stringResource(id = R.string.no_item_found),
+                modifier = Modifier.padding(16.dp)
+            )
         } else
-            Text(text = stringResource(id = R.string.no_search_history), modifier = Modifier.padding(16.dp))
+            Text(
+                text = stringResource(id = R.string.no_search_history),
+                modifier = Modifier.padding(16.dp)
+            )
     }
 }
 
