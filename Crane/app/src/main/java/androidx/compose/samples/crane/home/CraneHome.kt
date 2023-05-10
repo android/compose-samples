@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.EaseIn
@@ -27,10 +26,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -41,10 +43,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
@@ -96,7 +95,10 @@ fun CraneHome(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun CraneHomeContent(
     widthSize: WindowWidthSizeClass,
@@ -109,20 +111,30 @@ fun CraneHomeContent(
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    var tabSelected by rememberSaveable { mutableStateOf(CraneScreen.Fly) }
-
+    val pagerState = rememberPagerState(initialPage = CraneScreen.Fly.ordinal)
+    val coroutineScope = rememberCoroutineScope()
+    val craneScreenValues = CraneScreen.values()
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
         frontLayerShape = BottomSheetShape,
         frontLayerScrimColor = Color.Unspecified,
         appBar = {
-            HomeTabBar(openDrawer, tabSelected, onTabSelected = { tabSelected = it })
+            HomeTabBar(openDrawer, craneScreenValues[pagerState.currentPage], onTabSelected = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(
+                        it.ordinal,
+                        animationSpec = tween(
+                            TAB_SWITCH_ANIM_DURATION
+                        )
+                    )
+                }
+            })
         },
         backLayerContent = {
             SearchContent(
                 widthSize,
-                tabSelected,
+                craneScreenValues[pagerState.currentPage],
                 viewModel,
                 onPeopleChanged,
                 onDateSelectionClicked,
@@ -130,29 +142,11 @@ fun CraneHomeContent(
             )
         },
         frontLayerContent = {
-            AnimatedContent(
-                targetState = tabSelected,
-                transitionSpec = {
-                    val direction = if (initialState.ordinal < targetState.ordinal)
-                        AnimatedContentScope.SlideDirection.Left else AnimatedContentScope
-                        .SlideDirection.Right
-
-                    slideIntoContainer(
-                        towards = direction,
-                        animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
-                    ) with
-                        slideOutOfContainer(
-                            towards = direction,
-                            animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION)
-                        ) using SizeTransform(
-                        clip = false,
-                        sizeAnimationSpec = { _, _ ->
-                            tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
-                        }
-                    )
-                }
-            ) { targetState ->
-                when (targetState) {
+            HorizontalPager(
+                pageCount = craneScreenValues.size,
+                state = pagerState
+            ) { page ->
+                when (craneScreenValues[page]) {
                     CraneScreen.Fly -> {
                         suggestedDestinations?.let { destinations ->
                             ExploreSection(
@@ -207,7 +201,7 @@ private fun HomeTabBar(
     }
 }
 
-private const val ANIMATED_CONTENT_ANIMATION_DURATION = 300
+private const val TAB_SWITCH_ANIM_DURATION = 300
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
@@ -225,15 +219,15 @@ private fun SearchContent(
         targetState = tabSelected,
         transitionSpec = {
             fadeIn(
-                animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseIn)
+                animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseIn)
             ).with(
                 fadeOut(
-                    animationSpec = tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseOut)
+                    animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseOut)
                 )
             ).using(
                 SizeTransform(
                     sizeAnimationSpec = { _, _ ->
-                        tween(ANIMATED_CONTENT_ANIMATION_DURATION, easing = EaseInOut)
+                        tween(TAB_SWITCH_ANIM_DURATION, easing = EaseInOut)
                     }
                 )
             )

@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-    uses: android/compose-samples/.github/workflows/build-sample.yml@main
+    uses: ./.github/workflows/build-sample.yml
     with:
       name: Jetcaster
       path: Jetcaster

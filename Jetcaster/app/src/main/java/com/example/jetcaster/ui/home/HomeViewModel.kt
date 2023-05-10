@@ -22,6 +22,9 @@ import com.example.jetcaster.Graph
 import com.example.jetcaster.data.PodcastStore
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.data.PodcastsRepository
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -59,7 +62,7 @@ class HomeViewModel(
                 HomeViewState(
                     homeCategories = categories,
                     selectedHomeCategory = selectedCategory,
-                    featuredPodcasts = podcasts,
+                    featuredPodcasts = podcasts.toPersistentList(),
                     refreshing = refreshing,
                     errorMessage = null /* TODO */
                 )
@@ -102,7 +105,7 @@ enum class HomeCategory {
 }
 
 data class HomeViewState(
-    val featuredPodcasts: List<PodcastWithExtraInfo> = emptyList(),
+    val featuredPodcasts: PersistentList<PodcastWithExtraInfo> = persistentListOf(),
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),

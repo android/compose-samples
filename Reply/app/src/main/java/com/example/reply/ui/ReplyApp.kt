@@ -64,7 +64,8 @@ fun ReplyApp(
     displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
-    navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> }
+    navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> },
+    toggleSelectedEmail: (Long) -> Unit = { }
 ) {
     /**
      * This will help us select type of navigation and content type depending on window size and
@@ -141,7 +142,8 @@ fun ReplyApp(
         navigationContentPosition = navigationContentPosition,
         replyHomeUIState = replyHomeUIState,
         closeDetailScreen = closeDetailScreen,
-        navigateToDetail = navigateToDetail
+        navigateToDetail = navigateToDetail,
+        toggleSelectedEmail = toggleSelectedEmail
     )
 }
 
@@ -154,7 +156,8 @@ private fun ReplyNavigationWrapper(
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long, ReplyContentType) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
+    toggleSelectedEmail: (Long) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -186,7 +189,8 @@ private fun ReplyNavigationWrapper(
                 selectedDestination = selectedDestination,
                 navigateToTopLevelDestination = navigationActions::navigateTo,
                 closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
+                toggleSelectedEmail = toggleSelectedEmail
             )
         }
     } else {
@@ -215,7 +219,8 @@ private fun ReplyNavigationWrapper(
                 selectedDestination = selectedDestination,
                 navigateToTopLevelDestination = navigationActions::navigateTo,
                 closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
+                toggleSelectedEmail = toggleSelectedEmail
             ) {
                 scope.launch {
                     drawerState.open()
@@ -238,6 +243,7 @@ fun ReplyAppContent(
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
+    toggleSelectedEmail: (Long) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     Row(modifier = modifier.fillMaxSize()) {
@@ -262,6 +268,7 @@ fun ReplyAppContent(
                 navigationType = navigationType,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
+                toggleSelectedEmail = toggleSelectedEmail,
                 modifier = Modifier.weight(1f),
             )
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
@@ -283,6 +290,7 @@ private fun ReplyNavHost(
     navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
+    toggleSelectedEmail: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -298,6 +306,7 @@ private fun ReplyNavHost(
                 displayFeatures = displayFeatures,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
+                toggleSelectedEmail = toggleSelectedEmail
             )
         }
         composable(ReplyRoute.DM) {

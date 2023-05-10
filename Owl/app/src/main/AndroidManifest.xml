@@ -13,9 +13,7 @@
   the License.
   -->
 
-<manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.example.owl">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--Load images from Unsplash-->
     <uses-permission android:name="android.permission.INTERNET" />

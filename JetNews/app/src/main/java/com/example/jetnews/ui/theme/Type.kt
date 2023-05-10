@@ -17,12 +17,12 @@
 package com.example.jetnews.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 import com.example.jetnews.R
@@ -33,7 +33,6 @@ private val Montserrat = FontFamily(
 )
 
 @Suppress("DEPRECATION")
-@OptIn(ExperimentalTextApi::class)
 val defaultTextStyle = TextStyle(
     fontFamily = Montserrat,
     platformStyle = PlatformTextStyle(
@@ -56,25 +55,30 @@ val JetnewsTypography = Typography(
         fontSize = 36.sp, lineHeight = 44.sp, letterSpacing = 0.sp
     ),
     headlineLarge = defaultTextStyle.copy(
-        fontSize = 32.sp, lineHeight = 40.sp, letterSpacing = 0.sp
+        fontSize = 32.sp, lineHeight = 40.sp, letterSpacing = 0.sp, lineBreak = LineBreak.Heading
     ),
     headlineMedium = defaultTextStyle.copy(
-        fontSize = 28.sp, lineHeight = 36.sp, letterSpacing = 0.sp
+        fontSize = 28.sp, lineHeight = 36.sp, letterSpacing = 0.sp, lineBreak = LineBreak.Heading
     ),
     headlineSmall = defaultTextStyle.copy(
-        fontSize = 24.sp, lineHeight = 32.sp, letterSpacing = 0.sp
+        fontSize = 24.sp, lineHeight = 32.sp, letterSpacing = 0.sp, lineBreak = LineBreak.Heading
     ),
     titleLarge = defaultTextStyle.copy(
-        fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp
+        fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp, lineBreak = LineBreak.Heading
     ),
     titleMedium = defaultTextStyle.copy(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
+        lineBreak = LineBreak.Heading
     ),
     titleSmall = defaultTextStyle.copy(
-        fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp, fontWeight = FontWeight.Medium
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp,
+        fontWeight = FontWeight.Medium,
+        lineBreak = LineBreak.Heading
     ),
     labelLarge = defaultTextStyle.copy(
         fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp, fontWeight = FontWeight.Medium
@@ -86,12 +90,21 @@ val JetnewsTypography = Typography(
         fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp, fontWeight = FontWeight.Medium
     ),
     bodyLarge = defaultTextStyle.copy(
-        fontSize = 16.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp,
+        lineBreak = LineBreak.Paragraph
     ),
     bodyMedium = defaultTextStyle.copy(
-        fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.25.sp
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp,
+        lineBreak = LineBreak.Paragraph
     ),
     bodySmall = defaultTextStyle.copy(
-        fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.4.sp
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp,
+        lineBreak = LineBreak.Paragraph
     ),
 )

@@ -18,7 +18,7 @@ env:
 
 jobs:
   build:
-    uses: android/compose-samples/.github/workflows/build-sample.yml@main
+    uses: ./.github/workflows/build-sample.yml
     with:
       name: JetLagged
       path: JetLagged
@@ -38,10 +38,11 @@ jobs:
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 17
+          distribution: 'zulu'
 
       - name: Generate cache key
         run: ./scripts/checksum.sh $SAMPLE_PATH checksum.txt
