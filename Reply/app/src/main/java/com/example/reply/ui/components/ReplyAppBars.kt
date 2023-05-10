@@ -68,17 +68,19 @@ fun ReplyDockedSearchBar(
     LaunchedEffect(query) {
         searchResults.clear()
         if (query.isNotEmpty()) {
-            searchResults.addAll(emails.filter {
-                it.subject.startsWith(
-                    prefix = query,
-                    ignoreCase = true
-                ) || it.sender.fullName.startsWith(
-                    prefix =
-                    query, ignoreCase = true
-                )
-            })
+            searchResults.addAll(
+                emails.filter {
+                    it.subject.startsWith(
+                        prefix = query,
+                        ignoreCase = true
+                    ) || it.sender.fullName.startsWith(
+                        prefix =
+                        query,
+                        ignoreCase = true
+                    )
+                }
+            )
         }
-
     }
 
     DockedSearchBar(
