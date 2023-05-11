@@ -101,8 +101,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Waiting for Compose BOM to contain m3 1.1.0 release
-    implementation("androidx.compose.material3:material3:1.1.0")
+    implementation(libs.androidx.compose.material3)
     implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
 
     implementation(libs.androidx.compose.materialWindow)
