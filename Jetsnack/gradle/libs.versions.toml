@@ -27,7 +27,7 @@ coil = "2.2.2"
 # @keep
 compileSdk = "33"
 compose-compiler = "1.4.0"
-coroutines = "1.7.0"
+coroutines = "1.6.4"
 google-maps = "18.1.0"
 gradle-versions = "0.46.0"
 hilt = "2.43.2"
