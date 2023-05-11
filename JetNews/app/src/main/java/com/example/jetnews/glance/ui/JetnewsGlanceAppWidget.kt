@@ -16,7 +16,6 @@
 
 package com.example.jetnews.glance.ui
 
-
 import android.content.Context
 import android.os.Build
 import androidx.compose.runtime.Composable
