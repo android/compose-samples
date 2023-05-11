@@ -124,9 +124,11 @@ class HomeViewModel(
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(
-        HomeViewModelState(isLoading = true,
-                           selectedPostId = preSelectedPostId,
-                           isArticleOpen = preSelectedPostId != null)
+        HomeViewModelState(
+            isLoading = true,
+            selectedPostId = preSelectedPostId,
+            isArticleOpen = preSelectedPostId != null
+        )
     )
 
     // UI state exposed to the UI

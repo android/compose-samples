@@ -4,24 +4,24 @@
 #####
 [versions]
 accompanist = "0.30.1"
-androidGradlePlugin = "8.0.0"
+androidGradlePlugin = "8.0.1"
 androidx-activity-compose = "1.7.1"
 androidx-appcompat = "1.6.1"
 androidx-benchmark = "1.1.0"
 androidx-benchmark-junit4 = "1.1.1"
-androidx-compose-bom = "2023.04.01"
+androidx-compose-bom = "2023.05.01"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.9.0"
 androidx-glance = "1.0.0-beta01"
 androidx-lifecycle-compose = "2.6.1"
 androidx-lifecycle-runtime-compose = "2.6.1"
-androidx-navigation = "2.6.0-alpha06"
+androidx-navigation = "2.6.0-rc01"
 androidx-palette = "1.0.0"
 androidx-test = "1.5.0"
 androidx-test-espresso = "3.5.1"
 androidx-test-ext-junit = "1.1.5"
 androidx-test-ext-truth = "1.5.0"
-androidx-window = "1.1.0-beta02"
+androidx-window = "1.1.0-rc01"
 androidxHiltNavigationCompose = "1.0.0"
 androix-test-uiautomator = "2.2.0"
 coil = "2.2.2"
@@ -122,9 +122,9 @@ hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.re
 hilt-ext-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltExt" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx_immutable" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx_immutable" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
