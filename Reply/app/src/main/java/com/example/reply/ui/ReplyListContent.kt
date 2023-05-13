@@ -29,7 +29,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +50,6 @@ import com.example.reply.ui.utils.ReplyNavigationType
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyInboxScreen(
     contentType: ReplyContentType,
@@ -64,7 +62,7 @@ fun ReplyInboxScreen(
     modifier: Modifier = Modifier
 ) {
     /**
-     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
+     * When moving from LIST_AND_DETAIL page to LIST page, clear the selection and user should see LIST screen.
      */
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {

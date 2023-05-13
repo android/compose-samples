@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
@@ -57,7 +56,6 @@ import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyApp(
     windowSize: WindowSizeClass,
@@ -68,7 +66,7 @@ fun ReplyApp(
     toggleSelectedEmail: (Long) -> Unit = { }
 ) {
     /**
-     * This will help us select type of navigation and content type depending on window size and
+     * This will help us select type of navigation and content type depending on the window size and
      * fold state of the device.
      */
     val navigationType: ReplyNavigationType
@@ -76,7 +74,7 @@ fun ReplyApp(
 
     /**
      * We are using display's folding features to map the device postures a fold is in.
-     * In the state of folding device If it's half fold in BookPosture we want to avoid content
+     * In the state of folding device, if it is half fold in BookPosture, we want to avoid content
      * at the crease/hinge
      */
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
@@ -96,6 +94,7 @@ fun ReplyApp(
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
             contentType = ReplyContentType.SINGLE_PANE
         }
+
         WindowWidthSizeClass.Medium -> {
             navigationType = ReplyNavigationType.NAVIGATION_RAIL
             contentType = if (foldingDevicePosture != DevicePosture.NormalPosture) {
@@ -104,6 +103,7 @@ fun ReplyApp(
                 ReplyContentType.SINGLE_PANE
             }
         }
+
         WindowWidthSizeClass.Expanded -> {
             navigationType = if (foldingDevicePosture is DevicePosture.BookPosture) {
                 ReplyNavigationType.NAVIGATION_RAIL
@@ -112,6 +112,7 @@ fun ReplyApp(
             }
             contentType = ReplyContentType.DUAL_PANE
         }
+
         else -> {
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
             contentType = ReplyContentType.SINGLE_PANE
@@ -126,10 +127,12 @@ fun ReplyApp(
         WindowHeightSizeClass.Compact -> {
             ReplyNavigationContentPosition.TOP
         }
+
         WindowHeightSizeClass.Medium,
         WindowHeightSizeClass.Expanded -> {
             ReplyNavigationContentPosition.CENTER
         }
+
         else -> {
             ReplyNavigationContentPosition.TOP
         }
@@ -147,7 +150,6 @@ fun ReplyApp(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
