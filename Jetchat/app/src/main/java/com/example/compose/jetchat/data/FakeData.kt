@@ -25,28 +25,29 @@ import com.example.compose.jetchat.data.EMOJIS.EMOJI_MELTING
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_PINK_HEART
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_POINTS
 import com.example.compose.jetchat.profile.ProfileScreenState
+import com.example.compose.jetchat.utils.convertDateToPrettyDate
 
 private val initialMessages = listOf(
     Message(
         "me",
         "Check it out!",
-        "8:07 PM"
+        convertDateToPrettyDate("2023-05-16 19:26:00")
     ),
     Message(
         "me",
         "Thank you!$EMOJI_PINK_HEART",
-        "8:06 PM",
+        convertDateToPrettyDate("2023-05-15 18:26:00"),
         R.drawable.sticker
     ),
     Message(
         "Taylor Brooks",
         "You can use all the same stuff",
-        "8:05 PM"
+        convertDateToPrettyDate("2023-05-15 16:29:00")
     ),
     Message(
         "Taylor Brooks",
         "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
-        "8:05 PM"
+        convertDateToPrettyDate("2023-05-11 17:36:00")
     ),
     Message(
         "John Glenn",
@@ -54,14 +55,14 @@ private val initialMessages = listOf(
             "Most blog posts end up out of date pretty fast but this sample is always up to " +
             "date and deals with async data loading (it's faked but the same idea " +
             "applies) $EMOJI_POINTS https://goo.gle/jetnews",
-        "8:04 PM"
+        convertDateToPrettyDate("2023-05-11 18:26:00")
     ),
     Message(
         "me",
         "Compose newbie: I’ve scourged the internet for tutorials about async data " +
             "loading but haven’t found any good ones $EMOJI_MELTING $EMOJI_CLOUDS. " +
             "What’s the recommended way to load async data and emit composable widgets?",
-        "8:03 PM"
+        convertDateToPrettyDate("2022-05-16 19:26:00")
     )
 )
 

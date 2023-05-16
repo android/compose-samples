@@ -85,6 +85,8 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.utils.convertDateToPrettyDate
+import com.example.compose.jetchat.utils.now
 import kotlinx.coroutines.launch
 
 /**
@@ -137,7 +139,7 @@ fun ConversationContent(
             UserInput(
                 onMessageSent = { content ->
                     uiState.addMessage(
-                        Message(authorMe, content, timeNow)
+                        Message(authorMe, content, convertDateToPrettyDate(now()))
                     )
                 },
                 resetScroll = {
@@ -237,16 +239,8 @@ fun Messages(
                 val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
 
-                // Hardcode day dividers for simplicity
-                if (index == messages.size - 1) {
-                    item {
-                        DayHeader("20 Aug")
-                    }
-                } else if (index == 2) {
-                    item {
-                        DayHeader("Today")
-                    }
-                }
+                val nextTimestamp = messages.getOrNull(index + 1)?.timestamp
+                val isTimeDivider = nextTimestamp != content.timestamp
 
                 item {
                     Message(
@@ -256,6 +250,12 @@ fun Messages(
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor
                     )
+                }
+
+                if (isTimeDivider) {
+                    item {
+                        DayHeader(content.timestamp)
+                    }
                 }
             }
         }
@@ -371,12 +371,6 @@ private fun AuthorNameTimestamp(msg: Message) {
                 .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = msg.timestamp,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.alignBy(LastBaseline),
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
