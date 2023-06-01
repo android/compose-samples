@@ -39,7 +39,7 @@ The [ProfileFragment](app/src/main/java/com/example/compose/jetchat/profile/Prof
 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel), served via [LiveData](https://developer.android.com/topic/libraries/architecture/livedata).
 
 ### Back button handling
-When the Emoji selector is shown, pressing back in the app closes it, intercepting any navigation events. This feature shows a way to integrate Compose and APIs from the Android Framework like [OnBackPressedDispatcherOwner](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) via [Ambients](https://developer.android.com/reference/kotlin/androidx/compose/Ambient). The implementation can be found in [ConversationUiState](app/src/main/java/com/example/compose/jetchat/conversation/BackHandler.kt).
+When the Emoji selector is shown, pressing back in the app closes it, intercepting any navigation events. The implementation can be found in [UserInput](app/src/main/java/com/example/compose/jetchat/conversation/UserInput.kt).
 
 ### Text Input and focus management
 When the Emoji panel is shown the keyboard must be hidden and vice versa. This is achieved with a combination of the [FocusRequester](https://developer.android.com/reference/kotlin/androidx/compose/ui/focus/FocusRequester) and [onFocusChanged](https://developer.android.com/reference/kotlin/androidx/compose/ui/focus/package-summary#(androidx.compose.ui.Modifier).onFocusChanged(kotlin.Function1)) APIs.
