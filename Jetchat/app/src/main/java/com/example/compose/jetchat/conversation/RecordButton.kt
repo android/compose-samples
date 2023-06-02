@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.animation.animateColor
@@ -48,8 +49,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 val swipeToCancelThreshold: () -> Float
     @Composable get() = with(LocalDensity.current) { { 200.dp.toPx() } }
