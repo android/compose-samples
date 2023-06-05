@@ -52,8 +52,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
-import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 val swipeToCancelThreshold: () -> Float
     @Composable get() = with(LocalDensity.current) { { 200.dp.toPx() } }
@@ -117,7 +117,7 @@ fun RecordButton(
                 modifier = modifier
                     .sizeIn(minWidth = 56.dp, minHeight = 6.dp)
                     .padding(18.dp)
-                    .clickable {  }
+                    .clickable { }
                     .voiceRecordingGesture(
                         swipeOffset,
                         swipeToCancelThreshold(),
