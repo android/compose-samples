@@ -22,6 +22,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -47,7 +48,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetchat.R
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -103,7 +106,7 @@ fun RecordButton(
         val scope = rememberCoroutineScope()
         val tooltipState = remember { RichTooltipState() }
         RichTooltipBox(
-            text = { Text("Touch and hold to record") },
+            text = { Text(stringResource(R.string.touch_and_hold_to_record)) },
             tooltipState = tooltipState
         ) {
             Icon(
@@ -113,7 +116,8 @@ fun RecordButton(
                 modifier = modifier
                     .sizeIn(minWidth = 56.dp, minHeight = 6.dp)
                     .padding(18.dp)
-                    .recordGesture(
+                    .clickable {  }
+                    .voiceRecordingGesture(
                         swipeOffset,
                         swipeToCancelThreshold(),
                         verticalThreshold(),
@@ -127,7 +131,7 @@ fun RecordButton(
     }
 }
 
-private fun Modifier.recordGesture(
+private fun Modifier.voiceRecordingGesture(
     horizontalSwipeProgress: MutableState<Float>,
     swipeToCancelThreshold: Float,
     verticalThreshold: Float,
