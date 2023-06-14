@@ -8,7 +8,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: malmstein/github-asana-action@0.4.1
+      - uses: malmstein/github-asana-action@master
         with:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           asana-project: ${{ secrets.GH_ASANA_ISSUES_PROJECT_ID }}
