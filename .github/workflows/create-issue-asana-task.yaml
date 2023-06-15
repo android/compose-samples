@@ -12,4 +12,5 @@ jobs:
         with:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           asana-project: ${{ secrets.GH_ASANA_ISSUES_PROJECT_ID }}
+          asana-custom-field: ${{ secrets.GH_ASANA_ISSUES_CUSTOM_FIELD_ID }}
           action: 'create-issue-task'
