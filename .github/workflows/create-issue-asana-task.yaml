@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Asana task
-      - uses: malmstein/github-asana-action@master
+        uses: malmstein/github-asana-action@master
         with:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           asana-project: ${{ secrets.GH_ASANA_ISSUES_PROJECT_ID }}
