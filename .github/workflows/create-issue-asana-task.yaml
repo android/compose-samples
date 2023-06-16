@@ -20,6 +20,12 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: Render template
+        id: render_template
+        uses: chuhlomin/render-template@v1.7
+        with:
+          template: .github/ACTIONS/issue-reply.template.yml
+
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v3.0.2
         with:
