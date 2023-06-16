@@ -20,17 +20,8 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Render template
-        id: render_template
-        uses: chuhlomin/render-template@v1.7
-        with:
-          template: issue-reply-template.md
-          vars: |
-            author: ${{ github.event.issue.sender }}
-
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v3.0.2
         with:
           issue-number: ${{ github.event.issue.number }}
-          body: |
-            This issue is available for anyone to work on.
+          body-path: '.github/issue-reply-template.md'
