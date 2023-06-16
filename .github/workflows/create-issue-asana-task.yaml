@@ -24,4 +24,5 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3.0.2
         with:
           issue-number: ${{ github.event.issue.number }}
-          body-path: .github/ACTIONS/issue-reply-template.md
+          body: |
+            This issue is available for anyone to work on.
