@@ -24,7 +24,7 @@ jobs:
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
-          template: .github/ACTIONS/issue-reply.template.md
+          template: .github/ACTIONS/issue-reply-template.md
           vars: |
             author: ${{ github.event.issue.sender }}
 
