@@ -41,6 +41,9 @@ val florina = PostAuthor(
 val jose =
     PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
 
+val takahirom =
+    PostAuthor("takahirom", "https://github.com/takahirom")
+
 val publication = Publication(
     "Android Developers",
     "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
@@ -61,10 +64,10 @@ val paragraphsPost1 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "include ':app'\n" +
-            "include ':features:module1'\n" +
-            "include ':features:module2'\n" +
-            "include ':features:module3'\n" +
-            "include ':features:module4'"
+                "include ':features:module1'\n" +
+                "include ':features:module2'\n" +
+                "include ':features:module3'\n" +
+                "include ':features:module4'"
     ),
     Paragraph(
         ParagraphType.Text,
@@ -703,8 +706,8 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "public inline fun <T, R> Iterable<T>.map(transform: (T) -> R): List<R> {\n" +
-            "  return mapTo(ArrayList<R>(collectionSizeOrDefault(10)), transform)\n" +
-            "}",
+                "  return mapTo(ArrayList<R>(collectionSizeOrDefault(10)), transform)\n" +
+                "}",
         listOf(
             Markup(MarkupType.Bold, 7, 13),
             Markup(MarkupType.Bold, 88, 97)
@@ -748,8 +751,8 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "public fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>{      \n" +
-            "   return TransformingSequence(this, transform)\n" +
-            "}",
+                "   return TransformingSequence(this, transform)\n" +
+                "}",
         listOf(Markup(MarkupType.Bold, 85, 105))
     ),
     Paragraph(
@@ -768,9 +771,9 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "public inline fun <T> Sequence<T>.first(predicate: (T) -> Boolean): T {\n" +
-            "   for (element in this) if (predicate(element)) return element\n" +
-            "   throw NoSuchElementException(“Sequence contains no element matching the predicate.”)\n" +
-            "}"
+                "   for (element in this) if (predicate(element)) return element\n" +
+                "   throw NoSuchElementException(“Sequence contains no element matching the predicate.”)\n" +
+                "}"
     ),
     Paragraph(
         ParagraphType.Text,
@@ -783,7 +786,7 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "internal class TransformingIndexedSequence<T, R> \n" +
-            "constructor(private val sequence: Sequence<T>, private val transformer: (Int, T) -> R) : Sequence<R> {",
+                "constructor(private val sequence: Sequence<T>, private val transformer: (Int, T) -> R) : Sequence<R> {",
         listOf(
             Markup(
                 MarkupType.Bold,
@@ -795,12 +798,12 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "override fun iterator(): Iterator<R> = object : Iterator<R> {\n" +
-            "   …\n" +
-            "   override fun next(): R {\n" +
-            "     return transformer(checkIndexOverflow(index++), iterator.next())\n" +
-            "   }\n" +
-            "   …\n" +
-            "}",
+                "   …\n" +
+                "   override fun next(): R {\n" +
+                "     return transformer(checkIndexOverflow(index++), iterator.next())\n" +
+                "   }\n" +
+                "   …\n" +
+                "}",
         listOf(
             Markup(MarkupType.Bold, 83, 89),
             Markup(MarkupType.Bold, 107, 118)
@@ -982,6 +985,22 @@ val post3 = Post(
     imageThumbId = R.drawable.post_3_thumb
 )
 
+val roborazziPost = Post(
+    id = "84eb677660d1",
+    title = "Hello from Roborazzi",
+    subtitle = "Roborazzi makes Android App test automation easy.",
+    url = "https://medium.com/androiddevelopers/locale-changes-and-the-androidviewmodel-antipattern-84eb677660d9",
+    publication = publication,
+    metadata = Metadata(
+        author = takahirom,
+        date = "June 18",
+        readTimeMinutes = 1
+    ),
+    paragraphs = paragraphsPost4,
+    imageId = R.drawable.post_4,
+    imageThumbId = R.drawable.post_4_thumb
+)
+
 val post4 = Post(
     id = "84eb677660d9",
     title = "Locale changes and the AndroidViewModel antipattern",
@@ -1016,7 +1035,7 @@ val post5 = Post(
 
 val posts: PostsFeed =
     PostsFeed(
-        highlightedPost = post4,
+        highlightedPost = roborazziPost,
         recommendedPosts = listOf(post1, post2, post3),
         popularPosts = listOf(
             post5,

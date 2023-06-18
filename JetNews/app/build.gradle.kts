@@ -17,6 +17,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("io.github.takahirom.roborazzi") version "1.3.0-alpha-4"
 }
 
 android {
@@ -147,6 +148,7 @@ dependencies {
     // Robolectric dependencies
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.robolectric)
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.3.0-alpha-4")
 }
 
 tasks.withType<Test>().configureEach {

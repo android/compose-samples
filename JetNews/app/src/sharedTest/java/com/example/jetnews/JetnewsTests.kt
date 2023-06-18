@@ -24,10 +24,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToString
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.GraphicsMode
 
 @RunWith(AndroidJUnit4::class)
 class JetnewsTests {
@@ -46,12 +48,15 @@ class JetnewsTests {
         composeTestRule.onNodeWithText("Top stories for you").assertExists()
     }
 
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
     @Test
     fun app_opensArticle() {
 
         println(composeTestRule.onRoot().printToString())
+        composeTestRule.onRoot().captureRoboImage()
         composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
 
+        composeTestRule.onRoot().captureRoboImage()
         println(composeTestRule.onRoot().printToString())
         try {
             composeTestRule.onNodeWithText("3 min read", substring = true).assertExists()
