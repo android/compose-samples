@@ -20,8 +20,19 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Render template
+        id: render_template
+        uses: chuhlomin/render-template@v1.7
+        with:
+          template: .github/issue-reply-template.md
+          vars: |
+            author: ${{ github.event.issue.sender }}
+
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v3.0.2
         with:
           issue-number: ${{ github.event.issue.number }}
-          body-path: 'issue-reply-template.md'
+          body-path: '.github/issue-reply-template.md'
