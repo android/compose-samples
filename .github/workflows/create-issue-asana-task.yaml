@@ -29,7 +29,7 @@ jobs:
         with:
           template: .github/issue-reply-template.md
           vars: |
-            author: ${{ github.event.issue.sender }}
+            author: ${{ github.event.issue.actor }}
 
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v3.0.2
