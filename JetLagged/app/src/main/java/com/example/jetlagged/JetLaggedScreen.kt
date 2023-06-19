@@ -16,19 +16,35 @@
 
 package com.example.jetlagged
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,45 +66,72 @@ import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
 
-@Preview(showBackground = true)
-@Preview(device = Devices.FOLDABLE, showBackground = true)
+@OptIn(ExperimentalLayoutApi::class)
+@MultiDevicePreview
 @Composable
 fun JetLaggedScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .background(Color.White)
     ) {
         Column(modifier = Modifier.yellowBackground()) {
             JetLaggedHeader(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(32.dp))
-            JetLaggedSleepSummary(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         var selectedTab by remember { mutableStateOf(SleepTab.Week) }
-        JetLaggedHeaderTabs(
-            onTabSelected = { selectedTab = it },
-            selectedTab = selectedTab,
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
         val sleepState by remember {
             mutableStateOf(sleepData)
         }
-        JetLaggedTimeGraph(sleepState)
+
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            JetLaggedSleepGraphCard(selectedTab, sleepState)
+            AverageTimeInBedCard(modifier = Modifier)
+            AverageTimeAsleepCard(modifier = Modifier)
+            WellnessCard()
+            HeartRateCard()
+        }
+
     }
 }
 
 @Composable
-private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
+private fun JetLaggedSleepGraphCard(
+    selectedTab: SleepTab,
+    sleepState: SleepGraphData
+) {
+    var selectedTab1 = selectedTab
+    BasicInformationalCard(
+        borderColor = Yellow,
+        modifier = Modifier.widthIn(max = 400.dp)
+    ) {
+        JetLaggedHeaderTabs(
+            onTabSelected = { selectedTab1 = it },
+            selectedTab = selectedTab1,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        JetLaggedTimeGraph(
+            sleepState
+        )
+    }
+}
+
+@Composable
+private fun JetLaggedTimeGraph(
+    sleepGraphData: SleepGraphData,
+    modifier: Modifier = Modifier
+) {
     val scrollState = rememberScrollState()
 
     val hours = (sleepGraphData.earliestStartHour..23) + (0..sleepGraphData.latestEndHour)
 
     TimeGraph(
-        modifier = Modifier
+        modifier = modifier
             .horizontalScroll(scrollState)
             .wrapContentSize(),
         dayItemsCount = sleepGraphData.sleepDayData.size,
@@ -103,7 +147,8 @@ private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
             // We have access to Modifier.timeGraphBar() as we are now in TimeGraphScope
             SleepBar(
                 sleepData = data,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
                     .timeGraphBar(
                         start = data.firstSleepStart,
                         end = data.lastSleepEnd,
