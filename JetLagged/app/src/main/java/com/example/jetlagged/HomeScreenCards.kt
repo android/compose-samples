@@ -1,8 +1,20 @@
 package com.example.jetlagged
 
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -10,6 +22,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -30,16 +43,24 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,9 +71,7 @@ import com.example.jetlagged.ui.theme.LightBlue
 import com.example.jetlagged.ui.theme.Lilac
 import com.example.jetlagged.ui.theme.MintGreen
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
-import com.example.jetlagged.ui.theme.Yellow
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import kotlin.math.min
+import kotlin.random.Random
 
 @Composable
 fun BasicInformationalCard(
@@ -82,6 +101,7 @@ fun TwoLineInfoCard(
     modifier: Modifier = Modifier
 ) {
     BasicInformationalCard(borderColor = borderColor) {
+        BubbleBackground(numberBubbles = 3, bubbleColor = borderColor.copy(0.25f))
         BoxWithConstraints(
             modifier = modifier.padding(16.dp),
         ) {
@@ -145,13 +165,7 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
         modifier = modifier
             .wrapContentWidth()
             .heightIn(min = 156.dp)
-            .drawBehind {
-                drawCircle(
-                    Lilac.copy(alpha = 0.25f),
-                    center = Offset(0f, size.minDimension / 4f),
-                    radius = size.minDimension / 1.5f
-                )
-            }
+
     )
 }
 
@@ -159,21 +173,66 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
 fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
-    TwoLineInfoCard(borderColor = MintGreen,
+    TwoLineInfoCard(
+        borderColor = MintGreen,
         firstLineText = "AVE TIME SLEEP",
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
         modifier = modifier
             .wrapContentWidth()
             .heightIn(min = 156.dp)
-            .drawBehind {
-                drawCircle(
-                    MintGreen.copy(alpha = 0.25f),
-                    center = Offset(size.minDimension / 2f, size.minDimension / 1.2f),
-                    radius = size.minDimension / 1.5f
+    )
+}
+
+@Composable
+fun BubbleBackground(numberBubbles: Int, bubbleColor: Color) {
+    val infiniteAnimation = rememberInfiniteTransition(label = "bubble position")
+
+    BoxWithConstraints(modifier = Modifier) {
+        val bubbles = remember {
+            List(numberBubbles) {
+                BackgroundBubbleData(
+                    startPosition = Offset(
+                        x = Random.nextFloat() * 400 ,
+                        y = Random.nextFloat() * 400
+                    ),
+                    endPosition = Offset(
+                        x = Random.nextFloat() * 400,
+                        y = Random.nextFloat() * 400
+                    ),
+                    durationMillis = Random.nextLong(3000L, 10000L),
+                    easingFunction = EaseInOut,
+                    radius = Random.nextFloat() * 50f + 50f
                 )
             }
-    )
+        }
+        for (bubble in bubbles) {
+            val xValue by infiniteAnimation.animateFloat(
+                initialValue = bubble.startPosition.x,
+                targetValue = bubble.endPosition.x,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(bubble.durationMillis.toInt(), easing = bubble.easingFunction),
+                    repeatMode = RepeatMode.Reverse
+                ), label = ""
+            )
+            val yValue by infiniteAnimation.animateFloat(
+                initialValue = bubble.startPosition.y,
+                targetValue = bubble.endPosition.y,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(bubble.durationMillis.toInt(), easing = bubble.easingFunction),
+                    repeatMode = RepeatMode.Reverse
+                ), label = ""
+            )
+            Canvas(modifier = Modifier) {
+                drawCircle(
+                    bubbleColor,
+                    radius = bubble.radius,
+                    center = Offset(xValue, yValue)
+                )
+            }
+        }
+    }
+
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -240,3 +299,11 @@ fun HeartRateCard() {
         Text("Heart Rate")
     }
 }
+
+data class BackgroundBubbleData(
+    val startPosition: Offset = Offset.Zero,
+    val endPosition: Offset = Offset.Zero,
+    val durationMillis: Long = 2000,
+    val easingFunction: Easing = EaseInOut,
+    val radius: Float = 5f
+)
