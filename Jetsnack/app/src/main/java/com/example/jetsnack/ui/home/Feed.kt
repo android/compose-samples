@@ -18,7 +18,6 @@ package com.example.jetsnack.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,7 +28,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -76,7 +74,7 @@ private fun Feed(
     modifier: Modifier = Modifier
 ) {
 
-    JetsnackSurface(modifier = modifier.fillMaxSize()) {
+    JetsnackSurface(modifier = modifier) {
         Box {
             SnackCollectionList(snackCollections, filters, onSnackClick)
             DestinationBar()
@@ -84,7 +82,6 @@ private fun Feed(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SnackCollectionList(
     snackCollections: List<SnackCollection>,

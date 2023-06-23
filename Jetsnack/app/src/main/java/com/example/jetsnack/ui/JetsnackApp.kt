@@ -16,11 +16,18 @@
 
 package com.example.jetsnack.ui
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -59,14 +66,19 @@ fun JetsnackApp() {
             },
             scaffoldState = appState.scaffoldState
         ) { innerPaddingModifier ->
+            var innerBottomPadding by remember { mutableStateOf(0f) }
+
+            if (innerPaddingModifier.calculateBottomPadding().value > innerBottomPadding)
+                innerBottomPadding = innerPaddingModifier.calculateBottomPadding().value
             NavHost(
                 navController = appState.navController,
                 startDestination = MainDestinations.HOME_ROUTE,
-                modifier = Modifier.padding(innerPaddingModifier)
             ) {
                 jetsnackNavGraph(
                     onSnackSelected = appState::navigateToSnackDetail,
-                    upPress = appState::upPress
+                    upPress = appState::upPress,
+                    modifier = Modifier.fillMaxSize().padding(bottom = innerBottomPadding.dp),
+                    innerPaddingValues = innerPaddingModifier
                 )
             }
         }
@@ -75,13 +87,15 @@ fun JetsnackApp() {
 
 private fun NavGraphBuilder.jetsnackNavGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
-    upPress: () -> Unit
+    upPress: () -> Unit,
+    modifier: Modifier,
+    innerPaddingValues: PaddingValues,
 ) {
     navigation(
         route = MainDestinations.HOME_ROUTE,
         startDestination = HomeSections.FEED.route
     ) {
-        addHomeGraph(onSnackSelected)
+        addHomeGraph(onSnackSelected, modifier)
     }
     composable(
         "${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}",
@@ -89,6 +103,6 @@ private fun NavGraphBuilder.jetsnackNavGraph(
     ) { backStackEntry ->
         val arguments = requireNotNull(backStackEntry.arguments)
         val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
-        SnackDetail(snackId, upPress)
+        SnackDetail(snackId, upPress, Modifier.fillMaxSize().padding(innerPaddingValues))
     }
 }
