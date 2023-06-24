@@ -100,7 +100,7 @@ fun SnackDetail(
     val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
     val related = remember(snackId) { SnackRepo.getRelated(snackId) }
 
-    Box(modifier = modifier) {
+    Box(modifier.fillMaxSize()) {
         val scroll = rememberScrollState(0)
         Header()
         Body(related, scroll)

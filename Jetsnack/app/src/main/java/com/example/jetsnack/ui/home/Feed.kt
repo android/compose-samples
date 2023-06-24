@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -73,8 +74,7 @@ private fun Feed(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    JetsnackSurface(modifier = modifier) {
+    JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
             SnackCollectionList(snackCollections, filters, onSnackClick)
             DestinationBar()
