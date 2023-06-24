@@ -16,6 +16,7 @@
 
 package com.example.jetsnack
 
+import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -33,7 +34,7 @@ class AppTest {
 
     @Before
     fun setUp() {
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             JetsnackApp()
         }
     }
