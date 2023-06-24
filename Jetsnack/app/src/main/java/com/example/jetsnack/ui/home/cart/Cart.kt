@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -132,7 +131,6 @@ fun Cart(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CartContent(
     orderLines: List<OrderLine>,
