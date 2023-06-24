@@ -21,11 +21,12 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.jetsnack.ui.components.JetsnackScaffold
@@ -42,7 +43,7 @@ fun JetsnackApp() {
         val appState = rememberJetsnackAppState()
         JetsnackScaffold(
             bottomBar = {
-                if (appState.shouldShowBottomBar) {
+                if(appState.currentRoute != null){
                     JetsnackBottomBar(
                         tabs = appState.bottomBarTabs,
                         currentRoute = appState.currentRoute!!,
@@ -83,9 +84,10 @@ private fun NavGraphBuilder.jetsnackNavGraph(
     ) {
         addHomeGraph(onSnackSelected)
     }
-    composable(
-        "${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}",
-        arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) { type = NavType.LongType })
+    dialog(
+        route ="${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}",
+        arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) { type = NavType.LongType }),
+        dialogProperties = DialogProperties( decorFitsSystemWindows = false)
     ) { backStackEntry ->
         val arguments = requireNotNull(backStackEntry.arguments)
         val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
