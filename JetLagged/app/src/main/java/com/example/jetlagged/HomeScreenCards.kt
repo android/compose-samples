@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -154,21 +156,24 @@ fun TwoLineInfoCard(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
 fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
+
     TwoLineInfoCard(borderColor = Lilac,
         firstLineText = "AVE TIME IN BED",
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
-        modifier = modifier
-            .wrapContentWidth()
-            .heightIn(min = 156.dp)
+        modifier = modifier.animateBounds(
+                Modifier.wrapContentWidth()
+            .heightIn(min = 156.dp))
 
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
@@ -178,9 +183,9 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
         firstLineText = "AVE TIME SLEEP",
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
-        modifier = modifier
-            .wrapContentWidth()
-            .heightIn(min = 156.dp)
+        modifier = modifier.animateBounds(
+            Modifier.wrapContentWidth()
+            .heightIn(min = 156.dp))
     )
 }
 
@@ -235,13 +240,15 @@ fun BubbleBackground(numberBubbles: Int, bubbleColor: Color) {
 
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun WellnessCard() {
     BasicInformationalCard(
-        borderColor = LightBlue, modifier = Modifier
-            .widthIn(max = 400.dp)
+        borderColor = LightBlue, modifier = Modifier.animateBounds(
+            Modifier.widthIn(max = 400.dp)
+                .heightIn(min = 200.dp)
+        )
     ) {
         Column(
             horizontalAlignment = CenterHorizontally,
@@ -254,7 +261,7 @@ fun WellnessCard() {
                 modifier = Modifier
                     .align(CenterHorizontally)
             )
-            FlowRow(horizontalArrangement = Arrangement.Center) {
+            FlowRow(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight()) {
                 WellnessBubble(titleText = "Snoring", countText = "5", metric = "min")
                 WellnessBubble(titleText = "Coughing", countText = "0", metric = "times")
                 WellnessBubble(titleText = "Respiration", countText = "15", metric = "rpm")
@@ -267,10 +274,11 @@ fun WellnessCard() {
 fun WellnessBubble(
     titleText: String,
     countText: String,
-    metric: String
+    metric: String,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(4.dp)
             .sizeIn(maxHeight = 100.dp)
             .aspectRatio(1f)

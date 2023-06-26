@@ -25,7 +25,7 @@ androidxHiltNavigationCompose = "1.0.0"
 androix-test-uiautomator = "2.2.0"
 coil = "2.2.2"
 # @keep
-compileSdk = "33"
+compileSdk = "34"
 compose-compiler = "1.4.0"
 coroutines = "1.6.4"
 google-maps = "18.1.0"
@@ -49,7 +49,7 @@ rome = "1.18.0"
 room = "2.5.1"
 secrets = "2.0.1"
 # @keep
-targetSdk = "33"
+targetSdk = "34"
 version-catalog-update = "0.8.0"
 
 [libraries]
@@ -64,7 +64,7 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-macro", version.ref = "androidx-benchmark" }
 androidx-benchmark-macrobenchmark-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
-androidx-compose-animation = { module = "androidx.compose.animation:animation" }
+androidx-compose-animation =  "androidx.compose.animation:animation:1.6.0-alpha01"
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
