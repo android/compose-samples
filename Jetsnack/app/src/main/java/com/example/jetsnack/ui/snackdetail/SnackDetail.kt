@@ -94,13 +94,12 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 @Composable
 fun SnackDetail(
     snackId: Long,
-    upPress: () -> Unit,
-    modifier: Modifier = Modifier
+    upPress: () -> Unit
 ) {
     val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
     val related = remember(snackId) { SnackRepo.getRelated(snackId) }
 
-    Box(modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState(0)
         Header()
         Body(related, scroll)

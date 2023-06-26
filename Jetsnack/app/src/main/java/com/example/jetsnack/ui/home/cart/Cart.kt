@@ -76,11 +76,14 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.home.DestinationBar
+import com.example.jetsnack.ui.home.HomeSections
+import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
@@ -88,20 +91,32 @@ import com.example.jetsnack.ui.utils.formatPrice
 @Composable
 fun Cart(
     onSnackClick: (Long) -> Unit,
+    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
     val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
-    Cart(
-        orderLines = orderLines,
-        removeSnack = viewModel::removeSnack,
-        increaseItemCount = viewModel::increaseSnackCount,
-        decreaseItemCount = viewModel::decreaseSnackCount,
-        inspiredByCart = inspiredByCart,
-        onSnackClick = onSnackClick,
+    JetsnackScaffold(
+        bottomBar = {
+            JetsnackBottomBar(
+                tabs = HomeSections.values(),
+                currentRoute = HomeSections.CART.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        },
         modifier = modifier
-    )
+    ) { paddingValues ->
+        Cart(
+            orderLines = orderLines,
+            removeSnack = viewModel::removeSnack,
+            increaseItemCount = viewModel::increaseSnackCount,
+            decreaseItemCount = viewModel::decreaseSnackCount,
+            inspiredByCart = inspiredByCart,
+            onSnackClick = onSnackClick,
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
