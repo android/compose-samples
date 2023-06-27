@@ -1,5 +1,6 @@
 package com.example.jetlagged
 
+import android.util.Log
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.Easing
@@ -32,11 +33,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bed
 import androidx.compose.material.icons.filled.SingleBed
 import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.Card
@@ -46,27 +46,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import com.example.jetlagged.ui.theme.Coral
 import com.example.jetlagged.ui.theme.HeadingStyle
 import com.example.jetlagged.ui.theme.LightBlue
@@ -89,7 +85,9 @@ fun BasicInformationalCard(
             .padding(8.dp)
             .border(2.dp, borderColor, shape)
     ) {
-        content()
+        Box {
+            content()
+        }
     }
 }
 
@@ -102,15 +100,20 @@ fun TwoLineInfoCard(
     icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
-    BasicInformationalCard(borderColor = borderColor) {
-        BubbleBackground(numberBubbles = 3, bubbleColor = borderColor.copy(0.25f))
+    BasicInformationalCard(borderColor = borderColor,
+        modifier = modifier.size(200.dp)) {
+        BubbleBackground(
+            modifier = Modifier.fillMaxSize(),
+            numberBubbles = 3, bubbleColor = borderColor.copy(0.25f))
         BoxWithConstraints(
-            modifier = modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
         ) {
             if (maxWidth > 400.dp) {
                 Row(
                     modifier = Modifier
-                        .wrapContentHeight()
+                        .wrapContentSize()
                         .align(CenterStart)
                 ) {
                     Icon(
@@ -119,7 +122,9 @@ fun TwoLineInfoCard(
                             .align(CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.align(CenterVertically)) {
+                    Column(modifier = Modifier
+                        .align(CenterVertically)
+                        .wrapContentSize()) {
                         Text(
                             firstLineText,
                             style = SmallHeadingStyle
@@ -131,7 +136,9 @@ fun TwoLineInfoCard(
                     }
                 }
             } else {
-                Column {
+                Column(modifier = Modifier
+                    .wrapContentSize()
+                    .align(Center)) {
                     Icon(
                         icon, contentDescription = null, modifier = Modifier
                             .size(50.dp)
@@ -161,14 +168,14 @@ fun TwoLineInfoCard(
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
 fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
-
     TwoLineInfoCard(borderColor = Lilac,
-        firstLineText = "AVE TIME IN BED",
+        firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
         modifier = modifier.animateBounds(
-                Modifier.wrapContentWidth()
-            .heightIn(min = 156.dp))
+            Modifier
+                .wrapContentWidth()
+                .heightIn(min = 156.dp))
 
     )
 }
@@ -180,34 +187,38 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
 fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
     TwoLineInfoCard(
         borderColor = MintGreen,
-        firstLineText = "AVE TIME SLEEP",
+        firstLineText = stringResource(R.string.ave_time_sleep_heading),
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
         modifier = modifier.animateBounds(
-            Modifier.wrapContentWidth()
-            .heightIn(min = 156.dp))
+            Modifier
+                .wrapContentWidth()
+                .heightIn(min = 156.dp))
     )
 }
 
 @Composable
-fun BubbleBackground(numberBubbles: Int, bubbleColor: Color) {
+fun BubbleBackground(
+    modifier: Modifier = Modifier,
+    numberBubbles: Int,
+    bubbleColor: Color) {
     val infiniteAnimation = rememberInfiniteTransition(label = "bubble position")
 
-    BoxWithConstraints(modifier = Modifier) {
-        val bubbles = remember {
+    Box(modifier = modifier) {
+        val bubbles = remember(numberBubbles) {
             List(numberBubbles) {
                 BackgroundBubbleData(
                     startPosition = Offset(
-                        x = Random.nextFloat() * 400 ,
-                        y = Random.nextFloat() * 400
+                        x = Random.nextFloat(),
+                        y = Random.nextFloat()
                     ),
                     endPosition = Offset(
-                        x = Random.nextFloat() * 400,
-                        y = Random.nextFloat() * 400
+                        x = Random.nextFloat(),
+                        y = Random.nextFloat()
                     ),
                     durationMillis = Random.nextLong(3000L, 10000L),
                     easingFunction = EaseInOut,
-                    radius = Random.nextFloat() * 50f + 50f
+                    radius = Random.nextFloat() * 30.dp + 20.dp
                 )
             }
         }
@@ -228,11 +239,11 @@ fun BubbleBackground(numberBubbles: Int, bubbleColor: Color) {
                     repeatMode = RepeatMode.Reverse
                 ), label = ""
             )
-            Canvas(modifier = Modifier) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
                 drawCircle(
                     bubbleColor,
-                    radius = bubble.radius,
-                    center = Offset(xValue, yValue)
+                    radius = bubble.radius.toPx(),
+                    center = Offset(xValue * size.width, yValue * size.height)
                 )
             }
         }
@@ -243,28 +254,25 @@ fun BubbleBackground(numberBubbles: Int, bubbleColor: Color) {
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun WellnessCard() {
+fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
     BasicInformationalCard(
         borderColor = LightBlue, modifier = Modifier.animateBounds(
-            Modifier.widthIn(max = 400.dp)
+            Modifier
+                .widthIn(max = 400.dp)
                 .heightIn(min = 200.dp)
         )
     ) {
+        BubbleBackground(numberBubbles = 10, bubbleColor = LightBlue.copy(alpha = 0.25f))
         Column(
             horizontalAlignment = CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
         ) {
-            Text(
-                "Wellness",
-                modifier = Modifier
-                    .align(CenterHorizontally)
-            )
+            HomeScreenCardHeading(text = stringResource(R.string.wellness_heading))
             FlowRow(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight()) {
-                WellnessBubble(titleText = "Snoring", countText = "5", metric = "min")
-                WellnessBubble(titleText = "Coughing", countText = "0", metric = "times")
-                WellnessBubble(titleText = "Respiration", countText = "15", metric = "rpm")
+                WellnessBubble(titleText = stringResource(R.string.snoring_heading), countText = wellnessData.snoring.toString(), metric = "min")
+                WellnessBubble(titleText = stringResource(R.string.coughing_heading), countText = wellnessData.coughing.toString(), metric = "times")
+                WellnessBubble(titleText = stringResource(R.string.respiration_heading), countText = wellnessData.respiration.toString(), metric = "rpm")
             }
         }
     }
@@ -296,15 +304,15 @@ fun WellnessBubble(
 
 @Preview
 @Composable
-fun HeartRateCard() {
+fun HeartRateCard(heartRateData: HeartRateData = HeartRateData(0)) {
     BasicInformationalCard(
         borderColor = Coral,
         modifier = Modifier
-            .height(160.dp)
-            .widthIn(max = 400.dp)
+            .height(260.dp)
+            .widthIn(max = 400.dp, min = 200.dp)
     ) {
         // TODO
-        Text("Heart Rate")
+        HomeScreenCardHeading(text = stringResource(R.string.heart_rate_heading))
     }
 }
 
@@ -313,5 +321,24 @@ data class BackgroundBubbleData(
     val endPosition: Offset = Offset.Zero,
     val durationMillis: Long = 2000,
     val easingFunction: Easing = EaseInOut,
-    val radius: Float = 5f
+    val radius: Dp = 0.dp
 )
+
+@Composable
+fun HomeScreenCardHeading(text : String){
+    Text(text,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        textAlign = TextAlign.Center,
+        style = HeadingStyle
+    )
+}
+
+@Preview
+@Composable
+fun AmbienceCard() {
+    BasicInformationalCard(borderColor = Lilac, modifier = Modifier.size(250.dp)) {
+        HomeScreenCardHeading(text = stringResource(R.string.ambiance_heading))
+    }
+}

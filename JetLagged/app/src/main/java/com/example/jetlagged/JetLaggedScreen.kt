@@ -36,9 +36,11 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,8 +54,10 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.jetlagged.ui.theme.HeadingStyle
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
@@ -64,7 +68,9 @@ import java.util.Locale
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @MultiDevicePreview
 @Composable
-fun JetLaggedScreen(windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact) {
+fun JetLaggedScreen(windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
+                    viewModel: JetLaggedHomeScreenViewModel = JetLaggedHomeScreenViewModel() // todo fix this to come from nav
+                    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,11 +80,8 @@ fun JetLaggedScreen(windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass
         Column(modifier = Modifier.yellowBackground()) {
             JetLaggedHeader(modifier = Modifier.fillMaxWidth())
         }
-        var selectedTab by remember { mutableStateOf(SleepTab.Week) }
 
-        val sleepState by remember {
-            mutableStateOf(sleepData)
-        }
+        val uiState = viewModel.uiState.collectAsState() // todo do i change to collectAsStateWithLifecycle
         val timeSleepSummaryCards = remember {
             movableContentOf {
                 AverageTimeInBedCard(modifier = Modifier)
@@ -87,49 +90,56 @@ fun JetLaggedScreen(windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass
         }
         LookaheadScope {
             FlowRow(
-                modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.CenterStart),
+                modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center,
                 maxItemsInEachRow = 3
             ) {
-                JetLaggedSleepGraphCard(selectedTab, sleepState)
+                JetLaggedSleepGraphCard(uiState.value.sleepGraphData)
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    AverageTimeInBedCard(modifier = Modifier)
-                    AverageTimeAsleepCard(modifier = Modifier)
-                //timeSleepSummaryCards()
+                    timeSleepSummaryCards()
                 } else {
                     FlowColumn {
-                        AverageTimeInBedCard(modifier = Modifier)
-                        AverageTimeAsleepCard(modifier = Modifier)
-                        //timeSleepSummaryCards()
+                        timeSleepSummaryCards()
                     }
                 }
-                WellnessCard()
-                HeartRateCard()
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    WellnessCard(uiState.value.wellnessData)
+                    HeartRateCard(uiState.value.heartRateData)
+                } else {
+                    FlowColumn {
+                        WellnessCard(uiState.value.wellnessData)
+                        HeartRateCard(uiState.value.heartRateData)
+                    }
+                }
+                AmbienceCard()
             }
         }
-
     }
 }
 
 @Composable
 private fun JetLaggedSleepGraphCard(
-    selectedTab: SleepTab,
     sleepState: SleepGraphData
 ) {
-    var selectedTab1 = selectedTab
+    var selectedTab by remember { mutableStateOf(SleepTab.Week) }
+
     BasicInformationalCard(
         borderColor = Yellow,
         modifier = Modifier.animateBounds(Modifier.widthIn(max = 400.dp))
     ) {
-        JetLaggedHeaderTabs(
-            onTabSelected = { selectedTab1 = it },
-            selectedTab = selectedTab1,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        JetLaggedTimeGraph(
-            sleepState
-        )
+        Column {
+            HomeScreenCardHeading(text = "Sleep")
+            JetLaggedHeaderTabs(
+                onTabSelected = { selectedTab = it },
+                selectedTab = selectedTab,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            JetLaggedTimeGraph(
+                sleepState
+            )
+        }
     }
 }
 
