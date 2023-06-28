@@ -11,6 +11,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +42,9 @@ import androidx.compose.material.icons.filled.SingleBed
 import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.example.jetlagged.ui.theme.Coral
+import com.example.jetlagged.ui.theme.DarkCoral
 import com.example.jetlagged.ui.theme.HeadingStyle
 import com.example.jetlagged.ui.theme.LightBlue
 import com.example.jetlagged.ui.theme.Lilac
@@ -78,12 +82,12 @@ fun BasicInformationalCard(
     content: @Composable () -> Unit
 ) {
     val shape = RoundedCornerShape(24.dp)
-    Card(
+    OutlinedCard(
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
-            .padding(8.dp)
-            .border(2.dp, borderColor, shape)
+            .padding(8.dp),
+        border = BorderStroke(2.dp, borderColor)
     ) {
         Box {
             content()
@@ -100,11 +104,14 @@ fun TwoLineInfoCard(
     icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
-    BasicInformationalCard(borderColor = borderColor,
-        modifier = modifier.size(200.dp)) {
+    BasicInformationalCard(
+        borderColor = borderColor,
+        modifier = modifier.size(200.dp)
+    ) {
         BubbleBackground(
             modifier = Modifier.fillMaxSize(),
-            numberBubbles = 3, bubbleColor = borderColor.copy(0.25f))
+            numberBubbles = 3, bubbleColor = borderColor.copy(0.25f)
+        )
         BoxWithConstraints(
             modifier = Modifier
                 .padding(16.dp)
@@ -122,9 +129,11 @@ fun TwoLineInfoCard(
                             .align(CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier
-                        .align(CenterVertically)
-                        .wrapContentSize()) {
+                    Column(
+                        modifier = Modifier
+                            .align(CenterVertically)
+                            .wrapContentSize()
+                    ) {
                         Text(
                             firstLineText,
                             style = SmallHeadingStyle
@@ -136,9 +145,11 @@ fun TwoLineInfoCard(
                     }
                 }
             } else {
-                Column(modifier = Modifier
-                    .wrapContentSize()
-                    .align(Center)) {
+                Column(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .align(Center)
+                ) {
                     Icon(
                         icon, contentDescription = null, modifier = Modifier
                             .size(50.dp)
@@ -168,14 +179,16 @@ fun TwoLineInfoCard(
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
 fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
-    TwoLineInfoCard(borderColor = Lilac,
+    TwoLineInfoCard(
+        borderColor = Lilac,
         firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
         modifier = modifier.animateBounds(
             Modifier
                 .wrapContentWidth()
-                .heightIn(min = 156.dp))
+                .heightIn(min = 156.dp)
+        )
 
     )
 }
@@ -193,7 +206,8 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
         modifier = modifier.animateBounds(
             Modifier
                 .wrapContentWidth()
-                .heightIn(min = 156.dp))
+                .heightIn(min = 156.dp)
+        )
     )
 }
 
@@ -201,7 +215,8 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
 fun BubbleBackground(
     modifier: Modifier = Modifier,
     numberBubbles: Int,
-    bubbleColor: Color) {
+    bubbleColor: Color
+) {
     val infiniteAnimation = rememberInfiniteTransition(label = "bubble position")
 
     Box(modifier = modifier) {
@@ -227,7 +242,10 @@ fun BubbleBackground(
                 initialValue = bubble.startPosition.x,
                 targetValue = bubble.endPosition.x,
                 animationSpec = infiniteRepeatable(
-                    animation = tween(bubble.durationMillis.toInt(), easing = bubble.easingFunction),
+                    animation = tween(
+                        bubble.durationMillis.toInt(),
+                        easing = bubble.easingFunction
+                    ),
                     repeatMode = RepeatMode.Reverse
                 ), label = ""
             )
@@ -235,7 +253,10 @@ fun BubbleBackground(
                 initialValue = bubble.startPosition.y,
                 targetValue = bubble.endPosition.y,
                 animationSpec = infiniteRepeatable(
-                    animation = tween(bubble.durationMillis.toInt(), easing = bubble.easingFunction),
+                    animation = tween(
+                        bubble.durationMillis.toInt(),
+                        easing = bubble.easingFunction
+                    ),
                     repeatMode = RepeatMode.Reverse
                 ), label = ""
             )
@@ -269,10 +290,25 @@ fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
                 .fillMaxWidth()
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.wellness_heading))
-            FlowRow(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight()) {
-                WellnessBubble(titleText = stringResource(R.string.snoring_heading), countText = wellnessData.snoring.toString(), metric = "min")
-                WellnessBubble(titleText = stringResource(R.string.coughing_heading), countText = wellnessData.coughing.toString(), metric = "times")
-                WellnessBubble(titleText = stringResource(R.string.respiration_heading), countText = wellnessData.respiration.toString(), metric = "rpm")
+            FlowRow(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxHeight()
+            ) {
+                WellnessBubble(
+                    titleText = stringResource(R.string.snoring_heading),
+                    countText = wellnessData.snoring.toString(),
+                    metric = "min"
+                )
+                WellnessBubble(
+                    titleText = stringResource(R.string.coughing_heading),
+                    countText = wellnessData.coughing.toString(),
+                    metric = "times"
+                )
+                WellnessBubble(
+                    titleText = stringResource(R.string.respiration_heading),
+                    countText = wellnessData.respiration.toString(),
+                    metric = "rpm"
+                )
             }
         }
     }
@@ -325,8 +361,9 @@ data class BackgroundBubbleData(
 )
 
 @Composable
-fun HomeScreenCardHeading(text : String){
-    Text(text,
+fun HomeScreenCardHeading(text: String) {
+    Text(
+        text,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp),
@@ -340,5 +377,13 @@ fun HomeScreenCardHeading(text : String){
 fun AmbienceCard() {
     BasicInformationalCard(borderColor = Lilac, modifier = Modifier.size(250.dp)) {
         HomeScreenCardHeading(text = stringResource(R.string.ambiance_heading))
+    }
+}
+
+@Preview
+@Composable
+fun RoomTemperature() {
+    BasicInformationalCard(borderColor = DarkCoral, modifier = Modifier.size(250.dp)) {
+        HomeScreenCardHeading(text = stringResource(R.string.room_temperature))
     }
 }

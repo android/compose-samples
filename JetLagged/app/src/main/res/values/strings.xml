@@ -38,6 +38,7 @@
     <string name="ave_time_sleep_heading">AVE TIME SLEEP</string>
     <string name="ave_time_in_bed_heading">AVE TIME IN BED</string>
     <string name="ambiance_heading">Ambiance</string>
+    <string name="room_temperature">Room Temperature</string>
 
 
 </resources>
