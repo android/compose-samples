@@ -1,4 +1,4 @@
-package com.example.jetlagged
+package com.example.jetlagged.sleep
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.jetlagged.BasicInformationalCard
+import com.example.jetlagged.HomeScreenCardHeading
+import com.example.jetlagged.ui.util.animateBounds
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant

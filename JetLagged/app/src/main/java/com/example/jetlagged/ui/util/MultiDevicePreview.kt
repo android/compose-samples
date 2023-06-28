@@ -1,4 +1,4 @@
-package com.example.jetlagged
+package com.example.jetlagged.ui.util
 
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview

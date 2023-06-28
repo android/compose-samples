@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetlagged
+package com.example.jetlagged.sleep
 
 import androidx.compose.foundation.layout.LayoutScopeMarker
 import androidx.compose.foundation.layout.padding

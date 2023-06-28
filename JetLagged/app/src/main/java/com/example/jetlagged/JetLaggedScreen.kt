@@ -37,6 +37,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
+import com.example.jetlagged.backgrounds.yellowBackground
+import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
+import com.example.jetlagged.heartrate.HeartRateCard
+import com.example.jetlagged.sleep.JetLaggedHeader
+import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
+import com.example.jetlagged.ui.util.MultiDevicePreview
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @MultiDevicePreview

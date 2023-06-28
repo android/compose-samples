@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalComposeUiApi::class)
 
-package com.example.jetlagged
+package com.example.jetlagged.ui.util
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector
@@ -95,6 +95,7 @@ fun Modifier.animateBounds(
 }
 
 context(LookaheadScope, Placeable.PlacementScope, CoroutineScope)
+@OptIn(ExperimentalComposeUiApi::class)
 internal fun DeferredAnimation<IntOffset, AnimationVector2D>.updateTargetBasedOnCoordinates(
     animationSpec: FiniteAnimationSpec<IntOffset>,
 ): IntOffset {

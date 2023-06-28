@@ -1,20 +1,6 @@
 package com.example.jetlagged
 
-import android.util.Log
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -40,15 +26,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SingleBed
 import androidx.compose.material.icons.filled.Watch
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -56,16 +38,16 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
+import com.example.jetlagged.backgrounds.BubbleBackground
+import com.example.jetlagged.data.HeartRateData
+import com.example.jetlagged.data.WellnessData
 import com.example.jetlagged.ui.theme.Coral
 import com.example.jetlagged.ui.theme.DarkCoral
 import com.example.jetlagged.ui.theme.HeadingStyle
@@ -73,7 +55,7 @@ import com.example.jetlagged.ui.theme.LightBlue
 import com.example.jetlagged.ui.theme.Lilac
 import com.example.jetlagged.ui.theme.MintGreen
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
-import kotlin.random.Random
+import com.example.jetlagged.ui.util.animateBounds
 
 @Composable
 fun BasicInformationalCard(
@@ -211,66 +193,6 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
     )
 }
 
-@Composable
-fun BubbleBackground(
-    modifier: Modifier = Modifier,
-    numberBubbles: Int,
-    bubbleColor: Color
-) {
-    val infiniteAnimation = rememberInfiniteTransition(label = "bubble position")
-
-    Box(modifier = modifier) {
-        val bubbles = remember(numberBubbles) {
-            List(numberBubbles) {
-                BackgroundBubbleData(
-                    startPosition = Offset(
-                        x = Random.nextFloat(),
-                        y = Random.nextFloat()
-                    ),
-                    endPosition = Offset(
-                        x = Random.nextFloat(),
-                        y = Random.nextFloat()
-                    ),
-                    durationMillis = Random.nextLong(3000L, 10000L),
-                    easingFunction = EaseInOut,
-                    radius = Random.nextFloat() * 30.dp + 20.dp
-                )
-            }
-        }
-        for (bubble in bubbles) {
-            val xValue by infiniteAnimation.animateFloat(
-                initialValue = bubble.startPosition.x,
-                targetValue = bubble.endPosition.x,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        bubble.durationMillis.toInt(),
-                        easing = bubble.easingFunction
-                    ),
-                    repeatMode = RepeatMode.Reverse
-                ), label = ""
-            )
-            val yValue by infiniteAnimation.animateFloat(
-                initialValue = bubble.startPosition.y,
-                targetValue = bubble.endPosition.y,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        bubble.durationMillis.toInt(),
-                        easing = bubble.easingFunction
-                    ),
-                    repeatMode = RepeatMode.Reverse
-                ), label = ""
-            )
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawCircle(
-                    bubbleColor,
-                    radius = bubble.radius.toPx(),
-                    center = Offset(xValue * size.width, yValue * size.height)
-                )
-            }
-        }
-    }
-
-}
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Preview
@@ -337,28 +259,6 @@ fun WellnessBubble(
         Text(metric, fontSize = 12.sp)
     }
 }
-
-@Preview
-@Composable
-fun HeartRateCard(heartRateData: HeartRateData = HeartRateData(0)) {
-    BasicInformationalCard(
-        borderColor = Coral,
-        modifier = Modifier
-            .height(260.dp)
-            .widthIn(max = 400.dp, min = 200.dp)
-    ) {
-        // TODO
-        HomeScreenCardHeading(text = stringResource(R.string.heart_rate_heading))
-    }
-}
-
-data class BackgroundBubbleData(
-    val startPosition: Offset = Offset.Zero,
-    val endPosition: Offset = Offset.Zero,
-    val durationMillis: Long = 2000,
-    val easingFunction: Easing = EaseInOut,
-    val radius: Dp = 0.dp
-)
 
 @Composable
 fun HomeScreenCardHeading(text: String) {

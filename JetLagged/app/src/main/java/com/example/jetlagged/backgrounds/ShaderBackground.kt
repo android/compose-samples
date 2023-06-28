@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetlagged
+package com.example.jetlagged.backgrounds
 
 import android.graphics.Color
 import android.graphics.RuntimeShader

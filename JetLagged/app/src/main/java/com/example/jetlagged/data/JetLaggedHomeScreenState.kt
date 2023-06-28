@@ -1,6 +1,6 @@
-package com.example.jetlagged
+package com.example.jetlagged.data
 
-import androidx.compose.runtime.Stable
+import com.example.jetlagged.sleep.SleepGraphData
 
 /*
 * Copyright 2022 The Android Open Source Project
