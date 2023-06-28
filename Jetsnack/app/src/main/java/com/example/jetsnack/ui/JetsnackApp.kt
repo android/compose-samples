@@ -16,11 +16,7 @@
 
 package com.example.jetsnack.ui
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -28,8 +24,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.jetsnack.ui.components.JetsnackScaffold
-import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.addHomeGraph
 import com.example.jetsnack.ui.snackdetail.SnackDetail
@@ -39,27 +33,15 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun JetsnackApp() {
     JetsnackTheme {
         val appState = rememberJetsnackAppState()
-        JetsnackScaffold(
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = it,
-                    modifier = Modifier.systemBarsPadding(),
-                    snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
-                )
-            },
-            scaffoldState = appState.scaffoldState
-        ) { innerPaddingModifier ->
-            NavHost(
-                navController = appState.navController,
-                startDestination = MainDestinations.HOME_ROUTE,
-                modifier = Modifier.padding(innerPaddingModifier)
-            ) {
-                jetsnackNavGraph(
-                    onSnackSelected = appState::navigateToSnackDetail,
-                    upPress = appState::upPress,
-                    onNavigateToRoute = appState::navigateToBottomBarRoute
-                )
-            }
+        NavHost(
+            navController = appState.navController,
+            startDestination = MainDestinations.HOME_ROUTE
+        ) {
+            jetsnackNavGraph(
+                onSnackSelected = appState::navigateToSnackDetail,
+                upPress = appState::upPress,
+                onNavigateToRoute = appState::navigateToBottomBarRoute
+            )
         }
     }
 }
