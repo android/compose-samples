@@ -30,5 +30,6 @@ data class WellnessData(
 )
 
 data class HeartRateOverallData(
-    val listData: List<HeartRateData> = generateFakeHeartRateData()
+    val averageBpm: Int = 65,
+    val listData: List<HeartRateData> = heartRateGraphData
 )

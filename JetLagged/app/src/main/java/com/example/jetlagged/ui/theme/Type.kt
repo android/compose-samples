@@ -76,3 +76,10 @@ val LegendHeadingStyle = TextStyle(
     letterSpacing = 0.5.sp,
     fontFamily = fontFamily
 )
+
+val TitleStyle = TextStyle(
+    fontSize = 36.sp,
+    fontWeight = FontWeight(500),
+    letterSpacing = 0.5.sp,
+    fontFamily = fontFamily
+)
