@@ -65,8 +65,8 @@ fun JetLaggedScreen(
             viewModel.uiState.collectAsState() // todo do i change to collectAsStateWithLifecycle
         val timeSleepSummaryCards = remember {
             movableContentOf {
-                AverageTimeInBedCard(modifier = Modifier)
-                AverageTimeAsleepCard(modifier = Modifier)
+                AverageTimeInBedCard()
+                AverageTimeAsleepCard()
             }
         }
         LookaheadScope {

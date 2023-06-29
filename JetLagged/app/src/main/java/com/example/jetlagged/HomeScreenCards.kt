@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -226,7 +227,6 @@ fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
                 WellnessBubble(
                     titleText = stringResource(R.string.coughing_heading),
                     countText = wellnessData.coughing.toString(),
-                    modifier = Modifier.offset(y = 50.dp),
                     metric = "times"
                 )
                 WellnessBubble(
