@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -31,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -46,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetlagged.backgrounds.BubbleBackground
+import com.example.jetlagged.backgrounds.FadingCircleBackground
 import com.example.jetlagged.data.HeartRateData
 import com.example.jetlagged.data.WellnessData
 import com.example.jetlagged.ui.theme.Coral
@@ -77,7 +80,6 @@ fun BasicInformationalCard(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TwoLineInfoCard(
     borderColor: Color,
@@ -205,7 +207,7 @@ fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
                 .heightIn(min = 200.dp)
         )
     ) {
-        BubbleBackground(numberBubbles = 10, bubbleColor = LightBlue.copy(alpha = 0.25f))
+        FadingCircleBackground(36.dp, LightBlue.copy(0.25f))
         Column(
             horizontalAlignment = CenterHorizontally,
             modifier = Modifier
@@ -224,6 +226,7 @@ fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
                 WellnessBubble(
                     titleText = stringResource(R.string.coughing_heading),
                     countText = wellnessData.coughing.toString(),
+                    modifier = Modifier.offset(y = 50.dp),
                     metric = "times"
                 )
                 WellnessBubble(

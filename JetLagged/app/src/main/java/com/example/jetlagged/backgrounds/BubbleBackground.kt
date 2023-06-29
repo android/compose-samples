@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import kotlin.random.Random
 
-
 @Composable
 fun BubbleBackground(
     modifier: Modifier = Modifier,

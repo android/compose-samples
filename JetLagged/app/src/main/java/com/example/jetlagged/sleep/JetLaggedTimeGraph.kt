@@ -43,7 +43,7 @@ fun JetLaggedSleepGraphCard(
 
     BasicInformationalCard(
         borderColor = Yellow,
-        modifier = Modifier.animateBounds(Modifier.widthIn(max = 400.dp))
+        modifier = Modifier.animateBounds(Modifier.widthIn(max = 600.dp))
     ) {
         Column {
             HomeScreenCardHeading(text = "Sleep")

@@ -20,7 +20,7 @@ import com.example.jetlagged.sleep.SleepGraphData
 data class JetLaggedHomeScreenState(
     val sleepGraphData: SleepGraphData = sleepData,
     val wellnessData: WellnessData = WellnessData(10, 4, 5),
-    val heartRateData: HeartRateData = HeartRateData(120)
+    val heartRateData: HeartRateOverallData = HeartRateOverallData()
 )
 
 data class WellnessData(
@@ -29,5 +29,6 @@ data class WellnessData(
     val respiration: Int
 )
 
-// TODO Add extra heart rate data
-data class HeartRateData(val averageRate: Int)
+data class HeartRateOverallData(
+    val listData: List<HeartRateData> = generateFakeHeartRateData()
+)
