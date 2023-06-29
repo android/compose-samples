@@ -44,7 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Wrap Material [androidx.compose.material.Scaffold] and set [JetsnackTheme] colors and [JetsnackScaffoldState].
+ * Wrap Material [androidx.compose.material.Scaffold] and set [JetsnackTheme] colors.
  */
 @Composable
 fun JetsnackScaffold(
@@ -88,7 +88,7 @@ fun JetsnackScaffold(
 }
 
 /**
- * Remember and created an instance of [JetsnackScaffoldState]
+ * Remember and creates an instance of [JetsnackScaffoldState]
  */
 @Composable
 fun rememberJetsnackScaffoldState(
