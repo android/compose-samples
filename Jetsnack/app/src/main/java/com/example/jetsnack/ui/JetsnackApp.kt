@@ -26,21 +26,23 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.addHomeGraph
+import com.example.jetsnack.ui.navigation.MainDestinations
+import com.example.jetsnack.ui.navigation.rememberJetsnackNavController
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun JetsnackApp() {
     JetsnackTheme {
-        val appState = rememberJetsnackAppState()
+        val jetsnackNavController = rememberJetsnackNavController()
         NavHost(
-            navController = appState.navController,
+            navController = jetsnackNavController.navController,
             startDestination = MainDestinations.HOME_ROUTE
         ) {
             jetsnackNavGraph(
-                onSnackSelected = appState::navigateToSnackDetail,
-                upPress = appState::upPress,
-                onNavigateToRoute = appState::navigateToBottomBarRoute
+                onSnackSelected = jetsnackNavController::navigateToSnackDetail,
+                upPress = jetsnackNavController::upPress,
+                onNavigateToRoute = jetsnackNavController::navigateToBottomBarRoute
             )
         }
     }
@@ -49,7 +51,7 @@ fun JetsnackApp() {
 private fun NavGraphBuilder.jetsnackNavGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
-    onNavigateToRoute: (String) -> Unit,
+    onNavigateToRoute: (String) -> Unit
 ) {
     navigation(
         route = MainDestinations.HOME_ROUTE,

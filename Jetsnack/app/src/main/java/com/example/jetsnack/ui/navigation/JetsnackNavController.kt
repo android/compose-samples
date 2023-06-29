@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.jetsnack.ui
+package com.example.jetsnack.ui.navigation
 
-import android.content.res.Resources
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.jetsnack.model.SnackbarManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * Destinations used in the [JetsnackApp].
@@ -46,47 +36,22 @@ object MainDestinations {
 }
 
 /**
- * Remembers and creates an instance of [JetsnackAppState]
+ * Remembers and creates an instance of [JetsnackNavController]
  */
 @Composable
-fun rememberJetsnackAppState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    navController: NavHostController = rememberNavController(),
-    snackbarManager: SnackbarManager = SnackbarManager,
-    resources: Resources = resources(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
-) =
-    remember(scaffoldState, navController, snackbarManager, resources, coroutineScope) {
-        JetsnackAppState(scaffoldState, navController, snackbarManager, resources, coroutineScope)
-    }
+fun rememberJetsnackNavController(
+    navController: NavHostController = rememberNavController()
+): JetsnackNavController = remember(navController) {
+    JetsnackNavController(navController)
+}
 
 /**
- * Responsible for holding state related to [JetsnackApp] and containing UI-related logic.
+ * Responsible for holding UI Navigation logic.
  */
 @Stable
-class JetsnackAppState(
-    val scaffoldState: ScaffoldState,
+class JetsnackNavController(
     val navController: NavHostController,
-    private val snackbarManager: SnackbarManager,
-    private val resources: Resources,
-    coroutineScope: CoroutineScope
 ) {
-    // Process snackbars coming from SnackbarManager
-    init {
-        coroutineScope.launch {
-            snackbarManager.messages.collect { currentMessages ->
-                if (currentMessages.isNotEmpty()) {
-                    val message = currentMessages[0]
-                    val text = resources.getText(message.messageId)
-                    // Notify the SnackbarManager so it can remove the current message from the list
-                    snackbarManager.setMessageShown(message.id)
-                    // Display the snackbar on the screen. `showSnackbar` is a function
-                    // that suspends until the snackbar disappears from the screen
-                    scaffoldState.snackbarHostState.showSnackbar(text.toString())
-                }
-            }
-        }
-    }
 
     // ----------------------------------------------------------
     // Navigation state source of truth
@@ -139,15 +104,4 @@ private val NavGraph.startDestination: NavDestination?
  */
 private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
     return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
-}
-
-/**
- * A composable function that returns the [Resources]. It will be recomposed when `Configuration`
- * gets updated.
- */
-@Composable
-@ReadOnlyComposable
-private fun resources(): Resources {
-    LocalConfiguration.current
-    return LocalContext.current.resources
 }

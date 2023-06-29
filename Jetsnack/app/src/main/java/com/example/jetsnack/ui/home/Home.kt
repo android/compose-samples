@@ -78,7 +78,7 @@ import java.util.Locale
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     composable(HomeSections.FEED.route) { from ->
         Feed(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)

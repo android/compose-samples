@@ -84,10 +84,10 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
 import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
-import com.example.jetsnack.ui.rememberJetsnackAppState
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
@@ -101,7 +101,7 @@ fun Cart(
 ) {
     val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
-    val appState = rememberJetsnackAppState()
+    val jetsnackScaffoldState = rememberJetsnackScaffoldState()
     JetsnackScaffold(
         bottomBar = {
             JetsnackBottomBar(
@@ -117,7 +117,7 @@ fun Cart(
                 snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
             )
         },
-        scaffoldState = appState.scaffoldState,
+        scaffoldState = jetsnackScaffoldState.scaffoldState,
         modifier = modifier
     ) { paddingValues ->
         Cart(
