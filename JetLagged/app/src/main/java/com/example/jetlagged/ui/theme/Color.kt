@@ -33,3 +33,9 @@ val Yellow_Awake = Color(0xFFffeac1)
 val Yellow_Rem = Color(0xFFffdd9a)
 val Yellow_Light = Color(0xFFffcb66)
 val Yellow_Deep = Color(0xFFff973c)
+
+val Pink = Color(0xFFEAA8A9)
+val Purple = Color(0xFFD2B4D3)
+val Green = Color(0xFFADD7B9)
+
+val DarkGreen = Color(0xFF558A64)
