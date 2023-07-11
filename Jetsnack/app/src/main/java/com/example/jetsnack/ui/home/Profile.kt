@@ -82,7 +82,6 @@ fun Profile(
             )
         }
     }
-
 }
 
 @Preview("default")

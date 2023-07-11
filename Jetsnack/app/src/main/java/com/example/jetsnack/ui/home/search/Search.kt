@@ -106,7 +106,9 @@ fun Search(
                     SearchDisplay.Categories -> SearchCategories(state.categories)
                     SearchDisplay.Suggestions -> SearchSuggestions(
                         suggestions = state.suggestions,
-                        onSuggestionSelect = { suggestion -> state.query = TextFieldValue(suggestion) }
+                        onSuggestionSelect = { suggestion ->
+                            state.query = TextFieldValue(suggestion)
+                        }
                     )
                     SearchDisplay.Results -> SearchResults(
                         state.searchResults,
