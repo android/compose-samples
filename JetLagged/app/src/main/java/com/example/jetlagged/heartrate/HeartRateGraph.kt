@@ -2,13 +2,11 @@ package com.example.jetlagged.heartrate
 
 import android.graphics.PointF
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -35,7 +33,6 @@ import com.example.jetlagged.ui.theme.Coral
 import com.example.jetlagged.ui.theme.Green
 import com.example.jetlagged.ui.theme.Pink
 import com.example.jetlagged.ui.theme.Purple
-import com.example.jetlagged.ui.theme.Yellow
 import kotlin.math.roundToInt
 
 /*
@@ -56,61 +53,39 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HeartRateGraph(listData: List<HeartRateData>) {
-  Box(Modifier.size(width = 400.dp, height = 100.dp)) {
-//    Background()
-    Graph(listData = listData,
-      modifier = Modifier.padding(16.dp))
-    Highlight()
-  }
-}
-
-@Composable
-private fun Background() {
-  Spacer(Modifier.fillMaxSize().drawBehind {
-    drawLine(
-      Yellow,
-      start = Offset(0f, 0f),
-      end = Offset(size.width, 0f),
-      strokeWidth = 2f
-    )
-    drawLine(
-      Yellow,
-      start = Offset(0f, size.height),
-      end = Offset(size.width, size.height),
-      strokeWidth = 2f
-    )
-    drawLine(
-      Yellow,
-      start = Offset(0f, size.height / 2),
-      end = Offset(size.width, size.height / 2),
-      strokeWidth = 2f
-    )
-  })
+    Box(Modifier.size(width = 400.dp, height = 100.dp)) {
+        Graph(
+            listData = listData,
+            modifier = Modifier.padding(16.dp)
+        )
+        Highlight()
+    }
 }
 
 @Composable
 private fun Graph(
-  listData: List<HeartRateData>,
-  modifier : Modifier = Modifier) {
-  Box(
-    modifier
-      .fillMaxSize()
-      .drawWithCache {
-        val paths = generateSmoothPath(listData, size)
-        val lineBrush = Brush.verticalGradient(listOf(Pink, Purple, Green))
-        onDrawBehind {
-          drawPath(
-            paths.second,
-            Coral.copy(alpha = 0.2f),
-            style = Fill
-          )
-          drawPath(
-            paths.first,
-            lineBrush,
-            style = Stroke(2.dp.toPx())
-          )
-        }
-      })
+    listData: List<HeartRateData>,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier
+            .fillMaxSize()
+            .drawWithCache {
+                val paths = generateSmoothPath(listData, size)
+                val lineBrush = Brush.verticalGradient(listOf(Pink, Purple, Green))
+                onDrawBehind {
+                    drawPath(
+                        paths.second,
+                        Coral.copy(alpha = 0.2f),
+                        style = Fill
+                    )
+                    drawPath(
+                        paths.first,
+                        lineBrush,
+                        style = Stroke(2.dp.toPx())
+                    )
+                }
+            })
 }
 
 @Composable
@@ -119,165 +94,166 @@ private fun Highlight() {
 }
 
 sealed class DataPoint {
-  object NoMeasurement : DataPoint()
-  data class Measurement(
-    val averageMeasurementTime: Int,
-    val minHeartRate: Int,
-    val maxHeartRate: Int,
-    val averageHeartRate: Int,
-  ) : DataPoint()
+    object NoMeasurement : DataPoint()
+    data class Measurement(
+        val averageMeasurementTime: Int,
+        val minHeartRate: Int,
+        val maxHeartRate: Int,
+        val averageHeartRate: Int,
+    ) : DataPoint()
 }
 
 fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> {
-  val path = Path()
-  val variancePath = Path()
+    val path = Path()
+    val variancePath = Path()
 
-  val totalSeconds = 60 * 60 * 24 // total seconds in a day
-  val widthPerSecond = size.width / totalSeconds
-  val maxValue = data.maxBy { it.amount }.amount
-  val minValue = data.minBy { it.amount }.amount
-  val graphTop = ((maxValue + 5) / 10f).roundToInt() * 10
-  val graphBottom = (minValue / 10f).toInt() * 10
-  val range = graphTop - graphBottom
-  val heightPxPerAmount = size.height / range.toFloat()
+    val totalSeconds = 60 * 60 * 24 // total seconds in a day
+    val widthPerSecond = size.width / totalSeconds
+    val maxValue = data.maxBy { it.amount }.amount
+    val minValue = data.minBy { it.amount }.amount
+    val graphTop = ((maxValue + 5) / 10f).roundToInt() * 10
+    val graphBottom = (minValue / 10f).toInt() * 10
+    val range = graphTop - graphBottom
+    val heightPxPerAmount = size.height / range.toFloat()
 
-  var previousX = 0f
-  var previousY = size.height
-  var previousMaxX = 0f
-  var previousMaxY = size.height
-  val groupedMeasurements = (0..numberEntries).map { bracketStart ->
-    heartRateGraphData.filter {
-      (bracketStart * bracketInSeconds..(bracketStart + 1) * bracketInSeconds)
-        .contains(it.date.toSecondOfDay())
+    var previousX = 0f
+    var previousY = size.height
+    var previousMaxX = 0f
+    var previousMaxY = size.height
+    val groupedMeasurements = (0..numberEntries).map { bracketStart ->
+        heartRateGraphData.filter {
+            (bracketStart * bracketInSeconds..(bracketStart + 1) * bracketInSeconds)
+                .contains(it.date.toSecondOfDay())
+        }
+    }.map { heartRates ->
+        if (heartRates.isEmpty()) DataPoint.NoMeasurement else
+            DataPoint.Measurement(
+                averageMeasurementTime = heartRates.map { it.date.toSecondOfDay() }.average()
+                    .roundToInt(),
+                minHeartRate = heartRates.minBy { it.amount }.amount,
+                maxHeartRate = heartRates.maxBy { it.amount }.amount,
+                averageHeartRate = heartRates.map { it.amount }.average().roundToInt()
+            )
     }
-  }.map { heartRates ->
-    if (heartRates.isEmpty()) DataPoint.NoMeasurement else
-      DataPoint.Measurement(
-        averageMeasurementTime = heartRates.map { it.date.toSecondOfDay() }.average().roundToInt(),
-        minHeartRate = heartRates.minBy { it.amount }.amount,
-        maxHeartRate = heartRates.maxBy { it.amount }.amount,
-        averageHeartRate = heartRates.map { it.amount }.average().roundToInt()
-      )
-  }
-  groupedMeasurements.forEachIndexed { i, dataPoint ->
-    if (i == 0 && dataPoint is DataPoint.Measurement) {
-      path.moveTo(
-        0f,
-        size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
-            heightPxPerAmount
-      )
-      variancePath.moveTo(
-        0f,
-        size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
-            heightPxPerAmount
-      )
-    }
+    groupedMeasurements.forEachIndexed { i, dataPoint ->
+        if (i == 0 && dataPoint is DataPoint.Measurement) {
+            path.moveTo(
+                0f,
+                size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
+                        heightPxPerAmount
+            )
+            variancePath.moveTo(
+                0f,
+                size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
+                        heightPxPerAmount
+            )
+        }
 
-    if (dataPoint is DataPoint.Measurement) {
-      val x = dataPoint.averageMeasurementTime * widthPerSecond
-      val y = size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
-          heightPxPerAmount
+        if (dataPoint is DataPoint.Measurement) {
+            val x = dataPoint.averageMeasurementTime * widthPerSecond
+            val y = size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
+                    heightPxPerAmount
 
-      // to do smooth curve graph - we use cubicTo, uncomment section below for non-curve
-      val controlPoint1 = PointF((x + previousX) / 2f, previousY)
-      val controlPoint2 = PointF((x + previousX) / 2f, y)
-      path.cubicTo(
-        controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y,
-        x, y
-      )
-      previousX = x
-      previousY = y
+            // to do smooth curve graph - we use cubicTo, uncomment section below for non-curve
+            val controlPoint1 = PointF((x + previousX) / 2f, previousY)
+            val controlPoint2 = PointF((x + previousX) / 2f, y)
+            path.cubicTo(
+                controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y,
+                x, y
+            )
+            previousX = x
+            previousY = y
 
-      val maxX = dataPoint.averageMeasurementTime * widthPerSecond
-      val maxY = size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
-          heightPxPerAmount
-      val maxControlPoint1 = PointF((maxX + previousMaxX) / 2f, previousMaxY)
-      val maxControlPoint2 = PointF((maxX + previousMaxX) / 2f, maxY)
-      variancePath.cubicTo(
-        maxControlPoint1.x, maxControlPoint1.y, maxControlPoint2.x, maxControlPoint2.y,
-        maxX, maxY
-      )
+            val maxX = dataPoint.averageMeasurementTime * widthPerSecond
+            val maxY = size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
+                    heightPxPerAmount
+            val maxControlPoint1 = PointF((maxX + previousMaxX) / 2f, previousMaxY)
+            val maxControlPoint2 = PointF((maxX + previousMaxX) / 2f, maxY)
+            variancePath.cubicTo(
+                maxControlPoint1.x, maxControlPoint1.y, maxControlPoint2.x, maxControlPoint2.y,
+                maxX, maxY
+            )
 
-      previousMaxX = maxX
-      previousMaxY = maxY
-    }
-  }
-
-  var previousMinX = size.width
-  var previousMinY = size.height
-  groupedMeasurements.reversed().forEachIndexed { index, dataPoint ->
-    val i = 47 - index
-    if (i == 47 && dataPoint is DataPoint.Measurement) {
-      variancePath.moveTo(
-        size.width,
-        size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
-            heightPxPerAmount
-      )
+            previousMaxX = maxX
+            previousMaxY = maxY
+        }
     }
 
-    if (dataPoint is DataPoint.Measurement) {
-      val minX = dataPoint.averageMeasurementTime * widthPerSecond
-      val minY = size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
-          heightPxPerAmount
-      val minControlPoint1 = PointF((minX + previousMinX) / 2f, previousMinY)
-      val minControlPoint2 = PointF((minX + previousMinX) / 2f, minY)
-      variancePath.cubicTo(
-        minControlPoint1.x, minControlPoint1.y, minControlPoint2.x, minControlPoint2.y,
-        minX, minY
-      )
+    var previousMinX = size.width
+    var previousMinY = size.height
+    groupedMeasurements.reversed().forEachIndexed { index, dataPoint ->
+        val i = 47 - index
+        if (i == 47 && dataPoint is DataPoint.Measurement) {
+            variancePath.moveTo(
+                size.width,
+                size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
+                        heightPxPerAmount
+            )
+        }
 
-      previousMinX = minX
-      previousMinY = minY
+        if (dataPoint is DataPoint.Measurement) {
+            val minX = dataPoint.averageMeasurementTime * widthPerSecond
+            val minY = size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
+                    heightPxPerAmount
+            val minControlPoint1 = PointF((minX + previousMinX) / 2f, previousMinY)
+            val minControlPoint2 = PointF((minX + previousMinX) / 2f, minY)
+            variancePath.cubicTo(
+                minControlPoint1.x, minControlPoint1.y, minControlPoint2.x, minControlPoint2.y,
+                minX, minY
+            )
+
+            previousMinX = minX
+            previousMinY = minY
+        }
     }
-  }
-  return path to variancePath
+    return path to variancePath
 }
 
 @OptIn(ExperimentalTextApi::class)
 fun DrawScope.drawHighlight(
-  highlightedWeek: Int,
-  graphData: List<HeartRateData>,
-  textMeasurer: TextMeasurer,
-  labelTextStyle: TextStyle
+    highlightedWeek: Int,
+    graphData: List<HeartRateData>,
+    textMeasurer: TextMeasurer,
+    labelTextStyle: TextStyle
 ) {
-  val amount = graphData[highlightedWeek].amount
-  val minAmount = graphData.minBy { it.amount }.amount
-  val range = graphData.maxBy { it.amount }.amount - minAmount
-  val percentageHeight = ((amount - minAmount).toFloat() / range.toFloat())
-  val pointY = size.height - (size.height * percentageHeight)
-  // draw vertical line on week
-  val x = highlightedWeek * (size.width / (graphData.size - 1))
-  drawLine(
-    HighlightColor,
-    start = Offset(x, 0f),
-    end = Offset(x, size.height),
-    strokeWidth = 2.dp.toPx(),
-    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
-  )
+    val amount = graphData[highlightedWeek].amount
+    val minAmount = graphData.minBy { it.amount }.amount
+    val range = graphData.maxBy { it.amount }.amount - minAmount
+    val percentageHeight = ((amount - minAmount).toFloat() / range.toFloat())
+    val pointY = size.height - (size.height * percentageHeight)
+    // draw vertical line on week
+    val x = highlightedWeek * (size.width / (graphData.size - 1))
+    drawLine(
+        HighlightColor,
+        start = Offset(x, 0f),
+        end = Offset(x, size.height),
+        strokeWidth = 2.dp.toPx(),
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
+    )
 
-  // draw hit circle on graph
-  drawCircle(
-    Color.Green,
-    radius = 4.dp.toPx(),
-    center = Offset(x, pointY)
-  )
+    // draw hit circle on graph
+    drawCircle(
+        Color.Green,
+        radius = 4.dp.toPx(),
+        center = Offset(x, pointY)
+    )
 
-  // draw info box
-  val textLayoutResult = textMeasurer.measure("$amount", style = labelTextStyle)
-  val highlightContainerSize = (textLayoutResult.size).toIntRect().inflate(4.dp.roundToPx()).size
-  val boxTopLeft = (x - (highlightContainerSize.width / 2f))
-    .coerceIn(0f, size.width - highlightContainerSize.width)
-  drawRoundRect(
-    Color.White,
-    topLeft = Offset(boxTopLeft, 0f),
-    size = highlightContainerSize.toSize(),
-    cornerRadius = CornerRadius(8.dp.toPx())
-  )
-  drawText(
-    textLayoutResult,
-    color = Color.Black,
-    topLeft = Offset(boxTopLeft + 4.dp.toPx(), 4.dp.toPx())
-  )
+    // draw info box
+    val textLayoutResult = textMeasurer.measure("$amount", style = labelTextStyle)
+    val highlightContainerSize = (textLayoutResult.size).toIntRect().inflate(4.dp.roundToPx()).size
+    val boxTopLeft = (x - (highlightContainerSize.width / 2f))
+        .coerceIn(0f, size.width - highlightContainerSize.width)
+    drawRoundRect(
+        Color.White,
+        topLeft = Offset(boxTopLeft, 0f),
+        size = highlightContainerSize.toSize(),
+        cornerRadius = CornerRadius(8.dp.toPx())
+    )
+    drawText(
+        textLayoutResult,
+        color = Color.Black,
+        topLeft = Offset(boxTopLeft + 4.dp.toPx(), 4.dp.toPx())
+    )
 }
 
 

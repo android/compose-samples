@@ -37,12 +37,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
-import com.example.jetlagged.backgrounds.yellowBackground
+import com.example.jetlagged.backgrounds.movingWaveLine
 import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
 import com.example.jetlagged.sleep.JetLaggedHeader
 import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
+import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.util.MultiDevicePreview
+import com.example.jetlagged.ui.util.animateBounds
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @MultiDevicePreview
@@ -57,7 +59,7 @@ fun JetLaggedScreen(
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
-        Column(modifier = Modifier.yellowBackground()) {
+        Column(modifier = Modifier.movingWaveLine(Yellow)) {
             JetLaggedHeader(modifier = Modifier.fillMaxWidth())
         }
 
@@ -71,7 +73,7 @@ fun JetLaggedScreen(
         }
         LookaheadScope {
             FlowRow(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.animateBounds(Modifier.fillMaxSize()),
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Center,
                 maxItemsInEachRow = 3
@@ -93,8 +95,15 @@ fun JetLaggedScreen(
                         HeartRateCard(uiState.value.heartRateData)
                     }
                 }
-                AmbienceCard()
-                RoomTemperature()
+                if (windowSizeClass != WindowWidthSizeClass.Medium) {
+                    AmbienceCard()
+                    RoomTemperature()
+                } else {
+                    FlowColumn {
+                        AmbienceCard()
+                        RoomTemperature()
+                    }
+                }
             }
         }
     }

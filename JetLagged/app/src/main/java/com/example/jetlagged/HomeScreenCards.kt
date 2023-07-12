@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -28,12 +26,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SingleBed
 import androidx.compose.material.icons.filled.Watch
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -50,9 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetlagged.backgrounds.BubbleBackground
 import com.example.jetlagged.backgrounds.FadingCircleBackground
-import com.example.jetlagged.data.HeartRateData
 import com.example.jetlagged.data.WellnessData
-import com.example.jetlagged.ui.theme.Coral
 import com.example.jetlagged.ui.theme.DarkCoral
 import com.example.jetlagged.ui.theme.HeadingStyle
 import com.example.jetlagged.ui.theme.LightBlue
@@ -68,7 +63,7 @@ fun BasicInformationalCard(
     content: @Composable () -> Unit
 ) {
     val shape = RoundedCornerShape(24.dp)
-    OutlinedCard(
+    Card(
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
@@ -275,18 +270,26 @@ fun HomeScreenCardHeading(text: String) {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun AmbienceCard() {
-    BasicInformationalCard(borderColor = Lilac, modifier = Modifier.size(250.dp)) {
+    BasicInformationalCard(
+        borderColor = Lilac,
+        modifier = Modifier.animateBounds(Modifier.size(250.dp))
+    ) {
         HomeScreenCardHeading(text = stringResource(R.string.ambiance_heading))
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun RoomTemperature() {
-    BasicInformationalCard(borderColor = DarkCoral, modifier = Modifier.size(250.dp)) {
+    BasicInformationalCard(
+        borderColor = DarkCoral,
+        modifier = Modifier.animateBounds(Modifier.size(250.dp))
+    ) {
         HomeScreenCardHeading(text = stringResource(R.string.room_temperature))
     }
 }
