@@ -31,29 +31,40 @@ fun FadingCircleBackground(bubbleSize: Dp, color: Color) {
     val alphaAnimation = remember {
         Animatable(0.5f)
     }
-    LaunchedEffect(Unit){
-        alphaAnimation.animateTo(1f, animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = EaseInOut),
-            repeatMode = RepeatMode.Reverse
-        ))
+    LaunchedEffect(Unit) {
+        alphaAnimation.animateTo(
+            1f, animationSpec = infiniteRepeatable(
+                animation = tween(2000, easing = EaseInOut),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
     }
-    Box(modifier = Modifier.fillMaxSize()
+    Box(modifier = Modifier
+        .fillMaxSize()
         .drawWithCache {
-        val bubbleSizePx = bubbleSize.toPx()
-        val paddingPx = 8.dp.toPx()
-        val numberCols = size.width / bubbleSizePx
-        val numberRows = size.height / bubbleSizePx
+            val bubbleSizePx = bubbleSize.toPx()
+            val paddingPx = 8.dp.toPx()
+            val numberCols = size.width / bubbleSizePx
+            val numberRows = size.height / bubbleSizePx
 
-        onDrawBehind {
-            repeat(ceil(numberRows).toInt()) { row ->
-                repeat(ceil(numberCols).toInt()) { col ->
-                    val offset = if (row.mod(2) == 0) (bubbleSizePx + paddingPx) / 2f else 0f
-                    drawCircle(color.copy(alpha =  color.alpha * ((row) / numberRows * alphaAnimation.value)), radius = bubbleSizePx / 2f,
-                        center = Offset((bubbleSizePx + paddingPx) * col  + offset, (bubbleSizePx + paddingPx) * row))
+            onDrawBehind {
+                repeat(ceil(numberRows).toInt()) { row ->
+                    repeat(ceil(numberCols).toInt()) { col ->
+                        val offset = if (row.mod(2) == 0)
+                                (bubbleSizePx + paddingPx) / 2f else 0f
+                        drawCircle(
+                            color.copy(
+                                alpha = color.alpha * ((row) / numberRows * alphaAnimation.value)),
+                            radius = bubbleSizePx / 2f,
+                            center = Offset(
+                                (bubbleSizePx + paddingPx) * col + offset,
+                                (bubbleSizePx + paddingPx) * row
+                            )
+                        )
+                    }
                 }
             }
-        }
-    })
+        })
 }
 
 @Preview
