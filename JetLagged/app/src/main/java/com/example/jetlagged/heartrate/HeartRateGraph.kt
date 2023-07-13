@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.jetlagged.heartrate
 
 import android.graphics.PointF
@@ -85,12 +101,12 @@ private fun Graph(
                         style = Stroke(2.dp.toPx())
                     )
                 }
-            })
+            }
+    )
 }
 
 @Composable
 private fun Highlight() {
-
 }
 
 sealed class DataPoint {
@@ -140,19 +156,19 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             path.moveTo(
                 0f,
                 size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
-                        heightPxPerAmount
+                    heightPxPerAmount
             )
             variancePath.moveTo(
                 0f,
                 size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
-                        heightPxPerAmount
+                    heightPxPerAmount
             )
         }
 
         if (dataPoint is DataPoint.Measurement) {
             val x = dataPoint.averageMeasurementTime * widthPerSecond
             val y = size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
-                    heightPxPerAmount
+                heightPxPerAmount
 
             // to do smooth curve graph - we use cubicTo, uncomment section below for non-curve
             val controlPoint1 = PointF((x + previousX) / 2f, previousY)
@@ -166,7 +182,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
 
             val maxX = dataPoint.averageMeasurementTime * widthPerSecond
             val maxY = size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
-                    heightPxPerAmount
+                heightPxPerAmount
             val maxControlPoint1 = PointF((maxX + previousMaxX) / 2f, previousMaxY)
             val maxControlPoint2 = PointF((maxX + previousMaxX) / 2f, maxY)
             variancePath.cubicTo(
@@ -187,14 +203,14 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             variancePath.moveTo(
                 size.width,
                 size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
-                        heightPxPerAmount
+                    heightPxPerAmount
             )
         }
 
         if (dataPoint is DataPoint.Measurement) {
             val minX = dataPoint.averageMeasurementTime * widthPerSecond
             val minY = size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
-                    heightPxPerAmount
+                heightPxPerAmount
             val minControlPoint1 = PointF((minX + previousMinX) / 2f, previousMinY)
             val minControlPoint2 = PointF((minX + previousMinX) / 2f, minY)
             variancePath.cubicTo(
@@ -255,7 +271,6 @@ fun DrawScope.drawHighlight(
         topLeft = Offset(boxTopLeft + 4.dp.toPx(), 4.dp.toPx())
     )
 }
-
 
 val BarColor = Color.White.copy(alpha = 0.3f)
 val HighlightColor = Color.White.copy(alpha = 0.7f)

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.jetlagged
 
 import androidx.compose.foundation.BorderStroke
@@ -48,7 +64,6 @@ import androidx.compose.ui.unit.sp
 import com.example.jetlagged.backgrounds.BubbleBackground
 import com.example.jetlagged.backgrounds.FadingCircleBackground
 import com.example.jetlagged.data.WellnessData
-import com.example.jetlagged.ui.theme.DarkCoral
 import com.example.jetlagged.ui.theme.HeadingStyle
 import com.example.jetlagged.ui.theme.LightBlue
 import com.example.jetlagged.ui.theme.Lilac
@@ -104,7 +119,8 @@ fun TwoLineInfoCard(
                         .align(CenterStart)
                 ) {
                     Icon(
-                        icon, contentDescription = null, modifier = Modifier
+                        icon, contentDescription = null,
+                        modifier = Modifier
                             .size(50.dp)
                             .align(CenterVertically)
                     )
@@ -131,7 +147,8 @@ fun TwoLineInfoCard(
                         .align(Center)
                 ) {
                     Icon(
-                        icon, contentDescription = null, modifier = Modifier
+                        icon, contentDescription = null,
+                        modifier = Modifier
                             .size(50.dp)
                             .align(CenterHorizontally)
                     )
@@ -191,13 +208,13 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
     )
 }
 
-
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
     BasicInformationalCard(
-        borderColor = LightBlue, modifier = Modifier.animateBounds(
+        borderColor = LightBlue,
+        modifier = Modifier.animateBounds(
             Modifier
                 .widthIn(max = 400.dp)
                 .heightIn(min = 200.dp)

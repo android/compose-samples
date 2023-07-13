@@ -30,7 +30,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -46,7 +45,6 @@ import com.example.jetlagged.sleep.JetLaggedHeader
 import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.util.MultiDevicePreview
-import com.example.jetlagged.ui.util.animateBounds
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @MultiDevicePreview
