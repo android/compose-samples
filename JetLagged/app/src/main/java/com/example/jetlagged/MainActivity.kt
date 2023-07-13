@@ -30,6 +30,9 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.jetlagged.ui.theme.JetLaggedTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,13 +43,21 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            JetLaggedTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = White
-                ) {
-                    val windowSizeClass = calculateWindowSizeClass(this)
-                    JetLaggedScreen(windowSizeClass.widthSizeClass)
+            val navController = rememberNavController()
+            val windowSizeClass = calculateWindowSizeClass(this)
+            NavHost(
+                navController,
+                startDestination = "dashboard"
+            ) {
+                composable("dashboard") {
+                    JetLaggedTheme {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = White
+                        ) {
+                            JetLaggedScreen(windowSizeClass.widthSizeClass)
+                        }
+                    }
                 }
             }
         }

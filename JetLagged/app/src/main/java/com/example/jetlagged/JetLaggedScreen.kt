@@ -37,6 +37,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetlagged.backgrounds.movingWaveLine
 import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
@@ -51,7 +53,7 @@ import com.example.jetlagged.ui.util.animateBounds
 @Composable
 fun JetLaggedScreen(
     windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
-    viewModel: JetLaggedHomeScreenViewModel = JetLaggedHomeScreenViewModel() // todo fix this to come from nav
+    viewModel: JetLaggedHomeScreenViewModel = viewModel()
 ) {
     Column(
         modifier = Modifier
@@ -64,7 +66,7 @@ fun JetLaggedScreen(
         }
 
         val uiState =
-            viewModel.uiState.collectAsState() // todo do i change to collectAsStateWithLifecycle
+            viewModel.uiState.collectAsStateWithLifecycle()
         val timeSleepSummaryCards = remember {
             movableContentOf {
                 AverageTimeInBedCard()
@@ -73,7 +75,7 @@ fun JetLaggedScreen(
         }
         LookaheadScope {
             FlowRow(
-                modifier = Modifier.animateBounds(Modifier.fillMaxSize()),
+                modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Center,
                 maxItemsInEachRow = 3
@@ -93,15 +95,6 @@ fun JetLaggedScreen(
                     FlowColumn {
                         WellnessCard(uiState.value.wellnessData)
                         HeartRateCard(uiState.value.heartRateData)
-                    }
-                }
-                if (windowSizeClass != WindowWidthSizeClass.Medium) {
-                    AmbienceCard()
-                    RoomTemperature()
-                } else {
-                    FlowColumn {
-                        AmbienceCard()
-                        RoomTemperature()
                     }
                 }
             }

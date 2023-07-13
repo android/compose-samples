@@ -212,6 +212,7 @@ fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
             HomeScreenCardHeading(text = stringResource(R.string.wellness_heading))
             FlowRow(
                 horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxHeight()
             ) {
                 WellnessBubble(
@@ -268,28 +269,4 @@ fun HomeScreenCardHeading(text: String) {
         textAlign = TextAlign.Center,
         style = HeadingStyle
     )
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
-@Composable
-fun AmbienceCard() {
-    BasicInformationalCard(
-        borderColor = Lilac,
-        modifier = Modifier.animateBounds(Modifier.size(250.dp))
-    ) {
-        HomeScreenCardHeading(text = stringResource(R.string.ambiance_heading))
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
-@Composable
-fun RoomTemperature() {
-    BasicInformationalCard(
-        borderColor = DarkCoral,
-        modifier = Modifier.animateBounds(Modifier.size(250.dp))
-    ) {
-        HomeScreenCardHeading(text = stringResource(R.string.room_temperature))
-    }
 }
