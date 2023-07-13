@@ -16,7 +16,6 @@
 
 package com.example.jetsnack.ui.home
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +43,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -60,7 +58,6 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FilterScreen(
     onDismiss: () -> Unit
@@ -94,7 +91,7 @@ fun FilterScreen(
                         )
                     },
                     actions = {
-                        var resetEnabled = sortState != defaultFilter
+                        val resetEnabled = sortState != defaultFilter
                         IconButton(
                             onClick = { /* TODO: Open search */ },
                             enabled = resetEnabled

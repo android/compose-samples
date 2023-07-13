@@ -18,7 +18,6 @@ package com.example.jetsnack.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,6 +29,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,6 +49,7 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -56,16 +57,28 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 @Composable
 fun Feed(
     onSnackClick: (Long) -> Unit,
+    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackCollections = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
-    Feed(
-        snackCollections,
-        filters,
-        onSnackClick,
-        modifier
-    )
+    JetsnackScaffold(
+        bottomBar = {
+            JetsnackBottomBar(
+                tabs = HomeSections.values(),
+                currentRoute = HomeSections.FEED.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        },
+        modifier = modifier
+    ) { paddingValues ->
+        Feed(
+            snackCollections,
+            filters,
+            onSnackClick,
+            Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
@@ -75,7 +88,6 @@ private fun Feed(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
             SnackCollectionList(snackCollections, filters, onSnackClick)
@@ -84,7 +96,6 @@ private fun Feed(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SnackCollectionList(
     snackCollections: List<SnackCollection>,
@@ -136,6 +147,6 @@ private fun SnackCollectionList(
 @Composable
 fun HomePreview() {
     JetsnackTheme {
-        Feed(onSnackClick = { })
+        Feed(onSnackClick = { }, onNavigateToRoute = { })
     }
 }

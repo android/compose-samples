@@ -60,46 +60,63 @@ import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.home.HomeSections
+import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringBackIcon
 
 @Composable
 fun Search(
     onSnackClick: (Long) -> Unit,
+    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     state: SearchState = rememberSearchState()
 ) {
-    JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        Column {
-            Spacer(modifier = Modifier.statusBarsPadding())
-            SearchBar(
-                query = state.query,
-                onQueryChange = { state.query = it },
-                searchFocused = state.focused,
-                onSearchFocusChange = { state.focused = it },
-                onClearQuery = { state.query = TextFieldValue("") },
-                searching = state.searching
+    JetsnackScaffold(
+        bottomBar = {
+            JetsnackBottomBar(
+                tabs = HomeSections.values(),
+                currentRoute = HomeSections.SEARCH.route,
+                navigateToRoute = onNavigateToRoute
             )
-            JetsnackDivider()
+        },
+        modifier = modifier
+    ) { paddingValues ->
+        JetsnackSurface(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            Column {
+                Spacer(modifier = Modifier.statusBarsPadding())
+                SearchBar(
+                    query = state.query,
+                    onQueryChange = { state.query = it },
+                    searchFocused = state.focused,
+                    onSearchFocusChange = { state.focused = it },
+                    onClearQuery = { state.query = TextFieldValue("") },
+                    searching = state.searching
+                )
+                JetsnackDivider()
 
-            LaunchedEffect(state.query.text) {
-                state.searching = true
-                state.searchResults = SearchRepo.search(state.query.text)
-                state.searching = false
-            }
-            when (state.searchDisplay) {
-                SearchDisplay.Categories -> SearchCategories(state.categories)
-                SearchDisplay.Suggestions -> SearchSuggestions(
-                    suggestions = state.suggestions,
-                    onSuggestionSelect = { suggestion -> state.query = TextFieldValue(suggestion) }
-                )
-                SearchDisplay.Results -> SearchResults(
-                    state.searchResults,
-                    state.filters,
-                    onSnackClick
-                )
-                SearchDisplay.NoResults -> NoResults(state.query.text)
+                LaunchedEffect(state.query.text) {
+                    state.searching = true
+                    state.searchResults = SearchRepo.search(state.query.text)
+                    state.searching = false
+                }
+                when (state.searchDisplay) {
+                    SearchDisplay.Categories -> SearchCategories(state.categories)
+                    SearchDisplay.Suggestions -> SearchSuggestions(
+                        suggestions = state.suggestions,
+                        onSuggestionSelect = { suggestion ->
+                            state.query = TextFieldValue(suggestion)
+                        }
+                    )
+                    SearchDisplay.Results -> SearchResults(
+                        state.searchResults,
+                        state.filters,
+                        onSnackClick
+                    )
+                    SearchDisplay.NoResults -> NoResults(state.query.text)
+                }
             }
         }
     }
