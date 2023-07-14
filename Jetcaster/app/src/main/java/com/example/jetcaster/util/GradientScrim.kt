@@ -96,7 +96,6 @@ private data class VerticalGradientElement(
 
     override fun create() = VerticalGradientModifier(createOnDraw())
 
-
     override fun update(node: VerticalGradientModifier) {
         node.onDraw = createOnDraw()
     }
