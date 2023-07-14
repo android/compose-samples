@@ -34,3 +34,4 @@ jobs:
         delete-branch: true
         title: '🤖 Update Dependencies'
         body: Updated depedencies
+        reviewers: ${{ github.actor }}
