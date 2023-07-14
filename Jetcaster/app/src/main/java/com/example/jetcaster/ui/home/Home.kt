@@ -185,7 +185,7 @@ fun HomeContent(
         }
 
         DynamicThemePrimaryColorsFromImage(dominantColorState) {
-            val pagerState = rememberPagerState()
+            val pagerState = rememberPagerState { featuredPodcasts.size }
 
             val selectedImageUrl = featuredPodcasts.getOrNull(pagerState.currentPage)
                 ?.podcast?.imageUrl
@@ -255,6 +255,7 @@ fun HomeContent(
             HomeCategory.Library -> {
                 // TODO
             }
+
             HomeCategory.Discover -> {
                 Discover(
                     navigateToPlayer = navigateToPlayer,
@@ -326,7 +327,6 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     HorizontalPager(
-        pageCount = items.size,
         state = pagerState,
         modifier = modifier
     ) { page ->
@@ -405,6 +405,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
             val weeks = days / 7
             quantityStringResource(R.plurals.updated_weeks_ago, weeks, weeks)
         }
+
         days > 0 -> quantityStringResource(R.plurals.updated_days_ago, days, days)
         else -> stringResource(R.string.updated_today)
     }
