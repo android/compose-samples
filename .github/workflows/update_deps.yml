@@ -35,4 +35,3 @@ jobs:
         title: '🤖 Update Dependencies'
         body: Updated depedencies
         reviewers: ${{ github.actor }}
-        team-reviewers: android/performance-devrel
