@@ -96,7 +96,7 @@ fun CraneHome(
 }
 
 @OptIn(
-    ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
+    ExperimentalMaterialApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -111,9 +111,11 @@ fun CraneHomeContent(
     val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    val pagerState = rememberPagerState(initialPage = CraneScreen.Fly.ordinal)
-    val coroutineScope = rememberCoroutineScope()
     val craneScreenValues = CraneScreen.values()
+    val pagerState =
+        rememberPagerState(initialPage = CraneScreen.Fly.ordinal) { craneScreenValues.size }
+
+    val coroutineScope = rememberCoroutineScope()
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
@@ -133,19 +135,16 @@ fun CraneHomeContent(
         },
         backLayerContent = {
             SearchContent(
-                widthSize,
-                craneScreenValues[pagerState.currentPage],
-                viewModel,
-                onPeopleChanged,
-                onDateSelectionClicked,
-                onExploreItemClicked
+                widthSize = widthSize,
+                tabSelected = craneScreenValues[pagerState.currentPage],
+                viewModel = viewModel,
+                onPeopleChanged = onPeopleChanged,
+                onDateSelectionClicked = onDateSelectionClicked,
+                onExploreItemClicked = onExploreItemClicked
             )
         },
         frontLayerContent = {
-            HorizontalPager(
-                pageCount = craneScreenValues.size,
-                state = pagerState
-            ) { page ->
+            HorizontalPager(state = pagerState) { page ->
                 when (craneScreenValues[page]) {
                     CraneScreen.Fly -> {
                         suggestedDestinations?.let { destinations ->
@@ -157,6 +156,7 @@ fun CraneHomeContent(
                             )
                         }
                     }
+
                     CraneScreen.Sleep -> {
                         ExploreSection(
                             widthSize = widthSize,
@@ -165,6 +165,7 @@ fun CraneHomeContent(
                             onItemClicked = onExploreItemClicked
                         )
                     }
+
                     CraneScreen.Eat -> {
                         ExploreSection(
                             widthSize = widthSize,
@@ -202,6 +203,7 @@ private fun HomeTabBar(
 }
 
 private const val TAB_SWITCH_ANIM_DURATION = 300
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
@@ -244,6 +246,7 @@ private fun SearchContent(
                     onExploreItemClicked = onExploreItemClicked
                 )
             )
+
             CraneScreen.Sleep -> SleepSearchContent(
                 widthSize = widthSize,
                 datesSelected = selectedDates,
@@ -253,6 +256,7 @@ private fun SearchContent(
                     onExploreItemClicked = onExploreItemClicked
                 )
             )
+
             CraneScreen.Eat -> EatSearchContent(
                 widthSize = widthSize,
                 datesSelected = selectedDates,
