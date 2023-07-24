@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.Posture
 import androidx.compose.material3.adaptive.calculateWindowAdaptiveInfo
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
@@ -51,18 +52,14 @@ import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationRail
 import com.example.reply.ui.navigation.ReplyRoute
 import com.example.reply.ui.navigation.ReplyTopLevelDestination
-import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import com.example.reply.ui.utils.ReplyNavigationType
-import com.example.reply.ui.utils.isBookPosture
-import com.example.reply.ui.utils.isSeparating
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ReplyApp(
-    displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
     navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> },
@@ -82,16 +79,7 @@ fun ReplyApp(
      */
 
     val windowSize = calculateWindowAdaptiveInfo().windowSizeClass
-    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
-    val foldingDevicePosture = when {
-        isBookPosture(foldingFeature) ->
-            DevicePosture.BookPosture(foldingFeature.bounds)
-
-        isSeparating(foldingFeature) ->
-            DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
-
-        else -> DevicePosture.NormalPosture
-    }
+    val devicePosture = calculateWindowAdaptiveInfo().posture
 
     when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
@@ -100,14 +88,14 @@ fun ReplyApp(
         }
         WindowWidthSizeClass.Medium -> {
             navigationType = ReplyNavigationType.NAVIGATION_RAIL
-            contentType = if (foldingDevicePosture != DevicePosture.NormalPosture) {
+            contentType = if (devicePosture.hasVerticalHinge) {
                 ReplyContentType.DUAL_PANE
             } else {
                 ReplyContentType.SINGLE_PANE
             }
         }
         WindowWidthSizeClass.Expanded -> {
-            navigationType = if (foldingDevicePosture is DevicePosture.BookPosture) {
+            navigationType = if (devicePosture.hasVerticalHinge) {
                 ReplyNavigationType.NAVIGATION_RAIL
             } else {
                 ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
@@ -140,7 +128,6 @@ fun ReplyApp(
     ReplyNavigationWrapper(
         navigationType = navigationType,
         contentType = contentType,
-        displayFeatures = displayFeatures,
         navigationContentPosition = navigationContentPosition,
         replyHomeUIState = replyHomeUIState,
         closeDetailScreen = closeDetailScreen,
@@ -154,7 +141,6 @@ fun ReplyApp(
 private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
-    displayFeatures: List<DisplayFeature>,
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit,
@@ -184,7 +170,6 @@ private fun ReplyNavigationWrapper(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
-                displayFeatures = displayFeatures,
                 navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
@@ -214,7 +199,6 @@ private fun ReplyNavigationWrapper(
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
-                displayFeatures = displayFeatures,
                 navigationContentPosition = navigationContentPosition,
                 replyHomeUIState = replyHomeUIState,
                 navController = navController,
@@ -237,7 +221,6 @@ fun ReplyAppContent(
     modifier: Modifier = Modifier,
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
-    displayFeatures: List<DisplayFeature>,
     navigationContentPosition: ReplyNavigationContentPosition,
     replyHomeUIState: ReplyHomeUIState,
     navController: NavHostController,
@@ -265,9 +248,7 @@ fun ReplyAppContent(
             ReplyNavHost(
                 navController = navController,
                 contentType = contentType,
-                displayFeatures = displayFeatures,
                 replyHomeUIState = replyHomeUIState,
-                navigationType = navigationType,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
                 toggleSelectedEmail = toggleSelectedEmail,
@@ -287,9 +268,7 @@ fun ReplyAppContent(
 private fun ReplyNavHost(
     navController: NavHostController,
     contentType: ReplyContentType,
-    displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
-    navigationType: ReplyNavigationType,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     toggleSelectedEmail: (Long) -> Unit,
@@ -304,8 +283,6 @@ private fun ReplyNavHost(
             ReplyInboxScreenCAMAL(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
-                navigationType = navigationType,
-                displayFeatures = displayFeatures,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
                 toggleSelectedEmail = toggleSelectedEmail

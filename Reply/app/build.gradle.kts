@@ -103,7 +103,6 @@ dependencies {
 
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material3:material3-adaptive-android:1.0.0-SNAPSHOT")
-    implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
 
     implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.material.iconsExtended)

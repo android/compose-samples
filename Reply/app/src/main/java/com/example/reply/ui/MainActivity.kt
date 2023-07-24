@@ -31,23 +31,20 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ReplyTheme
-import com.google.accompanist.adaptive.calculateDisplayFeatures
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel: ReplyHomeViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             ReplyTheme {
-                val displayFeatures = calculateDisplayFeatures(this)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 ReplyApp(
-                    displayFeatures = displayFeatures,
                     replyHomeUIState = uiState,
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
@@ -64,62 +61,57 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 @Preview(showBackground = true)
 @Composable
 fun ReplyAppPreview() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            displayFeatures = emptyList(),
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 @Preview(showBackground = true, widthDp = 700, heightDp = 500)
 @Composable
 fun ReplyAppPreviewTablet() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            displayFeatures = emptyList(),
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 @Preview(showBackground = true, widthDp = 500, heightDp = 700)
 @Composable
 fun ReplyAppPreviewTabletPortrait() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            displayFeatures = emptyList(),
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 @Preview(showBackground = true, widthDp = 1100, heightDp = 600)
 @Composable
 fun ReplyAppPreviewDesktop() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            displayFeatures = emptyList(),
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 @Preview(showBackground = true, widthDp = 600, heightDp = 1100)
 @Composable
 fun ReplyAppPreviewDesktopPortrait() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            displayFeatures = emptyList(),
         )
     }
 }
