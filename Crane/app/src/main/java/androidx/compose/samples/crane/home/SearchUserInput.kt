@@ -134,9 +134,9 @@ private fun tintPeopleUserInput(
     val validColor = MaterialTheme.colors.onSurface
     val invalidColor = MaterialTheme.colors.secondary
 
-    val transition = updateTransition(transitionState)
+    val transition = updateTransition(transitionState, label = stringResource(R.string.tint_transition))
     return transition.animateColor(
-        transitionSpec = { tween(durationMillis = 300) }
+        transitionSpec = { tween(durationMillis = 300) }, label = stringResource(R.string.tint_transition_spec)
     ) {
         if (it == Valid) validColor else invalidColor
     }

@@ -39,6 +39,8 @@
     <string name="select_destination_to_caption">To</string>
     <string name="select_dates">Select Dates</string>
     <string name="error_max_people">Error: We don\'t support more than %d people</string>
+    <string name="tint_transition_spec">tintTransitionSpec</string>
+    <string name="tint_transition">tintTransition</string>
     <plurals name="number_adults_selected">
         <item quantity="one"> %d Adult%s</item>
         <item quantity="other"> %d Adults%s</item>
