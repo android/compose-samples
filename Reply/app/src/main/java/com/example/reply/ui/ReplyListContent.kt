@@ -33,6 +33,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.rememberListDetailPaneScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -127,6 +131,59 @@ fun ReplyInboxScreen(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+fun ReplyInboxScreenCAMAL(
+    contentType: ReplyContentType,
+    replyHomeUIState: ReplyHomeUIState,
+    navigationType: ReplyNavigationType,
+    displayFeatures: List<DisplayFeature>,
+    closeDetailScreen: () -> Unit,
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
+    toggleSelectedEmail: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    /**
+     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
+     */
+    val layoutState =
+        rememberListDetailPaneScaffoldState(initialFocus = ListDetailPaneScaffoldRole.List)
+    LaunchedEffect(key1 = contentType) {
+        if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
+            closeDetailScreen()
+        } else {
+            layoutState. navigateTo(ListDetailPaneScaffoldRole.Detail)
+        }
+    }
+
+    val emailLazyListState = rememberLazyListState()
+
+
+    ListDetailPaneScaffold(
+        layoutState = layoutState,
+        listPane = {
+            ReplyEmailList(
+                emails = replyHomeUIState.emails,
+                openedEmail = replyHomeUIState.openedEmail,
+                selectedEmailIds = replyHomeUIState.selectedEmails,
+                toggleEmailSelection = toggleSelectedEmail,
+                emailLazyListState = emailLazyListState,
+                navigateToDetail = { id, contentType ->
+                    navigateToDetail.invoke(id, contentType)
+                    layoutState.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                }
+            )
+        },
+        detailPane = {
+            ReplyEmailDetail(
+                email = replyHomeUIState.openedEmail ?: replyHomeUIState.emails.first(),
+                isFullScreen = false
+            )
+        }
+    )
+}
+
 
 @Composable
 fun ReplySinglePaneContent(

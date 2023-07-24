@@ -43,12 +43,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ReplyTheme {
-                val windowSize = calculateWindowSizeClass(this)
                 val displayFeatures = calculateDisplayFeatures(this)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 ReplyApp(
-                    windowSize = windowSize,
                     displayFeatures = displayFeatures,
                     replyHomeUIState = uiState,
                     closeDetailScreen = {
@@ -73,7 +71,6 @@ fun ReplyAppPreview() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            windowSize = WindowSizeClass.calculateFromSize(DpSize(400.dp, 900.dp)),
             displayFeatures = emptyList(),
         )
     }
@@ -86,7 +83,6 @@ fun ReplyAppPreviewTablet() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            windowSize = WindowSizeClass.calculateFromSize(DpSize(700.dp, 500.dp)),
             displayFeatures = emptyList(),
         )
     }
@@ -99,7 +95,6 @@ fun ReplyAppPreviewTabletPortrait() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            windowSize = WindowSizeClass.calculateFromSize(DpSize(500.dp, 700.dp)),
             displayFeatures = emptyList(),
         )
     }
@@ -112,7 +107,6 @@ fun ReplyAppPreviewDesktop() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            windowSize = WindowSizeClass.calculateFromSize(DpSize(1100.dp, 600.dp)),
             displayFeatures = emptyList(),
         )
     }
@@ -125,7 +119,6 @@ fun ReplyAppPreviewDesktopPortrait() {
     ReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
-            windowSize = WindowSizeClass.calculateFromSize(DpSize(600.dp, 1100.dp)),
             displayFeatures = emptyList(),
         )
     }

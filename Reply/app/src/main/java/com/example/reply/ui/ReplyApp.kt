@@ -26,6 +26,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.calculateWindowAdaptiveInfo
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -57,10 +59,9 @@ import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ReplyApp(
-    windowSize: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
@@ -79,8 +80,9 @@ fun ReplyApp(
      * In the state of folding device If it's half fold in BookPosture we want to avoid content
      * at the crease/hinge
      */
-    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
+    val windowSize = calculateWindowAdaptiveInfo().windowSizeClass
+    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
     val foldingDevicePosture = when {
         isBookPosture(foldingFeature) ->
             DevicePosture.BookPosture(foldingFeature.bounds)
@@ -299,7 +301,7 @@ private fun ReplyNavHost(
         startDestination = ReplyRoute.INBOX,
     ) {
         composable(ReplyRoute.INBOX) {
-            ReplyInboxScreen(
+            ReplyInboxScreenCAMAL(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
                 navigationType = navigationType,
