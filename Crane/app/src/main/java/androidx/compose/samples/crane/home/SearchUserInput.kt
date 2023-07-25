@@ -136,7 +136,7 @@ private fun tintPeopleUserInput(
 
     val transition = updateTransition(transitionState, label = "tintTransition")
     return transition.animateColor(
-        transitionSpec = { tween(durationMillis = 300) }, label ="tintTransitionSpec"
+        transitionSpec = { tween(durationMillis = 300) }, label = "tintTransitionSpec"
     ) {
         if (it == Valid) validColor else invalidColor
     }
