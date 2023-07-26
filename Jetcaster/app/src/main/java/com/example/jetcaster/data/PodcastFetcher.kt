@@ -130,11 +130,14 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
         imageUrl = feedInfo?.imageUri?.toString()
     )
 
-    val categories = feedInfo?.categories
-        ?.map { Category(name = it.name) }
-        ?.toSet() ?: emptySet()
+    val allCategories = (feedInfo?.categories?.map { Category(name = it.name) }
+        ?.toSet() ?: emptySet()).toMutableSet()
+    allCategories += categories?.map { Category(name = it.name) }?.toSet() ?: emptySet()
+    for (e in entries)
+        for (c in e.categories)
+            allCategories += Category(name = c.name)
 
-    return PodcastRssResponse.Success(podcast, episodes, categories)
+    return PodcastRssResponse.Success(podcast, episodes, allCategories)
 }
 
 /**
