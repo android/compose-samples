@@ -17,7 +17,6 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseInOut
@@ -25,7 +24,7 @@ import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -204,7 +203,6 @@ private fun HomeTabBar(
 
 private const val TAB_SWITCH_ANIM_DURATION = 300
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SearchContent(
     widthSize: WindowWidthSizeClass,
@@ -222,7 +220,7 @@ private fun SearchContent(
         transitionSpec = {
             fadeIn(
                 animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseIn)
-            ).with(
+            ).togetherWith(
                 fadeOut(
                     animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseOut)
                 )
