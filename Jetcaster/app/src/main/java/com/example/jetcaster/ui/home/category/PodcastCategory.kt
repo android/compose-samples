@@ -170,7 +170,7 @@ fun EpisodeListItem(
         // If we have an image Url, we can show it using Coil
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(podcast.imageUrl)
+                .data(episode.imageUri)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
