@@ -153,7 +153,8 @@ private fun SyndEntry.toEpisode(podcastUri: String): Episode {
         summary = entryInformation?.summary ?: description?.value,
         subtitle = entryInformation?.subtitle,
         published = Instant.ofEpochMilli(publishedDate.time).atOffset(ZoneOffset.UTC),
-        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) }
+        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) },
+        imageUri = entryInformation?.imageUri
     )
 }
 

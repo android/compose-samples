@@ -144,7 +144,7 @@ fun PlayerContent(
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    PlayerDynamicTheme(uiState.podcastImageUrl) {
+    PlayerDynamicTheme(uiState.episodeImageUrl) {
         val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
         // Use a two pane layout if there is a fold impacting layout (meaning it is separating
@@ -235,7 +235,7 @@ private fun PlayerContentRegular(
         ) {
             Spacer(modifier = Modifier.weight(1f))
             PlayerImage(
-                podcastImageUrl = uiState.podcastImageUrl,
+                podcastImageUrl = uiState.episodeImageUrl,
                 modifier = Modifier.weight(10f)
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -278,7 +278,7 @@ private fun PlayerContentTableTopTop(
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PlayerImage(uiState.podcastImageUrl)
+        PlayerImage(uiState.episodeImageUrl)
     }
 }
 
@@ -364,7 +364,7 @@ private fun PlayerContentBookEnd(
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         PlayerImage(
-            podcastImageUrl = uiState.podcastImageUrl,
+            podcastImageUrl = uiState.episodeImageUrl,
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .weight(1f)
