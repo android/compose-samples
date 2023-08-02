@@ -66,7 +66,8 @@ fun Discover(
                 targetState = selectedCategory,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                label = "crossfade_discover",
             ) { category ->
                 /**
                  * TODO, need to think about how this will scroll within the outer VerticalScroller
