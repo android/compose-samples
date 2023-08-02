@@ -65,11 +65,18 @@ fun ToggleFollowPodcastIconButton(
                 when {
                     isFollowed -> LocalContentColor.current
                     else -> Color.Black.copy(alpha = ContentAlpha.high)
-                }
+                },
+                label = "animation_tint_color_toggle_follow_icon_button"
             ).value,
             modifier = Modifier
                 .shadow(
-                    elevation = animateDpAsState(if (isFollowed) 0.dp else 1.dp).value,
+                    elevation = animateDpAsState(
+                        if (isFollowed)
+                            0.dp
+                        else
+                            1.dp,
+                        label = "animation_elevation_dp_toggle_follow_icon_button"
+                    ).value,
                     shape = MaterialTheme.shapes.small
                 )
                 .background(
@@ -77,7 +84,8 @@ fun ToggleFollowPodcastIconButton(
                         when {
                             isFollowed -> MaterialTheme.colors.surface.copy(0.38f)
                             else -> Color.White
-                        }
+                        },
+                        label = "animation_background_color_toggle_follow_icon_button",
                     ).value,
                     shape = MaterialTheme.shapes.small
                 )
