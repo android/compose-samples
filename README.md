@@ -16,6 +16,19 @@ project from Android Studio following the steps
 🧬 Samples
 ------------
 
+| App                                  | Complexity | Resource Loading | UI Testing | Animation | Coroutines | Custom Layouts | Theme Type                           | Adaptive UI |
+|--------------------------------------|------------|------------------|------------|-----------|------------|----------------|--------------------------------------|-------------|
+| [Jetchat](Jetchat/)                  | Low        | ✔                | ✔          | ✔         | ✘          | ✘              | Material Design 3                   | ✘           |
+| [Jetsurvey](Jetsurvey/)              | Low        | ✔                | ✘          | ✘         | ✘          | ✘              | -                                    | ✘           |
+| [Rally](Rally/)                      | Low        | ✔                | ✔          | ✔         | ✘          | ✔              | Material Theming (Dark-only)        | ✘           |
+| [JetNews](JetNews/)                  | Medium     | ✔                | ✔          | ✘         | ✘          | ✘              | Light & Dark                         | ✘           |
+| [Jetsnack](Jetsnack/)                | Medium     | ✘                | ✘          | ✔         | ✘          | ✘              | -                                    | ✘           |
+| [Crane](Crane/)                      | Medium     | ✘                | ✔          | ✘         | ✘          | ✔              | -                                    | ✘           |
+| [Owl](Owl/)                          | Medium     | ✘                | ✘          | ✔         | ✘          | ✔              | Material Theming & Light/Dark       | ✘           |
+| [Jetcaster](Jetcaster/)              | Advanced   | ✔                | ✘          | ✔         | ✔          | ✘              | Dynamic Theming                     | ✘           |
+| [Reply](Reply/)                      | Advanced   | ✘                | ✘          | ✘         | ✘          | ✘              | Material 3 Theming & Dynamic Colors | ✔           |
+| [JetLagged](JetLagged/)              | Custom     | ✘                | ✘          | ✘         | ✘          | ✔              | -                                    | ✘           |
+
 | Project | |
 |:-----|---------|
 |  <br><img src="readme/jetnews.png" alt="JetNews" width="240"></img> <br><br> A sample blog post viewer that demonstrates the use of Compose with a typical Material app and real-world architecture. <br><br> • Medium complexity<br>• Varied UI<br>• Light & dark themes<br>• Resource loading<br>• UI Testing <br><br> **[> Browse](JetNews/)**<br><br> | <img src="readme/screenshots/JetNews.png" width="320" alt="Jetnews sample demo"> |
