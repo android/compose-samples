@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -37,6 +36,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -47,6 +47,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -77,11 +78,16 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackScaffold
+import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
 import com.example.jetsnack.ui.home.DestinationBar
+import com.example.jetsnack.ui.home.HomeSections
+import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
@@ -89,20 +95,41 @@ import com.example.jetsnack.ui.utils.formatPrice
 @Composable
 fun Cart(
     onSnackClick: (Long) -> Unit,
+    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
     val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
-    Cart(
-        orderLines = orderLines,
-        removeSnack = viewModel::removeSnack,
-        increaseItemCount = viewModel::increaseSnackCount,
-        decreaseItemCount = viewModel::decreaseSnackCount,
-        inspiredByCart = inspiredByCart,
-        onSnackClick = onSnackClick,
+    val jetsnackScaffoldState = rememberJetsnackScaffoldState()
+    JetsnackScaffold(
+        bottomBar = {
+            JetsnackBottomBar(
+                tabs = HomeSections.values(),
+                currentRoute = HomeSections.CART.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = it,
+                modifier = Modifier.systemBarsPadding(),
+                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+            )
+        },
+        scaffoldState = jetsnackScaffoldState.scaffoldState,
         modifier = modifier
-    )
+    ) { paddingValues ->
+        Cart(
+            orderLines = orderLines,
+            removeSnack = viewModel::removeSnack,
+            increaseItemCount = viewModel::increaseSnackCount,
+            decreaseItemCount = viewModel::decreaseSnackCount,
+            inspiredByCart = inspiredByCart,
+            onSnackClick = onSnackClick,
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
@@ -132,7 +159,6 @@ fun Cart(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CartContent(
     orderLines: List<OrderLine>,

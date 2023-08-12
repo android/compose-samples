@@ -77,19 +77,20 @@ import java.util.Locale
 
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
+    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     composable(HomeSections.FEED.route) { from ->
-        Feed(onSnackClick = { id -> onSnackSelected(id, from) }, modifier)
+        Feed(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.SEARCH.route) { from ->
-        Search(onSnackClick = { id -> onSnackSelected(id, from) }, modifier)
+        Search(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.CART.route) { from ->
-        Cart(onSnackClick = { id -> onSnackSelected(id, from) }, modifier)
+        Cart(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.PROFILE.route) {
-        Profile(modifier)
+        Profile(onNavigateToRoute, modifier)
     }
 }
 

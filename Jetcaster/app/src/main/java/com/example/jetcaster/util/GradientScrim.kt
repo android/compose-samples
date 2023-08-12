@@ -17,11 +17,8 @@
 package com.example.jetcaster.util
 
 import androidx.annotation.FloatRange
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
@@ -56,7 +53,6 @@ fun Modifier.verticalGradientScrim(
     numStops: Int = 16
 ) = this then VerticalGradientElement(color, startYPercentage, endYPercentage, decay, numStops)
 
-@OptIn(ExperimentalComposeUiApi::class)
 private data class VerticalGradientElement(
     var color: Color,
     var startYPercentage: Float = 0f,
@@ -100,7 +96,7 @@ private data class VerticalGradientElement(
 
     override fun create() = VerticalGradientModifier(createOnDraw())
 
-    override fun update(node: VerticalGradientModifier) = node.apply {
+    override fun update(node: VerticalGradientModifier) {
         node.onDraw = createOnDraw()
     }
 

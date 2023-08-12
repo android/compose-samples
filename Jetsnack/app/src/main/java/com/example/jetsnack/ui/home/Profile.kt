@@ -36,35 +36,51 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun Profile(modifier: Modifier = Modifier) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+fun Profile(
+    onNavigateToRoute: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    JetsnackScaffold(
+        bottomBar = {
+            JetsnackBottomBar(
+                tabs = HomeSections.values(),
+                currentRoute = HomeSections.PROFILE.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        },
         modifier = modifier
-            .fillMaxSize()
-            .wrapContentSize()
-            .padding(24.dp)
-    ) {
-        Image(
-            painterResource(R.drawable.empty_state_search),
-            contentDescription = null
-        )
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(R.string.work_in_progress),
-            style = MaterialTheme.typography.subtitle1,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.grab_beverage),
-            style = MaterialTheme.typography.body2,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
+    ) { paddingValues ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize()
+                .padding(24.dp)
+                .padding(paddingValues)
+        ) {
+            Image(
+                painterResource(R.drawable.empty_state_search),
+                contentDescription = null
+            )
+            Spacer(Modifier.height(24.dp))
+            Text(
+                text = stringResource(R.string.work_in_progress),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.grab_beverage),
+                style = MaterialTheme.typography.body2,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -74,6 +90,6 @@ fun Profile(modifier: Modifier = Modifier) {
 @Composable
 fun ProfilePreview() {
     JetsnackTheme {
-        Profile()
+        Profile(onNavigateToRoute = { })
     }
 }
