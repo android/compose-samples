@@ -95,6 +95,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -110,10 +111,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -440,7 +441,8 @@ private fun UserInputText(
         }
         RecordButton(
             recording = isRecordingMessage,
-            swipeOffset = swipeOffset,
+            swipeOffset = { swipeOffset.value },
+            onSwipeOffsetChange = { offset -> swipeOffset.value = offset },
             onStartRecording = {
                 val consumed = !isRecordingMessage
                 isRecordingMessage = true
@@ -549,7 +551,7 @@ private fun RecordingIndicator(swipeOffset: State<Float>) {
                 .alignByBaseline()
                 .clipToBounds()
         ) {
-            val swipeThreshold = swipeToCancelThreshold()
+            val swipeThreshold = with(LocalDensity.current) { 200.dp.toPx() }
             Text(
                 modifier = Modifier
                     .align(Alignment.Center)

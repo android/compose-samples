@@ -41,31 +41,27 @@ import androidx.compose.material3.RichTooltipState
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-val swipeToCancelThreshold: () -> Float
-    @Composable get() = with(LocalDensity.current) { { 200.dp.toPx() } }
-
-private val verticalThreshold: () -> Float
-    @Composable get() = with(LocalDensity.current) { { 80.dp.toPx() } }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordButton(
     recording: Boolean,
-    swipeOffset: MutableState<Float>,
+    swipeOffset: () -> Float,
+    onSwipeOffsetChange: (Float) -> Unit,
     onStartRecording: () -> Boolean,
     onFinishRecording: () -> Unit,
     onCancelRecording: () -> Unit,
@@ -119,13 +115,12 @@ fun RecordButton(
                     .padding(18.dp)
                     .clickable {  }
                     .voiceRecordingGesture(
-                        swipeOffset,
-                        swipeToCancelThreshold(),
-                        verticalThreshold(),
-                        { scope.launch { tooltipState.show() } },
-                        onStartRecording,
-                        onFinishRecording,
-                        onCancelRecording,
+                        horizontalSwipeProgress = swipeOffset,
+                        onSwipeProgressChanged = onSwipeOffsetChange,
+                        onClick = { scope.launch { tooltipState.show() } },
+                        onStartRecording = onStartRecording,
+                        onFinishRecording = onFinishRecording,
+                        onCancelRecording = onCancelRecording,
                     )
             )
         }
@@ -133,33 +128,37 @@ fun RecordButton(
 }
 
 private fun Modifier.voiceRecordingGesture(
-    horizontalSwipeProgress: MutableState<Float>,
-    swipeToCancelThreshold: Float,
-    verticalThreshold: Float,
-    onClick: () -> Unit,
-    onStartRecording: () -> Boolean,
-    onFinishRecording: () -> Unit,
-    onCancelRecording: () -> Unit,
-): Modifier {
+    horizontalSwipeProgress: () -> Float,
+    onSwipeProgressChanged: (Float) -> Unit,
+    onClick: () -> Unit = {},
+    onStartRecording: () -> Boolean = { false },
+    onFinishRecording: () -> Unit = {},
+    onCancelRecording: () -> Unit = {},
+    swipeToCancelThreshold: Dp = 200.dp,
+    verticalThreshold: Dp = 80.dp,
+): Modifier = composed {
+    val density = LocalDensity.current
+    val swipeToCancelThresholdPx = with(density) { swipeToCancelThreshold.toPx() }
+    val verticalThresholdPx = with(density) { verticalThreshold.toPx()}
     var offsetY = 0f
-    return this
+    this
         .pointerInput(Unit) { detectTapGestures { onClick() } }
         .pointerInput(Unit) {
             detectDragGesturesAfterLongPress(
                 onDragStart = {
-                    horizontalSwipeProgress.value = 0f
+                    onSwipeProgressChanged(0f)
                     offsetY = 0f
                     onStartRecording()
                 },
                 onDragCancel = { onCancelRecording() },
                 onDragEnd = { onFinishRecording() },
                 onDrag = { _, dragAmount ->
-                    horizontalSwipeProgress.value += dragAmount.x
+                    onSwipeProgressChanged(horizontalSwipeProgress() + dragAmount.x)
                     offsetY += dragAmount.y
-                    val offsetX = horizontalSwipeProgress.value
+                    val offsetX = horizontalSwipeProgress()
                     if ((offsetX < 0) &&
-                        abs(offsetX) >= swipeToCancelThreshold &&
-                        abs(offsetY) <= verticalThreshold
+                        abs(offsetX) >= swipeToCancelThresholdPx &&
+                        abs(offsetY) <= verticalThresholdPx
                     ) {
                         onCancelRecording()
                     }
