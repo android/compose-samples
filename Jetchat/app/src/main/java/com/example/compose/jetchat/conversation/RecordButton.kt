@@ -53,8 +53,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
-import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,7 +113,7 @@ fun RecordButton(
                 modifier = modifier
                     .sizeIn(minWidth = 56.dp, minHeight = 6.dp)
                     .padding(18.dp)
-                    .clickable {  }
+                    .clickable { }
                     .voiceRecordingGesture(
                         horizontalSwipeProgress = swipeOffset,
                         onSwipeProgressChanged = onSwipeOffsetChange,
