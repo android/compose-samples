@@ -139,7 +139,7 @@ private fun Modifier.voiceRecordingGesture(
 ): Modifier = composed {
     val density = LocalDensity.current
     val swipeToCancelThresholdPx = with(density) { swipeToCancelThreshold.toPx() }
-    val verticalThresholdPx = with(density) { verticalThreshold.toPx()}
+    val verticalThresholdPx = with(density) { verticalThreshold.toPx() }
     var offsetY = 0f
     this
         .pointerInput(Unit) { detectTapGestures { onClick() } }
