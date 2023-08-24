@@ -76,7 +76,6 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -427,7 +426,7 @@ private fun UserInputText(
         ) { recording ->
             Box(Modifier.fillMaxSize()) {
                 if (recording) {
-                    RecordingIndicator(swipeOffset)
+                    RecordingIndicator { swipeOffset.value }
                 } else {
                     UserInputTextField(
                         textFieldValue,
@@ -504,7 +503,7 @@ private fun BoxScope.UserInputTextField(
 }
 
 @Composable
-private fun RecordingIndicator(swipeOffset: State<Float>) {
+private fun RecordingIndicator(swipeOffset: () -> Float) {
     var duration by remember { mutableStateOf(Duration.ZERO) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -556,8 +555,8 @@ private fun RecordingIndicator(swipeOffset: State<Float>) {
                 modifier = Modifier
                     .align(Alignment.Center)
                     .graphicsLayer {
-                        translationX = swipeOffset.value / 2
-                        alpha = 1 - (swipeOffset.value.absoluteValue / swipeThreshold)
+                        translationX = swipeOffset() / 2
+                        alpha = 1 - (swipeOffset().absoluteValue / swipeThreshold)
                     },
                 textAlign = TextAlign.Center,
                 text = stringResource(R.string.swipe_to_cancel_recording),
