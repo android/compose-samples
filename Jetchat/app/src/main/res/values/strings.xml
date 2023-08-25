@@ -66,5 +66,6 @@
     <string name="info">Information</string>
     <string name="more_options">More options</string>
     <string name="touch_and_hold_to_record">Touch and hold to record</string>
+    <string name="record_message">Record voice message</string>
 
 </resources>

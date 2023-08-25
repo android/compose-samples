@@ -110,10 +110,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -410,11 +410,7 @@ private fun UserInputText(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
-            .semantics {
-                contentDescription = a11ylabel
-                keyboardShownProperty = keyboardShown
-            },
+            .height(64.dp),
         horizontalArrangement = Arrangement.End
     ) {
         AnimatedContent(
@@ -433,7 +429,11 @@ private fun UserInputText(
                         onTextChanged,
                         onTextFieldFocused,
                         keyboardType,
-                        focusState
+                        focusState,
+                        Modifier.semantics {
+                                contentDescription = a11ylabel
+                                keyboardShownProperty = keyboardShown
+                            }
                     )
                 }
             }
@@ -465,13 +465,14 @@ private fun BoxScope.UserInputTextField(
     onTextChanged: (TextFieldValue) -> Unit,
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
-    focusState: Boolean
+    focusState: Boolean,
+    modifier: Modifier = Modifier
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
     BasicTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 32.dp)
             .align(Alignment.CenterStart)
             .onFocusChanged { state ->

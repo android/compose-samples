@@ -53,8 +53,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
-import kotlin.math.abs
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,7 +108,7 @@ fun RecordButton(
         ) {
             Icon(
                 Icons.Default.Mic,
-                contentDescription = "Record voice message",
+                contentDescription = stringResource(R.string.record_message),
                 tint = iconColor.value,
                 modifier = modifier
                     .sizeIn(minWidth = 56.dp, minHeight = 6.dp)
