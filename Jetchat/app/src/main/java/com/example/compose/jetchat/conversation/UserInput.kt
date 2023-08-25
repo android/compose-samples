@@ -110,10 +110,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
-import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -431,9 +431,9 @@ private fun UserInputText(
                         keyboardType,
                         focusState,
                         Modifier.semantics {
-                                contentDescription = a11ylabel
-                                keyboardShownProperty = keyboardShown
-                            }
+                            contentDescription = a11ylabel
+                            keyboardShownProperty = keyboardShown
+                        }
                     )
                 }
             }
