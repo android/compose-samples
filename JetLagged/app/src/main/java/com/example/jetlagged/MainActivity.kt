@@ -24,6 +24,7 @@ import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -55,6 +56,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
+import com.example.jetlagged.Screen.*
 import com.example.jetlagged.ui.theme.JetLaggedTheme
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -66,134 +68,8 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             JetLaggedTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = White
-                ) {
-                    val draggedX = remember {
-                        Animatable(0f)
-                    }
-                    val velocityTracker = VelocityTracker()
-                    val drawerWidth = with (LocalDensity.current) {
-                        300.dp.toPx()
-                    }
-                    draggedX.updateBounds(0f, drawerWidth)
-                    val progress = draggedX.value / drawerWidth
-                    var drawerState by remember {
-                        mutableStateOf(DrawerState.Closed)
-                    }
-                    val coroutineScope = rememberCoroutineScope()
-
-                    fun animateToState(drawerState: DrawerState, velocity: Float) {
-                        coroutineScope.launch {
-                            when (drawerState) {
-                                DrawerState.Open -> draggedX.animateTo(drawerWidth, initialVelocity = velocity)
-                                DrawerState.Closed -> draggedX.animateTo(0f, initialVelocity = velocity)
-                            }
-                        }
-                    }
-
-                    val roundedCorners = 16.dp
-
-                    HomeScreenCustomDrawer()
-                    JetLaggedScreen(modifier = Modifier
-                        .pointerInput(Unit){
-                            val decay = splineBasedDecay<Float>(this)
-                            detectHorizontalDragGestures(onDragEnd = {
-                                val velocity = velocityTracker.calculateVelocity().x
-                                val targetOffsetX = decay.calculateTargetValue(
-                                    draggedX.value,
-                                    velocity
-                                )
-                                coroutineScope.launch {
-                                    if (targetOffsetX.absoluteValue <= size.width * 0.5f) {
-                                        animateToState(DrawerState.Closed, velocity)
-                                    } else {
-                                        animateToState(DrawerState.Open, velocity)
-                                    }
-                                }
-                            }) { change, dragAmount ->
-                                coroutineScope.launch {
-                                    draggedX.snapTo(draggedX.value + dragAmount)
-                                    velocityTracker.addPosition(
-                                        change.uptimeMillis, Offset(dragAmount, 0f)
-                                    )
-                                }
-                            }
-
-                        }
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints)
-                            layout(width = placeable.width, height = placeable.height) {
-                                placeable.placeRelative(
-                                    x = draggedX.value.toInt(),
-                                    y = 0
-                                )
-                            }
-                        }
-                        .graphicsLayer {
-                            this.scaleX = lerp(1f, 0.8f, progress)
-                            this.scaleY = lerp(1f, 0.8f, progress)
-                            this.shape = RoundedCornerShape(roundedCorners)
-                            this.clip = true
-                            this.shadowElevation = 32f
-                        },
-                        onDrawerClicked = {
-                            animateToState(if (drawerState == DrawerState.Open) {
-                                DrawerState.Closed
-                            } else {
-                                DrawerState.Open
-                            }, velocity = 0f)
-                            drawerState = if (drawerState == DrawerState.Open) {
-                                DrawerState.Closed
-                            } else {
-                                DrawerState.Open
-                            }
-                        }
-                    )
-                }
+                HomeScreenDrawer()
             }
         }
     }
-
-    enum class DrawerState {
-        Open,
-        Closed
-    }
-
-    @Composable
-    private fun HomeScreenCustomDrawer(modifier: Modifier = Modifier) {
-        var selectedItem by remember {
-            mutableStateOf(Screens.Home)
-        }
-        Column(
-            modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Screens.values().forEach {
-                NavigationDrawerItem(
-                    label = {
-                        Text(it.text)
-                    },
-                    icon = {
-                        Icon(imageVector = it.icon, contentDescription = it.text)
-                    },
-                    selected = selectedItem == it,
-                    onClick = {
-                        selectedItem = it
-                    },
-                )
-            }
-        }
-
-    }
-}
-
-enum class Screens(val text: String, val icon: ImageVector) {
-    Home("Home", Icons.Default.Home),
-    SleepDetails("Sleep", Icons.Default.Bedtime),
-    Leaderboard("Leaderboard", Icons.Default.Leaderboard),
-    Settings("Settings", Icons.Default.Settings),
 }
