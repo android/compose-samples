@@ -36,9 +36,10 @@ private val LightColorScheme = lightColorScheme(
     secondaryContainer = Yellow
 )
 private val shapes: Shapes
-        @Composable
-        get() = MaterialTheme.shapes.copy(
-            large = CircleShape)
+    @Composable
+    get() = MaterialTheme.shapes.copy(
+        large = CircleShape
+    )
 @Composable
 fun JetLaggedTheme(
     content: @Composable () -> Unit,
