@@ -1,9 +1,15 @@
 package com.example.jetlagged
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.animation.splineBasedDecay
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +41,7 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -93,12 +100,23 @@ fun HomeScreenDrawer() {
             }
         }
 
-        HomeScreenDrawer(
+        HomeScreenDrawerContents(
             selectedScreen = screenState,
             onScreenSelected = { screen ->
                 screenState = screen
             }
         )
+
+        val velocityTracker = remember {
+            VelocityTracker()
+        }
+        val draggableState = rememberDraggableState(onDelta = {dragAmount ->
+            coroutineScope.launch {
+
+                translationX.snapTo(translationX.value + dragAmount)
+            }
+        })
+        val decay = rememberSplineBasedDecay<Float>()
         ScreenContents(selectedScreen = screenState,
             onDrawerClicked = ::toggleDrawerState,
             modifier = Modifier
@@ -110,32 +128,43 @@ fun HomeScreenDrawer() {
                     this.clip = true
                     this.shadowElevation = 32f
                 }
-                .pointerInput(Unit) {
-                    val decay = splineBasedDecay<Float>(this)
-                    val velocityTracker = VelocityTracker()
-
-                    detectHorizontalDragGestures(onDragEnd = {
-                        val velocity = velocityTracker.calculateVelocity().x
-                        val targetOffsetX = decay.calculateTargetValue(
-                            translationX.value,
-                            velocity
-                        )
-                        coroutineScope.launch {
-                            if (targetOffsetX.absoluteValue <= size.width * 0.5f) {
-                                animateToState(DrawerState.Closed, velocity)
-                            } else {
-                                animateToState(DrawerState.Open, velocity)
+                .draggable(draggableState, Orientation.Horizontal, onDragStopped = {velocity ->
+                    val targetOffsetX = decay.calculateTargetValue(
+                        translationX.value,
+                        velocity
+                    )
+                    coroutineScope.launch {
+                        val midpoint = drawerWidth * 0.5
+                        val actualTargetX = if (targetOffsetX > midpoint && velocity > 0f) {
+                            drawerWidth
+                        } else {
+                            0f
+                        }
+                        if ((targetOffsetX <= actualTargetX)) {
+                            Log.d(
+                                "animateTo",
+                                "actualTargetX $actualTargetX, velocity: $velocity, targetOffset $targetOffsetX, drawerWidth $drawerWidth"
+                            )
+                            translationX.animateTo(actualTargetX, initialVelocity = velocity)
+                        } else {
+                            Log.d(
+                                "animateDecay",
+                                "actualTargetX $actualTargetX, velocity: $velocity, targetOffset $targetOffsetX, drawerWidth $drawerWidth"
+                            )
+                            translationX.animateDecay(
+                                initialVelocity = velocity,
+                                animationSpec = decay
+                            ) {
+                                if ((this.value == actualTargetX) /*&& velocity > 0) ||
+                                    (this.value <= actualTargetX && velocity < 0)*/) {
+                                    Log.d("animate cancel", "Cancelling animation ${this.value}")
+                                    cancel()
+                                }
                             }
                         }
-                    }) { change, dragAmount ->
-                        coroutineScope.launch {
-                            translationX.snapTo(translationX.value + dragAmount)
-                            velocityTracker.addPosition(
-                                change.uptimeMillis, Offset(dragAmount, 0f)
-                            )
-                        }
                     }
-                }
+                })
+
         )
     }
 }
@@ -188,7 +217,7 @@ enum class DrawerState {
 }
 
 @Composable
-private fun HomeScreenDrawer(
+private fun HomeScreenDrawerContents(
     selectedScreen: Screen,
     onScreenSelected: (Screen) -> Unit,
     modifier: Modifier = Modifier
