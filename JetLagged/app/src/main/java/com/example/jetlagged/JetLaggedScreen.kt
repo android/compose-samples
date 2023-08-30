@@ -55,8 +55,9 @@ import java.util.Locale
 @Preview(device = Devices.FOLDABLE, showBackground = true)
 @Composable
 fun JetLaggedScreen(
-    modifier : Modifier = Modifier,
-    onDrawerClicked: () -> Unit = {}) {
+    modifier: Modifier = Modifier,
+    onDrawerClicked: () -> Unit = {}
+) {
     Column(
         modifier = modifier
             .background(Color.White)
@@ -64,8 +65,10 @@ fun JetLaggedScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Column(modifier = Modifier.yellowBackground()) {
-            JetLaggedHeader(onDrawerClicked = onDrawerClicked,
-                modifier = Modifier.fillMaxWidth())
+            JetLaggedHeader(
+                onDrawerClicked = onDrawerClicked,
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(32.dp))
             JetLaggedSleepSummary(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }
