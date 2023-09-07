@@ -18,15 +18,15 @@ package androidx.compose.samples.crane.base
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,13 +50,14 @@ fun CraneDrawer(modifier: Modifier = Modifier) {
     ) {
         Image(
             painter = painterResource(R.drawable.ic_crane_drawer),
-            contentDescription = stringResource(R.string.cd_drawer)
+            contentDescription = stringResource(R.string.cd_drawer),
+            modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
         )
-        for (screenTitleResource in screens) {
-            Spacer(Modifier.height(24.dp))
+        screens.forEach { titleResource ->
             Text(
-                text = stringResource(id = screenTitleResource),
-                style = MaterialTheme.typography.h4
+                text = stringResource(id = titleResource),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.padding(top = 24.dp)
             )
         }
     }

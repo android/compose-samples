@@ -22,10 +22,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -42,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -52,18 +52,24 @@ fun CraneTabBar(
 ) {
     Row(modifier) {
         // Separate Row as the children shouldn't have the padding
-        Row(Modifier.padding(top = 8.dp)) {
+        Row {
+
             Image(
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .align(Alignment.CenterVertically)
+                    .size(20.dp)
                     .clickable(onClick = onMenuClicked),
                 painter = painterResource(id = R.drawable.ic_menu),
                 contentDescription = stringResource(id = R.string.cd_menu)
             )
-            Spacer(Modifier.width(8.dp))
             Image(
                 painter = painterResource(id = R.drawable.ic_crane_logo),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(
+                        start = 10.dp, end = 30.dp,
+                        top = 5.dp, bottom = 5.dp
+                    )
             )
         }
         children(
@@ -116,5 +122,13 @@ fun CraneTabs(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun Preview() {
+    CraneTabBar(onMenuClicked = { /*TODO*/ }) {
+
     }
 }

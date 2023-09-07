@@ -232,6 +232,7 @@ private fun SearchContent(
                 )
             )
         },
+        label = "AnimatedContent"// I just put this for fix the warning
     ) { targetState ->
         when (targetState) {
             CraneScreen.Fly -> FlySearchContent(
