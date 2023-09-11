@@ -20,15 +20,9 @@ import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.animation.splineBasedDecay
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
