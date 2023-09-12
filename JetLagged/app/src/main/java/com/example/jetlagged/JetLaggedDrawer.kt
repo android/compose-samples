@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
@@ -57,7 +58,7 @@ import kotlinx.coroutines.launch
 fun HomeScreenDrawer() {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.White
+        color = MaterialTheme.colorScheme.background
     ) {
         var drawerState by remember {
             mutableStateOf(DrawerState.Closed)
@@ -159,7 +160,7 @@ fun HomeScreenDrawer() {
 }
 
 @Composable
-fun ScreenContents(
+private fun ScreenContents(
     selectedScreen: Screen,
     onDrawerClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -174,21 +175,18 @@ fun ScreenContents(
 
             Screen.SleepDetails ->
                 Surface(
-                    color = Color.White,
                     modifier = Modifier.fillMaxSize()
                 ) {
                 }
 
             Screen.Leaderboard ->
                 Surface(
-                    color = Color.White,
                     modifier = Modifier.fillMaxSize()
                 ) {
                 }
 
             Screen.Settings ->
                 Surface(
-                    color = Color.White,
                     modifier = Modifier.fillMaxSize()
                 ) {
                 }
@@ -196,7 +194,7 @@ fun ScreenContents(
     }
 }
 
-enum class DrawerState {
+private enum class DrawerState {
     Open,
     Closed
 }
@@ -221,7 +219,8 @@ private fun HomeScreenDrawerContents(
                 icon = {
                     Icon(imageVector = it.icon, contentDescription = it.text)
                 },
-                colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.White),
+                colors =
+                NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.White),
                 selected = selectedScreen == it,
                 onClick = {
                     onScreenSelected(it)
@@ -231,10 +230,9 @@ private fun HomeScreenDrawerContents(
     }
 }
 
-private val RoundedCorners = 16.dp
 private val DrawerWidth = 300.dp
 
-enum class Screen(val text: String, val icon: ImageVector) {
+private enum class Screen(val text: String, val icon: ImageVector) {
     Home("Home", Icons.Default.Home),
     SleepDetails("Sleep", Icons.Default.Bedtime),
     Leaderboard("Leaderboard", Icons.Default.Leaderboard),

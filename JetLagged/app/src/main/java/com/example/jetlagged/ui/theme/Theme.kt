@@ -33,7 +33,8 @@ private val LightColorScheme = lightColorScheme(
     primary = Yellow,
     secondary = MintGreen,
     tertiary = Coral,
-    secondaryContainer = Yellow
+    secondaryContainer = Yellow,
+    surface = White
 )
 private val shapes: Shapes
     @Composable
