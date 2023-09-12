@@ -16,6 +16,7 @@
 
 package com.example.jetlagged
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,14 +54,21 @@ import java.util.Locale
 @Preview(showBackground = true)
 @Preview(device = Devices.FOLDABLE, showBackground = true)
 @Composable
-fun JetLaggedScreen() {
+fun JetLaggedScreen(
+    modifier: Modifier = Modifier,
+    onDrawerClicked: () -> Unit = {}
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
+            .background(Color.White)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Column(modifier = Modifier.yellowBackground()) {
-            JetLaggedHeader(modifier = Modifier.fillMaxWidth())
+            JetLaggedHeader(
+                onDrawerClicked = onDrawerClicked,
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(32.dp))
             JetLaggedSleepSummary(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }

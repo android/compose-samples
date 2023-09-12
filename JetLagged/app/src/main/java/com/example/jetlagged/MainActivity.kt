@@ -19,10 +19,6 @@ package com.example.jetlagged
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.core.view.WindowCompat
 import com.example.jetlagged.ui.theme.JetLaggedTheme
 
@@ -33,12 +29,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             JetLaggedTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = White
-                ) {
-                    JetLaggedScreen()
-                }
+                HomeScreenDrawer()
             }
         }
     }

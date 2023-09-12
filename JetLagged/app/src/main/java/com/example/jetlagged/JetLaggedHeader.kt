@@ -29,7 +29,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -45,16 +45,19 @@ import com.example.jetlagged.ui.theme.TitleBarStyle
 
 @Preview
 @Composable
-fun JetLaggedHeader(modifier: Modifier = Modifier) {
+fun JetLaggedHeader(
+    onDrawerClicked: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier.height(150.dp)
     ) {
         Row(modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars)) {
             IconButton(
-                onClick = { },
+                onClick = onDrawerClicked,
             ) {
                 Icon(
-                    Icons.Default.ArrowBack,
+                    Icons.Default.Menu,
                     contentDescription = stringResource(R.string.not_implemented)
                 )
             }
