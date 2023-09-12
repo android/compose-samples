@@ -57,8 +57,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreenDrawer() {
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        modifier = Modifier.fillMaxSize()
     ) {
         var drawerState by remember {
             mutableStateOf(DrawerState.Closed)
