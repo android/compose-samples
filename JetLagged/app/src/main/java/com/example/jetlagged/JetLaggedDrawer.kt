@@ -142,8 +142,10 @@ fun HomeScreenDrawer() {
                             // checking if the difference between the target and actual is + or -
                             val targetDifference = (actualTargetX - targetOffsetX)
                             val canReachTargetWithDecay =
-                                (targetOffsetX > actualTargetX && velocity > 0f && targetDifference > 0f)
-                                        || (targetOffsetX < actualTargetX && velocity < 0 && targetDifference < 0f)
+                                (targetOffsetX > actualTargetX && velocity > 0f
+                                        && targetDifference > 0f)
+                                        || (targetOffsetX < actualTargetX && velocity < 0
+                                        && targetDifference < 0f)
                             if (canReachTargetWithDecay) {
                                 translationX.animateDecay(
                                     initialVelocity = velocity,
