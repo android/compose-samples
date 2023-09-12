@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
@@ -105,7 +104,8 @@ fun HomeScreenDrawer() {
             }
         })
         val decay = rememberSplineBasedDecay<Float>()
-        ScreenContents(selectedScreen = screenState,
+        ScreenContents(
+            selectedScreen = screenState,
             onDrawerClicked = ::toggleDrawerState,
             modifier = Modifier
                 .graphicsLayer {
@@ -120,7 +120,8 @@ fun HomeScreenDrawer() {
                 }
                 // This example is showing how to use draggable with custom logic on stop to snap to the edges
                 // You can also use `anchoredDraggable()` to set up anchors and not need to worry about more calculations.
-                .draggable(draggableState, Orientation.Horizontal,
+                .draggable(
+                    draggableState, Orientation.Horizontal,
                     onDragStopped = { velocity ->
                         val targetOffsetX = decay.calculateTargetValue(
                             translationX.value,
@@ -135,10 +136,14 @@ fun HomeScreenDrawer() {
                             // checking if the difference between the target and actual is + or -
                             val targetDifference = (actualTargetX - targetOffsetX)
                             val canReachTargetWithDecay =
-                                (targetOffsetX > actualTargetX && velocity > 0f
-                                        && targetDifference > 0f)
-                                        || (targetOffsetX < actualTargetX && velocity < 0
-                                        && targetDifference < 0f)
+                                (
+                                    targetOffsetX > actualTargetX && velocity > 0f &&
+                                        targetDifference > 0f
+                                    ) ||
+                                    (
+                                        targetOffsetX < actualTargetX && velocity < 0 &&
+                                            targetDifference < 0f
+                                        )
                             if (canReachTargetWithDecay) {
                                 translationX.animateDecay(
                                     initialVelocity = velocity,
@@ -153,7 +158,8 @@ fun HomeScreenDrawer() {
                                 DrawerState.Closed
                             }
                         }
-                    })
+                    }
+                )
         )
     }
 }
