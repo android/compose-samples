@@ -19,10 +19,11 @@ package com.example.jetnews.ui.home
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -59,7 +60,7 @@ fun PostCardPopular(
         onClick = { navigateToArticle(post.id) },
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
-            .size(280.dp, 240.dp)
+            .width(280.dp)
     ) {
         Column {
             Image(
@@ -78,6 +79,7 @@ fun PostCardPopular(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = post.metadata.author.name,
                     maxLines = 1,
