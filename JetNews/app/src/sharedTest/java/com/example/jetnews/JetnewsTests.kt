@@ -16,6 +16,7 @@
 
 package com.example.jetnews
 
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -50,11 +51,11 @@ class JetnewsTests {
     fun app_opensArticle() {
 
         println(composeTestRule.onRoot().printToString())
-        composeTestRule.onNodeWithText(text = "Manuel Vivo", substring = true).performClick()
+        composeTestRule.onAllNodes(hasText("Manuel Vivo", substring = true))[0].performClick()
 
         println(composeTestRule.onRoot().printToString())
         try {
-            composeTestRule.onNodeWithText("3 min read", substring = true).assertExists()
+            composeTestRule.onAllNodes(hasText("3 min read", substring = true))[0].assertExists()
         } catch (e: AssertionError) {
             println(composeTestRule.onRoot().printToString())
             throw e
