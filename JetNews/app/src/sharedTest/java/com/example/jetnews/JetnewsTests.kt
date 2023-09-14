@@ -51,7 +51,7 @@ class JetnewsTests {
     fun app_opensArticle() {
 
         println(composeTestRule.onRoot().printToString())
-        composeTestRule.onAllNodes(hasText("Manuel Vivo"))[0].performClick()
+        composeTestRule.onAllNodes(hasText("Manuel Vivo", substring = true))[0].performClick()
 
         println(composeTestRule.onRoot().printToString())
         try {
