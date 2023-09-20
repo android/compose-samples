@@ -9,7 +9,7 @@ androidx-activity-compose = "1.7.2"
 androidx-appcompat = "1.6.1"
 androidx-benchmark = "1.1.0"
 androidx-benchmark-junit4 = "1.1.1"
-androidx-compose-bom = "2023.08.00"
+androidx-compose-bom = "2023.09.00"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.12.0-rc01"
 androidx-glance = "1.0.0-rc01"
@@ -67,7 +67,7 @@ androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-mac
 androidx-benchmark-macrobenchmark-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
-androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-compose-foundation =  "androidx.compose.foundation:foundation:1.6.0-alpha05"
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 androidx-compose-material = { module = "androidx.compose.material:material" }
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }
