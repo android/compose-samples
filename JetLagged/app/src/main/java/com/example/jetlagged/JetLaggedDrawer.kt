@@ -50,9 +50,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.util.VelocityTracker
+import androidx.compose.ui.input.pointer.util.VelocityTracker1D
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
@@ -81,7 +84,9 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
             DrawerWidth.toPx()
         }
         translationX.updateBounds(0f, drawerWidth)
-
+        val velocityTracker = remember {
+            VelocityTracker()
+        }
         PredictiveBackHandler(drawerState == DrawerState.Closed) { progress: Flow<BackEventCompat> ->
             // code for gesture back started
             try {
@@ -89,6 +94,7 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                     // code for progress
                     if (drawerState == DrawerState.Closed) {
                         translationX.snapTo(backEvent.progress * drawerWidth)
+                        velocityTracker.addPosition(System.currentTimeMillis(), Offset(backEvent.touchX, backEvent.touchY))
                     }
                 }
                 // code for completion
@@ -97,13 +103,13 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                 } else {
                     0f
                 }
-                translationX.animateTo(endProgress) // todo add velocity?
+                translationX.animateTo(endProgress, initialVelocity = velocityTracker.calculateVelocity().x)
+
                 if (endProgress == 0f){
                     drawerState = DrawerState.Closed
-                }else {
+                } else {
                     drawerState = DrawerState.Open
                 }
-                // val finalValue =
             } catch (e: CancellationException) {
                 // code for cancellation
                 Log.d("!!!", "predictive back gesture cancelled")
