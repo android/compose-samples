@@ -77,7 +77,6 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
         }
         translationX.updateBounds(0f, drawerWidth)
 
-
         val coroutineScope = rememberCoroutineScope()
 
         fun toggleDrawerState() {

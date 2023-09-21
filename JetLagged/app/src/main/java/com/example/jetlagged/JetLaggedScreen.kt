@@ -63,9 +63,10 @@ fun JetLaggedScreen(
             .background(Color.White)
     ) {
         Column(modifier = Modifier.movingWaveLine(Yellow)) {
-            JetLaggedHeader(modifier = Modifier.fillMaxWidth(),
+            JetLaggedHeader(
+                modifier = Modifier.fillMaxWidth(),
                 onDrawerClicked = onDrawerClicked
-                )
+            )
         }
 
         val uiState =
