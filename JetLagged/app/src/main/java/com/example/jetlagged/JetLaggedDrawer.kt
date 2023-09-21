@@ -16,6 +16,9 @@
 
 package com.example.jetlagged
 
+import android.util.Log
+import androidx.activity.BackEventCompat
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -38,6 +41,8 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,10 +56,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
-fun HomeScreenDrawer() {
+fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -73,6 +81,34 @@ fun HomeScreenDrawer() {
             DrawerWidth.toPx()
         }
         translationX.updateBounds(0f, drawerWidth)
+
+        PredictiveBackHandler(drawerState == DrawerState.Closed) { progress: Flow<BackEventCompat> ->
+            // code for gesture back started
+            try {
+                progress.collect { backEvent ->
+                    // code for progress
+                    if (drawerState == DrawerState.Closed) {
+                        translationX.snapTo(backEvent.progress * drawerWidth)
+                    }
+                }
+                // code for completion
+                val endProgress = if (translationX.value > drawerWidth * 0.5f) {
+                    drawerWidth
+                } else {
+                    0f
+                }
+                translationX.animateTo(endProgress) // todo add velocity?
+                if (endProgress == 0f){
+                    drawerState = DrawerState.Closed
+                }else {
+                    drawerState = DrawerState.Open
+                }
+                // val finalValue =
+            } catch (e: CancellationException) {
+                // code for cancellation
+                Log.d("!!!", "predictive back gesture cancelled")
+            }
+        }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -105,6 +141,7 @@ fun HomeScreenDrawer() {
         })
         val decay = rememberSplineBasedDecay<Float>()
         ScreenContents(
+            windowWidthSizeClass = windowSizeClass.widthSizeClass,
             selectedScreen = screenState,
             onDrawerClicked = ::toggleDrawerState,
             modifier = Modifier
@@ -137,13 +174,13 @@ fun HomeScreenDrawer() {
                             val targetDifference = (actualTargetX - targetOffsetX)
                             val canReachTargetWithDecay =
                                 (
-                                    targetOffsetX > actualTargetX && velocity > 0f &&
-                                        targetDifference > 0f
-                                    ) ||
-                                    (
-                                        targetOffsetX < actualTargetX && velocity < 0 &&
-                                            targetDifference < 0f
-                                        )
+                                        targetOffsetX > actualTargetX && velocity > 0f &&
+                                                targetDifference > 0f
+                                        ) ||
+                                        (
+                                                targetOffsetX < actualTargetX && velocity < 0 &&
+                                                        targetDifference < 0f
+                                                )
                             if (canReachTargetWithDecay) {
                                 translationX.animateDecay(
                                     initialVelocity = velocity,
@@ -166,6 +203,7 @@ fun HomeScreenDrawer() {
 
 @Composable
 private fun ScreenContents(
+    windowWidthSizeClass: WindowWidthSizeClass,
     selectedScreen: Screen,
     onDrawerClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -174,6 +212,7 @@ private fun ScreenContents(
         when (selectedScreen) {
             Screen.Home ->
                 JetLaggedScreen(
+                    windowSizeClass = windowWidthSizeClass,
                     modifier = Modifier,
                     onDrawerClicked = onDrawerClicked
                 )

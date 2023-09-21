@@ -30,6 +30,15 @@
     <string name="sleep_tab_month_heading">Month</string>
     <string name="sleep_tab_six_months_heading">6M</string>
     <string name="sleep_tab_one_year_heading">1Y</string>
+    <string name="heart_rate_heading">Heart Rate</string>
+    <string name="wellness_heading">Wellness</string>
+    <string name="snoring_heading">Snoring</string>
+    <string name="coughing_heading">Coughing</string>
+    <string name="respiration_heading">Respiration</string>
+    <string name="ave_time_sleep_heading">AVE TIME SLEEP</string>
+    <string name="ave_time_in_bed_heading">AVE TIME IN BED</string>
+    <string name="ambiance_heading">Ambiance</string>
+    <string name="room_temperature">Room Temperature</string>
 
 
 </resources>

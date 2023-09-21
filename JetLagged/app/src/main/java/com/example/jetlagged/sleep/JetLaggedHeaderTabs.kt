@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetlagged
+package com.example.jetlagged.sleep
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.jetlagged.R
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.White
 import com.example.jetlagged.ui.theme.Yellow
