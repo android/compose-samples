@@ -38,6 +38,8 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +56,8 @@ import androidx.compose.ui.util.lerp
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreenDrawer() {
+fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -73,6 +76,7 @@ fun HomeScreenDrawer() {
             DrawerWidth.toPx()
         }
         translationX.updateBounds(0f, drawerWidth)
+
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -105,6 +109,7 @@ fun HomeScreenDrawer() {
         })
         val decay = rememberSplineBasedDecay<Float>()
         ScreenContents(
+            windowWidthSizeClass = windowSizeClass.widthSizeClass,
             selectedScreen = screenState,
             onDrawerClicked = ::toggleDrawerState,
             modifier = Modifier
@@ -166,6 +171,7 @@ fun HomeScreenDrawer() {
 
 @Composable
 private fun ScreenContents(
+    windowWidthSizeClass: WindowWidthSizeClass,
     selectedScreen: Screen,
     onDrawerClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -174,6 +180,7 @@ private fun ScreenContents(
         when (selectedScreen) {
             Screen.Home ->
                 JetLaggedScreen(
+                    windowSizeClass = windowWidthSizeClass,
                     modifier = Modifier,
                     onDrawerClicked = onDrawerClicked
                 )

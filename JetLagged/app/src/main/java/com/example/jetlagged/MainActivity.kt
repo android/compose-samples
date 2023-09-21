@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             JetLaggedTheme {
-                HomeScreenDrawer(windowSizeClass.widthSizeClass)
+                HomeScreenDrawer(windowSizeClass)
             }
         }
     }
