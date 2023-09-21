@@ -51,16 +51,21 @@ import com.example.jetlagged.ui.util.MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
     windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
-    viewModel: JetLaggedHomeScreenViewModel = viewModel()
+    viewModel: JetLaggedHomeScreenViewModel = viewModel(),
+    modifier: Modifier = Modifier,
+    onDrawerClicked: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
+            .background(Color.White)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
         Column(modifier = Modifier.movingWaveLine(Yellow)) {
-            JetLaggedHeader(modifier = Modifier.fillMaxWidth())
+            JetLaggedHeader(modifier = Modifier.fillMaxWidth(),
+                onDrawerClicked = onDrawerClicked
+                )
         }
 
         val uiState =

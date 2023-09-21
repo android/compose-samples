@@ -35,6 +35,7 @@
     <string name="now">8:30 PM</string>
     <string name="members">%d members</string>
     <string name="textfield_hint">Message #composers</string>
+    <string name="swipe_to_cancel_recording">&#x25C0; Swipe to cancel</string>
     <string name="emojis_label">Emojis</string>
     <string name="stickers_label">Stickers</string>
 
@@ -64,5 +65,7 @@
     <string name="search">Search</string>
     <string name="info">Information</string>
     <string name="more_options">More options</string>
+    <string name="touch_and_hold_to_record">Touch and hold to record</string>
+    <string name="record_message">Record voice message</string>
 
 </resources>

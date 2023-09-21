@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-
 package com.example.jetlagged
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.jetlagged.ui.theme.JetLaggedTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,30 +31,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContent {
-            val navController = rememberNavController()
             val windowSizeClass = calculateWindowSizeClass(this)
-            NavHost(
-                navController,
-                startDestination = "dashboard"
-            ) {
-                composable("dashboard") {
-                    JetLaggedTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = White
-                        ) {
-                            JetLaggedScreen(windowSizeClass.widthSizeClass)
-                        }
-                    }
-                }
+            JetLaggedTheme {
+                HomeScreenDrawer(windowSizeClass.widthSizeClass)
             }
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        Log.d("onConfigChanged", "new")
     }
 }
