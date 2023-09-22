@@ -98,7 +98,7 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                     }
                 }
                 // code for completion
-                val endProgress = if (translationX.value > drawerWidth * 0.5f) {
+                val endProgress = if (translationX.value > drawerWidth * 0.2f) {
                     drawerWidth
                 } else {
                     0f
