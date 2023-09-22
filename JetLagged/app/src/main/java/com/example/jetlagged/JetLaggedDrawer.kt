@@ -112,7 +112,6 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                 }
             } catch (e: CancellationException) {
                 // code for cancellation
-                Log.d("!!!", "predictive back gesture cancelled")
             }
         }
 
