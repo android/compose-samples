@@ -16,6 +16,9 @@
 #
 # This file is used by Google as part of our samples packaging process.
 # End users may safely ignore this file. It has no relevance to other systems.
+#
+# Ignore
+
 ---
 status:       PUBLISHED
 technologies: [Android, JetpackCompose]
