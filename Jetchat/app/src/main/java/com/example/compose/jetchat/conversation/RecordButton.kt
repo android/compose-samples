@@ -44,11 +44,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -136,33 +134,45 @@ private fun Modifier.voiceRecordingGesture(
     onCancelRecording: () -> Unit = {},
     swipeToCancelThreshold: Dp = 200.dp,
     verticalThreshold: Dp = 80.dp,
-): Modifier = composed {
-    val density = LocalDensity.current
-    val swipeToCancelThresholdPx = with(density) { swipeToCancelThreshold.toPx() }
-    val verticalThresholdPx = with(density) { verticalThreshold.toPx() }
-    var offsetY = 0f
-    this
-        .pointerInput(Unit) { detectTapGestures { onClick() } }
-        .pointerInput(Unit) {
-            detectDragGesturesAfterLongPress(
-                onDragStart = {
-                    onSwipeProgressChanged(0f)
-                    offsetY = 0f
-                    onStartRecording()
-                },
-                onDragCancel = { onCancelRecording() },
-                onDragEnd = { onFinishRecording() },
-                onDrag = { _, dragAmount ->
+): Modifier = this
+    .pointerInput(Unit) { detectTapGestures { onClick() } }
+    .pointerInput(Unit) {
+        var offsetY = 0f
+        var dragging = false
+        val swipeToCancelThresholdPx = swipeToCancelThreshold.toPx()
+        val verticalThresholdPx = verticalThreshold.toPx()
+
+        detectDragGesturesAfterLongPress(
+            onDragStart = {
+                onSwipeProgressChanged(0f)
+                offsetY = 0f
+                dragging = true
+                onStartRecording()
+            },
+            onDragCancel = {
+                onCancelRecording()
+                dragging = false
+            },
+            onDragEnd = {
+                if (dragging) {
+                    onFinishRecording()
+                }
+                dragging = false
+            },
+            onDrag = { change, dragAmount ->
+                if (dragging) {
                     onSwipeProgressChanged(horizontalSwipeProgress() + dragAmount.x)
                     offsetY += dragAmount.y
                     val offsetX = horizontalSwipeProgress()
-                    if ((offsetX < 0) &&
+                    if (
+                        offsetX < 0 &&
                         abs(offsetX) >= swipeToCancelThresholdPx &&
                         abs(offsetY) <= verticalThresholdPx
                     ) {
                         onCancelRecording()
+                        dragging = false
                     }
                 }
-            )
-        }
-}
+            }
+        )
+    }
