@@ -18,6 +18,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -67,6 +68,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -78,8 +80,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.trace
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
@@ -95,7 +99,7 @@ import kotlinx.coroutines.launch
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
@@ -110,6 +114,10 @@ fun ConversationContent(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val scope = rememberCoroutineScope()
+
+    ReportDrawnWhen {
+        scrollState.layoutInfo.totalItemsCount > 0
+    }
 
     Scaffold(
         topBar = {
@@ -126,29 +134,37 @@ fun ConversationContent(
             .exclude(WindowInsets.navigationBars)
             .exclude(WindowInsets.ime),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
     ) { paddingValues ->
-        Column(Modifier.fillMaxSize().padding(paddingValues)) {
-            Messages(
-                messages = uiState.messages,
-                navigateToProfile = navigateToProfile,
-                modifier = Modifier.weight(1f),
-                scrollState = scrollState
-            )
-            UserInput(
-                onMessageSent = { content ->
-                    uiState.addMessage(
-                        Message(authorMe, content, timeNow)
-                    )
-                },
-                resetScroll = {
-                    scope.launch {
-                        scrollState.scrollToItem(0)
-                    }
-                },
-                // let this element handle the padding so that the elevation is shown behind the
-                // navigation bar
-                modifier = Modifier.navigationBarsPadding().imePadding()
-            )
+        trace("ConversationContent") {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)) {
+                Messages(
+                    messages = uiState.messages,
+                    navigateToProfile = navigateToProfile,
+                    modifier = Modifier.weight(1f),
+                    scrollState = scrollState
+                )
+                UserInput(
+                    onMessageSent = { content ->
+                        uiState.addMessage(
+                            Message(authorMe, content, timeNow)
+                        )
+                    },
+                    resetScroll = {
+                        scope.launch {
+                            scrollState.scrollToItem(0)
+                        }
+                    },
+                    // let this element handle the padding so that the elevation is shown behind the
+                    // navigation bar
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding()
+                )
+            }
         }
     }
 }

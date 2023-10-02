@@ -48,6 +48,12 @@ android {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
         }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("debug")
+        }
 
         getByName("release") {
             isMinifyEnabled = true
@@ -106,6 +112,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.googlefonts)
+
+    implementation("androidx.compose.runtime:runtime-tracing:1.0.0-alpha03")
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 

@@ -37,3 +37,4 @@ dependencyResolutionManagement {
 rootProject.name = "Jetchat"
 include(":app")
 
+include(":benchmark")

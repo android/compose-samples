@@ -64,6 +64,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.trace
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
@@ -91,31 +92,33 @@ fun ProfileScreen(
             .nestedScroll(nestedScrollInteropConnection)
             .systemBarsPadding()
     ) {
-        Surface {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
-            ) {
-                ProfileHeader(
-                    scrollState,
-                    userData,
-                    this@BoxWithConstraints.maxHeight
-                )
-                UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
+        trace("ProfileContent") {
+            Surface {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                ) {
+                    ProfileHeader(
+                        scrollState,
+                        userData,
+                        this@BoxWithConstraints.maxHeight
+                    )
+                    UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
+                }
             }
-        }
 
-        val fabExtended by remember { derivedStateOf { scrollState.value == 0 } }
-        ProfileFab(
-            extended = fabExtended,
-            userIsMe = userData.isMe(),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
-                .offset(y = ((-100).dp)),
-            onFabClicked = { functionalityNotAvailablePopupShown = true }
-        )
+            val fabExtended by remember { derivedStateOf { scrollState.value == 0 } }
+            ProfileFab(
+                extended = fabExtended,
+                userIsMe = userData.isMe(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
+                    .offset(y = ((-100).dp)),
+                onFabClicked = { functionalityNotAvailablePopupShown = true }
+            )
+        }
     }
 }
 
