@@ -1,6 +1,7 @@
 package com.example.compose.benchmark
 
 import androidx.benchmark.macro.ExperimentalMetricApi
+import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MemoryUsageMetric
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
@@ -37,9 +38,10 @@ class StartupBenchmark {
         packageName = "com.example.compose.jetchat",
         metrics = listOf(
             StartupTimingMetric(),
-            TraceSectionMetric("ConversationContent")
+            TraceSectionMetric("ConversationContent"),
+            FrameTimingMetric()
         ),
-        iterations = 10,
+        iterations = 30,
         startupMode = StartupMode.COLD
     ) {
         pressHome()

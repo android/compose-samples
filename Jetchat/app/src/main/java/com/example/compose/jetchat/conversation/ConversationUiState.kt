@@ -18,14 +18,20 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.example.compose.jetchat.R
+import kotlin.random.Random
 
 class ConversationUiState(
     val channelName: String,
     val channelMembers: Int,
     initialMessages: List<Message>
 ) {
-    private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
+    private val _messages: MutableList<Message> = mutableListOf<Message>().apply {
+        repeat(20) { // Create enough data to do some flings
+            addAll(initialMessages)
+        }
+    }.toMutableStateList()
     val messages: List<Message> = _messages
 
     fun addMessage(msg: Message) {
