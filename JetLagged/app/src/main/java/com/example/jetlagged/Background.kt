@@ -46,13 +46,13 @@ fun Modifier.yellowBackground(): Modifier = this.composed {
             val shader = RuntimeShader(SHADER)
             val shaderBrush = ShaderBrush(shader)
             shader.setFloatUniform("iResolution", size.width, size.height)
-            shader.setFloatUniform("iTime", time)
             // Pass the color to support color space automatically
             shader.setColorUniform(
                 "iColor",
                 Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
             )
             onDrawBehind {
+                shader.setFloatUniform("iTime", time)
                 drawRect(shaderBrush)
             }
         }
