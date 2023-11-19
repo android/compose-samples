@@ -161,6 +161,7 @@ fun Email(
                 onImeAction()
             }
         ),
+        singleLine = true
     )
 
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -232,6 +233,7 @@ fun Password(
                 onImeAction()
             }
         ),
+        singleLine = true
     )
 }
 
