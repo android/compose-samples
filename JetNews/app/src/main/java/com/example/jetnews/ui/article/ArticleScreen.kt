@@ -160,8 +160,6 @@ private fun ArticleScreenContent(
             contentPadding = innerPadding,
             modifier = Modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
-            // innerPadding takes into account the top and bottom bar
-//                .padding(innerPadding)
             state = lazyListState,
         )
     }
