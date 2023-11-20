@@ -86,7 +86,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.coil.kt.compose)
 
