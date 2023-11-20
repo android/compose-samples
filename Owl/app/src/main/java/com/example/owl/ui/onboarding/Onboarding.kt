@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -87,7 +86,6 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                 FloatingActionButton(
                     onClick = onboardingComplete,
                     modifier = Modifier
-                        .navigationBarsPadding()
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Explore,
@@ -97,10 +95,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
             }
         ) { innerPadding ->
             Column(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-                    .padding(innerPadding)
+                modifier = Modifier.padding(innerPadding)
             ) {
                 Text(
                     text = stringResource(R.string.choose_topics_that_interest_you),
