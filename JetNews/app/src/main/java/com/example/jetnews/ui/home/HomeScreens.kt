@@ -308,7 +308,8 @@ private fun HomeScreenWithList(
             onRefresh = onRefreshPosts,
             content = {
                 when (uiState) {
-                    is HomeUiState.HasPosts -> hasPostsContent(uiState, innerPadding, contentModifier)
+                    is HomeUiState.HasPosts ->
+                        hasPostsContent(uiState, innerPadding, contentModifier)
                     is HomeUiState.NoPosts -> {
                         if (uiState.errorMessages.isEmpty()) {
                             // if there are no posts, and no error, let the user refresh manually
@@ -326,7 +327,8 @@ private fun HomeScreenWithList(
                             Box(
                                 contentModifier
                                     .padding(innerPadding)
-                                    .fillMaxSize()) { /* empty screen */ }
+                                    .fillMaxSize()
+                            ) { /* empty screen */ }
                         }
                     }
                 }
