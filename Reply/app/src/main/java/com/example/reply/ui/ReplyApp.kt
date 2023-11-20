@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
@@ -57,7 +56,6 @@ import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyApp(
     windowSize: WindowSizeClass,
@@ -147,7 +145,6 @@ fun ReplyApp(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
