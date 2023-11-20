@@ -98,7 +98,6 @@ fun JetnewsApp(
 /**
  * Determine the drawer state to pass to the modal drawer.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -114,16 +113,3 @@ private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState
         DrawerState(DrawerValue.Closed)
     }
 }
-
-/**
- * Determine the content padding to apply to the different screens of the app
- */
-@Composable
-fun rememberContentPaddingForScreen(
-    additionalTop: Dp = 0.dp,
-    excludeTop: Boolean = false
-) =
-    WindowInsets.systemBars
-        .only(if (excludeTop) WindowInsetsSides.Bottom else WindowInsetsSides.Vertical)
-        .add(WindowInsets(top = additionalTop))
-        .asPaddingValues()

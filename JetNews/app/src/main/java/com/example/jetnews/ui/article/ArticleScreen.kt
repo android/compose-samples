@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -157,10 +158,12 @@ private fun ArticleScreenContent(
     ) { innerPadding ->
         PostContent(
             post = post,
+            contentPadding = innerPadding,
             modifier = Modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 // innerPadding takes into account the top and bottom bar
-                .padding(innerPadding),
+//                .padding(innerPadding)
+            ,
             state = lazyListState,
         )
     }
