@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -75,64 +74,57 @@ fun ReplyNavigationRail(
         modifier = Modifier.fillMaxHeight(),
         containerColor = MaterialTheme.colorScheme.inverseOnSurface
     ) {
-        // TODO remove custom nav rail positioning when NavRail component supports it. ticket : b/232495216
-        Layout(
-            modifier = Modifier.widthIn(max = 80.dp),
-            content = {
-                Column(
-                    modifier = Modifier.layoutId(LayoutType.HEADER),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    NavigationRailItem(
-                        selected = false,
-                        onClick = onDrawerClicked,
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = stringResource(id = R.string.navigation_drawer)
-                            )
-                        }
+        Column(
+            modifier = Modifier.layoutId(LayoutType.HEADER),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            NavigationRailItem(
+                selected = false,
+                onClick = onDrawerClicked,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = stringResource(id = R.string.navigation_drawer)
                     )
-                    FloatingActionButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = stringResource(id = R.string.edit),
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    Spacer(Modifier.height(8.dp)) // NavigationRailHeaderPadding
-                    Spacer(Modifier.height(4.dp)) // NavigationRailVerticalPadding
                 }
+            )
+            FloatingActionButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(id = R.string.edit),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Spacer(Modifier.height(8.dp)) // NavigationRailHeaderPadding
+            Spacer(Modifier.height(4.dp)) // NavigationRailVerticalPadding
+        }
 
-                Column(
-                    modifier = Modifier.layoutId(LayoutType.CONTENT),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
-                        NavigationRailItem(
-                            selected = selectedDestination == replyDestination.route,
-                            onClick = { navigateToTopLevelDestination(replyDestination) },
-                            icon = {
-                                Icon(
-                                    imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(
-                                        id = replyDestination.iconTextId
-                                    )
-                                )
-                            }
+        Column(
+            modifier = Modifier.layoutId(LayoutType.CONTENT),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
+                NavigationRailItem(
+                    selected = selectedDestination == replyDestination.route,
+                    onClick = { navigateToTopLevelDestination(replyDestination) },
+                    icon = {
+                        Icon(
+                            imageVector = replyDestination.selectedIcon,
+                            contentDescription = stringResource(
+                                id = replyDestination.iconTextId
+                            )
                         )
                     }
-                }
-            },
-            measurePolicy = navigationMeasurePolicy(navigationContentPosition)
-        )
+                )
+            }
+        }
     }
 }
 
@@ -157,14 +149,16 @@ fun ReplyBottomNavigationBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PermanentNavigationDrawerContent(
     selectedDestination: String,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
 ) {
-    PermanentDrawerSheet(modifier = Modifier.sizeIn(minWidth = 200.dp, maxWidth = 300.dp)) {
+    PermanentDrawerSheet(
+        modifier = Modifier.sizeIn(minWidth = 200.dp, maxWidth = 300.dp),
+        drawerContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
+    ) {
         // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
         Layout(
             modifier = Modifier
