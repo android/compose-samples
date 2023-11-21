@@ -90,7 +90,8 @@ fun FilterChip(
 ) {
     val (selected, setSelected) = filter.enabled
     val backgroundColor by animateColorAsState(
-        if (selected) JetsnackTheme.colors.brandSecondary else JetsnackTheme.colors.uiBackground
+        if (selected) JetsnackTheme.colors.brandSecondary else JetsnackTheme.colors.uiBackground,
+        label = "background color"
     )
     val border = Modifier.fadeInDiagonalGradientBorder(
         showBorder = !selected,
@@ -98,11 +99,12 @@ fun FilterChip(
         shape = shape
     )
     val textColor by animateColorAsState(
-        if (selected) Color.Black else JetsnackTheme.colors.textSecondary
+        if (selected) Color.Black else JetsnackTheme.colors.textSecondary,
+        label = "text color"
     )
 
     JetsnackSurface(
-        modifier = modifier.height(28.dp),
+        modifier = modifier,
         color = backgroundColor,
         contentColor = textColor,
         shape = shape,

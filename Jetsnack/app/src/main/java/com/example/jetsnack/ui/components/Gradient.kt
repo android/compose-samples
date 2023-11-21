@@ -71,7 +71,7 @@ fun Modifier.fadeInDiagonalGradientBorder(
     shape: Shape
 ) = composed {
     val animatedColors = List(colors.size) { i ->
-        animateColorAsState(if (showBorder) colors[i] else colors[i].copy(alpha = 0f)).value
+        animateColorAsState(if (showBorder) colors[i] else colors[i].copy(alpha = 0f), label = "animated color").value
     }
     diagonalGradientBorder(
         colors = animatedColors,
