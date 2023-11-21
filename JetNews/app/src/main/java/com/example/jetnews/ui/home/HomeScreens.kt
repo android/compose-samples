@@ -103,7 +103,6 @@ import com.example.jetnews.ui.article.postContentItems
 import com.example.jetnews.ui.article.sharePost
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.modifiers.interceptKey
-import com.example.jetnews.ui.rememberContentPaddingForScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
@@ -144,11 +143,7 @@ fun HomeFeedWithArticleDetailsScreen(
         openDrawer = openDrawer,
         snackbarHostState = snackbarHostState,
         modifier = modifier,
-    ) { hasPostsUiState, contentModifier ->
-        val contentPadding = rememberContentPaddingForScreen(
-            additionalTop = if (showTopAppBar) 0.dp else 8.dp,
-            excludeTop = showTopAppBar
-        )
+    ) { hasPostsUiState, contentPadding, contentModifier ->
         Row(contentModifier) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
@@ -246,17 +241,14 @@ fun HomeFeedScreen(
         openDrawer = openDrawer,
         snackbarHostState = snackbarHostState,
         modifier = modifier
-    ) { hasPostsUiState, contentModifier ->
+    ) { hasPostsUiState, contentPadding, contentModifier ->
         PostList(
             postsFeed = hasPostsUiState.postsFeed,
             favorites = hasPostsUiState.favorites,
             showExpandedSearch = !showTopAppBar,
             onArticleTapped = onSelectPost,
             onToggleFavorite = onToggleFavorite,
-            contentPadding = rememberContentPaddingForScreen(
-                additionalTop = if (showTopAppBar) 0.dp else 8.dp,
-                excludeTop = showTopAppBar
-            ),
+            contentPadding = contentPadding,
             modifier = contentModifier,
             state = homeListLazyListState,
             searchInput = searchInput,
@@ -286,6 +278,7 @@ private fun HomeScreenWithList(
     modifier: Modifier = Modifier,
     hasPostsContent: @Composable (
         uiState: HomeUiState.HasPosts,
+        contentPadding: PaddingValues,
         modifier: Modifier
     ) -> Unit
 ) {
@@ -303,9 +296,7 @@ private fun HomeScreenWithList(
         },
         modifier = modifier
     ) { innerPadding ->
-        val contentModifier = Modifier
-            .padding(innerPadding)
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        val contentModifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
 
         LoadingContent(
             empty = when (uiState) {
@@ -317,13 +308,14 @@ private fun HomeScreenWithList(
             onRefresh = onRefreshPosts,
             content = {
                 when (uiState) {
-                    is HomeUiState.HasPosts -> hasPostsContent(uiState, contentModifier)
+                    is HomeUiState.HasPosts ->
+                        hasPostsContent(uiState, innerPadding, contentModifier)
                     is HomeUiState.NoPosts -> {
                         if (uiState.errorMessages.isEmpty()) {
                             // if there are no posts, and no error, let the user refresh manually
                             TextButton(
                                 onClick = onRefreshPosts,
-                                modifier.fillMaxSize()
+                                modifier.padding(innerPadding).fillMaxSize()
                             ) {
                                 Text(
                                     stringResource(id = R.string.home_tap_to_load_content),
@@ -332,7 +324,11 @@ private fun HomeScreenWithList(
                             }
                         } else {
                             // there's currently an error showing, don't show any content
-                            Box(contentModifier.fillMaxSize()) { /* empty screen */ }
+                            Box(
+                                contentModifier
+                                    .padding(innerPadding)
+                                    .fillMaxSize()
+                            ) { /* empty screen */ }
                         }
                     }
                 }

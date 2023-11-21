@@ -84,11 +84,12 @@ private val defaultSpacerSize = 16.dp
 fun PostContent(
     post: Post,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(defaultSpacerSize),
-        modifier = modifier,
+        contentPadding = contentPadding,
+        modifier = modifier.padding(horizontal = defaultSpacerSize),
         state = state,
     ) {
         postContentItems(post)
