@@ -105,6 +105,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.google.android.material)
 
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.foundation)
@@ -117,7 +118,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.flowlayout)
 
     implementation(libs.coil.kt.compose)

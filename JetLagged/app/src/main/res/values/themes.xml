@@ -13,12 +13,5 @@
   the License.
   -->
 <resources>
-
-    <style name="Theme.JetLagged" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-
+    <style name="Theme.JetLagged" parent="Theme.MaterialComponents.DayNight"/>
 </resources>
