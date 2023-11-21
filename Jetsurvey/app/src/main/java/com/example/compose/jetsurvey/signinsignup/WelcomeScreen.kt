@@ -29,7 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,9 +57,10 @@ fun WelcomeScreen(
 ) {
     var showBranding by rememberSaveable { mutableStateOf(true) }
 
-    Surface(modifier = Modifier.supportWideScreen()) {
+    Scaffold(modifier = Modifier.supportWideScreen()) { innerPadding ->
         Column(
             modifier = Modifier
+                .padding(innerPadding)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {

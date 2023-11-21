@@ -21,11 +21,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Bottom
+import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Horizontal
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -50,8 +56,6 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.supportWideScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
-// Scaffold is experimental in m3
 @Composable
 fun SurveyQuestionsScreen(
     surveyScreenData: SurveyScreenData,
@@ -87,7 +91,6 @@ fun SurveyQuestionsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // Scaffold is experimental in m3
 @Composable
 fun SurveyResultScreen(
     onDonePressed: () -> Unit,
@@ -220,14 +223,14 @@ fun SurveyBottomBar(
     onNextPressed: () -> Unit,
     onDonePressed: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shadowElevation = 7.dp,
-    ) {
-
+    Surface(shadowElevation = 7.dp) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                // Since we're not using a Material component but we implement our own bottom bar,
+                // we will also need to implement our own edge-to-edge support. Similar to the
+                // NavigationBar, we add the horizontal and bottom padding if it hasn't been consumed yet.
+                .windowInsetsPadding(WindowInsets.systemBars.only(Horizontal + Bottom))
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
             if (shouldShowPreviousButton) {
