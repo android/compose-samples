@@ -200,7 +200,6 @@ fun SortFilters(
     }
 }
 
-
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     FlowRow {
