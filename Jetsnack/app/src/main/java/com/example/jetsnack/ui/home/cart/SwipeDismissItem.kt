@@ -19,7 +19,6 @@ package com.example.jetsnack.ui.home.cart
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.material.DismissDirection
@@ -31,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 /**
  * Holds the Swipe to dismiss composable, its animation and the current state

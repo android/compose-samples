@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package com.example.jetsnack.ui.home
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +43,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,15 +60,13 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun FilterScreen(
     onDismiss: () -> Unit
 ) {
     var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
-    var maxCalories by remember { mutableStateOf(0f) }
+    var maxCalories by remember { mutableFloatStateOf(0f) }
     val defaultFilter = SnackRepo.getSortDefault()
 
     Dialog(onDismissRequest = onDismiss) {
@@ -153,7 +156,6 @@ fun FilterScreen(
 fun FilterChipSection(title: String, filters: List<Filter>) {
     FilterTitle(text = title)
     FlowRow(
-        mainAxisAlignment = FlowMainAxisAlignment.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp, bottom = 16.dp)
