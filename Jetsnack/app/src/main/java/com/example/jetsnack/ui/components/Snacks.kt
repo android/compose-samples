@@ -126,12 +126,12 @@ private fun HighlightedSnacks(
     modifier: Modifier = Modifier
 ) {
     val rowState = rememberLazyListState()
-
-    val highlightedCardWidthPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
+    val cardWidthWithPaddingPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
 
     val scrollProvider = {
         // Simple calculation of scroll distance for homogenous item types with the same width.
-        highlightedCardWidthPx * rowState.firstVisibleItemIndex + rowState.firstVisibleItemScrollOffset
+        val offsetFromStart = cardWidthWithPaddingPx * rowState.firstVisibleItemIndex
+        offsetFromStart + rowState.firstVisibleItemScrollOffset
     }
 
     val gradient = when ((index / 2) % 2) {
