@@ -68,7 +68,8 @@ import com.example.jetsnack.ui.utils.mirroringIcon
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
-private val Density.cardWidthWithPaddingPx get() = (HighlightCardWidth + HighlightCardPadding).toPx()
+private val Density.cardWidthWithPaddingPx
+    get() = (HighlightCardWidth + HighlightCardPadding).toPx()
 
 @Composable
 fun SnackCollection(
