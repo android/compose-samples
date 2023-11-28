@@ -47,7 +47,7 @@ fun Modifier.offsetGradientBackground(
     colors: List<Color>,
     width: Float,
     offset: Float = 0f
-) = this then background(
+) = background(
     Brush.horizontalGradient(
         colors = colors,
         startX = -offset,
@@ -60,7 +60,7 @@ fun Modifier.offsetGradientBackground(
     colors: List<Color>,
     width: Density.() -> Float,
     offset: Density.() -> Float = { 0f }
-) = this then drawBehind {
+) = drawBehind {
     val actualOffset = offset()
 
     drawRect(
@@ -77,7 +77,7 @@ fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
     borderSize: Dp = 2.dp,
     shape: Shape
-) = this then border(
+) = border(
     width = borderSize,
     brush = Brush.linearGradient(colors),
     shape = shape
