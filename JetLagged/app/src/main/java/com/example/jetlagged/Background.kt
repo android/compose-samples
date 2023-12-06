@@ -22,7 +22,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
@@ -30,7 +29,6 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
-import androidx.compose.ui.node.invalidateDraw
 import com.example.jetlagged.ui.theme.White
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
@@ -42,12 +40,14 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
 
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
+
     init {
         shader.setColorUniform(
             "color",
             Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
         )
     }
+
     private val time = mutableFloatStateOf(0f)
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
@@ -55,16 +55,18 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
         drawRect(shaderBrush)
         drawContent()
     }
+
     override fun onAttach() {
         coroutineScope.launch {
             while (true) {
                 withInfiniteAnimationFrameMillis {
-                    time.floatValue = it/1000f
+                    time.floatValue = it / 1000f
                 }
             }
         }
     }
 }
+
 private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun create() = YellowBackgroundNode()
@@ -72,17 +74,19 @@ private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgrou
 
     }
 }
-fun Modifier.yellowBackground() : Modifier = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    this.then(YellowBackgroundElement)
-} else {
-    drawWithCache {
 
-        val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
-        onDrawBehind {
-            drawRect(gradientBrush)
+fun Modifier.yellowBackground(): Modifier =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this.then(YellowBackgroundElement)
+    } else {
+        drawWithCache {
+
+            val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
+            onDrawBehind {
+                drawRect(gradientBrush)
+            }
         }
     }
-}
 
 @Language("AGSL")
 val SHADER = """
