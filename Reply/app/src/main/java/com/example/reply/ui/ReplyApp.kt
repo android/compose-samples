@@ -16,7 +16,6 @@
 
 package com.example.reply.ui
 
-import com.example.reply.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -60,6 +59,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
+import com.example.reply.R
 import com.example.reply.ui.navigation.ModalNavigationDrawerContent
 import com.example.reply.ui.navigation.PermanentNavigationDrawerContent
 import com.example.reply.ui.navigation.ReplyBottomNavigationBar
@@ -235,10 +235,10 @@ private fun ReplyNavigationWrapper(
                 ) {
                     SendEmailContent(
                         onSendClicked = {
-                          coroutineScope.launch {
-                              bottomSheetState.hide()
-                              isBottomSheetOpen.value = false
-                          }
+                            coroutineScope.launch {
+                                bottomSheetState.hide()
+                                isBottomSheetOpen.value = false
+                            }
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -257,7 +257,6 @@ private fun ReplyNavigationWrapper(
                             drawerState.close()
                             isBottomSheetOpen.value = true
                             bottomSheetState.expand()
-
                         }
                     },
                     onDrawerClicked = {
@@ -417,7 +416,7 @@ fun SendEmailContent(
     modifier: Modifier = Modifier
 ) {
     var toEmail by remember { mutableStateOf(TextFieldValue("")) }
-    var subject by  remember { mutableStateOf(TextFieldValue("")) }
+    var subject by remember { mutableStateOf(TextFieldValue("")) }
     var content by remember { mutableStateOf(TextFieldValue("")) }
     Column(modifier = modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -430,7 +429,7 @@ fun SendEmailContent(
         OutlinedTextField(
             value = toEmail,
             onValueChange = { toEmail = it },
-            label = { Text(text = stringResource(id = R.string.create_email_to))},
+            label = { Text(text = stringResource(id = R.string.create_email_to)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp)
@@ -438,7 +437,7 @@ fun SendEmailContent(
         OutlinedTextField(
             value = subject,
             onValueChange = { subject = it },
-            label = { Text(text = stringResource(id = R.string.create_email_subject))},
+            label = { Text(text = stringResource(id = R.string.create_email_subject)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp)
@@ -446,7 +445,7 @@ fun SendEmailContent(
         TextField(
             value = content,
             onValueChange = { content = it },
-            label = { Text(text = stringResource(id = R.string.create_email_content))},
+            label = { Text(text = stringResource(id = R.string.create_email_content)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
@@ -462,4 +461,3 @@ fun SendEmailContent(
         }
     }
 }
-
