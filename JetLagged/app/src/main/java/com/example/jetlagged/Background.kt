@@ -20,9 +20,9 @@ import android.graphics.Color
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
@@ -30,10 +30,10 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.invalidateDraw
 import com.example.jetlagged.ui.theme.White
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
@@ -42,24 +42,25 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
 
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
-    private var time = mutableLongStateOf(0L)
     init {
         shader.setColorUniform(
             "color",
             Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
         )
     }
+    private val time = mutableFloatStateOf(0f)
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
-        shader.setFloatUniform("time", time.longValue.toFloat())
+        shader.setFloatUniform("time", time.floatValue)
         drawRect(shaderBrush)
         drawContent()
     }
     override fun onAttach() {
         coroutineScope.launch {
             while (true) {
-                time.longValue = System.nanoTime()
-                delay(1)
+                withInfiniteAnimationFrameMillis {
+                    time.floatValue = it/1000f
+                }
             }
         }
     }
@@ -74,50 +75,14 @@ private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgrou
 fun Modifier.yellowBackground() : Modifier = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     this.then(YellowBackgroundElement)
 } else {
-    this.then(drawWithCache {
+    drawWithCache {
 
         val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
         onDrawBehind {
             drawRect(gradientBrush)
         }
-    })
-}
-/*
-
-fun Modifier.yellowBackground(): Modifier = this.composed {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        // produce updating time in seconds variable to pass into shader
-        val time by produceState(0f) {
-            while (true) {
-                withInfiniteAnimationFrameMillis {
-                    value = it / 1000f
-                }
-            }
-        }
-        Modifier.drawWithCache {
-            val shader = RuntimeShader(SHADER)
-            val shaderBrush = ShaderBrush(shader)
-            shader.setFloatUniform("resolution", size.width, size.height)
-            // Pass the color to support color space automatically
-            shader.setColorUniform(
-                "color",
-                Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
-            )
-            onDrawBehind {
-                shader.setFloatUniform("time", time)
-                drawRect(shaderBrush)
-            }
-        }
-    } else {
-        Modifier.drawWithCache {
-            val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
-            onDrawBehind {
-                drawRect(gradientBrush)
-            }
-        }
     }
 }
-*/
 
 @Language("AGSL")
 val SHADER = """
