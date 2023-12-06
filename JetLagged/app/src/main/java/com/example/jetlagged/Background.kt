@@ -35,11 +35,20 @@ import com.example.jetlagged.ui.theme.YellowVariant
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
+private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun create() = YellowBackgroundNode()
+    override fun update(node: YellowBackgroundNode) {
+
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
 
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
+    private val time = mutableFloatStateOf(0f)
 
     init {
         shader.setColorUniform(
@@ -48,7 +57,7 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
         )
     }
 
-    private val time = mutableFloatStateOf(0f)
+
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
         shader.setFloatUniform("time", time.floatValue)
@@ -67,13 +76,6 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
     }
 }
 
-private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun create() = YellowBackgroundNode()
-    override fun update(node: YellowBackgroundNode) {
-
-    }
-}
 
 fun Modifier.yellowBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
