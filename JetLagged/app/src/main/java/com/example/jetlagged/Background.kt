@@ -39,7 +39,6 @@ private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgrou
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun create() = YellowBackgroundNode()
     override fun update(node: YellowBackgroundNode) {
-
     }
 }
 
@@ -56,7 +55,6 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
             Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
         )
     }
-
 
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
@@ -75,7 +73,6 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
         }
     }
 }
-
 
 fun Modifier.yellowBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
