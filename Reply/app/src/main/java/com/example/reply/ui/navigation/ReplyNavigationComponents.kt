@@ -68,6 +68,7 @@ fun ReplyNavigationRail(
     selectedDestination: String,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
+    onFABClicked: () -> Unit = {},
     onDrawerClicked: () -> Unit = {},
 ) {
     NavigationRail(
@@ -90,7 +91,7 @@ fun ReplyNavigationRail(
                 }
             )
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = onFABClicked,
                 modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
@@ -153,6 +154,7 @@ fun ReplyBottomNavigationBar(
 fun PermanentNavigationDrawerContent(
     selectedDestination: String,
     navigationContentPosition: ReplyNavigationContentPosition,
+    onFABClicked: () -> Unit,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
 ) {
     PermanentDrawerSheet(
@@ -178,7 +180,7 @@ fun PermanentNavigationDrawerContent(
                         color = MaterialTheme.colorScheme.primary
                     )
                     ExtendedFloatingActionButton(
-                        onClick = { /*TODO*/ },
+                        onClick = onFABClicked,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp, bottom = 40.dp),
@@ -240,6 +242,7 @@ fun ModalNavigationDrawerContent(
     selectedDestination: String,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
+    onFABClicked: () -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     ModalDrawerSheet {
@@ -275,7 +278,7 @@ fun ModalNavigationDrawerContent(
                     }
 
                     ExtendedFloatingActionButton(
-                        onClick = { /*TODO*/ },
+                        onClick = onFABClicked,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp, bottom = 40.dp),

@@ -16,24 +16,43 @@
 
 package com.example.reply.ui
 
+import com.example.reply.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -145,6 +164,7 @@ fun ReplyApp(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapper(
     navigationType: ReplyNavigationType,
@@ -167,12 +187,22 @@ private fun ReplyNavigationWrapper(
     val selectedDestination =
         navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
 
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val isBottomSheetOpen = rememberSaveable { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         // TODO check on custom width of PermanentNavigationDrawer: b/232495216
         PermanentNavigationDrawer(drawerContent = {
             PermanentNavigationDrawerContent(
                 selectedDestination = selectedDestination,
                 navigationContentPosition = navigationContentPosition,
+                onFABClicked = {
+                    coroutineScope.launch {
+                        isBottomSheetOpen.value = true
+                        bottomSheetState.expand()
+                    }
+                },
                 navigateToTopLevelDestination = navigationActions::navigateTo,
             )
         }) {
@@ -187,8 +217,33 @@ private fun ReplyNavigationWrapper(
                 navigateToTopLevelDestination = navigationActions::navigateTo,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
+                onFABClicked = {
+                    coroutineScope.launch {
+                        isBottomSheetOpen.value = true
+                        bottomSheetState.expand()
+                    }
+                },
                 toggleSelectedEmail = toggleSelectedEmail
             )
+
+            // Bottom sheet content
+            if (isBottomSheetOpen.value) {
+                ModalBottomSheet(
+                    modifier = Modifier.wrapContentWidth(),
+                    onDismissRequest = { isBottomSheetOpen.value = false },
+                    sheetState = bottomSheetState
+                ) {
+                    SendEmailContent(
+                        onSendClicked = {
+                          coroutineScope.launch {
+                              bottomSheetState.hide()
+                              isBottomSheetOpen.value = false
+                          }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
         }
     } else {
         ModalNavigationDrawer(
@@ -197,6 +252,14 @@ private fun ReplyNavigationWrapper(
                     selectedDestination = selectedDestination,
                     navigationContentPosition = navigationContentPosition,
                     navigateToTopLevelDestination = navigationActions::navigateTo,
+                    onFABClicked = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            isBottomSheetOpen.value = true
+                            bottomSheetState.expand()
+
+                        }
+                    },
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -217,10 +280,35 @@ private fun ReplyNavigationWrapper(
                 navigateToTopLevelDestination = navigationActions::navigateTo,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
-                toggleSelectedEmail = toggleSelectedEmail
+                toggleSelectedEmail = toggleSelectedEmail,
+                onFABClicked = {
+                    coroutineScope.launch {
+                        isBottomSheetOpen.value = true
+                        bottomSheetState.expand()
+                    }
+                }
             ) {
                 scope.launch {
                     drawerState.open()
+                }
+            }
+
+            // Bottom sheet content
+            if (isBottomSheetOpen.value) {
+                ModalBottomSheet(
+                    modifier = Modifier.fillMaxWidth(),
+                    onDismissRequest = { isBottomSheetOpen.value = false },
+                    sheetState = bottomSheetState
+                ) {
+                    SendEmailContent(
+                        onSendClicked = {
+                            coroutineScope.launch {
+                                bottomSheetState.hide()
+                                isBottomSheetOpen.value = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -241,6 +329,7 @@ fun ReplyAppContent(
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     toggleSelectedEmail: (Long) -> Unit,
+    onFABClicked: () -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     Row(modifier = modifier.fillMaxSize()) {
@@ -249,6 +338,7 @@ fun ReplyAppContent(
                 selectedDestination = selectedDestination,
                 navigationContentPosition = navigationContentPosition,
                 navigateToTopLevelDestination = navigateToTopLevelDestination,
+                onFABClicked = onFABClicked,
                 onDrawerClicked = onDrawerClicked,
             )
         }
@@ -266,6 +356,7 @@ fun ReplyAppContent(
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
                 toggleSelectedEmail = toggleSelectedEmail,
+                onFABClicked = onFABClicked,
                 modifier = Modifier.weight(1f),
             )
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
@@ -288,6 +379,7 @@ private fun ReplyNavHost(
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     toggleSelectedEmail: (Long) -> Unit,
+    onFABClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -303,6 +395,7 @@ private fun ReplyNavHost(
                 displayFeatures = displayFeatures,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
+                onFABClicked = onFABClicked,
                 toggleSelectedEmail = toggleSelectedEmail
             )
         }
@@ -317,3 +410,56 @@ private fun ReplyNavHost(
         }
     }
 }
+
+@Composable
+fun SendEmailContent(
+    onSendClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var toEmail by remember { mutableStateOf(TextFieldValue("")) }
+    var subject by  remember { mutableStateOf(TextFieldValue("")) }
+    var content by remember { mutableStateOf(TextFieldValue("")) }
+    Column(modifier = modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "Compose Email",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+        OutlinedTextField(
+            value = toEmail,
+            onValueChange = { toEmail = it },
+            label = { Text(text = stringResource(id = R.string.create_email_to))},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        )
+        OutlinedTextField(
+            value = subject,
+            onValueChange = { subject = it },
+            label = { Text(text = stringResource(id = R.string.create_email_subject))},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        )
+        TextField(
+            value = content,
+            onValueChange = { content = it },
+            label = { Text(text = stringResource(id = R.string.create_email_content))},
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+                .padding(vertical = 16.dp, horizontal = 4.dp)
+        )
+        Button(
+            onClick = onSendClicked,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        ) {
+            Text(text = stringResource(id = R.string.create_email_send))
+        }
+    }
+}
+
