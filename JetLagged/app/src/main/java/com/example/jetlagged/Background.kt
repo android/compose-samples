@@ -71,7 +71,6 @@ private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgrou
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun create() = YellowBackgroundNode()
     override fun update(node: YellowBackgroundNode) {
-
     }
 }
 
