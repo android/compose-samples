@@ -233,10 +233,10 @@ private fun ReplyNavigationWrapper(
                 ) {
                     SendEmailContent(
                         onSendClicked = {
-                          coroutineScope.launch {
-                              bottomSheetState.hide()
-                              isBottomSheetOpen = false
-                          }
+                            coroutineScope.launch {
+                                bottomSheetState.hide()
+                                isBottomSheetOpen = false
+                            }
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
