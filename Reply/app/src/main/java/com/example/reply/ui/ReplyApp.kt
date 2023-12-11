@@ -188,7 +188,7 @@ private fun ReplyNavigationWrapper(
         navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
 
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val isBottomSheetOpen = rememberSaveable { mutableStateOf(false) }
+    var isBottomSheetOpen by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
@@ -199,7 +199,7 @@ private fun ReplyNavigationWrapper(
                 navigationContentPosition = navigationContentPosition,
                 onFABClicked = {
                     coroutineScope.launch {
-                        isBottomSheetOpen.value = true
+                        isBottomSheetOpen = true
                         bottomSheetState.expand()
                     }
                 },
@@ -219,7 +219,7 @@ private fun ReplyNavigationWrapper(
                 navigateToDetail = navigateToDetail,
                 onFABClicked = {
                     coroutineScope.launch {
-                        isBottomSheetOpen.value = true
+                        isBottomSheetOpen = true
                         bottomSheetState.expand()
                     }
                 },
@@ -227,18 +227,17 @@ private fun ReplyNavigationWrapper(
             )
 
             // Bottom sheet content
-            if (isBottomSheetOpen.value) {
+            if (isBottomSheetOpen) {
                 ModalBottomSheet(
-                    modifier = Modifier.wrapContentWidth(),
-                    onDismissRequest = { isBottomSheetOpen.value = false },
+                    onDismissRequest = { isBottomSheetOpen = false },
                     sheetState = bottomSheetState
                 ) {
                     SendEmailContent(
                         onSendClicked = {
-                            coroutineScope.launch {
-                                bottomSheetState.hide()
-                                isBottomSheetOpen.value = false
-                            }
+                          coroutineScope.launch {
+                              bottomSheetState.hide()
+                              isBottomSheetOpen = false
+                          }
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -255,7 +254,7 @@ private fun ReplyNavigationWrapper(
                     onFABClicked = {
                         coroutineScope.launch {
                             drawerState.close()
-                            isBottomSheetOpen.value = true
+                            isBottomSheetOpen = true
                             bottomSheetState.expand()
                         }
                     },
@@ -282,7 +281,7 @@ private fun ReplyNavigationWrapper(
                 toggleSelectedEmail = toggleSelectedEmail,
                 onFABClicked = {
                     coroutineScope.launch {
-                        isBottomSheetOpen.value = true
+                        isBottomSheetOpen = true
                         bottomSheetState.expand()
                     }
                 }
@@ -293,17 +292,16 @@ private fun ReplyNavigationWrapper(
             }
 
             // Bottom sheet content
-            if (isBottomSheetOpen.value) {
+            if (isBottomSheetOpen) {
                 ModalBottomSheet(
-                    modifier = Modifier.fillMaxWidth(),
-                    onDismissRequest = { isBottomSheetOpen.value = false },
+                    onDismissRequest = { isBottomSheetOpen = false },
                     sheetState = bottomSheetState
                 ) {
                     SendEmailContent(
                         onSendClicked = {
                             coroutineScope.launch {
                                 bottomSheetState.hide()
-                                isBottomSheetOpen.value = false
+                                isBottomSheetOpen = false
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
@@ -420,7 +418,7 @@ fun SendEmailContent(
     var content by remember { mutableStateOf(TextFieldValue("")) }
     Column(modifier = modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "Compose Email",
+            text = stringResource(id = R.string.create_email_text),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()

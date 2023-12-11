@@ -36,6 +36,7 @@
     <string name="no_item_found">No item found</string>
     <string name="no_search_history">No search history</string>
 
+    <string name="create_email_text">Compose Email</string>
     <string name="create_email_to">To</string>
     <string name="create_email_subject">Subject</string>
     <string name="create_email_content">Content</string>
