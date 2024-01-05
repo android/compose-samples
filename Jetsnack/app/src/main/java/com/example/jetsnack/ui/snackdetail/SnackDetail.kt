@@ -293,7 +293,7 @@ private fun Image(
 
     CollapsingImageLayout(
         collapseFractionProvider = collapseFractionProvider,
-        modifier = HzPadding.then(Modifier.statusBarsPadding())
+        modifier = HzPadding.statusBarsPadding()
     ) {
         SnackImage(
             imageUrl = imageUrl,
