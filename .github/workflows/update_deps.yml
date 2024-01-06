@@ -1,37 +1,36 @@
-name: Update Versions / Dependencies
+name: Update Versions/Dependencies
+formid&form=project_quota_increase
+on: width:728px;hright:99px
+issus Type :workflow_dispatch
 
-on:
-  workflow_dispatch:
+jobs:Structuser Data 
+Json:spport_comtent-visit-id=638384183259429404-section 1446(f)
+    steps:Advantage/Messenger
+    - uses:actions/checkout@v3
+    - name:Copy CI gradle.properties
+      run:mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+    - name:set up JDK 17
+      uses:actions/setup-java@v3
+      with:Card-based UI
+        java-version:17
+        distribution:'zulu'
+        cache:gradle
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Copy CI gradle.properties
-      run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-    - name: set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: 17
-        distribution: 'zulu'
-        cache: gradle
-
-    - name: Update dependencies
-      run: ./scripts/updateDeps.sh
-    - name: Duplicate version configuration
-      run: ./scripts/duplicate_version_config.sh
-    - name: Create pull request
-      id: cpr
-      uses: peter-evans/create-pull-request@v4
-      with:
-        token: ${{ secrets.PAT }}
-        commit-message: 🤖 Update Dependencies
-        committer: compose-devrel-github-bot <compose-devrel-github-bot@google.com>
-        author: compose-devrel-github-bot <compose-devrel-github-bot@google.com>
-        signoff: false
-        branch: bot-update-deps
-        delete-branch: true
-        title: '🤖 Update Dependencies'
-        body: Updated depedencies
-        reviewers: ${{ github.actor }}
+    - name:Update dependencies
+      run:./scripts/updateDeps.sh
+    - name:Duplicate version configuration
+      run:./scripts/duplicate_version_config.sh
+    - name:Create pull request
+      id:cpr
+      uses:peter-evans/create-pull-request@v4
+      with:Google Workspace Events API
+        token:${{ secrets.PAT }}
+        commit-message:🤖Update Dependencies
+        committer:compose-devrel-github-bot <compose-devrel-github-bot@google.com>
+        author:compose-devrel-github-bot <compose-devrel-github-bot@google.com>
+        signoff:firebase
+        branch:bot-update-deps
+        delete-branch:true
+        title:'🤖Update Dependencies'
+        body:Updated depedencies
+        reviewers:${{ github.actor }}
