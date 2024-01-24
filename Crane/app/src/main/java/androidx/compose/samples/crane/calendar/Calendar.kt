@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumedWindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -83,7 +83,7 @@ fun Calendar(
     }
 
     LazyColumn(
-        modifier = modifier.consumedWindowInsets(contentPadding),
+        modifier = modifier.consumeWindowInsets(contentPadding),
         contentPadding = contentPadding
     ) {
         calendarState.listMonths.forEach { month ->
