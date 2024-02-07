@@ -36,9 +36,11 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -99,10 +101,15 @@ fun RecordButton(
                 .background(LocalContentColor.current)
         )
         val scope = rememberCoroutineScope()
-        val tooltipState = remember { RichTooltipState() }
-        RichTooltipBox(
-            text = { Text(stringResource(R.string.touch_and_hold_to_record)) },
-            tooltipState = tooltipState
+        val tooltipState = remember { TooltipState() }
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+            tooltip = {
+                RichTooltip {
+                    Text(stringResource(R.string.touch_and_hold_to_record))
+                }
+            },
+            state = tooltipState
         ) {
             Icon(
                 Icons.Default.Mic,
