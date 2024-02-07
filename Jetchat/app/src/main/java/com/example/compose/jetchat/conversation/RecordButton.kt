@@ -53,8 +53,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
-import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,9 +105,9 @@ fun RecordButton(
         TooltipBox(
             positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
             tooltip = {
-                  RichTooltip {
-                      Text(stringResource(R.string.touch_and_hold_to_record))
-                  }
+                RichTooltip {
+                    Text(stringResource(R.string.touch_and_hold_to_record))
+                }
             },
             state = tooltipState
         ) {
