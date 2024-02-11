@@ -171,7 +171,7 @@ fun HomeContent(
 ) {
     Column(
         modifier = modifier.windowInsetsPadding(
-            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         )
     ) {
         // We dynamically theme this sub-section of the layout to match the selected
