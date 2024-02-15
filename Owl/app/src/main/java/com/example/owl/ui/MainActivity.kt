@@ -22,6 +22,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import com.example.owl.R
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
             )
         )
         super.onCreate(savedInstanceState)
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets -> insets }
 
         setContent {
             OwlApp { finish() }
