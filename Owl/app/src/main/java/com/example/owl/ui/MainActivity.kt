@@ -33,7 +33,9 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(
                 ContextCompat.getColor(this, R.color.immersive_sys_ui)
             ),
-            navigationBarStyle = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+            navigationBarStyle =
+            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                Configuration.UI_MODE_NIGHT_YES)
                 SystemBarStyle.dark(Color.TRANSPARENT)
             else
                 SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
