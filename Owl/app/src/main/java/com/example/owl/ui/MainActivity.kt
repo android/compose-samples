@@ -16,13 +16,14 @@
 
 package com.example.owl.ui
 
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import com.example.owl.R
 
 class MainActivity : ComponentActivity() {
@@ -31,10 +32,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(
                 ContextCompat.getColor(this, R.color.immersive_sys_ui)
-            )
+            ),
+            navigationBarStyle = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+                SystemBarStyle.dark(Color.TRANSPARENT)
+            else
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
         super.onCreate(savedInstanceState)
-        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets -> insets }
 
         setContent {
             OwlApp { finish() }
