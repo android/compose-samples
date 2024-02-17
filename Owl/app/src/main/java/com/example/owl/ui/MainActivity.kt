@@ -16,8 +16,8 @@
 
 package com.example.owl.ui
 
-import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -33,14 +33,11 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(
                 ContextCompat.getColor(this, R.color.immersive_sys_ui)
             ),
-            navigationBarStyle =
-            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
-                Configuration.UI_MODE_NIGHT_YES
-            )
-                SystemBarStyle.dark(Color.TRANSPARENT)
-            else
-                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
         )
+        if (Build.VERSION.SDK_INT >= 29) {
+            window.isNavigationBarContrastEnforced = false
+        }
         super.onCreate(savedInstanceState)
 
         setContent {
