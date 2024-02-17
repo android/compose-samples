@@ -17,7 +17,6 @@
 package com.example.owl.ui
 
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -35,9 +34,6 @@ class MainActivity : ComponentActivity() {
             ),
             navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
         )
-        if (Build.VERSION.SDK_INT >= 29) {
-            window.isNavigationBarContrastEnforced = false
-        }
         super.onCreate(savedInstanceState)
 
         setContent {
