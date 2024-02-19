@@ -16,6 +16,9 @@
 
 package com.example.owl.ui.theme
 
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -26,7 +29,9 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.example.owl.R
 
 private val YellowThemeLight = lightColors(
@@ -125,6 +130,17 @@ private fun OwlTheme(
     colors: Colors,
     content: @Composable () -> Unit
 ) {
+    val transparent = android.graphics.Color.TRANSPARENT
+    val activity = LocalContext.current as ComponentActivity
+    activity.enableEdgeToEdge(
+        statusBarStyle = SystemBarStyle.dark(
+            ContextCompat.getColor(activity, R.color.immersive_sys_ui)
+        ),
+        navigationBarStyle = if (darkTheme)
+            SystemBarStyle.dark(transparent)
+        else
+            SystemBarStyle.light(transparent, transparent)
+    )
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val images = if (darkTheme) DarkImages else LightImages
     CompositionLocalProvider(
