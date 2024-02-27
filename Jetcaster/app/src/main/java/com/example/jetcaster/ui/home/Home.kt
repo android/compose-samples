@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -46,6 +48,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabPosition
@@ -74,8 +77,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
+import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.PodcastWithExtraInfo
-import com.example.jetcaster.ui.home.discover.Discover
+import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
+import com.example.jetcaster.ui.home.discover.DiscoverViewState
+import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
@@ -102,9 +108,13 @@ fun Home(
             isRefreshing = viewState.refreshing,
             homeCategories = viewState.homeCategories,
             selectedHomeCategory = viewState.selectedHomeCategory,
-            onCategorySelected = viewModel::onHomeCategorySelected,
+            discoverViewState = viewState.discoverViewState,
+            podcastCategoryViewState = viewState.podcastCategoryViewState,
+            onHomeCategorySelected = viewModel::onHomeCategorySelected,
+            onCategorySelected = viewModel::onCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
             navigateToPlayer = navigateToPlayer,
+            onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -163,10 +173,14 @@ fun HomeContent(
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
+    discoverViewState: DiscoverViewState,
+    podcastCategoryViewState: PodcastCategoryViewState,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
-    onCategorySelected: (HomeCategory) -> Unit,
-    navigateToPlayer: (String) -> Unit
+    onHomeCategorySelected: (HomeCategory) -> Unit,
+    onCategorySelected: (Category) -> Unit,
+    navigateToPlayer: (String) -> Unit,
+    onTogglePodcastFollowed: (String) -> Unit,
 ) {
     Column(
         modifier = modifier.windowInsetsPadding(
@@ -198,72 +212,106 @@ fun HomeContent(
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalGradientScrim(
-                        color = MaterialTheme.colors.primary.copy(alpha = 0.38f),
-                        startYPercentage = 1f,
-                        endYPercentage = 0f
-                    )
-            ) {
-                // Draw a scrim over the status bar which matches the app bar
-                Spacer(
-                    Modifier
-                        .background(appBarColor)
-                        .fillMaxWidth()
-                        .windowInsetsTopHeight(WindowInsets.statusBars)
-                )
-
-                HomeAppBar(
-                    backgroundColor = appBarColor,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                if (featuredPodcasts.isNotEmpty()) {
-                    Spacer(Modifier.height(16.dp))
-
-                    FollowedPodcasts(
-                        items = featuredPodcasts,
-                        pagerState = pagerState,
-                        onPodcastUnfollowed = onPodcastUnfollowed,
+            val scrimColor = MaterialTheme.colors.primary.copy(alpha = 0.38f)
+            Scaffold(
+                topBar = {
+                    Column(
                         modifier = Modifier
-                            .padding(start = Keyline1, top = 16.dp, end = Keyline1)
                             .fillMaxWidth()
-                            .height(200.dp)
-                    )
+                            .background(color = scrimColor)
+                    ) {
+                        // Draw a scrim over the status bar which matches the app bar
+                        Spacer(
+                            Modifier
+                                .background(appBarColor)
+                                .fillMaxWidth()
+                                .windowInsetsTopHeight(WindowInsets.statusBars)
+                        )
+                        HomeAppBar(
+                            backgroundColor = appBarColor,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+            ) { contentPadding ->
+                LazyColumn(
+                    contentPadding = contentPadding,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (featuredPodcasts.isNotEmpty()) {
+                        item {
+                            FollowedPodcastItem(
+                                items = featuredPodcasts,
+                                pagerState = pagerState,
+                                onPodcastUnfollowed = onPodcastUnfollowed,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .verticalGradientScrim(
+                                        color = scrimColor,
+                                        startYPercentage = 1f,
+                                        endYPercentage = 0f
+                                    )
+                            )
+                        }
 
-                    Spacer(Modifier.height(16.dp))
+                        if (isRefreshing) {
+                            // TODO show a progress indicator or similar
+                        }
+
+                        stickyHeader {
+                            if (homeCategories.isNotEmpty()) {
+                                HomeCategoryTabs(
+                                    categories = homeCategories,
+                                    selectedCategory = selectedHomeCategory,
+                                    onCategorySelected = onHomeCategorySelected
+                                )
+                            }
+                        }
+
+                        when (selectedHomeCategory) {
+                            HomeCategory.Library -> {
+                                // TODO
+                            }
+
+                            HomeCategory.Discover -> {
+                                discoverItems(
+                                    discoverViewState = discoverViewState,
+                                    podcastCategoryViewState = podcastCategoryViewState,
+                                    navigateToPlayer = navigateToPlayer,
+                                    onCategorySelected = onCategorySelected,
+                                    onTogglePodcastFollowed = onTogglePodcastFollowed
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
+    }
+}
 
-        if (isRefreshing) {
-            // TODO show a progress indicator or similar
-        }
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun FollowedPodcastItem(
+    items: PersistentList<PodcastWithExtraInfo>,
+    pagerState: PagerState,
+    onPodcastUnfollowed: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Spacer(Modifier.height(16.dp))
 
-        if (homeCategories.isNotEmpty()) {
-            HomeCategoryTabs(
-                categories = homeCategories,
-                selectedCategory = selectedHomeCategory,
-                onCategorySelected = onCategorySelected
-            )
-        }
+        FollowedPodcasts(
+            items = items,
+            pagerState = pagerState,
+            onPodcastUnfollowed = onPodcastUnfollowed,
+            modifier = Modifier
+                .padding(start = Keyline1, top = 16.dp, end = Keyline1)
+                .fillMaxWidth()
+                .height(200.dp)
+        )
 
-        when (selectedHomeCategory) {
-            HomeCategory.Library -> {
-                // TODO
-            }
-
-            HomeCategory.Discover -> {
-                Discover(
-                    navigateToPlayer = navigateToPlayer,
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
-            }
-        }
+        Spacer(Modifier.height(16.dp))
     }
 }
 
@@ -410,8 +458,6 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
-/*
-TODO: Fix preview error
 @Composable
 @Preview
 fun PreviewHomeContent() {
@@ -419,14 +465,24 @@ fun PreviewHomeContent() {
         HomeContent(
             featuredPodcasts = PreviewPodcastsWithExtraInfo,
             isRefreshing = false,
-            homeCategories = HomeCategory.values().asList(),
+            homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
+            discoverViewState = DiscoverViewState(
+                categories = PreviewCategories,
+                selectedCategory = PreviewCategories.first(),
+            ),
+            podcastCategoryViewState = PodcastCategoryViewState(
+                topPodcasts = PreviewPodcastsWithExtraInfo,
+                episodes = PreviewEpisodeToPodcasts,
+            ),
             onCategorySelected = {},
-            onPodcastUnfollowed = {}
+            onPodcastUnfollowed = {},
+            navigateToPlayer = {},
+            onHomeCategorySelected = {},
+            onTogglePodcastFollowed = {}
         )
     }
 }
-*/
 
 @Composable
 @Preview
