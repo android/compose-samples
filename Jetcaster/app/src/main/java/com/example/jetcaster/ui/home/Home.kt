@@ -61,6 +61,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -252,35 +253,35 @@ fun HomeContent(
                                     )
                             )
                         }
+                    }
 
-                        if (isRefreshing) {
-                            // TODO show a progress indicator or similar
+                    if (isRefreshing) {
+                        // TODO show a progress indicator or similar
+                    }
+
+                    stickyHeader {
+                        if (homeCategories.isNotEmpty()) {
+                            HomeCategoryTabs(
+                                categories = homeCategories,
+                                selectedCategory = selectedHomeCategory,
+                                onCategorySelected = onHomeCategorySelected
+                            )
+                        }
+                    }
+
+                    when (selectedHomeCategory) {
+                        HomeCategory.Library -> {
+                            // TODO
                         }
 
-                        stickyHeader {
-                            if (homeCategories.isNotEmpty()) {
-                                HomeCategoryTabs(
-                                    categories = homeCategories,
-                                    selectedCategory = selectedHomeCategory,
-                                    onCategorySelected = onHomeCategorySelected
-                                )
-                            }
-                        }
-
-                        when (selectedHomeCategory) {
-                            HomeCategory.Library -> {
-                                // TODO
-                            }
-
-                            HomeCategory.Discover -> {
-                                discoverItems(
-                                    discoverViewState = discoverViewState,
-                                    podcastCategoryViewState = podcastCategoryViewState,
-                                    navigateToPlayer = navigateToPlayer,
-                                    onCategorySelected = onCategorySelected,
-                                    onTogglePodcastFollowed = onTogglePodcastFollowed
-                                )
-                            }
+                        HomeCategory.Discover -> {
+                            discoverItems(
+                                discoverViewState = discoverViewState,
+                                podcastCategoryViewState = podcastCategoryViewState,
+                                navigateToPlayer = navigateToPlayer,
+                                onCategorySelected = onCategorySelected,
+                                onTogglePodcastFollowed = onTogglePodcastFollowed
+                            )
                         }
                     }
                 }

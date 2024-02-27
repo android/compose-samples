@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -75,7 +76,7 @@ class HomeViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val podcastCategory = _selectedCategory.flatMapLatest { category ->
         if (category == null) {
-            return@flatMapLatest emptyFlow<PodcastCategoryViewState>()
+            return@flatMapLatest flowOf(PodcastCategoryViewState())
         }
 
         val recentPodcastsFlow = categoryStore.podcastsInCategorySortedByPodcastCount(
