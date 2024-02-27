@@ -73,7 +73,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
-import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.PreviewEpisodes
