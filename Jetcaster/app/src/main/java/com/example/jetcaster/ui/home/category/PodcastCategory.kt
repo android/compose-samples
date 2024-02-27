@@ -73,7 +73,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Episode
-import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.Podcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.PreviewEpisodes
@@ -106,9 +105,23 @@ fun PodcastCategory(
     /**
      * TODO: reset scroll position when category changes
      */
-    Column(modifier = modifier) {
-        CategoryPodcasts(viewState.topPodcasts, viewModel)
-        EpisodeList(viewState.episodes, navigateToPlayer)
+    LazyColumn(
+        contentPadding = PaddingValues(0.dp),
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+    ) {
+        item {
+            CategoryPodcasts(viewState.topPodcasts, viewModel)
+        }
+
+        items(viewState.episodes, key = { it.episode.uri }) { item ->
+            EpisodeListItem(
+                episode = item.episode,
+                podcast = item.podcast,
+                onClick = navigateToPlayer,
+                modifier = Modifier.fillParentMaxWidth()
+            )
+        }
     }
 }
 
@@ -122,27 +135,6 @@ private fun CategoryPodcasts(
         onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
         modifier = Modifier.fillMaxWidth()
     )
-}
-
-@Composable
-private fun EpisodeList(
-    episodes: List<EpisodeToPodcast>,
-    navigateToPlayer: (String) -> Unit
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(0.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        items(episodes, key = { it.episode.uri }) { item ->
-            EpisodeListItem(
-                episode = item.episode,
-                podcast = item.podcast,
-                onClick = navigateToPlayer,
-                modifier = Modifier.fillParentMaxWidth()
-            )
-        }
-    }
 }
 
 @Composable
