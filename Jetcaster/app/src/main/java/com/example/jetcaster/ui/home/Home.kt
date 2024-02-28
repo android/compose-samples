@@ -47,7 +47,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabPosition
@@ -61,7 +60,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -103,7 +101,7 @@ fun Home(
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
     Surface(Modifier.fillMaxSize()) {
-        HomeContent(
+        Home(
             featuredPodcasts = viewState.featuredPodcasts,
             isRefreshing = viewState.refreshing,
             homeCategories = viewState.homeCategories,
@@ -168,7 +166,7 @@ fun HomeAppBar(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeContent(
+fun Home(
     featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
@@ -213,78 +211,109 @@ fun HomeContent(
             }
 
             val scrimColor = MaterialTheme.colors.primary.copy(alpha = 0.38f)
-            Scaffold(
-                topBar = {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = scrimColor)
-                    ) {
-                        // Draw a scrim over the status bar which matches the app bar
-                        Spacer(
-                            Modifier
-                                .background(appBarColor)
-                                .fillMaxWidth()
-                                .windowInsetsTopHeight(WindowInsets.statusBars)
+
+            // Top Bar
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = scrimColor)
+            ) {
+                // Draw a scrim over the status bar which matches the app bar
+                Spacer(
+                    Modifier
+                        .background(appBarColor)
+                        .fillMaxWidth()
+                        .windowInsetsTopHeight(WindowInsets.statusBars)
+                )
+                HomeAppBar(
+                    backgroundColor = appBarColor,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Main Content
+            HomeContent(
+                featuredPodcasts = featuredPodcasts,
+                isRefreshing = isRefreshing,
+                selectedHomeCategory = selectedHomeCategory,
+                homeCategories = homeCategories,
+                discoverViewState = discoverViewState,
+                podcastCategoryViewState = podcastCategoryViewState,
+                scrimColor = scrimColor,
+                pagerState = pagerState,
+                onPodcastUnfollowed = onPodcastUnfollowed,
+                onHomeCategorySelected = onHomeCategorySelected,
+                onCategorySelected = onCategorySelected,
+                navigateToPlayer = navigateToPlayer,
+                onTogglePodcastFollowed = onTogglePodcastFollowed
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun HomeContent(
+    featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
+    isRefreshing: Boolean,
+    selectedHomeCategory: HomeCategory,
+    homeCategories: List<HomeCategory>,
+    discoverViewState: DiscoverViewState,
+    podcastCategoryViewState: PodcastCategoryViewState,
+    scrimColor: Color,
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    onPodcastUnfollowed: (String) -> Unit,
+    onHomeCategorySelected: (HomeCategory) -> Unit,
+    onCategorySelected: (Category) -> Unit,
+    navigateToPlayer: (String) -> Unit,
+    onTogglePodcastFollowed: (String) -> Unit,
+) {
+    LazyColumn(modifier = modifier.fillMaxSize()) {
+        if (featuredPodcasts.isNotEmpty()) {
+            item {
+                FollowedPodcastItem(
+                    items = featuredPodcasts,
+                    pagerState = pagerState,
+                    onPodcastUnfollowed = onPodcastUnfollowed,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalGradientScrim(
+                            color = scrimColor,
+                            startYPercentage = 1f,
+                            endYPercentage = 0f
                         )
-                        HomeAppBar(
-                            backgroundColor = appBarColor,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                },
-            ) { contentPadding ->
-                LazyColumn(
-                    contentPadding = contentPadding,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    if (featuredPodcasts.isNotEmpty()) {
-                        item {
-                            FollowedPodcastItem(
-                                items = featuredPodcasts,
-                                pagerState = pagerState,
-                                onPodcastUnfollowed = onPodcastUnfollowed,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .verticalGradientScrim(
-                                        color = scrimColor,
-                                        startYPercentage = 1f,
-                                        endYPercentage = 0f
-                                    )
-                            )
-                        }
-                    }
+                )
+            }
+        }
 
-                    if (isRefreshing) {
-                        // TODO show a progress indicator or similar
-                    }
+        if (isRefreshing) {
+            // TODO show a progress indicator or similar
+        }
 
-                    stickyHeader {
-                        if (homeCategories.isNotEmpty()) {
-                            HomeCategoryTabs(
-                                categories = homeCategories,
-                                selectedCategory = selectedHomeCategory,
-                                onCategorySelected = onHomeCategorySelected
-                            )
-                        }
-                    }
+        if (homeCategories.isNotEmpty()) {
+            stickyHeader {
+                HomeCategoryTabs(
+                    categories = homeCategories,
+                    selectedCategory = selectedHomeCategory,
+                    onCategorySelected = onHomeCategorySelected
+                )
+            }
+        }
 
-                    when (selectedHomeCategory) {
-                        HomeCategory.Library -> {
-                            // TODO
-                        }
+        when (selectedHomeCategory) {
+            HomeCategory.Library -> {
+                // TODO
+            }
 
-                        HomeCategory.Discover -> {
-                            discoverItems(
-                                discoverViewState = discoverViewState,
-                                podcastCategoryViewState = podcastCategoryViewState,
-                                navigateToPlayer = navigateToPlayer,
-                                onCategorySelected = onCategorySelected,
-                                onTogglePodcastFollowed = onTogglePodcastFollowed
-                            )
-                        }
-                    }
-                }
+            HomeCategory.Discover -> {
+                discoverItems(
+                    discoverViewState = discoverViewState,
+                    podcastCategoryViewState = podcastCategoryViewState,
+                    navigateToPlayer = navigateToPlayer,
+                    onCategorySelected = onCategorySelected,
+                    onTogglePodcastFollowed = onTogglePodcastFollowed
+                )
             }
         }
     }
@@ -462,7 +491,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 @Preview
 fun PreviewHomeContent() {
     JetcasterTheme {
-        HomeContent(
+        Home(
             featuredPodcasts = PreviewPodcastsWithExtraInfo,
             isRefreshing = false,
             homeCategories = HomeCategory.entries,
