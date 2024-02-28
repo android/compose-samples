@@ -60,12 +60,6 @@ class PodcastCategoryViewModel(
             }.collect { _state.value = it }
         }
     }
-
-    fun onTogglePodcastFollowed(podcastUri: String) {
-        viewModelScope.launch {
-            podcastStore.togglePodcastFollowed(podcastUri)
-        }
-    }
 }
 
 data class PodcastCategoryViewState(
