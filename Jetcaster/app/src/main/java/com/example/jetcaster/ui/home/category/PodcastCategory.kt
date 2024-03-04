@@ -80,6 +80,10 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+data class PodcastCategoryViewState(
+    val topPodcasts: List<PodcastWithExtraInfo> = emptyList(),
+    val episodes: List<EpisodeToPodcast> = emptyList()
+)
 fun LazyListScope.podcastCategory(
     topPodcasts: List<PodcastWithExtraInfo>,
     episodes: List<EpisodeToPodcast>,

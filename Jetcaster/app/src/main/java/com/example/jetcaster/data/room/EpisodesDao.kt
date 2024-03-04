@@ -46,7 +46,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
     abstract fun episodesForPodcastUri(
         podcastUri: String,
         limit: Int
-    ): Flow<List<Episode>>
+    ): Flow<List<EpisodeToPodcast>>
 
     @Transaction
     @Query(

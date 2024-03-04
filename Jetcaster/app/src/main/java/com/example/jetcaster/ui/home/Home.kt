@@ -76,10 +76,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.data.Category
+import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
 import com.example.jetcaster.ui.home.discover.DiscoverViewState
 import com.example.jetcaster.ui.home.discover.discoverItems
+import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
@@ -108,6 +110,7 @@ fun Home(
             selectedHomeCategory = viewState.selectedHomeCategory,
             discoverViewState = viewState.discoverViewState,
             podcastCategoryViewState = viewState.podcastCategoryViewState,
+            libraryEpisodes = viewState.libraryEpisodes,
             onHomeCategorySelected = viewModel::onHomeCategorySelected,
             onCategorySelected = viewModel::onCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
@@ -173,6 +176,7 @@ fun Home(
     homeCategories: List<HomeCategory>,
     discoverViewState: DiscoverViewState,
     podcastCategoryViewState: PodcastCategoryViewState,
+    libraryEpisodes: List<EpisodeToPodcast>,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
     onHomeCategorySelected: (HomeCategory) -> Unit,
@@ -239,6 +243,7 @@ fun Home(
                 homeCategories = homeCategories,
                 discoverViewState = discoverViewState,
                 podcastCategoryViewState = podcastCategoryViewState,
+                libraryEpisodes = libraryEpisodes,
                 scrimColor = scrimColor,
                 pagerState = pagerState,
                 onPodcastUnfollowed = onPodcastUnfollowed,
@@ -260,6 +265,7 @@ private fun HomeContent(
     homeCategories: List<HomeCategory>,
     discoverViewState: DiscoverViewState,
     podcastCategoryViewState: PodcastCategoryViewState,
+    libraryEpisodes: List<EpisodeToPodcast>,
     scrimColor: Color,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
@@ -303,7 +309,10 @@ private fun HomeContent(
 
         when (selectedHomeCategory) {
             HomeCategory.Library -> {
-                // TODO
+                libraryItems(
+                    episodes = libraryEpisodes,
+                    navigateToPlayer = navigateToPlayer
+                )
             }
 
             HomeCategory.Discover -> {
@@ -504,6 +513,7 @@ fun PreviewHomeContent() {
                 topPodcasts = PreviewPodcastsWithExtraInfo,
                 episodes = PreviewEpisodeToPodcasts,
             ),
+            libraryEpisodes = emptyList(),
             onCategorySelected = {},
             onPodcastUnfollowed = {},
             navigateToPlayer = {},
