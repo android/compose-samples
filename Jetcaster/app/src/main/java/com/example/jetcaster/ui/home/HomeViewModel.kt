@@ -62,9 +62,11 @@ class HomeViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val libraryEpisodes = podcastStore.followedPodcastsSortedByLastEpisode()
         .flatMapLatest { followedPodcasts ->
-            combine(followedPodcasts.map { p ->
-                episodeStore.episodesInPodcast(p.podcast.uri, 5)
-            }) { allEpisodes ->
+            combine(
+                followedPodcasts.map { p ->
+                    episodeStore.episodesInPodcast(p.podcast.uri, 5)
+                }
+            ) { allEpisodes ->
                 allEpisodes.toList().flatten().sortedByDescending { it.episode.published }
             }
         }
