@@ -39,7 +39,7 @@ class EpisodeStore(
     fun episodesInPodcast(
         podcastUri: String,
         limit: Int = Integer.MAX_VALUE
-    ): Flow<List<Episode>> {
+    ): Flow<List<EpisodeToPodcast>> {
         return episodesDao.episodesForPodcastUri(podcastUri, limit)
     }
 

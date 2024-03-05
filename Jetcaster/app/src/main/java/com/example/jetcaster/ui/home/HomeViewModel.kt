@@ -21,6 +21,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.Graph
 import com.example.jetcaster.data.Category
 import com.example.jetcaster.data.CategoryStore
+import com.example.jetcaster.data.EpisodeStore
+import com.example.jetcaster.data.EpisodeToPodcast
 import com.example.jetcaster.data.PodcastStore
 import com.example.jetcaster.data.PodcastWithExtraInfo
 import com.example.jetcaster.data.PodcastsRepository
@@ -43,7 +45,8 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
     private val categoryStore: CategoryStore = Graph.categoryStore,
-    private val podcastStore: PodcastStore = Graph.podcastStore
+    private val podcastStore: PodcastStore = Graph.podcastStore,
+    private val episodeStore: EpisodeStore = Graph.episodeStore
 ) : ViewModel() {
     // Holds our currently selected home category
     private val selectedHomeCategory = MutableStateFlow(HomeCategory.Discover)
@@ -55,6 +58,18 @@ class HomeViewModel(
     private val _state = MutableStateFlow(HomeViewState())
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val libraryEpisodes = podcastStore.followedPodcastsSortedByLastEpisode()
+        .flatMapLatest { followedPodcasts ->
+            combine(
+                followedPodcasts.map { p ->
+                    episodeStore.episodesInPodcast(p.podcast.uri, 5)
+                }
+            ) { allEpisodes ->
+                allEpisodes.toList().flatten().sortedByDescending { it.episode.published }
+            }
+        }
 
     private val discover = combine(
         categoryStore.categoriesSortedByPodcastCount()
@@ -110,13 +125,15 @@ class HomeViewModel(
                 podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
                 refreshing,
                 discover,
-                podcastCategory
+                podcastCategory,
+                libraryEpisodes
             ) { homeCategories,
                 selectedHomeCategory,
                 podcasts,
                 refreshing,
                 discoverViewState,
-                podcastCategoryViewState ->
+                podcastCategoryViewState,
+                libraryEpisodes ->
                 HomeViewState(
                     homeCategories = homeCategories,
                     selectedHomeCategory = selectedHomeCategory,
@@ -124,6 +141,7 @@ class HomeViewModel(
                     refreshing = refreshing,
                     discoverViewState = discoverViewState,
                     podcastCategoryViewState = podcastCategoryViewState,
+                    libraryEpisodes = libraryEpisodes,
                     errorMessage = null, /* TODO */
                 )
             }.catch { throwable ->
@@ -181,5 +199,6 @@ data class HomeViewState(
     val homeCategories: List<HomeCategory> = emptyList(),
     val discoverViewState: DiscoverViewState = DiscoverViewState(),
     val podcastCategoryViewState: PodcastCategoryViewState = PodcastCategoryViewState(),
+    val libraryEpisodes: List<EpisodeToPodcast> = emptyList(),
     val errorMessage: String? = null
 )
