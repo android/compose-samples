@@ -109,6 +109,7 @@ fun RecordButton(
                     Text(stringResource(R.string.touch_and_hold_to_record))
                 }
             },
+            enableUserInput = false,
             state = tooltipState
         ) {
             Icon(
