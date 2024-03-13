@@ -62,19 +62,19 @@ class HomeViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val libraryEpisodes =
         podcastStore.followedPodcastsSortedByLastEpisode()
-        .flatMapLatest { followedPodcasts ->
-            if (followedPodcasts.isEmpty()) {
-                flowOf(emptyList())
-            } else {
-                combine(
-                    followedPodcasts.map { p ->
-                        episodeStore.episodesInPodcast(p.podcast.uri, 5)
+            .flatMapLatest { followedPodcasts ->
+                if (followedPodcasts.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    combine(
+                        followedPodcasts.map { p ->
+                            episodeStore.episodesInPodcast(p.podcast.uri, 5)
+                        }
+                    ) { allEpisodes ->
+                        allEpisodes.toList().flatten().sortedByDescending { it.episode.published }
                     }
-                ) { allEpisodes ->
-                    allEpisodes.toList().flatten().sortedByDescending { it.episode.published }
                 }
             }
-        }
 
     private val discover = combine(
         categoryStore.categoriesSortedByPodcastCount()
