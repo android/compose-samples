@@ -309,7 +309,7 @@ fun ContrastAwareReplyTheme(
 
     MaterialTheme(
         colorScheme = replyColorScheme,
-        typography = replyTypography,
+        typography = replyTypography, shapes = shapes,
         content = content
     )
 }
@@ -341,7 +341,7 @@ fun ReplyTheme(
 
   MaterialTheme(
     colorScheme = replyColorScheme,
-    typography = replyTypography,
+    typography = replyTypography, shapes = shapes,
     content = content
   )
 }
