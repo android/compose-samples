@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuOpen
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MenuOpen
@@ -157,12 +158,12 @@ fun PermanentNavigationDrawerContent(
 ) {
     PermanentDrawerSheet(
         modifier = Modifier.sizeIn(minWidth = 200.dp, maxWidth = 300.dp),
-        drawerContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
+        drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
         Layout(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.inverseOnSurface)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 .padding(16.dp),
             content = {
                 Column(
@@ -188,7 +189,7 @@ fun PermanentNavigationDrawerContent(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = stringResource(id = R.string.edit),
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                         Text(
                             text = stringResource(id = R.string.compose),
@@ -268,7 +269,7 @@ fun ModalNavigationDrawerContent(
                         )
                         IconButton(onClick = onDrawerClicked) {
                             Icon(
-                                imageVector = Icons.Default.MenuOpen,
+                                imageVector = Icons.AutoMirrored.Filled.MenuOpen,
                                 contentDescription = stringResource(id = R.string.navigation_drawer)
                             )
                         }
