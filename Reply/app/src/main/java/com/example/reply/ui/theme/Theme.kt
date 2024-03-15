@@ -276,9 +276,12 @@ fun selectSchemeForContrast(isDark: Boolean, ) : ColorScheme {
     val contrastLevel = if (!isContrastAvailable()) 0.0 else uiModeManager.contrast
 
     val colorScheme = when(contrastLevel as Float) {
-        in 0.0f .. 0.33f -> if (isDark) darkScheme else lightScheme
-        in 0.34f..0.66f -> if (isDark) mediumContrastDarkColorScheme else mediumContrastLightColorScheme
-        in 0.67f..1.0f -> if (isDark) highContrastDarkColorScheme else highContrastLightColorScheme
+        in 0.0f .. 0.33f -> if (isDark)
+            darkScheme else lightScheme
+        in 0.34f..0.66f -> if (isDark)
+            mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+        in 0.67f..1.0f -> if (isDark)
+            highContrastDarkColorScheme else highContrastLightColorScheme
         else -> if (isDark) darkScheme else lightScheme
     }
     return colorScheme
