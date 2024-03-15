@@ -21,9 +21,9 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
-import kotlinx.collections.immutable.toPersistentList
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import kotlinx.collections.immutable.toPersistentList
 
 val PreviewCategories = listOf(
     Category(name = "Crime"),

@@ -27,11 +27,11 @@ import androidx.room.PrimaryKey
     tableName = "podcast_followed_entries",
     foreignKeys = [
         ForeignKey(
-          entity = Podcast::class,
-          parentColumns = ["uri"],
-          childColumns = ["podcast_uri"],
-          onUpdate = ForeignKey.CASCADE,
-          onDelete = ForeignKey.CASCADE
+            entity = Podcast::class,
+            parentColumns = ["uri"],
+            childColumns = ["podcast_uri"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
