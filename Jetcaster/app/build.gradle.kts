@@ -117,15 +117,7 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
 
-    implementation(libs.okhttp3)
-    implementation(libs.okhttp.logging)
+    implementation(project(":core"))
 
-    implementation(libs.rometools.rome)
-    implementation(libs.rometools.modules)
-
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-
-    ksp(libs.androidx.room.compiler)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 }

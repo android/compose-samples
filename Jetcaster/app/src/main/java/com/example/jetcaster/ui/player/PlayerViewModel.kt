@@ -26,9 +26,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
-import com.example.jetcaster.Graph
-import com.example.jetcaster.data.EpisodeStore
-import com.example.jetcaster.data.PodcastStore
+import com.example.jetcaster.core.data.di.Graph
+import com.example.jetcaster.core.data.repository.EpisodeStore
+import com.example.jetcaster.core.data.repository.PodcastStore
 import java.time.Duration
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

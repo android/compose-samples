@@ -16,14 +16,14 @@
 
 package com.example.jetcaster.ui.home
 
-import com.example.jetcaster.data.Category
-import com.example.jetcaster.data.Episode
-import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.Podcast
-import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.Episode
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.Podcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import kotlinx.collections.immutable.toPersistentList
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import kotlinx.collections.immutable.toPersistentList
 
 val PreviewCategories = listOf(
     Category(name = "Crime"),

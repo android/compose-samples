@@ -75,9 +75,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
-import com.example.jetcaster.data.Category
-import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
 import com.example.jetcaster.ui.home.discover.DiscoverViewState
 import com.example.jetcaster.ui.home.discover.discoverItems

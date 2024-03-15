@@ -19,6 +19,7 @@ package com.example.jetcaster
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import com.example.jetcaster.core.data.di.Graph
 
 /**
  * Application which sets up our dependency [Graph] with a context.
