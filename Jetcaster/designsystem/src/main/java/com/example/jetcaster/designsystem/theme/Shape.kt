@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster.designsystem.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Shapes
+import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 val JetcasterShapes = Shapes(

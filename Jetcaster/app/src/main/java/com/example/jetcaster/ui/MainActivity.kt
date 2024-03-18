@@ -16,10 +16,8 @@
 
 package com.example.jetcaster.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -34,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge(
             // This app is only ever in dark mode, so hard code detectDarkMode to true.
-            SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT, detectDarkMode = { true })
+            //SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT, detectDarkMode = { true })
         )
 
         setContent {
