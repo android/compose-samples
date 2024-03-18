@@ -35,5 +35,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Jetcaster"
-include(":app")
-
+include(":app", ":core", ":designsystem")

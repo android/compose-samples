@@ -30,7 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.jetcaster.data.Category
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
 import com.example.jetcaster.ui.home.category.podcastCategory
 import com.example.jetcaster.ui.theme.Keyline1

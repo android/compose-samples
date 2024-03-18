@@ -77,9 +77,11 @@ androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-googlefonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-compose-ui-text = { module = "androidx.compose.ui:ui-text" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-ui-util = { module = "androidx.compose.ui:ui-util" }
@@ -134,6 +136,7 @@ rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

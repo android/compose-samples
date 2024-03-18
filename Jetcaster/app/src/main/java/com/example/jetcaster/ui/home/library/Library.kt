@@ -19,7 +19,7 @@ package com.example.jetcaster.ui.home.library
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
-import com.example.jetcaster.data.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.ui.home.category.EpisodeListItem
 
 fun LazyListScope.libraryItems(

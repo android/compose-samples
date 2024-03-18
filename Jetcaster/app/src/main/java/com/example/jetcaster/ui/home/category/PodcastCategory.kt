@@ -68,10 +68,10 @@ import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapConten
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
-import com.example.jetcaster.data.Episode
-import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.Podcast
-import com.example.jetcaster.data.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.database.model.Episode
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.Podcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.theme.JetcasterTheme
@@ -218,15 +218,16 @@ fun EpisodeListItem(
         )
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            val duration = episode.duration
             Text(
                 text = when {
-                    episode.duration != null -> {
+                    duration != null -> {
                         // If we have the duration, we combine the date/duration via a
                         // formatted string
                         stringResource(
                             R.string.episode_date_duration,
                             MediumDateFormatter.format(episode.published),
-                            episode.duration.toMinutes().toInt()
+                            duration.toMinutes().toInt()
                         )
                     }
                     // Otherwise we just use the date

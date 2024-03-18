@@ -101,6 +101,7 @@ dependencies {
 
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -117,15 +118,8 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
 
-    implementation(libs.okhttp3)
-    implementation(libs.okhttp.logging)
+    implementation(project(":core"))
+    implementation(project(":designsystem"))
 
-    implementation(libs.rometools.rome)
-    implementation(libs.rometools.modules)
-
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-
-    ksp(libs.androidx.room.compiler)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 }

@@ -18,14 +18,14 @@ package com.example.jetcaster.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.Graph
-import com.example.jetcaster.data.Category
-import com.example.jetcaster.data.CategoryStore
-import com.example.jetcaster.data.EpisodeStore
-import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.PodcastStore
-import com.example.jetcaster.data.PodcastWithExtraInfo
-import com.example.jetcaster.data.PodcastsRepository
+import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.di.Graph
+import com.example.jetcaster.core.data.repository.CategoryStore
+import com.example.jetcaster.core.data.repository.EpisodeStore
+import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
 import com.example.jetcaster.ui.home.discover.DiscoverViewState
 import com.example.jetcaster.util.combine
