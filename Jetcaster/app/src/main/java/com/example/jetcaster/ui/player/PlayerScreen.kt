@@ -532,34 +532,6 @@ private fun PlayerButtons(
 }
 
 /**
- * Theme that updates the colors dynamically depending on the podcast image URL
- */
-// @Composable
-// private fun PlayerDynamicTheme(
-//    podcastImageUrl: String,
-//    content: @Composable () -> Unit
-// ) {
-//    val surfaceColor = MaterialTheme.colors.surface
-//    val dominantColorState = rememberDominantColorState(
-//        defaultColor = MaterialTheme.colors.surface
-//    ) { color ->
-//        // We want a color which has sufficient contrast against the surface color
-//        color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
-//    }
-//    DynamicThemePrimaryColorsFromImage(dominantColorState) {
-//        // Update the dominantColorState with colors coming from the podcast image URL
-//        LaunchedEffect(podcastImageUrl) {
-//            if (podcastImageUrl.isNotEmpty()) {
-//                dominantColorState.updateColorsFromImageUrl(podcastImageUrl)
-//            } else {
-//                dominantColorState.reset()
-//            }
-//        }
-//        content()
-//    }
-// }
-
-/**
  * Full screen circular progress indicator
  */
 @Composable
