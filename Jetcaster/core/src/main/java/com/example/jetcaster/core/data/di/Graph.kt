@@ -21,18 +21,21 @@ import androidx.room.Room
 import com.example.jetcaster.core.BuildConfig
 import com.example.jetcaster.core.data.database.JetcasterDatabase
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
+import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
+import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
+import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.rometools.rome.io.SyndFeedInput
-import java.io.File
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.LoggingEventListener
+import java.io.File
 
 /**
  * A very simple global singleton dependency graph.
@@ -80,6 +83,25 @@ object Graph {
     val episodeStore by lazy {
         EpisodeStore(
             episodesDao = database.episodesDao()
+        )
+    }
+
+    val getLatestFollowedEpisodesUseCase by lazy {
+        GetLatestFollowedEpisodesUseCase(
+            episodeStore = episodeStore,
+            podcastStore = podcastStore
+        )
+    }
+
+    val podcastCategoryFilterUseCase by lazy {
+        PodcastCategoryFilterUseCase(
+            categoryStore = categoryStore
+        )
+    }
+
+    val filterableCategoriesUseCase by lazy {
+        FilterableCategoriesUseCase(
+            categoryStore = categoryStore
         )
     }
 

@@ -38,23 +38,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.model.FilterableCategory
+import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.designsystem.theme.Keyline1
-import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
 import com.example.jetcaster.ui.home.category.podcastCategory
 
-data class DiscoverViewState(
-    val categories: List<Category> = emptyList(),
-    val selectedCategory: Category? = null
-)
-
 fun LazyListScope.discoverItems(
-    discoverViewState: DiscoverViewState,
-    podcastCategoryViewState: PodcastCategoryViewState,
+    filterableCategories: List<FilterableCategory>,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPlayer: (String) -> Unit,
     onCategorySelected: (Category) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
 ) {
-    if (discoverViewState.categories.isEmpty() || discoverViewState.selectedCategory == null) {
+    if (filterableCategories.isEmpty() || !filterableCategories.any { it.isSelected }) {
         // TODO: empty state
         return
     }
@@ -63,8 +59,7 @@ fun LazyListScope.discoverItems(
         Spacer(Modifier.height(8.dp))
 
         PodcastCategoryTabs(
-            categories = discoverViewState.categories,
-            selectedCategory = discoverViewState.selectedCategory,
+            filterableCategories = filterableCategories,
             onCategorySelected = onCategorySelected,
             modifier = Modifier.fillMaxWidth()
         )
@@ -73,8 +68,8 @@ fun LazyListScope.discoverItems(
     }
 
     podcastCategory(
-        topPodcasts = podcastCategoryViewState.topPodcasts,
-        episodes = podcastCategoryViewState.episodes,
+        topPodcasts = podcastCategoryFilterResult.topPodcasts,
+        episodes = podcastCategoryFilterResult.episodes,
         navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = onTogglePodcastFollowed
     )
@@ -84,12 +79,11 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 
 @Composable
 private fun PodcastCategoryTabs(
-    categories: List<Category>,
-    selectedCategory: Category,
+    filterableCategories: List<FilterableCategory>,
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedIndex = categories.indexOfFirst { it == selectedCategory }
+    val selectedIndex = filterableCategories.indexOfFirst { it.isSelected }
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
         divider = {}, /* Disable the built-in divider */
@@ -97,13 +91,13 @@ private fun PodcastCategoryTabs(
         indicator = emptyTabIndicator,
         modifier = modifier
     ) {
-        categories.forEachIndexed { index, category ->
+        filterableCategories.forEachIndexed { index, filterableCategory ->
             Tab(
                 selected = index == selectedIndex,
-                onClick = { onCategorySelected(category) }
+                onClick = { onCategorySelected(filterableCategory.category) }
             ) {
                 ChoiceChipContent(
-                    text = category.name,
+                    text = filterableCategory.category.name,
                     selected = index == selectedIndex,
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
                 )

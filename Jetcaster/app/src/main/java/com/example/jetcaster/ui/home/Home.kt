@@ -76,19 +76,19 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.FilterableCategory
+import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.designsystem.theme.Keyline1
-import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
-import com.example.jetcaster.ui.home.discover.DiscoverViewState
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun Home(
@@ -102,8 +102,8 @@ fun Home(
             isRefreshing = viewState.refreshing,
             homeCategories = viewState.homeCategories,
             selectedHomeCategory = viewState.selectedHomeCategory,
-            discoverViewState = viewState.discoverViewState,
-            podcastCategoryViewState = viewState.podcastCategoryViewState,
+            filterableCategories = viewState.filterableCategories,
+            podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
             libraryEpisodes = viewState.libraryEpisodes,
             onHomeCategorySelected = viewModel::onHomeCategorySelected,
             onCategorySelected = viewModel::onCategorySelected,
@@ -159,15 +159,14 @@ fun HomeAppBar(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Home(
     featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
-    discoverViewState: DiscoverViewState,
-    podcastCategoryViewState: PodcastCategoryViewState,
+    filterableCategories: List<FilterableCategory>,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
     libraryEpisodes: List<EpisodeToPodcast>,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
@@ -214,8 +213,8 @@ fun Home(
             isRefreshing = isRefreshing,
             selectedHomeCategory = selectedHomeCategory,
             homeCategories = homeCategories,
-            discoverViewState = discoverViewState,
-            podcastCategoryViewState = podcastCategoryViewState,
+            filterableCategories = filterableCategories,
+            podcastCategoryFilterResult = podcastCategoryFilterResult,
             libraryEpisodes = libraryEpisodes,
             scrimColor = scrimColor,
             onPodcastUnfollowed = onPodcastUnfollowed,
@@ -234,8 +233,8 @@ private fun HomeContent(
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
-    discoverViewState: DiscoverViewState,
-    podcastCategoryViewState: PodcastCategoryViewState,
+    filterableCategories: List<FilterableCategory>,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
     libraryEpisodes: List<EpisodeToPodcast>,
     scrimColor: Color,
     modifier: Modifier = Modifier,
@@ -286,8 +285,8 @@ private fun HomeContent(
 
             HomeCategory.Discover -> {
                 discoverItems(
-                    discoverViewState = discoverViewState,
-                    podcastCategoryViewState = podcastCategoryViewState,
+                    filterableCategories = filterableCategories,
+                    podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed
@@ -472,11 +471,10 @@ fun PreviewHomeContent() {
             isRefreshing = false,
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
-            discoverViewState = DiscoverViewState(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.first(),
-            ),
-            podcastCategoryViewState = PodcastCategoryViewState(
+            filterableCategories = PreviewCategories.map {
+                FilterableCategory(it, it == PreviewCategories.first())
+            },
+            podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcastsWithExtraInfo,
                 episodes = PreviewEpisodeToPodcasts,
             ),
