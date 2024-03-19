@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.Jetcaster" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
