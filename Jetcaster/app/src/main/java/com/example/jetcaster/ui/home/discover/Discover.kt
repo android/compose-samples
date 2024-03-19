@@ -91,11 +91,11 @@ private fun PodcastCategoryTabs(
 ) {
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
     ScrollableTabRow(
-      selectedTabIndex = selectedIndex,
-      divider = {}, /* Disable the built-in divider */
-      edgePadding = Keyline1,
-      indicator = emptyTabIndicator,
-      modifier = modifier
+        selectedTabIndex = selectedIndex,
+        divider = {}, /* Disable the built-in divider */
+        edgePadding = Keyline1,
+        indicator = emptyTabIndicator,
+        modifier = modifier
     ) {
         categories.forEachIndexed { index, category ->
             Tab(

@@ -23,19 +23,19 @@ package com.example.jetcaster.ui.theme
  */
 const val MinContrastOfPrimaryVsSurface = 3f
 
-///**
+// /**
 // * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
 // * given [alpha]. Useful for situations where semi-transparent colors are undesirable.
 // */
-//@Composable
-//fun Colors.compositedOnSurface(alpha: Float): Color {
+// @Composable
+// fun Colors.compositedOnSurface(alpha: Float): Color {
 //    return onSurface.copy(alpha = alpha).compositeOver(surface)
-//}
+// }
 //
-//val Yellow800 = Color(0xFFF29F05)
-//val Red300 = Color(0xFFEA6D7E)
+// val Yellow800 = Color(0xFFF29F05)
+// val Red300 = Color(0xFFEA6D7E)
 //
-//val JetcasterColors = darkColors(
+// val JetcasterColors = darkColors(
 //    primary = Yellow800,
 //    onPrimary = Color.Black,
 //    primaryVariant = Yellow800,
@@ -43,4 +43,4 @@ const val MinContrastOfPrimaryVsSurface = 3f
 //    onSecondary = Color.Black,
 //    error = Red300,
 //    onError = Color.Black
-//)
+// )
