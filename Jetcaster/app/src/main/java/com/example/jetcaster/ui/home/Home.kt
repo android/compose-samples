@@ -85,10 +85,10 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun Home(
@@ -374,6 +374,7 @@ fun FollowedPodcasts(
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
 ) {
+    // TODO: Update this component to a carousel once better support is available
     val lastIndex = items.size - 1
     LazyRow(
         modifier = modifier,
