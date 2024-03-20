@@ -27,7 +27,9 @@ import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.EpisodeStore
-import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.repository.LocalCategoryStore
+import com.example.jetcaster.core.data.repository.LocalEpisodeStore
+import com.example.jetcaster.core.data.repository.LocalPodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.rometools.rome.io.SyndFeedInput
 import kotlinx.coroutines.CoroutineDispatcher
@@ -73,15 +75,15 @@ object Graph {
     }
 
     val podcastStore by lazy {
-        PodcastStore(
+        LocalPodcastStore(
             podcastDao = database.podcastsDao(),
             podcastFollowedEntryDao = database.podcastFollowedEntryDao(),
             transactionRunner = transactionRunner
         )
     }
 
-    val episodeStore by lazy {
-        EpisodeStore(
+    val episodeStore: EpisodeStore by lazy {
+        LocalEpisodeStore(
             episodesDao = database.episodesDao()
         )
     }
@@ -105,8 +107,8 @@ object Graph {
         )
     }
 
-    val categoryStore by lazy {
-        CategoryStore(
+    val categoryStore: CategoryStore by lazy {
+        LocalCategoryStore(
             categoriesDao = database.categoriesDao(),
             categoryEntryDao = database.podcastCategoryEntryDao(),
             episodesDao = database.episodesDao(),

@@ -54,4 +54,8 @@ dependencies {
   implementation(libs.rometools.modules)
 
   coreLibraryDesugaring(libs.core.jdk.desugaring)
+
+  // Testing
+  testImplementation(libs.junit)
+  testImplementation(libs.kotlinx.coroutines.test)
 }
