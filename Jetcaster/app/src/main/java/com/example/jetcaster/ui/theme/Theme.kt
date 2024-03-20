@@ -502,10 +502,11 @@ fun JetcasterTheme(
         else -> lightScheme
     }
     val view = LocalView.current
+    val statusBarColor = colorScheme.surface
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb()
+            window.statusBarColor = statusBarColor.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
