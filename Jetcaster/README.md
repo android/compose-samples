@@ -3,7 +3,7 @@
 # Jetcaster sample 🎙️
 
 Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is to
-showcase dynamic theming and full featured architecture.
+showcase building with Compose across multiple form factors and full featured architecture.
 
 To try out this sample app, use the latest stable version
 of [Android Studio](https://developer.android.com/studio).
@@ -14,7 +14,7 @@ project from Android Studio following the steps
 ### Status: 🚧 In progress 🚧
 
 Jetcaster is still in the early stages of development, and as such only one screen has been created so far. However,
-most of the app's architecture has been implemented, as well as the data layer, and early stages of dynamic theming.
+most of the app's architecture has been implemented as well as the data layer.
 
 
 ## Screenshots
@@ -35,29 +35,6 @@ The player screen displays media controls and the currently "playing" podcast (t
 The player screen layout is adapting to different form factors, including a tabletop layout on foldable devices:
 
 <img src="docs/tabletop.png"/>
-
-### Dynamic theming
-The home screen currently implements dynamic theming, using the artwork of the currently selected podcast from the carousel to  update the  `primary` and `onPrimary` [colors](https://developer.android.com/reference/kotlin/androidx/compose/material/Colors). You can see it in action in the screenshots above: as the carousel item is changed, the background gradient is updated to match the artwork.
-
-This is implemented in [`DynamicTheming.kt`](app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt), which provides the `DynamicThemePrimaryColorsFromImage` composable, to automatically animate the theme colors based on the provided image URL, like so:
-
-``` kotlin
-val dominantColorState: DominantColorState = rememberDominantColorState()
-
-DynamicThemePrimaryColorsFromImage(dominantColorState) {
-    var imageUrl = remember { mutableStateOf("") }
-
-    // When the image url changes, call updateColorsFromImageUrl()
-    launchInComposition(imageUrl) {
-        dominantColorState.updateColorsFromImageUrl(imageUrl)
-    }
-
-    // Content which will be dynamically themed....
-}
-```
-
-Underneath, [`DominantColorState`](app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt) uses the [Coil][coil] library to fetch the artwork image 🖼️, and then [Palette][palette] to extract the dominant colors from the image 🎨.
-
 
 ### Others
 Some other notable things which are implemented:

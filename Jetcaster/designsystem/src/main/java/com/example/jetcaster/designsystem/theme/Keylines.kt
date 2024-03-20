@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.util
+package com.example.jetcaster.designsystem.theme
 
-/**
- * Pager is now a library! https://google.github.io/accompanist/pager/
- */
+import androidx.compose.ui.unit.dp
+
+val Keyline1 = 24.dp
