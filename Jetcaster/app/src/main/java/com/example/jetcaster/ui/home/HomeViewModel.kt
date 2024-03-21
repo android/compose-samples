@@ -74,7 +74,14 @@ class HomeViewModel(
                 selectedHomeCategory,
                 podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
                 refreshing,
-                filterableCategoriesUseCase(_selectedCategory),
+                _selectedCategory.flatMapLatest { selectedCategory ->
+                    filterableCategoriesUseCase(
+                        selectedCategory,
+                        onEmptySelectedCategory = {
+                            _selectedCategory.value = it
+                        }
+                    )
+                },
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
                 },

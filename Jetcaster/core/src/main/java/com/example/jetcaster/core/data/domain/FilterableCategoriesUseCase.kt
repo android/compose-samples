@@ -20,8 +20,7 @@ import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.model.FilterableCategory
 import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 /**
@@ -31,20 +30,20 @@ class FilterableCategoriesUseCase(
     private val categoryStore: CategoryStore
 ) {
     operator fun invoke(
-        selectedCategoryStateFlow: MutableStateFlow<Category?>
+        selectedCategory: Category?,
+        onEmptySelectedCategory: (Category) -> Unit
     ): Flow<List<FilterableCategory>> =
-        combine(
-            categoryStore.categoriesSortedByPodcastCount()
-                .onEach { categories ->
-                    // If we haven't got a selected category yet, select the first
-                    if (categories.isNotEmpty() && selectedCategoryStateFlow.value == null) {
-                        selectedCategoryStateFlow.value = categories[0]
-                    }
-                },
-            selectedCategoryStateFlow
-        ) { categories, selectedCategory ->
-            categories.map { c ->
-                FilterableCategory(c, c == selectedCategory)
+        categoryStore.categoriesSortedByPodcastCount()
+            .onEach { categories ->
+                // If we haven't got a selected category yet, select the first
+                if (categories.isNotEmpty() && selectedCategory == null) {
+                    onEmptySelectedCategory(categories[0])
+                }
+            }
+            .map { categories ->
+                categories.map { c ->
+                    FilterableCategory(c, c == selectedCategory)
+                }
             }
         }
 }

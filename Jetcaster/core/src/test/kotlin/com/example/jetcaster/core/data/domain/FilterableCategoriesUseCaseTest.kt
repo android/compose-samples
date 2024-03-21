@@ -18,11 +18,12 @@ package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.repository.TestCategoryStore
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
 
 class FilterableCategoriesUseCaseTest {
 
@@ -39,17 +40,26 @@ class FilterableCategoriesUseCaseTest {
     )
 
     @Test
-    fun whenNoSelectedCategory_firstCategoryIsSelected() = runTest {
-        val filterableCategories = useCase(MutableStateFlow(null))
-
+    fun whenNoSelectedCategory_onEmptySelectedCategoryInvoked() = runTest {
         categoriesStore.setCategories(testCategories)
 
-        assertTrue(filterableCategories.first()[0].isSelected)
+        var selectedCategory: Category? = null
+        val latch = CountDownLatch(1)
+        val filterableCategories = useCase(null, onEmptySelectedCategory = {
+            selectedCategory = it
+            latch.countDown()
+        }).first()
+        latch.await()
+
+        assertEquals(
+            filterableCategories[0].category,
+            selectedCategory
+        )
     }
 
     @Test
     fun whenSelectedCategory_correctFilterableCategoryIsSelected() = runTest {
-        val filterableCategories = useCase(MutableStateFlow(testCategories[2]))
+        val filterableCategories = useCase(testCategories[2]) {}
 
         categoriesStore.setCategories(testCategories)
 

@@ -43,6 +43,20 @@ class TestEpisodeStore : EpisodeStore {
             }
         }
 
+    override fun episodesInPodcasts(
+        podcastUris: List<String>,
+        limit: Int
+    ): Flow<List<EpisodeToPodcast>> =
+        episodesFlow.map { episodes ->
+            episodes.filter {
+                podcastUris.contains(it.podcastUri)
+            }.map { ep ->
+                EpisodeToPodcast().apply {
+                    episode = ep
+                }
+            }
+        }
+
     override suspend fun addEpisodes(episodes: Collection<Episode>) =
         episodesFlow.update {
             it + episodes
