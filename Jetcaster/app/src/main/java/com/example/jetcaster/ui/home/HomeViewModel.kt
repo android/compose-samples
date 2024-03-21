@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -76,9 +75,7 @@ class HomeViewModel(
                 podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
                 refreshing,
                 _selectedCategory.flatMapLatest { selectedCategory ->
-                    filterableCategoriesUseCase(selectedCategory).onEach {
-                        _selectedCategory.value = it.selectedCategory
-                    }
+                    filterableCategoriesUseCase(selectedCategory)
                 },
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
@@ -91,6 +88,9 @@ class HomeViewModel(
                 filterableCategories,
                 podcastCategoryFilterResult,
                 libraryEpisodes ->
+
+                _selectedCategory.value = filterableCategories.selectedCategory
+
                 HomeViewState(
                     homeCategories = homeCategories,
                     selectedHomeCategory = selectedHomeCategory,

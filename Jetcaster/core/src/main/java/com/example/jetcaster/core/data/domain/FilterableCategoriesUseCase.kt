@@ -28,6 +28,12 @@ import kotlinx.coroutines.flow.map
 class FilterableCategoriesUseCase(
     private val categoryStore: CategoryStore
 ) {
+    /**
+     * Created a [FilterableCategoriesModel] from the list of categories in [categoryStore].
+     * @param selectedCategory the currently selected category. If null, the first category
+     *        returned by the backing category list will be selected in the returned
+     *        FilterableCategoriesModel
+     */
     operator fun invoke(selectedCategory: Category?): Flow<FilterableCategoriesModel> =
         categoryStore.categoriesSortedByPodcastCount()
             .map {

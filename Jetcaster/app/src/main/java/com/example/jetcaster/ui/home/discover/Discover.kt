@@ -50,9 +50,7 @@ fun LazyListScope.discoverItems(
     onCategorySelected: (Category) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
 ) {
-    if (filterableCategoriesModel.categories.isEmpty() ||
-        filterableCategoriesModel.selectedCategory == null
-    ) {
+    if (filterableCategoriesModel.isEmpty) {
         // TODO: empty state
         return
     }
@@ -85,7 +83,9 @@ private fun PodcastCategoryTabs(
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedIndex = filterableCategoriesModel.categories.indexOf(filterableCategoriesModel.selectedCategory)
+    val selectedIndex = filterableCategoriesModel.categories.indexOf(
+        filterableCategoriesModel.selectedCategory
+    )
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
         divider = {}, /* Disable the built-in divider */
