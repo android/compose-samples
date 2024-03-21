@@ -51,7 +51,8 @@ fun LazyListScope.discoverItems(
     onTogglePodcastFollowed: (String) -> Unit,
 ) {
     if (filterableCategoriesModel.categories.isEmpty() ||
-        filterableCategoriesModel.selectedCategory == null) {
+        filterableCategoriesModel.selectedCategory == null
+    ) {
         // TODO: empty state
         return
     }
