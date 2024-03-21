@@ -35,4 +35,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Jetcaster"
-include(":app", ":core", ":designsystem")
+include(":app", ":core", ":designsystem", "wear")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+ 
