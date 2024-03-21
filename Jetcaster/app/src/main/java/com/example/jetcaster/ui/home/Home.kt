@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.jetcaster.ui.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,7 +29,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,8 +42,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -58,12 +62,20 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -75,20 +87,21 @@ import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun Home(
@@ -110,6 +123,7 @@ fun Home(
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
             navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+            onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -174,7 +188,15 @@ fun Home(
     onCategorySelected: (Category) -> Unit,
     navigateToPlayer: (String) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
+    onLibraryPodcastSelected: (Podcast?) -> Unit
 ) {
+    // Effect that changes the home category selection when there are no subscribed podcasts
+    LaunchedEffect(key1 = featuredPodcasts) {
+        if (featuredPodcasts.isEmpty()) {
+            onHomeCategorySelected(HomeCategory.Discover)
+        }
+    }
+
     Column(
         modifier = modifier.windowInsetsPadding(
             WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
@@ -221,7 +243,8 @@ fun Home(
             onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
             navigateToPlayer = navigateToPlayer,
-            onTogglePodcastFollowed = onTogglePodcastFollowed
+            onTogglePodcastFollowed = onTogglePodcastFollowed,
+            onLibraryPodcastSelected = onLibraryPodcastSelected
         )
     }
 }
@@ -243,11 +266,18 @@ private fun HomeContent(
     onCategorySelected: (Category) -> Unit,
     navigateToPlayer: (String) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
+    onLibraryPodcastSelected: (Podcast?) -> Unit
 ) {
+    val pagerState = rememberPagerState { featuredPodcasts.size }
+    LaunchedEffect(pagerState.currentPage, featuredPodcasts) {
+        val podcast = featuredPodcasts.getOrNull(pagerState.currentPage)
+        onLibraryPodcastSelected(podcast?.podcast)
+    }
     LazyColumn(modifier = modifier.fillMaxSize()) {
         if (featuredPodcasts.isNotEmpty()) {
             item {
                 FollowedPodcastItem(
+                    pagerState = pagerState,
                     items = featuredPodcasts,
                     onPodcastUnfollowed = onPodcastUnfollowed,
                     modifier = Modifier
@@ -265,7 +295,7 @@ private fun HomeContent(
             // TODO show a progress indicator or similar
         }
 
-        if (homeCategories.isNotEmpty()) {
+        if (featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()) {
             stickyHeader {
                 HomeCategoryTabs(
                     categories = homeCategories,
@@ -298,6 +328,7 @@ private fun HomeContent(
 
 @Composable
 private fun FollowedPodcastItem(
+    pagerState: PagerState,
     items: PersistentList<PodcastWithExtraInfo>,
     onPodcastUnfollowed: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -306,11 +337,10 @@ private fun FollowedPodcastItem(
         Spacer(Modifier.height(16.dp))
 
         FollowedPodcasts(
+            pagerState = pagerState,
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(16.dp))
@@ -367,34 +397,54 @@ fun HomeCategoryTabIndicator(
     )
 }
 
+private val FEATURED_PODCAST_IMAGE_WIDTH_DP = 160.dp
+private val FEATURED_PODCAST_IMAGE_HEIGHT_DP = 180.dp
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FollowedPodcasts(
+    pagerState: PagerState,
     items: PersistentList<PodcastWithExtraInfo>,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
 ) {
-    // TODO: Update this component to a carousel once better support is available
-    val lastIndex = items.size - 1
-    LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(
-            start = Keyline1,
-            top = 16.dp,
-            end = Keyline1,
-        )
-    ) {
-        itemsIndexed(items) { index: Int,
-            (podcast, lastEpisodeDate): PodcastWithExtraInfo ->
-            FollowedPodcastCarouselItem(
-                podcastImageUrl = podcast.imageUrl,
-                podcastTitle = podcast.title,
-                onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
-                lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
-                modifier = Modifier.padding(4.dp)
-            )
+    val coroutineScope = rememberCoroutineScope()
 
-            if (index < lastIndex) Spacer(Modifier.width(24.dp))
-        }
+    var horizontalPadding by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    HorizontalPager(
+        state = pagerState,
+        modifier = modifier.onSizeChanged {size ->
+            // TODO: this is not quite performant since it requires 2 passes to compute the content
+            // padding. This should be revisited once a carousel component is available.
+            // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
+            // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
+            // stable, this implementation can be updated.
+            horizontalPadding = with(density) {
+                (size.width.toDp() - FEATURED_PODCAST_IMAGE_WIDTH_DP) / 2
+            }
+        },
+        contentPadding = PaddingValues(
+            horizontal = horizontalPadding,
+            vertical = 16.dp,
+        ),
+        pageSize = PageSize.Fixed(180.dp)
+    ) { page ->
+        val (podcast, lastEpisodeDate) = items[page]
+        FollowedPodcastCarouselItem(
+            podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
+            onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
+            lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(page)
+                    }
+                }
+        )
     }
 }
 
@@ -409,9 +459,9 @@ private fun FollowedPodcastCarouselItem(
     Column(modifier) {
         Box(
             Modifier
-                .weight(1f)
+                .height(FEATURED_PODCAST_IMAGE_HEIGHT_DP)
+                .width(FEATURED_PODCAST_IMAGE_WIDTH_DP)
                 .align(Alignment.CenterHorizontally)
-                .aspectRatio(1f)
         ) {
             if (podcastImageUrl != null) {
                 AsyncImage(
@@ -484,7 +534,8 @@ fun PreviewHomeContent() {
             onPodcastUnfollowed = {},
             navigateToPlayer = {},
             onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {}
+            onTogglePodcastFollowed = {},
+            onLibraryPodcastSelected = {}
         )
     }
 }

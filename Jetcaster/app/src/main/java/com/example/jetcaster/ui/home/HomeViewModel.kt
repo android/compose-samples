@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
@@ -27,6 +28,7 @@ import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.util.combine
@@ -44,6 +46,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
     private val podcastStore: PodcastStore = Graph.podcastStore,
+    private val episodeStore: EpisodeStore = Graph.episodeStore,
     private val getLatestFollowedEpisodesUseCase: GetLatestFollowedEpisodesUseCase =
         Graph.getLatestFollowedEpisodesUseCase,
     private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase =
@@ -51,6 +54,8 @@ class HomeViewModel(
     private val filterableCategoriesUseCase: FilterableCategoriesUseCase =
         Graph.filterableCategoriesUseCase
 ) : ViewModel() {
+    // Holds our currently selected podcast in the library
+    private val selectedLibraryPodcast = MutableStateFlow<Podcast?>(null)
     // Holds our currently selected home category
     private val selectedHomeCategory = MutableStateFlow(HomeCategory.Discover)
     // Holds the currently available home categories
@@ -72,7 +77,7 @@ class HomeViewModel(
             combine(
                 homeCategories,
                 selectedHomeCategory,
-                podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
+                podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
                 refreshing,
                 _selectedCategory.flatMapLatest { selectedCategory ->
                     filterableCategoriesUseCase(selectedCategory)
@@ -80,7 +85,12 @@ class HomeViewModel(
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
                 },
-                getLatestFollowedEpisodesUseCase()
+                selectedLibraryPodcast.flatMapLatest {
+                    episodeStore.episodesInPodcast(
+                        podcastUri = it?.uri ?: "",
+                        limit = 20
+                    )
+                }
             ) { homeCategories,
                 selectedHomeCategory,
                 podcasts,
@@ -142,6 +152,10 @@ class HomeViewModel(
         viewModelScope.launch {
             podcastStore.togglePodcastFollowed(podcastUri)
         }
+    }
+
+    fun onLibraryPodcastSelected(podcast: Podcast?) {
+        selectedLibraryPodcast.value = podcast
     }
 }
 
