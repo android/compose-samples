@@ -17,11 +17,10 @@
 package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.model.FilterableCategory
+import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 
 /**
  * Use case for categories that can be used to filter podcasts.
@@ -29,21 +28,12 @@ import kotlinx.coroutines.flow.onEach
 class FilterableCategoriesUseCase(
     private val categoryStore: CategoryStore
 ) {
-    operator fun invoke(
-        selectedCategory: Category?,
-        onEmptySelectedCategory: (Category) -> Unit
-    ): Flow<List<FilterableCategory>> =
+    operator fun invoke(selectedCategory: Category?): Flow<FilterableCategoriesModel> =
         categoryStore.categoriesSortedByPodcastCount()
-            .onEach { categories ->
-                // If we haven't got a selected category yet, select the first
-                if (categories.isNotEmpty() && selectedCategory == null) {
-                    onEmptySelectedCategory(categories[0])
-                }
+            .map {
+                FilterableCategoriesModel(
+                    categories = it,
+                    selectedCategory = selectedCategory ?: it.firstOrNull()
+                )
             }
-            .map { categories ->
-                categories.map { c ->
-                    FilterableCategory(c, c == selectedCategory)
-                }
-            }
-        }
 }

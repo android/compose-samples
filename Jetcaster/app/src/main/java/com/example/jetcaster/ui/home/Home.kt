@@ -76,7 +76,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
-import com.example.jetcaster.core.data.model.FilterableCategory
+import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.discover.discoverItems
@@ -85,10 +85,10 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun Home(
@@ -102,7 +102,7 @@ fun Home(
             isRefreshing = viewState.refreshing,
             homeCategories = viewState.homeCategories,
             selectedHomeCategory = viewState.selectedHomeCategory,
-            filterableCategories = viewState.filterableCategories,
+            filterableCategoriesModel = viewState.filterableCategoriesModel,
             podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
             libraryEpisodes = viewState.libraryEpisodes,
             onHomeCategorySelected = viewModel::onHomeCategorySelected,
@@ -165,7 +165,7 @@ fun Home(
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
-    filterableCategories: List<FilterableCategory>,
+    filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     libraryEpisodes: List<EpisodeToPodcast>,
     modifier: Modifier = Modifier,
@@ -213,7 +213,7 @@ fun Home(
             isRefreshing = isRefreshing,
             selectedHomeCategory = selectedHomeCategory,
             homeCategories = homeCategories,
-            filterableCategories = filterableCategories,
+            filterableCategoriesModel = filterableCategoriesModel,
             podcastCategoryFilterResult = podcastCategoryFilterResult,
             libraryEpisodes = libraryEpisodes,
             scrimColor = scrimColor,
@@ -233,7 +233,7 @@ private fun HomeContent(
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
-    filterableCategories: List<FilterableCategory>,
+    filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     libraryEpisodes: List<EpisodeToPodcast>,
     scrimColor: Color,
@@ -285,7 +285,7 @@ private fun HomeContent(
 
             HomeCategory.Discover -> {
                 discoverItems(
-                    filterableCategories = filterableCategories,
+                    filterableCategoriesModel = filterableCategoriesModel,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
@@ -471,9 +471,10 @@ fun PreviewHomeContent() {
             isRefreshing = false,
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
-            filterableCategories = PreviewCategories.map {
-                FilterableCategory(it, it == PreviewCategories.first())
-            },
+            filterableCategoriesModel = FilterableCategoriesModel(
+                categories = PreviewCategories,
+                selectedCategory = PreviewCategories.firstOrNull()
+            ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcastsWithExtraInfo,
                 episodes = PreviewEpisodeToPodcasts,

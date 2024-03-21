@@ -38,19 +38,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.model.FilterableCategory
+import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 
 fun LazyListScope.discoverItems(
-    filterableCategories: List<FilterableCategory>,
+    filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPlayer: (String) -> Unit,
     onCategorySelected: (Category) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
 ) {
-    if (filterableCategories.isEmpty() || !filterableCategories.any { it.isSelected }) {
+    if (filterableCategoriesModel.categories.isEmpty() ||
+        filterableCategoriesModel.selectedCategory == null) {
         // TODO: empty state
         return
     }
@@ -59,7 +60,7 @@ fun LazyListScope.discoverItems(
         Spacer(Modifier.height(8.dp))
 
         PodcastCategoryTabs(
-            filterableCategories = filterableCategories,
+            filterableCategoriesModel = filterableCategoriesModel,
             onCategorySelected = onCategorySelected,
             modifier = Modifier.fillMaxWidth()
         )
@@ -79,11 +80,13 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 
 @Composable
 private fun PodcastCategoryTabs(
-    filterableCategories: List<FilterableCategory>,
+    filterableCategoriesModel: FilterableCategoriesModel,
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedIndex = filterableCategories.indexOfFirst { it.isSelected }
+    val selectedIndex = filterableCategoriesModel.categories.indexOfFirst {
+        filterableCategoriesModel.selectedCategory == it
+    }
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
         divider = {}, /* Disable the built-in divider */
@@ -91,13 +94,13 @@ private fun PodcastCategoryTabs(
         indicator = emptyTabIndicator,
         modifier = modifier
     ) {
-        filterableCategories.forEachIndexed { index, filterableCategory ->
+        filterableCategoriesModel.categories.forEachIndexed { index, category ->
             Tab(
                 selected = index == selectedIndex,
-                onClick = { onCategorySelected(filterableCategory.category) }
+                onClick = { onCategorySelected(category) }
             ) {
                 ChoiceChipContent(
-                    text = filterableCategory.category.name,
+                    text = category.name,
                     selected = index == selectedIndex,
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
                 )

@@ -25,7 +25,7 @@ import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
-import com.example.jetcaster.core.data.model.FilterableCategory
+import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -75,12 +76,9 @@ class HomeViewModel(
                 podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
                 refreshing,
                 _selectedCategory.flatMapLatest { selectedCategory ->
-                    filterableCategoriesUseCase(
-                        selectedCategory,
-                        onEmptySelectedCategory = {
-                            _selectedCategory.value = it
-                        }
-                    )
+                    filterableCategoriesUseCase(selectedCategory).onEach {
+                        _selectedCategory.value = it.selectedCategory
+                    }
                 },
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
@@ -98,7 +96,7 @@ class HomeViewModel(
                     selectedHomeCategory = selectedHomeCategory,
                     featuredPodcasts = podcasts.toPersistentList(),
                     refreshing = refreshing,
-                    filterableCategories = filterableCategories,
+                    filterableCategoriesModel = filterableCategories,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     libraryEpisodes = libraryEpisodes,
                     errorMessage = null, /* TODO */
@@ -156,7 +154,7 @@ data class HomeViewState(
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),
-    val filterableCategories: List<FilterableCategory> = emptyList(),
+    val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),
     val podcastCategoryFilterResult: PodcastCategoryFilterResult = PodcastCategoryFilterResult(),
     val libraryEpisodes: List<EpisodeToPodcast> = emptyList(),
     val errorMessage: String? = null
