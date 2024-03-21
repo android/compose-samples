@@ -26,24 +26,14 @@ import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
 
-/**
- * A data repository for [Category] instances.
- */
-class CategoryStore(
-    private val categoriesDao: CategoriesDao,
-    private val categoryEntryDao: PodcastCategoryEntryDao,
-    private val episodesDao: EpisodesDao,
-    private val podcastsDao: PodcastsDao
-) {
+interface CategoryStore {
     /**
      * Returns a flow containing a list of categories which is sorted by the number
      * of podcasts in each category.
      */
     fun categoriesSortedByPodcastCount(
         limit: Int = Integer.MAX_VALUE
-    ): Flow<List<Category>> {
-        return categoriesDao.categoriesSortedByPodcastCount(limit)
-    }
+    ): Flow<List<Category>>
 
     /**
      * Returns a flow containing a list of podcasts in the category with the given [categoryId],
@@ -52,9 +42,7 @@ class CategoryStore(
     fun podcastsInCategorySortedByPodcastCount(
         categoryId: Long,
         limit: Int = Int.MAX_VALUE
-    ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastsDao.podcastsInCategorySortedByLastEpisode(categoryId, limit)
-    }
+    ): Flow<List<PodcastWithExtraInfo>>
 
     /**
      * Returns a flow containing a list of episodes from podcasts in the category with the
@@ -63,6 +51,53 @@ class CategoryStore(
     fun episodesFromPodcastsInCategory(
         categoryId: Long,
         limit: Int = Integer.MAX_VALUE
+    ): Flow<List<EpisodeToPodcast>>
+
+    /**
+     * Adds the category to the database if it doesn't already exist.
+     *
+     * @return the id of the newly inserted/existing category
+     */
+    suspend fun addCategory(category: Category): Long
+
+    suspend fun addPodcastToCategory(podcastUri: String, categoryId: Long)
+}
+
+/**
+ * A data repository for [Category] instances.
+ */
+class LocalCategoryStore(
+    private val categoriesDao: CategoriesDao,
+    private val categoryEntryDao: PodcastCategoryEntryDao,
+    private val episodesDao: EpisodesDao,
+    private val podcastsDao: PodcastsDao
+) : CategoryStore {
+    /**
+     * Returns a flow containing a list of categories which is sorted by the number
+     * of podcasts in each category.
+     */
+    override fun categoriesSortedByPodcastCount(limit: Int): Flow<List<Category>> {
+        return categoriesDao.categoriesSortedByPodcastCount(limit)
+    }
+
+    /**
+     * Returns a flow containing a list of podcasts in the category with the given [categoryId],
+     * sorted by the their last episode date.
+     */
+    override fun podcastsInCategorySortedByPodcastCount(
+        categoryId: Long,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> {
+        return podcastsDao.podcastsInCategorySortedByLastEpisode(categoryId, limit)
+    }
+
+    /**
+     * Returns a flow containing a list of episodes from podcasts in the category with the
+     * given [categoryId], sorted by the their last episode date.
+     */
+    override fun episodesFromPodcastsInCategory(
+        categoryId: Long,
+        limit: Int
     ): Flow<List<EpisodeToPodcast>> {
         return episodesDao.episodesFromPodcastsInCategory(categoryId, limit)
     }
@@ -72,14 +107,14 @@ class CategoryStore(
      *
      * @return the id of the newly inserted/existing category
      */
-    suspend fun addCategory(category: Category): Long {
+    override suspend fun addCategory(category: Category): Long {
         return when (val local = categoriesDao.getCategoryWithName(category.name)) {
             null -> categoriesDao.insert(category)
             else -> local.id
         }
     }
 
-    suspend fun addPodcastToCategory(podcastUri: String, categoryId: Long) {
+    override suspend fun addPodcastToCategory(podcastUri: String, categoryId: Long) {
         categoryEntryDao.insert(
             PodcastCategoryEntry(podcastUri = podcastUri, categoryId = categoryId)
         )
