@@ -85,9 +85,7 @@ private fun PodcastCategoryTabs(
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedIndex = filterableCategoriesModel.categories.indexOfFirst {
-        filterableCategoriesModel.selectedCategory == it
-    }
+    val selectedIndex = filterableCategoriesModel.categories.indexOf(filterableCategoriesModel.selectedCategory)
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
         divider = {}, /* Disable the built-in divider */
