@@ -97,11 +97,11 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.launch
 
 @Composable
 fun Home(
@@ -415,7 +415,7 @@ fun FollowedPodcasts(
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     HorizontalPager(
         state = pagerState,
-        modifier = modifier.onSizeChanged {size ->
+        modifier = modifier.onSizeChanged { size ->
             // TODO: this is not quite performant since it requires 2 passes to compute the content
             // padding. This should be revisited once a carousel component is available.
             // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
