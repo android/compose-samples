@@ -38,6 +38,15 @@ abstract class EpisodesDao : BaseDao<Episode> {
 
     @Query(
         """
+        SELECT episodes.* FROM episodes
+        INNER JOIN podcasts ON episodes.podcast_uri = podcasts.uri
+        WHERE episodes.uri = :uri
+        """
+    )
+    abstract fun episodeAndPodcast(uri: String): Flow<EpisodeToPodcast>
+
+    @Query(
+        """
         SELECT * FROM episodes WHERE podcast_uri = :podcastUri
         ORDER BY datetime(published) DESC
         LIMIT :limit

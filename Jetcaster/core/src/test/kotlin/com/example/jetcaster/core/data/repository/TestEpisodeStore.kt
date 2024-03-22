@@ -28,8 +28,19 @@ class TestEpisodeStore : EpisodeStore {
 
     private val episodesFlow = MutableStateFlow<List<Episode>>(listOf())
     override fun episodeWithUri(episodeUri: String): Flow<Episode> =
-        episodesFlow.map {
-            it.first { it.uri == episodeUri }
+        episodesFlow.map { episodes ->
+            episodes.first { it.uri == episodeUri }
+        }
+
+    override fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast> =
+        episodesFlow.map { episodes ->
+            val e = episodes.first {
+                it.uri == episodeUri
+            }
+            EpisodeToPodcast().apply {
+                episode = e
+                _podcasts = emptyList()
+            }
         }
 
     override fun episodesInPodcast(podcastUri: String, limit: Int): Flow<List<EpisodeToPodcast>> =

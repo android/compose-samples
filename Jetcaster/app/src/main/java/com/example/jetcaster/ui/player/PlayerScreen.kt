@@ -19,6 +19,7 @@ package com.example.jetcaster.ui.player
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -44,16 +45,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.Forward30
+import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.rounded.PauseCircleFilled
 import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -62,6 +63,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -99,13 +101,23 @@ import java.time.Duration
  */
 @Composable
 fun PlayerScreen(
-    viewModel: PlayerViewModel,
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
+    viewModel: PlayerViewModel,
     onBackPress: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    PlayerScreen(uiState, windowSizeClass, displayFeatures, onBackPress)
+    PlayerScreen(
+        uiState,
+        windowSizeClass,
+        displayFeatures,
+        onBackPress,
+        onPlayPress = viewModel::onPlay,
+        onPausePress = viewModel::onPause,
+        onAdvanceBy = viewModel::onAdvanceBy,
+        onRewindBy = viewModel::onRewindBy,
+        onStop = viewModel::onStop
+    )
 }
 
 /**
@@ -117,11 +129,30 @@ private fun PlayerScreen(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
+    onStop: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    DisposableEffect(Unit) {
+        onDispose {
+            onStop()
+        }
+    }
     Surface(modifier) {
         if (uiState.podcastName.isNotEmpty()) {
-            PlayerContent(uiState, windowSizeClass, displayFeatures, onBackPress)
+            PlayerContent(
+                uiState,
+                windowSizeClass,
+                displayFeatures,
+                onBackPress,
+                onPlayPress,
+                onPausePress,
+                onAdvanceBy,
+                onRewindBy
+            )
         } else {
             FullScreenLoading()
         }
@@ -134,6 +165,10 @@ fun PlayerContent(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
@@ -162,7 +197,14 @@ fun PlayerContent(
                     PlayerContentTableTopTop(uiState = uiState)
                 },
                 second = {
-                    PlayerContentTableTopBottom(uiState = uiState, onBackPress = onBackPress)
+                    PlayerContentTableTopBottom(
+                        uiState = uiState,
+                        onBackPress = onBackPress,
+                        onPlayPress = onPlayPress,
+                        onPausePress = onPausePress,
+                        onAdvanceBy = onAdvanceBy,
+                        onRewindBy = onRewindBy
+                    )
                 },
                 strategy = VerticalTwoPaneStrategy(splitFraction = 0.5f),
                 displayFeatures = displayFeatures,
@@ -186,7 +228,13 @@ fun PlayerContent(
                         PlayerContentBookStart(uiState = uiState)
                     },
                     second = {
-                        PlayerContentBookEnd(uiState = uiState)
+                        PlayerContentBookEnd(
+                            uiState = uiState,
+                            onPlayPress = onPlayPress,
+                            onPausePress = onPausePress,
+                            onAdvanceBy = onAdvanceBy,
+                            onRewindBy = onRewindBy
+                        )
                     },
                     strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
                     displayFeatures = displayFeatures
@@ -194,7 +242,15 @@ fun PlayerContent(
             }
         }
     } else {
-        PlayerContentRegular(uiState, onBackPress, modifier)
+        PlayerContentRegular(
+            uiState,
+            onBackPress,
+            onPlayPress,
+            onPausePress,
+            onAdvanceBy = onAdvanceBy,
+            onRewindBy = onRewindBy,
+            modifier,
+        )
     }
 }
 
@@ -205,6 +261,10 @@ fun PlayerContent(
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
     onBackPress: () -> Unit,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -235,8 +295,18 @@ private fun PlayerContentRegular(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(10f)
             ) {
-                PlayerSlider(uiState.duration)
-                PlayerButtons(Modifier.padding(vertical = 8.dp))
+                PlayerSlider(
+                    timeElapsed = uiState.timeElapsed,
+                    episodeDuration = uiState.duration
+                )
+                PlayerButtons(
+                    isPlaying = uiState.isPlaying,
+                    onPlayPress = onPlayPress,
+                    onPausePress = onPausePress,
+                    onAdvanceBy = onAdvanceBy,
+                    onRewindBy = onRewindBy,
+                    Modifier.padding(vertical = 8.dp)
+                )
             }
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -279,6 +349,10 @@ private fun PlayerContentTableTopTop(
 private fun PlayerContentTableTopBottom(
     uiState: PlayerUiState,
     onBackPress: () -> Unit,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Content for the table part of the screen
@@ -303,8 +377,19 @@ private fun PlayerContentTableTopBottom(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(10f)
         ) {
-            PlayerButtons(playerButtonSize = 92.dp, modifier = Modifier.padding(top = 8.dp))
-            PlayerSlider(uiState.duration)
+            PlayerButtons(
+                isPlaying = uiState.isPlaying,
+                onPlayPress = onPlayPress,
+                onPausePress = onPausePress,
+                playerButtonSize = 92.dp,
+                onAdvanceBy = onAdvanceBy,
+                onRewindBy = onRewindBy,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+            PlayerSlider(
+                timeElapsed = uiState.timeElapsed,
+                episodeDuration = uiState.duration
+            )
         }
     }
 }
@@ -344,6 +429,10 @@ private fun PlayerContentBookStart(
 @Composable
 private fun PlayerContentBookEnd(
     uiState: PlayerUiState,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -359,8 +448,18 @@ private fun PlayerContentBookEnd(
                 .padding(vertical = 16.dp)
                 .weight(1f)
         )
-        PlayerSlider(uiState.duration)
-        PlayerButtons(Modifier.padding(vertical = 8.dp))
+        PlayerSlider(
+            timeElapsed = uiState.timeElapsed,
+            episodeDuration = uiState.duration
+        )
+        PlayerButtons(
+            isPlaying = uiState.isPlaying,
+            onPlayPress = onPlayPress,
+            onPausePress = onPausePress,
+            onAdvanceBy = onAdvanceBy,
+            onRewindBy = onRewindBy,
+            Modifier.padding(vertical = 8.dp)
+        )
     }
 }
 
@@ -462,25 +561,42 @@ private fun PodcastInformation(
     }
 }
 
+fun Duration.formatString() : String {
+    val minutes = this.toMinutes().toString().padStart(2, '0')
+    val secondsLeft = (this.toSeconds() % 60).toString().padStart(2, '0')
+    return "$minutes:$secondsLeft"
+}
+
 @Composable
-private fun PlayerSlider(episodeDuration: Duration?) {
-    if (episodeDuration != null) {
-        Column(Modifier.fillMaxWidth()) {
-            Slider(value = 0f, onValueChange = { })
-            Row(Modifier.fillMaxWidth()) {
-                Text(text = "0s")
-                Spacer(modifier = Modifier.weight(1f))
-                Text("${episodeDuration.seconds}s")
-            }
+private fun PlayerSlider(timeElapsed: Duration?, episodeDuration: Duration?) {
+    Column(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = "${timeElapsed?.formatString()} • ${episodeDuration?.formatString()}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
+        val sliderValue = (timeElapsed?.toSeconds() ?: 0).toFloat()
+        val maxRange = (episodeDuration?.toSeconds() ?: 0).toFloat()
+        Slider(
+            value = sliderValue,
+            valueRange = 0f..maxRange,
+            onValueChange = { }
+        )
     }
 }
 
 @Composable
 private fun PlayerButtons(
+    isPlaying: Boolean,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
     modifier: Modifier = Modifier,
     playerButtonSize: Dp = 72.dp,
-    sideButtonSize: Dp = 48.dp
+    sideButtonSize: Dp = 48.dp,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -495,37 +611,61 @@ private fun PlayerButtons(
             imageVector = Icons.Filled.SkipPrevious,
             contentDescription = stringResource(R.string.cd_skip_previous),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
             modifier = buttonsModifier
         )
         Image(
             imageVector = Icons.Filled.Replay10,
-            contentDescription = stringResource(R.string.cd_reply10),
+            contentDescription = stringResource(R.string.cd_replay10),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
             modifier = buttonsModifier
+                .clickable {
+                    onRewindBy(Duration.ofSeconds(10))
+                }
         )
+        if (isPlaying) {
+            Image(
+                imageVector = Icons.Rounded.PauseCircleFilled,
+                contentDescription = stringResource(R.string.cd_pause),
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
+                modifier = Modifier
+                    .size(playerButtonSize)
+                    .semantics { role = Role.Button }
+                    .clickable {
+                        onPausePress()
+                    }
+            )
+        } else {
+            Image(
+                imageVector = Icons.Rounded.PlayCircleFilled,
+                contentDescription = stringResource(R.string.cd_play),
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
+                modifier = Modifier
+                    .size(playerButtonSize)
+                    .semantics { role = Role.Button }
+                    .clickable {
+                        onPlayPress()
+                    }
+            )
+        }
         Image(
-            imageVector = Icons.Rounded.PlayCircleFilled,
-            contentDescription = stringResource(R.string.cd_play),
+            imageVector = Icons.Filled.Forward10,
+            contentDescription = stringResource(R.string.cd_forward10),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
-            modifier = Modifier
-                .size(playerButtonSize)
-                .semantics { role = Role.Button }
-        )
-        Image(
-            imageVector = Icons.Filled.Forward30,
-            contentDescription = stringResource(R.string.cd_forward30),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
             modifier = buttonsModifier
+                .clickable {
+                    onAdvanceBy(Duration.ofSeconds(10))
+                }
         )
         Image(
             imageVector = Icons.Filled.SkipNext,
             contentDescription = stringResource(R.string.cd_skip_next),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
             modifier = buttonsModifier
         )
     }
@@ -557,7 +697,13 @@ fun TopAppBarPreview() {
 @Composable
 fun PlayerButtonsPreview() {
     JetcasterTheme {
-        PlayerButtons()
+        PlayerButtons(
+            isPlaying = true,
+            onPlayPress = {},
+            onPausePress = {},
+            onAdvanceBy = {},
+            onRewindBy = {},
+        )
     }
 }
 
@@ -574,11 +720,17 @@ fun PlayerScreenPreview() {
                 PlayerUiState(
                     title = "Title",
                     duration = Duration.ofHours(2),
-                    podcastName = "Podcast"
+                    podcastName = "Podcast",
+                    isPlaying = false,
                 ),
                 displayFeatures = emptyList(),
                 windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
-                onBackPress = { }
+                onBackPress = { },
+                onPlayPress = {},
+                onPausePress = {},
+                onAdvanceBy = {},
+                onRewindBy = {},
+                onStop = {},
             )
         }
     }

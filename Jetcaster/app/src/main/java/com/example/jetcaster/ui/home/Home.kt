@@ -37,11 +37,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -201,9 +199,6 @@ fun Home(
         // We dynamically theme this sub-section of the layout to match the selected
         // 'top podcast'
 
-        val surfaceColor = MaterialTheme.colorScheme.surface
-        val appBarColor = surfaceColor.copy(alpha = 0.87f)
-
         val scrimColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
 
         // Top Bar
@@ -213,14 +208,8 @@ fun Home(
                 .background(color = scrimColor)
         ) {
             // Draw a scrim over the status bar which matches the app bar
-            Spacer(
-                Modifier
-                    .background(appBarColor)
-                    .fillMaxWidth()
-                    .windowInsetsTopHeight(WindowInsets.statusBars)
-            )
             HomeAppBar(
-                backgroundColor = appBarColor,
+                backgroundColor = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.fillMaxWidth()
             )
         }

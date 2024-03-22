@@ -28,6 +28,11 @@ interface EpisodeStore {
     fun episodeWithUri(episodeUri: String): Flow<Episode>
 
     /**
+     * Returns a flow containing the episode and corresponding podcast given an [episodeUri].
+     */
+    fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast>
+
+    /**
      * Returns a flow containing the list of episodes associated with the podcast with the
      * given [podcastUri].
      */
@@ -67,6 +72,9 @@ class LocalEpisodeStore(
     override fun episodeWithUri(episodeUri: String): Flow<Episode> {
         return episodesDao.episode(episodeUri)
     }
+
+    override fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast> =
+        episodesDao.episodeAndPodcast(episodeUri)
 
     /**
      * Returns a flow containing the list of episodes associated with the podcast with the

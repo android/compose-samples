@@ -57,9 +57,9 @@ fun JetcasterApp(
                     )
                 )
                 PlayerScreen(
-                    playerViewModel,
                     windowSizeClass,
                     displayFeatures,
+                    playerViewModel,
                     onBackPress = appState::navigateBack
                 )
             }
