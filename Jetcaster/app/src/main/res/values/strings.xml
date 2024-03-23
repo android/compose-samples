@@ -56,5 +56,6 @@
     <string name="cd_skip_next">Skip next</string>
     <string name="cd_skip_previous">Skip previous</string>
     <string name="cd_unfollow">Unfollow</string>
+  <string name="episode_added_to_your_queue">Episode added to your queue</string>
 
 </resources>

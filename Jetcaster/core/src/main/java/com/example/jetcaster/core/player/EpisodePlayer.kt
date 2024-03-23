@@ -16,12 +16,13 @@
 
 package com.example.jetcaster.core.player
 
-import com.example.jetcaster.core.data.database.model.Episode
-import java.time.Duration
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import kotlinx.coroutines.flow.StateFlow
+import java.time.Duration
 
 data class EpisodePlayerState(
-    val currentEpisode: Episode? = null,
+    val currentEpisode: PlayerEpisode? = null,
+    val queue: List<PlayerEpisode> = emptyList(),
     val isPlaying: Boolean = false,
     val timeElapsed: Duration = Duration.ZERO,
 )
@@ -40,7 +41,9 @@ interface EpisodePlayer {
     /**
      * Gets the current episode playing, or to be played, by this player.
      */
-    var currentEpisode: Episode?
+    var currentEpisode: PlayerEpisode?
+
+    fun addToQueue(episode: PlayerEpisode)
 
     /**
      * Plays the current episode

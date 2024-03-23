@@ -27,28 +27,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.jetcaster.core.data.di.Graph
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import java.time.Duration
-import kotlinx.coroutines.flow.combine
+import com.example.jetcaster.core.player.EpisodePlayerState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 data class PlayerUiState(
-    val title: String = "",
-    val subTitle: String = "",
-    val duration: Duration? = null,
-    val podcastName: String = "",
-    val author: String = "",
-    val summary: String = "",
-    val podcastImageUrl: String = "",
-    val isPlaying: Boolean = false,
-    val timeElapsed: Duration? = null,
+    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
 )
 
 /**
  * ViewModel that handles the business logic and screen state of the Player screen
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModel(
     episodeStore: EpisodeStore = Graph.episodeStore,
     podcastStore: PodcastStore = Graph.podcastStore,
@@ -65,20 +62,11 @@ class PlayerViewModel(
 
     init {
         viewModelScope.launch {
-            combine(
-                episodeStore.episodeAndPodcastWithUri(episodeUri),
+            episodeStore.episodeAndPodcastWithUri(episodeUri).flatMapConcat {
+                episodePlayer.currentEpisode = it.toPlayerEpisode()
                 episodePlayer.playerState
-            ) { episodeToPlayer, playerState ->
-                episodePlayer.currentEpisode = episodeToPlayer.episode
-                PlayerUiState(
-                    title = episodeToPlayer.episode.title,
-                    duration = episodeToPlayer.episode.duration,
-                    podcastName = episodeToPlayer.episode.title,
-                    summary = episodeToPlayer.episode.summary ?: "",
-                    podcastImageUrl = episodeToPlayer.podcast.imageUrl ?: "",
-                    isPlaying = playerState.isPlaying,
-                    timeElapsed = playerState.timeElapsed
-                )
+            }.map {
+                PlayerUiState(episodePlayerState = it)
             }.collect {
                 uiState = it
             }
@@ -95,6 +83,14 @@ class PlayerViewModel(
 
     fun onStop() {
         episodePlayer.stop()
+    }
+
+    fun onPrevious() {
+        episodePlayer.previous()
+    }
+
+    fun onNext() {
+        episodePlayer.next()
     }
 
     fun onAdvanceBy(duration: Duration) {

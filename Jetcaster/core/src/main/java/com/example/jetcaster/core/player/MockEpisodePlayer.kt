@@ -16,9 +16,9 @@
 
 package com.example.jetcaster.core.player
 
-import com.example.jetcaster.core.data.database.model.Episode
 import java.time.Duration
 import kotlin.reflect.KProperty
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -37,7 +37,8 @@ class MockEpisodePlayer(
 ) : EpisodePlayer {
 
     private val _playerState = MutableStateFlow(EpisodePlayerState())
-    private val _currentEpisode = MutableStateFlow<Episode?>(null)
+    private val _currentEpisode = MutableStateFlow<PlayerEpisode?>(null)
+    private val queue = MutableStateFlow<List<PlayerEpisode>>(emptyList())
     private val isPlaying = MutableStateFlow(false)
     private val timeElapsed = MutableStateFlow(Duration.ZERO)
     private val coroutineScope = CoroutineScope(mainDispatcher)
@@ -48,11 +49,13 @@ class MockEpisodePlayer(
             // Combine streams here
             combine(
                 _currentEpisode,
+                queue,
                 isPlaying,
                 timeElapsed
-            ) { currentEpisode, isPlaying, timeElapsed ->
+            ) { currentEpisode, queue, isPlaying, timeElapsed ->
                 EpisodePlayerState(
                     currentEpisode = currentEpisode,
+                    queue = queue,
                     isPlaying = isPlaying,
                     timeElapsed = timeElapsed
                 )
@@ -67,7 +70,12 @@ class MockEpisodePlayer(
 
     override val playerState: StateFlow<EpisodePlayerState> = _playerState.asStateFlow()
 
-    override var currentEpisode: Episode? by _currentEpisode
+    override var currentEpisode: PlayerEpisode? by _currentEpisode
+    override fun addToQueue(episode: PlayerEpisode) {
+        queue.update {
+            it + episode
+        }
+    }
 
     override fun play() {
         // Do nothing if already playing
@@ -85,9 +93,13 @@ class MockEpisodePlayer(
                 timeElapsed.update { it + Duration.ofSeconds(1) }
             }
 
-            // Stop playing
-            timeElapsed.value = Duration.ZERO
+            // Once done playing, see if
             isPlaying.value = false
+            timeElapsed.value = Duration.ZERO
+
+            if (hasNext()) {
+                next()
+            }
         }
     }
 
@@ -120,11 +132,26 @@ class MockEpisodePlayer(
     }
 
     override fun next() {
-        TODO("Not yet implemented")
+        val q = queue.value
+        if (q.isEmpty()) {
+            return
+        }
+
+        timeElapsed.value = Duration.ZERO
+        val nextEpisode = q[0]
+        currentEpisode = nextEpisode
+        queue.value = q - nextEpisode
     }
 
     override fun previous() {
-        TODO("Not yet implemented")
+        timeElapsed.value = Duration.ZERO
+        isPlaying.value = false
+        timerJob?.cancel()
+        timerJob = null
+    }
+
+    private fun hasNext(): Boolean {
+        return queue.value.isNotEmpty()
     }
 }
 

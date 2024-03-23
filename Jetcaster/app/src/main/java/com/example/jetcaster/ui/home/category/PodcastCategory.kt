@@ -80,6 +80,7 @@ fun LazyListScope.podcastCategory(
     topPodcasts: List<PodcastWithExtraInfo>,
     episodes: List<EpisodeToPodcast>,
     navigateToPlayer: (String) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
 ) {
     item {
@@ -91,6 +92,7 @@ fun LazyListScope.podcastCategory(
             episode = item.episode,
             podcast = item.podcast,
             onClick = navigateToPlayer,
+            onQueuePodcast = onQueuePodcast,
             modifier = Modifier.fillParentMaxWidth()
         )
     }
@@ -113,6 +115,7 @@ fun EpisodeListItem(
     episode: Episode,
     podcast: Podcast,
     onClick: (String) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
 ) {
@@ -241,7 +244,12 @@ fun EpisodeListItem(
         )
 
         IconButton(
-            onClick = { /* TODO */ },
+            onClick = {
+                onQueuePodcast(EpisodeToPodcast().apply {
+                    this.episode = episode
+                    this._podcasts = listOf(podcast)
+                })
+            },
             modifier = Modifier.constrainAs(addPlaylist) {
                 end.linkTo(overflow.start)
                 centerVerticallyTo(playIcon)
@@ -358,6 +366,7 @@ fun PreviewEpisodeListItem() {
             episode = PreviewEpisodes[0],
             podcast = PreviewPodcasts[0],
             onClick = { },
+            onQueuePodcast = { },
             modifier = Modifier.fillMaxWidth()
         )
     }

@@ -28,9 +28,11 @@ import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.util.combine
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -52,7 +54,8 @@ class HomeViewModel(
     private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase =
         Graph.podcastCategoryFilterUseCase,
     private val filterableCategoriesUseCase: FilterableCategoriesUseCase =
-        Graph.filterableCategoriesUseCase
+        Graph.filterableCategoriesUseCase,
+    private val episodePlayer: EpisodePlayer = Graph.episodePlayer
 ) : ViewModel() {
     // Holds our currently selected podcast in the library
     private val selectedLibraryPodcast = MutableStateFlow<Podcast?>(null)
@@ -161,6 +164,10 @@ class HomeViewModel(
 
     fun onLibraryPodcastSelected(podcast: Podcast?) {
         selectedLibraryPodcast.value = podcast
+    }
+
+    fun onQueuePodcast(episodeToPodcast: EpisodeToPodcast) {
+        episodePlayer.addToQueue(episodeToPodcast.toPlayerEpisode())
     }
 }
 
