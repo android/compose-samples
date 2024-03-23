@@ -16,9 +16,9 @@
 
 package com.example.jetcaster.core.player
 
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import java.time.Duration
 import kotlin.reflect.KProperty
-import com.example.jetcaster.core.data.model.PlayerEpisode
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

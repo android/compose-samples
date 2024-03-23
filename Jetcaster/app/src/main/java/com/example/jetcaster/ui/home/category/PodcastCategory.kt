@@ -245,10 +245,12 @@ fun EpisodeListItem(
 
         IconButton(
             onClick = {
-                onQueuePodcast(EpisodeToPodcast().apply {
-                    this.episode = episode
-                    this._podcasts = listOf(podcast)
-                })
+                onQueuePodcast(
+                    EpisodeToPodcast().apply {
+                        this.episode = episode
+                        this._podcasts = listOf(podcast)
+                    }
+                )
             },
             modifier = Modifier.constrainAs(addPlaylist) {
                 end.linkTo(overflow.start)
