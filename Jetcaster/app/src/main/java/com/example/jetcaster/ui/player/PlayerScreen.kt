@@ -561,7 +561,7 @@ private fun PodcastInformation(
     }
 }
 
-fun Duration.formatString() : String {
+fun Duration.formatString(): String {
     val minutes = this.toMinutes().toString().padStart(2, '0')
     val secondsLeft = (this.toSeconds() % 60).toString().padStart(2, '0')
     return "$minutes:$secondsLeft"

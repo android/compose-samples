@@ -30,9 +30,9 @@ import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.player.EpisodePlayer
+import java.time.Duration
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.time.Duration
 
 data class PlayerUiState(
     val title: String = "",
