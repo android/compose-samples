@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -51,7 +52,7 @@ import com.example.jetcaster.tv.ui.settings.SettingsScreen
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppState()) {
-    val (menu, discover) = FocusRequester.createRefs()
+    val discover = remember { FocusRequester() }
 
     NavigationDrawer(
         drawerContent = {
@@ -65,7 +66,6 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
                             )
                             .intoPaddingValues()
                     )
-                    .focusRequester(menu)
                     .focusRestorer { discover }
             ) {
 
@@ -117,8 +117,11 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
     }
 }
 
-data object JetcasterAppDefaults {
+internal data object JetcasterAppDefaults {
     val overScanMargin = OverScanMargin()
+    val gapSettings = GapSettings()
+    val cardWidth = CardWidth()
+    val padding = PaddingSettings()
 }
 
 data class OverScanMargin(
@@ -131,6 +134,22 @@ data class OverScanMargin(
         return PaddingValues(start, top, end, bottom)
     }
 }
+
+data class CardWidth(
+    val large: Dp = 268.dp,
+    val medium: Dp = 196.dp,
+    val small: Dp = 124.dp
+)
+
+data class PaddingSettings(
+    val tab: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+    val sectionTitle: PaddingValues = PaddingValues(bottom = 16.dp)
+)
+
+data class GapSettings(
+    val catalogItemGap: Dp = 20.dp,
+    val catalogSectionGap: Dp = 40.dp,
+)
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable

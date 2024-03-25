@@ -24,13 +24,16 @@
         android:name="android.software.leanback"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:banner="@mipmap/ic_launcher"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Jetcaster">
+        android:theme="@style/Theme.Jetcaster"
+        android:name=".JetCasterTvApp">
         <activity
             android:name=".MainActivity"
             android:exported="true">

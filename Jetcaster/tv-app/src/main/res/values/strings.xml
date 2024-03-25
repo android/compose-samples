@@ -17,4 +17,32 @@
 <resources>
     <string name="app_name">JetCaster</string>
     <string name="message_not_available_feature">This feature is not available yet.</string>
+    <string name="message_loading">Loading</string>
+    <string name="section_podcast">Podcast</string>
+    <string name="section_latest_episodes">Latest Episodes</string>
+    <string name="label_subscribe">Subscribe</string>
+    <string name="label_info">Info</string>
+    <string name="label_play">Play</string>
+    <string name="label_pause">Pause</string>
+    <string name="label_skip">Skip 10 seconds</string>
+    <string name="label_rewind">Rewind 10 seconds</string>
+    <string name="label_next_episode">Play the next episode</string>
+    <string name="label_previous_episode">Play the previous episode</string>
+    <string name="label_listen">Listen</string>
+    <string name="label_podcast">Podcasts</string>
+    <string name="label_episode">Episodes</string>
+    <string name="label_latest_episode">Latest Episodes</string>
+
+    <string name="updated_longer">Updated a while ago</string>
+    <plurals name="updated_weeks_ago">
+        <item quantity="one">Updated %d week ago</item>
+        <item quantity="other">Updated %d weeks ago</item>
+    </plurals>
+    <plurals name="updated_days_ago">
+        <item quantity="one">Updated yesterday</item>
+        <item quantity="other">Updated %d days ago</item>
+    </plurals>
+    <string name="updated_today">Updated today</string>
+
+    <string name="episode_date_duration">%1$s &#8226; %2$d mins</string>
 </resources>
