@@ -269,9 +269,12 @@ private fun HomeContent(
     onLibraryPodcastSelected: (Podcast?) -> Unit
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
-    LaunchedEffect(pagerState.currentPage, featuredPodcasts) {
-        val podcast = featuredPodcasts.getOrNull(pagerState.currentPage)
-        onLibraryPodcastSelected(podcast?.podcast)
+LaunchedEffect(pagerState, featuredPodcasts) {
+        snapshotFlow { pagerState.currentPage }
+            .collect {
+                val podcast = featuredPodcasts.getOrNull(pagerState.currentPage)
+                onLibraryPodcastSelected(podcast?.podcast)
+            }
     }
     LazyColumn(modifier = modifier.fillMaxSize()) {
         if (featuredPodcasts.isNotEmpty()) {
