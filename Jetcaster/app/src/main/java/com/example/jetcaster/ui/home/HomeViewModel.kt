@@ -92,7 +92,7 @@ class HomeViewModel(
                     )
                 }
             ) { homeCategories,
-                selectedHomeCategory,
+                homeCategory,
                 podcasts,
                 refreshing,
                 filterableCategories,
@@ -101,9 +101,14 @@ class HomeViewModel(
 
                 _selectedCategory.value = filterableCategories.selectedCategory
 
+                // Override selected home category to show 'DISCOVER' if there are no
+                // featured podcasts
+                selectedHomeCategory.value =
+                    if (podcasts.isEmpty()) HomeCategory.Discover else homeCategory
+
                 HomeViewState(
                     homeCategories = homeCategories,
-                    selectedHomeCategory = selectedHomeCategory,
+                    selectedHomeCategory = homeCategory,
                     featuredPodcasts = podcasts.toPersistentList(),
                     refreshing = refreshing,
                     filterableCategoriesModel = filterableCategories,

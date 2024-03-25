@@ -23,6 +23,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -64,18 +65,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -97,11 +93,11 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.coroutines.launch
 
 @Composable
 fun Home(
@@ -412,42 +408,37 @@ fun FollowedPodcasts(
     onPodcastUnfollowed: (String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-
-    var horizontalPadding by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    HorizontalPager(
-        state = pagerState,
-        modifier = modifier.onSizeChanged { size ->
-            // TODO: this is not quite performant since it requires 2 passes to compute the content
-            // padding. This should be revisited once a carousel component is available.
-            // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
-            // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
-            // stable, this implementation can be updated.
-            horizontalPadding = with(density) {
-                (size.width.toDp() - FEATURED_PODCAST_IMAGE_WIDTH_DP) / 2
-            }
-        },
-        contentPadding = PaddingValues(
-            horizontal = horizontalPadding,
-            vertical = 16.dp,
-        ),
-        pageSize = PageSize.Fixed(180.dp)
-    ) { page ->
-        val (podcast, lastEpisodeDate) = items[page]
-        FollowedPodcastCarouselItem(
-            podcastImageUrl = podcast.imageUrl,
-            podcastTitle = podcast.title,
-            onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
-            lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(page)
+    // TODO: Using BoxWithConstraints is not quite performant since it requires 2 passes to compute
+    // the content padding. This should be revisited once a carousel component is available.
+    // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
+    // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
+    // stable, this implementation can be updated.
+    BoxWithConstraints(modifier) {
+        val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_WIDTH_DP) / 2
+        HorizontalPager(
+            state = pagerState,
+            contentPadding = PaddingValues(
+                horizontal = horizontalPadding,
+                vertical = 16.dp,
+            ),
+            pageSpacing = 24.dp,
+            pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_WIDTH_DP)
+        ) { page ->
+            val (podcast, lastEpisodeDate) = items[page]
+            FollowedPodcastCarouselItem(
+                podcastImageUrl = podcast.imageUrl,
+                podcastTitle = podcast.title,
+                onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
+                lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(page)
+                        }
                     }
-                }
-        )
+            )
+        }
     }
 }
 
