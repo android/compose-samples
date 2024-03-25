@@ -269,7 +269,7 @@ private fun HomeContent(
     onLibraryPodcastSelected: (Podcast?) -> Unit
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
-LaunchedEffect(pagerState, featuredPodcasts) {
+    LaunchedEffect(pagerState, featuredPodcasts) {
         snapshotFlow { pagerState.currentPage }
             .collect {
                 val podcast = featuredPodcasts.getOrNull(pagerState.currentPage)
