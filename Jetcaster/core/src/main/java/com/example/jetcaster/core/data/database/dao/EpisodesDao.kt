@@ -65,4 +65,16 @@ abstract class EpisodesDao : BaseDao<Episode> {
 
     @Query("SELECT COUNT(*) FROM episodes")
     abstract suspend fun count(): Int
+
+    @Query(
+        """
+        SELECT * FROM episodes WHERE podcast_uri IN (:podcastUris)
+        ORDER BY datetime(published) DESC
+        LIMIT :limit
+        """
+    )
+    abstract fun episodesForPodcasts(
+        podcastUris: List<String>,
+        limit: Int
+    ): Flow<List<EpisodeToPodcast>>
 }

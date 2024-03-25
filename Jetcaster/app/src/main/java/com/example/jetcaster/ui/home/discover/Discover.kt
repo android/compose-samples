@@ -16,38 +16,41 @@
 
 package com.example.jetcaster.ui.home.discover
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabPosition
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
+import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
-import com.example.jetcaster.ui.theme.Keyline1
-
-data class DiscoverViewState(
-    val categories: List<Category> = emptyList(),
-    val selectedCategory: Category? = null
-)
 
 fun LazyListScope.discoverItems(
-    discoverViewState: DiscoverViewState,
-    podcastCategoryViewState: PodcastCategoryViewState,
+    filterableCategoriesModel: FilterableCategoriesModel,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPlayer: (String) -> Unit,
     onCategorySelected: (Category) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
 ) {
-    if (discoverViewState.categories.isEmpty() || discoverViewState.selectedCategory == null) {
+    if (filterableCategoriesModel.isEmpty) {
         // TODO: empty state
         return
     }
@@ -56,8 +59,7 @@ fun LazyListScope.discoverItems(
         Spacer(Modifier.height(8.dp))
 
         PodcastCategoryTabs(
-            categories = discoverViewState.categories,
-            selectedCategory = discoverViewState.selectedCategory,
+            filterableCategoriesModel = filterableCategoriesModel,
             onCategorySelected = onCategorySelected,
             modifier = Modifier.fillMaxWidth()
         )
@@ -66,8 +68,8 @@ fun LazyListScope.discoverItems(
     }
 
     podcastCategory(
-        topPodcasts = podcastCategoryViewState.topPodcasts,
-        episodes = podcastCategoryViewState.episodes,
+        topPodcasts = podcastCategoryFilterResult.topPodcasts,
+        episodes = podcastCategoryFilterResult.episodes,
         navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = onTogglePodcastFollowed
     )
@@ -77,12 +79,13 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 
 @Composable
 private fun PodcastCategoryTabs(
-    categories: List<Category>,
-    selectedCategory: Category,
+    filterableCategoriesModel: FilterableCategoriesModel,
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedIndex = categories.indexOfFirst { it == selectedCategory }
+    val selectedIndex = filterableCategoriesModel.categories.indexOf(
+        filterableCategoriesModel.selectedCategory
+    )
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
         divider = {}, /* Disable the built-in divider */
@@ -90,7 +93,7 @@ private fun PodcastCategoryTabs(
         indicator = emptyTabIndicator,
         modifier = modifier
     ) {
-        categories.forEachIndexed { index, category ->
+        filterableCategoriesModel.categories.forEachIndexed { index, category ->
             Tab(
                 selected = index == selectedIndex,
                 onClick = { onCategorySelected(category) }
@@ -113,20 +116,37 @@ private fun ChoiceChipContent(
 ) {
     Surface(
         color = when {
-            selected -> MaterialTheme.colors.primary.copy(alpha = 0.08f)
-            else -> MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            selected -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.surfaceContainer
         },
         contentColor = when {
-            selected -> MaterialTheme.colors.primary
-            else -> MaterialTheme.colors.onSurface
+            selected -> MaterialTheme.colorScheme.onSecondaryContainer
+            else -> MaterialTheme.colorScheme.onSurfaceVariant
         },
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
         modifier = modifier
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.body2,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(
+                horizontal = when {
+                    selected -> 8.dp
+                    else -> 16.dp
+                },
+                vertical = 8.dp
+            )
+        ) {
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = stringResource(id = R.string.cd_selected_category),
+                    modifier = Modifier.height(18.dp).padding(end = 8.dp)
+                )
+            }
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
     }
 }

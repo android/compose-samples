@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster.designsystem.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
-val Keyline1 = 24.dp
+val JetcasterShapes = Shapes(
+    small = RoundedCornerShape(percent = 50),
+    medium = RoundedCornerShape(size = 8.dp),
+    large = RoundedCornerShape(size = 0.dp)
+)

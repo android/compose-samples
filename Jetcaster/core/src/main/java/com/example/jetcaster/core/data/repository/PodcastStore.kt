@@ -24,20 +24,11 @@ import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
 
-/**
- * A data repository for [Podcast] instances.
- */
-class PodcastStore(
-    private val podcastDao: PodcastsDao,
-    private val podcastFollowedEntryDao: PodcastFollowedEntryDao,
-    private val transactionRunner: TransactionRunner
-) {
+interface PodcastStore {
     /**
      * Return a flow containing the [Podcast] with the given [uri].
      */
-    fun podcastWithUri(uri: String): Flow<Podcast> {
-        return podcastDao.podcastWithUri(uri)
-    }
+    fun podcastWithUri(uri: String): Flow<Podcast>
 
     /**
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
@@ -45,6 +36,51 @@ class PodcastStore(
      */
     fun podcastsSortedByLastEpisode(
         limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>>
+
+    /**
+     * Returns a flow containing a list of all followed podcasts, sorted by the their last
+     * episode date.
+     */
+    fun followedPodcastsSortedByLastEpisode(
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>>
+
+    suspend fun togglePodcastFollowed(podcastUri: String)
+
+    suspend fun unfollowPodcast(podcastUri: String)
+
+    /**
+     * Add a new [Podcast] to this store.
+     *
+     * This automatically switches to the main thread to maintain thread consistency.
+     */
+    suspend fun addPodcast(podcast: Podcast)
+
+    suspend fun isEmpty(): Boolean
+}
+
+/**
+ * A data repository for [Podcast] instances.
+ */
+class LocalPodcastStore(
+    private val podcastDao: PodcastsDao,
+    private val podcastFollowedEntryDao: PodcastFollowedEntryDao,
+    private val transactionRunner: TransactionRunner
+) : PodcastStore {
+    /**
+     * Return a flow containing the [Podcast] with the given [uri].
+     */
+    override fun podcastWithUri(uri: String): Flow<Podcast> {
+        return podcastDao.podcastWithUri(uri)
+    }
+
+    /**
+     * Returns a flow containing the entire collection of podcasts, sorted by the last episode
+     * publish date for each podcast.
+     */
+    override fun podcastsSortedByLastEpisode(
+        limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
         return podcastDao.podcastsSortedByLastEpisode(limit)
     }
@@ -53,8 +89,8 @@ class PodcastStore(
      * Returns a flow containing a list of all followed podcasts, sorted by the their last
      * episode date.
      */
-    fun followedPodcastsSortedByLastEpisode(
-        limit: Int = Int.MAX_VALUE
+    override fun followedPodcastsSortedByLastEpisode(
+        limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
         return podcastDao.followedPodcastsSortedByLastEpisode(limit)
     }
@@ -63,7 +99,7 @@ class PodcastStore(
         podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
     }
 
-    suspend fun togglePodcastFollowed(podcastUri: String) = transactionRunner {
+    override suspend fun togglePodcastFollowed(podcastUri: String) = transactionRunner {
         if (podcastFollowedEntryDao.isPodcastFollowed(podcastUri)) {
             unfollowPodcast(podcastUri)
         } else {
@@ -71,7 +107,7 @@ class PodcastStore(
         }
     }
 
-    suspend fun unfollowPodcast(podcastUri: String) {
+    override suspend fun unfollowPodcast(podcastUri: String) {
         podcastFollowedEntryDao.deleteWithPodcastUri(podcastUri)
     }
 
@@ -80,9 +116,9 @@ class PodcastStore(
      *
      * This automatically switches to the main thread to maintain thread consistency.
      */
-    suspend fun addPodcast(podcast: Podcast) {
+    override suspend fun addPodcast(podcast: Podcast) {
         podcastDao.insert(podcast)
     }
 
-    suspend fun isEmpty(): Boolean = podcastDao.count() == 0
+    override suspend fun isEmpty(): Boolean = podcastDao.count() == 0
 }

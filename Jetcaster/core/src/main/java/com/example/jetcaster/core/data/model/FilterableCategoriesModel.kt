@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.theme
+package com.example.jetcaster.core.data.model
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Shapes
-import androidx.compose.ui.unit.dp
+import com.example.jetcaster.core.data.database.model.Category
 
-val JetcasterShapes = Shapes(
-    small = RoundedCornerShape(percent = 50),
-    medium = RoundedCornerShape(size = 8.dp),
-    large = RoundedCornerShape(size = 0.dp)
-)
+/**
+ * Model holding a list of categories and a selected category in the collection
+ */
+data class FilterableCategoriesModel(
+    val categories: List<Category> = emptyList(),
+    val selectedCategory: Category? = null
+) {
+    val isEmpty = categories.isEmpty() || selectedCategory == null
+}

@@ -20,18 +20,16 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
@@ -63,8 +61,8 @@ fun ToggleFollowPodcastIconButton(
             },
             tint = animateColorAsState(
                 when {
-                    isFollowed -> LocalContentColor.current
-                    else -> Color.Black.copy(alpha = ContentAlpha.high)
+                    isFollowed -> MaterialTheme.colorScheme.onPrimary
+                    else -> MaterialTheme.colorScheme.primary
                 }
             ).value,
             modifier = Modifier
@@ -75,11 +73,11 @@ fun ToggleFollowPodcastIconButton(
                 .background(
                     color = animateColorAsState(
                         when {
-                            isFollowed -> MaterialTheme.colors.surface.copy(0.38f)
-                            else -> Color.White
+                            isFollowed -> MaterialTheme.colorScheme.primary
+                            else -> MaterialTheme.colorScheme.surfaceContainerHighest
                         }
                     ).value,
-                    shape = MaterialTheme.shapes.small
+                    shape = CircleShape
                 )
                 .padding(4.dp)
         )

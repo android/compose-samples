@@ -4,15 +4,16 @@
 #####
 [versions]
 accompanist = "0.34.0"
-androidGradlePlugin = "8.3.0"
+androidGradlePlugin = "8.2.0"
 androidx-activity-compose = "1.8.2"
 androidx-appcompat = "1.6.1"
-androidx-benchmark = "1.2.0"
-androidx-benchmark-junit4 = "1.2.1"
+androidx-benchmark = "1.2.3"
+androidx-benchmark-junit4 = "1.2.3"
 androidx-compose-bom = "2024.02.02"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.13.0-alpha05"
 androidx-glance = "1.0.0"
+androidx-lifecycle-runtime = "2.7.0"
 androidx-lifecycle-compose = "2.7.0"
 androidx-lifecycle-runtime-compose = "2.7.0"
 androidx-navigation = "2.7.7"
@@ -21,18 +22,20 @@ androidx-test = "1.5.0"
 androidx-test-espresso = "3.5.1"
 androidx-test-ext-junit = "1.1.5"
 androidx-test-ext-truth = "1.5.0"
+androidx-tv-foundation = "1.0.0-alpha10"
+androidx-tv-material = "1.0.0-alpha10"
 androidx-window = "1.3.0-alpha03"
-androidxHiltNavigationCompose = "1.1.0"
-androix-test-uiautomator = "2.2.0"
-coil = "2.4.0"
+androidxHiltNavigationCompose = "1.2.0"
+androix-test-uiautomator = "2.3.0"
+coil = "2.5.0"
 # @keep
 compileSdk = "34"
 compose-compiler = "1.5.4"
 coroutines = "1.8.0"
 google-maps = "18.2.0"
 gradle-versions = "0.51.0"
-hilt = "2.48.1"
-hiltExt = "1.1.0"
+hilt = "2.49"
+hiltExt = "1.2.0"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "2.0.4"
 junit = "4.13.2"
@@ -44,10 +47,10 @@ maps-compose = "3.1.1"
 material = "1.11.0"
 # @keep
 minSdk = "21"
-okhttp = "4.11.0"
+okhttp = "4.12.0"
 robolectric = "4.9.2"
 rome = "1.18.0"
-room = "2.6.0"
+room = "2.6.1"
 secrets = "2.0.1"
 # @keep
 targetSdk = "33"
@@ -83,7 +86,7 @@ androidx-compose-foundation-layout = { module = "androidx.compose.foundation:fou
 androidx-compose-material = { module = "androidx.compose.material:material" }
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
-androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
+androidx-compose-material3-window = { module = "androidx.compose.material3:material3-window-size-class" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
@@ -104,7 +107,7 @@ androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", versi
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "androidx-glance" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
-androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha04"
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
@@ -123,6 +126,8 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
+androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
+androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 core-jdk-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "jdkDesugar" }

@@ -19,7 +19,7 @@ package com.example.jetcaster.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.jetcaster.designsystem.theme.JetcasterShapes
+import com.example.jetcaster.designsystem.theme.JetcasterTypography
 import com.example.jetcaster.designsystem.theme.backgroundDark
 import com.example.jetcaster.designsystem.theme.backgroundDarkHighContrast
 import com.example.jetcaster.designsystem.theme.backgroundDarkMediumContrast
@@ -242,18 +244,6 @@ import com.example.jetcaster.designsystem.theme.tertiaryDarkMediumContrast
 import com.example.jetcaster.designsystem.theme.tertiaryLight
 import com.example.jetcaster.designsystem.theme.tertiaryLightHighContrast
 import com.example.jetcaster.designsystem.theme.tertiaryLightMediumContrast
-
-@Composable
-fun JetcasterTheme(
-    content: @Composable () -> Unit
-) {
-    MaterialTheme(
-        colors = JetcasterColors,
-        typography = JetcasterTypography,
-        shapes = JetcasterShapes,
-        content = content
-    )
-}
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -496,10 +486,10 @@ val unspecified_scheme = ColorFamily(
 )
 
 @Composable
-fun JetcasterThemeM3(
+fun JetcasterTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -512,17 +502,19 @@ fun JetcasterThemeM3(
         else -> lightScheme
     }
     val view = LocalView.current
+    val statusBarColor = colorScheme.surface
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = statusBarColor.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
-    androidx.compose.material3.MaterialTheme(
+    MaterialTheme(
         colorScheme = colorScheme,
-        typography = JetcasterTypographyM3,
+        shapes = JetcasterShapes,
+        typography = JetcasterTypography,
         content = content
     )
 }

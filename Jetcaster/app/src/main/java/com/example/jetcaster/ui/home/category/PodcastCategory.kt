@@ -33,21 +33,17 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,18 +68,14 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.theme.JetcasterTheme
-import com.example.jetcaster.ui.theme.Keyline1
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-data class PodcastCategoryViewState(
-    val topPodcasts: List<PodcastWithExtraInfo> = emptyList(),
-    val episodes: List<EpisodeToPodcast> = emptyList()
-)
 fun LazyListScope.podcastCategory(
     topPodcasts: List<PodcastWithExtraInfo>,
     episodes: List<EpisodeToPodcast>,
@@ -121,7 +113,8 @@ fun EpisodeListItem(
     episode: Episode,
     podcast: Podcast,
     onClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showDivider: Boolean = true,
 ) {
     ConstraintLayout(modifier = modifier.clickable { onClick(episode.uri) }) {
         val (
@@ -129,14 +122,15 @@ fun EpisodeListItem(
             date, addPlaylist, overflow
         ) = createRefs()
 
-        Divider(
-            Modifier.constrainAs(divider) {
-                top.linkTo(parent.top)
-                centerHorizontallyTo(parent)
-
-                width = fillToConstraints
-            }
-        )
+        if (showDivider) {
+            HorizontalDivider(
+                Modifier.constrainAs(divider) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                    width = fillToConstraints
+                }
+            )
+        }
 
         // If we have an image Url, we can show it using Coil
         AsyncImage(
@@ -159,7 +153,7 @@ fun EpisodeListItem(
             text = episode.title,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.constrainAs(episodeTitle) {
                 linkTo(
                     start = parent.start,
@@ -176,32 +170,30 @@ fun EpisodeListItem(
 
         val titleImageBarrier = createBottomBarrier(podcastTitle, image)
 
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = podcast.title,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier.constrainAs(podcastTitle) {
-                    linkTo(
-                        start = parent.start,
-                        end = image.start,
-                        startMargin = Keyline1,
-                        endMargin = 16.dp,
-                        bias = 0f
-                    )
-                    top.linkTo(episodeTitle.bottom, 6.dp)
-                    height = preferredWrapContent
-                    width = preferredWrapContent
-                }
-            )
-        }
+        Text(
+            text = podcast.title,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.constrainAs(podcastTitle) {
+                linkTo(
+                    start = parent.start,
+                    end = image.start,
+                    startMargin = Keyline1,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+                top.linkTo(episodeTitle.bottom, 6.dp)
+                height = preferredWrapContent
+                width = preferredWrapContent
+            }
+        )
 
         Image(
             imageVector = Icons.Rounded.PlayCircleFilled,
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -217,63 +209,63 @@ fun EpisodeListItem(
                 }
         )
 
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            val duration = episode.duration
-            Text(
-                text = when {
-                    duration != null -> {
-                        // If we have the duration, we combine the date/duration via a
-                        // formatted string
-                        stringResource(
-                            R.string.episode_date_duration,
-                            MediumDateFormatter.format(episode.published),
-                            duration.toMinutes().toInt()
-                        )
-                    }
-                    // Otherwise we just use the date
-                    else -> MediumDateFormatter.format(episode.published)
-                },
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier.constrainAs(date) {
-                    centerVerticallyTo(playIcon)
-                    linkTo(
-                        start = playIcon.end,
-                        startMargin = 12.dp,
-                        end = addPlaylist.start,
-                        endMargin = 16.dp,
-                        bias = 0f // float this towards the start
+        val duration = episode.duration
+        Text(
+            text = when {
+                duration != null -> {
+                    // If we have the duration, we combine the date/duration via a
+                    // formatted string
+                    stringResource(
+                        R.string.episode_date_duration,
+                        MediumDateFormatter.format(episode.published),
+                        duration.toMinutes().toInt()
                     )
-                    width = preferredWrapContent
                 }
+                // Otherwise we just use the date
+                else -> MediumDateFormatter.format(episode.published)
+            },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.constrainAs(date) {
+                centerVerticallyTo(playIcon)
+                linkTo(
+                    start = playIcon.end,
+                    startMargin = 12.dp,
+                    end = addPlaylist.start,
+                    endMargin = 16.dp,
+                    bias = 0f // float this towards the start
+                )
+                width = preferredWrapContent
+            }
+        )
+
+        IconButton(
+            onClick = { /* TODO */ },
+            modifier = Modifier.constrainAs(addPlaylist) {
+                end.linkTo(overflow.start)
+                centerVerticallyTo(playIcon)
+            }
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                contentDescription = stringResource(R.string.cd_add),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
 
-            IconButton(
-                onClick = { /* TODO */ },
-                modifier = Modifier.constrainAs(addPlaylist) {
-                    end.linkTo(overflow.start)
-                    centerVerticallyTo(playIcon)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlaylistAdd,
-                    contentDescription = stringResource(R.string.cd_add)
-                )
+        IconButton(
+            onClick = { /* TODO */ },
+            modifier = Modifier.constrainAs(overflow) {
+                end.linkTo(parent.end, 8.dp)
+                centerVerticallyTo(playIcon)
             }
-
-            IconButton(
-                onClick = { /* TODO */ },
-                modifier = Modifier.constrainAs(overflow) {
-                    end.linkTo(parent.end, 8.dp)
-                    centerVerticallyTo(playIcon)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = stringResource(R.string.cd_more)
-                )
-            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(R.string.cd_more),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -344,7 +336,7 @@ private fun TopPodcastRowItem(
 
         Text(
             text = podcastTitle,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodyMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier

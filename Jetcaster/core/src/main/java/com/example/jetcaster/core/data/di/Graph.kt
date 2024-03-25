@@ -21,10 +21,15 @@ import androidx.room.Room
 import com.example.jetcaster.core.BuildConfig
 import com.example.jetcaster.core.data.database.JetcasterDatabase
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
+import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
+import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
+import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.EpisodeStore
-import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.repository.LocalCategoryStore
+import com.example.jetcaster.core.data.repository.LocalEpisodeStore
+import com.example.jetcaster.core.data.repository.LocalPodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.rometools.rome.io.SyndFeedInput
 import java.io.File
@@ -70,21 +75,40 @@ object Graph {
     }
 
     val podcastStore by lazy {
-        PodcastStore(
+        LocalPodcastStore(
             podcastDao = database.podcastsDao(),
             podcastFollowedEntryDao = database.podcastFollowedEntryDao(),
             transactionRunner = transactionRunner
         )
     }
 
-    val episodeStore by lazy {
-        EpisodeStore(
+    val episodeStore: EpisodeStore by lazy {
+        LocalEpisodeStore(
             episodesDao = database.episodesDao()
         )
     }
 
-    val categoryStore by lazy {
-        CategoryStore(
+    val getLatestFollowedEpisodesUseCase by lazy {
+        GetLatestFollowedEpisodesUseCase(
+            episodeStore = episodeStore,
+            podcastStore = podcastStore
+        )
+    }
+
+    val podcastCategoryFilterUseCase by lazy {
+        PodcastCategoryFilterUseCase(
+            categoryStore = categoryStore
+        )
+    }
+
+    val filterableCategoriesUseCase by lazy {
+        FilterableCategoriesUseCase(
+            categoryStore = categoryStore
+        )
+    }
+
+    val categoryStore: CategoryStore by lazy {
+        LocalCategoryStore(
             categoriesDao = database.categoriesDao(),
             categoryEntryDao = database.podcastCategoryEntryDao(),
             episodesDao = database.episodesDao(),

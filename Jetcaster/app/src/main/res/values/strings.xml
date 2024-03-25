@@ -54,5 +54,6 @@
     <string name="cd_follow">Follow</string>
     <string name="cd_following">Following</string>
     <string name="cd_not_following">Not following</string>
+    <string name="cd_selected_category">Selected category</string>
 
 </resources>

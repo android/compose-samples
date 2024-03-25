@@ -41,31 +41,27 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Forward30
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -89,13 +85,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.theme.JetcasterTheme
-import com.example.jetcaster.ui.theme.MinContrastOfPrimaryVsSurface
-import com.example.jetcaster.util.DynamicThemePrimaryColorsFromImage
-import com.example.jetcaster.util.contrastAgainst
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
-import com.example.jetcaster.util.rememberDominantColorState
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
@@ -144,67 +136,65 @@ fun PlayerContent(
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    PlayerDynamicTheme(uiState.podcastImageUrl) {
-        val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
-        // Use a two pane layout if there is a fold impacting layout (meaning it is separating
-        // or non-flat) or if we have a large enough width to show both.
-        if (
-            windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
-            isBookPosture(foldingFeature) ||
+    // Use a two pane layout if there is a fold impacting layout (meaning it is separating
+    // or non-flat) or if we have a large enough width to show both.
+    if (
+        windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
+        isBookPosture(foldingFeature) ||
+        isTableTopPosture(foldingFeature) ||
+        isSeparatingPosture(foldingFeature)
+    ) {
+        // Determine if we are going to be using a vertical strategy (as if laying out
+        // both sides in a column). We want to do so if we are in a tabletop posture,
+        // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
+        val usingVerticalStrategy =
             isTableTopPosture(foldingFeature) ||
-            isSeparatingPosture(foldingFeature)
-        ) {
-            // Determine if we are going to be using a vertical strategy (as if laying out
-            // both sides in a column). We want to do so if we are in a tabletop posture,
-            // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
-            val usingVerticalStrategy =
-                isTableTopPosture(foldingFeature) ||
-                    (
-                        isSeparatingPosture(foldingFeature) &&
-                            foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
-                        )
+                (
+                    isSeparatingPosture(foldingFeature) &&
+                        foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                    )
 
-            if (usingVerticalStrategy) {
+        if (usingVerticalStrategy) {
+            TwoPane(
+                first = {
+                    PlayerContentTableTopTop(uiState = uiState)
+                },
+                second = {
+                    PlayerContentTableTopBottom(uiState = uiState, onBackPress = onBackPress)
+                },
+                strategy = VerticalTwoPaneStrategy(splitFraction = 0.5f),
+                displayFeatures = displayFeatures,
+                modifier = modifier,
+            )
+        } else {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .verticalGradientScrim(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
+                        startYPercentage = 1f,
+                        endYPercentage = 0f
+                    )
+                    .systemBarsPadding()
+                    .padding(horizontal = 8.dp)
+            ) {
+                TopAppBar(onBackPress = onBackPress)
                 TwoPane(
                     first = {
-                        PlayerContentTableTopTop(uiState = uiState)
+                        PlayerContentBookStart(uiState = uiState)
                     },
                     second = {
-                        PlayerContentTableTopBottom(uiState = uiState, onBackPress = onBackPress)
+                        PlayerContentBookEnd(uiState = uiState)
                     },
-                    strategy = VerticalTwoPaneStrategy(splitFraction = 0.5f),
-                    displayFeatures = displayFeatures,
-                    modifier = modifier,
+                    strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
+                    displayFeatures = displayFeatures
                 )
-            } else {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .verticalGradientScrim(
-                            color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
-                            startYPercentage = 1f,
-                            endYPercentage = 0f
-                        )
-                        .systemBarsPadding()
-                        .padding(horizontal = 8.dp)
-                ) {
-                    TopAppBar(onBackPress = onBackPress)
-                    TwoPane(
-                        first = {
-                            PlayerContentBookStart(uiState = uiState)
-                        },
-                        second = {
-                            PlayerContentBookEnd(uiState = uiState)
-                        },
-                        strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
-                        displayFeatures = displayFeatures
-                    )
-                }
             }
-        } else {
-            PlayerContentRegular(uiState, onBackPress, modifier)
         }
+    } else {
+        PlayerContentRegular(uiState, onBackPress, modifier)
     }
 }
 
@@ -221,7 +211,7 @@ private fun PlayerContentRegular(
         modifier = modifier
             .fillMaxSize()
             .verticalGradientScrim(
-                color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
                 startYPercentage = 1f,
                 endYPercentage = 0f
             )
@@ -266,7 +256,7 @@ private fun PlayerContentTableTopTop(
         modifier = modifier
             .fillMaxWidth()
             .verticalGradientScrim(
-                color = MaterialTheme.colors.primary.copy(alpha = 0.50f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
                 startYPercentage = 1f,
                 endYPercentage = 0f
             )
@@ -306,7 +296,7 @@ private fun PlayerContentTableTopBottom(
         PodcastDescription(
             title = uiState.title,
             podcastName = uiState.podcastName,
-            titleTextStyle = MaterialTheme.typography.h6
+            titleTextStyle = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.weight(0.5f))
         Column(
@@ -379,14 +369,14 @@ private fun TopAppBar(onBackPress: () -> Unit) {
     Row(Modifier.fillMaxWidth()) {
         IconButton(onClick = onBackPress) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(R.string.cd_back)
             )
         }
         Spacer(Modifier.weight(1f))
         IconButton(onClick = { /* TODO */ }) {
             Icon(
-                imageVector = Icons.Default.PlaylistAdd,
+                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
                 contentDescription = stringResource(R.string.cd_add)
             )
         }
@@ -423,7 +413,7 @@ private fun PlayerImage(
 private fun PodcastDescription(
     title: String,
     podcastName: String,
-    titleTextStyle: TextStyle = MaterialTheme.typography.h5
+    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall
 ) {
     Text(
         text = title,
@@ -431,13 +421,11 @@ private fun PodcastDescription(
         maxLines = 1,
         modifier = Modifier.basicMarquee()
     )
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        Text(
-            text = podcastName,
-            style = MaterialTheme.typography.body2,
-            maxLines = 1
-        )
-    }
+    Text(
+        text = podcastName,
+        style = MaterialTheme.typography.bodyMedium,
+        maxLines = 1
+    )
 }
 
 @Composable
@@ -445,8 +433,8 @@ private fun PodcastInformation(
     title: String,
     name: String,
     summary: String,
-    titleTextStyle: TextStyle = MaterialTheme.typography.h5,
-    nameTextStyle: TextStyle = MaterialTheme.typography.h3,
+    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    nameTextStyle: TextStyle = MaterialTheme.typography.displaySmall,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -466,12 +454,10 @@ private fun PodcastInformation(
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(32.dp))
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = summary,
-                style = MaterialTheme.typography.body2,
-            )
-        }
+        Text(
+            text = summary,
+            style = MaterialTheme.typography.bodyMedium,
+        )
         Spacer(modifier = Modifier.weight(1f))
     }
 }
@@ -542,34 +528,6 @@ private fun PlayerButtons(
             colorFilter = ColorFilter.tint(LocalContentColor.current),
             modifier = buttonsModifier
         )
-    }
-}
-
-/**
- * Theme that updates the colors dynamically depending on the podcast image URL
- */
-@Composable
-private fun PlayerDynamicTheme(
-    podcastImageUrl: String,
-    content: @Composable () -> Unit
-) {
-    val surfaceColor = MaterialTheme.colors.surface
-    val dominantColorState = rememberDominantColorState(
-        defaultColor = MaterialTheme.colors.surface
-    ) { color ->
-        // We want a color which has sufficient contrast against the surface color
-        color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
-    }
-    DynamicThemePrimaryColorsFromImage(dominantColorState) {
-        // Update the dominantColorState with colors coming from the podcast image URL
-        LaunchedEffect(podcastImageUrl) {
-            if (podcastImageUrl.isNotEmpty()) {
-                dominantColorState.updateColorsFromImageUrl(podcastImageUrl)
-            } else {
-                dominantColorState.reset()
-            }
-        }
-        content()
     }
 }
 
