@@ -40,10 +40,10 @@ abstract class EpisodesDao : BaseDao<Episode> {
         """
         SELECT episodes.* FROM episodes
         INNER JOIN podcasts ON episodes.podcast_uri = podcasts.uri
-        WHERE episodes.uri = :uri
+        WHERE episodes.uri = :episodeUri
         """
     )
-    abstract fun episodeAndPodcast(uri: String): Flow<EpisodeToPodcast>
+    abstract fun episodeAndPodcast(episodeUri: String): Flow<EpisodeToPodcast>
 
     @Query(
         """
