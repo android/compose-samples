@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.designsystem.theme.Keyline1
@@ -49,6 +50,7 @@ fun LazyListScope.discoverItems(
     navigateToPlayer: (String) -> Unit,
     onCategorySelected: (Category) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit,
 ) {
     if (filterableCategoriesModel.isEmpty) {
         // TODO: empty state
@@ -71,7 +73,8 @@ fun LazyListScope.discoverItems(
         topPodcasts = podcastCategoryFilterResult.topPodcasts,
         episodes = podcastCategoryFilterResult.episodes,
         navigateToPlayer = navigateToPlayer,
-        onTogglePodcastFollowed = onTogglePodcastFollowed
+        onTogglePodcastFollowed = onTogglePodcastFollowed,
+        onQueuePodcast = onQueuePodcast,
     )
 }
 

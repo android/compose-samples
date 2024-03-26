@@ -31,6 +31,7 @@ import com.example.jetcaster.core.data.repository.LocalCategoryStore
 import com.example.jetcaster.core.data.repository.LocalEpisodeStore
 import com.example.jetcaster.core.data.repository.LocalPodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.player.MockEpisodePlayer
 import com.rometools.rome.io.SyndFeedInput
 import java.io.File
 import kotlinx.coroutines.CoroutineDispatcher
@@ -54,6 +55,10 @@ object Graph {
         get() = database.transactionRunnerDao()
 
     private val syndFeedInput by lazy { SyndFeedInput() }
+
+    val episodePlayer by lazy {
+        MockEpisodePlayer(mainDispatcher)
+    }
 
     val podcastRepository by lazy {
         PodcastsRepository(

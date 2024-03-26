@@ -37,11 +37,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -55,6 +53,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
@@ -65,6 +66,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -120,6 +122,7 @@ fun Home(
             navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
             onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
+            onQueuePodcast = viewModel::onQueuePodcast,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -184,7 +187,8 @@ fun Home(
     onCategorySelected: (Category) -> Unit,
     navigateToPlayer: (String) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
-    onLibraryPodcastSelected: (Podcast?) -> Unit
+    onLibraryPodcastSelected: (Podcast?) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit,
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = featuredPodcasts) {
@@ -193,39 +197,25 @@ fun Home(
         }
     }
 
-    Column(
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    Scaffold(
         modifier = modifier.windowInsetsPadding(
             WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-        )
-    ) {
-        // We dynamically theme this sub-section of the layout to match the selected
-        // 'top podcast'
-
-        val surfaceColor = MaterialTheme.colorScheme.surface
-        val appBarColor = surfaceColor.copy(alpha = 0.87f)
-
-        val scrimColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
-
-        // Top Bar
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = scrimColor)
-        ) {
-            // Draw a scrim over the status bar which matches the app bar
-            Spacer(
-                Modifier
-                    .background(appBarColor)
-                    .fillMaxWidth()
-                    .windowInsetsTopHeight(WindowInsets.statusBars)
-            )
+        ),
+        topBar = {
             HomeAppBar(
-                backgroundColor = appBarColor,
+                backgroundColor = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.fillMaxWidth()
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
-
+    ) { contentPadding ->
         // Main Content
+        val scrimColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+        val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
         HomeContent(
             featuredPodcasts = featuredPodcasts,
             isRefreshing = isRefreshing,
@@ -235,12 +225,19 @@ fun Home(
             podcastCategoryFilterResult = podcastCategoryFilterResult,
             libraryEpisodes = libraryEpisodes,
             scrimColor = scrimColor,
+            modifier = Modifier.padding(contentPadding),
             onPodcastUnfollowed = onPodcastUnfollowed,
             onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
             navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
-            onLibraryPodcastSelected = onLibraryPodcastSelected
+            onLibraryPodcastSelected = onLibraryPodcastSelected,
+            onQueuePodcast = {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(snackBarText)
+                }
+                onQueuePodcast(it)
+            }
         )
     }
 }
@@ -262,7 +259,8 @@ private fun HomeContent(
     onCategorySelected: (Category) -> Unit,
     navigateToPlayer: (String) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
-    onLibraryPodcastSelected: (Podcast?) -> Unit
+    onLibraryPodcastSelected: (Podcast?) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit,
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
     LaunchedEffect(pagerState, featuredPodcasts) {
@@ -308,7 +306,8 @@ private fun HomeContent(
             HomeCategory.Library -> {
                 libraryItems(
                     episodes = libraryEpisodes,
-                    navigateToPlayer = navigateToPlayer
+                    navigateToPlayer = navigateToPlayer,
+                    onQueuePodcast = onQueuePodcast
                 )
             }
 
@@ -318,7 +317,8 @@ private fun HomeContent(
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
-                    onTogglePodcastFollowed = onTogglePodcastFollowed
+                    onTogglePodcastFollowed = onTogglePodcastFollowed,
+                    onQueuePodcast = onQueuePodcast
                 )
             }
         }
@@ -529,7 +529,8 @@ fun PreviewHomeContent() {
             navigateToPlayer = {},
             onHomeCategorySelected = {},
             onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {}
+            onLibraryPodcastSelected = {},
+            onQueuePodcast = {}
         )
     }
 }

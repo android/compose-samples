@@ -31,7 +31,8 @@ import com.example.jetcaster.ui.home.category.EpisodeListItem
 
 fun LazyListScope.libraryItems(
     episodes: List<EpisodeToPodcast>,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (String) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit
 ) {
     if (episodes.isEmpty()) {
         // TODO: Empty state
@@ -57,6 +58,7 @@ fun LazyListScope.libraryItems(
             episode = item.episode,
             podcast = item.podcast,
             onClick = navigateToPlayer,
+            onQueuePodcast = onQueuePodcast,
             modifier = Modifier.fillParentMaxWidth(),
             showDivider = index != 0
         )

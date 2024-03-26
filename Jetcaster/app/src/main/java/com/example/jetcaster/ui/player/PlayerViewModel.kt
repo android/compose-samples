@@ -27,28 +27,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.jetcaster.core.data.di.Graph
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.player.EpisodePlayerState
 import java.time.Duration
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 data class PlayerUiState(
-    val title: String = "",
-    val subTitle: String = "",
-    val duration: Duration? = null,
-    val podcastName: String = "",
-    val author: String = "",
-    val summary: String = "",
-    val podcastImageUrl: String = ""
+    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
 )
 
 /**
  * ViewModel that handles the business logic and screen state of the Player screen
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModel(
-    episodeStore: EpisodeStore,
-    podcastStore: PodcastStore,
+    episodeStore: EpisodeStore = Graph.episodeStore,
+    podcastStore: PodcastStore = Graph.podcastStore,
+    private val episodePlayer: EpisodePlayer = Graph.episodePlayer,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -61,25 +62,54 @@ class PlayerViewModel(
 
     init {
         viewModelScope.launch {
-            val episode = episodeStore.episodeWithUri(episodeUri).first()
-            val podcast = podcastStore.podcastWithUri(episode.podcastUri).first()
-            uiState = PlayerUiState(
-                title = episode.title,
-                duration = episode.duration,
-                podcastName = podcast.title,
-                summary = episode.summary ?: "",
-                podcastImageUrl = podcast.imageUrl ?: ""
-            )
+            episodeStore.episodeAndPodcastWithUri(episodeUri).flatMapConcat {
+                episodePlayer.currentEpisode = it.toPlayerEpisode()
+                episodePlayer.playerState
+            }.map {
+                PlayerUiState(episodePlayerState = it)
+            }.collect {
+                uiState = it
+            }
         }
     }
 
+    fun onPlay() {
+        episodePlayer.play()
+    }
+
+    fun onPause() {
+        episodePlayer.pause()
+    }
+
+    fun onStop() {
+        episodePlayer.stop()
+    }
+
+    fun onPrevious() {
+        episodePlayer.previous()
+    }
+
+    fun onNext() {
+        episodePlayer.next()
+    }
+
+    fun onAdvanceBy(duration: Duration) {
+        episodePlayer.advanceBy(duration)
+    }
+
+    fun onRewindBy(duration: Duration) {
+        episodePlayer.rewindBy(duration)
+    }
+
     /**
-     * Factory for PlayerViewModel that takes EpisodeStore and PodcastStore as a dependency
+     * Factory for PlayerViewModel that takes EpisodeStore, PodcastStore and EpisodePlayer as a
+     * dependency
      */
     companion object {
         fun provideFactory(
             episodeStore: EpisodeStore = Graph.episodeStore,
             podcastStore: PodcastStore = Graph.podcastStore,
+            episodePlayer: EpisodePlayer = Graph.episodePlayer,
             owner: SavedStateRegistryOwner,
             defaultArgs: Bundle? = null,
         ): AbstractSavedStateViewModelFactory =
@@ -90,7 +120,7 @@ class PlayerViewModel(
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    return PlayerViewModel(episodeStore, podcastStore, handle) as T
+                    return PlayerViewModel(episodeStore, podcastStore, episodePlayer, handle) as T
                 }
             }
     }
