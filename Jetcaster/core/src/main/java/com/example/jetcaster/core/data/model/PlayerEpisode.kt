@@ -31,7 +31,7 @@ data class PlayerEpisode(
     val summary: String = "",
     val podcastImageUrl: String = "",
 ) {
-    constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo): this(
+    constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo) : this(
         title = episodeInfo.title,
         subTitle = episodeInfo.subTitle,
         duration = episodeInfo.duration,

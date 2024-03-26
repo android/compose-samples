@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.Flow
 interface PodcastStore {
     /**
      * Return a flow containing the [Podcast] with the given [uri].
-    */
+     */
     fun podcastWithUri(uri: String): Flow<Podcast>
 
     /**
