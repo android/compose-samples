@@ -19,6 +19,7 @@ package com.example.jetcaster.tv.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -111,7 +112,7 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
                     Text(text = "Settings")
                 }
             }
-        }
+        },
     ) {
         Route(jetcasterAppState = jetcasterAppState)
     }
@@ -157,19 +158,26 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
     NavHost(navController = jetcasterAppState.navHostController, Screen.Discover.route) {
         composable(Screen.Discover.route) {
             DiscoverScreen(
-                modifier = Modifier.padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                    .fillMaxSize()
             )
         }
 
         composable(Screen.Library.route) {
             LibraryScreen(
-                modifier = Modifier.padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                navigateToDiscover = jetcasterAppState::navigateToDiscover,
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                    .fillMaxSize()
             )
         }
 
         composable(Screen.Search.route) {
             SearchScreen(
-                modifier = Modifier.padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                    .fillMaxSize()
             )
         }
 

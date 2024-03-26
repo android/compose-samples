@@ -18,6 +18,8 @@
     <string name="app_name">JetCaster</string>
     <string name="message_not_available_feature">This feature is not available yet.</string>
     <string name="message_loading">Loading</string>
+    <string name="display_no_subscribed_podcast">Let\'s discover the podcasts!</string>
+    <string name="message_no_subscribed_podcast">You subscribe no podcast yet. Let\'s discover the podcasts and subscribe them!</string>
     <string name="section_podcast">Podcast</string>
     <string name="section_latest_episodes">Latest Episodes</string>
     <string name="label_subscribe">Subscribe</string>
@@ -32,6 +34,7 @@
     <string name="label_podcast">Podcasts</string>
     <string name="label_episode">Episodes</string>
     <string name="label_latest_episode">Latest Episodes</string>
+    <string name="label_navigate_to_discover">Discover the podcasts</string>
 
     <string name="updated_longer">Updated a while ago</string>
     <plurals name="updated_weeks_ago">

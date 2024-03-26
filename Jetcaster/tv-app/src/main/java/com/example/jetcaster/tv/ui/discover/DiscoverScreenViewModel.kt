@@ -20,8 +20,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.CategoryStore
+import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.tv.model.CategoryList
 import com.example.jetcaster.tv.model.EpisodeList
@@ -39,6 +41,7 @@ import kotlinx.coroutines.launch
 class DiscoverScreenViewModel(
     private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
     private val categoryStore: CategoryStore = Graph.categoryStore,
+    private val podcastStore: PodcastStore = Graph.podcastStore,
 ) : ViewModel() {
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)
@@ -100,6 +103,14 @@ class DiscoverScreenViewModel(
 
     fun selectCategory(category: Category) {
         _selectedCategory.value = category
+    }
+
+    fun subscribe(podcastWithExtraInfo: PodcastWithExtraInfo) {
+        if (!podcastWithExtraInfo.isFollowed) {
+            viewModelScope.launch {
+                podcastStore.togglePodcastFollowed(podcastWithExtraInfo.podcast.uri)
+            }
+        }
     }
 
     private fun refresh() {
