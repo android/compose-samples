@@ -27,8 +27,8 @@ import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -166,8 +166,8 @@ class HomeViewModel(
         selectedLibraryPodcast.value = podcast
     }
 
-    fun onQueuePodcast(episodeToPodcast: EpisodeToPodcast) {
-        episodePlayer.addToQueue(episodeToPodcast.toPlayerEpisode())
+    fun onQueueEpisode(episode: PlayerEpisode) {
+        episodePlayer.addToQueue(episode)
     }
 }
 

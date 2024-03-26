@@ -26,13 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.designsystem.theme.Keyline1
-import com.example.jetcaster.ui.home.category.EpisodeListItem
+import com.example.jetcaster.ui.shared.EpisodeListItem
 
 fun LazyListScope.libraryItems(
     episodes: List<EpisodeToPodcast>,
     navigateToPlayer: (String) -> Unit,
-    onQueuePodcast: (EpisodeToPodcast) -> Unit
+    navigateToPodcastDetails: (String) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit
 ) {
     if (episodes.isEmpty()) {
         // TODO: Empty state
@@ -57,8 +59,8 @@ fun LazyListScope.libraryItems(
         EpisodeListItem(
             episode = item.episode,
             podcast = item.podcast,
-            onClick = navigateToPlayer,
-            onQueuePodcast = onQueuePodcast,
+            onClick = navigateToPodcastDetails,
+            onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth(),
             showDivider = index != 0
         )
