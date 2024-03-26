@@ -98,4 +98,3 @@ limitations under the License.
 ```
 
 [compose]: https://developer.android.com/jetpack/compose
-[coil-accompanist]: https://google.github.io/accompanist/coil/
