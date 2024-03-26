@@ -160,6 +160,7 @@ horologist-compose-material = { module = "com.google.android.horologist:horologi
 horologist-media-ui = { module = "com.google.android.horologist:horologist-media-ui", version.ref = "horologist" }
 horologist-audio-ui = { module = "com.google.android.horologist:horologist-audio-ui", version.ref = "horologist" }
 horologist-media-data = { module = "com.google.android.horologist:horologist-media-data", version.ref = "horologist" }
+horologist-images-coil = { module = "com.google.android.horologist:horologist-images-coil", version.ref = "horologist" }
 horologist-roboscreenshots = { module = "com.google.android.horologist:horologist-roboscreenshots", version.ref = "horologist" }
 roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
 roborazzi-compose = { group = "io.github.takahirom.roborazzi", name = "roborazzi-compose", version.ref = "roborazzi" }

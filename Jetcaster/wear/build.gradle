@@ -87,6 +87,8 @@ dependencies {
     // https://issuetracker.google.com/issues/new?component=1077552&template=1598429&pli=1
     implementation libs.wear.compose.material
 
+    implementation(libs.kotlinx.collections.immutable)
+
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
     implementation libs.wear.compose.foundation
     implementation(libs.androidx.material.icons.core)
@@ -101,6 +103,7 @@ dependencies {
     implementation libs.horologist.media.ui
     implementation libs.horologist.audio.ui
     implementation libs.horologist.media.data
+    implementation libs.horologist.images.coil
 
     // Preview Tooling
     implementation libs.compose.ui.tooling.preview

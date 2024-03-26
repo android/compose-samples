@@ -25,35 +25,51 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
+import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
 import com.example.jetcaster.theme.WearAppTheme
+import com.example.jetcaster.ui.JetcasterNavController.navigateToLatestEpisode
+import com.example.jetcaster.ui.JetcasterNavController.navigateToUpNext
+import com.example.jetcaster.ui.JetcasterNavController.navigateToYourPodcast
+import com.example.jetcaster.ui.LatestEpisodes
+import com.example.jetcaster.ui.home.HomeScreen
+import com.example.jetcaster.ui.home.HomeViewModel
+import com.example.jetcaster.ui.library.LatestEpisodeViewModel
+import com.example.jetcaster.ui.library.LatestEpisodes
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.player.PlayerViewModel
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.audio.ui.VolumeViewModel
+import com.google.android.horologist.compose.layout.ScreenScaffold
+import com.google.android.horologist.compose.layout.rememberColumnState
 import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToVolume
 import com.google.android.horologist.media.ui.navigation.MediaPlayerScaffold
 import com.google.android.horologist.media.ui.snackbar.SnackbarManager
 import com.google.android.horologist.media.ui.snackbar.SnackbarViewModel
 
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
+            navController = rememberSwipeDismissableNavController()
             installSplashScreen()
-            WearApp()
+            WearApp(navController)
         }
     }
 }
 
+@OptIn(ExperimentalHorologistApi::class)
 @Composable
-fun WearApp() {
-    val navController = rememberSwipeDismissableNavController()
+fun WearApp(navController: NavHostController,) {
 
     val navHostState = rememberSwipeDismissableNavHostState()
     val volumeViewModel: VolumeViewModel = viewModel(factory = VolumeViewModel.Factory)
@@ -78,16 +94,15 @@ fun WearApp() {
                 )
             },
             libraryScreen = {
-//                val columnState = rememberColumnState()
-
-//                ScreenScaffold(scrollState = columnState) {
-//                        JetcasterBrowseScreen(
-//                            jetcasterBrowseScreenViewModel = JetcasterBrowseScreenViewModel(),
-//                            onPlaylistsClick = { navController.navigateToCollections() },
-//                            onSettingsClick = { navController.navigateToSettings() },
-//                            columnState = columnState,
-//                        )
-//                }
+                ScreenScaffold() {
+                    HomeScreen(
+                        homeViewModel = HomeViewModel(),
+                        onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
+                        onYourPodcastClick = { navController.navigateToYourPodcast() },
+                        onUpNextClick = { navController.navigateToUpNext() },
+                        onErrorDialogCancelClick = { navController.popBackStack() }
+                    )
+                }
             },
             categoryEntityScreen = { _, _ -> },
             mediaEntityScreen = {},
@@ -97,10 +112,28 @@ fun WearApp() {
             navHostState = navHostState,
             snackbarViewModel = snackbarViewModel,
             volumeViewModel = volumeViewModel,
-            timeText = {},
+            timeText = {
+                TimeText()
+            },
             deepLinkPrefix = "",
             navController = navController,
-            additionalNavRoutes = {},
+            additionalNavRoutes = {
+                composable(
+                    route = LatestEpisodes.navRoute,
+                ) {
+                    val columnState = rememberColumnState()
+
+                    ScreenScaffold(scrollState = columnState) {
+                        LatestEpisodes(
+                            columnState = columnState,
+                            playlistName = stringResource(id = R.string.latest_episodes),
+                            latestEpisodeViewModel = LatestEpisodeViewModel(),
+                            onShuffleButtonClick = {},
+                            onPlayButtonClick = {}
+                        )
+                    }
+                }
+            },
 
         )
     }
