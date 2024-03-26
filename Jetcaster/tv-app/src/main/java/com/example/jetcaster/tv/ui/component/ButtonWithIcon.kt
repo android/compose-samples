@@ -34,8 +34,8 @@ internal fun ButtonWithIcon(
     label: String,
     icon: ImageVector,
     onClick: () -> Unit,
-    scale: ButtonScale = ButtonDefaults.scale(),
     modifier: Modifier = Modifier,
+    scale: ButtonScale = ButtonDefaults.scale(),
 ) {
     Button(onClick = onClick, modifier = modifier, scale = scale) {
         Icon(

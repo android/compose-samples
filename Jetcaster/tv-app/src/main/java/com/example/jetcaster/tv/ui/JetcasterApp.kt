@@ -28,12 +28,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,77 +52,22 @@ import com.example.jetcaster.tv.ui.settings.SettingsScreen
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppState()) {
-    val discover = remember { FocusRequester() }
-
-    NavigationDrawer(
-        drawerContent = {
-            Column(
-                modifier = Modifier
-                    .padding(
-                        JetcasterAppDefaults.overScanMargin
-                            .copy(
-                                start = 0.dp,
-                                end = 0.dp
-                            )
-                            .intoPaddingValues()
-                    )
-                    .focusRestorer { discover }
-            ) {
-
-                NavigationDrawerItem(
-                    selected = false,
-                    onClick = jetcasterAppState::navigateToProfile,
-                    leadingContent = { Icon(Icons.Default.Person, contentDescription = null) },
-                ) {
-                    Column {
-                        Text(text = "Name")
-                        Text(text = "Switch Account", style = MaterialTheme.typography.labelSmall)
-                    }
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                NavigationDrawerItem(
-                    selected = false,
-                    onClick = jetcasterAppState::navigateToSearch,
-                    leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
-                ) {
-                    Text(text = "Search")
-                }
-                NavigationDrawerItem(
-                    selected = false,
-                    onClick = jetcasterAppState::navigateToDiscover,
-                    leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
-                    modifier = Modifier.focusRequester(discover)
-                ) {
-                    Text(text = "Discover")
-                }
-                NavigationDrawerItem(
-                    selected = false,
-                    onClick = jetcasterAppState::navigateToLibrary,
-                    leadingContent = { Icon(Icons.Default.VideoLibrary, contentDescription = null) }
-                ) {
-                    Text(text = "Library")
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                NavigationDrawerItem(
-                    selected = false,
-                    onClick = jetcasterAppState::navigateToSettings,
-                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
-                ) {
-                    Text(text = "Settings")
-                }
-            }
-        },
-    ) {
-        Route(jetcasterAppState = jetcasterAppState)
-    }
+    Route(jetcasterAppState = jetcasterAppState)
 }
 
 internal data object JetcasterAppDefaults {
-    val overScanMargin = OverScanMargin()
+    val overScanMargin = OverScanMarginSettings()
     val gapSettings = GapSettings()
     val cardWidth = CardWidth()
     val padding = PaddingSettings()
 }
+
+data class OverScanMarginSettings(
+    val default: OverScanMargin = OverScanMargin(),
+    val podcastDetails: OverScanMargin = OverScanMargin(top = 40.dp, bottom = 40.dp),
+    val drawer: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
+    val catalog: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp)
+)
 
 data class OverScanMargin(
     val top: Dp = 24.dp,
@@ -157,35 +98,100 @@ data class GapSettings(
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
+private fun WithGlobalNavigation(
+    jetcasterAppState: JetcasterAppState,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    NavigationDrawer(
+        drawerContent = {
+            Column(
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
+            ) {
+
+                NavigationDrawerItem(
+                    selected = false,
+                    onClick = jetcasterAppState::navigateToProfile,
+                    leadingContent = { Icon(Icons.Default.Person, contentDescription = null) },
+                ) {
+                    Column {
+                        Text(text = "Name")
+                        Text(text = "Switch Account", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                NavigationDrawerItem(
+                    selected = false,
+                    onClick = jetcasterAppState::navigateToSearch,
+                    leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
+                ) {
+                    Text(text = "Search")
+                }
+                NavigationDrawerItem(
+                    selected = false,
+                    onClick = jetcasterAppState::navigateToDiscover,
+                    leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
+                ) {
+                    Text(text = "Discover")
+                }
+                NavigationDrawerItem(
+                    selected = false,
+                    onClick = jetcasterAppState::navigateToLibrary,
+                    leadingContent = { Icon(Icons.Default.VideoLibrary, contentDescription = null) }
+                ) {
+                    Text(text = "Library")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                NavigationDrawerItem(
+                    selected = false,
+                    onClick = jetcasterAppState::navigateToSettings,
+                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
+                ) {
+                    Text(text = "Settings")
+                }
+            }
+        },
+        content = content,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
 private fun Route(jetcasterAppState: JetcasterAppState) {
     NavHost(navController = jetcasterAppState.navHostController, Screen.Discover.route) {
         composable(Screen.Discover.route) {
-            DiscoverScreen(
-                showPodcastDetails = {
-                    jetcasterAppState.showPodcastDetails(it.uri)
-                },
-                modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
-                    .fillMaxSize()
-            )
+            WithGlobalNavigation(jetcasterAppState = jetcasterAppState) {
+                DiscoverScreen(
+                    showPodcastDetails = {
+                        jetcasterAppState.showPodcastDetails(it.uri)
+                    },
+                    modifier = Modifier
+                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
+                        .fillMaxSize()
+                )
+            }
         }
 
         composable(Screen.Library.route) {
-            LibraryScreen(
-                navigateToDiscover = jetcasterAppState::navigateToDiscover,
-                showPodcastDetails = {
-                    jetcasterAppState.showPodcastDetails(it.podcast.uri)
-                },
-                modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
-                    .fillMaxSize()
-            )
+            WithGlobalNavigation(jetcasterAppState = jetcasterAppState) {
+                LibraryScreen(
+                    navigateToDiscover = jetcasterAppState::navigateToDiscover,
+                    showPodcastDetails = {
+                        jetcasterAppState.showPodcastDetails(it.podcast.uri)
+                    },
+                    modifier = Modifier
+                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
+                        .fillMaxSize()
+                )
+            }
         }
 
         composable(Screen.Search.route) {
             SearchScreen(
                 modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
                     .fillMaxSize()
             )
         }
@@ -199,7 +205,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
                 playEpisode = {},
                 modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                    .padding(JetcasterAppDefaults.overScanMargin.podcastDetails.intoPaddingValues())
                     .fillMaxSize(),
             )
         }
@@ -210,13 +216,15 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
 
         composable(Screen.Profile.route) {
             ProfileScreen(
-                modifier = Modifier.padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
             )
         }
 
         composable(Screen.Settings.route) {
             SettingsScreen(
-                modifier = Modifier.padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
             )
         }
     }

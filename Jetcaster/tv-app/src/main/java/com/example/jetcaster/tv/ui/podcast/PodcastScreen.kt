@@ -16,12 +16,13 @@
 
 package com.example.jetcaster.tv.ui.podcast
 
-import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -37,9 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -74,7 +80,7 @@ fun PodcastScreen(
     when (val s = uiState) {
         PodcastScreenUiState.Loading -> Loading(modifier = modifier)
         PodcastScreenUiState.Error -> ErrorState(backToHome = backToHomeScreen, modifier = modifier)
-        is PodcastScreenUiState.Ready -> PodcastDetails(
+        is PodcastScreenUiState.Ready -> PodcastDetailsWithBackground(
             podcast = s.podcast,
             episodeList = s.episodeList,
             isSubscribed = s.isSubscribed,
@@ -82,6 +88,32 @@ fun PodcastScreen(
             unsubscribe = podcastScreenViewModel::unsubscribe,
             playEpisode = playEpisode,
             modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun PodcastDetailsWithBackground(
+    podcast: Podcast,
+    episodeList: EpisodeList,
+    isSubscribed: Boolean,
+    subscribe: (Podcast, Boolean) -> Unit,
+    unsubscribe: (Podcast, Boolean) -> Unit,
+    playEpisode: (Episode) -> Unit,
+    modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = remember { FocusRequester() }
+) {
+    Box {
+        Background(podcast = podcast)
+        PodcastDetails(
+            podcast = podcast,
+            episodeList = episodeList,
+            isSubscribed = isSubscribed,
+            subscribe = subscribe,
+            unsubscribe = unsubscribe,
+            playEpisode = playEpisode,
+            focusRequester = focusRequester,
+            modifier = modifier
         )
     }
 }
@@ -99,7 +131,7 @@ private fun PodcastDetails(
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
     Row(
-        modifier = modifier.focusGroup(),
+        modifier = modifier,
         horizontalArrangement =
         Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogSectionGap)
     ) {
@@ -123,6 +155,31 @@ private fun PodcastDetails(
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
+}
+
+@Composable
+private fun Background(
+    podcast: Podcast,
+    modifier: Modifier = Modifier,
+) {
+    AsyncImage(
+        model = podcast.imageUrl,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .fillMaxWidth()
+            .drawWithCache {
+                val overlay = Brush.radialGradient(
+                    listOf(Color.Black, Color.Transparent),
+                    center = Offset(0f, size.height),
+                    radius = size.width * 1.5f
+                )
+                onDrawWithContent {
+                    drawContent()
+                    drawRect(overlay, blendMode = BlendMode.Multiply)
+                }
+            }
+    )
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)

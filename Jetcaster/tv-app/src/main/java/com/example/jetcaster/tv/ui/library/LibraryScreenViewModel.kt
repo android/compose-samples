@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 class LibraryScreenViewModel(
     private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
     private val episodeStore: EpisodeStore = Graph.episodeStore,
-    private val podcastStore: PodcastStore = Graph.podcastStore,
+    podcastStore: PodcastStore = Graph.podcastStore,
 ) : ViewModel() {
 
     private val followingPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode().map {

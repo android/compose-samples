@@ -60,9 +60,7 @@ internal fun Catalog(
 ) {
     TvLazyColumn(
         modifier = modifier,
-        contentPadding = JetcasterAppDefaults.overScanMargin
-            .copy(start = 0.dp, end = 0.dp)
-            .intoPaddingValues(),
+        contentPadding = JetcasterAppDefaults.overScanMargin.catalog.intoPaddingValues(),
         verticalArrangement =
         Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogSectionGap)
     ) {
