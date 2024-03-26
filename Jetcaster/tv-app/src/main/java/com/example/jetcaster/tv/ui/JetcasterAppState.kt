@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -45,7 +46,8 @@ class JetcasterAppState(
     }
 
     fun showPodcastDetails(podcastUri: String) {
-        val screen = Screen.Show(podcastUri)
+        val encodedUrL = Uri.encode(podcastUri)
+        val screen = Screen.Podcast(encodedUrL)
         navHostController.navigate(screen.route)
     }
 
@@ -71,40 +73,40 @@ sealed interface Screen {
     val route: String
 
     data object Discover : Screen {
-        override val route = "/"
+        override val route = "/discover"
     }
 
     data object Library : Screen {
-        override val route = "/library"
+        override val route = "library"
     }
 
     data object Search : Screen {
-        override val route = "/search"
+        override val route = "search"
     }
 
     data object Profile : Screen {
-        override val route = "/profile"
+        override val route = "profile"
     }
 
     data object Settings : Screen {
-        override val route: String = "/settings"
+        override val route: String = "settings"
     }
 
-    data class Show(private val podcastUri: String) : Screen {
-        override val route = "$root/$podcastUri"
+    data class Podcast(private val podcastUri: String) : Screen {
+        override val route = "$ROOT/$podcastUri"
 
         companion object : Screen {
-            private const val root = "/show"
-            override val route = "$root/{showUri}"
+            private const val ROOT = "podcast"
+            override val route = "$ROOT/{podcastUri}"
         }
     }
 
     data class Player(private val episodeUri: String) : Screen {
-        override val route = "$root/$episodeUri"
+        override val route = "$ROOT/$episodeUri"
 
         companion object : Screen {
-            private const val root = "/player"
-            override val route = "$root/{episodeUri}"
+            private const val ROOT = "player"
+            override val route = "$ROOT/{episodeUri}"
         }
     }
 }

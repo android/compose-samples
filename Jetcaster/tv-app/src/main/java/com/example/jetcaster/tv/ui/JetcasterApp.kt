@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -46,6 +47,8 @@ import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.Text
 import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.library.LibraryScreen
+import com.example.jetcaster.tv.ui.podcast.PodcastScreen
+import com.example.jetcaster.tv.ui.podcast.PodcastScreenViewModel
 import com.example.jetcaster.tv.ui.profile.ProfileScreen
 import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
@@ -158,6 +161,9 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
     NavHost(navController = jetcasterAppState.navHostController, Screen.Discover.route) {
         composable(Screen.Discover.route) {
             DiscoverScreen(
+                showPodcastDetails = {
+                    jetcasterAppState.showPodcastDetails(it.uri)
+                },
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
                     .fillMaxSize()
@@ -167,6 +173,9 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         composable(Screen.Library.route) {
             LibraryScreen(
                 navigateToDiscover = jetcasterAppState::navigateToDiscover,
+                showPodcastDetails = {
+                    jetcasterAppState.showPodcastDetails(it.podcast.uri)
+                },
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
                     .fillMaxSize()
@@ -181,8 +190,18 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
             )
         }
 
-        composable(Screen.Show.route) {
-            Text(text = "Show")
+        composable(Screen.Podcast.route) {
+            val podcastScreenViewModel: PodcastScreenViewModel = viewModel(
+                factory = PodcastScreenViewModel.factory
+            )
+            PodcastScreen(
+                podcastScreenViewModel = podcastScreenViewModel,
+                backToHomeScreen = jetcasterAppState::navigateToDiscover,
+                playEpisode = {},
+                modifier = Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.intoPaddingValues())
+                    .fillMaxSize(),
+            )
         }
 
         composable(Screen.Player.route) {

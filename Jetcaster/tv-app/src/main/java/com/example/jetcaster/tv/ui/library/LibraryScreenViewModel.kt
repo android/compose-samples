@@ -18,7 +18,6 @@ package com.example.jetcaster.tv.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
@@ -73,14 +72,6 @@ class LibraryScreenViewModel(
             SharingStarted.WhileSubscribed(5_000),
             LibraryScreenUiState.Loading
         )
-
-    fun unsubscribe(podcast: PodcastWithExtraInfo) {
-        if (podcast.isFollowed) {
-            viewModelScope.launch {
-                podcastStore.togglePodcastFollowed(podcast.podcast.uri)
-            }
-        }
-    }
 
     init {
         viewModelScope.launch {

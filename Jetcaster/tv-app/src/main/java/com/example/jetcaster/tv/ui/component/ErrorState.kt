@@ -14,79 +14,49 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.tv.ui.library
+package com.example.jetcaster.tv.ui.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.ui.JetcasterAppDefaults
-import com.example.jetcaster.tv.ui.component.Catalog
-import com.example.jetcaster.tv.ui.component.Loading
-
-@Composable
-fun LibraryScreen(
-    modifier: Modifier = Modifier,
-    navigateToDiscover: () -> Unit,
-    showPodcastDetails: (PodcastWithExtraInfo) -> Unit,
-    libraryScreenViewModel: LibraryScreenViewModel = viewModel()
-) {
-    val uiState by libraryScreenViewModel.uiState.collectAsState()
-    when (val s = uiState) {
-        LibraryScreenUiState.Loading -> Loading(modifier = modifier)
-        LibraryScreenUiState.NoSubscribedPodcast -> {
-            NavigateToDiscover(onNavigationRequested = navigateToDiscover, modifier = modifier)
-        }
-
-        is LibraryScreenUiState.Ready -> Catalog(
-            podcastList = s.subscribedPodcastList,
-            latestEpisodeList = s.latestEpisodeList,
-            onPodcastSelected = showPodcastDetails,
-            modifier = modifier
-        )
-    }
-}
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun NavigateToDiscover(
-    onNavigationRequested: () -> Unit,
+fun ErrorState(
+    backToHome: () -> Unit,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
-    val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Column {
             Text(
-                text = stringResource(id = R.string.display_no_subscribed_podcast),
+                text = stringResource(R.string.display_error_state),
                 style = MaterialTheme.typography.displayMedium
             )
-            Text(text = stringResource(id = R.string.message_no_subscribed_podcast))
             Button(
-                onClick = onNavigationRequested,
-                modifier = Modifier
+                onClick = backToHome,
+                modifier
                     .padding(top = JetcasterAppDefaults.gapSettings.catalogItemGap)
                     .focusRequester(focusRequester)
             ) {
-                Text(text = stringResource(id = R.string.label_navigate_to_discover))
+                Text(text = stringResource(R.string.label_back_to_home))
             }
         }
     }

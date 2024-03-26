@@ -49,8 +49,6 @@ import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
 import com.example.jetcaster.tv.ui.JetcasterAppDefaults
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable
 internal fun Catalog(
@@ -267,18 +265,7 @@ private fun EpisodeMetaData(episode: EpisodeToPodcast, modifier: Modifier = Modi
             Spacer(
                 modifier = Modifier.height(JetcasterAppDefaults.gapSettings.catalogItemGap * 0.8f)
             )
-            Text(
-                text = stringResource(
-                    R.string.episode_date_duration,
-                    MediumDateFormatter.format(publishedDate),
-                    duration.toMinutes().toInt()
-                ),
-                style = MaterialTheme.typography.bodySmall
-            )
+            EpisodeDataAndDuration(offsetDateTime = publishedDate, duration = duration)
         }
     }
-}
-
-private val MediumDateFormatter by lazy {
-    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 }

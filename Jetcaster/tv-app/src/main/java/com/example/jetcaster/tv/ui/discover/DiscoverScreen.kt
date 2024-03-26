@@ -33,6 +33,7 @@ import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.tv.model.CategoryList
 import com.example.jetcaster.tv.model.EpisodeList
@@ -43,6 +44,7 @@ import com.example.jetcaster.tv.ui.component.Loading
 
 @Composable
 fun DiscoverScreen(
+    showPodcastDetails: (Podcast) -> Unit,
     modifier: Modifier = Modifier,
     discoverScreenViewModel: DiscoverScreenViewModel = viewModel()
 ) {
@@ -63,7 +65,7 @@ fun DiscoverScreen(
                 podcastList = s.podcastList,
                 selectedCategory = s.selectedCategory,
                 latestEpisodeList = s.latestEpisodeList,
-                onPodcastSelected = discoverScreenViewModel::subscribe,
+                onPodcastSelected = { showPodcastDetails(it.podcast) },
                 onCategorySelected = discoverScreenViewModel::selectCategory,
                 modifier = Modifier
                     .fillMaxSize()
