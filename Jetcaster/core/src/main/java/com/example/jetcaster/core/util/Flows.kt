@@ -14,9 +14,47 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.util
+package com.example.jetcaster.core.util
 
 import kotlinx.coroutines.flow.Flow
+/**
+ * Combines 3 flows into a single flow by combining their latest values using the provided transform function.
+ *
+ * @param flow The first flow.
+ * @param flow2 The second flow.
+ * @param flow3 The third flow.
+ * @param transform The transform function to combine the latest values of the three flows.
+ * @return A flow that emits the results of the transform function applied to the latest values of the three flows.
+ */
+fun <T1, T2, T3, T4, T5, R> combine(
+    flow: Flow<T1>,
+    flow2: Flow<T2>,
+    flow3: Flow<T3>,
+    flow4: Flow<T4>,
+    flow5: Flow<T5>,
+    transform: suspend (T1, T2, T3, T4, T5) -> R
+): Flow<R> =
+    kotlinx.coroutines.flow.combine(flow, flow2, flow3, flow4, flow5) { args: Array<*> ->
+        transform(
+            args[0] as T1,
+            args[1] as T2,
+            args[2] as T3,
+            args[3] as T4,
+            args[4] as T5,
+        )
+    }
+fun <T1, T2, R> combine(
+    flow: Flow<T1>,
+    flow2: Flow<T2>,
+
+    transform: suspend (T1, T2) -> R
+): Flow<R> =
+    kotlinx.coroutines.flow.combine(flow, flow2) { args: Array<*> ->
+        transform(
+            args[0] as T1,
+            args[1] as T2,
+        )
+    }
 
 /**
  * Combines six flows into a single flow by combining their latest values using the provided transform function.
