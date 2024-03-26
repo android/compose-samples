@@ -19,6 +19,9 @@ package com.example.jetcaster.core.data.model
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import java.time.Duration
 
+/**
+ * Episode data with necessary information to be used within a player.
+ */
 data class PlayerEpisode(
     val title: String = "",
     val subTitle: String = "",
@@ -27,7 +30,17 @@ data class PlayerEpisode(
     val author: String = "",
     val summary: String = "",
     val podcastImageUrl: String = "",
-)
+) {
+    constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo): this(
+        title = episodeInfo.title,
+        subTitle = episodeInfo.subTitle,
+        duration = episodeInfo.duration,
+        podcastName = podcastInfo.title,
+        author = episodeInfo.author,
+        summary = episodeInfo.summary,
+        podcastImageUrl = podcastInfo.imageUrl,
+    )
+}
 
 fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
     PlayerEpisode(

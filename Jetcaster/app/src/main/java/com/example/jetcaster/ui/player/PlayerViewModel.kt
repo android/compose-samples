@@ -32,11 +32,12 @@ import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
-import java.time.Duration
+import com.example.jetcaster.ui.Screen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
@@ -55,7 +56,8 @@ class PlayerViewModel(
 
     // episodeUri should always be present in the PlayerViewModel.
     // If that's not the case, fail crashing the app!
-    private val episodeUri: String = Uri.decode(savedStateHandle.get<String>("episodeUri")!!)
+    private val episodeUri: String =
+        Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
 
     var uiState by mutableStateOf(PlayerUiState())
         private set

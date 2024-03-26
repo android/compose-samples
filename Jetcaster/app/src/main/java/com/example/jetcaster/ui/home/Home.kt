@@ -88,6 +88,7 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
@@ -95,15 +96,16 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.coroutines.launch
 
 @Composable
 fun Home(
     navigateToPlayer: (String) -> Unit,
+    navigateToPodcastDetails: (String) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
@@ -120,9 +122,10 @@ fun Home(
             onCategorySelected = viewModel::onCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
             navigateToPlayer = navigateToPlayer,
+            navigateToPodcastDetails = navigateToPodcastDetails,
             onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
             onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
-            onQueuePodcast = viewModel::onQueuePodcast,
+            onQueueEpisode = viewModel::onQueueEpisode,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -186,9 +189,10 @@ fun Home(
     onHomeCategorySelected: (HomeCategory) -> Unit,
     onCategorySelected: (Category) -> Unit,
     navigateToPlayer: (String) -> Unit,
+    navigateToPodcastDetails: (String) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
     onLibraryPodcastSelected: (Podcast?) -> Unit,
-    onQueuePodcast: (EpisodeToPodcast) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = featuredPodcasts) {
@@ -230,13 +234,14 @@ fun Home(
             onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
             navigateToPlayer = navigateToPlayer,
+            navigateToPodcastDetails = navigateToPodcastDetails,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
             onLibraryPodcastSelected = onLibraryPodcastSelected,
-            onQueuePodcast = {
+            onQueueEpisode = {
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(snackBarText)
                 }
-                onQueuePodcast(it)
+                onQueueEpisode(it)
             }
         )
     }
@@ -258,9 +263,10 @@ private fun HomeContent(
     onHomeCategorySelected: (HomeCategory) -> Unit,
     onCategorySelected: (Category) -> Unit,
     navigateToPlayer: (String) -> Unit,
+    navigateToPodcastDetails: (String) -> Unit,
     onTogglePodcastFollowed: (String) -> Unit,
     onLibraryPodcastSelected: (Podcast?) -> Unit,
-    onQueuePodcast: (EpisodeToPodcast) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
     LaunchedEffect(pagerState, featuredPodcasts) {
@@ -277,6 +283,7 @@ private fun HomeContent(
                     pagerState = pagerState,
                     items = featuredPodcasts,
                     onPodcastUnfollowed = onPodcastUnfollowed,
+                    navigateToPodcastDetails = navigateToPodcastDetails,
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalGradientScrim(
@@ -307,7 +314,8 @@ private fun HomeContent(
                 libraryItems(
                     episodes = libraryEpisodes,
                     navigateToPlayer = navigateToPlayer,
-                    onQueuePodcast = onQueuePodcast
+                    navigateToPodcastDetails = navigateToPodcastDetails,
+                    onQueueEpisode = onQueueEpisode
                 )
             }
 
@@ -316,9 +324,10 @@ private fun HomeContent(
                     filterableCategoriesModel = filterableCategoriesModel,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPlayer = navigateToPlayer,
+                    navigateToPodcastDetails = navigateToPodcastDetails,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueuePodcast = onQueuePodcast
+                    onQueueEpisode = onQueueEpisode
                 )
             }
         }
@@ -330,6 +339,7 @@ private fun FollowedPodcastItem(
     pagerState: PagerState,
     items: PersistentList<PodcastWithExtraInfo>,
     onPodcastUnfollowed: (String) -> Unit,
+    navigateToPodcastDetails: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -339,6 +349,7 @@ private fun FollowedPodcastItem(
             pagerState = pagerState,
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
+            navigateToPodcastDetails = navigateToPodcastDetails,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -404,10 +415,10 @@ private val FEATURED_PODCAST_IMAGE_HEIGHT_DP = 180.dp
 fun FollowedPodcasts(
     pagerState: PagerState,
     items: PersistentList<PodcastWithExtraInfo>,
-    modifier: Modifier = Modifier,
     onPodcastUnfollowed: (String) -> Unit,
+    navigateToPodcastDetails: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     // TODO: Using BoxWithConstraints is not quite performant since it requires 2 passes to compute
     // the content padding. This should be revisited once a carousel component is available.
     // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
@@ -433,9 +444,7 @@ fun FollowedPodcasts(
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(page)
-                        }
+                        navigateToPodcastDetails(podcast.uri)
                     }
             )
         }
@@ -527,10 +536,11 @@ fun PreviewHomeContent() {
             onCategorySelected = {},
             onPodcastUnfollowed = {},
             navigateToPlayer = {},
+            navigateToPodcastDetails = {},
             onHomeCategorySelected = {},
             onTogglePodcastFollowed = {},
             onLibraryPodcastSelected = {},
-            onQueuePodcast = {}
+            onQueueEpisode = {}
         )
     }
 }

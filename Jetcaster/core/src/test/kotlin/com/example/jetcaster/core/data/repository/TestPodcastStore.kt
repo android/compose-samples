@@ -33,6 +33,14 @@ class TestPodcastStore : PodcastStore {
             podcasts.first { it.uri == uri }
         }
 
+    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
+        podcastFlow.map { podcasts ->
+            val podcast = podcasts.first { it.uri == podcastUri }
+            PodcastWithExtraInfo().apply {
+                this.podcast = podcast
+            }
+        }
+
     override fun podcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> =
         podcastFlow.map { podcasts ->
             podcasts.map { p ->
@@ -57,10 +65,14 @@ class TestPodcastStore : PodcastStore {
 
     override suspend fun togglePodcastFollowed(podcastUri: String) {
         if (podcastUri in followedPodcasts) {
-            followedPodcasts.remove(podcastUri)
+            unfollowPodcast(podcastUri)
         } else {
-            followedPodcasts.add(podcastUri)
+            followPodcast(podcastUri)
         }
+    }
+
+    override suspend fun followPodcast(podcastUri: String) {
+        followedPodcasts.add(podcastUri)
     }
 
     override suspend fun unfollowPodcast(podcastUri: String) {

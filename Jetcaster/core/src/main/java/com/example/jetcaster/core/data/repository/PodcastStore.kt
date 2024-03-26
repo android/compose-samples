@@ -27,8 +27,13 @@ import kotlinx.coroutines.flow.Flow
 interface PodcastStore {
     /**
      * Return a flow containing the [Podcast] with the given [uri].
-     */
+    */
     fun podcastWithUri(uri: String): Flow<Podcast>
+
+    /**
+     * Return a flow containing the [PodcastWithExtraInfo] with the given [podcastUri].
+     */
+    fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo>
 
     /**
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
@@ -47,6 +52,8 @@ interface PodcastStore {
     ): Flow<List<PodcastWithExtraInfo>>
 
     suspend fun togglePodcastFollowed(podcastUri: String)
+
+    suspend fun followPodcast(podcastUri: String)
 
     suspend fun unfollowPodcast(podcastUri: String)
 
@@ -76,6 +83,12 @@ class LocalPodcastStore(
     }
 
     /**
+     * Return a flow containing the [PodcastWithExtraInfo] with the given [podcastUri].
+     */
+    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
+        podcastDao.podcastWithExtraInfo(podcastUri)
+
+    /**
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
      * publish date for each podcast.
      */
@@ -95,7 +108,7 @@ class LocalPodcastStore(
         return podcastDao.followedPodcastsSortedByLastEpisode(limit)
     }
 
-    private suspend fun followPodcast(podcastUri: String) {
+    override suspend fun followPodcast(podcastUri: String) {
         podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
     }
 
