@@ -112,7 +112,7 @@ fun ReplyEmailThreadItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Button(
                     onClick = { /*TODO*/ },
@@ -126,7 +126,6 @@ fun ReplyEmailThreadItem(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = { /*TODO*/ },
                     modifier = Modifier.weight(1f),

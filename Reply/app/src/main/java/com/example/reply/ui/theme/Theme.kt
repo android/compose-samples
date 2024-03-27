@@ -268,19 +268,25 @@ fun isContrastAvailable(): Boolean {
 @Composable
 fun selectSchemeForContrast(isDark: Boolean,): ColorScheme {
     val context = LocalContext.current
-    val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-    val contrastLevel = if (!isContrastAvailable()) 0.0 else uiModeManager.contrast
+    var colorScheme = if (isDark) darkScheme else lightScheme
+    if (isContrastAvailable()) {
+        val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager;
+        val contrastLevel = uiModeManager.contrast
 
-    val colorScheme = when (contrastLevel as Float) {
-        in 0.0f..0.33f -> if (isDark)
-            darkScheme else lightScheme
-        in 0.34f..0.66f -> if (isDark)
-            mediumContrastDarkColorScheme else mediumContrastLightColorScheme
-        in 0.67f..1.0f -> if (isDark)
-            highContrastDarkColorScheme else highContrastLightColorScheme
-        else -> if (isDark) darkScheme else lightScheme
-    }
-    return colorScheme
+        colorScheme = when (contrastLevel) {
+            in 0.0f..0.33f -> if (isDark)
+                darkScheme else lightScheme
+
+            in 0.34f..0.66f -> if (isDark)
+                mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+
+            in 0.67f..1.0f -> if (isDark)
+                highContrastDarkColorScheme else highContrastLightColorScheme
+
+            else -> if (isDark) darkScheme else lightScheme
+        }
+        return colorScheme
+    } else return colorScheme
 }
 @Composable
 fun ContrastAwareReplyTheme(
@@ -308,39 +314,8 @@ fun ContrastAwareReplyTheme(
 
     MaterialTheme(
         colorScheme = replyColorScheme,
-        typography = replyTypography, shapes = shapes,
-        content = content
-    )
-}
-
-@Composable
-fun ReplyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable() () -> Unit
-) {
-    val replyColorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> darkScheme
-        else -> lightScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = replyColorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
-    }
-
-    MaterialTheme(
-        colorScheme = replyColorScheme,
-        typography = replyTypography, shapes = shapes,
+        typography = replyTypography,
+        shapes = shapes,
         content = content
     )
 }
