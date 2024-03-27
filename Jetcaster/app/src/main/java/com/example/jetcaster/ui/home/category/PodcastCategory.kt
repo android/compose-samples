@@ -44,9 +44,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.model.PodcastInfo
 import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes
@@ -56,21 +56,20 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 
 fun LazyListScope.podcastCategory(
-    topPodcasts: List<PodcastWithExtraInfo>,
-    episodes: List<EpisodeToPodcast>,
-    navigateToPlayer: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
-    onTogglePodcastFollowed: (String) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
 ) {
     item {
         CategoryPodcasts(
-            topPodcasts = topPodcasts,
+            topPodcasts = podcastCategoryFilterResult.topPodcasts,
             navigateToPodcastDetails = navigateToPodcastDetails,
             onTogglePodcastFollowed = onTogglePodcastFollowed
         )
     }
 
+    val episodes = podcastCategoryFilterResult.episodes
     items(episodes, key = { it.episode.uri }) { item ->
         EpisodeListItem(
             episode = item.episode,
@@ -84,9 +83,9 @@ fun LazyListScope.podcastCategory(
 
 @Composable
 private fun CategoryPodcasts(
-    topPodcasts: List<PodcastWithExtraInfo>,
-    navigateToPodcastDetails: (String) -> Unit,
-    onTogglePodcastFollowed: (String) -> Unit
+    topPodcasts: List<PodcastInfo>,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit
 ) {
     CategoryPodcastRow(
         podcasts = topPodcasts,
@@ -98,9 +97,9 @@ private fun CategoryPodcasts(
 
 @Composable
 private fun CategoryPodcastRow(
-    podcasts: List<PodcastWithExtraInfo>,
-    onTogglePodcastFollowed: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
+    podcasts: List<PodcastInfo>,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lastIndex = podcasts.size - 1
@@ -108,15 +107,17 @@ private fun CategoryPodcastRow(
         modifier = modifier,
         contentPadding = PaddingValues(start = Keyline1, top = 8.dp, end = Keyline1, bottom = 24.dp)
     ) {
-        itemsIndexed(items = podcasts) { index: Int,
-            (podcast, _, isFollowed): PodcastWithExtraInfo ->
+        itemsIndexed(
+            items = podcasts,
+            key = { _, p -> p.uri }
+        ) { index, podcast ->
             TopPodcastRowItem(
                 podcastTitle = podcast.title,
                 podcastImageUrl = podcast.imageUrl,
-                isFollowed = isFollowed,
-                onToggleFollowClicked = { onTogglePodcastFollowed(podcast.uri) },
+                isFollowed = podcast.isSubscribed ?: false,
+                onToggleFollowClicked = { onTogglePodcastFollowed(podcast) },
                 modifier = Modifier.width(128.dp).clickable {
-                    navigateToPodcastDetails(podcast.uri)
+                    navigateToPodcastDetails(podcast)
                 }
             )
 

@@ -83,29 +83,30 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.Podcast
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.CategoryInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.data.model.asExternalModel
+import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.coroutines.launch
 
 @Composable
 fun Home(
-    navigateToPlayer: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
@@ -117,11 +118,10 @@ fun Home(
             selectedHomeCategory = viewState.selectedHomeCategory,
             filterableCategoriesModel = viewState.filterableCategoriesModel,
             podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
-            libraryEpisodes = viewState.libraryEpisodes,
+            library = viewState.library,
             onHomeCategorySelected = viewModel::onHomeCategorySelected,
             onCategorySelected = viewModel::onCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
-            navigateToPlayer = navigateToPlayer,
             navigateToPodcastDetails = navigateToPodcastDetails,
             onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
             onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
@@ -177,21 +177,20 @@ fun HomeAppBar(
 
 @Composable
 fun Home(
-    featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
+    featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    libraryEpisodes: List<EpisodeToPodcast>,
+    library: LibraryInfo,
     modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (String) -> Unit,
+    onPodcastUnfollowed: (PodcastInfo) -> Unit,
     onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    navigateToPlayer: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
-    onTogglePodcastFollowed: (String) -> Unit,
-    onLibraryPodcastSelected: (Podcast?) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
@@ -227,13 +226,12 @@ fun Home(
             homeCategories = homeCategories,
             filterableCategoriesModel = filterableCategoriesModel,
             podcastCategoryFilterResult = podcastCategoryFilterResult,
-            libraryEpisodes = libraryEpisodes,
+            library = library,
             scrimColor = scrimColor,
             modifier = Modifier.padding(contentPadding),
             onPodcastUnfollowed = onPodcastUnfollowed,
             onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
-            navigateToPlayer = navigateToPlayer,
             navigateToPodcastDetails = navigateToPodcastDetails,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
             onLibraryPodcastSelected = onLibraryPodcastSelected,
@@ -250,22 +248,21 @@ fun Home(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContent(
-    featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
+    featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    libraryEpisodes: List<EpisodeToPodcast>,
+    library: LibraryInfo,
     scrimColor: Color,
     modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (String) -> Unit,
+    onPodcastUnfollowed: (PodcastInfo) -> Unit,
     onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    navigateToPlayer: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
-    onTogglePodcastFollowed: (String) -> Unit,
-    onLibraryPodcastSelected: (Podcast?) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
@@ -273,7 +270,7 @@ private fun HomeContent(
         snapshotFlow { pagerState.currentPage }
             .collect {
                 val podcast = featuredPodcasts.getOrNull(pagerState.currentPage)
-                onLibraryPodcastSelected(podcast?.podcast)
+                onLibraryPodcastSelected(podcast)
             }
     }
     LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -312,8 +309,7 @@ private fun HomeContent(
         when (selectedHomeCategory) {
             HomeCategory.Library -> {
                 libraryItems(
-                    episodes = libraryEpisodes,
-                    navigateToPlayer = navigateToPlayer,
+                    library = library,
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     onQueueEpisode = onQueueEpisode
                 )
@@ -323,7 +319,6 @@ private fun HomeContent(
                 discoverItems(
                     filterableCategoriesModel = filterableCategoriesModel,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    navigateToPlayer = navigateToPlayer,
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed,
@@ -337,9 +332,9 @@ private fun HomeContent(
 @Composable
 private fun FollowedPodcastItem(
     pagerState: PagerState,
-    items: PersistentList<PodcastWithExtraInfo>,
-    onPodcastUnfollowed: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
+    items: PersistentList<PodcastInfo>,
+    onPodcastUnfollowed: (PodcastInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -414,9 +409,9 @@ private val FEATURED_PODCAST_IMAGE_HEIGHT_DP = 180.dp
 @Composable
 fun FollowedPodcasts(
     pagerState: PagerState,
-    items: PersistentList<PodcastWithExtraInfo>,
-    onPodcastUnfollowed: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
+    items: PersistentList<PodcastInfo>,
+    onPodcastUnfollowed: (PodcastInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // TODO: Using BoxWithConstraints is not quite performant since it requires 2 passes to compute
@@ -435,16 +430,16 @@ fun FollowedPodcasts(
             pageSpacing = 24.dp,
             pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_WIDTH_DP)
         ) { page ->
-            val (podcast, lastEpisodeDate) = items[page]
+            val podcast = items[page]
             FollowedPodcastCarouselItem(
                 podcastImageUrl = podcast.imageUrl,
                 podcastTitle = podcast.title,
-                onUnfollowedClick = { onPodcastUnfollowed(podcast.uri) },
-                lastEpisodeDateText = lastEpisodeDate?.let { lastUpdated(it) },
+                onUnfollowedClick = { onPodcastUnfollowed(podcast) },
+                lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        navigateToPodcastDetails(podcast.uri)
+                        navigateToPodcastDetails(podcast)
                     }
             )
         }
@@ -520,22 +515,25 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 fun PreviewHomeContent() {
     JetcasterTheme {
         Home(
-            featuredPodcasts = PreviewPodcastsWithExtraInfo,
+            featuredPodcasts = PreviewPodcastsWithExtraInfo.map {
+                it.asExternalModel()
+            }.toPersistentList(),
             isRefreshing = false,
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
             filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
+                categories = PreviewCategories.map { it.asExternalModel() },
+                selectedCategory = PreviewCategories.firstOrNull()?.asExternalModel()
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcastsWithExtraInfo,
-                episodes = PreviewEpisodeToPodcasts,
+                topPodcasts = PreviewPodcastsWithExtraInfo.map { it.asExternalModel() },
+                episodes = PreviewEpisodeToPodcasts.map {
+                    it.asPodcastCategoryEpisode()
+                }
             ),
-            libraryEpisodes = emptyList(),
+            library = LibraryInfo(),
             onCategorySelected = {},
             onPodcastUnfollowed = {},
-            navigateToPlayer = {},
             navigateToPodcastDetails = {},
             onHomeCategorySelected = {},
             onTogglePodcastFollowed = {},

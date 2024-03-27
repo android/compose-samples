@@ -49,18 +49,15 @@ fun JetcasterApp(
     displayFeatures: List<DisplayFeature>,
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
-    if (appState.isOnline) {
+    //if (appState.isOnline) {
         NavHost(
             navController = appState.navController,
             startDestination = Screen.Home.route
         ) {
             composable(Screen.Home.route) { backStackEntry ->
                 Home(
-                    navigateToPlayer = { episodeUri ->
-                        appState.navigateToPlayer(episodeUri, backStackEntry)
-                    },
-                    navigateToPodcastDetails = { podcastUri ->
-                        appState.navigateToPodcastDetails(podcastUri, backStackEntry)
+                    navigateToPodcastDetails = { podcast ->
+                        appState.navigateToPodcastDetails(podcast.uri, backStackEntry)
                     },
                 )
             }
@@ -119,9 +116,9 @@ fun JetcasterApp(
                 )
             }
         }
-    } else {
-        OfflineDialog { appState.refreshOnline() }
-    }
+//    } else {
+//        OfflineDialog { appState.refreshOnline() }
+//    }
 }
 
 @Composable

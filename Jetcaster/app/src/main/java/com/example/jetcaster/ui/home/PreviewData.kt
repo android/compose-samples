@@ -23,7 +23,6 @@ import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import kotlinx.collections.immutable.toPersistentList
 
 val PreviewCategories = listOf(
     Category(name = "Crime"),
@@ -50,7 +49,7 @@ val PreviewPodcastsWithExtraInfo = PreviewPodcasts.mapIndexed { index, podcast -
         this.lastEpisodeDate = OffsetDateTime.now()
         this.isFollowed = index % 2 == 0
     }
-}.toPersistentList()
+}
 
 val PreviewEpisodes = listOf(
     Episode(

@@ -37,20 +37,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.model.CategoryInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.model.PodcastInfo
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 
 fun LazyListScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    navigateToPlayer: (String) -> Unit,
-    navigateToPodcastDetails: (String) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    onTogglePodcastFollowed: (String) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     if (filterableCategoriesModel.isEmpty) {
@@ -71,9 +71,7 @@ fun LazyListScope.discoverItems(
     }
 
     podcastCategory(
-        topPodcasts = podcastCategoryFilterResult.topPodcasts,
-        episodes = podcastCategoryFilterResult.episodes,
-        navigateToPlayer = navigateToPlayer,
+        podcastCategoryFilterResult = podcastCategoryFilterResult,
         navigateToPodcastDetails = navigateToPodcastDetails,
         onTogglePodcastFollowed = onTogglePodcastFollowed,
         onQueueEpisode = onQueueEpisode,
@@ -85,7 +83,7 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 @Composable
 private fun PodcastCategoryTabs(
     filterableCategoriesModel: FilterableCategoriesModel,
-    onCategorySelected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectedIndex = filterableCategoriesModel.categories.indexOf(

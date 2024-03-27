@@ -81,7 +81,6 @@ fun PodcastDetailsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     PodcastDetailsScreen(
         podcast = state.podcast,
-        isSubscribed = state.isSubscribed,
         episodes = state.episodes,
         toggleSubscribe = viewModel::toggleSusbcribe,
         onQueueEpisode = viewModel::onQueueEpisode,
@@ -94,7 +93,6 @@ fun PodcastDetailsScreen(
 @Composable
 fun PodcastDetailsScreen(
     podcast: PodcastInfo,
-    isSubscribed: Boolean,
     episodes: List<EpisodeInfo>,
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -119,7 +117,6 @@ fun PodcastDetailsScreen(
     ) { contentPadding ->
         PodcastDetailsContent(
             podcast = podcast,
-            isSubscribed = isSubscribed,
             episodes = episodes,
             toggleSubscribe = toggleSubscribe,
             onQueueEpisode = {
@@ -137,7 +134,6 @@ fun PodcastDetailsScreen(
 @Composable
 fun PodcastDetailsContent(
     podcast: PodcastInfo,
-    isSubscribed: Boolean,
     episodes: List<EpisodeInfo>,
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -150,7 +146,6 @@ fun PodcastDetailsContent(
         item {
             PodcastDetailsHeaderItem(
                 podcast = podcast,
-                isSubscribed = isSubscribed,
                 toggleSubscribe = toggleSubscribe,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -171,7 +166,6 @@ fun PodcastDetailsContent(
 @Composable
 fun PodcastDetailsHeaderItem(
     podcast: PodcastInfo,
-    isSubscribed: Boolean,
     toggleSubscribe: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -203,7 +197,7 @@ fun PodcastDetailsHeaderItem(
                     style = MaterialTheme.typography.headlineMedium
                 )
                 PodcastDetailsHeaderItemButtons(
-                    isSubscribed = isSubscribed,
+                    isSubscribed = podcast.isSubscribed ?: false,
                     onClick = {
                         toggleSubscribe(podcast)
                     },
@@ -324,7 +318,6 @@ fun PodcastDetailsTopAppBar(
 fun PodcastDetailsHeaderItemPreview() {
     PodcastDetailsHeaderItem(
         podcast = PreviewPodcasts[0].asExternalModel(),
-        isSubscribed = false,
         toggleSubscribe = { },
     )
 }
@@ -334,7 +327,6 @@ fun PodcastDetailsHeaderItemPreview() {
 fun PodcastDetailsScreenPreview() {
     PodcastDetailsScreen(
         podcast = PreviewPodcasts[0].asExternalModel(),
-        isSubscribed = false,
         episodes = PreviewEpisodes.map { it.asExternalModel() },
         toggleSubscribe = { },
         onQueueEpisode = { },

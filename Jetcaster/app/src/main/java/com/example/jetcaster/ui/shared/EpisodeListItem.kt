@@ -50,43 +50,18 @@ import androidx.constraintlayout.compose.Visibility
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.Episode
-import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.designsystem.theme.Keyline1
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-
-@Deprecated("Use the EpisodeListItem overload that accepts external models instead.")
-@Composable
-fun EpisodeListItem(
-    episode: Episode,
-    podcast: Podcast,
-    onClick: (String) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier,
-    showDivider: Boolean = true,
-    showPodcastImage: Boolean = true,
-) {
-    EpisodeListItem(
-        episode = episode.asExternalModel(),
-        podcast = podcast.asExternalModel(),
-        onClick = onClick,
-        onQueueEpisode = onQueueEpisode,
-        modifier = modifier,
-        showDivider = showDivider,
-        showPodcastImage = showPodcastImage
-    )
-}
 
 @Composable
 fun EpisodeListItem(
     episode: EpisodeInfo,
     podcast: PodcastInfo,
-    onClick: (String) -> Unit,
+    onClick: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
@@ -94,7 +69,7 @@ fun EpisodeListItem(
 ) {
     ConstraintLayout(
         modifier = modifier.clickable {
-            onClick(podcast.uri)
+            onClick(podcast)
         }
     ) {
         val (
