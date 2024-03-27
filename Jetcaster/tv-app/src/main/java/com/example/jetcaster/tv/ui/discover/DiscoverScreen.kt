@@ -38,9 +38,9 @@ import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.tv.model.CategoryList
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
-import com.example.jetcaster.tv.ui.JetcasterAppDefaults
 import com.example.jetcaster.tv.ui.component.Catalog
 import com.example.jetcaster.tv.ui.component.Loading
+import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun DiscoverScreen(

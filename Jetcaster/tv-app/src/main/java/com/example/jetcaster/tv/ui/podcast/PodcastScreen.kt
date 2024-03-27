@@ -63,11 +63,11 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
-import com.example.jetcaster.tv.ui.JetcasterAppDefaults
 import com.example.jetcaster.tv.ui.component.ButtonWithIcon
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration
 import com.example.jetcaster.tv.ui.component.ErrorState
 import com.example.jetcaster.tv.ui.component.Loading
+import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun PodcastScreen(

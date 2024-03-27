@@ -36,9 +36,9 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.tv.R
-import com.example.jetcaster.tv.ui.JetcasterAppDefaults
 import com.example.jetcaster.tv.ui.component.Catalog
 import com.example.jetcaster.tv.ui.component.Loading
+import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun LibraryScreen(

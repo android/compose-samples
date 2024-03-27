@@ -48,7 +48,7 @@ import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
-import com.example.jetcaster.tv.ui.JetcasterAppDefaults
+import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 internal fun Catalog(

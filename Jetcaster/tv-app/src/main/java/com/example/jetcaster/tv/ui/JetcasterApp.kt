@@ -17,7 +17,6 @@
 package com.example.jetcaster.tv.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,8 +29,6 @@ import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,53 +45,13 @@ import com.example.jetcaster.tv.ui.podcast.PodcastScreenViewModel
 import com.example.jetcaster.tv.ui.profile.ProfileScreen
 import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
+import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppState()) {
     Route(jetcasterAppState = jetcasterAppState)
 }
-
-internal data object JetcasterAppDefaults {
-    val overScanMargin = OverScanMarginSettings()
-    val gapSettings = GapSettings()
-    val cardWidth = CardWidth()
-    val padding = PaddingSettings()
-}
-
-data class OverScanMarginSettings(
-    val default: OverScanMargin = OverScanMargin(),
-    val podcastDetails: OverScanMargin = OverScanMargin(top = 40.dp, bottom = 40.dp),
-    val drawer: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
-    val catalog: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp)
-)
-
-data class OverScanMargin(
-    val top: Dp = 24.dp,
-    val bottom: Dp = 24.dp,
-    val start: Dp = 48.dp,
-    val end: Dp = 48.dp,
-) {
-    fun intoPaddingValues(): PaddingValues {
-        return PaddingValues(start, top, end, bottom)
-    }
-}
-
-data class CardWidth(
-    val large: Dp = 268.dp,
-    val medium: Dp = 196.dp,
-    val small: Dp = 124.dp
-)
-
-data class PaddingSettings(
-    val tab: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
-    val sectionTitle: PaddingValues = PaddingValues(bottom = 16.dp)
-)
-
-data class GapSettings(
-    val catalogItemGap: Dp = 20.dp,
-    val catalogSectionGap: Dp = 40.dp,
-)
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable

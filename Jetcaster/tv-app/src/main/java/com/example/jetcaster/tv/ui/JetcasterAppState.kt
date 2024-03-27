@@ -97,7 +97,8 @@ sealed interface Screen {
 
         companion object : Screen {
             private const val ROOT = "podcast"
-            override val route = "$ROOT/{podcastUri}"
+            private const val PARAMETER_NAME = "podcastUri"
+            override val route = "$ROOT/{$PARAMETER_NAME}"
         }
     }
 
@@ -106,7 +107,8 @@ sealed interface Screen {
 
         companion object : Screen {
             private const val ROOT = "player"
-            override val route = "$ROOT/{episodeUri}"
+            private const val PARAMETER_NAME = "episodeUri"
+            override val route = "$ROOT/{$PARAMETER_NAME}"
         }
     }
 }

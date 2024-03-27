@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.model
 
+import androidx.compose.runtime.Immutable
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-
+@Immutable
 data class EpisodeList(val member: List<EpisodeToPodcast>) : List<EpisodeToPodcast> by member
