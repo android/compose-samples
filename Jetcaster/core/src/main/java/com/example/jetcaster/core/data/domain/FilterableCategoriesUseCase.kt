@@ -16,8 +16,9 @@
 
 package com.example.jetcaster.core.data.domain
 
-import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.model.CategoryInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,12 +35,13 @@ class FilterableCategoriesUseCase(
      *        returned by the backing category list will be selected in the returned
      *        FilterableCategoriesModel
      */
-    operator fun invoke(selectedCategory: Category?): Flow<FilterableCategoriesModel> =
+    operator fun invoke(selectedCategory: CategoryInfo?): Flow<FilterableCategoriesModel> =
         categoryStore.categoriesSortedByPodcastCount()
-            .map {
+            .map { categories ->
                 FilterableCategoriesModel(
-                    categories = it,
-                    selectedCategory = selectedCategory ?: it.firstOrNull()
+                    categories = categories.map { it.asExternalModel() },
+                    selectedCategory = selectedCategory ?:
+                        categories.firstOrNull()?.asExternalModel()
                 )
             }
 }

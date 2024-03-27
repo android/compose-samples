@@ -40,7 +40,6 @@ import kotlinx.coroutines.launch
 
 data class PodcastUiState(
     val podcast: PodcastInfo = PodcastInfo(),
-    val isSubscribed: Boolean = false,
     val episodes: List<EpisodeInfo> = emptyList()
 )
 
@@ -64,8 +63,7 @@ class PodcastDetailsViewModel(
         ) { podcast, episodeToPodcasts ->
             val episodes = episodeToPodcasts.map { it.episode.asExternalModel() }
             PodcastUiState(
-                podcast = podcast.podcast.asExternalModel(),
-                isSubscribed = podcast.isFollowed,
+                podcast = podcast.podcast.asExternalModel().copy(isSubscribed = podcast.isFollowed),
                 episodes = episodes,
             )
         }.stateIn(

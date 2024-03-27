@@ -29,7 +29,6 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
-import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.ui.Screen
@@ -49,7 +48,6 @@ data class PlayerUiState(
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModel(
     episodeStore: EpisodeStore = Graph.episodeStore,
-    podcastStore: PodcastStore = Graph.podcastStore,
     private val episodePlayer: EpisodePlayer = Graph.episodePlayer,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -110,7 +108,6 @@ class PlayerViewModel(
     companion object {
         fun provideFactory(
             episodeStore: EpisodeStore = Graph.episodeStore,
-            podcastStore: PodcastStore = Graph.podcastStore,
             episodePlayer: EpisodePlayer = Graph.episodePlayer,
             owner: SavedStateRegistryOwner,
             defaultArgs: Bundle? = null,
@@ -122,7 +119,7 @@ class PlayerViewModel(
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    return PlayerViewModel(episodeStore, podcastStore, episodePlayer, handle) as T
+                    return PlayerViewModel(episodeStore, episodePlayer, handle) as T
                 }
             }
     }
