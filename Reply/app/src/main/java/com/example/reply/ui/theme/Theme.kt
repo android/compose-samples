@@ -270,7 +270,7 @@ fun selectSchemeForContrast(isDark: Boolean,): ColorScheme {
     val context = LocalContext.current
     var colorScheme = if (isDark) darkScheme else lightScheme
     if (isContrastAvailable()) {
-        val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager;
+        val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         val contrastLevel = uiModeManager.contrast
 
         colorScheme = when (contrastLevel) {
