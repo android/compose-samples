@@ -16,7 +16,11 @@
 
 package com.example.reply.ui.theme
 
+import android.graphics.Color
 import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -91,6 +95,13 @@ fun ReplyTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val transparent = Color.TRANSPARENT
+    (LocalContext.current as ComponentActivity).enableEdgeToEdge(
+        navigationBarStyle = if (darkTheme)
+            SystemBarStyle.dark(transparent)
+        else
+            SystemBarStyle.light(transparent, transparent)
+    )
     val replyColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
