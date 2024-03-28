@@ -48,7 +48,7 @@ material = "1.11.0"
 # @keep
 minSdk = "21"
 okhttp = "4.12.0"
-robolectric = "4.9.2"
+robolectric = "4.11.1"
 rome = "1.18.0"
 room = "2.6.1"
 secrets = "2.0.1"
