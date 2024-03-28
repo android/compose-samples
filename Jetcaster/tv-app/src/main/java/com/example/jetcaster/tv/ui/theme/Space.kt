@@ -59,4 +59,6 @@ internal data class PaddingSettings(
 internal data class GapSettings(
     val catalogItemGap: Dp = 20.dp,
     val catalogSectionGap: Dp = 40.dp,
+    val itemGap: Dp = 16.dp,
+    val chipGap: Dp = 8.dp
 )

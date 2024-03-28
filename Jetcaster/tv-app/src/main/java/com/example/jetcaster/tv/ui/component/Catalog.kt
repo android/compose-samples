@@ -160,7 +160,7 @@ private fun PodcastRow(
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun PodcastCard(
+internal fun PodcastCard(
     podcast: Podcast,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

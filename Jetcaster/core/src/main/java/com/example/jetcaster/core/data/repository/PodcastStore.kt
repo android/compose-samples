@@ -19,6 +19,7 @@ package com.example.jetcaster.core.data.repository
 import com.example.jetcaster.core.data.database.dao.PodcastFollowedEntryDao
 import com.example.jetcaster.core.data.database.dao.PodcastsDao
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
@@ -43,6 +44,26 @@ interface PodcastStore {
      * episode date.
      */
     fun followedPodcastsSortedByLastEpisode(
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>>
+
+    /**
+     * Returns a flow containing a list of podcasts such that its name partially matches
+     * with the specified keyword
+     */
+    fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>>
+
+    /**
+     * Return a flow containing a list of podcast such that it belongs to the any of categories
+     * specified with categories parameter and its name partially matches with the specified
+     * keyword.
+     */
+    fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
         limit: Int = Int.MAX_VALUE
     ): Flow<List<PodcastWithExtraInfo>>
 
@@ -93,6 +114,22 @@ class LocalPodcastStore(
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
         return podcastDao.followedPodcastsSortedByLastEpisode(limit)
+    }
+
+    override fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> {
+        return podcastDao.searchPodcastByTitle(keyword, limit)
+    }
+
+    override fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> {
+        val categoryIdList = categories.map { it.id }
+        return podcastDao.searchPodcastByTitleAndCategory(keyword, categoryIdList, limit)
     }
 
     private suspend fun followPodcast(podcastUri: String) {
