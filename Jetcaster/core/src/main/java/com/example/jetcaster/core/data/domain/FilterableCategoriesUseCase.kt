@@ -40,8 +40,8 @@ class FilterableCategoriesUseCase(
             .map { categories ->
                 FilterableCategoriesModel(
                     categories = categories.map { it.asExternalModel() },
-                    selectedCategory = selectedCategory ?:
-                        categories.firstOrNull()?.asExternalModel()
+                    selectedCategory = selectedCategory
+                        ?: categories.firstOrNull()?.asExternalModel()
                 )
             }
 }
