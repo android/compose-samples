@@ -25,6 +25,9 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +42,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
@@ -138,7 +142,7 @@ fun EpisodeListItem(
         }
 
         Row(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
-            Column {
+            Column(modifier = Modifier.fillMaxWidth(0.8f)) {
                 Text(
                     text = episode.title,
                     maxLines = 2,
@@ -165,13 +169,15 @@ fun EpisodeListItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(56.dp)
+                    .requiredSize(56.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .padding(16.dp)
-
                     .sharedElement(
                         rememberSharedContentState(key = "player-image-${podcast.uri}-${episode.uri}"),
-                        animatedVisibilityScope = this@AnimatedVisibilityScope
+                        animatedVisibilityScope = this@AnimatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            tween(2000)
+                        },
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
                     ),
             )
 
@@ -214,6 +220,7 @@ fun EpisodeListItem(
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(16.dp)
             )
+            Spacer(Modifier.weight(1f))
             IconButton(
                 onClick = {
                     onQueuePodcast(
