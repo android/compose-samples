@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalSharedTransitionApi::class
+)
+
 package com.example.jetcaster.ui.player
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -67,6 +77,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -101,6 +112,7 @@ import java.time.Duration
 /**
  * Stateful version of the Podcast player
  */
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PlayerScreen(
     windowSizeClass: WindowSizeClass,
@@ -127,6 +139,7 @@ fun PlayerScreen(
 /**
  * Stateless version of the Player screen
  */
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
@@ -166,7 +179,7 @@ private fun PlayerScreen(
         }
     }
 }
-
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
@@ -269,10 +282,13 @@ fun PlayerContent(
         )
     }
 }
-
+val boundsTransform = { initial: Rect, target: Rect ->
+    tween<Rect>(1500)
+}
 /**
  * The UI for the top pane of a tabletop layout.
  */
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
@@ -305,8 +321,9 @@ private fun PlayerContentRegular(
         ) {
             Spacer(modifier = Modifier.weight(1f))
             PlayerImage(
-                podcastImageUrl = currentEpisode.podcastImageUrl,
-                modifier = Modifier.weight(10f)
+                modifier = Modifier
+                    .weight(10f),
+                currentEpisode = currentEpisode
             )
             Spacer(modifier = Modifier.height(32.dp))
             PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
@@ -339,6 +356,7 @@ private fun PlayerContentRegular(
 /**
  * The UI for the top pane of a tabletop layout.
  */
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerContentTableTopTop(
     uiState: PlayerUiState,
@@ -362,7 +380,7 @@ private fun PlayerContentTableTopTop(
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PlayerImage(episode.podcastImageUrl)
+        PlayerImage(episode)
     }
 }
 
@@ -458,6 +476,7 @@ private fun PlayerContentBookStart(
 /**
  * The UI for the end pane of a book layout.
  */
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerContentBookEnd(
     uiState: PlayerUiState,
@@ -479,7 +498,7 @@ private fun PlayerContentBookEnd(
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         PlayerImage(
-            podcastImageUrl = episode.podcastImageUrl,
+            episode,
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .weight(1f)
@@ -527,14 +546,15 @@ private fun TopAppBar(onBackPress: () -> Unit) {
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerImage(
-    podcastImageUrl: String,
+    currentEpisode: PlayerEpisode,
     modifier: Modifier = Modifier
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(podcastImageUrl)
+            .data(currentEpisode.podcastImageUrl)
             .crossfade(true)
             .build(),
         contentDescription = null,
@@ -543,6 +563,12 @@ private fun PlayerImage(
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.medium)
+            .sharedElement(
+                rememberSharedContentState(key = "player-image-${currentEpisode.podcastUri}-${currentEpisode.episodeUri}"),
+                animatedVisibilityScope = this@AnimatedVisibilityScope,
+                boundsTransform = boundsTransform,
+                clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+            )
     )
 }
 
@@ -763,28 +789,33 @@ fun PlayerButtonsPreview() {
 fun PlayerScreenPreview() {
     JetcasterTheme {
         BoxWithConstraints {
-            PlayerScreen(
-                PlayerUiState(
-                    episodePlayerState = EpisodePlayerState(
-                        currentEpisode = PlayerEpisode(
-                            title = "Title",
-                            duration = Duration.ofHours(2),
-                            podcastName = "Podcast",
+            AnimatedVisibility(visible = true) {
+                SharedTransitionScope {
+                    PlayerScreen(
+                        PlayerUiState(
+                            episodePlayerState = EpisodePlayerState(
+                                currentEpisode = PlayerEpisode(
+                                    title = "Title",
+                                    duration = Duration.ofHours(2),
+                                    podcastName = "Podcast",
+                                ),
+                                isPlaying = false,
+                            ),
                         ),
-                        isPlaying = false,
-                    ),
-                ),
-                displayFeatures = emptyList(),
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
-                onBackPress = { },
-                onPlayPress = {},
-                onPausePress = {},
-                onAdvanceBy = {},
-                onRewindBy = {},
-                onStop = {},
-                onNext = {},
-                onPrevious = {}
-            )
+                        displayFeatures = emptyList(),
+                        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
+                        onBackPress = { },
+                        onPlayPress = {},
+                        onPausePress = {},
+                        onAdvanceBy = {},
+                        onRewindBy = {},
+                        onStop = {},
+                        onNext = {},
+                        onPrevious = {}
+                    )
+                }
+            }
+
         }
     }
 }
