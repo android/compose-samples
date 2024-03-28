@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.data.repository
 
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
@@ -55,6 +56,37 @@ class TestPodcastStore : PodcastStore {
             }
         }
 
+    override fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> =
+        podcastFlow.map { podcastList ->
+            podcastList.filter {
+                it.title.contains(keyword)
+            }.map { p ->
+                PodcastWithExtraInfo().apply {
+                    podcast = p
+                    isFollowed = true
+                }
+            }
+        }
+
+    override fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> =
+        podcastFlow.map { podcastList ->
+            podcastList.filter {
+                it.title.contains(keyword)
+            }.map { p ->
+                PodcastWithExtraInfo().apply {
+                    podcast = p
+                    isFollowed = true
+                }
+            }
+        }
+    
     override suspend fun togglePodcastFollowed(podcastUri: String) {
         if (podcastUri in followedPodcasts) {
             followedPodcasts.remove(podcastUri)
