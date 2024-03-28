@@ -86,7 +86,7 @@ class TestPodcastStore : PodcastStore {
                 }
             }
         }
-    
+
     override suspend fun togglePodcastFollowed(podcastUri: String) {
         if (podcastUri in followedPodcasts) {
             followedPodcasts.remove(podcastUri)
