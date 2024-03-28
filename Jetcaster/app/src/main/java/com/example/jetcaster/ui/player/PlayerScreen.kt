@@ -62,7 +62,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -86,7 +85,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
@@ -99,8 +97,6 @@ import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.adaptive.TwoPane
-import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
 import java.time.Duration
 
 /**
@@ -256,7 +252,7 @@ private fun VerticalDetailsPlayerScreen(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     val supportingPaneNavigator = rememberSupportingPaneScaffoldNavigator<Nothing>()
     BackHandler(supportingPaneNavigator.canNavigateBack()) {
         supportingPaneNavigator.navigateBack()
@@ -294,7 +290,7 @@ private fun HorizontalDetailsPlayerScreen(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     val supportingPaneNavigator = rememberSupportingPaneScaffoldNavigator<Nothing>()
     BackHandler(supportingPaneNavigator.canNavigateBack()) {
         supportingPaneNavigator.navigateBack()
@@ -329,7 +325,6 @@ private fun HorizontalDetailsPlayerScreen(
                     onNext = onNext,
                     onPrevious = onPrevious,
                 )
-
             },
         )
     }
