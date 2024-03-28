@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,32 +43,35 @@ fun JetcasterApp(
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
     if (appState.isOnline) {
-        NavHost(
-            navController = appState.navController,
-            startDestination = Screen.Home.route
-        ) {
-            composable(Screen.Home.route) { backStackEntry ->
-                Home(
-                    navigateToPlayer = { episodeUri ->
-                        appState.navigateToPlayer(episodeUri, backStackEntry)
-                    }
-                )
-            }
-            composable(Screen.Player.route) { backStackEntry ->
-                val playerViewModel: PlayerViewModel = viewModel(
-                    factory = PlayerViewModel.provideFactory(
-                        owner = backStackEntry,
-                        defaultArgs = backStackEntry.arguments
+        SharedTransitionLayout {
+            NavHost(
+                navController = appState.navController,
+                startDestination = Screen.Home.route
+            ) {
+                composable(Screen.Home.route) { backStackEntry ->
+                    Home(
+                        navigateToPlayer = { episodeUri ->
+                            appState.navigateToPlayer(episodeUri, backStackEntry)
+                        }
                     )
-                )
-                PlayerScreen(
-                    windowSizeClass,
-                    displayFeatures,
-                    playerViewModel,
-                    onBackPress = appState::navigateBack
-                )
+                }
+                composable(Screen.Player.route) { backStackEntry ->
+                    val playerViewModel: PlayerViewModel = viewModel(
+                        factory = PlayerViewModel.provideFactory(
+                            owner = backStackEntry,
+                            defaultArgs = backStackEntry.arguments
+                        )
+                    )
+                    PlayerScreen(
+                        windowSizeClass,
+                        displayFeatures,
+                        playerViewModel,
+                        onBackPress = appState::navigateBack
+                    )
+                }
             }
         }
+
     } else {
         OfflineDialog { appState.refreshOnline() }
     }

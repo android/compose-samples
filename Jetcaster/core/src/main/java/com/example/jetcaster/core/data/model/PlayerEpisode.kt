@@ -27,6 +27,8 @@ data class PlayerEpisode(
     val author: String = "",
     val summary: String = "",
     val podcastImageUrl: String = "",
+    val episodeUri: String = "",
+    val podcastUri: String = ""
 )
 
 fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
@@ -36,4 +38,6 @@ fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
         podcastName = podcast.title,
         summary = episode.summary ?: "",
         podcastImageUrl = podcast.imageUrl ?: "",
+        episodeUri = episode.uri,
+        podcastUri = podcast.uri
     )

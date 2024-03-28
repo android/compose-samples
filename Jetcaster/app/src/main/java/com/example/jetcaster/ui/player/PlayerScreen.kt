@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalSharedTransitionApi::class
+)
+
 package com.example.jetcaster.ui.player
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -101,6 +109,7 @@ import java.time.Duration
 /**
  * Stateful version of the Podcast player
  */
+context(SharedTransitionScope)
 @Composable
 fun PlayerScreen(
     windowSizeClass: WindowSizeClass,
@@ -127,6 +136,7 @@ fun PlayerScreen(
 /**
  * Stateless version of the Player screen
  */
+context(SharedTransitionScope)
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
@@ -166,7 +176,7 @@ private fun PlayerScreen(
         }
     }
 }
-
+context(SharedTransitionScope)
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
@@ -273,6 +283,7 @@ fun PlayerContent(
 /**
  * The UI for the top pane of a tabletop layout.
  */
+context(SharedTransitionScope)
 @Composable
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
@@ -307,6 +318,10 @@ private fun PlayerContentRegular(
             PlayerImage(
                 podcastImageUrl = currentEpisode.podcastImageUrl,
                 modifier = Modifier.weight(10f)
+                    .sharedElementWithCallerManagedVisibility(
+                        rememberSharedContentState(key = "player-image-${currentEpisode.podcastUri}-${currentEpisode.episodeUri}"),
+                        visible = true
+                    )
             )
             Spacer(modifier = Modifier.height(32.dp))
             PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
@@ -543,6 +558,7 @@ private fun PlayerImage(
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.medium)
+
     )
 }
 
@@ -763,28 +779,30 @@ fun PlayerButtonsPreview() {
 fun PlayerScreenPreview() {
     JetcasterTheme {
         BoxWithConstraints {
-            PlayerScreen(
-                PlayerUiState(
-                    episodePlayerState = EpisodePlayerState(
-                        currentEpisode = PlayerEpisode(
-                            title = "Title",
-                            duration = Duration.ofHours(2),
-                            podcastName = "Podcast",
+            SharedTransitionScope {
+                PlayerScreen(
+                    PlayerUiState(
+                        episodePlayerState = EpisodePlayerState(
+                            currentEpisode = PlayerEpisode(
+                                title = "Title",
+                                duration = Duration.ofHours(2),
+                                podcastName = "Podcast",
+                            ),
+                            isPlaying = false,
                         ),
-                        isPlaying = false,
                     ),
-                ),
-                displayFeatures = emptyList(),
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
-                onBackPress = { },
-                onPlayPress = {},
-                onPausePress = {},
-                onAdvanceBy = {},
-                onRewindBy = {},
-                onStop = {},
-                onNext = {},
-                onPrevious = {}
-            )
+                    displayFeatures = emptyList(),
+                    windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
+                    onBackPress = { },
+                    onPlayPress = {},
+                    onPausePress = {},
+                    onAdvanceBy = {},
+                    onRewindBy = {},
+                    onStop = {},
+                    onNext = {},
+                    onPrevious = {}
+                )
+            }
         }
     }
 }

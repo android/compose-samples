@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class)
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -101,6 +107,7 @@ import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.launch
 
+context(SharedTransitionScope, AnimatedContentScope)
 @Composable
 fun Home(
     navigateToPlayer: (String) -> Unit,
@@ -172,6 +179,7 @@ fun HomeAppBar(
     )
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun Home(
     featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
@@ -242,8 +250,10 @@ fun Home(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
+
 private fun HomeContent(
     featuredPodcasts: PersistentList<PodcastWithExtraInfo>,
     isRefreshing: Boolean,
@@ -510,28 +520,32 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 @Preview
 fun PreviewHomeContent() {
     JetcasterTheme {
-        Home(
-            featuredPodcasts = PreviewPodcastsWithExtraInfo,
-            isRefreshing = false,
-            homeCategories = HomeCategory.entries,
-            selectedHomeCategory = HomeCategory.Discover,
-            filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
-            ),
-            podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcastsWithExtraInfo,
-                episodes = PreviewEpisodeToPodcasts,
-            ),
-            libraryEpisodes = emptyList(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
-            navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
-            onQueuePodcast = {}
-        )
+        AnimatedVisibility(visible = true) {
+            SharedTransitionLayout {
+                Home(
+                    featuredPodcasts = PreviewPodcastsWithExtraInfo,
+                    isRefreshing = false,
+                    homeCategories = HomeCategory.entries,
+                    selectedHomeCategory = HomeCategory.Discover,
+                    filterableCategoriesModel = FilterableCategoriesModel(
+                        categories = PreviewCategories,
+                        selectedCategory = PreviewCategories.firstOrNull()
+                    ),
+                    podcastCategoryFilterResult = PodcastCategoryFilterResult(
+                        topPodcasts = PreviewPodcastsWithExtraInfo,
+                        episodes = PreviewEpisodeToPodcasts,
+                    ),
+                    libraryEpisodes = emptyList(),
+                    onCategorySelected = {},
+                    onPodcastUnfollowed = {},
+                    navigateToPlayer = {},
+                    onHomeCategorySelected = {},
+                    onTogglePodcastFollowed = {},
+                    onLibraryPodcastSelected = {},
+                    onQueuePodcast = {}
+                )
+            }
+        }
     }
 }
 

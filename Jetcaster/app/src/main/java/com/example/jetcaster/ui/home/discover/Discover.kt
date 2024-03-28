@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.home.discover
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +50,7 @@ import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 fun LazyListScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,

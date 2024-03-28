@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.home.library
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -29,7 +34,8 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.EpisodeListItem
 
-fun LazyListScope.libraryItems(
+context(SharedTransitionScope, LazyListScope, AnimatedVisibilityScope)
+fun libraryItems(
     episodes: List<EpisodeToPodcast>,
     navigateToPlayer: (String) -> Unit,
     onQueuePodcast: (EpisodeToPodcast) -> Unit

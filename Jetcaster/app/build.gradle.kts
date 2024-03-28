@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -81,6 +83,9 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
+    tasks.withType(KotlinCompile::class.java) {
+        kotlinOptions.freeCompilerArgs += "-Xcontext-receivers"
+    }
 }
 
 dependencies {
@@ -102,6 +107,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.window)
+    implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)

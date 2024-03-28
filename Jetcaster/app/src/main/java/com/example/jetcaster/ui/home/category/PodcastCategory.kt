@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.home.category
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -58,9 +70,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
-import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
@@ -76,6 +85,7 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 fun LazyListScope.podcastCategory(
     topPodcasts: List<PodcastWithExtraInfo>,
     episodes: List<EpisodeToPodcast>,
@@ -110,6 +120,7 @@ private fun CategoryPodcasts(
     )
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -119,164 +130,120 @@ fun EpisodeListItem(
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
 ) {
-    ConstraintLayout(modifier = modifier.clickable { onClick(episode.uri) }) {
-        val (
-            divider, episodeTitle, podcastTitle, image, playIcon,
-            date, addPlaylist, overflow
-        ) = createRefs()
-
+    Column(modifier = modifier.clickable { onClick(episode.uri) }) {
         if (showDivider) {
             HorizontalDivider(
-                Modifier.constrainAs(divider) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                    width = fillToConstraints
-                }
+                Modifier.fillMaxWidth()
             )
         }
 
-        // If we have an image Url, we can show it using Coil
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(podcast.imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(56.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .constrainAs(image) {
-                    end.linkTo(parent.end, 16.dp)
-                    top.linkTo(parent.top, 16.dp)
-                },
-        )
-
-        Text(
-            text = episode.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.constrainAs(episodeTitle) {
-                linkTo(
-                    start = parent.start,
-                    end = image.start,
-                    startMargin = Keyline1,
-                    endMargin = 16.dp,
-                    bias = 0f
+        Row(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+            Column {
+                Text(
+                    text = episode.title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
                 )
-                top.linkTo(parent.top, 16.dp)
-                height = preferredWrapContent
-                width = preferredWrapContent
-            }
-        )
 
-        val titleImageBarrier = createBottomBarrier(podcastTitle, image)
-
-        Text(
-            text = podcast.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.constrainAs(podcastTitle) {
-                linkTo(
-                    start = parent.start,
-                    end = image.start,
-                    startMargin = Keyline1,
-                    endMargin = 16.dp,
-                    bias = 0f
+                Text(
+                    text = podcast.title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(top = 6.dp)
                 )
-                top.linkTo(episodeTitle.bottom, 6.dp)
-                height = preferredWrapContent
-                width = preferredWrapContent
             }
-        )
+            Spacer(Modifier.weight(1f))
+            // If we have an image Url, we can show it using Coil
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(podcast.imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .padding(16.dp)
 
-        Image(
-            imageVector = Icons.Rounded.PlayCircleFilled,
-            contentDescription = stringResource(R.string.cd_play),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false, radius = 24.dp)
-                ) { /* TODO */ }
-                .size(48.dp)
-                .padding(6.dp)
-                .semantics { role = Role.Button }
-                .constrainAs(playIcon) {
-                    start.linkTo(parent.start, Keyline1)
-                    top.linkTo(titleImageBarrier, margin = 10.dp)
-                    bottom.linkTo(parent.bottom, 10.dp)
-                }
-        )
+                    .sharedElement(
+                        rememberSharedContentState(key = "player-image-${podcast.uri}-${episode.uri}"),
+                        animatedVisibilityScope = this@AnimatedVisibilityScope
+                    ),
+            )
 
-        val duration = episode.duration
-        Text(
-            text = when {
-                duration != null -> {
-                    // If we have the duration, we combine the date/duration via a
-                    // formatted string
-                    stringResource(
-                        R.string.episode_date_duration,
-                        MediumDateFormatter.format(episode.published),
-                        duration.toMinutes().toInt()
-                    )
-                }
-                // Otherwise we just use the date
-                else -> MediumDateFormatter.format(episode.published)
-            },
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.constrainAs(date) {
-                centerVerticallyTo(playIcon)
-                linkTo(
-                    start = playIcon.end,
-                    startMargin = 12.dp,
-                    end = addPlaylist.start,
-                    endMargin = 16.dp,
-                    bias = 0f // float this towards the start
-                )
-                width = preferredWrapContent
-            }
-        )
+        }
 
-        IconButton(
-            onClick = {
-                onQueuePodcast(
-                    EpisodeToPodcast().apply {
-                        this.episode = episode
-                        this._podcasts = listOf(podcast)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                imageVector = Icons.Rounded.PlayCircleFilled,
+                contentDescription = stringResource(R.string.cd_play),
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false, radius = 24.dp)
+                    ) { /* TODO */ }
+                    .size(48.dp)
+                    .padding(6.dp)
+                    .semantics { role = Role.Button }
+
+            )
+
+            val duration = episode.duration
+            Text(
+                text = when {
+                    duration != null -> {
+                        // If we have the duration, we combine the date/duration via a
+                        // formatted string
+                        stringResource(
+                            R.string.episode_date_duration,
+                            MediumDateFormatter.format(episode.published),
+                            duration.toMinutes().toInt()
+                        )
                     }
-                )
-            },
-            modifier = Modifier.constrainAs(addPlaylist) {
-                end.linkTo(overflow.start)
-                centerVerticallyTo(playIcon)
-            }
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                contentDescription = stringResource(R.string.cd_add),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    // Otherwise we just use the date
+                    else -> MediumDateFormatter.format(episode.published)
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(16.dp)
             )
+            IconButton(
+                onClick = {
+                    onQueuePodcast(
+                        EpisodeToPodcast().apply {
+                            this.episode = episode
+                            this._podcasts = listOf(podcast)
+                        }
+                    )
+                },
+                modifier = Modifier
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                    contentDescription = stringResource(R.string.cd_add),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            IconButton(
+                onClick = { /* TODO */ },
+                modifier = Modifier
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.cd_more),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
-        IconButton(
-            onClick = { /* TODO */ },
-            modifier = Modifier.constrainAs(overflow) {
-                end.linkTo(parent.end, 8.dp)
-                centerVerticallyTo(playIcon)
-            }
-        ) {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
     }
 }
 
@@ -360,16 +327,20 @@ private val MediumDateFormatter by lazy {
     DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewEpisodeListItem() {
     JetcasterTheme {
-        EpisodeListItem(
-            episode = PreviewEpisodes[0],
-            podcast = PreviewPodcasts[0],
-            onClick = { },
-            onQueuePodcast = { },
-            modifier = Modifier.fillMaxWidth()
-        )
+        AnimatedVisibility(visible = true) {
+            SharedTransitionLayout {
+                EpisodeListItem(
+                    episode = PreviewEpisodes[0],
+                    podcast = PreviewPodcasts[0],
+                    onClick = { },
+                    onQueuePodcast = { },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }
