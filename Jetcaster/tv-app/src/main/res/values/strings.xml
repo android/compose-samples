@@ -38,6 +38,7 @@
     <string name="label_latest_episode">Latest Episodes</string>
     <string name="label_navigate_to_discover">Discover the podcasts</string>
     <string name="label_back_to_home">Back to Home</string>
+    <string name="label_search">Search podcasts by keyword</string>
 
     <string name="updated_longer">Updated a while ago</string>
     <plurals name="updated_weeks_ago">
