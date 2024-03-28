@@ -16,27 +16,51 @@
 
 package com.example.jetcaster.ui.home.library
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import com.example.jetcaster.data.EpisodeToPodcast
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.example.jetcaster.R
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.EpisodeListItem
 
 fun LazyListScope.libraryItems(
     episodes: List<EpisodeToPodcast>,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (String) -> Unit,
+    onQueuePodcast: (EpisodeToPodcast) -> Unit
 ) {
     if (episodes.isEmpty()) {
         // TODO: Empty state
         return
     }
 
-    items(episodes, key = { it.episode.uri }) { item ->
+    item {
+        Text(
+            text = stringResource(id = R.string.latest_episodes),
+            modifier = Modifier.padding(
+                start = Keyline1,
+                top = 16.dp,
+            ),
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+
+    itemsIndexed(
+        episodes,
+        key = { _, item -> item.episode.uri }
+    ) { index, item ->
         EpisodeListItem(
             episode = item.episode,
             podcast = item.podcast,
             onClick = navigateToPlayer,
-            modifier = Modifier.fillParentMaxWidth()
+            onQueuePodcast = onQueuePodcast,
+            modifier = Modifier.fillParentMaxWidth(),
+            showDivider = index != 0
         )
     }
 }

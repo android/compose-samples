@@ -17,7 +17,6 @@
 package com.example.jetcaster.util
 
 import androidx.annotation.FloatRange
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -113,7 +112,6 @@ private data class VerticalGradientElement(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 private class VerticalGradientModifier(
     var onDraw: DrawScope.() -> Unit
 ) : Modifier.Node(), DrawModifierNode {
