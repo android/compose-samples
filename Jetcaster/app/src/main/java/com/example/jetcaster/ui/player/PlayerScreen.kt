@@ -62,6 +62,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -85,6 +86,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
@@ -97,6 +99,8 @@ import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.example.jetcaster.util.verticalGradientScrim
+import com.google.accompanist.adaptive.TwoPane
+import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
 import java.time.Duration
 
 /**
@@ -168,6 +172,7 @@ private fun PlayerScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
@@ -197,33 +202,68 @@ fun PlayerContent(
         // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
         val usingVerticalStrategy =
             isTableTopPosture(foldingFeature) ||
-                (
-                    isSeparatingPosture(foldingFeature) &&
-                        foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
-                    )
-
+                    (
+                            isSeparatingPosture(foldingFeature) &&
+                                    foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                            )
+        val supportingPaneNavigator = rememberSupportingPaneScaffoldNavigator<Nothing>()
+        BackHandler(supportingPaneNavigator.canNavigateBack()) {
+            supportingPaneNavigator.navigateBack()
+        }
         if (usingVerticalStrategy) {
-            VerticalDetailsPlayerScreen(
-                uiState = uiState,
-                onBackPress = onBackPress,
-                onPlayPress = onPlayPress,
-                onPausePress = onPausePress,
-                onAdvanceBy = onAdvanceBy,
-                onRewindBy = onRewindBy,
-                onNext = onNext,
-                onPrevious = onPrevious,
+            SupportingPaneScaffold(
+                value = supportingPaneNavigator.scaffoldValue,
+                directive = supportingPaneNavigator.scaffoldDirective,
+                mainPane = {
+                    PlayerContentTableTopTop(uiState = uiState)
+                },
+                supportingPane = {
+                    PlayerContentTableTopBottom(
+                        uiState = uiState,
+                        onBackPress = onBackPress,
+                        onPlayPress = onPlayPress,
+                        onPausePress = onPausePress,
+                        onAdvanceBy = onAdvanceBy,
+                        onRewindBy = onRewindBy,
+                        onNext = onNext,
+                        onPrevious = onPrevious,
+                    )
+                },
             )
         } else {
-            HorizontalDetailsPlayerScreen(
-                uiState = uiState,
-                onBackPress = onBackPress,
-                onPlayPress = onPlayPress,
-                onPausePress = onPausePress,
-                onAdvanceBy = onAdvanceBy,
-                onRewindBy = onRewindBy,
-                onNext = onNext,
-                onPrevious = onPrevious,
-            )
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .verticalGradientScrim(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
+                        startYPercentage = 1f,
+                        endYPercentage = 0f
+                    )
+                    .systemBarsPadding()
+                    .padding(horizontal = 8.dp)
+            ) {
+                TopAppBar(onBackPress = onBackPress)
+                SupportingPaneScaffold(
+                    value = supportingPaneNavigator.scaffoldValue,
+                    directive = supportingPaneNavigator.scaffoldDirective,
+                    mainPane = {
+                        PlayerContentBookStart(uiState = uiState)
+                    },
+                    supportingPane = {
+
+                        PlayerContentBookEnd(
+                            uiState = uiState,
+                            onPlayPress = onPlayPress,
+                            onPausePress = onPausePress,
+                            onAdvanceBy = onAdvanceBy,
+                            onRewindBy = onRewindBy,
+                            onNext = onNext,
+                            onPrevious = onPrevious,
+                        )
+
+                    },
+                )
+            }
         }
     } else {
         PlayerContentRegular(
@@ -236,96 +276,6 @@ fun PlayerContent(
             onNext = onNext,
             onPrevious = onPrevious,
             modifier,
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun VerticalDetailsPlayerScreen(
-    uiState: PlayerUiState,
-    onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val supportingPaneNavigator = rememberSupportingPaneScaffoldNavigator<Nothing>()
-    BackHandler(supportingPaneNavigator.canNavigateBack()) {
-        supportingPaneNavigator.navigateBack()
-    }
-
-    SupportingPaneScaffold(
-        value = supportingPaneNavigator.scaffoldValue,
-        directive = supportingPaneNavigator.scaffoldDirective,
-        mainPane = {
-            PlayerContentTableTopTop(uiState = uiState)
-        },
-        supportingPane = {
-            PlayerContentTableTopBottom(
-                uiState = uiState,
-                onBackPress = onBackPress,
-                onPlayPress = onPlayPress,
-                onPausePress = onPausePress,
-                onAdvanceBy = onAdvanceBy,
-                onRewindBy = onRewindBy,
-                onNext = onNext,
-                onPrevious = onPrevious,
-            )
-        },
-    )
-}
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun HorizontalDetailsPlayerScreen(
-    uiState: PlayerUiState,
-    onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val supportingPaneNavigator = rememberSupportingPaneScaffoldNavigator<Nothing>()
-    BackHandler(supportingPaneNavigator.canNavigateBack()) {
-        supportingPaneNavigator.navigateBack()
-    }
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalGradientScrim(
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
-                startYPercentage = 1f,
-                endYPercentage = 0f
-            )
-            .systemBarsPadding()
-            .padding(horizontal = 8.dp)
-    ) {
-        TopAppBar(onBackPress = onBackPress)
-        SupportingPaneScaffold(
-            value = supportingPaneNavigator.scaffoldValue,
-            directive = supportingPaneNavigator.scaffoldDirective,
-            mainPane = {
-                PlayerContentBookStart(uiState = uiState)
-            },
-            supportingPane = {
-
-                PlayerContentBookEnd(
-                    uiState = uiState,
-                    onPlayPress = onPlayPress,
-                    onPausePress = onPausePress,
-                    onAdvanceBy = onAdvanceBy,
-                    onRewindBy = onRewindBy,
-                    onNext = onNext,
-                    onPrevious = onPrevious,
-                )
-            },
         )
     }
 }
