@@ -49,76 +49,76 @@ fun JetcasterApp(
     displayFeatures: List<DisplayFeature>,
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
-    // if (appState.isOnline) {
-    NavHost(
-        navController = appState.navController,
-        startDestination = Screen.Home.route
-    ) {
-        composable(Screen.Home.route) { backStackEntry ->
-            Home(
-                navigateToPodcastDetails = { podcast ->
-                    appState.navigateToPodcastDetails(podcast.uri, backStackEntry)
-                },
-            )
-        }
-        composable(Screen.Player.route) { backStackEntry ->
-            val playerViewModel: PlayerViewModel = viewModel(
-                factory = PlayerViewModel.provideFactory(
-                    owner = backStackEntry,
-                    defaultArgs = backStackEntry.arguments
-                )
-            )
-            PlayerScreen(
-                windowSizeClass,
-                displayFeatures,
-                playerViewModel,
-                onBackPress = appState::navigateBack
-            )
-        }
-        composable(
-            route = Screen.PodcastDetails.route,
-            enterTransition = {
-                fadeIn(
-                    animationSpec = tween(
-                        300, easing = LinearEasing
-                    )
-                ) + slideIntoContainer(
-                    animationSpec = tween(300, easing = EaseIn),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Start
-                )
-            },
-            exitTransition = {
-                fadeOut(
-                    animationSpec = tween(
-                        300, easing = LinearEasing
-                    )
-                ) + slideOutOfContainer(
-                    animationSpec = tween(300, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End
+    if (appState.isOnline) {
+        NavHost(
+            navController = appState.navController,
+            startDestination = Screen.Home.route
+        ) {
+            composable(Screen.Home.route) { backStackEntry ->
+                Home(
+                    navigateToPodcastDetails = { podcast ->
+                        appState.navigateToPodcastDetails(podcast.uri, backStackEntry)
+                    },
                 )
             }
-        ) { backStackEntry ->
-            val podcastDetailsViewModel: PodcastDetailsViewModel = viewModel(
-                factory = PodcastDetailsViewModel.provideFactory(
-                    episodeStore = episodeStore,
-                    podcastStore = podcastStore,
-                    episodePlayer = episodePlayer,
-                    owner = backStackEntry,
-                    defaultArgs = backStackEntry.arguments
+            composable(Screen.Player.route) { backStackEntry ->
+                val playerViewModel: PlayerViewModel = viewModel(
+                    factory = PlayerViewModel.provideFactory(
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
                 )
-            )
-            PodcastDetailsScreen(
-                viewModel = podcastDetailsViewModel,
-                navigateToPlayer = { episodePlayer ->
-                    appState.navigateToPlayer(episodePlayer.uri, backStackEntry)
+                PlayerScreen(
+                    windowSizeClass,
+                    displayFeatures,
+                    playerViewModel,
+                    onBackPress = appState::navigateBack
+                )
+            }
+            composable(
+                route = Screen.PodcastDetails.route,
+                enterTransition = {
+                    fadeIn(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideIntoContainer(
+                        animationSpec = tween(300, easing = EaseIn),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
+                    )
                 },
-                navigateBack = appState::navigateBack
-            )
+                exitTransition = {
+                    fadeOut(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideOutOfContainer(
+                        animationSpec = tween(300, easing = EaseOut),
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                }
+            ) { backStackEntry ->
+                val podcastDetailsViewModel: PodcastDetailsViewModel = viewModel(
+                    factory = PodcastDetailsViewModel.provideFactory(
+                        episodeStore = episodeStore,
+                        podcastStore = podcastStore,
+                        episodePlayer = episodePlayer,
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
+                )
+                PodcastDetailsScreen(
+                    viewModel = podcastDetailsViewModel,
+                    navigateToPlayer = { episodePlayer ->
+                        appState.navigateToPlayer(episodePlayer.uri, backStackEntry)
+                    },
+                    navigateBack = appState::navigateBack
+                )
+            }
         }
+    } else {
+        OfflineDialog { appState.refreshOnline() }
     }
-//    } else {
-//        OfflineDialog { appState.refreshOnline() }
-//    }
 }
 
 @Composable
