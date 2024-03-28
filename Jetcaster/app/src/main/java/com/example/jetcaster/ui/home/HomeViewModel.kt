@@ -18,17 +18,17 @@ package com.example.jetcaster.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.Podcast
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
-import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
+import com.example.jetcaster.core.data.model.CategoryInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.LibraryInfo
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.core.data.model.toPlayerEpisode
+import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -49,8 +49,6 @@ class HomeViewModel(
     private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
     private val podcastStore: PodcastStore = Graph.podcastStore,
     private val episodeStore: EpisodeStore = Graph.episodeStore,
-    private val getLatestFollowedEpisodesUseCase: GetLatestFollowedEpisodesUseCase =
-        Graph.getLatestFollowedEpisodesUseCase,
     private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase =
         Graph.podcastCategoryFilterUseCase,
     private val filterableCategoriesUseCase: FilterableCategoriesUseCase =
@@ -58,13 +56,13 @@ class HomeViewModel(
     private val episodePlayer: EpisodePlayer = Graph.episodePlayer
 ) : ViewModel() {
     // Holds our currently selected podcast in the library
-    private val selectedLibraryPodcast = MutableStateFlow<Podcast?>(null)
+    private val selectedLibraryPodcast = MutableStateFlow<PodcastInfo?>(null)
     // Holds our currently selected home category
     private val selectedHomeCategory = MutableStateFlow(HomeCategory.Discover)
     // Holds the currently available home categories
     private val homeCategories = MutableStateFlow(HomeCategory.entries)
     // Holds our currently selected category
-    private val _selectedCategory = MutableStateFlow<Category?>(null)
+    private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
     // Holds our view state which the UI collects via [state]
     private val _state = MutableStateFlow(HomeViewState())
     // Holds the view state if the UI is refreshing for new data
@@ -112,11 +110,11 @@ class HomeViewModel(
                 HomeViewState(
                     homeCategories = homeCategories,
                     selectedHomeCategory = homeCategory,
-                    featuredPodcasts = podcasts.toPersistentList(),
+                    featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
                     refreshing = refreshing,
                     filterableCategoriesModel = filterableCategories,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    libraryEpisodes = libraryEpisodes,
+                    library = libraryEpisodes.asLibrary(),
                     errorMessage = null, /* TODO */
                 )
             }.catch { throwable ->
@@ -142,7 +140,7 @@ class HomeViewModel(
         }
     }
 
-    fun onCategorySelected(category: Category) {
+    fun onCategorySelected(category: CategoryInfo) {
         _selectedCategory.value = category
     }
 
@@ -150,38 +148,44 @@ class HomeViewModel(
         selectedHomeCategory.value = category
     }
 
-    fun onPodcastUnfollowed(podcastUri: String) {
+    fun onPodcastUnfollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
-            podcastStore.unfollowPodcast(podcastUri)
+            podcastStore.unfollowPodcast(podcast.uri)
         }
     }
 
-    fun onTogglePodcastFollowed(podcastUri: String) {
+    fun onTogglePodcastFollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
-            podcastStore.togglePodcastFollowed(podcastUri)
+            podcastStore.togglePodcastFollowed(podcast.uri)
         }
     }
 
-    fun onLibraryPodcastSelected(podcast: Podcast?) {
+    fun onLibraryPodcastSelected(podcast: PodcastInfo?) {
         selectedLibraryPodcast.value = podcast
     }
 
-    fun onQueuePodcast(episodeToPodcast: EpisodeToPodcast) {
-        episodePlayer.addToQueue(episodeToPodcast.toPlayerEpisode())
+    fun onQueueEpisode(episode: PlayerEpisode) {
+        episodePlayer.addToQueue(episode)
     }
 }
+
+private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
+    LibraryInfo(
+        podcast = this.firstOrNull()?.podcast?.asExternalModel(),
+        episodes = this.map { it.episode.asExternalModel() }
+    )
 
 enum class HomeCategory {
     Library, Discover
 }
 
 data class HomeViewState(
-    val featuredPodcasts: PersistentList<PodcastWithExtraInfo> = persistentListOf(),
+    val featuredPodcasts: PersistentList<PodcastInfo> = persistentListOf(),
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),
     val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),
     val podcastCategoryFilterResult: PodcastCategoryFilterResult = PodcastCategoryFilterResult(),
-    val libraryEpisodes: List<EpisodeToPodcast> = emptyList(),
+    val library: LibraryInfo = LibraryInfo(),
     val errorMessage: String? = null
 )

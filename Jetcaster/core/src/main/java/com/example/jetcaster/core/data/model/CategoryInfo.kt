@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.designsystem.theme
+package com.example.jetcaster.core.data.model
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.unit.dp
+import com.example.jetcaster.core.data.database.model.Category
 
-val JetcasterShapes = Shapes(
-    small = RoundedCornerShape(percent = 50),
-    medium = RoundedCornerShape(size = 8.dp),
-    large = RoundedCornerShape(size = 16.dp)
+data class CategoryInfo(
+    val id: Long,
+    val name: String
 )
+
+fun Category.asExternalModel() =
+    CategoryInfo(
+        id = id,
+        name = name
+    )

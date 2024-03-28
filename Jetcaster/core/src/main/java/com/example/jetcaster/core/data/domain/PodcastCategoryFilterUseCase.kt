@@ -17,7 +17,10 @@
 package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.model.CategoryInfo
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.model.asExternalModel
+import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
 import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -29,7 +32,7 @@ import kotlinx.coroutines.flow.flowOf
 class PodcastCategoryFilterUseCase(
     private val categoryStore: CategoryStore
 ) {
-    operator fun invoke(category: Category?): Flow<PodcastCategoryFilterResult> {
+    operator fun invoke(category: CategoryInfo?): Flow<PodcastCategoryFilterResult> {
         if (category == null) {
             return flowOf(PodcastCategoryFilterResult())
         }
@@ -47,8 +50,8 @@ class PodcastCategoryFilterUseCase(
         // Combine our flows and collect them into the view state StateFlow
         return combine(recentPodcastsFlow, episodesFlow) { topPodcasts, episodes ->
             PodcastCategoryFilterResult(
-                topPodcasts = topPodcasts,
-                episodes = episodes
+                topPodcasts = topPodcasts.map { it.asExternalModel() },
+                episodes = episodes.map { it.asPodcastCategoryEpisode() }
             )
         }
     }
