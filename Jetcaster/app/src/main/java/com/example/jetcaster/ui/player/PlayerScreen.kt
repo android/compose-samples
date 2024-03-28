@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.player
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -59,6 +60,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -93,9 +97,6 @@ import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
 import com.example.jetcaster.util.verticalGradientScrim
-import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
-import com.google.accompanist.adaptive.TwoPane
-import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
 import java.time.Duration
 
 /**
@@ -167,6 +168,7 @@ private fun PlayerScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
@@ -200,13 +202,18 @@ fun PlayerContent(
                     isSeparatingPosture(foldingFeature) &&
                         foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
                     )
-
+        val supportingPaneNavigator = rememberSupportingPaneScaffoldNavigator<Nothing>()
+        BackHandler(supportingPaneNavigator.canNavigateBack()) {
+            supportingPaneNavigator.navigateBack()
+        }
         if (usingVerticalStrategy) {
-            TwoPane(
-                first = {
+            SupportingPaneScaffold(
+                value = supportingPaneNavigator.scaffoldValue,
+                directive = supportingPaneNavigator.scaffoldDirective,
+                mainPane = {
                     PlayerContentTableTopTop(uiState = uiState)
                 },
-                second = {
+                supportingPane = {
                     PlayerContentTableTopBottom(
                         uiState = uiState,
                         onBackPress = onBackPress,
@@ -218,9 +225,6 @@ fun PlayerContent(
                         onPrevious = onPrevious,
                     )
                 },
-                strategy = VerticalTwoPaneStrategy(splitFraction = 0.5f),
-                displayFeatures = displayFeatures,
-                modifier = modifier,
             )
         } else {
             Column(
@@ -235,11 +239,14 @@ fun PlayerContent(
                     .padding(horizontal = 8.dp)
             ) {
                 TopAppBar(onBackPress = onBackPress)
-                TwoPane(
-                    first = {
+                SupportingPaneScaffold(
+                    value = supportingPaneNavigator.scaffoldValue,
+                    directive = supportingPaneNavigator.scaffoldDirective,
+                    mainPane = {
                         PlayerContentBookStart(uiState = uiState)
                     },
-                    second = {
+                    supportingPane = {
+
                         PlayerContentBookEnd(
                             uiState = uiState,
                             onPlayPress = onPlayPress,
@@ -250,8 +257,6 @@ fun PlayerContent(
                             onPrevious = onPrevious,
                         )
                     },
-                    strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
-                    displayFeatures = displayFeatures
                 )
             }
         }
