@@ -147,6 +147,9 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
 
         composable(Screen.Search.route) {
             SearchScreen(
+                onPodcastSelected = {
+                    jetcasterAppState.showPodcastDetails(it.podcast.uri)
+                },
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
                     .fillMaxSize()

@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.data.repository
 
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
@@ -47,6 +48,37 @@ class TestPodcastStore : PodcastStore {
         podcastFlow.map { podcasts ->
             podcasts.filter {
                 followedPodcasts.contains(it.uri)
+            }.map { p ->
+                PodcastWithExtraInfo().apply {
+                    podcast = p
+                    isFollowed = true
+                }
+            }
+        }
+
+    override fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> =
+        podcastFlow.map { podcastList ->
+            podcastList.filter {
+                it.title.contains(keyword)
+            }.map { p ->
+                PodcastWithExtraInfo().apply {
+                    podcast = p
+                    isFollowed = true
+                }
+            }
+        }
+
+    override fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> =
+        podcastFlow.map { podcastList ->
+            podcastList.filter {
+                it.title.contains(keyword)
             }.map { p ->
                 PodcastWithExtraInfo().apply {
                     podcast = p
