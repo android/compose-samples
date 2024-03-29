@@ -17,6 +17,7 @@
 package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.TestCategoryStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -55,7 +56,7 @@ class FilterableCategoriesUseCaseTest {
     @Test
     fun whenSelectedCategory_correctFilterableCategoryIsSelected() = runTest {
         val selectedCategory = testCategories[2]
-        val filterableCategories = useCase(selectedCategory).first()
+        val filterableCategories = useCase(selectedCategory.asExternalModel()).first()
         assertEquals(
             selectedCategory,
             filterableCategories.selectedCategory

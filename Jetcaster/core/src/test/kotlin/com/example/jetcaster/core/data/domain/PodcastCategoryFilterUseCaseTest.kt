@@ -21,13 +21,14 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.TestCategoryStore
-import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.OffsetDateTime
 
 class PodcastCategoryFilterUseCaseTest {
 
@@ -78,7 +79,7 @@ class PodcastCategoryFilterUseCaseTest {
 
     @Test
     fun whenCategoryNotNull_validFlow() = runTest {
-        val resultFlow = useCase(testCategory)
+        val resultFlow = useCase(testCategory.asExternalModel())
 
         categoriesStore.setEpisodesFromPodcast(testCategory.id, testEpisodeToPodcast)
         categoriesStore.setPodcastsInCategory(testCategory.id, testPodcasts)
