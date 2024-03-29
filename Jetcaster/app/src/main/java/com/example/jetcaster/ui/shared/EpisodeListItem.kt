@@ -25,12 +25,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.PlayCircleFilled
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -61,7 +61,7 @@ import java.time.format.FormatStyle
 fun EpisodeListItem(
     episode: EpisodeInfo,
     podcast: PodcastInfo,
-    onClick: (PodcastInfo) -> Unit,
+    onClick: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
@@ -69,7 +69,7 @@ fun EpisodeListItem(
 ) {
     ConstraintLayout(
         modifier = modifier.clickable {
-            onClick(podcast)
+            onClick(episode)
         }
     ) {
         val (
@@ -153,7 +153,7 @@ fun EpisodeListItem(
             modifier = Modifier
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false, radius = 24.dp)
+                    indication = ripple(bounded = false, radius = 24.dp)
                 ) { /* TODO */ }
                 .size(48.dp)
                 .padding(6.dp)

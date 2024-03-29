@@ -18,6 +18,7 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -56,13 +57,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -84,6 +89,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.CategoryInfo
+import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
@@ -93,42 +99,81 @@ import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
+import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
+import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun Home(
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
-    Surface(Modifier.fillMaxSize()) {
-        Home(
-            featuredPodcasts = viewState.featuredPodcasts,
-            isRefreshing = viewState.refreshing,
-            homeCategories = viewState.homeCategories,
-            selectedHomeCategory = viewState.selectedHomeCategory,
-            filterableCategoriesModel = viewState.filterableCategoriesModel,
-            podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
-            library = viewState.library,
-            onHomeCategorySelected = viewModel::onHomeCategorySelected,
-            onCategorySelected = viewModel::onCategorySelected,
-            onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
-            navigateToPodcastDetails = navigateToPodcastDetails,
-            onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-            onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
-            onQueueEpisode = viewModel::onQueueEpisode,
-            modifier = Modifier.fillMaxSize()
-        )
+    val navigator = rememberSupportingPaneScaffoldNavigator<String>(
+        isDestinationHistoryAware = false
+    )
+    BackHandler(enabled = navigator.canNavigateBack()) {
+        navigator.navigateBack()
     }
+    SupportingPaneScaffold(
+        value = navigator.scaffoldValue,
+        directive = navigator.scaffoldDirective,
+        supportingPane = {
+            val podcastUri = navigator.currentDestination?.content ?:
+                viewState.featuredPodcasts.firstOrNull()?.uri
+            AnimatedPane {
+                if (podcastUri.isNullOrEmpty()) {
+                    // TODO
+                    Text(text = "")
+                } else {
+                    val podcastDetailsViewModel = PodcastDetailsViewModel(podcastUri = podcastUri)
+                    PodcastDetailsScreen(
+                        viewModel = podcastDetailsViewModel,
+                        navigateToPlayer = navigateToPlayer,
+                        navigateBack = {
+                            if (navigator.canNavigateBack()) {
+                                navigator.navigateBack()
+                            }
+                        }
+                    )
+                }
+            }
+        },
+        mainPane = {
+            Home(
+                featuredPodcasts = viewState.featuredPodcasts,
+                isRefreshing = viewState.refreshing,
+                homeCategories = viewState.homeCategories,
+                selectedHomeCategory = viewState.selectedHomeCategory,
+                filterableCategoriesModel = viewState.filterableCategoriesModel,
+                podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
+                library = viewState.library,
+                onHomeCategorySelected = viewModel::onHomeCategorySelected,
+                onCategorySelected = viewModel::onCategorySelected,
+                onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
+                navigateToPodcastDetails = {
+                    navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                },
+                navigateToPlayer = navigateToPlayer,
+                onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+                onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
+                onQueueEpisode = viewModel::onQueueEpisode,
+                modifier = Modifier.fillMaxSize()
+            )
+        },
+        modifier = Modifier.fillMaxSize()
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -189,6 +234,7 @@ fun Home(
     onHomeCategorySelected: (HomeCategory) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -233,6 +279,7 @@ fun Home(
             onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
             navigateToPodcastDetails = navigateToPodcastDetails,
+            navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
             onLibraryPodcastSelected = onLibraryPodcastSelected,
             onQueueEpisode = {
@@ -261,6 +308,7 @@ private fun HomeContent(
     onHomeCategorySelected: (HomeCategory) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -311,6 +359,7 @@ private fun HomeContent(
                 libraryItems(
                     library = library,
                     navigateToPodcastDetails = navigateToPodcastDetails,
+                    navigateToPlayer = navigateToPlayer,
                     onQueueEpisode = onQueueEpisode
                 )
             }
@@ -320,6 +369,7 @@ private fun HomeContent(
                     filterableCategoriesModel = filterableCategoriesModel,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPodcastDetails = navigateToPodcastDetails,
+                    navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed,
                     onQueueEpisode = onQueueEpisode
@@ -535,6 +585,7 @@ fun PreviewHomeContent() {
             onCategorySelected = {},
             onPodcastUnfollowed = {},
             navigateToPodcastDetails = {},
+            navigateToPlayer = {},
             onHomeCategorySelected = {},
             onTogglePodcastFollowed = {},
             onLibraryPodcastSelected = {},
