@@ -50,11 +50,20 @@ class PodcastDetailsViewModel(
     private val episodeStore: EpisodeStore = Graph.episodeStore,
     private val episodePlayer: EpisodePlayer = Graph.episodePlayer,
     private val podcastStore: PodcastStore = Graph.podcastStore,
-    savedStateHandle: SavedStateHandle
+    private val podcastUri: String
 ) : ViewModel() {
 
-    private val podcastUri: String =
-        Uri.decode(savedStateHandle.get<String>(Screen.ARG_PODCAST_URI)!!)
+    constructor(
+        episodeStore: EpisodeStore = Graph.episodeStore,
+        episodePlayer: EpisodePlayer = Graph.episodePlayer,
+        podcastStore: PodcastStore = Graph.podcastStore,
+        savedStateHandle: SavedStateHandle
+    ) : this(
+        episodeStore = episodeStore,
+        episodePlayer = episodePlayer,
+        podcastStore = podcastStore,
+        podcastUri = Uri.decode(savedStateHandle.get<String>(Screen.ARG_PODCAST_URI)!!)
+    )
 
     val state: StateFlow<PodcastUiState> =
         combine(
