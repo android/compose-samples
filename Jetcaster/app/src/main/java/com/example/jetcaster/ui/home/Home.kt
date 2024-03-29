@@ -133,7 +133,7 @@ fun Home(
             AnimatedPane {
                 if (podcastUri.isNullOrEmpty()) {
                     // TODO
-                    Text(text = "")
+                    Text(text = "Empty State")
                 } else {
                     val podcastDetailsViewModel = PodcastDetailsViewModel(podcastUri = podcastUri)
                     PodcastDetailsScreen(

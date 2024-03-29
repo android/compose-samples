@@ -69,6 +69,7 @@ import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.shared.EpisodeListItem
+import com.example.jetcaster.ui.shared.Loading
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,15 +80,31 @@ fun PodcastDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    PodcastDetailsScreen(
-        podcast = state.podcast,
-        episodes = state.episodes,
-        toggleSubscribe = viewModel::toggleSusbcribe,
-        onQueueEpisode = viewModel::onQueueEpisode,
-        navigateToPlayer = navigateToPlayer,
-        navigateBack = navigateBack,
-        modifier = modifier,
-    )
+    when (val s = state) {
+        is PodcastUiState.Loading -> {
+            PodcastDetailsLoadingScreen(
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        is PodcastUiState.Ready -> {
+            PodcastDetailsScreen(
+                podcast = s.podcast,
+                episodes = s.episodes,
+                toggleSubscribe = viewModel::toggleSusbcribe,
+                onQueueEpisode = viewModel::onQueueEpisode,
+                navigateToPlayer = navigateToPlayer,
+                navigateBack = navigateBack,
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PodcastDetailsLoadingScreen(
+    modifier: Modifier = Modifier
+) {
+    Loading(modifier = modifier)
 }
 
 @Composable

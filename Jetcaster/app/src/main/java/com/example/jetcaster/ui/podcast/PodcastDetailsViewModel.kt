@@ -38,10 +38,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class PodcastUiState(
-    val podcast: PodcastInfo = PodcastInfo(),
-    val episodes: List<EpisodeInfo> = emptyList()
-)
+sealed interface PodcastUiState {
+    data object Loading : PodcastUiState
+    data class Ready(
+        val podcast: PodcastInfo,
+        val episodes: List<EpisodeInfo>,
+    ) : PodcastUiState
+}
 
 /**
  * ViewModel that handles the business logic and screen state of the Podcast details screen.
@@ -71,14 +74,14 @@ class PodcastDetailsViewModel(
             episodeStore.episodesInPodcast(podcastUri)
         ) { podcast, episodeToPodcasts ->
             val episodes = episodeToPodcasts.map { it.episode.asExternalModel() }
-            PodcastUiState(
+            PodcastUiState.Ready(
                 podcast = podcast.podcast.asExternalModel().copy(isSubscribed = podcast.isFollowed),
                 episodes = episodes,
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = PodcastUiState()
+            initialValue = PodcastUiState.Loading
         )
 
     fun toggleSusbcribe(podcast: PodcastInfo) {
