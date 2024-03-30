@@ -89,20 +89,18 @@ import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.core.data.model.asExternalModel
-import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Composable
 fun Home(
@@ -515,21 +513,17 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 fun PreviewHomeContent() {
     JetcasterTheme {
         Home(
-            featuredPodcasts = PreviewPodcastsWithExtraInfo.map {
-                it.asExternalModel()
-            }.toPersistentList(),
+            featuredPodcasts = PreviewPodcasts.toPersistentList(),
             isRefreshing = false,
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
             filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories.map { it.asExternalModel() },
-                selectedCategory = PreviewCategories.firstOrNull()?.asExternalModel()
+                categories = PreviewCategories,
+                selectedCategory = PreviewCategories.firstOrNull()
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcastsWithExtraInfo.map { it.asExternalModel() },
-                episodes = PreviewEpisodeToPodcasts.map {
-                    it.asPodcastCategoryEpisode()
-                }
+                topPodcasts = PreviewPodcasts,
+                episodes = PreviewPodcastCategoryEpisodes
             ),
             library = LibraryInfo(),
             onCategorySelected = {},

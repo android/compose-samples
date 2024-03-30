@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,6 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
@@ -181,7 +181,7 @@ fun PodcastDetailsHeaderItem(
                     .data(podcast.imageUrl)
                     .crossfade(true)
                     .build(),
-                contentDescription = stringResource(id = R.string.cd_podcast_image),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(148.dp)
@@ -260,17 +260,15 @@ fun PodcastDetailsHeaderItemButtons(
 ) {
     Row(modifier.padding(top = 16.dp)) {
         Button(
-            onClick = onClick
+            onClick = onClick,
+            modifier = Modifier.semantics(mergeDescendants = true) { }
         ) {
             Icon(
                 imageVector = if (isSubscribed)
                     Icons.Default.Check
                 else
                     Icons.Default.Add,
-                contentDescription = if (isSubscribed)
-                    stringResource(id = R.string.unsubscribe)
-                else
-                    stringResource(id = R.string.subscribe)
+                contentDescription = null
             )
             Text(
                 text = if (isSubscribed)
@@ -317,7 +315,7 @@ fun PodcastDetailsTopAppBar(
 @Composable
 fun PodcastDetailsHeaderItemPreview() {
     PodcastDetailsHeaderItem(
-        podcast = PreviewPodcasts[0].asExternalModel(),
+        podcast = PreviewPodcasts[0],
         toggleSubscribe = { },
     )
 }
@@ -326,8 +324,8 @@ fun PodcastDetailsHeaderItemPreview() {
 @Composable
 fun PodcastDetailsScreenPreview() {
     PodcastDetailsScreen(
-        podcast = PreviewPodcasts[0].asExternalModel(),
-        episodes = PreviewEpisodes.map { it.asExternalModel() },
+        podcast = PreviewPodcasts[0],
+        episodes = PreviewEpisodes,
         toggleSubscribe = { },
         onQueueEpisode = { },
         navigateToPlayer = { },

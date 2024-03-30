@@ -47,7 +47,6 @@ import coil.request.ImageRequest
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
@@ -181,8 +180,8 @@ private fun TopPodcastRowItem(
 fun PreviewEpisodeListItem() {
     JetcasterTheme {
         EpisodeListItem(
-            episode = PreviewEpisodes[0].asExternalModel(),
-            podcast = PreviewPodcasts[0].asExternalModel(),
+            episode = PreviewEpisodes[0],
+            podcast = PreviewPodcasts[0],
             onClick = { },
             onQueueEpisode = { },
             modifier = Modifier.fillMaxWidth()
