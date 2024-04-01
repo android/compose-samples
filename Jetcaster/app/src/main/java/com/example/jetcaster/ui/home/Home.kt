@@ -133,11 +133,10 @@ fun Home(
                 val podcastUri = navigator.currentDestination?.content
                     ?: viewState.featuredPodcasts.firstOrNull()?.uri
                 AnimatedPane {
-                    if (podcastUri.isNullOrEmpty()) {
-                        // TODO
-                        Text(text = "Empty State")
-                    } else {
-                        val podcastDetailsViewModel = PodcastDetailsViewModel(podcastUri = podcastUri)
+                    if (!podcastUri.isNullOrEmpty()) {
+                        val podcastDetailsViewModel = PodcastDetailsViewModel(
+                            podcastUri = podcastUri
+                        )
                         PodcastDetailsScreen(
                             viewModel = podcastDetailsViewModel,
                             navigateToPlayer = navigateToPlayer,
