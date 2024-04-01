@@ -26,14 +26,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
+import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
+import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -55,14 +59,17 @@ internal fun Catalog(
     podcastList: PodcastList,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
+    state: TvLazyListState = rememberTvLazyListState(),
     header: (@Composable () -> Unit)? = null,
 ) {
     TvLazyColumn(
         modifier = modifier,
         contentPadding = JetcasterAppDefaults.overScanMargin.catalog.intoPaddingValues(),
         verticalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogSectionGap)
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
+        state = state,
     ) {
         if (header != null) {
             item { header() }
@@ -77,13 +84,14 @@ internal fun Catalog(
         item {
             LatestEpisodeSection(
                 episodeList = latestEpisodeList,
-                onEpisodeSelected = {},
+                onEpisodeSelected = onEpisodeSelected,
                 title = stringResource(R.string.label_latest_episode)
             )
         }
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PodcastSection(
     podcastList: PodcastList,
@@ -95,10 +103,15 @@ private fun PodcastSection(
         title = title,
         modifier = modifier
     ) {
-        PodcastRow(podcastList = podcastList, onPodcastSelected = onPodcastSelected)
+        PodcastRow(
+            podcastList = podcastList,
+            onPodcastSelected = onPodcastSelected,
+            modifier = Modifier.focusRestorer()
+        )
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun LatestEpisodeSection(
     episodeList: EpisodeList,
@@ -110,7 +123,11 @@ private fun LatestEpisodeSection(
         modifier = modifier,
         title = title
     ) {
-        EpisodeRow(episodeList = episodeList, onEpisodeSelected = onEpisodeSelected)
+        EpisodeRow(
+            episodeList = episodeList,
+            onEpisodeSelected = onEpisodeSelected,
+            modifier = Modifier.focusRestorer()
+        )
     }
 }
 
@@ -141,7 +158,7 @@ private fun PodcastRow(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     horizontalArrangement: Arrangement.Horizontal =
-        Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogItemGap),
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
 ) {
     TvLazyRow(
         contentPadding = contentPadding,
@@ -189,7 +206,7 @@ private fun EpisodeRow(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     horizontalArrangement: Arrangement.Horizontal =
-        Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogItemGap),
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.episodeRow),
 ) {
     TvLazyRow(
         contentPadding = contentPadding,
@@ -261,7 +278,7 @@ private fun EpisodeMetaData(episode: EpisodeToPodcast, modifier: Modifier = Modi
         Text(text = episode.podcast.title, style = MaterialTheme.typography.bodySmall)
         if (duration != null) {
             Spacer(
-                modifier = Modifier.height(JetcasterAppDefaults.gapSettings.catalogItemGap * 0.8f)
+                modifier = Modifier.height(JetcasterAppDefaults.gap.podcastRow * 0.8f)
             )
             EpisodeDataAndDuration(offsetDateTime = publishedDate, duration = duration)
         }

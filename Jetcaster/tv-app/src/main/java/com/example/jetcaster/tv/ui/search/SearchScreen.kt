@@ -162,7 +162,7 @@ private fun Controls(
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.itemGap),
+        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
         modifier = modifier
     ) {
         KeywordInput(
@@ -232,8 +232,8 @@ private fun CategorySelection(
 ) {
     FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.chipGap),
-        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.chipGap),
+        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.chip),
+        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.chip),
     ) {
         categorySelectionList.forEach {
             FilterChip(
@@ -262,8 +262,8 @@ private fun SearchResult(
     TvLazyVerticalGrid(
         columns = TvGridCells.Fixed(4),
         horizontalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogItemGap),
-        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogItemGap),
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
+        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         modifier = modifier,
     ) {
         item(span = { TvGridItemSpan(maxLineSpan) }) {

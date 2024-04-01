@@ -21,12 +21,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -35,18 +32,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -57,16 +48,17 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.ListItem
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import coil.compose.AsyncImage
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
+import com.example.jetcaster.tv.ui.component.Background
 import com.example.jetcaster.tv.ui.component.ButtonWithIcon
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration
 import com.example.jetcaster.tv.ui.component.ErrorState
 import com.example.jetcaster.tv.ui.component.Loading
+import com.example.jetcaster.tv.ui.component.Thumbnail
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
@@ -74,6 +66,7 @@ fun PodcastScreen(
     podcastScreenViewModel: PodcastScreenViewModel,
     backToHomeScreen: () -> Unit,
     playEpisode: (Episode) -> Unit,
+    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val uiState by podcastScreenViewModel.uiStateFlow.collectAsState()
@@ -87,7 +80,7 @@ fun PodcastScreen(
             subscribe = podcastScreenViewModel::subscribe,
             unsubscribe = podcastScreenViewModel::unsubscribe,
             playEpisode = playEpisode,
-            modifier = modifier,
+            showEpisodeDetails = showEpisodeDetails,
         )
     }
 }
@@ -100,10 +93,11 @@ private fun PodcastDetailsWithBackground(
     subscribe: (Podcast, Boolean) -> Unit,
     unsubscribe: (Podcast, Boolean) -> Unit,
     playEpisode: (Episode) -> Unit,
+    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
-    Box {
+    Box(modifier = modifier) {
         Background(podcast = podcast)
         PodcastDetails(
             podcast = podcast,
@@ -113,12 +107,15 @@ private fun PodcastDetailsWithBackground(
             unsubscribe = unsubscribe,
             playEpisode = playEpisode,
             focusRequester = focusRequester,
-            modifier = modifier
+            showEpisodeDetails = showEpisodeDetails,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
         )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PodcastDetails(
     podcast: Podcast,
@@ -127,13 +124,14 @@ private fun PodcastDetails(
     subscribe: (Podcast, Boolean) -> Unit,
     unsubscribe: (Podcast, Boolean) -> Unit,
     playEpisode: (Episode) -> Unit,
+    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogSectionGap)
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn)
     ) {
         PodcastInfo(
             podcast = podcast,
@@ -145,6 +143,7 @@ private fun PodcastDetails(
         PodcastEpisodeList(
             episodeList = episodeList,
             onEpisodeSelected = { playEpisode(it.episode) },
+            onDetailsRequested = showEpisodeDetails,
             modifier = Modifier
                 .focusRequester(focusRequester)
                 .focusRestorer()
@@ -155,31 +154,6 @@ private fun PodcastDetails(
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
-}
-
-@Composable
-private fun Background(
-    podcast: Podcast,
-    modifier: Modifier = Modifier,
-) {
-    AsyncImage(
-        model = podcast.imageUrl,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxWidth()
-            .drawWithCache {
-                val overlay = Brush.radialGradient(
-                    listOf(Color.Black, Color.Transparent),
-                    center = Offset(0f, size.height),
-                    radius = size.width * 1.5f
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(overlay, blendMode = BlendMode.Multiply)
-                }
-            }
-    )
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
@@ -195,17 +169,7 @@ private fun PodcastInfo(
     val description = podcast.description
 
     Column(modifier = modifier) {
-        AsyncImage(
-            model = podcast.imageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .width(JetcasterAppDefaults.cardWidth.medium)
-                .aspectRatio(1f)
-                .clip(
-                    RoundedCornerShape(12.dp)
-                )
-        )
+        Thumbnail(podcast = podcast)
         Spacer(modifier = Modifier.height(16.dp))
         if (author != null) {
             Text(
@@ -231,7 +195,7 @@ private fun PodcastInfo(
             subscribe,
             unsubscribe,
             modifier = Modifier
-                .padding(top = JetcasterAppDefaults.gapSettings.catalogItemGap)
+                .padding(top = JetcasterAppDefaults.gap.podcastRow)
         )
     }
 }
@@ -273,14 +237,19 @@ private fun ToggleSubscriptionButton(
 private fun PodcastEpisodeList(
     episodeList: EpisodeList,
     onEpisodeSelected: (EpisodeToPodcast) -> Unit,
+    onDetailsRequested: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier
 ) {
     TvLazyColumn(
-        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gapSettings.catalogItemGap),
+        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         modifier = modifier
     ) {
         items(episodeList) {
-            EpisodeListItem(episodeToPodcast = it, onEpisodeSelected = onEpisodeSelected)
+            EpisodeListItem(
+                episodeToPodcast = it,
+                onEpisodeSelected = onEpisodeSelected,
+                onInfoClicked = onDetailsRequested
+            )
         }
     }
 }
@@ -290,16 +259,19 @@ private fun PodcastEpisodeList(
 private fun EpisodeListItem(
     episodeToPodcast: EpisodeToPodcast,
     onEpisodeSelected: (EpisodeToPodcast) -> Unit,
+    onInfoClicked: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false
 ) {
     ListItem(
         selected = selected,
-        onClick = { onEpisodeSelected(episodeToPodcast) },
+        onClick = { onInfoClicked(episodeToPodcast) },
+        onLongClick = { onEpisodeSelected(episodeToPodcast) },
         modifier = modifier
     ) {
         Row(
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 12.dp, end = 16.dp)
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 12.dp, end = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             EpisodeMetaData(episode = episodeToPodcast.episode)
         }
