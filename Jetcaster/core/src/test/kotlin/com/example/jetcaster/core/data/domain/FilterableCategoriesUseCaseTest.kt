@@ -58,7 +58,7 @@ class FilterableCategoriesUseCaseTest {
         val selectedCategory = testCategories[2]
         val filterableCategories = useCase(selectedCategory.asExternalModel()).first()
         assertEquals(
-            selectedCategory,
+            selectedCategory.asExternalModel(),
             filterableCategories.selectedCategory
         )
     }
