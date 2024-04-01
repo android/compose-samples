@@ -25,16 +25,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.model.EpisodeInfo
+import com.example.jetcaster.core.data.model.LibraryInfo
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.designsystem.theme.Keyline1
-import com.example.jetcaster.ui.home.category.EpisodeListItem
+import com.example.jetcaster.ui.shared.EpisodeListItem
 
 fun LazyListScope.libraryItems(
-    episodes: List<EpisodeToPodcast>,
-    navigateToPlayer: (String) -> Unit,
-    onQueuePodcast: (EpisodeToPodcast) -> Unit
+    library: LibraryInfo,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit
 ) {
-    if (episodes.isEmpty()) {
+    val podcast = library.podcast
+    if (podcast == null || library.episodes.isEmpty()) {
         // TODO: Empty state
         return
     }
@@ -51,14 +54,14 @@ fun LazyListScope.libraryItems(
     }
 
     itemsIndexed(
-        episodes,
-        key = { _, item -> item.episode.uri }
+        library.episodes,
+        key = { _, item -> item.uri }
     ) { index, item ->
         EpisodeListItem(
-            episode = item.episode,
-            podcast = item.podcast,
+            episode = item,
+            podcast = podcast,
             onClick = navigateToPlayer,
-            onQueuePodcast = onQueuePodcast,
+            onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth(),
             showDivider = index != 0
         )

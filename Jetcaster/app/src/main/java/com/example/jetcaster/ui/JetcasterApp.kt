@@ -16,6 +16,13 @@
 
 package com.example.jetcaster.ui
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,9 +34,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.window.layout.DisplayFeature
 import com.example.jetcaster.R
+import com.example.jetcaster.core.data.di.Graph.episodePlayer
+import com.example.jetcaster.core.data.di.Graph.episodeStore
+import com.example.jetcaster.core.data.di.Graph.podcastStore
 import com.example.jetcaster.ui.home.Home
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.player.PlayerViewModel
+import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
+import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 
 @Composable
 fun JetcasterApp(
@@ -44,8 +56,11 @@ fun JetcasterApp(
         ) {
             composable(Screen.Home.route) { backStackEntry ->
                 Home(
-                    navigateToPlayer = { episodeUri ->
-                        appState.navigateToPlayer(episodeUri, backStackEntry)
+                    navigateToPodcastDetails = { podcast ->
+                        appState.navigateToPodcastDetails(podcast.uri, backStackEntry)
+                    },
+                    navigateToPlayer = { episode ->
+                        appState.navigateToPlayer(episode.uri, backStackEntry)
                     }
                 )
             }
@@ -61,6 +76,46 @@ fun JetcasterApp(
                     displayFeatures,
                     playerViewModel,
                     onBackPress = appState::navigateBack
+                )
+            }
+            composable(
+                route = Screen.PodcastDetails.route,
+                enterTransition = {
+                    fadeIn(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideIntoContainer(
+                        animationSpec = tween(300, easing = EaseIn),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
+                    )
+                },
+                exitTransition = {
+                    fadeOut(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideOutOfContainer(
+                        animationSpec = tween(300, easing = EaseOut),
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                }
+            ) { backStackEntry ->
+                val podcastDetailsViewModel: PodcastDetailsViewModel = viewModel(
+                    factory = PodcastDetailsViewModel.provideFactory(
+                        episodeStore = episodeStore,
+                        podcastStore = podcastStore,
+                        episodePlayer = episodePlayer,
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
+                )
+                PodcastDetailsScreen(
+                    viewModel = podcastDetailsViewModel,
+                    navigateToPlayer = { episodePlayer ->
+                        appState.navigateToPlayer(episodePlayer.uri, backStackEntry)
+                    },
+                    navigateBack = appState::navigateBack
                 )
             }
         }

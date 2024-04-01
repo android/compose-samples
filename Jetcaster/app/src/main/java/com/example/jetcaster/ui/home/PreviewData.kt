@@ -16,46 +16,38 @@
 
 package com.example.jetcaster.ui.home
 
-import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.database.model.Episode
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.Podcast
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.CategoryInfo
+import com.example.jetcaster.core.data.model.EpisodeInfo
+import com.example.jetcaster.core.data.model.PodcastCategoryEpisode
+import com.example.jetcaster.core.data.model.PodcastInfo
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import kotlinx.collections.immutable.toPersistentList
 
 val PreviewCategories = listOf(
-    Category(name = "Crime"),
-    Category(name = "News"),
-    Category(name = "Comedy")
+    CategoryInfo(id = 1, name = "Crime"),
+    CategoryInfo(id = 2, name = "News"),
+    CategoryInfo(id = 3, name = "Comedy")
 )
 
 val PreviewPodcasts = listOf(
-    Podcast(
+    PodcastInfo(
         uri = "fakeUri://podcast/1",
         title = "Android Developers Backstage",
-        author = "Android Developers"
+        author = "Android Developers",
+        isSubscribed = true,
+        lastEpisodeDate = OffsetDateTime.now()
     ),
-    Podcast(
+    PodcastInfo(
         uri = "fakeUri://podcast/2",
         title = "Google Developers podcast",
-        author = "Google Developers"
+        author = "Google Developers",
+        lastEpisodeDate = OffsetDateTime.now()
     )
 )
 
-val PreviewPodcastsWithExtraInfo = PreviewPodcasts.mapIndexed { index, podcast ->
-    PodcastWithExtraInfo().apply {
-        this.podcast = podcast
-        this.lastEpisodeDate = OffsetDateTime.now()
-        this.isFollowed = index % 2 == 0
-    }
-}.toPersistentList()
-
 val PreviewEpisodes = listOf(
-    Episode(
+    EpisodeInfo(
         uri = "fakeUri://episode/1",
-        podcastUri = PreviewPodcasts[0].uri,
         title = "Episode 140: Bubbles!",
         summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur " +
             "Tsurkan from the System UI team about... Bubbles!",
@@ -66,9 +58,9 @@ val PreviewEpisodes = listOf(
     )
 )
 
-val PreviewEpisodeToPodcasts = listOf(
-    EpisodeToPodcast().apply {
-        episode = PreviewEpisodes.first()
-        _podcasts = PreviewPodcasts
-    }
+val PreviewPodcastCategoryEpisodes = listOf(
+    PodcastCategoryEpisode(
+        podcast = PreviewPodcasts[0],
+        episode = PreviewEpisodes[0],
+    )
 )
