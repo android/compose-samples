@@ -25,6 +25,7 @@ import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.tv.model.EpisodeList
+import com.example.jetcaster.tv.ui.Screen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -40,9 +41,13 @@ class PodcastScreenViewModel(
     episodeStore: EpisodeStore = Graph.episodeStore,
 ) : ViewModel() {
 
-    private val podcastUri = handle.get<String>("podcastUri") ?: "uri://no/podcast/is/specified"
+    private val podcastUri = handle.get<String>(Screen.Podcast.PARAMETER_NAME)
 
-    private val podcastFlow = podcastStore.podcastWithUri(podcastUri).stateIn(
+    private val podcastFlow = if (podcastUri != null) {
+        podcastStore.podcastWithUri(podcastUri)
+    } else {
+        flowOf(null)
+    }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         null

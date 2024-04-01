@@ -53,7 +53,7 @@ fun ErrorState(
             Button(
                 onClick = backToHome,
                 modifier
-                    .padding(top = JetcasterAppDefaults.gapSettings.catalogItemGap)
+                    .padding(top = JetcasterAppDefaults.gap.podcastRow)
                     .focusRequester(focusRequester)
             ) {
                 Text(text = stringResource(R.string.label_back_to_home))

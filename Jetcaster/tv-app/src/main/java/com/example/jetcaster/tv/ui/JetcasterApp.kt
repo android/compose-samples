@@ -39,6 +39,8 @@ import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.Text
 import com.example.jetcaster.tv.ui.discover.DiscoverScreen
+import com.example.jetcaster.tv.ui.episode.EpisodeScreen
+import com.example.jetcaster.tv.ui.episode.EpisodeScreenViewModel
 import com.example.jetcaster.tv.ui.library.LibraryScreen
 import com.example.jetcaster.tv.ui.podcast.PodcastScreen
 import com.example.jetcaster.tv.ui.podcast.PodcastScreenViewModel
@@ -124,6 +126,9 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     showPodcastDetails = {
                         jetcasterAppState.showPodcastDetails(it.uri)
                     },
+                    showEpisodeDetails = {
+                        jetcasterAppState.showEpisodeDetails(it.episode.uri)
+                    },
                     modifier = Modifier
                         .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
                         .fillMaxSize()
@@ -137,6 +142,9 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     navigateToDiscover = jetcasterAppState::navigateToDiscover,
                     showPodcastDetails = {
                         jetcasterAppState.showPodcastDetails(it.podcast.uri)
+                    },
+                    showEpisodeDetails = {
+                        jetcasterAppState.showEpisodeDetails(it.episode.uri)
                     },
                     modifier = Modifier
                         .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
@@ -164,9 +172,23 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                 podcastScreenViewModel = podcastScreenViewModel,
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
                 playEpisode = {},
+                showEpisodeDetails = { jetcasterAppState.showEpisodeDetails(it.episode.uri) },
                 modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.podcastDetails.intoPaddingValues())
+                    .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
                     .fillMaxSize(),
+            )
+        }
+
+        composable(Screen.Episode.route) {
+            val episodeScreenViewModel: EpisodeScreenViewModel = viewModel(
+                factory = EpisodeScreenViewModel.factory
+            )
+            EpisodeScreen(
+                playEpisode = {
+                    jetcasterAppState.playEpisode(it.uri)
+                },
+                backToHome = jetcasterAppState::navigateToDiscover,
+                episodeScreenViewModel = episodeScreenViewModel,
             )
         }
 

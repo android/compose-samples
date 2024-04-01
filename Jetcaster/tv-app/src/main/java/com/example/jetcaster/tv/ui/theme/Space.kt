@@ -18,20 +18,28 @@ package com.example.jetcaster.tv.ui.theme
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
 internal data object JetcasterAppDefaults {
     val overScanMargin = OverScanMarginSettings()
-    val gapSettings = GapSettings()
+    val gap = GapSettings()
     val cardWidth = CardWidth()
     val padding = PaddingSettings()
+    val thumbnailSize = ThumbnailSize()
 }
 
 internal data class OverScanMarginSettings(
     val default: OverScanMargin = OverScanMargin(),
-    val podcastDetails: OverScanMargin = OverScanMargin(top = 40.dp, bottom = 40.dp),
+    val catalog: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
+    val episode: OverScanMargin = OverScanMargin(start = 80.dp, end = 80.dp),
     val drawer: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
-    val catalog: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp)
+    val podcast: OverScanMargin = OverScanMargin(
+        top = 40.dp,
+        bottom = 40.dp,
+        start = 80.dp,
+        end = 80.dp
+    ),
 )
 
 internal data class OverScanMargin(
@@ -51,14 +59,21 @@ internal data class CardWidth(
     val small: Dp = 124.dp
 )
 
+internal data class ThumbnailSize(
+    val episode: DpSize = DpSize(266.dp, 266.dp),
+)
+
 internal data class PaddingSettings(
     val tab: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
     val sectionTitle: PaddingValues = PaddingValues(bottom = 16.dp)
 )
 
 internal data class GapSettings(
-    val catalogItemGap: Dp = 20.dp,
-    val catalogSectionGap: Dp = 40.dp,
-    val itemGap: Dp = 16.dp,
-    val chipGap: Dp = 8.dp
+    val chip: Dp = 8.dp,
+    val episodeRow: Dp = 20.dp,
+    val item: Dp = 16.dp,
+    val paragraph: Dp = 16.dp,
+    val podcastRow: Dp = 20.dp,
+    val section: Dp = 40.dp,
+    val twoColumn: Dp = 40.dp,
 )
