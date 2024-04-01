@@ -16,44 +16,51 @@
 
 package com.example.jetcaster.ui.shared
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.PlayCircleFilled
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.Visibility
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.designsystem.theme.Keyline1
+import com.example.jetcaster.ui.home.PreviewEpisodes
+import com.example.jetcaster.ui.home.PreviewPodcasts
+import com.example.jetcaster.ui.theme.JetcasterTheme
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -64,87 +71,50 @@ fun EpisodeListItem(
     onClick: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    showDivider: Boolean = true,
     showPodcastImage: Boolean = true,
 ) {
-    ConstraintLayout(
-        modifier = modifier.clickable {
-            onClick(episode)
+    Box(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
+        Surface(
+            shape = MaterialTheme.shapes.large,
+            color = MaterialTheme.colorScheme.surfaceContainer
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clickable {
+                        onClick(episode)
+                    },
+            ) {
+                // Top Part
+                EpisodeListItemHeader(
+                    episode = episode,
+                    podcast = podcast,
+                    showPodcastImage = showPodcastImage,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                // Bottom Part
+                EpisodeListItemFooter(
+                    episode = episode,
+                    podcast = podcast,
+                    onQueueEpisode = onQueueEpisode,
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun EpisodeListItemFooter(
+    episode: EpisodeInfo,
+    podcast: PodcastInfo,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
     ) {
-        val (
-            divider, episodeTitle, podcastTitle, image, playIcon,
-            date, addPlaylist, overflow
-        ) = createRefs()
-
-        if (showDivider) {
-            HorizontalDivider(
-                Modifier.constrainAs(divider) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                    width = Dimension.fillToConstraints
-                }
-            )
-        }
-
-        // If we have an image Url, we can show it using Coil
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(podcast.imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(56.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .constrainAs(image) {
-                    end.linkTo(parent.end, 16.dp)
-                    top.linkTo(parent.top, 16.dp)
-                    visibility = if (showPodcastImage) Visibility.Visible else Visibility.Gone
-                },
-        )
-
-        Text(
-            text = episode.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.constrainAs(episodeTitle) {
-                linkTo(
-                    start = parent.start,
-                    end = image.start,
-                    startMargin = Keyline1,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-                top.linkTo(parent.top, 16.dp)
-                height = Dimension.preferredWrapContent
-                width = Dimension.preferredWrapContent
-            }
-        )
-
-        val titleImageBarrier = createBottomBarrier(podcastTitle, image)
-
-        Text(
-            text = podcast.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.constrainAs(podcastTitle) {
-                linkTo(
-                    start = parent.start,
-                    end = image.start,
-                    startMargin = Keyline1,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-                top.linkTo(episodeTitle.bottom, 6.dp)
-                height = Dimension.preferredWrapContent
-                width = Dimension.preferredWrapContent
-            }
-        )
-
         Image(
             imageVector = Icons.Rounded.PlayCircleFilled,
             contentDescription = stringResource(R.string.cd_play),
@@ -153,16 +123,11 @@ fun EpisodeListItem(
             modifier = Modifier
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false, radius = 24.dp)
+                    indication = ripple(bounded = false, radius = 24.dp)
                 ) { /* TODO */ }
                 .size(48.dp)
                 .padding(6.dp)
                 .semantics { role = Role.Button }
-                .constrainAs(playIcon) {
-                    start.linkTo(parent.start, Keyline1)
-                    top.linkTo(titleImageBarrier, margin = 10.dp)
-                    bottom.linkTo(parent.bottom, 10.dp)
-                }
         )
 
         val duration = episode.duration
@@ -183,17 +148,9 @@ fun EpisodeListItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.constrainAs(date) {
-                centerVerticallyTo(playIcon)
-                linkTo(
-                    start = playIcon.end,
-                    startMargin = 12.dp,
-                    end = addPlaylist.start,
-                    endMargin = 16.dp,
-                    bias = 0f // float this towards the start
-                )
-                width = Dimension.preferredWrapContent
-            }
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .weight(1f)
         )
 
         IconButton(
@@ -205,10 +162,6 @@ fun EpisodeListItem(
                     )
                 )
             },
-            modifier = Modifier.constrainAs(addPlaylist) {
-                end.linkTo(overflow.start)
-                centerVerticallyTo(playIcon)
-            }
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
@@ -219,10 +172,6 @@ fun EpisodeListItem(
 
         IconButton(
             onClick = { /* TODO */ },
-            modifier = Modifier.constrainAs(overflow) {
-                end.linkTo(parent.end, 8.dp)
-                centerVerticallyTo(playIcon)
-            }
         ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
@@ -230,6 +179,88 @@ fun EpisodeListItem(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+}
+
+@Composable
+fun EpisodeListItemHeader(
+    episode: EpisodeInfo,
+    podcast: PodcastInfo,
+    showPodcastImage: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier) {
+        Column(
+            modifier =
+            Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+        ) {
+            Text(
+                text = episode.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 6.dp)
+            )
+
+            Text(
+                text = podcast.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
+        if (showPodcastImage) {
+            EpisodeListItemImage(
+                podcast = podcast,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(MaterialTheme.shapes.medium)
+            )
+        }
+    }
+}
+
+@Composable
+private fun EpisodeListItemImage(
+    podcast: PodcastInfo,
+    modifier: Modifier = Modifier
+) {
+    if (LocalInspectionMode.current) {
+        Box(modifier = modifier.background(MaterialTheme.colorScheme.primary))
+    } else {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(podcast.imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+        )
+    }
+}
+
+@Preview(
+    name = "Light Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun EpisodeListItemPreview() {
+    JetcasterTheme {
+        EpisodeListItem(
+            episode = PreviewEpisodes[0],
+            podcast = PreviewPodcasts[0],
+            onClick = {},
+            onQueueEpisode = {}
+        )
     }
 }
 
