@@ -48,7 +48,7 @@ val PreviewPodcasts = listOf(
 val PreviewEpisodes = listOf(
     EpisodeInfo(
         uri = "fakeUri://episode/1",
-        title = "Episode 140: Bubbles!",
+        title = "Episode 140: Lorem ipsum dolor",
         summary = "In this episode, Romain, Chet and Tor talked with Mady Melor and Artur " +
             "Tsurkan from the System UI team about... Bubbles!",
         published = OffsetDateTime.of(
