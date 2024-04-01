@@ -63,7 +63,6 @@ fun LazyListScope.libraryItems(
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth(),
-            showDivider = index != 0
         )
     }
 }

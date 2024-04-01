@@ -65,7 +65,6 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
@@ -132,21 +131,19 @@ fun Home(
             supportingPane = {
                 val podcastUri = navigator.currentDestination?.content
                     ?: viewState.featuredPodcasts.firstOrNull()?.uri
-                AnimatedPane {
-                    if (!podcastUri.isNullOrEmpty()) {
-                        val podcastDetailsViewModel = PodcastDetailsViewModel(
-                            podcastUri = podcastUri
-                        )
-                        PodcastDetailsScreen(
-                            viewModel = podcastDetailsViewModel,
-                            navigateToPlayer = navigateToPlayer,
-                            navigateBack = {
-                                if (navigator.canNavigateBack()) {
-                                    navigator.navigateBack()
-                                }
+                if (!podcastUri.isNullOrEmpty()) {
+                    val podcastDetailsViewModel = PodcastDetailsViewModel(
+                        podcastUri = podcastUri
+                    )
+                    PodcastDetailsScreen(
+                        viewModel = podcastDetailsViewModel,
+                        navigateToPlayer = navigateToPlayer,
+                        navigateBack = {
+                            if (navigator.canNavigateBack()) {
+                                navigator.navigateBack()
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             },
             mainPane = {
