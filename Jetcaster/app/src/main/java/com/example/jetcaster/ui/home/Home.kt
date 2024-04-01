@@ -103,12 +103,12 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -128,8 +128,8 @@ fun Home(
         value = navigator.scaffoldValue,
         directive = navigator.scaffoldDirective,
         supportingPane = {
-            val podcastUri = navigator.currentDestination?.content ?:
-                viewState.featuredPodcasts.firstOrNull()?.uri
+            val podcastUri = navigator.currentDestination?.content
+                ?: viewState.featuredPodcasts.firstOrNull()?.uri
             AnimatedPane {
                 if (podcastUri.isNullOrEmpty()) {
                     // TODO
