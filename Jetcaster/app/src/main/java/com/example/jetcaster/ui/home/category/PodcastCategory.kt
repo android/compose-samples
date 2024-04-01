@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.PodcastInfo
@@ -57,6 +58,7 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 fun LazyListScope.podcastCategory(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
 ) {
@@ -73,7 +75,7 @@ fun LazyListScope.podcastCategory(
         EpisodeListItem(
             episode = item.episode,
             podcast = item.podcast,
-            onClick = navigateToPodcastDetails,
+            onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth()
         )

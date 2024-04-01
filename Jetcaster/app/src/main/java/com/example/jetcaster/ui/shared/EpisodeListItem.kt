@@ -61,7 +61,7 @@ import java.time.format.FormatStyle
 fun EpisodeListItem(
     episode: EpisodeInfo,
     podcast: PodcastInfo,
-    onClick: (PodcastInfo) -> Unit,
+    onClick: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
@@ -69,7 +69,7 @@ fun EpisodeListItem(
 ) {
     ConstraintLayout(
         modifier = modifier.clickable {
-            onClick(podcast)
+            onClick(episode)
         }
     ) {
         val (

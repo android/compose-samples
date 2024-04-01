@@ -25,15 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
+import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
-import com.example.jetcaster.core.data.model.PodcastInfo
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.shared.EpisodeListItem
 
 fun LazyListScope.libraryItems(
     library: LibraryInfo,
-    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit
 ) {
     val podcast = library.podcast
@@ -60,7 +60,7 @@ fun LazyListScope.libraryItems(
         EpisodeListItem(
             episode = item,
             podcast = podcast,
-            onClick = navigateToPodcastDetails,
+            onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth(),
             showDivider = index != 0

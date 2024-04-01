@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.CategoryInfo
+import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
@@ -49,6 +50,7 @@ fun LazyListScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -73,6 +75,7 @@ fun LazyListScope.discoverItems(
     podcastCategory(
         podcastCategoryFilterResult = podcastCategoryFilterResult,
         navigateToPodcastDetails = navigateToPodcastDetails,
+        navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = onTogglePodcastFollowed,
         onQueueEpisode = onQueueEpisode,
     )

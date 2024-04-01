@@ -154,7 +154,7 @@ fun PodcastDetailsContent(
             EpisodeListItem(
                 episode = episode,
                 podcast = podcast,
-                onClick = { navigateToPlayer(episode) },
+                onClick = navigateToPlayer,
                 onQueueEpisode = onQueueEpisode,
                 modifier = Modifier.fillMaxWidth(),
                 showPodcastImage = false

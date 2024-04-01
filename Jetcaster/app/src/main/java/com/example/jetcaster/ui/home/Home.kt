@@ -84,6 +84,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.CategoryInfo
+import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
@@ -105,6 +106,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Home(
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
@@ -121,6 +123,7 @@ fun Home(
             onCategorySelected = viewModel::onCategorySelected,
             onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
             navigateToPodcastDetails = navigateToPodcastDetails,
+            navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
             onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
             onQueueEpisode = viewModel::onQueueEpisode,
@@ -187,6 +190,7 @@ fun Home(
     onHomeCategorySelected: (HomeCategory) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -231,6 +235,7 @@ fun Home(
             onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
             navigateToPodcastDetails = navigateToPodcastDetails,
+            navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
             onLibraryPodcastSelected = onLibraryPodcastSelected,
             onQueueEpisode = {
@@ -259,6 +264,7 @@ private fun HomeContent(
     onHomeCategorySelected: (HomeCategory) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -308,7 +314,7 @@ private fun HomeContent(
             HomeCategory.Library -> {
                 libraryItems(
                     library = library,
-                    navigateToPodcastDetails = navigateToPodcastDetails,
+                    navigateToPlayer = navigateToPlayer,
                     onQueueEpisode = onQueueEpisode
                 )
             }
@@ -318,6 +324,7 @@ private fun HomeContent(
                     filterableCategoriesModel = filterableCategoriesModel,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPodcastDetails = navigateToPodcastDetails,
+                    navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed,
                     onQueueEpisode = onQueueEpisode
@@ -529,6 +536,7 @@ fun PreviewHomeContent() {
             onCategorySelected = {},
             onPodcastUnfollowed = {},
             navigateToPodcastDetails = {},
+            navigateToPlayer = {},
             onHomeCategorySelected = {},
             onTogglePodcastFollowed = {},
             onLibraryPodcastSelected = {},
