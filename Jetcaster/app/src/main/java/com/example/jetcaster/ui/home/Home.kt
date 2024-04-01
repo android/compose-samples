@@ -57,6 +57,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
@@ -103,12 +104,12 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.verticalGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -124,54 +125,56 @@ fun Home(
     BackHandler(enabled = navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
-    SupportingPaneScaffold(
-        value = navigator.scaffoldValue,
-        directive = navigator.scaffoldDirective,
-        supportingPane = {
-            val podcastUri = navigator.currentDestination?.content
-                ?: viewState.featuredPodcasts.firstOrNull()?.uri
-            AnimatedPane {
-                if (podcastUri.isNullOrEmpty()) {
-                    // TODO
-                    Text(text = "Empty State")
-                } else {
-                    val podcastDetailsViewModel = PodcastDetailsViewModel(podcastUri = podcastUri)
-                    PodcastDetailsScreen(
-                        viewModel = podcastDetailsViewModel,
-                        navigateToPlayer = navigateToPlayer,
-                        navigateBack = {
-                            if (navigator.canNavigateBack()) {
-                                navigator.navigateBack()
+    Surface {
+        SupportingPaneScaffold(
+            value = navigator.scaffoldValue,
+            directive = navigator.scaffoldDirective,
+            supportingPane = {
+                val podcastUri = navigator.currentDestination?.content
+                    ?: viewState.featuredPodcasts.firstOrNull()?.uri
+                AnimatedPane {
+                    if (podcastUri.isNullOrEmpty()) {
+                        // TODO
+                        Text(text = "Empty State")
+                    } else {
+                        val podcastDetailsViewModel = PodcastDetailsViewModel(podcastUri = podcastUri)
+                        PodcastDetailsScreen(
+                            viewModel = podcastDetailsViewModel,
+                            navigateToPlayer = navigateToPlayer,
+                            navigateBack = {
+                                if (navigator.canNavigateBack()) {
+                                    navigator.navigateBack()
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
-            }
-        },
-        mainPane = {
-            Home(
-                featuredPodcasts = viewState.featuredPodcasts,
-                isRefreshing = viewState.refreshing,
-                homeCategories = viewState.homeCategories,
-                selectedHomeCategory = viewState.selectedHomeCategory,
-                filterableCategoriesModel = viewState.filterableCategoriesModel,
-                podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
-                library = viewState.library,
-                onHomeCategorySelected = viewModel::onHomeCategorySelected,
-                onCategorySelected = viewModel::onCategorySelected,
-                onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
-                navigateToPodcastDetails = {
-                    navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
-                },
-                navigateToPlayer = navigateToPlayer,
-                onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
-                onQueueEpisode = viewModel::onQueueEpisode,
-                modifier = Modifier.fillMaxSize()
-            )
-        },
-        modifier = Modifier.fillMaxSize()
-    )
+            },
+            mainPane = {
+                Home(
+                    featuredPodcasts = viewState.featuredPodcasts,
+                    isRefreshing = viewState.refreshing,
+                    homeCategories = viewState.homeCategories,
+                    selectedHomeCategory = viewState.selectedHomeCategory,
+                    filterableCategoriesModel = viewState.filterableCategoriesModel,
+                    podcastCategoryFilterResult = viewState.podcastCategoryFilterResult,
+                    library = viewState.library,
+                    onHomeCategorySelected = viewModel::onHomeCategorySelected,
+                    onCategorySelected = viewModel::onCategorySelected,
+                    onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
+                    navigateToPodcastDetails = {
+                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                    },
+                    navigateToPlayer = navigateToPlayer,
+                    onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
+                    onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
+                    onQueueEpisode = viewModel::onQueueEpisode,
+                    modifier = Modifier.fillMaxSize()
+                )
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
