@@ -18,7 +18,6 @@ package com.example.jetcaster.ui.podcast
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -58,10 +57,6 @@ class PodcastDetailsViewModel(
 ) : ViewModel() {
 
     private val podcastUri = Uri.decode(savedStateHandle.get<String>(Screen.ARG_PODCAST_URI)!!)
-
-    init {
-        Log.d("JetcasterVM", "PodcatURI: $podcastUri")
-    }
 
     val state: StateFlow<PodcastUiState> =
         combine(
