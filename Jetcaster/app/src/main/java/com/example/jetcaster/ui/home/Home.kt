@@ -20,7 +20,6 @@ package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,6 +40,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
@@ -51,10 +51,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -68,6 +69,8 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -79,10 +82,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -101,8 +105,9 @@ import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
+import com.example.jetcaster.util.fullWidthItem
+import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
-import com.example.jetcaster.util.verticalGradientScrim
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -112,7 +117,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun Home(
+fun MainScreen(
+    windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
@@ -146,7 +152,8 @@ fun Home(
                 }
             },
             mainPane = {
-                Home(
+                HomeScreen(
+                    windowSizeClass = windowSizeClass,
                     featuredPodcasts = viewState.featuredPodcasts,
                     isRefreshing = viewState.refreshing,
                     homeCategories = viewState.homeCategories,
@@ -174,50 +181,61 @@ fun Home(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeAppBar(
-    backgroundColor: Color,
-    modifier: Modifier = Modifier
+private fun HomeAppBar(
+    selectedHomeCategory: HomeCategory,
+    homeCategories: List<HomeCategory>,
+    onHomeCategorySelected: (HomeCategory) -> Unit,
+    modifier: Modifier = Modifier,
+    showHomeCategoryToggle: Boolean = false,
 ) {
     TopAppBar(
         title = {
-            Row {
-                Image(
-                    painter = painterResource(R.drawable.ic_logo),
-                    contentDescription = null
-                )
-                Icon(
-                    painter = painterResource(R.drawable.ic_text_logo),
-                    contentDescription = stringResource(R.string.app_name),
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .heightIn(max = 24.dp)
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 16.dp)
+            ) {
+                if (showHomeCategoryToggle) {
+                    HomeCategoryTabs(
+                        categories = homeCategories,
+                        selectedCategory = selectedHomeCategory,
+                        onCategorySelected = onHomeCategorySelected,
+                        modifier = Modifier.width(240.dp),
+                        showHorizontalLine = false
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                SearchBar(
+                    query = "",
+                    onQueryChange = {},
+                    placeholder = {
+                        Text(stringResource(id = R.string.search_for_a_podcast))
+                    },
+                    onSearch = {},
+                    active = false,
+                    onActiveChange = {},
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = stringResource(R.string.cd_account)
+                        )
+                    },
+                ) { }
             }
         },
-        actions = {
-            IconButton(
-                onClick = { /* TODO: Open search */ }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = stringResource(R.string.cd_search)
-                )
-            }
-            IconButton(
-                onClick = { /* TODO: Open account? */ }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = stringResource(R.string.cd_account)
-                )
-            }
-        },
-        modifier = modifier.background(backgroundColor)
+        modifier = modifier.padding(vertical = 8.dp)
     )
 }
 
 @Composable
-fun Home(
+private fun HomeScreen(
+    windowSizeClass: WindowSizeClass,
     featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
@@ -250,8 +268,11 @@ fun Home(
         ),
         topBar = {
             HomeAppBar(
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.fillMaxWidth()
+                selectedHomeCategory = selectedHomeCategory,
+                homeCategories = homeCategories,
+                onHomeCategorySelected = onHomeCategorySelected,
+                showHomeCategoryToggle = !windowSizeClass.isCompact,
+                modifier = Modifier.fillMaxWidth(),
             )
         },
         snackbarHost = {
@@ -259,9 +280,9 @@ fun Home(
         }
     ) { contentPadding ->
         // Main Content
-        val scrimColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
         val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
         HomeContent(
+            showGrid = !windowSizeClass.isCompact,
             featuredPodcasts = featuredPodcasts,
             isRefreshing = isRefreshing,
             selectedHomeCategory = selectedHomeCategory,
@@ -269,7 +290,6 @@ fun Home(
             filterableCategoriesModel = filterableCategoriesModel,
             podcastCategoryFilterResult = podcastCategoryFilterResult,
             library = library,
-            scrimColor = scrimColor,
             modifier = Modifier.padding(contentPadding),
             onPodcastUnfollowed = onPodcastUnfollowed,
             onHomeCategorySelected = onHomeCategorySelected,
@@ -288,9 +308,9 @@ fun Home(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContent(
+    showGrid: Boolean,
     featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
@@ -298,7 +318,6 @@ private fun HomeContent(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
-    scrimColor: Color,
     modifier: Modifier = Modifier,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
     onHomeCategorySelected: (HomeCategory) -> Unit,
@@ -317,6 +336,70 @@ private fun HomeContent(
                 onLibraryPodcastSelected(podcast)
             }
     }
+
+    // Note: ideally, `HomeContentColumn` and `HomeContentGrid` would be the same implementation
+    // (i.e. a grid). However, LazyVerticalGrid does not have the concept of a sticky header.
+    // So we are using two different composables here depending on the provided window size class.
+    // See: https://issuetracker.google.com/issues/231557184
+    if (showGrid) {
+        HomeContentGrid(
+            pagerState = pagerState,
+            featuredPodcasts = featuredPodcasts,
+            isRefreshing = isRefreshing,
+            selectedHomeCategory = selectedHomeCategory,
+            filterableCategoriesModel = filterableCategoriesModel,
+            podcastCategoryFilterResult = podcastCategoryFilterResult,
+            library = library,
+            modifier = modifier,
+            onPodcastUnfollowed = onPodcastUnfollowed,
+            onCategorySelected = onCategorySelected,
+            navigateToPodcastDetails = navigateToPodcastDetails,
+            navigateToPlayer = navigateToPlayer,
+            onTogglePodcastFollowed = onTogglePodcastFollowed,
+            onQueueEpisode = onQueueEpisode,
+        )
+    } else {
+        HomeContentColumn(
+            pagerState = pagerState,
+            featuredPodcasts = featuredPodcasts,
+            isRefreshing = isRefreshing,
+            selectedHomeCategory = selectedHomeCategory,
+            homeCategories = homeCategories,
+            filterableCategoriesModel = filterableCategoriesModel,
+            podcastCategoryFilterResult = podcastCategoryFilterResult,
+            library = library,
+            modifier = modifier,
+            onPodcastUnfollowed = onPodcastUnfollowed,
+            onHomeCategorySelected = onHomeCategorySelected,
+            onCategorySelected = onCategorySelected,
+            navigateToPodcastDetails = navigateToPodcastDetails,
+            navigateToPlayer = navigateToPlayer,
+            onTogglePodcastFollowed = onTogglePodcastFollowed,
+            onQueueEpisode = onQueueEpisode,
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun HomeContentColumn(
+    pagerState: PagerState,
+    featuredPodcasts: PersistentList<PodcastInfo>,
+    isRefreshing: Boolean,
+    selectedHomeCategory: HomeCategory,
+    homeCategories: List<HomeCategory>,
+    filterableCategoriesModel: FilterableCategoriesModel,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
+    library: LibraryInfo,
+    modifier: Modifier = Modifier,
+    onPodcastUnfollowed: (PodcastInfo) -> Unit,
+    onHomeCategorySelected: (HomeCategory) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         if (featuredPodcasts.isNotEmpty()) {
             item {
@@ -327,11 +410,6 @@ private fun HomeContent(
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalGradientScrim(
-                            color = scrimColor,
-                            startYPercentage = 1f,
-                            endYPercentage = 0f
-                        )
                 )
             }
         }
@@ -348,6 +426,68 @@ private fun HomeContent(
                     onCategorySelected = onHomeCategorySelected
                 )
             }
+        }
+
+        when (selectedHomeCategory) {
+            HomeCategory.Library -> {
+                libraryItems(
+                    library = library,
+                    navigateToPlayer = navigateToPlayer,
+                    onQueueEpisode = onQueueEpisode
+                )
+            }
+
+            HomeCategory.Discover -> {
+                discoverItems(
+                    filterableCategoriesModel = filterableCategoriesModel,
+                    podcastCategoryFilterResult = podcastCategoryFilterResult,
+                    navigateToPodcastDetails = navigateToPodcastDetails,
+                    navigateToPlayer = navigateToPlayer,
+                    onCategorySelected = onCategorySelected,
+                    onTogglePodcastFollowed = onTogglePodcastFollowed,
+                    onQueueEpisode = onQueueEpisode
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeContentGrid(
+    pagerState: PagerState,
+    featuredPodcasts: PersistentList<PodcastInfo>,
+    isRefreshing: Boolean,
+    selectedHomeCategory: HomeCategory,
+    filterableCategoriesModel: FilterableCategoriesModel,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
+    library: LibraryInfo,
+    modifier: Modifier = Modifier,
+    onPodcastUnfollowed: (PodcastInfo) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(362.dp),
+        modifier = modifier.fillMaxSize()
+    ) {
+        if (featuredPodcasts.isNotEmpty()) {
+            fullWidthItem {
+                FollowedPodcastItem(
+                    pagerState = pagerState,
+                    items = featuredPodcasts,
+                    onPodcastUnfollowed = onPodcastUnfollowed,
+                    navigateToPodcastDetails = navigateToPodcastDetails,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+        }
+
+        if (isRefreshing) {
+            // TODO show a progress indicator or similar
         }
 
         when (selectedHomeCategory) {
@@ -402,8 +542,13 @@ private fun HomeCategoryTabs(
     categories: List<HomeCategory>,
     selectedCategory: HomeCategory,
     onCategorySelected: (HomeCategory) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showHorizontalLine: Boolean = true,
 ) {
+    if (categories.isEmpty()) {
+        return
+    }
+
     val selectedIndex = categories.indexOfFirst { it == selectedCategory }
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         HomeCategoryTabIndicator(
@@ -414,7 +559,12 @@ private fun HomeCategoryTabs(
     TabRow(
         selectedTabIndex = selectedIndex,
         indicator = indicator,
-        modifier = modifier
+        modifier = modifier,
+        divider = {
+            if (showHorizontalLine) {
+                HorizontalDivider()
+            }
+        }
     ) {
         categories.forEachIndexed { index, category ->
             Tab(
@@ -435,7 +585,7 @@ private fun HomeCategoryTabs(
 }
 
 @Composable
-fun HomeCategoryTabIndicator(
+private fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface
 ) {
@@ -447,12 +597,10 @@ fun HomeCategoryTabIndicator(
     )
 }
 
-private val FEATURED_PODCAST_IMAGE_WIDTH_DP = 160.dp
-private val FEATURED_PODCAST_IMAGE_HEIGHT_DP = 180.dp
+private val FEATURED_PODCAST_IMAGE_SIZE_DP = 160.dp
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FollowedPodcasts(
+private fun FollowedPodcasts(
     pagerState: PagerState,
     items: PersistentList<PodcastInfo>,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
@@ -465,7 +613,7 @@ fun FollowedPodcasts(
     // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
     // stable, this implementation can be updated.
     BoxWithConstraints(modifier) {
-        val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_WIDTH_DP) / 2
+        val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
         HorizontalPager(
             state = pagerState,
             contentPadding = PaddingValues(
@@ -473,7 +621,7 @@ fun FollowedPodcasts(
                 vertical = 16.dp,
             ),
             pageSpacing = 24.dp,
-            pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_WIDTH_DP)
+            pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP)
         ) { page ->
             val podcast = items[page]
             FollowedPodcastCarouselItem(
@@ -502,8 +650,7 @@ private fun FollowedPodcastCarouselItem(
     Column(modifier) {
         Box(
             Modifier
-                .height(FEATURED_PODCAST_IMAGE_HEIGHT_DP)
-                .width(FEATURED_PODCAST_IMAGE_WIDTH_DP)
+                .size(FEATURED_PODCAST_IMAGE_SIZE_DP)
                 .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
@@ -555,11 +702,62 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
-@Composable
 @Preview
-fun PreviewHomeContent() {
+@Composable
+private fun HomeAppBarPreview() {
     JetcasterTheme {
-        Home(
+        HomeAppBar(
+            homeCategories = emptyList(),
+            onHomeCategorySelected = {},
+            selectedHomeCategory = HomeCategory.Discover,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+private val CompactWindowSizeClass = WindowSizeClass.calculateFromSize(
+    size = DpSize(width = 360.dp, height = 780.dp)
+)
+
+@Preview(device = Devices.PHONE)
+@Composable
+private fun PreviewHomeContent() {
+    JetcasterTheme {
+        HomeScreen(
+            windowSizeClass = CompactWindowSizeClass,
+            featuredPodcasts = PreviewPodcasts.toPersistentList(),
+            isRefreshing = false,
+            homeCategories = HomeCategory.entries,
+            selectedHomeCategory = HomeCategory.Discover,
+            filterableCategoriesModel = FilterableCategoriesModel(
+                categories = PreviewCategories,
+                selectedCategory = PreviewCategories.firstOrNull()
+            ),
+            podcastCategoryFilterResult = PodcastCategoryFilterResult(
+                topPodcasts = PreviewPodcasts,
+                episodes = PreviewPodcastCategoryEpisodes
+            ),
+            library = LibraryInfo(),
+            onCategorySelected = {},
+            onPodcastUnfollowed = {},
+            navigateToPodcastDetails = {},
+            navigateToPlayer = {},
+            onHomeCategorySelected = {},
+            onTogglePodcastFollowed = {},
+            onLibraryPodcastSelected = {},
+            onQueueEpisode = {}
+        )
+    }
+}
+
+@Preview(device = Devices.FOLDABLE)
+@Preview(device = Devices.TABLET)
+@Preview(device = Devices.DESKTOP)
+@Composable
+private fun PreviewHomeContentExpanded() {
+    JetcasterTheme {
+        HomeScreen(
+            windowSizeClass = CompactWindowSizeClass,
             featuredPodcasts = PreviewPodcasts.toPersistentList(),
             isRefreshing = false,
             homeCategories = HomeCategory.entries,
@@ -587,7 +785,7 @@ fun PreviewHomeContent() {
 
 @Composable
 @Preview
-fun PreviewPodcastCard() {
+private fun PreviewPodcastCard() {
     JetcasterTheme {
         FollowedPodcastCarouselItem(
             modifier = Modifier.size(128.dp),

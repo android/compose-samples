@@ -21,12 +21,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -70,6 +72,7 @@ import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.ui.shared.Loading
+import com.example.jetcaster.util.fullWidthItem
 import kotlinx.coroutines.launch
 
 @Composable
@@ -157,10 +160,11 @@ fun PodcastDetailsContent(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(362.dp),
         modifier.fillMaxSize()
     ) {
-        item {
+        fullWidthItem {
             PodcastDetailsHeaderItem(
                 podcast = podcast,
                 toggleSubscribe = toggleSubscribe,
@@ -295,6 +299,8 @@ fun PodcastDetailsHeaderItemButtons(
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
+
+        Spacer(modifier = Modifier.weight(1f))
 
         IconButton(
             onClick = { /* TODO */ },

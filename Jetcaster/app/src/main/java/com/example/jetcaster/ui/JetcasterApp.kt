@@ -37,7 +37,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.data.di.Graph.episodePlayer
 import com.example.jetcaster.core.data.di.Graph.episodeStore
 import com.example.jetcaster.core.data.di.Graph.podcastStore
-import com.example.jetcaster.ui.home.Home
+import com.example.jetcaster.ui.home.MainScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.player.PlayerViewModel
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
@@ -55,7 +55,8 @@ fun JetcasterApp(
             startDestination = Screen.Home.route
         ) {
             composable(Screen.Home.route) { backStackEntry ->
-                Home(
+                MainScreen(
+                    windowSizeClass = windowSizeClass,
                     navigateToPlayer = { episode ->
                         appState.navigateToPlayer(episode.uri, backStackEntry)
                     }

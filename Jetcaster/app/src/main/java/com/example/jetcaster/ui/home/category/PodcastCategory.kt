@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +56,7 @@ import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
+import com.example.jetcaster.util.fullWidthItem
 
 fun LazyListScope.podcastCategory(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
@@ -78,6 +81,33 @@ fun LazyListScope.podcastCategory(
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth()
+        )
+    }
+}
+
+fun LazyGridScope.podcastCategory(
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+) {
+    fullWidthItem {
+        CategoryPodcasts(
+            topPodcasts = podcastCategoryFilterResult.topPodcasts,
+            navigateToPodcastDetails = navigateToPodcastDetails,
+            onTogglePodcastFollowed = onTogglePodcastFollowed
+        )
+    }
+
+    val episodes = podcastCategoryFilterResult.episodes
+    items(episodes, key = { it.episode.uri }) { item ->
+        EpisodeListItem(
+            episode = item.episode,
+            podcast = item.podcast,
+            onClick = navigateToPlayer,
+            onQueueEpisode = onQueueEpisode,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

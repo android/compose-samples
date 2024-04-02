@@ -199,14 +199,16 @@ fun EpisodeListItemHeader(
             Text(
                 text = episode.title,
                 maxLines = 2,
+                minLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 6.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             )
 
             Text(
                 text = podcast.title,
                 maxLines = 2,
+                minLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall,
             )
