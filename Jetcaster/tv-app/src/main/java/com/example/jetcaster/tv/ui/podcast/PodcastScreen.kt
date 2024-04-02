@@ -32,7 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -263,33 +262,29 @@ private fun EpisodeListItem(
     modifier: Modifier = Modifier,
     selected: Boolean = false
 ) {
+    val duration = episodeToPodcast.episode.duration
+
     ListItem(
         selected = selected,
         onClick = { onInfoClicked(episodeToPodcast) },
         onLongClick = { onEpisodeSelected(episodeToPodcast) },
+        supportingContent = {
+            if (duration != null) {
+                EpisodeDataAndDuration(episodeToPodcast.episode.published, duration)
+            }
+        },
         modifier = modifier
     ) {
-        Row(
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 12.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            EpisodeMetaData(episode = episodeToPodcast.episode)
-        }
+        EpisodeTitle(episode = episodeToPodcast.episode)
     }
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun EpisodeMetaData(episode: Episode, modifier: Modifier = Modifier) {
-    val published = episode.published
-    val duration = episode.duration
-    Column(modifier = modifier) {
-        Text(
-            text = episode.title,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        if (duration != null) {
-            EpisodeDataAndDuration(published, duration)
-        }
-    }
+private fun EpisodeTitle(episode: Episode, modifier: Modifier = Modifier) {
+    Text(
+        text = episode.title,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = modifier
+    )
 }
