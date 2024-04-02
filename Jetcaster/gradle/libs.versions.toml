@@ -63,7 +63,7 @@ composeMaterial = "1.2.1"
 composeFoundation = "1.2.1"
 coreSplashscreen = "1.0.1"
 horologistComposeTools = "0.4.8"
-horologist = "0.5.25"
+horologist = "0.6.6"
 roborazzi = "1.11.0"
 androidx-wear-compose = "1.3.0"
 wear-compose-ui-tooling = "1.3.0"
@@ -165,6 +165,7 @@ horologist-compose-material = { module = "com.google.android.horologist:horologi
 horologist-media-ui = { module = "com.google.android.horologist:horologist-media-ui", version.ref = "horologist" }
 horologist-audio-ui = { module = "com.google.android.horologist:horologist-audio-ui", version.ref = "horologist" }
 horologist-media-data = { module = "com.google.android.horologist:horologist-media-data", version.ref = "horologist" }
+horologist-images-coil = { module = "com.google.android.horologist:horologist-images-coil", version.ref = "horologist" }
 horologist-roboscreenshots = { module = "com.google.android.horologist:horologist-roboscreenshots", version.ref = "horologist" }
 roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
 roborazzi-compose = { group = "io.github.takahirom.roborazzi", name = "roborazzi-compose", version.ref = "roborazzi" }
