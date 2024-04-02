@@ -61,5 +61,6 @@
     <string name="subscribe">Subscribe</string>
     <string name="unsubscribe">Unsubscribe</string>
   <string name="see_more">see more</string>
+  <string name="search_for_a_podcast">Search for a podcast</string>
 
 </resources>

@@ -206,8 +206,11 @@ private fun HomeAppBar(
                     Spacer(modifier = Modifier.weight(1f))
                 }
                 SearchBar(
-                    query = "Jetcaster",
+                    query = "",
                     onQueryChange = {},
+                    placeholder = {
+                        Text(stringResource(id = R.string.search_for_a_podcast))
+                    },
                     onSearch = {},
                     active = false,
                     onActiveChange = {},
