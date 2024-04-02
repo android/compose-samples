@@ -82,7 +82,6 @@ class DiscoverScreenViewModel(
         EpisodeList(it)
     }
 
-
     val uiState = combine(
         categoryListFlow,
         selectedCategoryFlow,
