@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text2.BasicTextField2
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -191,14 +191,14 @@ private fun KeywordInput(
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
     val cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant)
-    BasicTextField2(
+    BasicTextField(
         value = keyword,
         onValueChange = onKeywordInput,
         textStyle = textStyle,
         cursorBrush = cursorBrush,
         modifier = modifier,
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-        decorator = { innerTextField ->
+        decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
