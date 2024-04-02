@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.core.data.repository
 
+import com.example.jetcaster.core.data.Dispatcher
+import com.example.jetcaster.core.data.JetcasterDispatchers
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
 import com.example.jetcaster.core.data.network.PodcastRssResponse
 import com.example.jetcaster.core.data.network.PodcastsFetcher
@@ -26,17 +28,18 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Data repository for Podcasts.
  */
-class PodcastsRepository(
+class PodcastsRepository @Inject constructor(
     private val podcastsFetcher: PodcastsFetcher,
     private val podcastStore: PodcastStore,
     private val episodeStore: EpisodeStore,
     private val categoryStore: CategoryStore,
     private val transactionRunner: TransactionRunner,
-    mainDispatcher: CoroutineDispatcher
+    @Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher
 ) {
     private var refreshingJob: Job? = null
 

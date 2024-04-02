@@ -19,7 +19,6 @@ package com.example.jetcaster.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.model.CategoryInfo
@@ -34,6 +33,7 @@ import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.util.combine
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -43,17 +43,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModel(
-    private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
-    private val podcastStore: PodcastStore = Graph.podcastStore,
-    private val episodeStore: EpisodeStore = Graph.episodeStore,
-    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase =
-        Graph.podcastCategoryFilterUseCase,
-    private val filterableCategoriesUseCase: FilterableCategoriesUseCase =
-        Graph.filterableCategoriesUseCase,
-    private val episodePlayer: EpisodePlayer = Graph.episodePlayer
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val podcastsRepository: PodcastsRepository,
+    private val podcastStore: PodcastStore,
+    private val episodeStore: EpisodeStore,
+    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
+    private val filterableCategoriesUseCase: FilterableCategoriesUseCase,
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
     // Holds our currently selected podcast in the library
     private val selectedLibraryPodcast = MutableStateFlow<PodcastInfo?>(null)

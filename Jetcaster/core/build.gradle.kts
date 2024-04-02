@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.ksp)
+  alias(libs.plugins.hilt)
 }
 
 // TODO(chris): Set up convention plugin
@@ -38,14 +39,23 @@ dependencies {
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.compose.runtime)
 
+  // Image loading
   implementation(libs.coil.kt.compose)
 
+  // Compose
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)
 
+  // Dependency injection
+  implementation(libs.androidx.hilt.navigation.compose)
+  implementation(libs.hilt.android)
+  ksp(libs.hilt.compiler)
+
+  // Networking
   implementation(libs.okhttp3)
   implementation(libs.okhttp.logging)
 
+  // Database
   implementation(libs.androidx.room.runtime)
   implementation(libs.androidx.room.ktx)
   ksp(libs.androidx.room.compiler)

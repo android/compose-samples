@@ -17,26 +17,24 @@
 package com.example.jetcaster.ui.player
 
 import android.net.Uri
-import android.os.Bundle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
-import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.ui.Screen
-import java.time.Duration
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.Duration
+import javax.inject.Inject
 
 data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
@@ -46,9 +44,10 @@ data class PlayerUiState(
  * ViewModel that handles the business logic and screen state of the Player screen
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class PlayerViewModel(
-    episodeStore: EpisodeStore = Graph.episodeStore,
-    private val episodePlayer: EpisodePlayer = Graph.episodePlayer,
+@HiltViewModel
+class PlayerViewModel @Inject constructor(
+    episodeStore: EpisodeStore,
+    private val episodePlayer: EpisodePlayer,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -99,28 +98,5 @@ class PlayerViewModel(
 
     fun onRewindBy(duration: Duration) {
         episodePlayer.rewindBy(duration)
-    }
-
-    /**
-     * Factory for PlayerViewModel that takes EpisodeStore, PodcastStore and EpisodePlayer as a
-     * dependency
-     */
-    companion object {
-        fun provideFactory(
-            episodeStore: EpisodeStore = Graph.episodeStore,
-            episodePlayer: EpisodePlayer = Graph.episodePlayer,
-            owner: SavedStateRegistryOwner,
-            defaultArgs: Bundle? = null,
-        ): AbstractSavedStateViewModelFactory =
-            object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
-                ): T {
-                    return PlayerViewModel(episodeStore, episodePlayer, handle) as T
-                }
-            }
     }
 }

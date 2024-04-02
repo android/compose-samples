@@ -25,11 +25,12 @@ import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
 
 /**
  *  A use case which returns top podcasts and matching episodes in a given [Category].
  */
-class PodcastCategoryFilterUseCase(
+class PodcastCategoryFilterUseCase @Inject constructor(
     private val categoryStore: CategoryStore
 ) {
     operator fun invoke(category: CategoryInfo?): Flow<PodcastCategoryFilterResult> {

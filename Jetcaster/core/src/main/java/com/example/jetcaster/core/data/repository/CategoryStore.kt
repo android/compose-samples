@@ -25,6 +25,7 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 interface CategoryStore {
     /**
@@ -66,7 +67,7 @@ interface CategoryStore {
 /**
  * A data repository for [Category] instances.
  */
-class LocalCategoryStore(
+class LocalCategoryStore constructor(
     private val categoriesDao: CategoriesDao,
     private val categoryEntryDao: PodcastCategoryEntryDao,
     private val episodesDao: EpisodesDao,

@@ -17,12 +17,9 @@
 package com.example.jetcaster.core.data.di
 
 import android.content.Context
-import androidx.room.Room
-import com.example.jetcaster.core.BuildConfig
 import com.example.jetcaster.core.data.database.JetcasterDatabase
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
-import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.repository.CategoryStore
@@ -33,12 +30,9 @@ import com.example.jetcaster.core.data.repository.LocalPodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.player.MockEpisodePlayer
 import com.rometools.rome.io.SyndFeedInput
-import java.io.File
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import okhttp3.Cache
 import okhttp3.OkHttpClient
-import okhttp3.logging.LoggingEventListener
 
 /**
  * A very simple global singleton dependency graph.
@@ -93,13 +87,6 @@ object Graph {
         )
     }
 
-    val getLatestFollowedEpisodesUseCase by lazy {
-        GetLatestFollowedEpisodesUseCase(
-            episodeStore = episodeStore,
-            podcastStore = podcastStore
-        )
-    }
-
     val podcastCategoryFilterUseCase by lazy {
         PodcastCategoryFilterUseCase(
             categoryStore = categoryStore
@@ -128,17 +115,7 @@ object Graph {
         get() = Dispatchers.IO
 
     fun provide(context: Context) {
-        okHttpClient = OkHttpClient.Builder()
-            .cache(Cache(File(context.cacheDir, "http_cache"), (20 * 1024 * 1024).toLong()))
-            .apply {
-                if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory())
-            }
-            .build()
-
-        database = Room.databaseBuilder(context, JetcasterDatabase::class.java, "data.db")
-            // This is not recommended for normal apps, but the goal of this sample isn't to
-            // showcase all of Room.
-            .fallbackToDestructiveMigration()
-            .build()
+        okHttpClient = CoreDiModule.provideOkHttpClient(context)
+        database = CoreDiModule.provideDatabase(context)
     }
 }

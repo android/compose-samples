@@ -84,16 +84,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.CategoryInfo
@@ -103,7 +101,6 @@ import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.ui.Screen
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
@@ -113,12 +110,12 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -150,7 +147,7 @@ private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
 fun MainScreen(
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
     val navigator = rememberSupportingPaneScaffoldNavigator<String>()
@@ -193,15 +190,10 @@ fun MainScreen(
                 value = navigator.scaffoldValue,
                 directive = navigator.scaffoldDirective,
                 supportingPane = {
-                    val podcastDetailsViewModel: PodcastDetailsViewModel = viewModel(
-                        key = podcastUri,
-                        factory = PodcastDetailsViewModel.provideFactory(
-                            owner = LocalSavedStateRegistryOwner.current,
-                            defaultArgs = bundleOf(
-                                Screen.ARG_PODCAST_URI to podcastUri
-                            )
-                        )
-                    )
+                    val podcastDetailsViewModel =
+                        hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory> {
+                            it.create(podcastUri)
+                        }
                     PodcastDetailsScreen(
                         viewModel = podcastDetailsViewModel,
                         navigateToPlayer = navigateToPlayer,

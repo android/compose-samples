@@ -22,11 +22,12 @@ import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 /**
  * Use case for categories that can be used to filter podcasts.
  */
-class FilterableCategoriesUseCase(
+class FilterableCategoriesUseCase @Inject constructor(
     private val categoryStore: CategoryStore
 ) {
     /**

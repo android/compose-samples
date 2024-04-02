@@ -17,6 +17,8 @@
 package com.example.jetcaster.core.data.network
 
 import coil.network.HttpException
+import com.example.jetcaster.core.data.Dispatcher
+import com.example.jetcaster.core.data.JetcasterDispatchers
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.Podcast
@@ -25,10 +27,6 @@ import com.rometools.modules.itunes.FeedInformation
 import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
-import java.time.Duration
-import java.time.Instant
-import java.time.ZoneOffset
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -39,6 +37,11 @@ import kotlinx.coroutines.withContext
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneOffset
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * A class which fetches some selected podcast RSS feeds.
@@ -47,10 +50,10 @@ import okhttp3.Request
  * @param syndFeedInput [SyndFeedInput] to use for parsing RSS feeds.
  * @param ioDispatcher [CoroutineDispatcher] to use for running fetch requests.
  */
-class PodcastsFetcher(
+class PodcastsFetcher @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val syndFeedInput: SyndFeedInput,
-    private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
 
     /**
