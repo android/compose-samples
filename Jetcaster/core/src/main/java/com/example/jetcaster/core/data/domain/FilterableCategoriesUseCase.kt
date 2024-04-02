@@ -20,9 +20,9 @@ import com.example.jetcaster.core.data.model.CategoryInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
 import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.CategoryStore
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * Use case for categories that can be used to filter podcasts.

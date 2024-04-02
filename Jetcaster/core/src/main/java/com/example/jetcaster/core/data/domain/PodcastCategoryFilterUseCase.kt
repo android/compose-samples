@@ -22,10 +22,10 @@ import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
 import com.example.jetcaster.core.data.repository.CategoryStore
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
 
 /**
  *  A use case which returns top podcasts and matching episodes in a given [Category].

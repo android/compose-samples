@@ -25,7 +25,6 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 interface CategoryStore {
     /**

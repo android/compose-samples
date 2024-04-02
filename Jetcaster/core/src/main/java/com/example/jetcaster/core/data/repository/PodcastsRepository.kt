@@ -22,13 +22,13 @@ import com.example.jetcaster.core.data.database.dao.TransactionRunner
 import com.example.jetcaster.core.data.network.PodcastRssResponse
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.network.SampleFeeds
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Data repository for Podcasts.
