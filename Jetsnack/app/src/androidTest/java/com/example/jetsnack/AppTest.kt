@@ -31,13 +31,6 @@ class AppTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Before
-    fun setUp() {
-        composeTestRule.setContent {
-            JetsnackApp()
-        }
-    }
-
     @Test
     fun app_launches() {
         // Check app launches at the correct destination
