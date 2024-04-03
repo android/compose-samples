@@ -25,6 +25,7 @@ import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -33,7 +34,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class PodcastScreenViewModel @Inject constructor(
