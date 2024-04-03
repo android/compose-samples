@@ -115,14 +115,13 @@ fun ReplyEmailListItem(
                     Text(
                         text = email.createdAt,
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.outline
                     )
                 }
                 IconButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
@@ -135,15 +134,12 @@ fun ReplyEmailListItem(
             Text(
                 text = email.subject,
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
             )
             Text(
                 text = email.body,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 overflow = TextOverflow.Ellipsis
             )
         }

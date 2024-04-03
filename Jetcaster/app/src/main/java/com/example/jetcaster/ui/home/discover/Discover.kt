@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
@@ -43,21 +44,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.model.CategoryInfo
+import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.FilterableCategoriesModel
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.data.model.PodcastInfo
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
+import com.example.jetcaster.util.fullWidthItem
 
 context(SharedTransitionScope, AnimatedVisibilityScope)
 fun LazyListScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    navigateToPlayer: (String) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    onTogglePodcastFollowed: (String) -> Unit,
-    onQueuePodcast: (EpisodeToPodcast) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     if (filterableCategoriesModel.isEmpty) {
         // TODO: empty state
@@ -77,11 +82,46 @@ fun LazyListScope.discoverItems(
     }
 
     podcastCategory(
-        topPodcasts = podcastCategoryFilterResult.topPodcasts,
-        episodes = podcastCategoryFilterResult.episodes,
+        podcastCategoryFilterResult = podcastCategoryFilterResult,
+        navigateToPodcastDetails = navigateToPodcastDetails,
         navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = onTogglePodcastFollowed,
-        onQueuePodcast = onQueuePodcast,
+        onQueueEpisode = onQueueEpisode,
+    )
+}
+
+fun LazyGridScope.discoverItems(
+    filterableCategoriesModel: FilterableCategoriesModel,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+) {
+    if (filterableCategoriesModel.isEmpty) {
+        // TODO: empty state
+        return
+    }
+
+    fullWidthItem {
+        Spacer(Modifier.height(8.dp))
+
+        PodcastCategoryTabs(
+            filterableCategoriesModel = filterableCategoriesModel,
+            onCategorySelected = onCategorySelected,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(8.dp))
+    }
+
+    podcastCategory(
+        podcastCategoryFilterResult = podcastCategoryFilterResult,
+        navigateToPodcastDetails = navigateToPodcastDetails,
+        navigateToPlayer = navigateToPlayer,
+        onTogglePodcastFollowed = onTogglePodcastFollowed,
+        onQueueEpisode = onQueueEpisode,
     )
 }
 
@@ -90,7 +130,7 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 @Composable
 private fun PodcastCategoryTabs(
     filterableCategoriesModel: FilterableCategoriesModel,
-    onCategorySelected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectedIndex = filterableCategoriesModel.categories.indexOf(

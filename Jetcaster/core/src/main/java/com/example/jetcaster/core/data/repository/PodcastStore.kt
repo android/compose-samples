@@ -19,6 +19,7 @@ package com.example.jetcaster.core.data.repository
 import com.example.jetcaster.core.data.database.dao.PodcastFollowedEntryDao
 import com.example.jetcaster.core.data.database.dao.PodcastsDao
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
@@ -29,6 +30,11 @@ interface PodcastStore {
      * Return a flow containing the [Podcast] with the given [uri].
      */
     fun podcastWithUri(uri: String): Flow<Podcast>
+
+    /**
+     * Return a flow containing the [PodcastWithExtraInfo] with the given [podcastUri].
+     */
+    fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo>
 
     /**
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
@@ -46,7 +52,29 @@ interface PodcastStore {
         limit: Int = Int.MAX_VALUE
     ): Flow<List<PodcastWithExtraInfo>>
 
+    /**
+     * Returns a flow containing a list of podcasts such that its name partially matches
+     * with the specified keyword
+     */
+    fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>>
+
+    /**
+     * Return a flow containing a list of podcast such that it belongs to the any of categories
+     * specified with categories parameter and its name partially matches with the specified
+     * keyword.
+     */
+    fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
+        limit: Int = Int.MAX_VALUE
+    ): Flow<List<PodcastWithExtraInfo>>
+
     suspend fun togglePodcastFollowed(podcastUri: String)
+
+    suspend fun followPodcast(podcastUri: String)
 
     suspend fun unfollowPodcast(podcastUri: String)
 
@@ -76,6 +104,12 @@ class LocalPodcastStore(
     }
 
     /**
+     * Return a flow containing the [PodcastWithExtraInfo] with the given [podcastUri].
+     */
+    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
+        podcastDao.podcastWithExtraInfo(podcastUri)
+
+    /**
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
      * publish date for each podcast.
      */
@@ -95,7 +129,23 @@ class LocalPodcastStore(
         return podcastDao.followedPodcastsSortedByLastEpisode(limit)
     }
 
-    private suspend fun followPodcast(podcastUri: String) {
+    override fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> {
+        return podcastDao.searchPodcastByTitle(keyword, limit)
+    }
+
+    override fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> {
+        val categoryIdList = categories.map { it.id }
+        return podcastDao.searchPodcastByTitleAndCategory(keyword, categoryIdList, limit)
+    }
+
+    override suspend fun followPodcast(podcastUri: String) {
         podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
     }
 

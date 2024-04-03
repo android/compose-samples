@@ -26,13 +26,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusRestorer
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.tv.foundation.lazy.list.TvLazyListState
+import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.tv.model.CategoryList
@@ -45,6 +50,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 @Composable
 fun DiscoverScreen(
     showPodcastDetails: (Podcast) -> Unit,
+    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
     discoverScreenViewModel: DiscoverScreenViewModel = viewModel()
 ) {
@@ -67,6 +73,7 @@ fun DiscoverScreen(
                 latestEpisodeList = s.latestEpisodeList,
                 onPodcastSelected = { showPodcastDetails(it.podcast) },
                 onCategorySelected = discoverScreenViewModel::selectCategory,
+                onEpisodeSelected = showEpisodeDetails,
                 modifier = Modifier
                     .fillMaxSize()
                     .then(modifier)
@@ -83,34 +90,60 @@ private fun CatalogWithCategorySelection(
     selectedCategory: Category,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier,
+    state: TvLazyListState = rememberTvLazyListState(),
 ) {
-    val tabRow = remember(categoryList) { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        tabRow.requestFocus()
+    val (focusRequester, selectedTab) = remember {
+        FocusRequester.createRefs()
     }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+    val selectedTabIndex = categoryList.indexOf(selectedCategory)
 
     Catalog(
         podcastList = podcastList,
         latestEpisodeList = latestEpisodeList,
-        onPodcastSelected = onPodcastSelected,
-        modifier = modifier,
+        onPodcastSelected = {
+            focusRequester.saveFocusedChild()
+            onPodcastSelected(it)
+        },
+        onEpisodeSelected = {
+            focusRequester.saveFocusedChild()
+            onEpisodeSelected(it)
+        },
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .focusRestorer(),
+        state = state,
     ) {
+
         TabRow(
-            selectedTabIndex = categoryList.indexOf(selectedCategory),
-            modifier = Modifier.focusRequester(tabRow)
+            selectedTabIndex = selectedTabIndex,
+            modifier = Modifier.focusProperties {
+                enter = {
+                    selectedTab
+                }
+            }
         ) {
-            categoryList.forEach {
+            categoryList.forEachIndexed { index, category ->
+                val tabModifier = if (selectedTabIndex == index) {
+                    Modifier.focusRequester(selectedTab)
+                } else {
+                    Modifier
+                }
+
                 Tab(
-                    selected = it == selectedCategory,
+                    selected = index == selectedTabIndex,
                     onFocus = {
-                        onCategorySelected(it)
-                    }
+                        onCategorySelected(category)
+                    },
+                    modifier = tabModifier,
                 ) {
                     Text(
-                        text = it.name,
+                        text = category.name,
                         modifier = Modifier.padding(JetcasterAppDefaults.padding.tab)
                     )
                 }

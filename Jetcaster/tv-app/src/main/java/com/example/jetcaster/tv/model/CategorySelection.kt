@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.home
+package com.example.jetcaster.tv.model
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import androidx.compose.runtime.Immutable
+import com.example.jetcaster.core.data.database.model.Category
 
-@OptIn(ExperimentalHorologistApi::class)
-@Composable
-fun JetcasterBrowseScreen(
-    jetcasterBrowseScreenViewModel: JetcasterBrowseScreenViewModel,
-    onLatestEpisodeClick: () -> Unit,
-    onPodcastClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-}
+data class CategorySelection(val category: Category, val isSelected: Boolean = false)
 
-data class BrowseScreenState(val name: String)
+@Immutable
+data class CategorySelectionList(
+    val member: List<CategorySelection>
+) : List<CategorySelection> by member

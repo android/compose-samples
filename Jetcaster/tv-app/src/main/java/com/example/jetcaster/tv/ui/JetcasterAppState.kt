@@ -51,6 +51,12 @@ class JetcasterAppState(
         navHostController.navigate(screen.route)
     }
 
+    fun showEpisodeDetails(episodeUri: String) {
+        val encodeUrl = Uri.encode(episodeUri)
+        val screen = Screen.Episode(encodeUrl)
+        navHostController.navigate(screen.route)
+    }
+
     fun playEpisode(episodeUri: String) {
         val screen = Screen.Player(episodeUri)
         navHostController.navigate(screen.route)
@@ -97,7 +103,17 @@ sealed interface Screen {
 
         companion object : Screen {
             private const val ROOT = "podcast"
-            private const val PARAMETER_NAME = "podcastUri"
+            const val PARAMETER_NAME = "podcastUri"
+            override val route = "$ROOT/{$PARAMETER_NAME}"
+        }
+    }
+
+    data class Episode(private val episodeUri: String) : Screen {
+
+        override val route: String = "$ROOT/$episodeUri"
+        companion object : Screen {
+            private const val ROOT = "episode"
+            const val PARAMETER_NAME = "episodeUri"
             override val route = "$ROOT/{$PARAMETER_NAME}"
         }
     }
@@ -107,7 +123,7 @@ sealed interface Screen {
 
         companion object : Screen {
             private const val ROOT = "player"
-            private const val PARAMETER_NAME = "episodeUri"
+            const val PARAMETER_NAME = "episodeUri"
             override val route = "$ROOT/{$PARAMETER_NAME}"
         }
     }

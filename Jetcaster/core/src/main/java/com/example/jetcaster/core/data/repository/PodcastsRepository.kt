@@ -46,6 +46,7 @@ class PodcastsRepository(
         if (refreshingJob?.isActive == true) {
             refreshingJob?.join()
         } else if (force || podcastStore.isEmpty()) {
+
             refreshingJob = scope.launch {
                 // Now fetch the podcasts, and add each to each store
                 podcastsFetcher(SampleFeeds)

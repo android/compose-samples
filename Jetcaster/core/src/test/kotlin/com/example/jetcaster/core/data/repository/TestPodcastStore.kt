@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.data.repository
 
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,14 @@ class TestPodcastStore : PodcastStore {
     override fun podcastWithUri(uri: String): Flow<Podcast> =
         podcastFlow.map { podcasts ->
             podcasts.first { it.uri == uri }
+        }
+
+    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
+        podcastFlow.map { podcasts ->
+            val podcast = podcasts.first { it.uri == podcastUri }
+            PodcastWithExtraInfo().apply {
+                this.podcast = podcast
+            }
         }
 
     override fun podcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> =
@@ -55,12 +64,47 @@ class TestPodcastStore : PodcastStore {
             }
         }
 
+    override fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> =
+        podcastFlow.map { podcastList ->
+            podcastList.filter {
+                it.title.contains(keyword)
+            }.map { p ->
+                PodcastWithExtraInfo().apply {
+                    podcast = p
+                    isFollowed = true
+                }
+            }
+        }
+
+    override fun searchPodcastByTitleAndCategories(
+        keyword: String,
+        categories: List<Category>,
+        limit: Int
+    ): Flow<List<PodcastWithExtraInfo>> =
+        podcastFlow.map { podcastList ->
+            podcastList.filter {
+                it.title.contains(keyword)
+            }.map { p ->
+                PodcastWithExtraInfo().apply {
+                    podcast = p
+                    isFollowed = true
+                }
+            }
+        }
+
     override suspend fun togglePodcastFollowed(podcastUri: String) {
         if (podcastUri in followedPodcasts) {
-            followedPodcasts.remove(podcastUri)
+            unfollowPodcast(podcastUri)
         } else {
-            followedPodcasts.add(podcastUri)
+            followPodcast(podcastUri)
         }
+    }
+
+    override suspend fun followPodcast(podcastUri: String) {
+        followedPodcasts.add(podcastUri)
     }
 
     override suspend fun unfollowPodcast(podcastUri: String) {

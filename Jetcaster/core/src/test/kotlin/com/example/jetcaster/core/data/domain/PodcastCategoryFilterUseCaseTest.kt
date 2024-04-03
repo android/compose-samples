@@ -21,6 +21,8 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.asExternalModel
+import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
 import com.example.jetcaster.core.data.repository.TestCategoryStore
 import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
@@ -40,13 +42,11 @@ class PodcastCategoryFilterUseCaseTest {
                 "Episode 1",
                 published = OffsetDateTime.now()
             )
-        },
-        EpisodeToPodcast().apply {
-            episode = Episode(
-                "",
-                "",
-                "Episode 2",
-                published = OffsetDateTime.now()
+            _podcasts = listOf(
+                Podcast(
+                    uri = "",
+                    title = "Podcast 1"
+                )
             )
         },
         EpisodeToPodcast().apply {
@@ -55,6 +55,26 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "Episode 2",
                 published = OffsetDateTime.now()
+            )
+            _podcasts = listOf(
+                Podcast(
+                    uri = "",
+                    title = "Podcast 2"
+                )
+            )
+        },
+        EpisodeToPodcast().apply {
+            episode = Episode(
+                "",
+                "",
+                "Episode 3",
+                published = OffsetDateTime.now()
+            )
+            _podcasts = listOf(
+                Podcast(
+                    uri = "",
+                    title = "Podcast 3"
+                )
             )
         }
     )
@@ -78,18 +98,18 @@ class PodcastCategoryFilterUseCaseTest {
 
     @Test
     fun whenCategoryNotNull_validFlow() = runTest {
-        val resultFlow = useCase(testCategory)
+        val resultFlow = useCase(testCategory.asExternalModel())
 
         categoriesStore.setEpisodesFromPodcast(testCategory.id, testEpisodeToPodcast)
         categoriesStore.setPodcastsInCategory(testCategory.id, testPodcasts)
 
         val result = resultFlow.first()
         assertEquals(
-            testPodcasts,
+            testPodcasts.map { it.asExternalModel() },
             result.topPodcasts
         )
         assertEquals(
-            testEpisodeToPodcast,
+            testEpisodeToPodcast.map { it.asPodcastCategoryEpisode() },
             result.episodes
         )
     }
