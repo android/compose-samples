@@ -16,29 +16,18 @@
 
 package com.example.jetcaster.ui.player
 
-import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.repository.EpisodeStore
-import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.player.EpisodePlayerState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.Duration
 import javax.inject.Inject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 data class PlayerUiState(
-    val title: String = "",
-    val subTitle: String = "",
-    val duration: Duration? = null,
-    val podcastName: String = "",
-    val author: String = "",
-    val summary: String = "",
-    val podcastImageUrl: String = ""
+    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
 )
 
 /**
@@ -46,34 +35,21 @@ data class PlayerUiState(
  */
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    episodeStore: EpisodeStore,
-    podcastStore: PodcastStore,
-    savedStateHandle: SavedStateHandle
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(PlayerUiState())
-        private set
+    val uiState = MutableStateFlow<PlayerUiState?>(null)
 
     init {
         viewModelScope.launch {
-            if (savedStateHandle.get<String>("episodeUri") != null) {
-                val episodeUri = Uri.decode(savedStateHandle.get<String>("episodeUri"))
-                val episode = episodeStore.episodeWithUri(episodeUri).first()
-                val podcast = podcastStore.podcastWithUri(episode.podcastUri).first()
-                uiState = PlayerUiState(
-                    title = episode.title,
-                    duration = episode.duration,
-                    podcastName = podcast.title,
-                    summary = episode.summary ?: "",
-                    podcastImageUrl = podcast.imageUrl ?: ""
+            val currentEpisode = episodePlayer.currentEpisode
+            if (currentEpisode != null) {
+                uiState.value = PlayerUiState(
+                    episodePlayer.playerState.value
                 )
             } else {
-                uiState = PlayerUiState(
-                    title = "",
-                    duration = Duration.ZERO,
-                    podcastName = "Nothing to play",
-                    summary = "",
-                    podcastImageUrl = ""
+                uiState.value = PlayerUiState(
+                    EpisodePlayerState(currentEpisode = PlayerEpisode(title = "Nothing playing"))
                 )
             }
         }
