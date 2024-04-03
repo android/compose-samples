@@ -76,8 +76,8 @@ fun LazyListScope.libraryItems(
         )
     }
 }
-
-fun LazyGridScope.libraryItems(
+context(SharedTransitionScope, LazyGridScope, AnimatedVisibilityScope)
+fun libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit

@@ -105,7 +105,8 @@ fun LazyListScope.podcastCategory(
     }
 }
 
-fun LazyGridScope.podcastCategory(
+context(LazyGridScope, SharedTransitionScope, AnimatedVisibilityScope)
+fun podcastCategory(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,

@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.podcast
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -75,6 +82,7 @@ import com.example.jetcaster.ui.shared.Loading
 import com.example.jetcaster.util.fullWidthItem
 import kotlinx.coroutines.launch
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsScreen(
     viewModel: PodcastDetailsViewModel,
@@ -109,7 +117,7 @@ private fun PodcastDetailsLoadingScreen(
 ) {
     Loading(modifier = modifier)
 }
-
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsScreen(
     podcast: PodcastInfo,
@@ -151,6 +159,7 @@ fun PodcastDetailsScreen(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsContent(
     podcast: PodcastInfo,
@@ -346,12 +355,18 @@ fun PodcastDetailsHeaderItemPreview() {
 @Preview
 @Composable
 fun PodcastDetailsScreenPreview() {
-    PodcastDetailsScreen(
-        podcast = PreviewPodcasts[0],
-        episodes = PreviewEpisodes,
-        toggleSubscribe = { },
-        onQueueEpisode = { },
-        navigateToPlayer = { },
-        navigateBack = { }
-    )
+    AnimatedVisibility(visible = true) {
+        SharedTransitionLayout {
+            PodcastDetailsScreen(
+                podcast = PreviewPodcasts[0],
+                episodes = PreviewEpisodes,
+                toggleSubscribe = { },
+                onQueueEpisode = { },
+                navigateToPlayer = { },
+                navigateBack = { }
+            )
+        }
+
+    }
+
 }

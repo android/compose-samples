@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.shared
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
+import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastInfo
@@ -64,6 +72,7 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun EpisodeListItem(
     episode: EpisodeInfo,
@@ -103,7 +112,6 @@ fun EpisodeListItem(
         }
     }
 }
-
 @Composable
 private fun EpisodeListItemFooter(
     episode: EpisodeInfo,
@@ -181,7 +189,7 @@ private fun EpisodeListItemFooter(
         }
     }
 }
-
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun EpisodeListItemHeader(
     episode: EpisodeInfo,
@@ -216,6 +224,7 @@ fun EpisodeListItemHeader(
         if (showPodcastImage) {
             EpisodeListItemImage(
                 podcast = podcast,
+                episode = episode,
                 modifier = Modifier
                     .size(56.dp)
                     .clip(MaterialTheme.shapes.medium)
@@ -224,9 +233,11 @@ fun EpisodeListItemHeader(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun EpisodeListItemImage(
     podcast: PodcastInfo,
+    episode: EpisodeInfo,
     modifier: Modifier = Modifier
 ) {
     if (LocalInspectionMode.current) {
@@ -240,6 +251,11 @@ private fun EpisodeListItemImage(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = modifier
+                .sharedElement(
+                    rememberSharedContentState(key = "player-image-${podcast.uri}-${episode.uri}"),
+                    animatedVisibilityScope = this@AnimatedVisibilityScope,
+                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                )
         )
     }
 }
@@ -257,12 +273,16 @@ private fun EpisodeListItemImage(
 @Composable
 private fun EpisodeListItemPreview() {
     JetcasterTheme {
-        EpisodeListItem(
-            episode = PreviewEpisodes[0],
-            podcast = PreviewPodcasts[0],
-            onClick = {},
-            onQueueEpisode = {}
-        )
+        AnimatedVisibility(visible = true) {
+            SharedTransitionLayout {
+                EpisodeListItem(
+                    episode = PreviewEpisodes[0],
+                    podcast = PreviewPodcasts[0],
+                    onClick = {},
+                    onQueueEpisode = {}
+                )
+            }
+        }
     }
 }
 

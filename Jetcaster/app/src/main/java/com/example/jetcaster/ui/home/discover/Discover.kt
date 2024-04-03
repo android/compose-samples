@@ -90,7 +90,8 @@ fun LazyListScope.discoverItems(
     )
 }
 
-fun LazyGridScope.discoverItems(
+context(SharedTransitionScope, AnimatedVisibilityScope, LazyGridScope)
+fun discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,

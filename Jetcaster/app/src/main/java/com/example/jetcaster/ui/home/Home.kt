@@ -471,6 +471,7 @@ private fun HomeContentColumn(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun HomeContentGrid(
     pagerState: PagerState,
