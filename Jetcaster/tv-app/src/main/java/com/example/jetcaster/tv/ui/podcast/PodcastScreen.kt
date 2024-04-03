@@ -40,6 +40,7 @@ import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.ButtonDefaults
@@ -62,11 +63,11 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun PodcastScreen(
-    podcastScreenViewModel: PodcastScreenViewModel,
     backToHomeScreen: () -> Unit,
     playEpisode: (Episode) -> Unit,
     showEpisodeDetails: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
+    podcastScreenViewModel: PodcastScreenViewModel = hiltViewModel(),
 ) {
     val uiState by podcastScreenViewModel.uiStateFlow.collectAsState()
     when (val s = uiState) {

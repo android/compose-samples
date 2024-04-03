@@ -19,12 +19,12 @@ package com.example.jetcaster.tv.ui.discover
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.tv.model.CategoryList
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,10 +34,12 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DiscoverScreenViewModel(
-    private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
-    private val categoryStore: CategoryStore = Graph.categoryStore,
+@HiltViewModel
+class DiscoverScreenViewModel @Inject constructor(
+    private val podcastsRepository: PodcastsRepository,
+    private val categoryStore: CategoryStore,
 ) : ViewModel() {
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)

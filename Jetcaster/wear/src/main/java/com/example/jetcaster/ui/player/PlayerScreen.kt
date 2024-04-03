@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.rememberActiveFocusRequester
@@ -56,10 +57,10 @@ import com.google.android.horologist.media.ui.state.PlayerUiState
 @OptIn(ExperimentalHorologistApi::class, ExperimentalWearFoundationApi::class)
 @Composable
 fun PlayerScreen(
-    playerScreenViewModel: PlayerViewModel,
     volumeViewModel: VolumeViewModel,
     onVolumeClick: () -> Unit,
     modifier: Modifier = Modifier,
+    playerScreenViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val volumeUiState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
     // val settingsState by playerScreenViewModel.settingsState.collectAsStateWithLifecycle()

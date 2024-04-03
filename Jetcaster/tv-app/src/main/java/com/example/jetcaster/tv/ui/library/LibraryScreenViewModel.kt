@@ -18,12 +18,12 @@ package com.example.jetcaster.tv.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -32,11 +32,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LibraryScreenViewModel(
-    private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
-    private val episodeStore: EpisodeStore = Graph.episodeStore,
-    podcastStore: PodcastStore = Graph.podcastStore,
+@HiltViewModel
+class LibraryScreenViewModel @Inject constructor(
+    private val podcastsRepository: PodcastsRepository,
+    private val episodeStore: EpisodeStore,
+    podcastStore: PodcastStore,
 ) : ViewModel() {
 
     private val followingPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode().map {

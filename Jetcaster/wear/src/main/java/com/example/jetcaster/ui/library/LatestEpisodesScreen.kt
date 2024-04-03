@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import com.example.jetcaster.R
@@ -52,10 +53,10 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 public fun LatestEpisodesScreen(
     columnState: ScalingLazyColumnState,
     playlistName: String,
-    latestEpisodeViewModel: LatestEpisodeViewModel,
     onShuffleButtonClick: (EpisodeToPodcast) -> Unit,
     onPlayButtonClick: (EpisodeToPodcast) -> Unit,
     modifier: Modifier = Modifier,
+    latestEpisodeViewModel: LatestEpisodeViewModel = hiltViewModel()
 ) {
     val viewState by latestEpisodeViewModel.state.collectAsStateWithLifecycle()
 

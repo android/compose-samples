@@ -24,7 +24,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,11 +38,8 @@ import com.example.jetcaster.ui.JetcasterNavController.navigateToUpNext
 import com.example.jetcaster.ui.JetcasterNavController.navigateToYourPodcast
 import com.example.jetcaster.ui.LatestEpisodes
 import com.example.jetcaster.ui.home.HomeScreen
-import com.example.jetcaster.ui.home.HomeViewModel
-import com.example.jetcaster.ui.library.LatestEpisodeViewModel
 import com.example.jetcaster.ui.library.LatestEpisodesScreen
 import com.example.jetcaster.ui.player.PlayerScreen
-import com.example.jetcaster.ui.player.PlayerViewModel
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.audio.ui.VolumeViewModel
 import com.google.android.horologist.compose.layout.ScreenScaffold
@@ -52,7 +48,9 @@ import com.google.android.horologist.media.ui.navigation.MediaNavController.navi
 import com.google.android.horologist.media.ui.navigation.MediaPlayerScaffold
 import com.google.android.horologist.media.ui.snackbar.SnackbarManager
 import com.google.android.horologist.media.ui.snackbar.SnackbarViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +77,6 @@ fun WearApp() {
             playerScreen = {
                 PlayerScreen(
                     modifier = Modifier.fillMaxSize(),
-
-                    playerScreenViewModel = viewModel(
-                        factory = PlayerViewModel.provideFactory(
-                            owner = LocalSavedStateRegistryOwner.current
-                        )
-                    ),
                     volumeViewModel = volumeViewModel,
                     onVolumeClick = {
                         navController.navigateToVolume()
@@ -93,7 +85,6 @@ fun WearApp() {
             },
             libraryScreen = {
                 HomeScreen(
-                    homeViewModel = HomeViewModel(),
                     onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
                     onYourPodcastClick = { navController.navigateToYourPodcast() },
                     onUpNextClick = { navController.navigateToUpNext() },
@@ -123,7 +114,6 @@ fun WearApp() {
                         LatestEpisodesScreen(
                             columnState = columnState,
                             playlistName = stringResource(id = R.string.latest_episodes),
-                            latestEpisodeViewModel = LatestEpisodeViewModel(),
                             onShuffleButtonClick = {},
                             onPlayButtonClick = {}
                         )

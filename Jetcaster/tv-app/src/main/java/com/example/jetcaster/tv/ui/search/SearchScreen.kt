@@ -45,7 +45,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvGridItemSpan
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
@@ -68,7 +68,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 fun SearchScreen(
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
     modifier: Modifier = Modifier,
-    searchScreenViewModel: SearchScreenViewModel = viewModel()
+    searchScreenViewModel: SearchScreenViewModel = hiltViewModel()
 ) {
     val uiState by searchScreenViewModel.uiStateFlow.collectAsState()
 

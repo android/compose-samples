@@ -17,12 +17,7 @@
 package com.example.jetcaster.tv
 
 import android.app.Application
-import com.example.jetcaster.core.data.di.Graph
+import dagger.hilt.android.HiltAndroidApp
 
-class JetCasterTvApp : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        Graph.provide(this)
-    }
-}
+@HiltAndroidApp
+class JetCasterTvApp : Application()
