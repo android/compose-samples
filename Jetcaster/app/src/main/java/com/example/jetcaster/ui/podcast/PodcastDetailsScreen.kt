@@ -80,6 +80,7 @@ fun PodcastDetailsScreen(
     viewModel: PodcastDetailsViewModel,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
+    showBackButton: Boolean,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -97,6 +98,7 @@ fun PodcastDetailsScreen(
                 onQueueEpisode = viewModel::onQueueEpisode,
                 navigateToPlayer = navigateToPlayer,
                 navigateBack = navigateBack,
+                showBackButton = showBackButton,
                 modifier = modifier,
             )
         }
@@ -118,6 +120,7 @@ fun PodcastDetailsScreen(
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
+    showBackButton: Boolean,
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -126,10 +129,12 @@ fun PodcastDetailsScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            PodcastDetailsTopAppBar(
-                navigateBack = navigateBack,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (showBackButton) {
+                PodcastDetailsTopAppBar(
+                    navigateBack = navigateBack,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -352,6 +357,7 @@ fun PodcastDetailsScreenPreview() {
         toggleSubscribe = { },
         onQueueEpisode = { },
         navigateToPlayer = { },
-        navigateBack = { }
+        navigateBack = { },
+        showBackButton = true,
     )
 }

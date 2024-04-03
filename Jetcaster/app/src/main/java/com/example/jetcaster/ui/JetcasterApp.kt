@@ -113,7 +113,8 @@ fun JetcasterApp(
                     navigateToPlayer = { episodePlayer ->
                         appState.navigateToPlayer(episodePlayer.uri, backStackEntry)
                     },
-                    navigateBack = appState::navigateBack
+                    navigateBack = appState::navigateBack,
+                    showBackButton = true,
                 )
             }
         }

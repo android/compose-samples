@@ -66,8 +66,10 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -139,6 +141,11 @@ data class HomeState(
 )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
+    return scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MainScreen(
     windowSizeClass: WindowSizeClass,
@@ -202,7 +209,8 @@ fun MainScreen(
                             if (navigator.canNavigateBack()) {
                                 navigator.navigateBack()
                             }
-                        }
+                        },
+                        showBackButton = navigator.isMainPaneHidden(),
                     )
                 },
                 mainPane = {
