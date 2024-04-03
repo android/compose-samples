@@ -64,6 +64,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
@@ -145,7 +146,7 @@ private fun CategoryPodcasts(
     )
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
+/*context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun EpisodeListItem(
     episode: Episode,
@@ -214,7 +215,7 @@ fun EpisodeListItem(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = false, radius = 24.dp)
-                    ) { /* TODO */ }
+                    ) { *//* TODO *//* }
                     .size(48.dp)
                     .padding(6.dp)
                     .semantics { role = Role.Button }
@@ -261,7 +262,7 @@ fun EpisodeListItem(
             }
 
             IconButton(
-                onClick = { /* TODO */ },
+                onClick = { *//* TODO *//* },
                 modifier = Modifier
             ) {
                 Icon(
@@ -273,7 +274,7 @@ fun EpisodeListItem(
         }
 
     }
-}
+}*/
 
 @Composable
 private fun CategoryPodcastRow(
@@ -362,13 +363,14 @@ fun PreviewEpisodeListItem() {
     JetcasterTheme {
         AnimatedVisibility(visible = true) {
             SharedTransitionLayout {
-                    EpisodeListItem(
-                        episode = PreviewEpisodes[0],
-                        podcast = PreviewPodcasts[0],
-                        onClick = { },
-                        onQueueEpisode = { },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                EpisodeListItem(
+                    episode = PreviewEpisodes[0],
+                    podcast = PreviewPodcasts[0],
+                    onClick = { },
+                    onQueueEpisode = { },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
+        }
     }
 }

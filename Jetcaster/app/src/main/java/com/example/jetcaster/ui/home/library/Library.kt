@@ -22,8 +22,6 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope

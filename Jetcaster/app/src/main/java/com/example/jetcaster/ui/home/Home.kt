@@ -398,6 +398,7 @@ private fun HomeContent(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContentColumn(
@@ -741,30 +742,35 @@ private val CompactWindowSizeClass = WindowSizeClass.calculateFromSize(
 @Composable
 private fun PreviewHomeContent() {
     JetcasterTheme {
-        HomeScreen(
-            windowSizeClass = CompactWindowSizeClass,
-            featuredPodcasts = PreviewPodcasts.toPersistentList(),
-            isRefreshing = false,
-            homeCategories = HomeCategory.entries,
-            selectedHomeCategory = HomeCategory.Discover,
-            filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
-            ),
-            podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
-            ),
-            library = LibraryInfo(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
-            navigateToPodcastDetails = {},
-            navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
-            onQueueEpisode = {}
-        )
+        AnimatedVisibility(visible = true) {
+            SharedTransitionScope {
+                HomeScreen(
+                    windowSizeClass = CompactWindowSizeClass,
+                    featuredPodcasts = PreviewPodcasts.toPersistentList(),
+                    isRefreshing = false,
+                    homeCategories = HomeCategory.entries,
+                    selectedHomeCategory = HomeCategory.Discover,
+                    filterableCategoriesModel = FilterableCategoriesModel(
+                        categories = PreviewCategories,
+                        selectedCategory = PreviewCategories.firstOrNull()
+                    ),
+                    podcastCategoryFilterResult = PodcastCategoryFilterResult(
+                        topPodcasts = PreviewPodcasts,
+                        episodes = PreviewPodcastCategoryEpisodes
+                    ),
+                    library = LibraryInfo(),
+                    onCategorySelected = {},
+                    onPodcastUnfollowed = {},
+                    navigateToPodcastDetails = {},
+                    navigateToPlayer = {},
+                    onHomeCategorySelected = {},
+                    onTogglePodcastFollowed = {},
+                    onLibraryPodcastSelected = {},
+                    onQueueEpisode = {}
+                )
+            }
+        }
+
     }
 }
 
@@ -776,28 +782,28 @@ private fun PreviewHomeContentExpanded() {
     JetcasterTheme {
         AnimatedVisibility(visible = true) {
             SharedTransitionLayout {
-        HomeScreen(
-            windowSizeClass = CompactWindowSizeClass,
-            featuredPodcasts = PreviewPodcasts.toPersistentList(),
-            isRefreshing = false,
-            homeCategories = HomeCategory.entries,
-            selectedHomeCategory = HomeCategory.Discover,
-            filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
-            ),
-            podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
-            ),
-            library = LibraryInfo(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
-            navigateToPodcastDetails = {},
-            navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
+                HomeScreen(
+                    windowSizeClass = CompactWindowSizeClass,
+                    featuredPodcasts = PreviewPodcasts.toPersistentList(),
+                    isRefreshing = false,
+                    homeCategories = HomeCategory.entries,
+                    selectedHomeCategory = HomeCategory.Discover,
+                    filterableCategoriesModel = FilterableCategoriesModel(
+                        categories = PreviewCategories,
+                        selectedCategory = PreviewCategories.firstOrNull()
+                    ),
+                    podcastCategoryFilterResult = PodcastCategoryFilterResult(
+                        topPodcasts = PreviewPodcasts,
+                        episodes = PreviewPodcastCategoryEpisodes
+                    ),
+                    library = LibraryInfo(),
+                    onCategorySelected = {},
+                    onPodcastUnfollowed = {},
+                    navigateToPodcastDetails = {},
+                    navigateToPlayer = {},
+                    onHomeCategorySelected = {},
+                    onTogglePodcastFollowed = {},
+                    onLibraryPodcastSelected = {},
             onQueueEpisode = {}
         )
     }
