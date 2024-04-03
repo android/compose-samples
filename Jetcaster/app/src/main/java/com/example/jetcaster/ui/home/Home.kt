@@ -534,6 +534,7 @@ private fun HomeContentGrid(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun FollowedPodcastItem(
     pagerState: PagerState,
@@ -619,6 +620,7 @@ private fun HomeCategoryTabIndicator(
 
 private val FEATURED_PODCAST_IMAGE_SIZE_DP = 160.dp
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun FollowedPodcasts(
     pagerState: PagerState,
@@ -647,6 +649,7 @@ private fun FollowedPodcasts(
             FollowedPodcastCarouselItem(
                 podcastImageUrl = podcast.imageUrl,
                 podcastTitle = podcast.title,
+                podcastUri = podcast.uri,
                 onUnfollowedClick = { onPodcastUnfollowed(podcast) },
                 lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(it) },
                 modifier = Modifier
@@ -658,10 +661,11 @@ private fun FollowedPodcasts(
         }
     }
 }
-
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
+    podcastUri: String? = null,
     podcastImageUrl: String? = null,
     podcastTitle: String? = null,
     lastEpisodeDateText: String? = null,
@@ -680,7 +684,11 @@ private fun FollowedPodcastCarouselItem(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium),
+                        .clip(MaterialTheme.shapes.medium)
+                        .sharedElement(
+                            rememberSharedContentState(key = "podcast-$podcastUri"),
+                            animatedVisibilityScope = this@AnimatedVisibilityScope
+                        ),
                 )
             }
 
@@ -816,9 +824,13 @@ private fun PreviewHomeContentExpanded() {
 @Preview
 private fun PreviewPodcastCard() {
     JetcasterTheme {
-        FollowedPodcastCarouselItem(
-            modifier = Modifier.size(128.dp),
-            onUnfollowedClick = {}
-        )
+        SharedTransitionScope {
+            AnimatedVisibility(visible = true) {
+                FollowedPodcastCarouselItem(
+                    modifier = Modifier.size(128.dp),
+                    onUnfollowedClick = {}
+                )
+            }
+        }
     }
 }

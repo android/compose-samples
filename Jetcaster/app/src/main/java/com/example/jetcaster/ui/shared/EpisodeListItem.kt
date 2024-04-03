@@ -24,6 +24,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -254,7 +255,10 @@ private fun EpisodeListItemImage(
                 .sharedElement(
                     rememberSharedContentState(key = "player-image-${podcast.uri}-${episode.uri}"),
                     animatedVisibilityScope = this@AnimatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium),
+                    boundsTransform = { _, _ ->
+                        spring()
+                    }
                 )
         )
     }

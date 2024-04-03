@@ -25,6 +25,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -282,9 +283,7 @@ fun PlayerContent(
         )
     }
 }
-val boundsTransform = { initial: Rect, target: Rect ->
-    tween<Rect>(1500)
-}
+
 /**
  * The UI for the top pane of a tabletop layout.
  */
@@ -566,7 +565,9 @@ private fun PlayerImage(
             .sharedElement(
                 rememberSharedContentState(key = "player-image-${currentEpisode.podcastUri}-${currentEpisode.episodeUri}"),
                 animatedVisibilityScope = this@AnimatedVisibilityScope,
-                boundsTransform = boundsTransform,
+                boundsTransform = { _, _ ->
+                                  spring()
+                },
                 clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
             )
     )

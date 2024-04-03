@@ -93,9 +93,9 @@ fun PodcastDetailsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     when (val s = state) {
         is PodcastUiState.Loading -> {
-            PodcastDetailsLoadingScreen(
+            /*PodcastDetailsLoadingScreen(
                 modifier = Modifier.fillMaxSize()
-            )
+            )*/
         }
         is PodcastUiState.Ready -> {
             PodcastDetailsScreen(
@@ -193,6 +193,7 @@ fun PodcastDetailsContent(
     }
 }
 
+context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsHeaderItem(
     podcast: PodcastInfo,
@@ -216,6 +217,10 @@ fun PodcastDetailsHeaderItem(
                 modifier = Modifier
                     .size(148.dp)
                     .clip(MaterialTheme.shapes.large)
+                    .sharedElement(
+                        rememberSharedContentState(key = "podcast-${podcast.uri}"),
+                        animatedVisibilityScope = this@AnimatedVisibilityScope
+                    )
             )
             Column(
                 modifier = Modifier.padding(start = 16.dp)
@@ -346,10 +351,14 @@ fun PodcastDetailsTopAppBar(
 @Preview
 @Composable
 fun PodcastDetailsHeaderItemPreview() {
-    PodcastDetailsHeaderItem(
-        podcast = PreviewPodcasts[0],
-        toggleSubscribe = { },
-    )
+    SharedTransitionLayout {
+        AnimatedVisibility(visible = true) {
+            PodcastDetailsHeaderItem(
+                podcast = PreviewPodcasts[0],
+                toggleSubscribe = { },
+            )
+        }
+    }
 }
 
 @Preview
