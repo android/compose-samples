@@ -38,13 +38,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-sealed interface PodcastUiState {
-    data object Loading : PodcastUiState
-    data class Ready(
-        val podcast: PodcastInfo,
-        val episodes: List<EpisodeInfo>,
-    ) : PodcastUiState
-}
+data class PodcastUiState(
+    var isLoading: Boolean = false,
+    val podcast: PodcastInfo,
+    val episodes: List<EpisodeInfo>
+)
 
 /**
  * ViewModel that handles the business logic and screen state of the Podcast details screen.
@@ -57,6 +55,7 @@ class PodcastDetailsViewModel(
 ) : ViewModel() {
 
     private val podcastUri = Uri.decode(savedStateHandle.get<String>(Screen.ARG_PODCAST_URI)!!)
+    private val podcastImage = Uri.decode(savedStateHandle.get<String>(Screen.ARG_PODCAST_IMAGE)!!)
 
     val state: StateFlow<PodcastUiState> =
         combine(
@@ -64,14 +63,19 @@ class PodcastDetailsViewModel(
             episodeStore.episodesInPodcast(podcastUri)
         ) { podcast, episodeToPodcasts ->
             val episodes = episodeToPodcasts.map { it.episode.asExternalModel() }
-            PodcastUiState.Ready(
+            PodcastUiState(
+                isLoading = false,
                 podcast = podcast.podcast.asExternalModel().copy(isSubscribed = podcast.isFollowed),
                 episodes = episodes,
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = PodcastUiState.Loading
+            initialValue = PodcastUiState(
+                isLoading = true,
+                podcast = PodcastInfo(uri = podcastUri, imageUrl = podcastImage),
+                episodes = emptyList()
+            )
         )
 
     fun toggleSusbcribe(podcast: PodcastInfo) {

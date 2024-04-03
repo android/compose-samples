@@ -40,7 +40,6 @@ import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.util.fullWidthItem
 
-context(SharedTransitionScope, LazyListScope, AnimatedVisibilityScope)
 fun LazyListScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
@@ -76,8 +75,7 @@ fun LazyListScope.libraryItems(
         )
     }
 }
-context(SharedTransitionScope, LazyGridScope, AnimatedVisibilityScope)
-fun libraryItems(
+fun LazyGridScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit

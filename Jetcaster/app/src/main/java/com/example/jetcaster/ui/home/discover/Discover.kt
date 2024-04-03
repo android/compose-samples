@@ -54,7 +54,6 @@ import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 import com.example.jetcaster.util.fullWidthItem
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 fun LazyListScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
@@ -90,8 +89,7 @@ fun LazyListScope.discoverItems(
     )
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope, LazyGridScope)
-fun discoverItems(
+fun LazyGridScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,

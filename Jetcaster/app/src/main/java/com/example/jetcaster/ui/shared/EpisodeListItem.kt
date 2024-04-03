@@ -67,13 +67,13 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.ui.LocalSharedElementScopes
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun EpisodeListItem(
     episode: EpisodeInfo,
@@ -190,7 +190,6 @@ private fun EpisodeListItemFooter(
         }
     }
 }
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun EpisodeListItemHeader(
     episode: EpisodeInfo,
@@ -234,7 +233,6 @@ fun EpisodeListItemHeader(
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun EpisodeListItemImage(
     podcast: PodcastInfo,
@@ -244,23 +242,28 @@ private fun EpisodeListItemImage(
     if (LocalInspectionMode.current) {
         Box(modifier = modifier.background(MaterialTheme.colorScheme.primary))
     } else {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(podcast.imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = modifier
-                .sharedElement(
-                    rememberSharedContentState(key = "player-image-${podcast.uri}-${episode.uri}"),
-                    animatedVisibilityScope = this@AnimatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium),
-                    boundsTransform = { _, _ ->
-                        spring()
-                    }
-                )
-        )
+        val sharedElementScope = LocalSharedElementScopes.current.scope ?: throw IllegalArgumentException("No scope for shared element found")
+        val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No animated visibility scope found")
+
+        with(sharedElementScope) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(podcast.imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = "player-image-${podcast.uri}-${episode.uri}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium),
+                        boundsTransform = { _, _ ->
+                            spring()
+                        }
+                    )
+            )
+        }
     }
 }
 

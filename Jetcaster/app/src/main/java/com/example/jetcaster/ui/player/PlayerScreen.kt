@@ -100,6 +100,7 @@ import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.ui.LocalSharedElementScopes
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
@@ -113,7 +114,6 @@ import java.time.Duration
 /**
  * Stateful version of the Podcast player
  */
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PlayerScreen(
     windowSizeClass: WindowSizeClass,
@@ -140,7 +140,6 @@ fun PlayerScreen(
 /**
  * Stateless version of the Player screen
  */
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerScreen(
     uiState: PlayerUiState,
@@ -180,7 +179,6 @@ private fun PlayerScreen(
         }
     }
 }
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PlayerContent(
     uiState: PlayerUiState,
@@ -287,7 +285,6 @@ fun PlayerContent(
 /**
  * The UI for the top pane of a tabletop layout.
  */
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
@@ -355,7 +352,6 @@ private fun PlayerContentRegular(
 /**
  * The UI for the top pane of a tabletop layout.
  */
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerContentTableTopTop(
     uiState: PlayerUiState,
@@ -475,7 +471,6 @@ private fun PlayerContentBookStart(
 /**
  * The UI for the end pane of a book layout.
  */
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerContentBookEnd(
     uiState: PlayerUiState,
@@ -545,32 +540,36 @@ private fun TopAppBar(onBackPress: () -> Unit) {
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun PlayerImage(
     currentEpisode: PlayerEpisode,
     modifier: Modifier = Modifier
 ) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(currentEpisode.podcastImageUrl)
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
-            .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.medium)
-            .sharedElement(
-                rememberSharedContentState(key = "player-image-${currentEpisode.podcastUri}-${currentEpisode.episodeUri}"),
-                animatedVisibilityScope = this@AnimatedVisibilityScope,
-                boundsTransform = { _, _ ->
-                                  spring()
-                },
-                clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
-            )
-    )
+    val sharedElementScope = LocalSharedElementScopes.current.scope ?: throw IllegalArgumentException("No scope for shared element found")
+    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No animated visibility scope found")
+
+    with(sharedElementScope) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(currentEpisode.podcastImageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+                .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
+                .aspectRatio(1f)
+                .clip(MaterialTheme.shapes.medium)
+                .sharedElement(
+                    rememberSharedContentState(key = "player-image-${currentEpisode.podcastUri}-${currentEpisode.episodeUri}"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        spring()
+                    },
+                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                )
+        )
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

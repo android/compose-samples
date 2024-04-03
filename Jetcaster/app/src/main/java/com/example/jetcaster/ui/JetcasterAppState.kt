@@ -42,14 +42,15 @@ sealed class Screen(val route: String) {
         fun createRoute(episodeUri: String) = "player/$episodeUri"
     }
 
-    object PodcastDetails : Screen("podcast/{$ARG_PODCAST_URI}") {
+    object PodcastDetails : Screen("podcast/{$ARG_PODCAST_URI}?image={$ARG_PODCAST_IMAGE}") {
 
         val PODCAST_URI = "podcastUri"
-        fun createRoute(podcastUri: String) = "podcast/$podcastUri"
+        fun createRoute(podcastUri: String, imageUrl: String) = "podcast/$podcastUri?image=$imageUrl"
     }
 
     companion object {
         val ARG_PODCAST_URI = "podcastUri"
+        val ARG_PODCAST_IMAGE = "podcastImage"
         val ARG_EPISODE_URI = "episodeUri"
     }
 }
@@ -81,10 +82,13 @@ class JetcasterAppState(
         }
     }
 
-    fun navigateToPodcastDetails(podcastUri: String, from: NavBackStackEntry) {
+    fun navigateToPodcastDetails(podcastUri: String,
+                                 imageUrl: String,
+                                 from: NavBackStackEntry) {
         if (from.lifecycleIsResumed()) {
             val encodedUri = Uri.encode(podcastUri)
-            navController.navigate(Screen.PodcastDetails.createRoute(encodedUri))
+            val encodedImageUrl = Uri.encode(imageUrl)
+            navController.navigate(Screen.PodcastDetails.createRoute(encodedUri, encodedImageUrl))
         }
     }
 

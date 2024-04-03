@@ -18,7 +18,11 @@
 
 package com.example.jetcaster.ui
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
@@ -33,10 +37,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.get
 import androidx.window.layout.DisplayFeature
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.di.Graph.episodePlayer
@@ -48,6 +60,9 @@ import com.example.jetcaster.ui.player.PlayerViewModel
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 
+val LocalSharedElementScopes = compositionLocalOf { SharedElementScopes() }
+data class SharedElementScopes(val scope: SharedTransitionScope? = null,
+                               val animatedVisibilityScope: AnimatedVisibilityScope? = null)
 @Composable
 fun JetcasterApp(
     windowSizeClass: WindowSizeClass,
@@ -60,21 +75,51 @@ fun JetcasterApp(
                 navController = appState.navController,
                 startDestination = Screen.Home.route
             ) {
-                composable(Screen.Home.route) { backStackEntry ->
-                    MainScreen(
-                        windowSizeClass = windowSizeClass,
-                        navigateToPlayer = { episode ->
-                            appState.navigateToPlayer(episode.uri, backStackEntry)
+                fun NavGraphBuilder.sharedElementComposable(
+                    route: String,
+                    arguments: List<NamedNavArgument> = emptyList(),
+                    deepLinks: List<NavDeepLink> = emptyList(),
+                    enterTransition: (@JvmSuppressWildcards
+                    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+                    exitTransition: (@JvmSuppressWildcards
+                    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+                    popEnterTransition: (@JvmSuppressWildcards
+                    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
+                        enterTransition,
+                    popExitTransition: (@JvmSuppressWildcards
+                    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
+                        exitTransition,
+                    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+                ) {
+                    composable(route, arguments, deepLinks, enterTransition, exitTransition, popEnterTransition, popExitTransition
+                    ) {
+                        CompositionLocalProvider(
+                            LocalSharedElementScopes provides SharedElementScopes(
+                                this@SharedTransitionLayout,
+                                this@composable
+                            )
+                        ) {
+                            content(it)
                         }
-                    )
+                    }
                 }
-                composable(Screen.Player.route) { backStackEntry ->
+
+                sharedElementComposable(Screen.Home.route) { backStackEntry ->
+                        MainScreen(
+                            windowSizeClass = windowSizeClass,
+                            navigateToPlayer = { episode ->
+                                appState.navigateToPlayer(episode.uri, backStackEntry)
+                            }
+                        )
+                }
+                sharedElementComposable(Screen.Player.route) { backStackEntry ->
                     val playerViewModel: PlayerViewModel = viewModel(
                         factory = PlayerViewModel.provideFactory(
                             owner = backStackEntry,
                             defaultArgs = backStackEntry.arguments
                         )
                     )
+
                     PlayerScreen(
                         windowSizeClass,
                         displayFeatures,
@@ -82,7 +127,7 @@ fun JetcasterApp(
                         onBackPress = appState::navigateBack
                     )
                 }
-                composable(
+                sharedElementComposable(
                     route = Screen.PodcastDetails.route,
                     enterTransition = {
                         fadeIn(

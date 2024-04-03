@@ -77,7 +77,6 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 fun LazyListScope.podcastCategory(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
@@ -105,8 +104,7 @@ fun LazyListScope.podcastCategory(
     }
 }
 
-context(LazyGridScope, SharedTransitionScope, AnimatedVisibilityScope)
-fun podcastCategory(
+fun LazyGridScope.podcastCategory(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,

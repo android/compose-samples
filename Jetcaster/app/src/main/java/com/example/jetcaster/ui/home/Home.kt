@@ -72,6 +72,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
@@ -107,6 +108,7 @@ import com.example.jetcaster.core.data.model.LibraryInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.ui.LocalSharedElementScopes
 import com.example.jetcaster.ui.Screen
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
@@ -124,7 +126,6 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
-context(SharedTransitionScope, AnimatedContentScope)
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MainScreen(
@@ -133,7 +134,7 @@ fun MainScreen(
     viewModel: HomeViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
-    val navigator = rememberSupportingPaneScaffoldNavigator<String>()
+    val navigator = rememberSupportingPaneScaffoldNavigator<Pair<String, String>>()
     BackHandler(enabled = navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
@@ -142,15 +143,18 @@ fun MainScreen(
             value = navigator.scaffoldValue,
             directive = navigator.scaffoldDirective,
             supportingPane = {
-                val podcastUri = navigator.currentDestination?.content
+                val podcastUri = navigator.currentDestination?.content?.first
                     ?: viewState.featuredPodcasts.firstOrNull()?.uri
+                val podcastImageUrl = navigator.currentDestination?.content?.second // todo check this content value
+                    ?: viewState.featuredPodcasts.firstOrNull()?.imageUrl
                 if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel: PodcastDetailsViewModel = viewModel(
                         key = podcastUri,
                         factory = PodcastDetailsViewModel.provideFactory(
                             owner = LocalSavedStateRegistryOwner.current,
                             defaultArgs = bundleOf(
-                                Screen.ARG_PODCAST_URI to podcastUri
+                                Screen.ARG_PODCAST_URI to podcastUri,
+                                Screen.ARG_PODCAST_IMAGE to podcastImageUrl
                             )
                         )
                     )
@@ -163,6 +167,7 @@ fun MainScreen(
                             }
                         }
                     )
+
                 }
             },
             mainPane = {
@@ -178,8 +183,8 @@ fun MainScreen(
                     onHomeCategorySelected = viewModel::onHomeCategorySelected,
                     onCategorySelected = viewModel::onCategorySelected,
                     onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
-                    navigateToPodcastDetails = {
-                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                    navigateToPodcastDetails = { podcastInfo ->
+                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, Pair(podcastInfo.uri, podcastInfo.imageUrl))
                     },
                     navigateToPlayer = navigateToPlayer,
                     onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
@@ -247,7 +252,6 @@ private fun HomeAppBar(
     )
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun HomeScreen(
     windowSizeClass: WindowSizeClass,
@@ -323,7 +327,6 @@ private fun HomeScreen(
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 
@@ -398,7 +401,6 @@ private fun HomeContent(
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContentColumn(
@@ -471,7 +473,6 @@ private fun HomeContentColumn(
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun HomeContentGrid(
     pagerState: PagerState,
@@ -534,7 +535,6 @@ private fun HomeContentGrid(
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun FollowedPodcastItem(
     pagerState: PagerState,
@@ -620,7 +620,6 @@ private fun HomeCategoryTabIndicator(
 
 private val FEATURED_PODCAST_IMAGE_SIZE_DP = 160.dp
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun FollowedPodcasts(
     pagerState: PagerState,
@@ -661,7 +660,6 @@ private fun FollowedPodcasts(
         }
     }
 }
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun FollowedPodcastCarouselItem(
     modifier: Modifier = Modifier,
@@ -678,18 +676,24 @@ private fun FollowedPodcastCarouselItem(
                 .align(Alignment.CenterHorizontally)
         ) {
             if (podcastImageUrl != null) {
-                AsyncImage(
-                    model = podcastImageUrl,
-                    contentDescription = podcastTitle,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium)
-                        .sharedElement(
-                            rememberSharedContentState(key = "podcast-$podcastUri"),
-                            animatedVisibilityScope = this@AnimatedVisibilityScope
-                        ),
-                )
+                val sharedElementScope = LocalSharedElementScopes.current.scope ?: throw IllegalArgumentException("No scope for shared element found")
+                val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No animated visibility scope found")
+
+                with(sharedElementScope) {
+                    AsyncImage(
+                        model = podcastImageUrl,
+                        contentDescription = podcastTitle,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(MaterialTheme.shapes.medium)
+                            .sharedElement(
+                                rememberSharedContentState(key = "podcast-$podcastUri"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                            ),
+                    )
+                }
             }
 
             ToggleFollowPodcastIconButton(

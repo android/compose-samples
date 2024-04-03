@@ -75,6 +75,7 @@ import com.example.jetcaster.core.data.model.EpisodeInfo
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.model.PodcastInfo
 import com.example.jetcaster.designsystem.theme.Keyline1
+import com.example.jetcaster.ui.LocalSharedElementScopes
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.shared.EpisodeListItem
@@ -82,7 +83,6 @@ import com.example.jetcaster.ui.shared.Loading
 import com.example.jetcaster.util.fullWidthItem
 import kotlinx.coroutines.launch
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsScreen(
     viewModel: PodcastDetailsViewModel,
@@ -90,38 +90,28 @@ fun PodcastDetailsScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // one shared element modifier, that has selected key on list, in the new age you have a modifier thats the same
+    // do a shared bounds, so you get a cross fade.
+    // low res then swap?
+    // shimmer loading?
+
     val state by viewModel.state.collectAsStateWithLifecycle()
-    when (val s = state) {
-        is PodcastUiState.Loading -> {
-            /*PodcastDetailsLoadingScreen(
-                modifier = Modifier.fillMaxSize()
-            )*/
-        }
-        is PodcastUiState.Ready -> {
-            PodcastDetailsScreen(
-                podcast = s.podcast,
-                episodes = s.episodes,
-                toggleSubscribe = viewModel::toggleSusbcribe,
-                onQueueEpisode = viewModel::onQueueEpisode,
-                navigateToPlayer = navigateToPlayer,
-                navigateBack = navigateBack,
-                modifier = modifier,
-            )
-        }
-    }
+
+    PodcastDetailsScreen(
+        podcast = state.podcast,
+        episodes = state.episodes,
+        toggleSubscribe = viewModel::toggleSusbcribe,
+        onQueueEpisode = viewModel::onQueueEpisode,
+        navigateToPlayer = navigateToPlayer,
+        navigateBack = navigateBack,
+        modifier = modifier,
+    )
 }
 
 @Composable
-private fun PodcastDetailsLoadingScreen(
-    modifier: Modifier = Modifier
-) {
-    Loading(modifier = modifier)
-}
-context(SharedTransitionScope, AnimatedVisibilityScope)
-@Composable
 fun PodcastDetailsScreen(
-    podcast: PodcastInfo,
-    episodes: List<EpisodeInfo>,
+    podcast: PodcastInfo?,
+    episodes: List<EpisodeInfo>?,
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
@@ -159,11 +149,10 @@ fun PodcastDetailsScreen(
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsContent(
-    podcast: PodcastInfo,
-    episodes: List<EpisodeInfo>,
+    podcast: PodcastInfo?,
+    episodes: List<EpisodeInfo>?,
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
@@ -180,23 +169,25 @@ fun PodcastDetailsContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        items(episodes, key = { it.uri }) { episode ->
-            EpisodeListItem(
-                episode = episode,
-                podcast = podcast,
-                onClick = navigateToPlayer,
-                onQueueEpisode = onQueueEpisode,
-                modifier = Modifier.fillMaxWidth(),
-                showPodcastImage = false
-            )
+        if (episodes != null && podcast != null){
+            items(episodes, key = { it.uri }) { episode ->
+                EpisodeListItem(
+                    episode = episode,
+                    podcast = podcast,
+                    onClick = navigateToPlayer,
+                    onQueueEpisode = onQueueEpisode,
+                    modifier = Modifier.fillMaxWidth(),
+                    showPodcastImage = false
+                )
+            }
         }
+
     }
 }
 
-context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 fun PodcastDetailsHeaderItem(
-    podcast: PodcastInfo,
+    podcast: PodcastInfo?,
     toggleSubscribe: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -207,45 +198,57 @@ fun PodcastDetailsHeaderItem(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.fillMaxWidth()
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(podcast.imageUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(148.dp)
-                    .clip(MaterialTheme.shapes.large)
-                    .sharedElement(
-                        rememberSharedContentState(key = "podcast-${podcast.uri}"),
-                        animatedVisibilityScope = this@AnimatedVisibilityScope
-                    )
-            )
+            val sharedElementScope = LocalSharedElementScopes.current.scope ?: throw IllegalArgumentException("No scope for shared element found")
+            val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No animated visibility scope found")
+
+            with(sharedElementScope){
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(podcast?.imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(148.dp)
+                        .clip(MaterialTheme.shapes.large)
+                        .sharedElement(
+                            rememberSharedContentState(key = "podcast-${podcast?.uri}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large)
+                        )
+                )
+            }
+
             Column(
                 modifier = Modifier.padding(start = 16.dp)
             ) {
                 Text(
-                    text = podcast.title,
+                    text = podcast?.title ?: "",
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.headlineMedium
                 )
                 PodcastDetailsHeaderItemButtons(
-                    isSubscribed = podcast.isSubscribed ?: false,
+                    isSubscribed = podcast?.isSubscribed ?: false,
                     onClick = {
-                        toggleSubscribe(podcast)
+                        if (podcast!= null){
+                            toggleSubscribe(podcast)
+                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         }
-        PodcastDetailsDescription(
-            podcast = podcast,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        )
+        if (podcast != null){
+            PodcastDetailsDescription(
+                podcast = podcast,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            )
+        }
+
     }
 }
 
