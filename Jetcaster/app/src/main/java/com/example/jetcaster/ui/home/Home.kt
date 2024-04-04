@@ -111,12 +111,12 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.quantityStringResource
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -144,9 +144,11 @@ private val HomeState.showHowCategoryTabs: Boolean
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun HomeState.showGrid(
     scaffoldValue: ThreePaneScaffoldValue
-) : Boolean = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
-    (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium &&
-        scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden)
+): Boolean = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
+    (
+        windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium &&
+            scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
+        )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
