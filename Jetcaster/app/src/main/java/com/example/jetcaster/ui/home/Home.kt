@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalAnimationApi::class
+)
 
 package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -72,13 +85,15 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -88,6 +103,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.stringResource
@@ -95,6 +111,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -110,6 +127,7 @@ import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.data.model.PodcastInfo
 import com.example.jetcaster.ui.LocalSharedElementScopes
 import com.example.jetcaster.ui.Screen
+import com.example.jetcaster.ui.SharedElementScopes
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
@@ -147,6 +165,7 @@ fun MainScreen(
                     ?: viewState.featuredPodcasts.firstOrNull()?.uri
                 val podcastImageUrl = navigator.currentDestination?.content?.second // todo check this content value
                     ?: viewState.featuredPodcasts.firstOrNull()?.imageUrl
+
                 if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel: PodcastDetailsViewModel = viewModel(
                         key = podcastUri,
@@ -158,16 +177,47 @@ fun MainScreen(
                             )
                         )
                     )
-                    PodcastDetailsScreen(
-                        viewModel = podcastDetailsViewModel,
-                        navigateToPlayer = navigateToPlayer,
-                        navigateBack = {
-                            if (navigator.canNavigateBack()) {
-                                navigator.navigateBack()
-                            }
-                        }
-                    )
+                    val keepShowing = scaffoldStateTransition.currentState[role] != PaneAdaptedValue.Hidden &&
+                            scaffoldStateTransition.targetState[role] != PaneAdaptedValue.Hidden
+                    scaffoldStateTransition.AnimatedVisibility(
+                        visible = { value: ThreePaneScaffoldValue -> value[role] != PaneAdaptedValue.Hidden },
+                        modifier = Modifier,
+                        enter =
+                            fadeIn(
+                                animationSpec = tween(
+                                    300, easing = LinearEasing
+                                )
+                            ) + slideIn(
+                                animationSpec = tween(300, easing = EaseIn),
+                                initialOffset = { IntOffset(it.width, 0) }
+                            )
+                        ,
+                        exit =
+                            fadeOut(
+                                animationSpec = tween(
+                                    300, easing = LinearEasing
+                                )
+                            ) + slideOut(
+                                animationSpec = tween(300, easing = EaseIn),
+                                targetOffset = { IntOffset(it.width, 0) }
+                            )
 
+                    ) {
+                        val scopes = LocalSharedElementScopes.current
+                        val newScopes = SharedElementScopes(scopes.scope, this)
+                        CompositionLocalProvider(LocalSharedElementScopes provides newScopes) {
+                            PodcastDetailsScreen(
+                                viewModel = podcastDetailsViewModel,
+                                navigateToPlayer = navigateToPlayer,
+                                navigateBack = {
+                                    if (navigator.canNavigateBack()) {
+                                        navigator.navigateBack()
+                                    }
+                                }
+                            )
+                        }
+
+                    }
                 }
             },
             mainPane = {
@@ -686,12 +736,12 @@ private fun FollowedPodcastCarouselItem(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(MaterialTheme.shapes.medium)
                             .sharedElement(
                                 rememberSharedContentState(key = "podcast-$podcastUri"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
-                            ),
+                            )
+                            .clip(MaterialTheme.shapes.medium),
                     )
                 }
             }

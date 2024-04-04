@@ -32,6 +32,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -73,7 +75,8 @@ fun JetcasterApp(
         SharedTransitionLayout {
             NavHost(
                 navController = appState.navController,
-                startDestination = Screen.Home.route
+                startDestination = Screen.Home.route,
+
             ) {
                 fun NavGraphBuilder.sharedElementComposable(
                     route: String,

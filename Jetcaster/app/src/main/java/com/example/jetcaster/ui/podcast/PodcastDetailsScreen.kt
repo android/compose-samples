@@ -211,12 +211,12 @@ fun PodcastDetailsHeaderItem(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(148.dp)
-                        .clip(MaterialTheme.shapes.large)
                         .sharedElement(
                             rememberSharedContentState(key = "podcast-${podcast?.uri}"),
                             animatedVisibilityScope = animatedVisibilityScope,
                             clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large)
                         )
+                        .clip(MaterialTheme.shapes.large)
                 )
             }
 
