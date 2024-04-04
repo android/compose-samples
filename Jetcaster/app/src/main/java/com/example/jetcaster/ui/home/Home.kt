@@ -22,6 +22,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -110,13 +111,14 @@ import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
+import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -138,7 +140,7 @@ data class HomeState(
     val onQueueEpisode: (PlayerEpisode) -> Unit,
 )
 
-private val HomeState.showHowCategoryTabs: Boolean
+private val HomeState.showHomeCategoryTabs: Boolean
     get() = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -236,29 +238,17 @@ fun MainScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeAppBar(
-    selectedHomeCategory: HomeCategory,
-    homeCategories: List<HomeCategory>,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
+    isExpanded: Boolean,
     modifier: Modifier = Modifier,
-    showHomeCategoryToggle: Boolean = false,
 ) {
     TopAppBar(
         title = {
             Row(
+                horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 16.dp)
             ) {
-                if (showHomeCategoryToggle) {
-                    HomeCategoryTabs(
-                        categories = homeCategories,
-                        selectedCategory = selectedHomeCategory,
-                        onCategorySelected = onHomeCategorySelected,
-                        modifier = Modifier.width(240.dp),
-                        showHorizontalLine = false
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
                 SearchBar(
                     query = "",
                     onQueryChange = {},
@@ -280,7 +270,7 @@ private fun HomeAppBar(
                             contentDescription = stringResource(R.string.cd_account)
                         )
                     },
-                    modifier = if (showHomeCategoryToggle) Modifier else Modifier.fillMaxWidth()
+                    modifier = if (isExpanded) Modifier else Modifier.fillMaxWidth()
                 ) { }
             }
         },
@@ -309,10 +299,7 @@ private fun HomeScreen(
         ),
         topBar = {
             HomeAppBar(
-                selectedHomeCategory = homeState.selectedHomeCategory,
-                homeCategories = homeState.homeCategories,
-                onHomeCategorySelected = homeState.onHomeCategorySelected,
-                showHomeCategoryToggle = showGrid && homeState.showHowCategoryTabs,
+                isExpanded = homeState.windowSizeClass.isCompact,
                 modifier = Modifier.fillMaxWidth(),
             )
         },
@@ -324,7 +311,7 @@ private fun HomeScreen(
         val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
         HomeContent(
             showGrid = showGrid,
-            showHomeCategoryTabs = homeState.showHowCategoryTabs,
+            showHomeCategoryTabs = homeState.showHomeCategoryTabs,
             featuredPodcasts = homeState.featuredPodcasts,
             isRefreshing = homeState.isRefreshing,
             selectedHomeCategory = homeState.selectedHomeCategory,
@@ -387,14 +374,17 @@ private fun HomeContent(
     if (showGrid) {
         HomeContentGrid(
             pagerState = pagerState,
+            showHomeCategoryTabs = showHomeCategoryTabs,
             featuredPodcasts = featuredPodcasts,
             isRefreshing = isRefreshing,
             selectedHomeCategory = selectedHomeCategory,
+            homeCategories = homeCategories,
             filterableCategoriesModel = filterableCategoriesModel,
             podcastCategoryFilterResult = podcastCategoryFilterResult,
             library = library,
             modifier = modifier,
             onPodcastUnfollowed = onPodcastUnfollowed,
+            onHomeCategorySelected = onHomeCategorySelected,
             onCategorySelected = onCategorySelected,
             navigateToPodcastDetails = navigateToPodcastDetails,
             navigateToPlayer = navigateToPlayer,
@@ -468,6 +458,7 @@ private fun HomeContentColumn(
                 HomeCategoryTabs(
                     categories = homeCategories,
                     selectedCategory = selectedHomeCategory,
+                    showHorizontalLine = true,
                     onCategorySelected = onHomeCategorySelected
                 )
             }
@@ -499,14 +490,17 @@ private fun HomeContentColumn(
 
 @Composable
 private fun HomeContentGrid(
+    showHomeCategoryTabs: Boolean,
     pagerState: PagerState,
     featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
+    homeCategories: List<HomeCategory>,
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
     modifier: Modifier = Modifier,
+    onHomeCategorySelected: (HomeCategory) -> Unit,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
@@ -533,6 +527,20 @@ private fun HomeContentGrid(
 
         if (isRefreshing) {
             // TODO show a progress indicator or similar
+        }
+
+        if (showHomeCategoryTabs) {
+            fullWidthItem {
+                Row {
+                    HomeCategoryTabs(
+                        categories = homeCategories,
+                        selectedCategory = selectedHomeCategory,
+                        showHorizontalLine = false,
+                        onCategorySelected = onHomeCategorySelected,
+                        modifier = Modifier.width(240.dp)
+                    )
+                }
+            }
         }
 
         when (selectedHomeCategory) {
@@ -587,8 +595,8 @@ private fun HomeCategoryTabs(
     categories: List<HomeCategory>,
     selectedCategory: HomeCategory,
     onCategorySelected: (HomeCategory) -> Unit,
+    showHorizontalLine: Boolean,
     modifier: Modifier = Modifier,
-    showHorizontalLine: Boolean = true,
 ) {
     if (categories.isEmpty()) {
         return
@@ -752,9 +760,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 private fun HomeAppBarPreview() {
     JetcasterTheme {
         HomeAppBar(
-            homeCategories = emptyList(),
-            onHomeCategorySelected = {},
-            selectedHomeCategory = HomeCategory.Discover,
+            isExpanded = false
         )
     }
 }
