@@ -35,6 +35,7 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.text.Typography.dagger
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
