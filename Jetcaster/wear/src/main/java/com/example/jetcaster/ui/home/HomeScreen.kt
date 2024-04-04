@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
@@ -46,12 +47,12 @@ import com.google.android.horologist.images.coil.CoilPaintable
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel,
     onLatestEpisodeClick: () -> Unit,
     onYourPodcastClick: () -> Unit,
     onUpNextClick: () -> Unit,
     onErrorDialogCancelClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(

@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -40,10 +39,8 @@ import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.Text
 import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.episode.EpisodeScreen
-import com.example.jetcaster.tv.ui.episode.EpisodeScreenViewModel
 import com.example.jetcaster.tv.ui.library.LibraryScreen
 import com.example.jetcaster.tv.ui.podcast.PodcastScreen
-import com.example.jetcaster.tv.ui.podcast.PodcastScreenViewModel
 import com.example.jetcaster.tv.ui.profile.ProfileScreen
 import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
@@ -165,11 +162,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         }
 
         composable(Screen.Podcast.route) {
-            val podcastScreenViewModel: PodcastScreenViewModel = viewModel(
-                factory = PodcastScreenViewModel.factory
-            )
             PodcastScreen(
-                podcastScreenViewModel = podcastScreenViewModel,
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
                 playEpisode = {},
                 showEpisodeDetails = { jetcasterAppState.showEpisodeDetails(it.episode.uri) },
@@ -180,15 +173,11 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         }
 
         composable(Screen.Episode.route) {
-            val episodeScreenViewModel: EpisodeScreenViewModel = viewModel(
-                factory = EpisodeScreenViewModel.factory
-            )
             EpisodeScreen(
                 playEpisode = {
                     jetcasterAppState.playEpisode(it.uri)
                 },
                 backToHome = jetcasterAppState::navigateToDiscover,
-                episodeScreenViewModel = episodeScreenViewModel,
             )
         }
 

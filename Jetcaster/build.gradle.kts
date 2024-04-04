@@ -20,6 +20,8 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.gradle.versions)
     alias(libs.plugins.version.catalog.update)
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt) apply false
 }
 
 apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")

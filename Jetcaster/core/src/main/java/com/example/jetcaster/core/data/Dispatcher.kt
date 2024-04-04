@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.tv
+package com.example.jetcaster.core.data
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Qualifier
 
-@HiltAndroidApp
-class JetCasterTvApp : Application()
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Dispatcher(val jetcasterDispatcher: JetcasterDispatchers)
+
+enum class JetcasterDispatchers {
+    Main,
+    IO,
+}

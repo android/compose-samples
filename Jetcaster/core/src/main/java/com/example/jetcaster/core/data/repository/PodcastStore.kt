@@ -91,7 +91,7 @@ interface PodcastStore {
 /**
  * A data repository for [Podcast] instances.
  */
-class LocalPodcastStore(
+class LocalPodcastStore constructor(
     private val podcastDao: PodcastsDao,
     private val podcastFollowedEntryDao: PodcastFollowedEntryDao,
     private val transactionRunner: TransactionRunner

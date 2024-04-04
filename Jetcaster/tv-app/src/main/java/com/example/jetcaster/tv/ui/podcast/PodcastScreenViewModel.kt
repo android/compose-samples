@@ -16,16 +16,16 @@
 
 package com.example.jetcaster.tv.ui.podcast
 
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.Podcast
-import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.Screen
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,10 +35,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PodcastScreenViewModel(
+@HiltViewModel
+class PodcastScreenViewModel @Inject constructor(
     handle: SavedStateHandle,
-    private val podcastStore: PodcastStore = Graph.podcastStore,
-    episodeStore: EpisodeStore = Graph.episodeStore,
+    private val podcastStore: PodcastStore,
+    episodeStore: EpisodeStore,
 ) : ViewModel() {
 
     private val podcastUri = handle.get<String>(Screen.Podcast.PARAMETER_NAME)
@@ -95,21 +96,6 @@ class PodcastScreenViewModel(
         if (isSubscribed) {
             viewModelScope.launch {
                 podcastStore.togglePodcastFollowed(podcast.uri)
-            }
-        }
-    }
-
-    companion object {
-        @Suppress("UNCHECKED_CAST")
-        val factory = object : AbstractSavedStateViewModelFactory() {
-            override fun <T : ViewModel> create(
-                key: String,
-                modelClass: Class<T>,
-                handle: SavedStateHandle
-            ): T {
-                return PodcastScreenViewModel(
-                    handle
-                ) as T
             }
         }
     }

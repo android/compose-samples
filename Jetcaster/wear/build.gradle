@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     alias libs.plugins.roborazzi
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -104,6 +105,11 @@ dependencies {
     implementation libs.horologist.audio.ui
     implementation libs.horologist.media.data
     implementation libs.horologist.images.coil
+
+    // Dependency injection
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Preview Tooling
     implementation libs.compose.ui.tooling.preview

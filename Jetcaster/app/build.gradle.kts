@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -95,18 +96,21 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.palette)
 
+    // Dependency injection
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Compose
     implementation(libs.androidx.activity.compose)
-
-    implementation(libs.androidx.constraintlayout.compose)
-
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.compose.material3.window)
-    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 

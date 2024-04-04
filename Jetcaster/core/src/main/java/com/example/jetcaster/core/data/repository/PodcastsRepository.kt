@@ -16,10 +16,13 @@
 
 package com.example.jetcaster.core.data.repository
 
+import com.example.jetcaster.core.data.Dispatcher
+import com.example.jetcaster.core.data.JetcasterDispatchers
 import com.example.jetcaster.core.data.database.dao.TransactionRunner
 import com.example.jetcaster.core.data.network.PodcastRssResponse
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.network.SampleFeeds
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -30,13 +33,13 @@ import kotlinx.coroutines.launch
 /**
  * Data repository for Podcasts.
  */
-class PodcastsRepository(
+class PodcastsRepository @Inject constructor(
     private val podcastsFetcher: PodcastsFetcher,
     private val podcastStore: PodcastStore,
     private val episodeStore: EpisodeStore,
     private val categoryStore: CategoryStore,
     private val transactionRunner: TransactionRunner,
-    mainDispatcher: CoroutineDispatcher
+    @Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher
 ) {
     private var refreshingJob: Job? = null
 

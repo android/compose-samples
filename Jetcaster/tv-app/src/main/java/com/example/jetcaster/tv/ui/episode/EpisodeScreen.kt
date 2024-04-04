@@ -30,7 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -50,7 +50,7 @@ fun EpisodeScreen(
     playEpisode: (Episode) -> Unit,
     backToHome: () -> Unit,
     modifier: Modifier = Modifier,
-    episodeScreenViewModel: EpisodeScreenViewModel = viewModel()
+    episodeScreenViewModel: EpisodeScreenViewModel = hiltViewModel()
 ) {
 
     val uiState by episodeScreenViewModel.uiStateFlow.collectAsState()

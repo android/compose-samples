@@ -66,7 +66,7 @@ interface CategoryStore {
 /**
  * A data repository for [Category] instances.
  */
-class LocalCategoryStore(
+class LocalCategoryStore constructor(
     private val categoriesDao: CategoriesDao,
     private val categoryEntryDao: PodcastCategoryEntryDao,
     private val episodesDao: EpisodesDao,

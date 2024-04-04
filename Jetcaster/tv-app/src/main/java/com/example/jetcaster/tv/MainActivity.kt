@@ -29,7 +29,9 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.example.jetcaster.tv.ui.JetcasterApp
 import com.example.jetcaster.tv.ui.theme.JetcasterTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalTvMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {

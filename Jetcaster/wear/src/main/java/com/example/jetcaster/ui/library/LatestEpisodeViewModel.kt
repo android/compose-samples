@@ -19,17 +19,18 @@ package com.example.jetcaster.ui.library
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.di.Graph
 import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.util.combine
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class LatestEpisodeViewModel(
-    private val episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase =
-        Graph.getLatestFollowedEpisodesUseCase,
+@HiltViewModel
+class LatestEpisodeViewModel @Inject constructor(
+    private val episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase,
 ) : ViewModel() {
     // Holds our view state which the UI collects via [state]
     private val _state = MutableStateFlow(LatestEpisodeViewState())
