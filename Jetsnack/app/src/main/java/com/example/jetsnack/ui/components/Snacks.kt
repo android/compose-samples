@@ -215,41 +215,44 @@ fun SnackItem(
                 ?: throw IllegalArgumentException("No animatedVisibilityScope found")
 
             with(sharedTransitionScope) {
-                SnackImage(
-                    imageUrl = snack.imageUrl,
-                    elevation = 4.dp,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .sharedElement(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Image
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
-                        .size(120.dp)
-                )
-                Text(
-                    text = snack.name,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = JetsnackTheme.colors.textSecondary,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .sharedElement(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Title
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
-                        .fillMaxWidth()
-                )
+                with(animatedVisibilityScope) {
+                    SnackImage(
+                        imageUrl = snack.imageUrl,
+                        elevation = 4.dp,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .sharedElement(
+                                rememberSharedContentState(
+                                    key = SnackSharedElementKey(
+                                        snackId = snack.id,
+                                        origin = snackCollectionId.toString(),
+                                        type = SnackSharedElementType.Image
+                                    )
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .size(120.dp)
+                    )
+                    Text(
+                        text = snack.name,
+                        style = MaterialTheme.typography.subtitle1,
+                        color = JetsnackTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .sharedBounds(
+                                rememberSharedContentState(
+                                    key = SnackSharedElementKey(
+                                        snackId = snack.id,
+                                        origin = snackCollectionId.toString(),
+                                        type = SnackSharedElementType.Title
+                                    )
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .animateEnterExit()
+                            .fillMaxWidth()
+                    )
+                }
             }
 
 
@@ -272,6 +275,7 @@ private fun HighlightSnackItem(
     val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
         ?: throw IllegalArgumentException("No Scope found")
     with(sharedTransitionScope) {
+
         JetsnackCard(
             modifier = modifier
                 .size(
@@ -287,7 +291,8 @@ private fun HighlightSnackItem(
                             type = SnackSharedElementType.Bounds
                         )
                     ),
-                    animatedVisibilityScope
+                    animatedVisibilityScope,
+                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
                 )
         ) {
             Column(
@@ -302,6 +307,16 @@ private fun HighlightSnackItem(
                 ) {
                     Box(
                         modifier = Modifier
+                            .sharedElement(
+                                rememberSharedContentState(
+                                    key = SnackSharedElementKey(
+                                        snackId = snack.id,
+                                        origin = snackCollectionId.toString(),
+                                        type = SnackSharedElementType.Background
+                                    )
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
                             .height(100.dp)
                             .fillMaxWidth()
                             .offsetGradientBackground(
@@ -338,47 +353,49 @@ private fun HighlightSnackItem(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = snack.name,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.h6,
-                    color = JetsnackTheme.colors.textSecondary,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .sharedElement(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Title
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
-                        .fillMaxWidth()
-                    // .skipToLookaheadSize()
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = snack.tagline,
-                    style = MaterialTheme.typography.body1,
-                    color = JetsnackTheme.colors.textHelp,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .sharedElement(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Tagline
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
-                        .fillMaxWidth()
-                    //  .skipToLookaheadSize()
-                )
+                with(animatedVisibilityScope) {
+                    Text(
+                        text = snack.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.h6,
+                        color = JetsnackTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .sharedBounds(
+                                rememberSharedContentState(
+                                    key = SnackSharedElementKey(
+                                        snackId = snack.id,
+                                        origin = snackCollectionId.toString(),
+                                        type = SnackSharedElementType.Title
+                                    )
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .animateEnterExit()
+                            .fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = snack.tagline,
+                        style = MaterialTheme.typography.body1,
+                        color = JetsnackTheme.colors.textHelp,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .sharedBounds(
+                                rememberSharedContentState(
+                                    key = SnackSharedElementKey(
+                                        snackId = snack.id,
+                                        origin = snackCollectionId.toString(),
+                                        type = SnackSharedElementType.Tagline
+                                    )
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .fillMaxWidth()
+                    )
+                }
+
             }
         }
     }
@@ -392,7 +409,6 @@ fun SnackImage(
     elevation: Dp = 0.dp
 ) {
     JetsnackSurface(
-        color = Color.LightGray,
         elevation = elevation,
         shape = CircleShape,
         modifier = modifier
@@ -403,7 +419,6 @@ fun SnackImage(
                 .crossfade(true)
                 .build(),
             contentDescription = contentDescription,
-            placeholder = painterResource(R.drawable.placeholder),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
         )

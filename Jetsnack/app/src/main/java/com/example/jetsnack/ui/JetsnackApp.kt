@@ -25,6 +25,10 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.SnackbarHost
@@ -105,19 +109,33 @@ fun MainContainer(
     val currentRoute = navBackStackEntry?.destination?.route
     val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
         ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+        ?: throw IllegalStateException("No SharedElementScope found")
     JetsnackScaffold(
         bottomBar = {
-            with(sharedTransitionScope) {
-                JetsnackBottomBar(
-                    tabs = HomeSections.entries.toTypedArray(),
-                    currentRoute = currentRoute ?: HomeSections.FEED.route,
-                    navigateToRoute = nestedNavController::navigateToBottomBarRoute,
-                    // todo fix this as it doesn't hide quick enough
-                    modifier = Modifier.renderInSharedTransitionScopeOverlay(
-                        zIndexInOverlay = 1f,
+            with (animatedVisibilityScope){
+                with(sharedTransitionScope) {
+                    JetsnackBottomBar(
+                        tabs = HomeSections.entries.toTypedArray(),
+                        currentRoute = currentRoute ?: HomeSections.FEED.route,
+                        navigateToRoute = nestedNavController::navigateToBottomBarRoute,
+                        // todo fix this as it doesn't hide quick enough
+                        modifier = Modifier.renderInSharedTransitionScopeOverlay(
+                            zIndexInOverlay = 1f,
+                        ).animateEnterExit(
+                            enter = fadeIn() + slideInVertically(initialOffsetY = {
+                                it
+                            }),
+                            exit =
+                                fadeOut() + slideOutVertically(targetOffsetY = {
+                                    it
+                                })
+
+                        )
                     )
-                )
+                }
             }
+
 
         },
         modifier = modifier,
