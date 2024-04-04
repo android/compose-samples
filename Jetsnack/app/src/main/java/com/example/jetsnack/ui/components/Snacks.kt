@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +49,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,6 +69,8 @@ import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
+import com.example.jetsnack.ui.LocalSharedElementScopes
+import com.example.jetsnack.ui.SharedElementScopes
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
 
@@ -74,7 +82,7 @@ private val Density.cardWidthWithPaddingPx
 @Composable
 fun SnackCollection(
     snackCollection: SnackCollection,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
     index: Int = 0,
     highlight: Boolean = true
@@ -111,18 +119,19 @@ fun SnackCollection(
             }
         }
         if (highlight && snackCollection.type == CollectionType.Highlight) {
-            HighlightedSnacks(index, snackCollection.snacks, onSnackClick)
+            HighlightedSnacks(snackCollection.id, index, snackCollection.snacks, onSnackClick)
         } else {
-            Snacks(snackCollection.snacks, onSnackClick)
+            Snacks(snackCollection.id, snackCollection.snacks, onSnackClick)
         }
     }
 }
 
 @Composable
 private fun HighlightedSnacks(
+    snackCollectionId: Long,
     index: Int,
     snacks: List<Snack>,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val rowState = rememberLazyListState()
@@ -147,6 +156,7 @@ private fun HighlightedSnacks(
     ) {
         itemsIndexed(snacks) { index, snack ->
             HighlightSnackItem(
+                snackCollectionId = snackCollectionId,
                 snack = snack,
                 onSnackClick = onSnackClick,
                 index = index,
@@ -159,8 +169,9 @@ private fun HighlightedSnacks(
 
 @Composable
 private fun Snacks(
+    snackCollectionId: Long,
     snacks: List<Snack>,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -168,7 +179,7 @@ private fun Snacks(
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
     ) {
         items(snacks) { snack ->
-            SnackItem(snack, onSnackClick)
+            SnackItem(snack, snackCollectionId, onSnackClick)
         }
     }
 }
@@ -176,7 +187,8 @@ private fun Snacks(
 @Composable
 fun SnackItem(
     snack: Snack,
-    onSnackClick: (Long) -> Unit,
+    snackCollectionId: Long,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(
@@ -190,7 +202,7 @@ fun SnackItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .clickable(onClick = { onSnackClick(snack.id) })
+                .clickable(onClick = { onSnackClick(snack.id, snackCollectionId.toString()) })
                 .padding(8.dp)
         ) {
             SnackImage(
@@ -211,8 +223,9 @@ fun SnackItem(
 
 @Composable
 private fun HighlightSnackItem(
+    snackCollectionId: Long,
     snack: Snack,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     index: Int,
     gradient: List<Color>,
     scrollProvider: () -> Float,
@@ -228,7 +241,7 @@ private fun HighlightSnackItem(
     ) {
         Column(
             modifier = Modifier
-                .clickable(onClick = { onSnackClick(snack.id) })
+                .clickable(onClick = { onSnackClick(snack.id, snackCollectionId.toString()) })
                 .fillMaxSize()
         ) {
             Box(
@@ -253,13 +266,23 @@ private fun HighlightSnackItem(
                             }
                         )
                 )
-                SnackImage(
-                    imageUrl = snack.imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .align(Alignment.BottomCenter)
-                )
+                val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope ?: throw IllegalArgumentException("No Scope found")
+                val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No Scope found")
+
+                with(sharedTransitionScope) {
+                    SnackImage(
+                        imageUrl = snack.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .sharedElement(
+                                rememberSharedContentState(key = "snack-${snack.id}-$snackCollectionId"),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .size(120.dp)
+                            .align(Alignment.BottomCenter)
+                    )
+                }
+
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -314,12 +337,21 @@ fun SnackImage(
 fun SnackCardPreview() {
     JetsnackTheme {
         val snack = snacks.first()
-        HighlightSnackItem(
-            snack = snack,
-            onSnackClick = { },
-            index = 0,
-            gradient = JetsnackTheme.colors.gradient6_1,
-            scrollProvider = { 0f }
-        )
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                CompositionLocalProvider(
+                    LocalSharedElementScopes provides SharedElementScopes(this@SharedTransitionLayout, this)) {
+                    HighlightSnackItem(
+                        snackCollectionId = 1,
+                        snack = snack,
+                        onSnackClick = { _, _, -> },
+                        index = 0,
+                        gradient = JetsnackTheme.colors.gradient6_1,
+                        scrollProvider = { 0f }
+                    )
+                }
+
+            }
+        }
     }
 }

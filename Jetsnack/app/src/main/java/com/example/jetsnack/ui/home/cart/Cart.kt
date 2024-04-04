@@ -94,7 +94,7 @@ import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
 fun Cart(
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
@@ -139,7 +139,7 @@ fun Cart(
     increaseItemCount: (Long) -> Unit,
     decreaseItemCount: (Long) -> Unit,
     inspiredByCart: SnackCollection,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
@@ -166,7 +166,7 @@ private fun CartContent(
     increaseItemCount: (Long) -> Unit,
     decreaseItemCount: (Long) -> Unit,
     inspiredByCart: SnackCollection,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val resources = LocalContext.current.resources
@@ -307,14 +307,14 @@ fun CartItem(
     removeSnack: (Long) -> Unit,
     increaseItemCount: (Long) -> Unit,
     decreaseItemCount: (Long) -> Unit,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snack = orderLine.snack
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onSnackClick(snack.id) }
+            .clickable { onSnackClick(snack.id, "cart") }
             .background(JetsnackTheme.colors.uiBackground)
             .padding(horizontal = 24.dp)
 
@@ -525,7 +525,7 @@ private fun CartPreview() {
             increaseItemCount = {},
             decreaseItemCount = {},
             inspiredByCart = SnackRepo.getInspiredByCart(),
-            onSnackClick = {}
+            onSnackClick = {_ , _ -> }
         )
     }
 }

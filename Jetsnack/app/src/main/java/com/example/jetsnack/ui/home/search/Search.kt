@@ -69,7 +69,7 @@ import com.example.jetsnack.ui.utils.mirroringBackIcon
 
 @Composable
 fun Search(
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     state: SearchState = rememberSearchState()

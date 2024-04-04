@@ -56,7 +56,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun Feed(
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -65,7 +65,7 @@ fun Feed(
     JetsnackScaffold(
         bottomBar = {
             JetsnackBottomBar(
-                tabs = HomeSections.values(),
+                tabs = HomeSections.entries.toTypedArray(),
                 currentRoute = HomeSections.FEED.route,
                 navigateToRoute = onNavigateToRoute
             )
@@ -85,7 +85,7 @@ fun Feed(
 private fun Feed(
     snackCollections: List<SnackCollection>,
     filters: List<Filter>,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
@@ -100,13 +100,12 @@ private fun Feed(
 private fun SnackCollectionList(
     snackCollections: List<SnackCollection>,
     filters: List<Filter>,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
     Box(modifier) {
         LazyColumn {
-
             item {
                 Spacer(
                     Modifier.windowInsetsTopHeight(
@@ -147,6 +146,6 @@ private fun SnackCollectionList(
 @Composable
 fun HomePreview() {
     JetsnackTheme {
-        Feed(onSnackClick = { }, onNavigateToRoute = { })
+        Feed(onSnackClick = { _, _, -> }, onNavigateToRoute = { })
     }
 }

@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,6 +70,7 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.LocalSharedElementScopes
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -94,6 +98,7 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 @Composable
 fun SnackDetail(
     snackId: Long,
+    origin: String,
     upPress: () -> Unit
 ) {
     val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
@@ -104,7 +109,7 @@ fun SnackDetail(
         Header()
         Body(related, scroll)
         Title(snack) { scroll.value }
-        Image(snack.imageUrl) { scroll.value }
+        Image(snackId, origin, snack.imageUrl) { scroll.value }
         Up(upPress)
         CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
     }
@@ -219,7 +224,7 @@ private fun Body(
                         key(snackCollection.id) {
                             SnackCollection(
                                 snackCollection = snackCollection,
-                                onSnackClick = { },
+                                onSnackClick = { _, _ ->},
                                 highlight = false
                             )
                         }
@@ -283,6 +288,8 @@ private fun Title(snack: Snack, scrollProvider: () -> Int) {
 
 @Composable
 private fun Image(
+    snackId: Long,
+    origin: String?,
     imageUrl: String,
     scrollProvider: () -> Int
 ) {
@@ -295,11 +302,21 @@ private fun Image(
         collapseFractionProvider = collapseFractionProvider,
         modifier = HzPadding.statusBarsPadding()
     ) {
-        SnackImage(
-            imageUrl = imageUrl,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
+        val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope ?: throw IllegalArgumentException("No Scope found")
+        val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No Scope found")
+
+        with(sharedTransitionScope) {
+            SnackImage(
+                imageUrl = imageUrl,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+                    .sharedElement(
+                        rememberSharedContentState(key = "snack-${snackId}-$origin"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+
+            )
+        }
     }
 }
 
@@ -380,6 +397,7 @@ private fun SnackDetailPreview() {
     JetsnackTheme {
         SnackDetail(
             snackId = 1L,
+            origin = "details",
             upPress = { }
         )
     }
