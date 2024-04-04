@@ -71,6 +71,8 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.LocalSharedElementScopes
 import com.example.jetsnack.ui.SharedElementScopes
+import com.example.jetsnack.ui.SnackSharedElementKey
+import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
 
@@ -202,21 +204,55 @@ fun SnackItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .clickable(onClick = { onSnackClick(snack.id, snackCollectionId.toString()) })
+                .clickable(onClick = {
+                    onSnackClick(snack.id, snackCollectionId.toString())
+                })
                 .padding(8.dp)
         ) {
-            SnackImage(
-                imageUrl = snack.imageUrl,
-                elevation = 4.dp,
-                contentDescription = null,
-                modifier = Modifier.size(120.dp)
-            )
-            Text(
-                text = snack.name,
-                style = MaterialTheme.typography.subtitle1,
-                color = JetsnackTheme.colors.textSecondary,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+                ?: throw IllegalArgumentException("No sharedTransitionScope found")
+            val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+                ?: throw IllegalArgumentException("No animatedVisibilityScope found")
+
+            with(sharedTransitionScope) {
+                SnackImage(
+                    imageUrl = snack.imageUrl,
+                    elevation = 4.dp,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .sharedElement(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Image
+                                )
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .size(120.dp)
+                )
+                Text(
+                    text = snack.name,
+                    style = MaterialTheme.typography.subtitle1,
+                    color = JetsnackTheme.colors.textSecondary,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .sharedElement(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Title
+                                )
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .fillMaxWidth()
+                )
+            }
+
+
         }
     }
 }
@@ -231,51 +267,69 @@ private fun HighlightSnackItem(
     scrollProvider: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    JetsnackCard(
-        modifier = modifier
-            .size(
-                width = HighlightCardWidth,
-                height = 250.dp
-            )
-            .padding(bottom = 16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .clickable(onClick = { onSnackClick(snack.id, snackCollectionId.toString()) })
-                .fillMaxSize()
+    val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+        ?: throw IllegalArgumentException("No Scope found")
+    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+        ?: throw IllegalArgumentException("No Scope found")
+    with(sharedTransitionScope) {
+        JetsnackCard(
+            modifier = modifier
+                .size(
+                    width = HighlightCardWidth,
+                    height = 250.dp
+                )
+                .padding(bottom = 16.dp)
+                .sharedBounds(
+                    rememberSharedContentState(
+                        key = SnackSharedElementKey(
+                            snackId = snack.id,
+                            origin = snackCollectionId.toString(),
+                            type = SnackSharedElementType.Bounds
+                        )
+                    ),
+                    animatedVisibilityScope
+                )
         ) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .height(160.dp)
-                    .fillMaxWidth()
+                    .clickable(onClick = { onSnackClick(snack.id, snackCollectionId.toString()) })
+                    .fillMaxSize()
             ) {
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(160.dp)
                         .fillMaxWidth()
-                        .offsetGradientBackground(
-                            colors = gradient,
-                            width = {
-                                // The Cards show a gradient which spans 6 cards and scrolls with parallax.
-                                6 * cardWidthWithPaddingPx
-                            },
-                            offset = {
-                                val left = index * cardWidthWithPaddingPx
-                                val gradientOffset = left - (scrollProvider() / 3f)
-                                gradientOffset
-                            }
-                        )
-                )
-                val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope ?: throw IllegalArgumentException("No Scope found")
-                val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No Scope found")
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .height(100.dp)
+                            .fillMaxWidth()
+                            .offsetGradientBackground(
+                                colors = gradient,
+                                width = {
+                                    // The Cards show a gradient which spans 6 cards and scrolls with parallax.
+                                    6 * cardWidthWithPaddingPx
+                                },
+                                offset = {
+                                    val left = index * cardWidthWithPaddingPx
+                                    val gradientOffset = left - (scrollProvider() / 3f)
+                                    gradientOffset
+                                }
+                            )
+                    )
 
-                with(sharedTransitionScope) {
                     SnackImage(
                         imageUrl = snack.imageUrl,
                         contentDescription = null,
                         modifier = Modifier
                             .sharedElement(
-                                rememberSharedContentState(key = "snack-${snack.id}-$snackCollectionId"),
+                                rememberSharedContentState(
+                                    key = SnackSharedElementKey(
+                                        snackId = snack.id,
+                                        origin = snackCollectionId.toString(),
+                                        type = SnackSharedElementType.Image
+                                    )
+                                ),
                                 animatedVisibilityScope = animatedVisibilityScope
                             )
                             .size(120.dp)
@@ -283,23 +337,49 @@ private fun HighlightSnackItem(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = snack.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.h6,
+                    color = JetsnackTheme.colors.textSecondary,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .sharedElement(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Title
+                                )
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .fillMaxWidth()
+                    // .skipToLookaheadSize()
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = snack.tagline,
+                    style = MaterialTheme.typography.body1,
+                    color = JetsnackTheme.colors.textHelp,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .sharedElement(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Tagline
+                                )
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .fillMaxWidth()
+                    //  .skipToLookaheadSize()
+                )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = snack.name,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.h6,
-                color = JetsnackTheme.colors.textSecondary,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = snack.tagline,
-                style = MaterialTheme.typography.body1,
-                color = JetsnackTheme.colors.textHelp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
         }
     }
 }
@@ -340,11 +420,15 @@ fun SnackCardPreview() {
         SharedTransitionLayout {
             AnimatedVisibility(visible = true) {
                 CompositionLocalProvider(
-                    LocalSharedElementScopes provides SharedElementScopes(this@SharedTransitionLayout, this)) {
+                    LocalSharedElementScopes provides SharedElementScopes(
+                        this@SharedTransitionLayout,
+                        this
+                    )
+                ) {
                     HighlightSnackItem(
                         snackCollectionId = 1,
                         snack = snack,
-                        onSnackClick = { _, _, -> },
+                        onSnackClick = { _, _ -> },
                         index = 0,
                         gradient = JetsnackTheme.colors.gradient6_1,
                         scrollProvider = { 0f }

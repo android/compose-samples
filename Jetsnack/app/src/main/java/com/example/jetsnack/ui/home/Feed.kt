@@ -57,28 +57,16 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 @Composable
 fun Feed(
     onSnackClick: (Long, String) -> Unit,
-    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackCollections = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
-    JetsnackScaffold(
-        bottomBar = {
-            JetsnackBottomBar(
-                tabs = HomeSections.entries.toTypedArray(),
-                currentRoute = HomeSections.FEED.route,
-                navigateToRoute = onNavigateToRoute
-            )
-        },
-        modifier = modifier
-    ) { paddingValues ->
-        Feed(
-            snackCollections,
-            filters,
-            onSnackClick,
-            Modifier.padding(paddingValues)
-        )
-    }
+    Feed(
+        snackCollections,
+        filters,
+        onSnackClick,
+        modifier
+    )
 }
 
 @Composable
@@ -146,6 +134,6 @@ private fun SnackCollectionList(
 @Composable
 fun HomePreview() {
     JetsnackTheme {
-        Feed(onSnackClick = { _, _, -> }, onNavigateToRoute = { })
+        Feed(onSnackClick = { _, _, -> })
     }
 }

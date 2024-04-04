@@ -71,6 +71,8 @@ import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.LocalSharedElementScopes
+import com.example.jetsnack.ui.SnackSharedElementKey
+import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -103,15 +105,35 @@ fun SnackDetail(
 ) {
     val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
     val related = remember(snackId) { SnackRepo.getRelated(snackId) }
+    val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+        ?: throw IllegalArgumentException("No Scope found")
+    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+        ?: throw IllegalArgumentException("No Scope found")
+    println("details snack key: snack-${snackId}-$origin")
 
-    Box(Modifier.fillMaxSize()) {
-        val scroll = rememberScrollState(0)
-        Header()
-        Body(related, scroll)
-        Title(snack) { scroll.value }
-        Image(snackId, origin, snack.imageUrl) { scroll.value }
-        Up(upPress)
-        CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
+    with(sharedTransitionScope) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .sharedBounds(
+                    rememberSharedContentState(
+                        key = SnackSharedElementKey(
+                            snackId = snack.id,
+                            origin = origin,
+                            type = SnackSharedElementType.Bounds
+                        )
+                    ),
+                    animatedVisibilityScope
+                )
+        ) {
+            val scroll = rememberScrollState(0)
+            Header()
+            Body(related, scroll)
+            Title(snack, origin) { scroll.value }
+            Image(snackId, origin, snack.imageUrl) { scroll.value }
+            Up(upPress)
+            CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
+        }
     }
 }
 
@@ -224,7 +246,7 @@ private fun Body(
                         key(snackCollection.id) {
                             SnackCollection(
                                 snackCollection = snackCollection,
-                                onSnackClick = { _, _ ->},
+                                onSnackClick = { _, _ -> },
                                 highlight = false
                             )
                         }
@@ -243,53 +265,86 @@ private fun Body(
 }
 
 @Composable
-private fun Title(snack: Snack, scrollProvider: () -> Int) {
+private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
     val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
+    val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+        ?: throw IllegalArgumentException("No Scope found")
+    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+        ?: throw IllegalArgumentException("No Scope found")
 
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .heightIn(min = TitleHeight)
-            .statusBarsPadding()
-            .offset {
-                val scroll = scrollProvider()
-                val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
-                IntOffset(x = 0, y = offset.toInt())
-            }
-            .background(color = JetsnackTheme.colors.uiBackground)
-    ) {
-        Spacer(Modifier.height(16.dp))
-        Text(
-            text = snack.name,
-            style = MaterialTheme.typography.h4,
-            color = JetsnackTheme.colors.textSecondary,
-            modifier = HzPadding
-        )
-        Text(
-            text = snack.tagline,
-            style = MaterialTheme.typography.subtitle2,
-            fontSize = 20.sp,
-            color = JetsnackTheme.colors.textHelp,
-            modifier = HzPadding
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            text = formatPrice(snack.price),
-            style = MaterialTheme.typography.h6,
-            color = JetsnackTheme.colors.textPrimary,
-            modifier = HzPadding
-        )
+    with(sharedTransitionScope) {
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = TitleHeight)
+                .statusBarsPadding()
+                .offset {
+                    val scroll = scrollProvider()
+                    val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
+                    IntOffset(x = 0, y = offset.toInt())
+                }
+                .background(color = JetsnackTheme.colors.uiBackground)
+        ) {
+            Spacer(Modifier.height(16.dp))
 
-        Spacer(Modifier.height(8.dp))
-        JetsnackDivider()
+            Text(
+                text = snack.name,
+                style = MaterialTheme.typography.h4,
+                color = JetsnackTheme.colors.textSecondary,
+                modifier = HzPadding
+                    .sharedElement(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = origin,
+                                type = SnackSharedElementType.Title
+                            )
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+                    .fillMaxWidth()
+                    //.skipToLookaheadSize()
+
+            )
+            Text(
+                text = snack.tagline,
+                style = MaterialTheme.typography.subtitle2,
+                fontSize = 20.sp,
+                color = JetsnackTheme.colors.textHelp,
+                modifier = HzPadding
+                    .sharedElement(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = origin,
+                                type = SnackSharedElementType.Tagline
+                            )
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+                    .fillMaxWidth()
+                    //.skipToLookaheadSize()
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = formatPrice(snack.price),
+                style = MaterialTheme.typography.h6,
+                color = JetsnackTheme.colors.textPrimary,
+                modifier = HzPadding
+            )
+
+            Spacer(Modifier.height(8.dp))
+            JetsnackDivider()
+        }
     }
 }
 
 @Composable
 private fun Image(
     snackId: Long,
-    origin: String?,
+    origin: String,
     imageUrl: String,
     scrollProvider: () -> Int
 ) {
@@ -302,20 +357,29 @@ private fun Image(
         collapseFractionProvider = collapseFractionProvider,
         modifier = HzPadding.statusBarsPadding()
     ) {
-        val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope ?: throw IllegalArgumentException("No Scope found")
-        val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope ?: throw IllegalArgumentException("No Scope found")
+        val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+            ?: throw IllegalArgumentException("No Scope found")
+        val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+            ?: throw IllegalArgumentException("No Scope found")
 
         with(sharedTransitionScope) {
+            val sharedContentState = rememberSharedContentState(key = SnackSharedElementKey(
+                snackId = snackId,
+                origin = origin,
+                type = SnackSharedElementType.Image
+            ))
             SnackImage(
                 imageUrl = imageUrl,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .sharedElement(
-                        rememberSharedContentState(key = "snack-${snackId}-$origin"),
+                        sharedContentState,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
-
             )
+            println("sharedContentState ${sharedContentState.isMatchFound}")
+
         }
     }
 }

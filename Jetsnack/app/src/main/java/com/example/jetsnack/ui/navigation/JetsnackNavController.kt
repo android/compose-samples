@@ -58,15 +58,12 @@ class JetsnackNavController(
     // Navigation state source of truth
     // ----------------------------------------------------------
 
-    val currentRoute: String?
-        get() = navController.currentDestination?.route
-
     fun upPress() {
         navController.navigateUp()
     }
 
     fun navigateToBottomBarRoute(route: String) {
-        if (route != currentRoute) {
+        if (route != navController.currentDestination?.route) {
             navController.navigate(route) {
                 launchSingleTop = true
                 restoreState = true

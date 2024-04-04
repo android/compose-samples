@@ -70,53 +70,41 @@ import com.example.jetsnack.ui.utils.mirroringBackIcon
 @Composable
 fun Search(
     onSnackClick: (Long, String) -> Unit,
-    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     state: SearchState = rememberSearchState()
 ) {
-    JetsnackScaffold(
-        bottomBar = {
-            JetsnackBottomBar(
-                tabs = HomeSections.values(),
-                currentRoute = HomeSections.SEARCH.route,
-                navigateToRoute = onNavigateToRoute
+    JetsnackSurface(modifier = modifier.fillMaxSize()) {
+        Column {
+            Spacer(modifier = Modifier.statusBarsPadding())
+            SearchBar(
+                query = state.query,
+                onQueryChange = { state.query = it },
+                searchFocused = state.focused,
+                onSearchFocusChange = { state.focused = it },
+                onClearQuery = { state.query = TextFieldValue("") },
+                searching = state.searching
             )
-        },
-        modifier = modifier
-    ) { paddingValues ->
-        JetsnackSurface(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            Column {
-                Spacer(modifier = Modifier.statusBarsPadding())
-                SearchBar(
-                    query = state.query,
-                    onQueryChange = { state.query = it },
-                    searchFocused = state.focused,
-                    onSearchFocusChange = { state.focused = it },
-                    onClearQuery = { state.query = TextFieldValue("") },
-                    searching = state.searching
-                )
-                JetsnackDivider()
+            JetsnackDivider()
 
-                LaunchedEffect(state.query.text) {
-                    state.searching = true
-                    state.searchResults = SearchRepo.search(state.query.text)
-                    state.searching = false
-                }
-                when (state.searchDisplay) {
-                    SearchDisplay.Categories -> SearchCategories(state.categories)
-                    SearchDisplay.Suggestions -> SearchSuggestions(
-                        suggestions = state.suggestions,
-                        onSuggestionSelect = { suggestion ->
-                            state.query = TextFieldValue(suggestion)
-                        }
-                    )
-                    SearchDisplay.Results -> SearchResults(
-                        state.searchResults,
-                        state.filters,
-                        onSnackClick
-                    )
-                    SearchDisplay.NoResults -> NoResults(state.query.text)
-                }
+            LaunchedEffect(state.query.text) {
+                state.searching = true
+                state.searchResults = SearchRepo.search(state.query.text)
+                state.searching = false
+            }
+            when (state.searchDisplay) {
+                SearchDisplay.Categories -> SearchCategories(state.categories)
+                SearchDisplay.Suggestions -> SearchSuggestions(
+                    suggestions = state.suggestions,
+                    onSuggestionSelect = { suggestion ->
+                        state.query = TextFieldValue(suggestion)
+                    }
+                )
+                SearchDisplay.Results -> SearchResults(
+                    state.searchResults,
+                    state.filters,
+                    onSnackClick
+                )
+                SearchDisplay.NoResults -> NoResults(state.query.text)
             }
         }
     }

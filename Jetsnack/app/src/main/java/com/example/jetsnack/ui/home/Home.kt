@@ -31,6 +31,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -94,9 +97,13 @@ fun NavGraphBuilder.sharedElementComposable(
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
     enterTransition: (@JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
+        fadeIn()
+    },
     exitTransition: (@JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
+        fadeOut()
+    },
     popEnterTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
         enterTransition,
@@ -105,7 +112,14 @@ fun NavGraphBuilder.sharedElementComposable(
         exitTransition,
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
 ) {
-    composable(route, arguments, deepLinks, enterTransition, exitTransition, popEnterTransition, popExitTransition
+    composable(
+        route,
+        arguments,
+        deepLinks,
+        enterTransition,
+        exitTransition,
+        popEnterTransition,
+        popExitTransition
     ) {
         CompositionLocalProvider(
             LocalSharedElementScopes provides SharedElementScopes(
@@ -117,23 +131,31 @@ fun NavGraphBuilder.sharedElementComposable(
         }
     }
 }
+
 fun NavGraphBuilder.addHomeGraph(
-    sharedTransitionScope: SharedTransitionScope,
-    onSnackSelected: ( Long, String, NavBackStackEntry) -> Unit,
-    onNavigateToRoute: (String) -> Unit,
+    onSnackSelected: (Long, String, NavBackStackEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    sharedElementComposable(sharedTransitionScope, HomeSections.FEED.route) { from ->
-        Feed(onSnackClick = { id, origin -> onSnackSelected(id,origin, from) }, onNavigateToRoute, modifier)
+    composable(HomeSections.FEED.route) { from ->
+        Feed(
+            onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
+            modifier
+        )
     }
-    sharedElementComposable(sharedTransitionScope, HomeSections.SEARCH.route) { from ->
-        Search(onSnackClick = { id, origin -> onSnackSelected(id, origin, from) }, onNavigateToRoute, modifier)
+    composable( HomeSections.SEARCH.route) { from ->
+        Search(
+            onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
+            modifier
+        )
     }
-    sharedElementComposable(sharedTransitionScope, HomeSections.CART.route) { from ->
-        Cart(onSnackClick = { id, origin -> onSnackSelected(id, origin, from) }, onNavigateToRoute, modifier)
+    composable(HomeSections.CART.route) { from ->
+        Cart(
+            onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
+            modifier
+        )
     }
-    sharedElementComposable(sharedTransitionScope, HomeSections.PROFILE.route) {
-        Profile(onNavigateToRoute, modifier)
+    composable(HomeSections.PROFILE.route) {
+        Profile(modifier)
     }
 }
 
@@ -153,6 +175,7 @@ fun JetsnackBottomBar(
     tabs: Array<HomeSections>,
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
+    modifier: Modifier = Modifier,
     color: Color = JetsnackTheme.colors.iconPrimary,
     contentColor: Color = JetsnackTheme.colors.iconInteractive
 ) {
@@ -160,6 +183,7 @@ fun JetsnackBottomBar(
     val currentSection = tabs.first { it.route == currentRoute }
 
     JetsnackSurface(
+        modifier = modifier,
         color = color,
         contentColor = contentColor
     ) {
@@ -186,7 +210,7 @@ fun JetsnackBottomBar(
                         JetsnackTheme.colors.iconInteractive
                     } else {
                         JetsnackTheme.colors.iconInteractiveInactive
-                    }
+                    }, label = "tint"
                 )
 
                 val text = stringResource(section.title).uppercase(currentLocale)

@@ -95,41 +95,20 @@ import com.example.jetsnack.ui.utils.formatPrice
 @Composable
 fun Cart(
     onSnackClick: (Long, String) -> Unit,
-    onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
     val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
-    val jetsnackScaffoldState = rememberJetsnackScaffoldState()
-    JetsnackScaffold(
-        bottomBar = {
-            JetsnackBottomBar(
-                tabs = HomeSections.values(),
-                currentRoute = HomeSections.CART.route,
-                navigateToRoute = onNavigateToRoute
-            )
-        },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = it,
-                modifier = Modifier.systemBarsPadding(),
-                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
-            )
-        },
-        scaffoldState = jetsnackScaffoldState.scaffoldState,
+    Cart(
+        orderLines = orderLines,
+        removeSnack = viewModel::removeSnack,
+        increaseItemCount = viewModel::increaseSnackCount,
+        decreaseItemCount = viewModel::decreaseSnackCount,
+        inspiredByCart = inspiredByCart,
+        onSnackClick = onSnackClick,
         modifier = modifier
-    ) { paddingValues ->
-        Cart(
-            orderLines = orderLines,
-            removeSnack = viewModel::removeSnack,
-            increaseItemCount = viewModel::increaseSnackCount,
-            decreaseItemCount = viewModel::decreaseSnackCount,
-            inspiredByCart = inspiredByCart,
-            onSnackClick = onSnackClick,
-            modifier = Modifier.padding(paddingValues)
-        )
-    }
+    )
 }
 
 @Composable
