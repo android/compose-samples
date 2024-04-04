@@ -191,7 +191,6 @@ fun MainScreen(
 
     Surface {
         val podcastUri = navigator.currentDestination?.content
-            ?: viewState.featuredPodcasts.firstOrNull()?.uri
         val showGrid = homeState.showGrid(navigator.scaffoldValue)
         if (podcastUri.isNullOrEmpty()) {
             HomeScreen(
