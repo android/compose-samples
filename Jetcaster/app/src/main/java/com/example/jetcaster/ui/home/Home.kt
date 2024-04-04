@@ -69,10 +69,12 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -108,14 +110,13 @@ import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
-import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -136,6 +137,16 @@ data class HomeState(
     val onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     val onQueueEpisode: (PlayerEpisode) -> Unit,
 )
+
+private val HomeState.showHowCategoryTabs: Boolean
+    get() = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun HomeState.showGrid(
+    scaffoldValue: ThreePaneScaffoldValue
+) : Boolean = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
+    (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium &&
+        scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden)
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
@@ -179,10 +190,11 @@ fun MainScreen(
     Surface {
         val podcastUri = navigator.currentDestination?.content
             ?: viewState.featuredPodcasts.firstOrNull()?.uri
-
+        val showGrid = homeState.showGrid(navigator.scaffoldValue)
         if (podcastUri.isNullOrEmpty()) {
             HomeScreen(
                 homeState = homeState,
+                showGrid = showGrid,
                 modifier = Modifier.fillMaxSize()
             )
         } else {
@@ -210,6 +222,7 @@ fun MainScreen(
                 mainPane = {
                     HomeScreen(
                         homeState = homeState,
+                        showGrid = showGrid,
                         modifier = Modifier.fillMaxSize()
                     )
                 },
@@ -266,6 +279,7 @@ private fun HomeAppBar(
                             contentDescription = stringResource(R.string.cd_account)
                         )
                     },
+                    modifier = if (showHomeCategoryToggle) Modifier else Modifier.fillMaxWidth()
                 ) { }
             }
         },
@@ -276,6 +290,7 @@ private fun HomeAppBar(
 @Composable
 private fun HomeScreen(
     homeState: HomeState,
+    showGrid: Boolean,
     modifier: Modifier = Modifier
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
@@ -296,7 +311,7 @@ private fun HomeScreen(
                 selectedHomeCategory = homeState.selectedHomeCategory,
                 homeCategories = homeState.homeCategories,
                 onHomeCategorySelected = homeState.onHomeCategorySelected,
-                showHomeCategoryToggle = !homeState.windowSizeClass.isCompact,
+                showHomeCategoryToggle = showGrid && homeState.showHowCategoryTabs,
                 modifier = Modifier.fillMaxWidth(),
             )
         },
@@ -307,7 +322,8 @@ private fun HomeScreen(
         // Main Content
         val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
         HomeContent(
-            showGrid = !homeState.windowSizeClass.isCompact,
+            showGrid = showGrid,
+            showHomeCategoryTabs = homeState.showHowCategoryTabs,
             featuredPodcasts = homeState.featuredPodcasts,
             isRefreshing = homeState.isRefreshing,
             selectedHomeCategory = homeState.selectedHomeCategory,
@@ -336,6 +352,7 @@ private fun HomeScreen(
 @Composable
 private fun HomeContent(
     showGrid: Boolean,
+    showHomeCategoryTabs: Boolean,
     featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
     selectedHomeCategory: HomeCategory,
@@ -386,6 +403,7 @@ private fun HomeContent(
     } else {
         HomeContentColumn(
             pagerState = pagerState,
+            showHomeCategoryTabs = showHomeCategoryTabs,
             featuredPodcasts = featuredPodcasts,
             isRefreshing = isRefreshing,
             selectedHomeCategory = selectedHomeCategory,
@@ -408,6 +426,7 @@ private fun HomeContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContentColumn(
+    showHomeCategoryTabs: Boolean,
     pagerState: PagerState,
     featuredPodcasts: PersistentList<PodcastInfo>,
     isRefreshing: Boolean,
@@ -443,7 +462,7 @@ private fun HomeContentColumn(
             // TODO show a progress indicator or similar
         }
 
-        if (featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()) {
+        if (showHomeCategoryTabs) {
             stickyHeader {
                 HomeCategoryTabs(
                     categories = homeCategories,
@@ -772,7 +791,10 @@ private fun PreviewHomeContent() {
             onLibraryPodcastSelected = {},
             onQueueEpisode = {}
         )
-        HomeScreen(homeState = homeState)
+        HomeScreen(
+            homeState = homeState,
+            showGrid = false
+        )
     }
 }
 
@@ -806,7 +828,10 @@ private fun PreviewHomeContentExpanded() {
             onLibraryPodcastSelected = {},
             onQueueEpisode = {}
         )
-        HomeScreen(homeState = homeState)
+        HomeScreen(
+            homeState = homeState,
+            showGrid = true
+        )
     }
 }
 
