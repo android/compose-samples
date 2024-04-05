@@ -389,30 +389,27 @@ private fun Image(
         modifier = HzPadding.statusBarsPadding()
     ) {
         val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
-            ?: throw IllegalStateException("No Scope found")
+            ?: throw IllegalStateException("No sharedTransitionScope found")
         val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
-            ?: throw IllegalStateException("No Scope found")
+            ?: throw IllegalStateException("No animatedVisibilityScope found")
 
         with(sharedTransitionScope) {
-            val sharedContentState = rememberSharedContentState(
-                key = SnackSharedElementKey(
-                    snackId = snackId,
-                    origin = origin,
-                    type = SnackSharedElementType.Image
-                )
-            )
             SnackImage(
                 imageUrl = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
                     .sharedElement(
-                        sharedContentState,
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snackId,
+                                origin = origin,
+                                type = SnackSharedElementType.Image
+                            )
+                        ),
                         animatedVisibilityScope = animatedVisibilityScope
                     )
             )
-            println("sharedContentState ${sharedContentState.isMatchFound}")
-
         }
     }
 }
