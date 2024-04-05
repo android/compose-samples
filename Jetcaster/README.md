@@ -11,27 +11,25 @@ You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
-### Status: 🚧 In progress 🚧
-
-Jetcaster is still in the early stages of development, and as such only one screen has been created so far. However,
-most of the app's architecture has been implemented as well as the data layer.
-
-
 ## Screenshots
 
 ![readme_cover](https://github.com/android/compose-samples/assets/10263978/a58ab950-71aa-48e0-8bc7-85443a1b4f6b)
 
 ## Features
 
-This sample contains 2 screens so far: the home screen, and a player screen.
+This sample has 3 components: the home scree, the podcast details screen, and the player screen
 
 The home screen is split into sub-screens for easy re-use:
 
-- __Home__, allowing the user to see their followed podcasts (top carousel), and navigate between 'Your Library' and 'Discover'
+- __Home__, allowing the user to see their subscribed podcasts (top carousel), and navigate between 'Your Library' and 'Discover'
 - __Discover__, allowing the user to browse podcast categories
 - __Podcast Category__, allowing the user to see a list of recent episodes for podcasts in a given category.
 
-The player screen displays media controls and the currently "playing" podcast (the sample currently doesn't actually play any media).
+Multiple panes will also be shown depending on the device's [window size class][wsc]:
+
+<img src="docs/tablet.png"/>
+
+The player screen displays media controls and the currently "playing" podcast (the sample currently **does not** actually play any media—the behavior is simply mocked).
 The player screen layout is adapting to different form factors, including a tabletop layout on foldable devices:
 
 ![readme_fold](https://github.com/android/compose-samples/assets/10263978/fe02248f-81ce-489b-a6d6-838438c8368e)
@@ -117,3 +115,4 @@ limitations under the License.
  [rome]: https://rometools.github.io/rome/
  [jdk8desugar]: https://developer.android.com/studio/write/java8-support#library-desugaring
  [coil]: https://coil-kt.github.io/coil/
+ [wsc]: https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
