@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -46,7 +45,6 @@ import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppState()) {
     Route(jetcasterAppState = jetcasterAppState)
