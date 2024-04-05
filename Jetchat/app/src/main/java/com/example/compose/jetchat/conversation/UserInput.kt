@@ -497,7 +497,7 @@ private fun BoxScope.UserInputTextField(
             imeAction = ImeAction.Send
         ),
         keyboardActions = KeyboardActions {
-            onMessageSent(textFieldValue.text)
+            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
         },
         maxLines = 1,
         cursorBrush = SolidColor(LocalContentColor.current),
