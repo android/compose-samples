@@ -113,30 +113,27 @@ fun MainContainer(
         ?: throw IllegalStateException("No SharedElementScope found")
     JetsnackScaffold(
         bottomBar = {
-            with (animatedVisibilityScope){
+            with(animatedVisibilityScope) {
                 with(sharedTransitionScope) {
                     JetsnackBottomBar(
                         tabs = HomeSections.entries.toTypedArray(),
                         currentRoute = currentRoute ?: HomeSections.FEED.route,
                         navigateToRoute = nestedNavController::navigateToBottomBarRoute,
-                        // todo fix this as it doesn't hide quick enough
-                        modifier = Modifier.renderInSharedTransitionScopeOverlay(
-                            zIndexInOverlay = 1f,
-                        ).animateEnterExit(
-                            enter = fadeIn() + slideInVertically(initialOffsetY = {
-                                it
-                            }),
-                            exit =
-                                fadeOut() + slideOutVertically(targetOffsetY = {
+                        modifier = Modifier
+                            .renderInSharedTransitionScopeOverlay(
+                                zIndexInOverlay = 1f,
+                            )
+                            .animateEnterExit(
+                                enter = fadeIn() + slideInVertically(initialOffsetY = {
+                                    it
+                                }),
+                                exit = fadeOut() + slideOutVertically(targetOffsetY = {
                                     it
                                 })
-
-                        )
+                            )
                     )
                 }
             }
-
-
         },
         modifier = modifier,
         snackbarHost = {

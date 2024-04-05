@@ -52,6 +52,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -210,9 +211,9 @@ fun SnackItem(
                 .padding(8.dp)
         ) {
             val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
-                ?: throw IllegalArgumentException("No sharedTransitionScope found")
+                ?: throw IllegalStateException("No sharedTransitionScope found")
             val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
-                ?: throw IllegalArgumentException("No animatedVisibilityScope found")
+                ?: throw IllegalStateException("No animatedVisibilityScope found")
 
             with(sharedTransitionScope) {
                 with(animatedVisibilityScope) {
@@ -271,131 +272,139 @@ private fun HighlightSnackItem(
     modifier: Modifier = Modifier
 ) {
     val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
-        ?: throw IllegalArgumentException("No Scope found")
+        ?: throw IllegalStateException("No Scope found")
     val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
-        ?: throw IllegalArgumentException("No Scope found")
+        ?: throw IllegalStateException("No Scope found")
     with(sharedTransitionScope) {
-
-        JetsnackCard(
-            modifier = modifier
-                .size(
-                    width = HighlightCardWidth,
-                    height = 250.dp
-                )
-                .padding(bottom = 16.dp)
-                .sharedBounds(
-                    rememberSharedContentState(
-                        key = SnackSharedElementKey(
-                            snackId = snack.id,
-                            origin = snackCollectionId.toString(),
-                            type = SnackSharedElementType.Bounds
-                        )
-                    ),
-                    animatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .clickable(onClick = { onSnackClick(snack.id, snackCollectionId.toString()) })
-                    .fillMaxSize()
+        with(animatedVisibilityScope) {
+            JetsnackCard(
+                modifier = modifier
+                    .size(
+                        width = HighlightCardWidth,
+                        height = 250.dp
+                    )
+                    .padding(bottom = 16.dp)
+                    .sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = snackCollectionId.toString(),
+                                type = SnackSharedElementType.Bounds
+                            )
+                        ),
+                        animatedVisibilityScope,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                    )
             ) {
-                Box(
+                Column(
                     modifier = Modifier
-                        .height(160.dp)
-                        .fillMaxWidth()
+                        .clickable(onClick = {
+                            onSnackClick(
+                                snack.id,
+                                snackCollectionId.toString()
+                            )
+                        })
+                        .fillMaxSize()
+
                 ) {
                     Box(
                         modifier = Modifier
-                            .sharedElement(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Background
-                                    )
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                            .height(100.dp)
+                            .height(160.dp)
                             .fillMaxWidth()
-                            .offsetGradientBackground(
-                                colors = gradient,
-                                width = {
-                                    // The Cards show a gradient which spans 6 cards and scrolls with parallax.
-                                    6 * cardWidthWithPaddingPx
-                                },
-                                offset = {
-                                    val left = index * cardWidthWithPaddingPx
-                                    val gradientOffset = left - (scrollProvider() / 3f)
-                                    gradientOffset
-                                }
-                            )
-                    )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(
+                                        key = SnackSharedElementKey(
+                                            snackId = snack.id,
+                                            origin = snackCollectionId.toString(),
+                                            type = SnackSharedElementType.Background
+                                        )
+                                    ),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                                .animateEnterExit()
+                                .height(100.dp)
+                                .fillMaxWidth()
+                                .offsetGradientBackground(
+                                    colors = gradient,
+                                    width = {
+                                        // The Cards show a gradient which spans 6 cards and scrolls with parallax.
+                                        6 * cardWidthWithPaddingPx
+                                    },
+                                    offset = {
+                                        val left = index * cardWidthWithPaddingPx
+                                        val gradientOffset = left - (scrollProvider() / 3f)
+                                        gradientOffset
+                                    }
+                                )
+                        )
 
-                    SnackImage(
-                        imageUrl = snack.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .sharedElement(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Image
-                                    )
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                            .size(120.dp)
-                            .align(Alignment.BottomCenter)
-                    )
+                        SnackImage(
+                            imageUrl = snack.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .sharedElement(
+                                    rememberSharedContentState(
+                                        key = SnackSharedElementKey(
+                                            snackId = snack.id,
+                                            origin = snackCollectionId.toString(),
+                                            type = SnackSharedElementType.Image
+                                        )
+                                    ),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                                .size(120.dp)
+                                .align(Alignment.BottomCenter)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    with(animatedVisibilityScope) {
+                        Text(
+                            text = snack.name,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.h6,
+                            color = JetsnackTheme.colors.textSecondary,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .sharedBounds(
+                                    rememberSharedContentState(
+                                        key = SnackSharedElementKey(
+                                            snackId = snack.id,
+                                            origin = snackCollectionId.toString(),
+                                            type = SnackSharedElementType.Title
+                                        )
+                                    ),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                                .animateEnterExit()
+                                .fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = snack.tagline,
+                            style = MaterialTheme.typography.body1,
+                            color = JetsnackTheme.colors.textHelp,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .sharedBounds(
+                                    rememberSharedContentState(
+                                        key = SnackSharedElementKey(
+                                            snackId = snack.id,
+                                            origin = snackCollectionId.toString(),
+                                            type = SnackSharedElementType.Tagline
+                                        )
+                                    ),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                                .fillMaxWidth()
+                        )
+                    }
+
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                with(animatedVisibilityScope) {
-                    Text(
-                        text = snack.name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.h6,
-                        color = JetsnackTheme.colors.textSecondary,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .sharedBounds(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Title
-                                    )
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                            .animateEnterExit()
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = snack.tagline,
-                        style = MaterialTheme.typography.body1,
-                        color = JetsnackTheme.colors.textHelp,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .sharedBounds(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Tagline
-                                    )
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                            .fillMaxWidth()
-                    )
-                }
-
             }
         }
     }
