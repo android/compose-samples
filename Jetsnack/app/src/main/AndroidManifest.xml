@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jetsnack"
-        android:enableOnBackInvokedCallback="true"
+
         >
 
         <profileable android:shell="true" tools:targetApi="q" />
