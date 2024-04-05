@@ -11,6 +11,5 @@ enum class SnackSharedElementType {
     Image,
     Title,
     Tagline,
-    Background,
-    AfterBackground
+    Background
 }

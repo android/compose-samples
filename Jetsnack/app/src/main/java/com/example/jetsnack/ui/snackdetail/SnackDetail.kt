@@ -130,6 +130,7 @@ fun SnackDetail(
                         animatedVisibilityScope,
                         clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
                     )
+                    .background(color = JetsnackTheme.colors.uiBackground)
             ) {
                 val scroll = rememberScrollState(0)
                 Header(snack.id, origin = origin)
@@ -314,7 +315,6 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
                     IntOffset(x = 0, y = offset.toInt())
                 }
-                .background(color = JetsnackTheme.colors.uiBackground)
         ) {
             Spacer(Modifier.height(16.dp))
             with(animatedVisibilityScope) {
