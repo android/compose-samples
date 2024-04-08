@@ -226,7 +226,7 @@ fun SnackItem(
                         elevation = 4.dp,
                         contentDescription = null,
                         modifier = Modifier
-                            .sharedElement(
+                            .sharedBounds(
                                 rememberSharedContentState(
                                     key = SnackSharedElementKey(
                                         snackId = snack.id,
@@ -234,7 +234,8 @@ fun SnackItem(
                                         type = SnackSharedElementType.Image
                                     )
                                 ),
-                                animatedVisibilityScope = animatedVisibilityScope
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                exit = ExitTransition.None
                             )
                             .size(120.dp)
                     )
