@@ -20,7 +20,9 @@ package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.ScrollState
@@ -119,7 +121,6 @@ fun SnackDetail(
         with(animatedVisibilityScope) {
             Box(
                 Modifier
-                    .fillMaxSize()
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -131,7 +132,9 @@ fun SnackDetail(
                         animatedVisibilityScope,
                         clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
                     )
+                    .fillMaxSize()
                     .background(color = JetsnackTheme.colors.uiBackground)
+                    .clip(MaterialTheme.shapes.medium)
             ) {
                 val scroll = rememberScrollState(0)
                 Header(snack.id, origin = origin)
@@ -178,24 +181,26 @@ private fun Header(snackId: Long, origin: String) {
 }
 
 @Composable
-private fun AnimatedVisibilityScope.Up(upPress: () -> Unit) {
-    IconButton(
-        onClick = upPress,
-        modifier = Modifier
-            .statusBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-            .size(36.dp)
-            .background(
-                color = Neutral8.copy(alpha = 0.32f),
-                shape = CircleShape
+private fun SharedTransitionScope.Up(upPress: () -> Unit) {
+    if (!isTransitionActive) {
+        IconButton(
+            onClick = upPress,
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 10.dp)
+                .size(36.dp)
+                .background(
+                    color = Neutral8.copy(alpha = 0.32f),
+                    shape = CircleShape
+                )
+
+        ) {
+            Icon(
+                imageVector = mirroringBackIcon(),
+                tint = JetsnackTheme.colors.iconInteractive,
+                contentDescription = stringResource(R.string.label_back)
             )
-            .animateEnterExit()
-    ) {
-        Icon(
-            imageVector = mirroringBackIcon(),
-            tint = JetsnackTheme.colors.iconInteractive,
-            contentDescription = stringResource(R.string.label_back)
-        )
+        }
     }
 }
 
@@ -407,7 +412,8 @@ private fun Image(
                                 type = SnackSharedElementType.Image
                             )
                         ),
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        exit = ExitTransition.None
                     )
                     .fillMaxSize()
             )
