@@ -66,11 +66,19 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.Posture
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.allVerticalHingeBounds
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.layout.HingePolicy
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
+import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
+import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -82,16 +90,20 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.CategoryInfo
@@ -142,6 +154,77 @@ private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
     return scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden
 }
 
+/**
+ * Copied from `calculatePaneScaffoldDirective()` in [PaneScaffoldDirective], with modifications to
+ * only show 1 pane horizontally if either width or height size class is compact.
+ */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+fun calculateScaffoldDirective(
+    windowAdaptiveInfo: WindowAdaptiveInfo,
+    verticalHingePolicy: HingePolicy = HingePolicy.AvoidSeparating
+): PaneScaffoldDirective {
+    val maxHorizontalPartitions: Int
+    val verticalSpacerSize: Dp
+    if (windowAdaptiveInfo.windowSizeClass.isCompact()) {
+        // Window width or height is compact. Limit to 1 pane horizontally.
+        maxHorizontalPartitions = 1
+        verticalSpacerSize = 0.dp
+    } else {
+        when (windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.COMPACT -> {
+                maxHorizontalPartitions = 1
+                verticalSpacerSize = 0.dp
+            }
+            WindowWidthSizeClass.MEDIUM -> {
+                maxHorizontalPartitions = 1
+                verticalSpacerSize = 0.dp
+            }
+            else -> {
+                maxHorizontalPartitions = 2
+                verticalSpacerSize = 24.dp
+            }
+        }
+    }
+    val maxVerticalPartitions: Int
+    val horizontalSpacerSize: Dp
+
+    if (windowAdaptiveInfo.windowPosture.isTabletop) {
+        maxVerticalPartitions = 2
+        horizontalSpacerSize = 24.dp
+    } else {
+        maxVerticalPartitions = 1
+        horizontalSpacerSize = 0.dp
+    }
+
+    val defaultPanePreferredWidth = 360.dp
+
+    return PaneScaffoldDirective(
+        maxHorizontalPartitions,
+        verticalSpacerSize,
+        maxVerticalPartitions,
+        horizontalSpacerSize,
+        defaultPanePreferredWidth,
+        getExcludedVerticalBounds(windowAdaptiveInfo.windowPosture, verticalHingePolicy)
+    )
+}
+
+/**
+ * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
+ */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> {
+    return when (hingePolicy) {
+        HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
+        HingePolicy.AvoidOccluding -> posture.occludingVerticalHingeBounds
+        HingePolicy.AlwaysAvoid -> posture.allVerticalHingeBounds
+        else -> emptyList()
+    }
+}
+
+private fun androidx.window.core.layout.WindowSizeClass.isCompact(): Boolean =
+    windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
+        windowHeightSizeClass == WindowHeightSizeClass.COMPACT
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MainScreen(
@@ -150,7 +233,9 @@ fun MainScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
-    val navigator = rememberSupportingPaneScaffoldNavigator<String>()
+    val navigator = rememberSupportingPaneScaffoldNavigator<String>(
+        scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
+    )
     BackHandler(enabled = navigator.canNavigateBack()) {
         navigator.navigateBack()
     }

@@ -120,6 +120,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.window)
+    implementation(libs.androidx.window.core)
 
     implementation(libs.accompanist.adaptive)
 
