@@ -21,8 +21,11 @@ package com.example.jetsnack.ui.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -346,7 +349,7 @@ private fun HighlightSnackItem(
                             imageUrl = snack.imageUrl,
                             contentDescription = null,
                             modifier = Modifier
-                                .sharedElement(
+                                .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
                                             snackId = snack.id,
@@ -354,7 +357,8 @@ private fun HighlightSnackItem(
                                             type = SnackSharedElementType.Image
                                         )
                                     ),
-                                    animatedVisibilityScope = animatedVisibilityScope
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    exit = ExitTransition.None
                                 )
                                 .size(120.dp)
                                 .align(Alignment.BottomCenter)

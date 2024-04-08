@@ -21,6 +21,7 @@ package com.example.jetsnack.ui.snackdetail
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -398,7 +399,7 @@ private fun Image(
                 imageUrl = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
-                    .sharedElement(
+                    .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
                                 snackId = snackId,
