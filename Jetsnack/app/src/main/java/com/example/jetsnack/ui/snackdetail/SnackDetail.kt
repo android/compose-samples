@@ -122,6 +122,7 @@ fun SnackDetail(
         with(animatedVisibilityScope) {
             Box(
                 Modifier
+                    .fillMaxSize()
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -130,9 +131,10 @@ fun SnackDetail(
                                 type = SnackSharedElementType.Bounds
                             )
                         ),
-                        animatedVisibilityScope
+                        animatedVisibilityScope,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
                     )
-                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.medium)
                     .background(color = JetsnackTheme.colors.uiBackground)
             ) {
                 val scroll = rememberScrollState(0)
@@ -159,6 +161,8 @@ private fun Header(snackId: Long, origin: String) {
         with(animatedVisibilityScope) {
             Spacer(
                 modifier = Modifier
+                    .height(280.dp)
+                    .fillMaxWidth()
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -174,8 +178,6 @@ private fun Header(snackId: Long, origin: String) {
                         ))
                     )
                     .animateEnterExit()
-                    .height(280.dp)
-                    .fillMaxWidth()
                     .background(Brush.horizontalGradient(JetsnackTheme.colors.tornado1))
             )
         }
@@ -324,6 +326,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
                     IntOffset(x = 0, y = offset.toInt())
                 }
+                .background(JetsnackTheme.colors.uiBackground)
         ) {
             Spacer(Modifier.height(16.dp))
             with(animatedVisibilityScope) {
@@ -332,6 +335,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     style = MaterialTheme.typography.h4,
                     color = JetsnackTheme.colors.textSecondary,
                     modifier = HzPadding
+                        .fillMaxWidth()
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -343,8 +347,6 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                             animatedVisibilityScope = animatedVisibilityScope
                         )
                         .animateEnterExit()
-                        .fillMaxWidth()
-
                 )
                 Text(
                     text = snack.tagline,
@@ -352,6 +354,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     fontSize = 20.sp,
                     color = JetsnackTheme.colors.textHelp,
                     modifier = HzPadding
+                        .fillMaxWidth()
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -363,7 +366,6 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                             animatedVisibilityScope = animatedVisibilityScope
                         )
                         .animateEnterExit()
-                        .fillMaxWidth()
                 )
             }
 
@@ -407,6 +409,7 @@ private fun Image(
                 imageUrl = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
+                    .fillMaxSize()
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -418,7 +421,7 @@ private fun Image(
                         animatedVisibilityScope = animatedVisibilityScope,
                         exit = ExitTransition.None
                     )
-                    .fillMaxSize()
+
             )
         }
     }

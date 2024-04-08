@@ -24,10 +24,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -227,7 +223,7 @@ fun SnackItem(
                 with(animatedVisibilityScope) {
                     SnackImage(
                         imageUrl = snack.imageUrl,
-                        elevation = 4.dp,
+                        elevation = 1.dp,
                         contentDescription = null,
                         modifier = Modifier
                             .sharedBounds(
@@ -294,16 +290,17 @@ private fun HighlightSnackItem(
                 )
             )
             JetsnackCard(
+                elevation = 2.dp,
                 modifier = modifier
-                    .sharedBounds(
-                        sharedContentState,
-                        animatedVisibilityScope
-                    )
                     .size(
                         width = HighlightCardWidth,
                         height = 250.dp
                     )
                     .padding(bottom = 16.dp)
+                    .sharedBounds(
+                        sharedContentState,
+                        animatedVisibilityScope
+                    )
             ) {
                 Column(
                     modifier = Modifier
