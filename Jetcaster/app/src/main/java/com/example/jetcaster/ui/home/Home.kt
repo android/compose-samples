@@ -154,6 +154,10 @@ private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
     return scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden
 }
 
+/**
+ * Copied from `calculatePaneScaffoldDirective()` in [PaneScaffoldDirective], with modifications to
+ * only show 1 pane horizontally if either width or height size class is compact.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun calculateScaffoldDirective(
     windowAdaptiveInfo: WindowAdaptiveInfo,
@@ -162,6 +166,7 @@ fun calculateScaffoldDirective(
     val maxHorizontalPartitions: Int
     val verticalSpacerSize: Dp
     if (windowAdaptiveInfo.windowSizeClass.isCompact()) {
+        // Window width or height is compact. Limit to 1 pane horizontally.
         maxHorizontalPartitions = 1
         verticalSpacerSize = 0.dp
     } else {
@@ -203,6 +208,9 @@ fun calculateScaffoldDirective(
     )
 }
 
+/**
+ * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> {
     return when (hingePolicy) {
