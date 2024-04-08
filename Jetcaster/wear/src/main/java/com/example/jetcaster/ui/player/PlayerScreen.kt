@@ -36,25 +36,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
-import androidx.wear.compose.foundation.rememberActiveFocusRequester
 import androidx.wear.compose.material.MaterialTheme
-import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.audio.ui.VolumeViewModel
 import com.google.android.horologist.audio.ui.rotaryVolumeControlsWithFocus
 import com.google.android.horologist.compose.rotaryinput.RotaryDefaults
 import com.google.android.horologist.media.ui.components.PodcastControlButtons
 import com.google.android.horologist.media.ui.components.background.ArtworkColorBackground
+import com.google.android.horologist.media.ui.components.display.LoadingMediaDisplay
 import com.google.android.horologist.media.ui.components.display.TextMediaDisplay
 import com.google.android.horologist.media.ui.screens.player.PlayerScreen
-import com.google.android.horologist.media.ui.state.PlayerUiController
-import com.google.android.horologist.media.ui.state.PlayerUiState
 
-@OptIn(ExperimentalHorologistApi::class, ExperimentalWearFoundationApi::class)
 @Composable
 fun PlayerScreen(
     volumeViewModel: VolumeViewModel,
@@ -63,12 +58,36 @@ fun PlayerScreen(
     playerScreenViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val volumeUiState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
-    // val settingsState by playerScreenViewModel.settingsState.collectAsStateWithLifecycle()
-    val focusRequester: FocusRequester = rememberActiveFocusRequester()
+    val playerUiState by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
+
+    PlayerScreen(
+        modifier = modifier,
+        playerUiState = playerUiState,
+        volumeUiState = volumeUiState,
+        onVolumeClick = onVolumeClick,
+        onUpdateVolume = { newVolume -> volumeViewModel.setVolume(newVolume) },
+    )
+}
+
+@Composable
+private fun PlayerScreen(
+    playerUiState: PlayerUiState?,
+    volumeUiState: VolumeUiState,
+    onVolumeClick: () -> Unit,
+    onUpdateVolume: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     PlayerScreen(
         mediaDisplay = {
-            playerScreenViewModel.uiState?.let {
-                TextMediaDisplay(title = it.podcastName, subtitle = it.subTitle)
+            if (playerUiState != null) {
+                playerUiState.episodePlayerState.currentEpisode?.let {
+                    TextMediaDisplay(
+                        title = it.podcastName,
+                        subtitle = it.title
+                    )
+                }
+            } else {
+                LoadingMediaDisplay()
             }
         },
 
@@ -92,31 +111,20 @@ fun PlayerScreen(
             )
         },
         modifier = modifier.rotaryVolumeControlsWithFocus(
-            focusRequester = focusRequester,
             volumeUiStateProvider = { volumeUiState },
-            onRotaryVolumeInput = { newVolume -> volumeViewModel.setVolume(newVolume) },
+            onRotaryVolumeInput = onUpdateVolume,
             localView = LocalView.current,
             isLowRes = RotaryDefaults.isLowResInput(),
         ),
         background = {
-            val artworkUri = playerScreenViewModel.uiState.podcastImageUrl
-            ArtworkColorBackground(
-                artworkUri = artworkUri,
-                defaultColor = MaterialTheme.colors.primary,
-                modifier = Modifier.fillMaxSize(),
-            )
+            if (playerUiState != null) {
+                val artworkUri = playerUiState.episodePlayerState.currentEpisode?.podcastImageUrl
+                ArtworkColorBackground(
+                    artworkUri = artworkUri,
+                    defaultColor = MaterialTheme.colors.primary,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
         }
-    )
-}
-
-@OptIn(ExperimentalHorologistApi::class)
-@Composable
-fun PlayerScreenPodcastControlButtons(
-    playerUiController: PlayerUiController,
-    playerUiState: PlayerUiState,
-) {
-    PodcastControlButtons(
-        playerController = playerUiController,
-        playerUiState = playerUiState,
     )
 }

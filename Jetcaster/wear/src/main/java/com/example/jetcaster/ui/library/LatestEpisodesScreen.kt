@@ -38,9 +38,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
+import com.google.android.horologist.compose.layout.rememberColumnState
 import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.images.base.util.rememberVectorPainter
@@ -48,23 +50,40 @@ import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
-@OptIn(ExperimentalHorologistApi::class)
-@Composable
-public fun LatestEpisodesScreen(
-    columnState: ScalingLazyColumnState,
+@Composable fun LatestEpisodesScreen(
     playlistName: String,
-    onShuffleButtonClick: (EpisodeToPodcast) -> Unit,
-    onPlayButtonClick: (EpisodeToPodcast) -> Unit,
+    onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
     modifier: Modifier = Modifier,
     latestEpisodeViewModel: LatestEpisodeViewModel = hiltViewModel()
 ) {
     val viewState by latestEpisodeViewModel.state.collectAsStateWithLifecycle()
+    LatestEpisodeScreen(
+        modifier = modifier,
+        playlistName = playlistName,
+        viewState = viewState,
+        onShuffleButtonClick = onShuffleButtonClick,
+        onPlayButtonClick = onPlayButtonClick,
+        onPlayEpisode = latestEpisodeViewModel::onPlayEpisode
+    )
+}
 
+@Composable
+fun LatestEpisodeScreen(
+    playlistName: String,
+    viewState: LatestEpisodeViewState,
+    onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    modifier: Modifier = Modifier,
+    onPlayEpisode: (PlayerEpisode) -> Unit,
+) {
+    val columnState = rememberColumnState()
     ScreenScaffold(
         scrollState = columnState,
         modifier = modifier
     ) {
         EntityScreen(
+            modifier = modifier,
             columnState = columnState,
             headerContent = { DefaultEntityScreenHeader(title = playlistName) },
             content = {
@@ -78,20 +97,20 @@ public fun LatestEpisodesScreen(
                     )
                 }
             },
-            modifier = modifier,
             buttonsContent = {
                 ButtonsContent(
+                    viewState = viewState,
                     onShuffleButtonClick = onShuffleButtonClick,
                     onPlayButtonClick = onPlayButtonClick,
+                    onPlayEpisode = onPlayEpisode
                 )
             },
         )
     }
 }
 
-@OptIn(ExperimentalHorologistApi::class)
 @Composable
-private fun MediaContent(
+fun MediaContent(
     episode: EpisodeToPodcast,
     downloadItemArtworkPlaceholder: Painter?
 ) {
@@ -111,9 +130,11 @@ private fun MediaContent(
 
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
-private fun ButtonsContent(
-    onShuffleButtonClick: (EpisodeToPodcast) -> Unit,
-    onPlayButtonClick: (EpisodeToPodcast) -> Unit,
+fun ButtonsContent(
+    viewState: LatestEpisodeViewState,
+    onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onPlayEpisode: (PlayerEpisode) -> Unit
 ) {
 
     Row(
@@ -126,7 +147,7 @@ private fun ButtonsContent(
         Button(
             imageVector = ImageVector.vectorResource(R.drawable.speed),
             contentDescription = stringResource(id = R.string.speed_button_content_description),
-            onClick = { /*onShuffleButtonClick(state.collectionModel)*/ },
+            onClick = { onShuffleButtonClick(viewState.libraryEpisodes) },
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
         )
@@ -134,7 +155,10 @@ private fun ButtonsContent(
         Button(
             imageVector = Icons.Filled.PlayArrow,
             contentDescription = stringResource(id = R.string.button_play_content_description),
-            onClick = { /*onPlayButtonClick(state.)*/ },
+            onClick = {
+                onPlayButtonClick(viewState.libraryEpisodes)
+                onPlayEpisode(viewState.libraryEpisodes[0].toPlayerEpisode())
+            },
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
         )

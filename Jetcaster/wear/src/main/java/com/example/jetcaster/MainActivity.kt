@@ -14,113 +14,22 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalHorologistApi::class, ExperimentalWearFoundationApi::class)
-
 package com.example.jetcaster
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
-import androidx.wear.compose.material.TimeText
-import androidx.wear.compose.navigation.composable
-import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
-import com.example.jetcaster.theme.WearAppTheme
-import com.example.jetcaster.ui.JetcasterNavController.navigateToLatestEpisode
-import com.example.jetcaster.ui.JetcasterNavController.navigateToUpNext
-import com.example.jetcaster.ui.JetcasterNavController.navigateToYourPodcast
-import com.example.jetcaster.ui.LatestEpisodes
-import com.example.jetcaster.ui.home.HomeScreen
-import com.example.jetcaster.ui.library.LatestEpisodesScreen
-import com.example.jetcaster.ui.player.PlayerScreen
-import com.google.android.horologist.annotations.ExperimentalHorologistApi
-import com.google.android.horologist.audio.ui.VolumeViewModel
-import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.rememberColumnState
-import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToVolume
-import com.google.android.horologist.media.ui.navigation.MediaPlayerScaffold
-import com.google.android.horologist.media.ui.snackbar.SnackbarManager
-import com.google.android.horologist.media.ui.snackbar.SnackbarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         setContent {
-            installSplashScreen()
             WearApp()
         }
-    }
-}
-
-@OptIn(ExperimentalHorologistApi::class)
-@Composable
-fun WearApp() {
-
-    val navController = rememberSwipeDismissableNavController()
-    val navHostState = rememberSwipeDismissableNavHostState()
-    val volumeViewModel: VolumeViewModel = viewModel(factory = VolumeViewModel.Factory)
-    val snackBarManager: SnackbarManager = SnackbarManager()
-    val snackbarViewModel: SnackbarViewModel = SnackbarViewModel(snackBarManager)
-
-    WearAppTheme {
-        MediaPlayerScaffold(
-            playerScreen = {
-                PlayerScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    volumeViewModel = volumeViewModel,
-                    onVolumeClick = {
-                        navController.navigateToVolume()
-                    },
-                )
-            },
-            libraryScreen = {
-                HomeScreen(
-                    onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
-                    onYourPodcastClick = { navController.navigateToYourPodcast() },
-                    onUpNextClick = { navController.navigateToUpNext() },
-                    onErrorDialogCancelClick = { navController.popBackStack() }
-                )
-            },
-            categoryEntityScreen = { _, _ -> },
-            mediaEntityScreen = {},
-            playlistsScreen = {},
-            settingsScreen = {},
-
-            navHostState = navHostState,
-            snackbarViewModel = snackbarViewModel,
-            volumeViewModel = volumeViewModel,
-            timeText = {
-                TimeText()
-            },
-            deepLinkPrefix = "",
-            navController = navController,
-            additionalNavRoutes = {
-                composable(
-                    route = LatestEpisodes.navRoute,
-                ) {
-                    val columnState = rememberColumnState()
-
-                    ScreenScaffold(scrollState = columnState) {
-                        LatestEpisodesScreen(
-                            columnState = columnState,
-                            playlistName = stringResource(id = R.string.latest_episodes),
-                            onShuffleButtonClick = {},
-                            onPlayButtonClick = {}
-                        )
-                    }
-                }
-            },
-
-        )
     }
 }

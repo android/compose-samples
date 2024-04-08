@@ -34,14 +34,12 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -62,76 +60,61 @@ class HomeViewModel @Inject constructor(
     private val homeCategories = MutableStateFlow(HomeCategory.entries)
     // Holds our currently selected category
     private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
-    // Holds our view state which the UI collects via [state]
-    private val _state = MutableStateFlow(HomeViewState())
+
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
 
-    val state: StateFlow<HomeViewState>
-        get() = _state
+    // Combines the latest value from each of the flows, allowing us to generate a
+    // view state instance which only contains the latest values.
+    val uiState = combine(
+        homeCategories,
+        selectedHomeCategory,
+        podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
+        refreshing,
+        _selectedCategory.flatMapLatest { selectedCategory ->
+            filterableCategoriesUseCase(selectedCategory)
+        },
+        _selectedCategory.flatMapLatest {
+            podcastCategoryFilterUseCase(it)
+        },
+        selectedLibraryPodcast.flatMapLatest {
+            episodeStore.episodesInPodcast(
+                podcastUri = it?.uri ?: "",
+                limit = 20
+            )
+        }
+    ) { homeCategories,
+        homeCategory,
+        podcasts,
+        refreshing,
+        filterableCategories,
+        podcastCategoryFilterResult,
+        libraryEpisodes ->
+
+        _selectedCategory.value = filterableCategories.selectedCategory
+
+        selectedHomeCategory.value = homeCategory
+
+        HomeViewState(
+            homeCategories = homeCategories,
+            selectedHomeCategory = homeCategory,
+            featuredPodcasts = podcasts.toPersistentList(),
+            refreshing = refreshing,
+            filterableCategoriesModel = filterableCategories,
+            podcastCategoryFilterResult = podcastCategoryFilterResult,
+            libraryEpisodes = libraryEpisodes,
+            errorMessage = null, /* TODO */
+        )
+    }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = HomeViewState())
 
     init {
-        viewModelScope.launch {
-            // Combines the latest value from each of the flows, allowing us to generate a
-            // view state instance which only contains the latest values.
-            combine(
-                homeCategories,
-                selectedHomeCategory,
-                podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
-                refreshing,
-                _selectedCategory.flatMapLatest { selectedCategory ->
-                    filterableCategoriesUseCase(selectedCategory)
-                },
-                _selectedCategory.flatMapLatest {
-                    podcastCategoryFilterUseCase(it)
-                },
-                selectedLibraryPodcast.flatMapLatest {
-                    episodeStore.episodesInPodcast(
-                        podcastUri = it?.uri ?: "",
-                        limit = 20
-                    )
-                }
-            ) { homeCategories,
-                homeCategory,
-                podcasts,
-                refreshing,
-                filterableCategories,
-                podcastCategoryFilterResult,
-                libraryEpisodes ->
-
-                _selectedCategory.value = filterableCategories.selectedCategory
-
-                selectedHomeCategory.value = homeCategory
-
-                HomeViewState(
-                    homeCategories = homeCategories,
-                    selectedHomeCategory = homeCategory,
-                    featuredPodcasts = podcasts.toPersistentList(),
-                    refreshing = refreshing,
-                    filterableCategoriesModel = filterableCategories,
-                    podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    libraryEpisodes = libraryEpisodes,
-                    errorMessage = null, /* TODO */
-                )
-            }.catch { throwable ->
-                // TODO: emit a UI error here. For now we'll just rethrow
-                throw throwable
-            }.collect {
-                _state.value = it
-            }
-        }
-
         refresh(force = false)
     }
 
     private fun refresh(force: Boolean) {
         viewModelScope.launch {
-            runCatching {
-                refreshing.value = true
-                podcastsRepository.updatePodcasts(force)
-            }
-            // TODO: look at result of runCatching and show any errors
-
+            refreshing.value = true
+            podcastsRepository.updatePodcasts(force)
             refreshing.value = false
         }
     }
@@ -166,7 +149,7 @@ enum class HomeCategory {
 }
 
 data class HomeViewState(
-    val featuredPodcasts: PersistentList<PodcastWithExtraInfo> = persistentListOf(),
+    val featuredPodcasts: List<PodcastWithExtraInfo> = listOf(),
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),

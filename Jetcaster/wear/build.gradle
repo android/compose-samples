@@ -55,6 +55,8 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.majorVersion
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi"
     }
     buildFeatures {
         compose true
