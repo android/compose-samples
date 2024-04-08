@@ -16,22 +16,17 @@
 
 package com.example.jetcaster.tv.ui.component
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyListState
@@ -44,7 +39,6 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.StandardCardLayout
 import androidx.tv.material3.Text
-import androidx.tv.material3.WideCardLayout
 import coil.compose.AsyncImage
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
@@ -217,70 +211,8 @@ private fun EpisodeRow(
             EpisodeCard(
                 episode = it,
                 onClick = { onEpisodeSelected(it) },
-                modifier = Modifier.width(JetcasterAppDefaults.cardWidth.small)
+                cardWidth = JetcasterAppDefaults.cardWidth.small
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-private fun EpisodeCard(
-    episode: EpisodeToPodcast,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    WideCardLayout(
-        imageCard = {
-            EpisodeThumbnail(episode = episode, onClick = onClick, modifier = modifier)
-        },
-        title = {
-            EpisodeMetaData(
-                episode = episode,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .width(JetcasterAppDefaults.cardWidth.small * 2)
-            )
-        },
-    )
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-private fun EpisodeThumbnail(
-    episode: EpisodeToPodcast,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
-) {
-    Card(
-        onClick = onClick,
-        interactionSource = interactionSource,
-        scale = CardScale.None,
-        modifier = modifier,
-    ) {
-        AsyncImage(model = episode.podcast.imageUrl, contentDescription = null)
-    }
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-private fun EpisodeMetaData(episode: EpisodeToPodcast, modifier: Modifier = Modifier) {
-    val publishedDate = episode.episode.published
-    val duration = episode.episode.duration
-    Column(modifier = modifier) {
-        Text(
-            text = episode.episode.title,
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(text = episode.podcast.title, style = MaterialTheme.typography.bodySmall)
-        if (duration != null) {
-            Spacer(
-                modifier = Modifier.height(JetcasterAppDefaults.gap.podcastRow * 0.8f)
-            )
-            EpisodeDataAndDuration(offsetDateTime = publishedDate, duration = duration)
         }
     }
 }

@@ -21,6 +21,8 @@
     <string name="display_no_subscribed_podcast">Let\'s discover the podcasts!</string>
     <string name="message_no_subscribed_podcast">You subscribe no podcast yet. Let\'s discover the podcasts and subscribe them!</string>
     <string name="display_error_state">Something wrong happened</string>
+    <string name="display_nothing_in_queue">No episode in the queue</string>
+    <string name="message_nothing_in_queue">Discover the Podcast you want to listen to</string>
     <string name="section_podcast">Podcast</string>
     <string name="section_latest_episodes">Latest Episodes</string>
     <string name="label_subscribe">Subscribe</string>
@@ -53,4 +55,6 @@
     <string name="updated_today">Updated today</string>
 
     <string name="episode_date_duration">%1$s &#8226; %2$d mins</string>
+    <string name="elapsed_time">%1$s &#8226; %2$s</string>
+    <string name="minutes_seconds">%1$02d:%2$02d</string>
 </resources>

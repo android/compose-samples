@@ -19,10 +19,11 @@ package com.example.jetcaster.tv.ui.episode
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.tv.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,6 +40,7 @@ class EpisodeScreenViewModel @Inject constructor(
     handle: SavedStateHandle,
     podcastsRepository: PodcastsRepository,
     episodeStore: EpisodeStore,
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
     private val episodeUriFlow = handle.getStateFlow<String?>(Screen.Episode.PARAMETER_NAME, null)
@@ -68,7 +70,12 @@ class EpisodeScreenViewModel @Inject constructor(
         EpisodeScreenUiState.Loading
     )
 
-    fun addPlayList(episode: Episode) {
+    fun addPlayList(episode: PlayerEpisode) {
+        episodePlayer.addToQueue(episode)
+    }
+
+    fun play(playerEpisode: PlayerEpisode) {
+        episodePlayer.play(playerEpisode)
     }
 
     init {

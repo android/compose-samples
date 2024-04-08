@@ -27,6 +27,7 @@ internal data object JetcasterAppDefaults {
     val cardWidth = CardWidth()
     val padding = PaddingSettings()
     val thumbnailSize = ThumbnailSize()
+    val iconButtonSize: IconButtonSize = IconButtonSize()
 }
 
 internal data class OverScanMarginSettings(
@@ -35,6 +36,12 @@ internal data class OverScanMarginSettings(
     val episode: OverScanMargin = OverScanMargin(start = 80.dp, end = 80.dp),
     val drawer: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
     val podcast: OverScanMargin = OverScanMargin(
+        top = 40.dp,
+        bottom = 40.dp,
+        start = 80.dp,
+        end = 80.dp
+    ),
+    val player: OverScanMargin = OverScanMargin(
         top = 40.dp,
         bottom = 40.dp,
         start = 80.dp,
@@ -69,11 +76,33 @@ internal data class PaddingSettings(
 )
 
 internal data class GapSettings(
-    val chip: Dp = 8.dp,
-    val episodeRow: Dp = 20.dp,
-    val item: Dp = 16.dp,
-    val paragraph: Dp = 16.dp,
-    val podcastRow: Dp = 20.dp,
-    val section: Dp = 40.dp,
-    val twoColumn: Dp = 40.dp,
+    val tiny: Dp = 4.dp,
+    val small: Dp = tiny * 2,
+    val default: Dp = small * 2,
+    val medium: Dp = default + tiny,
+    val large: Dp = medium * 2,
+
+    val chip: Dp = small,
+    val episodeRow: Dp = medium,
+    val item: Dp = default,
+    val paragraph: Dp = default,
+    val podcastRow: Dp = medium,
+    val section: Dp = large,
+    val twoColumn: Dp = large,
 )
+
+internal data class IconButtonSize(
+    val default: Radius = Radius(14.dp),
+    val medium: Radius = Radius(20.dp),
+    val large: Radius = Radius(28.dp)
+)
+
+internal data class Radius(private val value: Dp) {
+    private fun diameter(): Dp {
+        return value * 2
+    }
+    fun intoDpSize(): DpSize {
+        val d = diameter()
+        return DpSize(d, d)
+    }
+}

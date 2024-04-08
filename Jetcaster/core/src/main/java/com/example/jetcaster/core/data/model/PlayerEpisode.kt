@@ -18,13 +18,16 @@ package com.example.jetcaster.core.data.model
 
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import java.time.Duration
+import java.time.OffsetDateTime
 
 /**
  * Episode data with necessary information to be used within a player.
  */
 data class PlayerEpisode(
+    val uri: String = "",
     val title: String = "",
     val subTitle: String = "",
+    val published: OffsetDateTime = OffsetDateTime.MIN,
     val duration: Duration? = null,
     val podcastName: String = "",
     val author: String = "",
@@ -35,6 +38,7 @@ data class PlayerEpisode(
     constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo) : this(
         title = episodeInfo.title,
         subTitle = episodeInfo.subTitle,
+        published = episodeInfo.published,
         duration = episodeInfo.duration,
         podcastName = podcastInfo.title,
         author = episodeInfo.author,
@@ -46,9 +50,13 @@ data class PlayerEpisode(
 
 fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
     PlayerEpisode(
+        uri = episode.uri,
         title = episode.title,
+        subTitle = episode.subtitle ?: "",
+        published = episode.published,
         duration = episode.duration,
         podcastName = podcast.title,
+        author = episode.author ?: podcast.author ?: "",
         summary = episode.summary ?: "",
         podcastImageUrl = podcast.imageUrl ?: "",
         uri = episode.uri

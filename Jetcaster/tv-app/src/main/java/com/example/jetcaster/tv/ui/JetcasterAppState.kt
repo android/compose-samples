@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.jetcaster.core.data.model.PlayerEpisode
 
 class JetcasterAppState(
     val navHostController: NavHostController
@@ -57,9 +58,17 @@ class JetcasterAppState(
         navHostController.navigate(screen.route)
     }
 
-    fun playEpisode(episodeUri: String) {
-        val screen = Screen.Player(episodeUri)
-        navHostController.navigate(screen.route)
+    fun showEpisodeDetails(playerEpisode: PlayerEpisode) {
+        showEpisodeDetails(playerEpisode.uri)
+    }
+
+    fun playEpisode() {
+        navHostController.navigate(Screen.Player.route)
+    }
+
+    fun backToHome() {
+        navHostController.popBackStack()
+        navigateToDiscover()
     }
 
     fun navigateBack() {
@@ -118,13 +127,7 @@ sealed interface Screen {
         }
     }
 
-    data class Player(private val episodeUri: String) : Screen {
-        override val route = "$ROOT/$episodeUri"
-
-        companion object : Screen {
-            private const val ROOT = "player"
-            const val PARAMETER_NAME = "episodeUri"
-            override val route = "$ROOT/{$PARAMETER_NAME}"
-        }
+    data object Player : Screen {
+        override val route = "player"
     }
 }
