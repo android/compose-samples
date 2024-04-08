@@ -24,6 +24,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.clickable
@@ -45,6 +47,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -56,6 +59,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -282,24 +286,24 @@ private fun HighlightSnackItem(
         ?: throw IllegalStateException("No Scope found")
     with(sharedTransitionScope) {
         with(animatedVisibilityScope) {
+            val sharedContentState = rememberSharedContentState(
+                key = SnackSharedElementKey(
+                    snackId = snack.id,
+                    origin = snackCollectionId.toString(),
+                    type = SnackSharedElementType.Bounds
+                )
+            )
             JetsnackCard(
                 modifier = modifier
+                    .sharedBounds(
+                        sharedContentState,
+                        animatedVisibilityScope
+                    )
                     .size(
                         width = HighlightCardWidth,
                         height = 250.dp
                     )
                     .padding(bottom = 16.dp)
-                    .sharedBounds(
-                        rememberSharedContentState(
-                            key = SnackSharedElementKey(
-                                snackId = snack.id,
-                                origin = snackCollectionId.toString(),
-                                type = SnackSharedElementType.Bounds
-                            )
-                        ),
-                        animatedVisibilityScope,
-                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
-                    )
             ) {
                 Column(
                     modifier = Modifier
@@ -327,7 +331,11 @@ private fun HighlightSnackItem(
                                             type = SnackSharedElementType.Background
                                         )
                                     ),
-                                    animatedVisibilityScope = animatedVisibilityScope
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium.copy(
+                                        bottomEnd = CornerSize(0.dp),
+                                        bottomStart = CornerSize(0.dp)
+                                    ))
                                 )
                                 .animateEnterExit()
                                 .height(100.dp)
@@ -387,6 +395,7 @@ private fun HighlightSnackItem(
                                     animatedVisibilityScope = animatedVisibilityScope
                                 )
                                 .animateEnterExit()
+                                .skipToLookaheadSize()
                                 .fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(4.dp))

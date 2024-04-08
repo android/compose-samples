@@ -45,6 +45,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -129,12 +130,10 @@ fun SnackDetail(
                                 type = SnackSharedElementType.Bounds
                             )
                         ),
-                        animatedVisibilityScope,
-                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                        animatedVisibilityScope
                     )
                     .fillMaxSize()
                     .background(color = JetsnackTheme.colors.uiBackground)
-                    .clip(MaterialTheme.shapes.medium)
             ) {
                 val scroll = rememberScrollState(0)
                 Header(snack.id, origin = origin)
@@ -168,7 +167,11 @@ private fun Header(snackId: Long, origin: String) {
                                 type = SnackSharedElementType.Background
                             )
                         ),
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium.copy(
+                            bottomEnd = CornerSize(0.dp),
+                            bottomStart = CornerSize(0.dp)
+                        ))
                     )
                     .animateEnterExit()
                     .height(280.dp)
@@ -205,7 +208,7 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
 }
 
 @Composable
-private fun Body(
+private fun SharedTransitionScope.Body(
     related: List<SnackCollection>,
     scroll: ScrollState
 ) {
@@ -240,7 +243,7 @@ private fun Body(
                         color = JetsnackTheme.colors.textHelp,
                         maxLines = if (seeMore) 5 else Int.MAX_VALUE,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = HzPadding
+                        modifier = HzPadding.skipToLookaheadSize()
                     )
                     val textButton = if (seeMore) {
                         stringResource(id = R.string.see_more)
