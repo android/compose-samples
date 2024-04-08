@@ -59,7 +59,7 @@
     <string name="episode_added_to_your_queue">Episode added to your queue</string>
     <string name="cd_podcast_image">Podcast image</string>
     <string name="subscribe">Subscribe</string>
-    <string name="unsubscribe">Unsubscribe</string>
+    <string name="subscribed">Subscribed</string>
   <string name="see_more">see more</string>
   <string name="search_for_a_podcast">Search for a podcast</string>
 

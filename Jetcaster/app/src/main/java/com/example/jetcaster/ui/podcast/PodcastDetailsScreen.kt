@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -287,6 +288,12 @@ fun PodcastDetailsHeaderItemButtons(
     Row(modifier.padding(top = 16.dp)) {
         Button(
             onClick = onClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isSubscribed)
+                    MaterialTheme.colorScheme.tertiary
+                else
+                    MaterialTheme.colorScheme.secondary
+            ),
             modifier = Modifier.semantics(mergeDescendants = true) { }
         ) {
             Icon(
@@ -298,7 +305,7 @@ fun PodcastDetailsHeaderItemButtons(
             )
             Text(
                 text = if (isSubscribed)
-                    stringResource(id = R.string.unsubscribe)
+                    stringResource(id = R.string.subscribed)
                 else
                     stringResource(id = R.string.subscribe),
                 modifier = Modifier.padding(start = 8.dp)
