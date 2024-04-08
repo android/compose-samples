@@ -398,7 +398,6 @@ private fun Image(
                 imageUrl = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
                     .sharedElement(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -409,6 +408,7 @@ private fun Image(
                         ),
                         animatedVisibilityScope = animatedVisibilityScope
                     )
+                    .fillMaxSize()
             )
         }
     }
