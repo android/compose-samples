@@ -69,6 +69,7 @@ class LatestEpisodeViewModel @Inject constructor(
     }
     fun onPlayEpisode(episode: PlayerEpisode) {
         episodePlayer.currentEpisode = episode
+        episodePlayer.play()
     }
 }
 data class LatestEpisodeViewState(
