@@ -3,7 +3,7 @@
 # Jetcaster sample 🎙️
 
 Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is to
-showcase building with Compose across multiple form factors and full featured architecture.
+showcase building with Compose across multiple form factors (mobile, TV, and Wear) and full featured architecture.
 
 To try out this sample app, use the latest stable version
 of [Android Studio](https://developer.android.com/studio).
@@ -17,7 +17,7 @@ project from Android Studio following the steps
 
 ## Features
 
-This sample has 3 components: the home scree, the podcast details screen, and the player screen
+This sample has 3 components: the home screen, the podcast details screen, and the player screen
 
 The home screen is split into sub-screens for easy re-use:
 
