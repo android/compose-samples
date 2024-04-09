@@ -36,6 +36,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
     )
     abstract fun episode(uri: String): Flow<Episode>
 
+    @Transaction
     @Query(
         """
         SELECT episodes.* FROM episodes
@@ -45,6 +46,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
     )
     abstract fun episodeAndPodcast(episodeUri: String): Flow<EpisodeToPodcast>
 
+    @Transaction
     @Query(
         """
         SELECT * FROM episodes WHERE podcast_uri = :podcastUri
@@ -75,6 +77,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
     @Query("SELECT COUNT(*) FROM episodes")
     abstract suspend fun count(): Int
 
+    @Transaction
     @Query(
         """
         SELECT * FROM episodes WHERE podcast_uri IN (:podcastUris)
