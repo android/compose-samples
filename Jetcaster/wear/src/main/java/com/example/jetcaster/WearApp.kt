@@ -45,8 +45,10 @@ import com.example.jetcaster.ui.JetcasterNavController.navigateToLatestEpisode
 import com.example.jetcaster.ui.JetcasterNavController.navigateToUpNext
 import com.example.jetcaster.ui.JetcasterNavController.navigateToYourPodcast
 import com.example.jetcaster.ui.LatestEpisodes
+import com.example.jetcaster.ui.YourPodcasts
 import com.example.jetcaster.ui.home.HomeScreen
 import com.example.jetcaster.ui.library.LatestEpisodesScreen
+import com.example.jetcaster.ui.library.PodcastsScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.google.android.horologist.audio.ui.VolumeViewModel
 import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToPlayer
@@ -88,7 +90,6 @@ fun WearApp() {
             mediaEntityScreen = {},
             playlistsScreen = {},
             settingsScreen = {},
-
             navHostState = navHostState,
             snackbarViewModel = snackbarViewModel,
             volumeViewModel = volumeViewModel,
@@ -106,6 +107,12 @@ fun WearApp() {
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         }
+                    )
+                }
+                composable(route = YourPodcasts.navRoute) {
+                    PodcastsScreen(
+                        onPodcastsItemClick = { navController.navigateToPlayer() },
+                        onErrorDialogCancelClick = { navController.popBackStack() }
                     )
                 }
             },

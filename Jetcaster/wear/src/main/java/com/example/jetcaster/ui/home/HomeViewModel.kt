@@ -119,10 +119,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onHomeCategorySelected(category: HomeCategory) {
-        selectedHomeCategory.value = category
-    }
-
     fun onPodcastUnfollowed(podcastUri: String) {
         viewModelScope.launch {
             podcastStore.unfollowPodcast(podcastUri)
