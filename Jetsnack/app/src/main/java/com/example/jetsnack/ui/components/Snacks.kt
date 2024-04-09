@@ -24,6 +24,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -226,6 +228,7 @@ fun SnackItem(
                         elevation = 1.dp,
                         contentDescription = null,
                         modifier = Modifier
+                            .size(120.dp)
                             .sharedBounds(
                                 rememberSharedContentState(
                                     key = SnackSharedElementKey(
@@ -237,7 +240,6 @@ fun SnackItem(
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 exit = ExitTransition.None
                             )
-                            .size(120.dp)
                     )
                     Text(
                         text = snack.name,
@@ -245,6 +247,7 @@ fun SnackItem(
                         color = JetsnackTheme.colors.textSecondary,
                         modifier = Modifier
                             .padding(top = 8.dp)
+                            .wrapContentWidth()
                             .sharedBounds(
                                 rememberSharedContentState(
                                     key = SnackSharedElementKey(
@@ -253,10 +256,10 @@ fun SnackItem(
                                         type = SnackSharedElementType.Title
                                     )
                                 ),
-                                animatedVisibilityScope = animatedVisibilityScope
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                enter = fadeIn() + scaleInSharedContentToBounds(),
+                                exit = fadeOut() + scaleOutSharedContentToBounds()
                             )
-                            .animateEnterExit()
-                            .fillMaxWidth()
                     )
                 }
             }
@@ -320,6 +323,8 @@ private fun HighlightSnackItem(
                     ) {
                         Box(
                             modifier = Modifier
+                                .height(100.dp)
+                                .fillMaxWidth()
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -335,8 +340,6 @@ private fun HighlightSnackItem(
                                     ))
                                 )
                                 .animateEnterExit()
-                                .height(100.dp)
-                                .fillMaxWidth()
                                 .offsetGradientBackground(
                                     colors = gradient,
                                     width = {
@@ -355,6 +358,8 @@ private fun HighlightSnackItem(
                             imageUrl = snack.imageUrl,
                             contentDescription = null,
                             modifier = Modifier
+                                .size(120.dp)
+                                .align(Alignment.BottomCenter)
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -366,8 +371,6 @@ private fun HighlightSnackItem(
                                     animatedVisibilityScope = animatedVisibilityScope,
                                     exit = ExitTransition.None
                                 )
-                                .size(120.dp)
-                                .align(Alignment.BottomCenter)
                         )
                     }
 
@@ -381,6 +384,7 @@ private fun HighlightSnackItem(
                             color = JetsnackTheme.colors.textSecondary,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
+                                .wrapContentWidth()
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -389,11 +393,10 @@ private fun HighlightSnackItem(
                                             type = SnackSharedElementType.Title
                                         )
                                     ),
-                                    animatedVisibilityScope = animatedVisibilityScope
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    enter = fadeIn() + scaleInSharedContentToBounds(),
+                                    exit = fadeOut() + scaleOutSharedContentToBounds()
                                 )
-                                .animateEnterExit()
-                                .skipToLookaheadSize()
-                                .fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -402,6 +405,7 @@ private fun HighlightSnackItem(
                             color = JetsnackTheme.colors.textHelp,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
+                                .wrapContentWidth()
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -410,9 +414,10 @@ private fun HighlightSnackItem(
                                             type = SnackSharedElementType.Tagline
                                         )
                                     ),
-                                    animatedVisibilityScope = animatedVisibilityScope
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    enter = fadeIn() + scaleInSharedContentToBounds(),
+                                    exit = fadeOut() + scaleOutSharedContentToBounds()
                                 )
-                                .fillMaxWidth()
                         )
                     }
 

@@ -25,6 +25,9 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,6 +46,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
@@ -335,7 +339,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     style = MaterialTheme.typography.h4,
                     color = JetsnackTheme.colors.textSecondary,
                     modifier = HzPadding
-                        .fillMaxWidth()
+                        .wrapContentWidth()
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -344,9 +348,10 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                                     type = SnackSharedElementType.Title
                                 )
                             ),
-                            animatedVisibilityScope = animatedVisibilityScope
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            enter = fadeIn() + scaleInSharedContentToBounds(),
+                            exit = fadeOut() + scaleOutSharedContentToBounds()
                         )
-                        .animateEnterExit()
                 )
                 Text(
                     text = snack.tagline,
@@ -354,7 +359,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     fontSize = 20.sp,
                     color = JetsnackTheme.colors.textHelp,
                     modifier = HzPadding
-                        .fillMaxWidth()
+                        .wrapContentWidth()
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -363,22 +368,22 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                                     type = SnackSharedElementType.Tagline
                                 )
                             ),
-                            animatedVisibilityScope = animatedVisibilityScope
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            enter = fadeIn() + scaleInSharedContentToBounds(),
+                            exit = fadeOut() + scaleOutSharedContentToBounds()
                         )
-                        .animateEnterExit()
                 )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = formatPrice(snack.price),
+                    style = MaterialTheme.typography.h6,
+                    color = JetsnackTheme.colors.textPrimary,
+                    modifier = HzPadding.animateEnterExit()
+                )
+
+                Spacer(Modifier.height(8.dp))
+                JetsnackDivider()
             }
-
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = formatPrice(snack.price),
-                style = MaterialTheme.typography.h6,
-                color = JetsnackTheme.colors.textPrimary,
-                modifier = HzPadding
-            )
-
-            Spacer(Modifier.height(8.dp))
-            JetsnackDivider()
         }
     }
 }
@@ -464,7 +469,7 @@ private fun CollapsingImageLayout(
 @Composable
 private fun AnimatedVisibilityScope.CartBottomBar(modifier: Modifier = Modifier) {
     val (count, updateCount) = remember { mutableIntStateOf(1) }
-    JetsnackSurface(modifier.animateEnterExit()) {
+    JetsnackSurface(modifier.animateEnterExit(enter =  slideInVertically { it } + fadeIn(), exit =  slideOutVertically { it } + fadeOut())) {
         Column {
             JetsnackDivider()
             Row(
