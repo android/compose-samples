@@ -33,7 +33,6 @@ data class PlayerEpisode(
     val author: String = "",
     val summary: String = "",
     val podcastImageUrl: String = "",
-    val uri: String = ""
 ) {
     constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo) : this(
         title = episodeInfo.title,
@@ -59,5 +58,4 @@ fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
         author = episode.author ?: podcast.author ?: "",
         summary = episode.summary ?: "",
         podcastImageUrl = podcast.imageUrl ?: "",
-        uri = episode.uri
     )
