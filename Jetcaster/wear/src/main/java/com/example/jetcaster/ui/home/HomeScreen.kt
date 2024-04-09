@@ -129,9 +129,9 @@ fun HomeScreen(
         onDismiss = { haveDismissedDialog = true },
 
         content = {
-            val podcast = viewState.podcastCategoryFilterResult.topPodcasts.first()
             if (viewState.podcastCategoryFilterResult.topPodcasts.isNotEmpty()) {
-                items(viewState.podcastCategoryFilterResult.topPodcasts.take(1).size) { index ->
+                val podcast = viewState.podcastCategoryFilterResult.topPodcasts.first()
+                items(viewState.podcastCategoryFilterResult.topPodcasts.take(1).size) {
                     PodcastContent(
                         podcast = podcast,
                         downloadItemArtworkPlaceholder = rememberVectorPainter(

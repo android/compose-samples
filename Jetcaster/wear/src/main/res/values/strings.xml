@@ -59,4 +59,5 @@
     <string name="cd_follow">Follow</string>
     <string name="cd_following">Following</string>
     <string name="cd_not_following">Not following</string>
+    <string name="nothing_playing">Nothing playing</string>
 </resources>
