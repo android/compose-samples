@@ -78,7 +78,7 @@ import com.example.jetcaster.tv.ui.component.PreviousButton
 import com.example.jetcaster.tv.ui.component.RewindButton
 import com.example.jetcaster.tv.ui.component.Seekbar
 import com.example.jetcaster.tv.ui.component.SkipButton
-import com.example.jetcaster.tv.ui.component.WithBackground
+import com.example.jetcaster.tv.ui.component.BackgroundContainer
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 import java.time.Duration
 import kotlinx.coroutines.CoroutineScope
@@ -177,7 +177,7 @@ private fun EpisodePlayerWithBackground(
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    WithBackground(
+    BackgroundContainer(
         playerEpisode = playerEpisode,
         modifier = modifier,
         contentAlignment = Alignment.Center

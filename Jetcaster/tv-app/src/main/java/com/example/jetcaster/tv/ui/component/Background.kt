@@ -91,7 +91,7 @@ internal fun Background(
 }
 
 @Composable
-internal fun WithBackground(
+internal fun BackgroundContainer(
     playerEpisode: PlayerEpisode,
     modifier: Modifier = Modifier,
     overlay: DrawScope.() -> Unit = {
