@@ -106,7 +106,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowHeightSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.model.CategoryInfo
@@ -186,11 +185,11 @@ fun calculateScaffoldDirective(
         verticalSpacerSize = 0.dp
     } else {
         when (windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass) {
-            WindowWidthSizeClass.COMPACT -> {
+            androidx.window.core.layout.WindowWidthSizeClass.COMPACT -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
-            WindowWidthSizeClass.MEDIUM -> {
+            androidx.window.core.layout.WindowWidthSizeClass.MEDIUM -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
@@ -237,7 +236,7 @@ private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy
 }
 
 private fun androidx.window.core.layout.WindowSizeClass.isCompact(): Boolean =
-    windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
+    windowWidthSizeClass == androidx.window.core.layout.WindowWidthSizeClass.COMPACT ||
         windowHeightSizeClass == WindowHeightSizeClass.COMPACT
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
