@@ -36,8 +36,8 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.model.PlayerEpisode
-import com.example.jetcaster.core.data.model.toPlayerEpisode
+import com.example.jetcaster.core.data.database.model.toPlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.component.Background
 import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration

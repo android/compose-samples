@@ -36,8 +36,8 @@ import androidx.tv.material3.Text
 import androidx.tv.material3.WideCardLayout
 import coil.compose.AsyncImage
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.model.PlayerEpisode
-import com.example.jetcaster.core.data.model.toPlayerEpisode
+import com.example.jetcaster.core.data.database.model.toPlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
