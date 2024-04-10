@@ -17,9 +17,9 @@
 package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.asExternalModel
+import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
-import com.example.jetcaster.core.data.repository.CategoryStore
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
