@@ -51,6 +51,11 @@ interface EpisodePlayer {
     fun play()
 
     /**
+     * Plays the specified episode
+     */
+    fun play(playerEpisode: PlayerEpisode)
+
+    /**
      * Pauses the currently played episode
      */
     fun pause()

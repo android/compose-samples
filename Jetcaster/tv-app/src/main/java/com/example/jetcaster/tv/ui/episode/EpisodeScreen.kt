@@ -36,6 +36,8 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.tv.ui.component.Background
 import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration
@@ -43,11 +45,12 @@ import com.example.jetcaster.tv.ui.component.ErrorState
 import com.example.jetcaster.tv.ui.component.Loading
 import com.example.jetcaster.tv.ui.component.PlayButton
 import com.example.jetcaster.tv.ui.component.Thumbnail
+import com.example.jetcaster.tv.ui.component.TwoColumn
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun EpisodeScreen(
-    playEpisode: (Episode) -> Unit,
+    playEpisode: () -> Unit,
     backToHome: () -> Unit,
     modifier: Modifier = Modifier,
     episodeScreenViewModel: EpisodeScreenViewModel = hiltViewModel()
@@ -60,7 +63,10 @@ fun EpisodeScreen(
         EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = modifier)
         is EpisodeScreenUiState.Ready -> EpisodeDetailsWithBackground(
             episodeToPodcast = s.episodeToPodcast,
-            playEpisode = playEpisode,
+            playEpisode = {
+                episodeScreenViewModel.play(it)
+                playEpisode()
+            },
             addPlayList = episodeScreenViewModel::addPlayList
         )
     }
@@ -69,8 +75,8 @@ fun EpisodeScreen(
 @Composable
 private fun EpisodeDetailsWithBackground(
     episodeToPodcast: EpisodeToPodcast,
-    playEpisode: (Episode) -> Unit,
-    addPlayList: (Episode) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
+    addPlayList: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -88,33 +94,35 @@ private fun EpisodeDetailsWithBackground(
 @Composable
 private fun EpisodeDetails(
     episodeToPodcast: EpisodeToPodcast,
-    playEpisode: (Episode) -> Unit,
-    addPlayList: (Episode) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
+    addPlayList: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    TwoColumn(
+        first = {
+            Thumbnail(
+                podcast = episodeToPodcast.podcast,
+                size = JetcasterAppDefaults.thumbnailSize.episode
+            )
+        },
+        second = {
+            EpisodeInfo(
+                episode = episodeToPodcast.episode,
+                playEpisode = { playEpisode(episodeToPodcast.toPlayerEpisode()) },
+                addPlayList = { addPlayList(episodeToPodcast.toPlayerEpisode()) },
+                modifier = Modifier.weight(1f)
+            )
+        },
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
-    ) {
-        Thumbnail(
-            podcast = episodeToPodcast.podcast,
-            size = JetcasterAppDefaults.thumbnailSize.episode
-        )
-        EpisodeInfo(
-            episode = episodeToPodcast.episode,
-            playEpisode = playEpisode,
-            addPlayList = addPlayList,
-            modifier = Modifier.weight(1f)
-        )
-    }
+    )
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun EpisodeInfo(
     episode: Episode,
-    playEpisode: (Episode) -> Unit,
-    addPlayList: (Episode) -> Unit,
+    playEpisode: () -> Unit,
+    addPlayList: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val author = episode.author
@@ -134,7 +142,7 @@ private fun EpisodeInfo(
             Text(text = summary, softWrap = true, maxLines = 5, overflow = TextOverflow.Ellipsis)
         }
         Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
-        Controls(playEpisode = { playEpisode(episode) }, addPlayList = { addPlayList(episode) })
+        Controls(playEpisode = playEpisode, addPlayList = addPlayList)
     }
 }
 

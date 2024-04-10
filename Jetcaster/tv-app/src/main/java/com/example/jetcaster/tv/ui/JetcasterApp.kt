@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,13 +39,13 @@ import androidx.tv.material3.Text
 import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.episode.EpisodeScreen
 import com.example.jetcaster.tv.ui.library.LibraryScreen
+import com.example.jetcaster.tv.ui.player.PlayerScreen
 import com.example.jetcaster.tv.ui.podcast.PodcastScreen
 import com.example.jetcaster.tv.ui.profile.ProfileScreen
 import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppState()) {
     Route(jetcasterAppState = jetcasterAppState)
@@ -164,7 +163,8 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         composable(Screen.Podcast.route) {
             PodcastScreen(
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
-                playEpisode = {},
+                playEpisode = {
+                },
                 showEpisodeDetails = { jetcasterAppState.showEpisodeDetails(it.episode.uri) },
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
@@ -175,14 +175,18 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         composable(Screen.Episode.route) {
             EpisodeScreen(
                 playEpisode = {
-                    jetcasterAppState.playEpisode(it.uri)
+                    jetcasterAppState.playEpisode()
                 },
-                backToHome = jetcasterAppState::navigateToDiscover,
+                backToHome = jetcasterAppState::backToHome,
             )
         }
 
         composable(Screen.Player.route) {
-            Text(text = "Player")
+            PlayerScreen(
+                backToHome = jetcasterAppState::backToHome,
+                modifier = Modifier.fillMaxSize(),
+                showDetails = jetcasterAppState::showEpisodeDetails,
+            )
         }
 
         composable(Screen.Profile.route) {

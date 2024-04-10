@@ -20,6 +20,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.Forward10
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Replay10
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -62,6 +69,20 @@ internal fun EnqueueButton(
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
+internal fun InfoButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            Icons.Outlined.Info,
+            contentDescription = stringResource(R.string.label_info),
+        )
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
 internal fun ButtonWithIcon(
     icon: ImageVector,
     label: String,
@@ -78,3 +99,76 @@ internal fun ButtonWithIcon(
         )
         Text(text = label)
     }
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+internal fun PreviousButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            Icons.Default.SkipPrevious,
+            contentDescription = stringResource(R.string.label_previous_episode)
+        )
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+internal fun NextButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            Icons.Default.SkipNext,
+            contentDescription = stringResource(R.string.label_next_episode)
+        )
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+internal fun PlayPauseButton(
+    isPlaying: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val (icon, description) = if (isPlaying) {
+        Icons.Default.Pause to stringResource(R.string.label_pause)
+    } else {
+        Icons.Default.PlayArrow to stringResource(R.string.label_play)
+    }
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(icon, description)
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+internal fun RewindButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            Icons.Default.Replay10,
+            contentDescription = stringResource(R.string.label_rewind)
+        )
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+internal fun SkipButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            Icons.Default.Forward10,
+            contentDescription = stringResource(R.string.label_skip)
+        )
+    }
+}

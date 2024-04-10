@@ -44,6 +44,7 @@ class MockEpisodePlayer(
     private val coroutineScope = CoroutineScope(mainDispatcher)
 
     private var timerJob: Job? = null
+
     init {
         coroutineScope.launch {
             // Combine streams here
@@ -101,6 +102,32 @@ class MockEpisodePlayer(
                 next()
             }
         }
+    }
+
+    override fun play(playerEpisode: PlayerEpisode) {
+        if (isPlaying.value) {
+            pause()
+        }
+
+        // Keep the currently playing episode in the queue
+        val playingEpisode = _currentEpisode.value
+        queue.update {
+            val previousList = if (it.contains(playerEpisode)) {
+                val mutableList = it.toMutableList()
+                mutableList.remove(playerEpisode)
+                mutableList
+            } else {
+                it
+            }
+            if (playingEpisode != null) {
+                listOf(playerEpisode, playingEpisode) + previousList
+            } else {
+                listOf(playerEpisode) + previousList
+            }
+        }
+
+        next()
+        play()
     }
 
     override fun pause() {
