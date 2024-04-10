@@ -19,6 +19,8 @@ package com.example.jetcaster.core.data.database.model
 import androidx.room.Embedded
 import androidx.room.Ignore
 import androidx.room.Relation
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastCategoryEpisode
 import java.util.Objects
 
 class EpisodeToPodcast {
@@ -46,3 +48,22 @@ class EpisodeToPodcast {
 
     override fun hashCode(): Int = Objects.hash(episode, _podcasts)
 }
+
+fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
+    PlayerEpisode(
+        uri = episode.uri,
+        title = episode.title,
+        subTitle = episode.subtitle ?: "",
+        published = episode.published,
+        duration = episode.duration,
+        podcastName = podcast.title,
+        author = episode.author ?: podcast.author ?: "",
+        summary = episode.summary ?: "",
+        podcastImageUrl = podcast.imageUrl ?: "",
+    )
+
+fun EpisodeToPodcast.asPodcastCategoryEpisode(): PodcastCategoryEpisode =
+    PodcastCategoryEpisode(
+        episode = episode.asExternalModel(),
+        podcast = podcast.asExternalModel(),
+    )

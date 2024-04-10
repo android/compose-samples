@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.core.data.model
+package com.example.jetcaster.core.model
 
-data class LibraryInfo(
-    val podcast: PodcastInfo? = null,
-    val episodes: List<EpisodeInfo> = emptyList()
+import java.time.Duration
+import java.time.OffsetDateTime
+
+/**
+ * External data layer representation of an episode.
+ */
+data class EpisodeInfo(
+    val uri: String = "",
+    val title: String = "",
+    val subTitle: String = "",
+    val summary: String = "",
+    val author: String = "",
+    val published: OffsetDateTime = OffsetDateTime.MIN,
+    val duration: Duration? = null,
 )

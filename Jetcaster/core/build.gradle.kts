@@ -38,6 +38,7 @@ dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.compose.runtime)
+  implementation(project(":core:model"))
 
   // Image loading
   implementation(libs.coil.kt.compose)

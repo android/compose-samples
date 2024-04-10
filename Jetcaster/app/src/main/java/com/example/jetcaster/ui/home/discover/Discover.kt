@@ -38,12 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.model.CategoryInfo
-import com.example.jetcaster.core.data.model.EpisodeInfo
-import com.example.jetcaster.core.data.model.FilterableCategoriesModel
-import com.example.jetcaster.core.data.model.PlayerEpisode
-import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.EpisodeInfo
+import com.example.jetcaster.core.model.FilterableCategoriesModel
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 import com.example.jetcaster.util.fullWidthItem
@@ -183,7 +183,9 @@ private fun ChoiceChipContent(
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = stringResource(id = R.string.cd_selected_category),
-                    modifier = Modifier.height(18.dp).padding(end = 8.dp)
+                    modifier = Modifier
+                        .height(18.dp)
+                        .padding(end = 8.dp)
                 )
             }
             Text(

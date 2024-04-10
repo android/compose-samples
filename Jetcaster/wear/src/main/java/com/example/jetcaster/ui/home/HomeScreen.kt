@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.model.PodcastInfo
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults

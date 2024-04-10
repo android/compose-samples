@@ -17,11 +17,11 @@
 package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.model.CategoryInfo
-import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.core.data.model.asExternalModel
-import com.example.jetcaster.core.data.model.asPodcastCategoryEpisode
+import com.example.jetcaster.core.data.database.model.asExternalModel
+import com.example.jetcaster.core.data.database.model.asPodcastCategoryEpisode
 import com.example.jetcaster.core.data.repository.CategoryStore
+import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

@@ -16,7 +16,7 @@
 
 package com.example.jetcaster.core.player
 
-import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import java.time.Duration
 import kotlinx.coroutines.flow.StateFlow
 

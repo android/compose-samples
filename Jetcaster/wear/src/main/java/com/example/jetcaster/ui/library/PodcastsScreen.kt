@@ -41,7 +41,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.dialog.Alert
 import androidx.wear.compose.material.dialog.Dialog
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.model.PodcastInfo
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.composables.Section

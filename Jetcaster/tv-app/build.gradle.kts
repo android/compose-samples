@@ -76,7 +76,6 @@ dependencies {
     implementation(libs.androidx.tv.foundation)
     implementation(libs.androidx.tv.material)
     implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.kt.compose)
@@ -84,7 +83,9 @@ dependencies {
     // Dependency injection
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(project(":core:model"))
     ksp(libs.hilt.compiler)
+
 
     implementation(project(":core"))
     implementation(project(":designsystem"))

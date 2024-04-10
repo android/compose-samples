@@ -16,10 +16,10 @@
 
 package com.example.jetcaster.ui.home
 
-import com.example.jetcaster.core.data.model.CategoryInfo
-import com.example.jetcaster.core.data.model.EpisodeInfo
-import com.example.jetcaster.core.data.model.PodcastCategoryEpisode
-import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.EpisodeInfo
+import com.example.jetcaster.core.model.PodcastCategoryEpisode
+import com.example.jetcaster.core.model.PodcastInfo
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 

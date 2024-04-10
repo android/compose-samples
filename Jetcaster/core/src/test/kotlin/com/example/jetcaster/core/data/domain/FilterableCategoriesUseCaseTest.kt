@@ -17,8 +17,8 @@
 package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.model.asExternalModel
 import com.example.jetcaster.core.data.repository.TestCategoryStore
+import com.example.jetcaster.model.asExternalModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

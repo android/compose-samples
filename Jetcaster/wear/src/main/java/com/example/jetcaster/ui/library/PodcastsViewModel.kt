@@ -19,9 +19,9 @@ package com.example.jetcaster.ui.library
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
-import com.example.jetcaster.core.data.model.PodcastInfo
-import com.example.jetcaster.core.data.model.asExternalModel
+import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.model.PodcastInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted

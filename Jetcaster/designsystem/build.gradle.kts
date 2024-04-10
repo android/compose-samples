@@ -21,6 +21,16 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
+
+  buildFeatures {
+    compose = true
+    buildConfig = true
+  }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+  }
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -34,6 +44,7 @@ dependencies {
   implementation(libs.androidx.compose.material3)
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.text)
+  implementation(libs.coil.kt.compose)
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
