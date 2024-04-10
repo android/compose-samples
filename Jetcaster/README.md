@@ -19,7 +19,7 @@ most of the app's architecture has been implemented as well as the data layer.
 
 ## Screenshots
 
-<img src="docs/screenshots.png"/>
+![readme_cover](https://github.com/android/compose-samples/assets/10263978/a58ab950-71aa-48e0-8bc7-85443a1b4f6b)
 
 ## Features
 
@@ -34,7 +34,8 @@ The home screen is split into sub-screens for easy re-use:
 The player screen displays media controls and the currently "playing" podcast (the sample currently doesn't actually play any media).
 The player screen layout is adapting to different form factors, including a tabletop layout on foldable devices:
 
-<img src="docs/tabletop.png"/>
+![readme_fold](https://github.com/android/compose-samples/assets/10263978/fe02248f-81ce-489b-a6d6-838438c8368e)
+
 
 ### Others
 Some other notable things which are implemented:
