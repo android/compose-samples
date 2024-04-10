@@ -57,7 +57,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -76,8 +75,8 @@ import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
-import com.example.jetsnack.ui.LocalSharedElementScopes
-import com.example.jetsnack.ui.SharedElementScopes
+import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
+import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -216,9 +215,9 @@ fun SnackItem(
                 })
                 .padding(8.dp)
         ) {
-            val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+            val sharedTransitionScope = LocalSharedTransitionScope.current
                 ?: throw IllegalStateException("No sharedTransitionScope found")
-            val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+            val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
                 ?: throw IllegalStateException("No animatedVisibilityScope found")
 
             with(sharedTransitionScope) {
@@ -279,9 +278,9 @@ private fun HighlightSnackItem(
     scrollProvider: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+    val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
-    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
     with(sharedTransitionScope) {
         with(animatedVisibilityScope) {
@@ -469,10 +468,8 @@ fun SnackCardPreview() {
         SharedTransitionLayout {
             AnimatedVisibility(visible = true) {
                 CompositionLocalProvider(
-                    LocalSharedElementScopes provides SharedElementScopes(
-                        this@SharedTransitionLayout,
-                        this
-                    )
+                    LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                    LocalNavAnimatedVisibilityScope provides this
                 ) {
                     HighlightSnackItem(
                         snackCollectionId = 1,

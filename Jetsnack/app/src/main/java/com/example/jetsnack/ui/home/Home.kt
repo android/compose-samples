@@ -25,13 +25,11 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
@@ -83,16 +81,14 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.jetsnack.R
-import com.example.jetsnack.ui.LocalSharedElementScopes
-import com.example.jetsnack.ui.SharedElementScopes
+import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.util.Locale
 
-fun NavGraphBuilder.sharedElementComposable(
-    sharedTransitionScope: SharedTransitionScope,
+fun NavGraphBuilder.composableWithCompositionLocal(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
@@ -122,10 +118,7 @@ fun NavGraphBuilder.sharedElementComposable(
         popExitTransition
     ) {
         CompositionLocalProvider(
-            LocalSharedElementScopes provides SharedElementScopes(
-                sharedTransitionScope,
-                this@composable
-            )
+            LocalNavAnimatedVisibilityScope provides this@composable
         ) {
             content(it)
         }

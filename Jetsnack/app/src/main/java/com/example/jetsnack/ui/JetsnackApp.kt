@@ -33,9 +33,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
@@ -43,15 +43,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.home.addHomeGraph
-import com.example.jetsnack.ui.home.sharedElementComposable
-import com.example.jetsnack.ui.navigation.JetsnackNavController
+import com.example.jetsnack.ui.home.composableWithCompositionLocal
 import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.navigation.rememberJetsnackNavController
 import com.example.jetsnack.ui.snackdetail.SnackDetail
@@ -63,38 +61,39 @@ fun JetsnackApp() {
     JetsnackTheme {
         val jetsnackNavController = rememberJetsnackNavController()
         SharedTransitionLayout {
-            NavHost(
-                navController = jetsnackNavController.navController,
-                startDestination = MainDestinations.HOME_ROUTE
+            CompositionLocalProvider(
+                LocalSharedTransitionScope provides this
             ) {
-                sharedElementComposable(
-                    route = MainDestinations.HOME_ROUTE,
-                    sharedTransitionScope = this@SharedTransitionLayout
+                NavHost(
+                    navController = jetsnackNavController.navController,
+                    startDestination = MainDestinations.HOME_ROUTE
                 ) {
-                    MainContainer(
-                        onSnackSelected = jetsnackNavController::navigateToSnackDetail
-                    )
-                }
-                sharedElementComposable(
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    "${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}?origin={${MainDestinations.ORIGIN}}",
-                    arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) {
-                        type = NavType.LongType
-                    }),
+                    composableWithCompositionLocal(
+                        route = MainDestinations.HOME_ROUTE
+                    ) {
+                        MainContainer(
+                            onSnackSelected = jetsnackNavController::navigateToSnackDetail
+                        )
+                    }
+                    composableWithCompositionLocal(
+                        "${MainDestinations.SNACK_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}?origin={${MainDestinations.ORIGIN}}",
+                        arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) {
+                            type = NavType.LongType
+                        }),
 
-                    ) { backStackEntry ->
-                    val arguments = requireNotNull(backStackEntry.arguments)
-                    val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
-                    val origin = arguments.getString(MainDestinations.ORIGIN)
-                    SnackDetail(
-                        snackId,
-                        origin = origin ?: "",
-                        upPress = jetsnackNavController::upPress
-                    )
+                        ) { backStackEntry ->
+                        val arguments = requireNotNull(backStackEntry.arguments)
+                        val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
+                        val origin = arguments.getString(MainDestinations.ORIGIN)
+                        SnackDetail(
+                            snackId,
+                            origin = origin ?: "",
+                            upPress = jetsnackNavController::upPress
+                        )
+                    }
                 }
             }
         }
-
     }
 }
 
@@ -107,9 +106,9 @@ fun MainContainer(
     val nestedNavController = rememberJetsnackNavController()
     val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val sharedTransitionScope = LocalSharedElementScopes.current.sharedTransitionScope
+    val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
-    val animatedVisibilityScope = LocalSharedElementScopes.current.animatedVisibilityScope
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
     JetsnackScaffold(
         bottomBar = {
@@ -158,9 +157,5 @@ fun MainContainer(
     }
 }
 
-val LocalSharedElementScopes = compositionLocalOf { SharedElementScopes() }
-
-data class SharedElementScopes(
-    val sharedTransitionScope: SharedTransitionScope? = null,
-    val animatedVisibilityScope: AnimatedVisibilityScope? = null
-)
+val LocalNavAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
