@@ -21,6 +21,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.jetcaster.core.model.PodcastInfo
 
 @Entity(
     tableName = "podcasts",
@@ -37,3 +38,12 @@ data class Podcast(
     @ColumnInfo(name = "image_url") val imageUrl: String? = null,
     @ColumnInfo(name = "copyright") val copyright: String? = null
 )
+
+fun Podcast.asExternalModel(): PodcastInfo =
+    PodcastInfo(
+        uri = this.uri,
+        title = this.title,
+        author = this.author ?: "",
+        imageUrl = this.imageUrl ?: "",
+        description = this.description ?: "",
+    )

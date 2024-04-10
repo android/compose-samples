@@ -18,6 +18,7 @@ package com.example.jetcaster.core.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
+import com.example.jetcaster.core.model.PodcastInfo
 import java.time.OffsetDateTime
 import java.util.Objects
 
@@ -50,3 +51,9 @@ class PodcastWithExtraInfo {
 
     override fun hashCode(): Int = Objects.hash(podcast, lastEpisodeDate, isFollowed)
 }
+
+fun PodcastWithExtraInfo.asExternalModel(): PodcastInfo =
+    this.podcast.asExternalModel().copy(
+        isSubscribed = isFollowed,
+        lastEpisodeDate = lastEpisodeDate,
+    )

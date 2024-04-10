@@ -21,6 +21,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.jetcaster.core.model.CategoryInfo
 
 @Entity(
     tableName = "categories",
@@ -33,3 +34,9 @@ data class Category(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
     @ColumnInfo(name = "name") val name: String
 )
+
+fun Category.asExternalModel() =
+    CategoryInfo(
+        id = id,
+        name = name
+    )

@@ -108,13 +108,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowHeightSizeClass
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.model.CategoryInfo
-import com.example.jetcaster.core.data.model.EpisodeInfo
-import com.example.jetcaster.core.data.model.FilterableCategoriesModel
-import com.example.jetcaster.core.data.model.LibraryInfo
-import com.example.jetcaster.core.data.model.PlayerEpisode
-import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.core.data.model.PodcastInfo
+import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.EpisodeInfo
+import com.example.jetcaster.core.model.FilterableCategoriesModel
+import com.example.jetcaster.core.model.LibraryInfo
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
@@ -124,12 +124,12 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,

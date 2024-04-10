@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.core.data.model
-
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+package com.example.jetcaster.core.model
 
 /**
  * A model holding top podcasts and matching episodes when filtering based on a category.
@@ -30,9 +28,3 @@ data class PodcastCategoryEpisode(
     val episode: EpisodeInfo,
     val podcast: PodcastInfo,
 )
-
-fun EpisodeToPodcast.asPodcastCategoryEpisode(): PodcastCategoryEpisode =
-    PodcastCategoryEpisode(
-        episode = episode.asExternalModel(),
-        podcast = podcast.asExternalModel(),
-    )

@@ -19,74 +19,35 @@ package com.example.jetcaster.tv.ui.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.ContentScale
-import coil.compose.AsyncImage
 import com.example.jetcaster.core.data.database.model.Podcast
-import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.designsystem.component.ImageBackgroundRadialGradientScrim
 
 @Composable
 internal fun Background(
     podcast: Podcast,
     modifier: Modifier = Modifier,
-    overlay: DrawScope.() -> Unit = {
-        val brush = Brush.radialGradient(
-            listOf(Color.Black, Color.Transparent),
-            center = Offset(0f, size.height),
-            radius = size.width * 1.5f
-        )
-        drawRect(brush, blendMode = BlendMode.Multiply)
-    }
-) = Background(imageUrl = podcast.imageUrl, modifier, overlay)
+) = Background(imageUrl = podcast.imageUrl, modifier)
 
 @Composable
 internal fun Background(
     episode: PlayerEpisode,
     modifier: Modifier = Modifier,
-    overlay: DrawScope.() -> Unit = {
-        val brush = Brush.radialGradient(
-            listOf(Color.Black, Color.Transparent),
-            center = Offset(0f, size.height),
-            radius = size.width * 1.5f
-        )
-        drawRect(brush, blendMode = BlendMode.Multiply)
-    }
-) = Background(imageUrl = episode.podcastImageUrl, modifier, overlay)
+) = Background(imageUrl = episode.podcastImageUrl, modifier)
 
 @Composable
 internal fun Background(
     imageUrl: String?,
     modifier: Modifier = Modifier,
-    overlay: DrawScope.() -> Unit = {
-        val brush = Brush.radialGradient(
-            listOf(Color.Black, Color.Transparent),
-            center = Offset(0f, size.height),
-            radius = size.width * 1.5f
-        )
-        drawRect(brush, blendMode = BlendMode.Multiply)
-    }
 ) {
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxWidth()
-            .drawWithCache {
-                onDrawWithContent {
-                    drawContent()
-                    overlay()
-                }
-            }
+    ImageBackgroundRadialGradientScrim(
+        url = imageUrl,
+        colors = listOf(Color.Black, Color.Transparent),
+        modifier = modifier,
     )
 }
 
@@ -94,19 +55,11 @@ internal fun Background(
 internal fun BackgroundContainer(
     playerEpisode: PlayerEpisode,
     modifier: Modifier = Modifier,
-    overlay: DrawScope.() -> Unit = {
-        val brush = Brush.radialGradient(
-            listOf(Color.Black, Color.Transparent),
-            center = Offset(0f, size.height),
-            radius = size.width * 1.5f
-        )
-        drawRect(brush, blendMode = BlendMode.Multiply)
-    },
     contentAlignment: Alignment = Alignment.Center,
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = contentAlignment) {
-        Background(episode = playerEpisode, overlay = overlay, modifier = Modifier.fillMaxSize())
+        Background(episode = playerEpisode, modifier = Modifier.fillMaxSize())
         content()
     }
 }

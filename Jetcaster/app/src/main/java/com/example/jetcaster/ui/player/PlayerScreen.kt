@@ -67,6 +67,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -87,8 +88,9 @@ import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
@@ -150,7 +152,7 @@ private fun PlayerScreen(
     }
     Surface(modifier) {
         if (uiState.episodePlayerState.currentEpisode != null) {
-            PlayerContent(
+            PlayerContentWithBackground(
                 uiState,
                 windowSizeClass,
                 displayFeatures,
@@ -165,6 +167,52 @@ private fun PlayerScreen(
         } else {
             FullScreenLoading()
         }
+    }
+}
+
+@Composable
+private fun PlayerBackground(
+    episode: PlayerEpisode?,
+    modifier: Modifier,
+) {
+    ImageBackgroundColorScrim(
+        url = episode?.podcastImageUrl,
+        color = Color.Black.copy(alpha = 0.68f),
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun PlayerContentWithBackground(
+    uiState: PlayerUiState,
+    windowSizeClass: WindowSizeClass,
+    displayFeatures: List<DisplayFeature>,
+    onBackPress: () -> Unit,
+    onPlayPress: () -> Unit,
+    onPausePress: () -> Unit,
+    onAdvanceBy: (Duration) -> Unit,
+    onRewindBy: (Duration) -> Unit,
+    onNext: () -> Unit,
+    onPrevious: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        PlayerBackground(
+            episode = uiState.episodePlayerState.currentEpisode,
+            modifier = Modifier.fillMaxSize()
+        )
+        PlayerContent(
+            uiState,
+            windowSizeClass,
+            displayFeatures,
+            onBackPress,
+            onPlayPress,
+            onPausePress,
+            onAdvanceBy,
+            onRewindBy,
+            onNext,
+            onPrevious,
+        )
     }
 }
 

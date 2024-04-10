@@ -38,8 +38,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.model.PlayerEpisode
-import com.example.jetcaster.core.data.model.toPlayerEpisode
+import com.example.jetcaster.model.PlayerEpisode
+import com.example.jetcaster.model.toPlayerEpisode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberColumnState
@@ -75,7 +75,7 @@ fun LatestEpisodeScreen(
     onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
     onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
     modifier: Modifier = Modifier,
-    onPlayEpisode: (PlayerEpisode) -> Unit,
+    onPlayEpisode: (com.example.jetcaster.model.PlayerEpisode) -> Unit,
 ) {
     val columnState = rememberColumnState()
     ScreenScaffold(
@@ -134,7 +134,7 @@ fun ButtonsContent(
     viewState: LatestEpisodeViewState,
     onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
     onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
-    onPlayEpisode: (PlayerEpisode) -> Unit
+    onPlayEpisode: (com.example.jetcaster.model.PlayerEpisode) -> Unit
 ) {
 
     Row(

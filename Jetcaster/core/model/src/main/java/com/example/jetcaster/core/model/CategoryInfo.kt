@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.core.data.model
+package com.example.jetcaster.core.model
 
-/**
- * Model holding a list of categories and a selected category in the collection
- */
-data class FilterableCategoriesModel(
-    val categories: List<CategoryInfo> = emptyList(),
-    val selectedCategory: CategoryInfo? = null
-) {
-    val isEmpty = categories.isEmpty() || selectedCategory == null
-}
+data class CategoryInfo(
+    val id: Long,
+    val name: String
+)

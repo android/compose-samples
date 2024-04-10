@@ -23,10 +23,10 @@ import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
-import com.example.jetcaster.core.data.model.CategoryInfo
-import com.example.jetcaster.core.data.model.FilterableCategoriesModel
-import com.example.jetcaster.core.data.model.PodcastCategoryFilterResult
-import com.example.jetcaster.core.data.model.toPlayerEpisode
+import com.example.jetcaster.model.CategoryInfo
+import com.example.jetcaster.model.FilterableCategoriesModel
+import com.example.jetcaster.model.PodcastCategoryFilterResult
+import com.example.jetcaster.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
     // Holds the currently available home categories
     private val homeCategories = MutableStateFlow(HomeCategory.entries)
     // Holds our currently selected category
-    private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
+    private val _selectedCategory = MutableStateFlow<com.example.jetcaster.model.CategoryInfo?>(null)
 
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
@@ -149,8 +149,8 @@ data class HomeViewState(
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),
-    val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),
-    val podcastCategoryFilterResult: PodcastCategoryFilterResult = PodcastCategoryFilterResult(),
+    val filterableCategoriesModel: com.example.jetcaster.model.FilterableCategoriesModel = com.example.jetcaster.model.FilterableCategoriesModel(),
+    val podcastCategoryFilterResult: com.example.jetcaster.model.PodcastCategoryFilterResult = com.example.jetcaster.model.PodcastCategoryFilterResult(),
     val libraryEpisodes: List<EpisodeToPodcast> = emptyList(),
     val errorMessage: String? = null
 )
