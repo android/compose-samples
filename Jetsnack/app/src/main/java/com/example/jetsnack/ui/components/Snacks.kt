@@ -79,6 +79,7 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
+import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
 
@@ -237,7 +238,8 @@ fun SnackItem(
                                     )
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
-                                exit = ExitTransition.None
+                                exit = ExitTransition.None,
+                                boundsTransform = snackDetailBoundsTransform
                             )
                     )
                     Text(
@@ -257,7 +259,8 @@ fun SnackItem(
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 enter = fadeIn() + scaleInSharedContentToBounds(),
-                                exit = fadeOut() + scaleOutSharedContentToBounds()
+                                exit = fadeOut() + scaleOutSharedContentToBounds(),
+                                boundsTransform = snackDetailBoundsTransform
                             )
                     )
                 }
@@ -300,8 +303,9 @@ private fun HighlightSnackItem(
                     )
                     .padding(bottom = 16.dp)
                     .sharedBounds(
-                        sharedContentState,
-                        animatedVisibilityScope
+                        sharedContentState =  sharedContentState,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = snackDetailBoundsTransform
                     )
             ) {
                 Column(
@@ -336,7 +340,8 @@ private fun HighlightSnackItem(
                                     clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium.copy(
                                         bottomEnd = CornerSize(0.dp),
                                         bottomStart = CornerSize(0.dp)
-                                    ))
+                                    )),
+                                    boundsTransform = snackDetailBoundsTransform
                                 )
                                 .animateEnterExit()
                                 .offsetGradientBackground(
@@ -368,7 +373,8 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
-                                    exit = ExitTransition.None
+                                    exit = ExitTransition.None,
+                                    boundsTransform = snackDetailBoundsTransform
                                 )
                         )
                     }
@@ -394,7 +400,8 @@ private fun HighlightSnackItem(
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                     enter = fadeIn() + scaleInSharedContentToBounds(),
-                                    exit = fadeOut() + scaleOutSharedContentToBounds()
+                                    exit = fadeOut() + scaleOutSharedContentToBounds(),
+                                    boundsTransform = snackDetailBoundsTransform
                                 )
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -415,7 +422,8 @@ private fun HighlightSnackItem(
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                     enter = fadeIn() + scaleInSharedContentToBounds(),
-                                    exit = fadeOut() + scaleOutSharedContentToBounds()
+                                    exit = fadeOut() + scaleOutSharedContentToBounds(),
+                                    boundsTransform = snackDetailBoundsTransform
                                 )
                         )
                     }
@@ -425,6 +433,7 @@ private fun HighlightSnackItem(
         }
     }
 }
+
 @Composable
 fun debugPlaceholder(@DrawableRes debugPreview: Int) =
     if (LocalInspectionMode.current) {

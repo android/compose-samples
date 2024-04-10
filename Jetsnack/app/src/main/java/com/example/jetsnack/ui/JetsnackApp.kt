@@ -15,7 +15,6 @@
  */
 
 @file:OptIn(
-    ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class,
     ExperimentalSharedTransitionApi::class
 )
 
