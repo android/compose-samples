@@ -75,6 +75,7 @@ android {
 dependencies {
 
 
+    implementation project(':core:model')
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies

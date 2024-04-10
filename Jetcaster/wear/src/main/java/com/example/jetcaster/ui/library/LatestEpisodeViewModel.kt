@@ -20,15 +20,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
-import com.example.jetcaster.model.PlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class LatestEpisodeViewModel @Inject constructor(
@@ -67,7 +67,7 @@ class LatestEpisodeViewModel @Inject constructor(
             }
         }
     }
-    fun onPlayEpisode(episode: com.example.jetcaster.model.PlayerEpisode) {
+    fun onPlayEpisode(episode: PlayerEpisode) {
         episodePlayer.currentEpisode = episode
         episodePlayer.play()
     }

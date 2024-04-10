@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
-import com.example.jetcaster.model.PodcastInfo
+import com.example.jetcaster.core.model.PodcastInfo
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
@@ -74,7 +74,7 @@ fun HomeScreen(
     onLatestEpisodeClick: () -> Unit,
     onYourPodcastClick: () -> Unit,
     onUpNextClick: () -> Unit,
-    onTogglePodcastFollowed: (com.example.jetcaster.model.PodcastInfo) -> Unit,
+    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val columnState = rememberResponsiveColumnState(
@@ -156,7 +156,7 @@ fun HomeScreen(
 }
 @Composable
 private fun PodcastContent(
-    podcast: com.example.jetcaster.model.PodcastInfo,
+    podcast: PodcastInfo,
     downloadItemArtworkPlaceholder: Painter?,
     onClick: () -> Unit
 ) {
