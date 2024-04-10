@@ -17,12 +17,7 @@
 package com.example.jetcaster.tv.model
 
 import androidx.compose.runtime.Immutable
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.model.PlayerEpisode
 
 @Immutable
-data class EpisodeList(val member: List<EpisodeToPodcast>) : List<EpisodeToPodcast> by member
-
-// ToDo: merge into EpisodeList as PlayerEpisode is the exposed data structure of EpisodeToPodcast
-@Immutable
-data class PlayerEpisodeList(val member: List<PlayerEpisode>) : List<PlayerEpisode> by member
+data class EpisodeList(val member: List<PlayerEpisode>) : List<PlayerEpisode> by member

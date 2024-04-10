@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.tv.ui.podcast
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +26,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -31,41 +34,51 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
-import androidx.tv.material3.ListItem
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.Episode
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.component.Background
 import com.example.jetcaster.tv.ui.component.ButtonWithIcon
+import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration
 import com.example.jetcaster.tv.ui.component.ErrorState
+import com.example.jetcaster.tv.ui.component.InfoButton
 import com.example.jetcaster.tv.ui.component.Loading
+import com.example.jetcaster.tv.ui.component.PlayButton
 import com.example.jetcaster.tv.ui.component.Thumbnail
+import com.example.jetcaster.tv.ui.component.TwoColumn
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun PodcastScreen(
     backToHomeScreen: () -> Unit,
-    playEpisode: (Episode) -> Unit,
-    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
+    showEpisodeDetails: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     podcastScreenViewModel: PodcastScreenViewModel = hiltViewModel(),
 ) {
@@ -79,7 +92,11 @@ fun PodcastScreen(
             isSubscribed = s.isSubscribed,
             subscribe = podcastScreenViewModel::subscribe,
             unsubscribe = podcastScreenViewModel::unsubscribe,
-            playEpisode = playEpisode,
+            playEpisode = {
+                podcastScreenViewModel.play(it)
+                playEpisode(it)
+            },
+            enqueue = podcastScreenViewModel::enqueue,
             showEpisodeDetails = showEpisodeDetails,
         )
     }
@@ -92,8 +109,9 @@ private fun PodcastDetailsWithBackground(
     isSubscribed: Boolean,
     subscribe: (Podcast, Boolean) -> Unit,
     unsubscribe: (Podcast, Boolean) -> Unit,
-    playEpisode: (Episode) -> Unit,
-    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
+    showEpisodeDetails: (PlayerEpisode) -> Unit,
+    enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
@@ -108,6 +126,7 @@ private fun PodcastDetailsWithBackground(
             playEpisode = playEpisode,
             focusRequester = focusRequester,
             showEpisodeDetails = showEpisodeDetails,
+            enqueue = enqueue,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
@@ -123,33 +142,38 @@ private fun PodcastDetails(
     isSubscribed: Boolean,
     subscribe: (Podcast, Boolean) -> Unit,
     unsubscribe: (Podcast, Boolean) -> Unit,
-    playEpisode: (Episode) -> Unit,
-    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
+    showEpisodeDetails: (PlayerEpisode) -> Unit,
+    enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
-    Row(
+    TwoColumn(
         modifier = modifier,
         horizontalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn)
-    ) {
-        PodcastInfo(
-            podcast = podcast,
-            isSubscribed = isSubscribed,
-            subscribe = subscribe,
-            unsubscribe = unsubscribe,
-            modifier = Modifier.weight(1f),
-        )
-        PodcastEpisodeList(
-            episodeList = episodeList,
-            onEpisodeSelected = { playEpisode(it.episode) },
-            onDetailsRequested = showEpisodeDetails,
-            modifier = Modifier
-                .focusRequester(focusRequester)
-                .focusRestorer()
-                .weight(1f)
-        )
-    }
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
+        first = {
+            PodcastInfo(
+                podcast = podcast,
+                isSubscribed = isSubscribed,
+                subscribe = subscribe,
+                unsubscribe = unsubscribe,
+                modifier = Modifier.weight(0.3f),
+            )
+        },
+        second = {
+            PodcastEpisodeList(
+                episodeList = episodeList,
+                playEpisode = { playEpisode(it) },
+                showDetails = showEpisodeDetails,
+                enqueue = enqueue,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .focusRestorer()
+                    .weight(0.7f)
+            )
+        }
+    )
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -236,8 +260,9 @@ private fun ToggleSubscriptionButton(
 @Composable
 private fun PodcastEpisodeList(
     episodeList: EpisodeList,
-    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
-    onDetailsRequested: (EpisodeToPodcast) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
+    showDetails: (PlayerEpisode) -> Unit,
+    enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     TvLazyColumn(
@@ -246,9 +271,10 @@ private fun PodcastEpisodeList(
     ) {
         items(episodeList) {
             EpisodeListItem(
-                episodeToPodcast = it,
-                onEpisodeSelected = onEpisodeSelected,
-                onInfoClicked = onDetailsRequested
+                playerEpisode = it,
+                onEpisodeSelected = { playEpisode(it) },
+                onInfoClicked = { showDetails(it) },
+                onEnqueueClicked = { enqueue(it) },
             )
         }
     }
@@ -257,35 +283,100 @@ private fun PodcastEpisodeList(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun EpisodeListItem(
-    episodeToPodcast: EpisodeToPodcast,
-    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
-    onInfoClicked: (EpisodeToPodcast) -> Unit,
+    playerEpisode: PlayerEpisode,
+    onEpisodeSelected: () -> Unit,
+    onInfoClicked: () -> Unit,
+    onEnqueueClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    selected: Boolean = false
+    borderWidth: Dp = 2.dp,
+    cornerRadius: Dp = 12.dp,
 ) {
-    val duration = episodeToPodcast.episode.duration
+    var hasFocus by remember {
+        mutableStateOf(false)
+    }
+    val shape = RoundedCornerShape(cornerRadius)
 
-    ListItem(
-        selected = selected,
-        onClick = { onInfoClicked(episodeToPodcast) },
-        onLongClick = { onEpisodeSelected(episodeToPodcast) },
-        supportingContent = {
-            if (duration != null) {
-                EpisodeDataAndDuration(episodeToPodcast.episode.published, duration)
+    val backgroundColor = if (hasFocus) {
+        MaterialTheme.colorScheme.surface
+    } else {
+        Color.Transparent
+    }
+
+    val borderColor = if (hasFocus) {
+        MaterialTheme.colorScheme.border
+    } else {
+        Color.Transparent
+    }
+    val elevation = if (hasFocus) {
+        10.dp
+    } else {
+        0.dp
+    }
+
+    EpisodeListItemContentLayer(
+        playerEpisode = playerEpisode,
+        onEpisodeSelected = onEpisodeSelected,
+        onInfoClicked = onInfoClicked,
+        onEnqueueClicked = onEnqueueClicked,
+        modifier = modifier
+            .clip(shape)
+            .onFocusChanged {
+                hasFocus = it.hasFocus
             }
-        },
+            .border(borderWidth, borderColor, shape)
+            .background(backgroundColor)
+            .shadow(elevation, shape)
+            .padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 16.dp)
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
+@Composable
+private fun EpisodeListItemContentLayer(
+    playerEpisode: PlayerEpisode,
+    onEpisodeSelected: () -> Unit,
+    onInfoClicked: () -> Unit,
+    onEnqueueClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val duration = playerEpisode.duration
+    val playButton = remember { FocusRequester() }
+    Box(
+        contentAlignment = Alignment.CenterStart,
         modifier = modifier
     ) {
-        EpisodeTitle(episode = episodeToPodcast.episode)
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny),
+        ) {
+            EpisodeTitle(playerEpisode)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.default),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = JetcasterAppDefaults.gap.paragraph)
+            ) {
+                PlayButton(
+                    onClick = onEpisodeSelected,
+                    modifier = Modifier.focusRequester(playButton)
+                )
+                if (duration != null) {
+                    EpisodeDataAndDuration(playerEpisode.published, duration)
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                EnqueueButton(onClick = onEnqueueClicked)
+                InfoButton(onClick = onInfoClicked)
+            }
+        }
     }
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun EpisodeTitle(episode: Episode, modifier: Modifier = Modifier) {
+private fun EpisodeTitle(playerEpisode: PlayerEpisode, modifier: Modifier = Modifier) {
     Text(
-        text = episode.title,
-        style = MaterialTheme.typography.bodyMedium,
+        text = playerEpisode.title,
+        style = MaterialTheme.typography.titleLarge,
         modifier = modifier
     )
 }

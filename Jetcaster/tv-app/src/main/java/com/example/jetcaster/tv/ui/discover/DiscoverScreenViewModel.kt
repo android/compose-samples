@@ -19,8 +19,11 @@ package com.example.jetcaster.tv.ui.discover
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.tv.model.CategoryList
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
@@ -40,6 +43,7 @@ import kotlinx.coroutines.launch
 class DiscoverScreenViewModel @Inject constructor(
     private val podcastsRepository: PodcastsRepository,
     private val categoryStore: CategoryStore,
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)
@@ -80,8 +84,8 @@ class DiscoverScreenViewModel @Inject constructor(
         } else {
             flowOf(emptyList())
         }
-    }.map {
-        EpisodeList(it)
+    }.map { list ->
+        EpisodeList(list.map { it.toPlayerEpisode() })
     }
 
     val uiState = combine(
@@ -112,6 +116,10 @@ class DiscoverScreenViewModel @Inject constructor(
 
     fun selectCategory(category: Category) {
         _selectedCategory.value = category
+    }
+
+    fun play(playerEpisode: PlayerEpisode) {
+        episodePlayer.play(playerEpisode)
     }
 
     private fun refresh() {

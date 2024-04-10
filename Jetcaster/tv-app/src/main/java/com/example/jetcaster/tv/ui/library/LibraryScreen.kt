@@ -36,8 +36,8 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
@@ -50,7 +50,7 @@ fun LibraryScreen(
     modifier: Modifier = Modifier,
     navigateToDiscover: () -> Unit,
     showPodcastDetails: (PodcastWithExtraInfo) -> Unit,
-    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
     libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel()
 ) {
     val uiState by libraryScreenViewModel.uiState.collectAsState()
@@ -64,7 +64,10 @@ fun LibraryScreen(
             podcastList = s.subscribedPodcastList,
             episodeList = s.latestEpisodeList,
             showPodcastDetails = showPodcastDetails,
-            showEpisodeDetails = showEpisodeDetails,
+            onEpisodeSelected = {
+                libraryScreenViewModel.playEpisode(it)
+                playEpisode(it)
+            },
             modifier = modifier,
         )
     }
@@ -76,7 +79,7 @@ private fun Library(
     podcastList: PodcastList,
     episodeList: EpisodeList,
     showPodcastDetails: (PodcastWithExtraInfo) -> Unit,
-    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
+    onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
@@ -88,7 +91,7 @@ private fun Library(
         podcastList = podcastList,
         latestEpisodeList = episodeList,
         onPodcastSelected = showPodcastDetails,
-        onEpisodeSelected = showEpisodeDetails,
+        onEpisodeSelected = onEpisodeSelected,
         modifier = modifier
             .focusRequester(focusRequester)
             .focusRestorer()
