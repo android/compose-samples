@@ -35,7 +35,7 @@ class PodcastsViewModel @Inject constructor(
     podcastStore: PodcastStore,
 ) : ViewModel() {
 
-    val uiState: StateFlow<PodcastsScreenState<PodcastInfo>> =
+    val uiState: StateFlow<PodcastsScreenState> =
         podcastStore.followedPodcastsSortedByLastEpisode(limit = 10).map {
             if (it.isNotEmpty()) {
                 PodcastsScreenState.Loaded(it.map(PodcastMapper::map))

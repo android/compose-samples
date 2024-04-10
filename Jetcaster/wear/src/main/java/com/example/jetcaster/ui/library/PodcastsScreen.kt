@@ -18,15 +18,16 @@ package com.example.jetcaster.ui.library
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -44,14 +45,14 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PodcastInfo
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
-import com.google.android.horologist.composables.Section
-import com.google.android.horologist.composables.SectionedList
 import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.rememberColumnState
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.Chip
-import com.google.android.horologist.compose.material.Title
+import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
+import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
+import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable
 fun PodcastsScreen(
@@ -122,87 +123,81 @@ fun PodcastsScreen(
 @ExperimentalHorologistApi
 @Composable
 fun PodcastsScreen(
-    podcastsScreenState: PodcastsScreenState<PodcastInfo>,
+    podcastsScreenState: PodcastsScreenState,
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
-    podcastItemArtworkPlaceholder: Painter? = null,
 ) {
 
-    val podcastContent: @Composable (podcast: PodcastInfo) -> Unit = { podcast ->
-        Chip(
-            label = podcast.title,
-            onClick = { onPodcastsItemClick(podcast) },
-            icon = CoilPaintable(podcast.imageUrl, podcastItemArtworkPlaceholder),
-            largeIcon = true,
-            colors = ChipDefaults.secondaryChipColors(),
-        )
-    }
+    val columnState = rememberResponsiveColumnState()
+    ScreenScaffold(
+        scrollState = columnState,
+        modifier = modifier
+    ) {
+        when (podcastsScreenState) {
+            is PodcastsScreenState.Loaded -> {
+                EntityScreen(
+                    columnState = columnState,
+                    headerContent = {
+                        DefaultEntityScreenHeader(
+                            title = stringResource(
+                                R.string.podcasts
+                            )
+                        )
+                    },
+                    content = {
+                        items(count = podcastsScreenState.podcastList.size) {
+                                index ->
+                            MediaContent(
+                                podcast = podcastsScreenState.podcastList[index],
+                                downloadItemArtworkPlaceholder = rememberVectorPainter(
+                                    image = Icons.Default.MusicNote,
+                                    tintColor = Color.Blue,
+                                ),
+                                onPodcastsItemClick = onPodcastsItemClick
 
-    PodcastsScreen(
-        podcastsScreenState = podcastsScreenState,
-        modifier = modifier,
-        content = { podcast ->
-            Chip(
-                label = podcast.title,
-                onClick = { onPodcastsItemClick(podcast) },
-                icon = CoilPaintable(podcast.imageUrl, podcastItemArtworkPlaceholder),
-                largeIcon = true,
-                colors = ChipDefaults.secondaryChipColors(),
-            )
+                            )
+                        }
+                    }
+                )
+            }
+            PodcastsScreenState.Empty,
+            PodcastsScreenState.Loading -> {
+                Column {
+                    PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun MediaContent(
+    podcast: PodcastInfo,
+    downloadItemArtworkPlaceholder: Painter?,
+    onPodcastsItemClick: (PodcastInfo) -> Unit
+) {
+    val mediaTitle = podcast.title
+
+    val secondaryLabel = podcast.author
+
+    Chip(
+        label = mediaTitle,
+        onClick = { onPodcastsItemClick(podcast) },
+        secondaryLabel = secondaryLabel,
+        icon = CoilPaintable(podcast.imageUrl, downloadItemArtworkPlaceholder),
+        largeIcon = true,
+        colors = ChipDefaults.secondaryChipColors(),
     )
 }
 
 @ExperimentalHorologistApi
-@Composable
-fun <T> PodcastsScreen(
-    podcastsScreenState: PodcastsScreenState<T>,
-    modifier: Modifier = Modifier,
-    content: @Composable (podcast: T) -> Unit,
-) {
-    val columnState = rememberColumnState()
-    ScreenScaffold(scrollState = columnState) {
-        SectionedList(
-            modifier = modifier,
-            columnState = columnState,
-        ) {
-            val sectionState = when (podcastsScreenState) {
-                is PodcastsScreenState.Loaded<T> -> {
-                    Section.State.Loaded(podcastsScreenState.podcastList)
-                }
+sealed class PodcastsScreenState {
 
-                PodcastsScreenState.Empty -> Section.State.Failed
-                PodcastsScreenState.Loading -> Section.State.Loading
-            }
+    data object Loading : PodcastsScreenState()
 
-            section(state = sectionState) {
-                header {
-                    Title(
-                        R.string.podcasts,
-                        Modifier.padding(bottom = 12.dp),
-                    )
-                }
+    data class Loaded(
+        val podcastList: List<PodcastInfo>,
+    ) : PodcastsScreenState()
 
-                loaded { content(it) }
-
-                loading(count = 4) {
-                    Column {
-                        PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-                    }
-                }
-            }
-        }
-    }
-}
-
-@ExperimentalHorologistApi
-public sealed class PodcastsScreenState<out T> {
-
-    public object Loading : PodcastsScreenState<Nothing>()
-
-    public data class Loaded<T>(
-        val podcastList: List<T>,
-    ) : PodcastsScreenState<T>()
-
-    public object Empty : PodcastsScreenState<Nothing>()
+    data object Empty : PodcastsScreenState()
 }

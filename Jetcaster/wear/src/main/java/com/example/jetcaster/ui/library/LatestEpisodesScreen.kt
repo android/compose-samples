@@ -52,8 +52,8 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable fun LatestEpisodesScreen(
     playlistName: String,
-    onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
-    onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onChangeSpeedButtonClick: () -> Unit,
+    onPlayButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     latestEpisodeViewModel: LatestEpisodeViewModel = hiltViewModel()
 ) {
@@ -62,7 +62,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
         modifier = modifier,
         playlistName = playlistName,
         viewState = viewState,
-        onShuffleButtonClick = onShuffleButtonClick,
+        onChangeSpeedButtonClick = onChangeSpeedButtonClick,
         onPlayButtonClick = onPlayButtonClick,
         onPlayEpisode = latestEpisodeViewModel::onPlayEpisode
     )
@@ -72,8 +72,8 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 fun LatestEpisodeScreen(
     playlistName: String,
     viewState: LatestEpisodeViewState,
-    onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
-    onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onChangeSpeedButtonClick: () -> Unit,
+    onPlayButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     onPlayEpisode: (PlayerEpisode) -> Unit,
 ) {
@@ -93,14 +93,16 @@ fun LatestEpisodeScreen(
                         downloadItemArtworkPlaceholder = rememberVectorPainter(
                             image = Icons.Default.MusicNote,
                             tintColor = Color.Blue,
-                        )
+                        ),
+                        onPlayButtonClick = onPlayButtonClick,
+                        onPlayEpisode = onPlayEpisode
                     )
                 }
             },
             buttonsContent = {
                 ButtonsContent(
                     viewState = viewState,
-                    onShuffleButtonClick = onShuffleButtonClick,
+                    onChangeSpeedButtonClick = onChangeSpeedButtonClick,
                     onPlayButtonClick = onPlayButtonClick,
                     onPlayEpisode = onPlayEpisode
                 )
@@ -112,7 +114,9 @@ fun LatestEpisodeScreen(
 @Composable
 fun MediaContent(
     episode: EpisodeToPodcast,
-    downloadItemArtworkPlaceholder: Painter?
+    downloadItemArtworkPlaceholder: Painter?,
+    onPlayButtonClick: () -> Unit,
+    onPlayEpisode: (PlayerEpisode) -> Unit
 ) {
     val mediaTitle = episode.episode.title
 
@@ -120,7 +124,10 @@ fun MediaContent(
 
     Chip(
         label = mediaTitle,
-        onClick = { /*play*/ },
+        onClick = {
+            onPlayButtonClick()
+            onPlayEpisode(episode.toPlayerEpisode())
+        },
         secondaryLabel = secondaryLabel,
         icon = CoilPaintable(episode.podcast.imageUrl, downloadItemArtworkPlaceholder),
         largeIcon = true,
@@ -132,8 +139,8 @@ fun MediaContent(
 @Composable
 fun ButtonsContent(
     viewState: LatestEpisodeViewState,
-    onShuffleButtonClick: (List<EpisodeToPodcast>) -> Unit,
-    onPlayButtonClick: (List<EpisodeToPodcast>) -> Unit,
+    onChangeSpeedButtonClick: () -> Unit,
+    onPlayButtonClick: () -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit
 ) {
 
@@ -147,7 +154,7 @@ fun ButtonsContent(
         Button(
             imageVector = ImageVector.vectorResource(R.drawable.speed),
             contentDescription = stringResource(id = R.string.speed_button_content_description),
-            onClick = { onShuffleButtonClick(viewState.libraryEpisodes) },
+            onClick = { onChangeSpeedButtonClick() },
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
         )
@@ -156,7 +163,7 @@ fun ButtonsContent(
             imageVector = Icons.Filled.PlayArrow,
             contentDescription = stringResource(id = R.string.button_play_content_description),
             onClick = {
-                onPlayButtonClick(viewState.libraryEpisodes)
+                onPlayButtonClick()
                 onPlayEpisode(viewState.libraryEpisodes[0].toPlayerEpisode())
             },
             modifier = Modifier
