@@ -24,12 +24,12 @@ import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.database.model.asPodcastCategoryEpisode
 import com.example.jetcaster.core.data.repository.TestCategoryStore
-import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.OffsetDateTime
 
 class PodcastCategoryFilterUseCaseTest {
 

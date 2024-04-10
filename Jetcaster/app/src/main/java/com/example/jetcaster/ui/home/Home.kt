@@ -454,7 +454,7 @@ private fun HomeContent(
     LaunchedEffect(pagerState, featuredPodcasts) {
         snapshotFlow { pagerState.currentPage }
             .collect {
-                val podcast = featuredPodcasts.getOrNull(pagerState.currentPage)
+                val podcast = featuredPodcasts.getOrNull(it)
                 onLibraryPodcastSelected(podcast)
             }
     }
