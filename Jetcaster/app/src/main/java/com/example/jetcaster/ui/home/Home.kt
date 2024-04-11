@@ -24,6 +24,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -65,7 +66,6 @@ import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.Posture
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
@@ -124,6 +124,7 @@ import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
+import com.example.jetcaster.util.radialGradientScrim
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -325,41 +326,55 @@ private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    TopAppBar(
-        title = {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 16.dp)
-            ) {
-                SearchBar(
-                    query = "",
-                    onQueryChange = {},
-                    placeholder = {
-                        Text(stringResource(id = R.string.search_for_a_podcast))
-                    },
-                    onSearch = {},
-                    active = false,
-                    onActiveChange = {},
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = stringResource(R.string.cd_account)
-                        )
-                    },
-                    modifier = if (isExpanded) Modifier else Modifier.fillMaxWidth()
-                ) { }
-            }
-        },
-        modifier = modifier.padding(vertical = 8.dp)
-    )
+    Row(
+        horizontalArrangement = Arrangement.End,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Transparent)
+            .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
+    ) {
+        SearchBar(
+            query = "",
+            onQueryChange = {},
+            placeholder = {
+                Text(stringResource(id = R.string.search_for_a_podcast))
+            },
+            onSearch = {},
+            active = false,
+            onActiveChange = {},
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = stringResource(R.string.cd_account)
+                )
+            },
+            modifier = if (isExpanded) Modifier else Modifier.fillMaxWidth()
+        ) { }
+    }
+}
+
+@Composable
+private fun HomeScreenBackground(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .radialGradientScrim(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+        )
+        content()
+    }
 }
 
 @Composable
@@ -377,47 +392,52 @@ private fun HomeScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    Scaffold(
-        modifier = modifier.windowInsetsPadding(
-            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-        ),
-        topBar = {
-            HomeAppBar(
-                isExpanded = homeState.windowSizeClass.isCompact,
-                modifier = Modifier.fillMaxWidth(),
+    HomeScreenBackground(
+        modifier = modifier
+            .windowInsetsPadding(
+                WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
             )
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ) { contentPadding ->
-        // Main Content
-        val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
-        HomeContent(
-            showGrid = showGrid,
-            showHomeCategoryTabs = homeState.showHomeCategoryTabs,
-            featuredPodcasts = homeState.featuredPodcasts,
-            isRefreshing = homeState.isRefreshing,
-            selectedHomeCategory = homeState.selectedHomeCategory,
-            homeCategories = homeState.homeCategories,
-            filterableCategoriesModel = homeState.filterableCategoriesModel,
-            podcastCategoryFilterResult = homeState.podcastCategoryFilterResult,
-            library = homeState.library,
-            modifier = Modifier.padding(contentPadding),
-            onPodcastUnfollowed = homeState.onPodcastUnfollowed,
-            onHomeCategorySelected = homeState.onHomeCategorySelected,
-            onCategorySelected = homeState.onCategorySelected,
-            navigateToPodcastDetails = homeState.navigateToPodcastDetails,
-            navigateToPlayer = homeState.navigateToPlayer,
-            onTogglePodcastFollowed = homeState.onTogglePodcastFollowed,
-            onLibraryPodcastSelected = homeState.onLibraryPodcastSelected,
-            onQueueEpisode = {
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(snackBarText)
+    ) {
+        Scaffold(
+            topBar = {
+                HomeAppBar(
+                    isExpanded = homeState.windowSizeClass.isCompact,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+            containerColor = Color.Transparent
+        ) { contentPadding ->
+            // Main Content
+            val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
+            HomeContent(
+                showGrid = showGrid,
+                showHomeCategoryTabs = homeState.showHomeCategoryTabs,
+                featuredPodcasts = homeState.featuredPodcasts,
+                isRefreshing = homeState.isRefreshing,
+                selectedHomeCategory = homeState.selectedHomeCategory,
+                homeCategories = homeState.homeCategories,
+                filterableCategoriesModel = homeState.filterableCategoriesModel,
+                podcastCategoryFilterResult = homeState.podcastCategoryFilterResult,
+                library = homeState.library,
+                modifier = Modifier.padding(contentPadding),
+                onPodcastUnfollowed = homeState.onPodcastUnfollowed,
+                onHomeCategorySelected = homeState.onHomeCategorySelected,
+                onCategorySelected = homeState.onCategorySelected,
+                navigateToPodcastDetails = homeState.navigateToPodcastDetails,
+                navigateToPlayer = homeState.navigateToPlayer,
+                onTogglePodcastFollowed = homeState.onTogglePodcastFollowed,
+                onLibraryPodcastSelected = homeState.onLibraryPodcastSelected,
+                onQueueEpisode = {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(snackBarText)
+                    }
+                    homeState.onQueueEpisode(it)
                 }
-                homeState.onQueueEpisode(it)
-            }
-        )
+            )
+        }
     }
 }
 
@@ -519,7 +539,9 @@ private fun HomeContentColumn(
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
         if (featuredPodcasts.isNotEmpty()) {
             item {
                 FollowedPodcastItem(
@@ -538,7 +560,7 @@ private fun HomeContentColumn(
         }
 
         if (showHomeCategoryTabs) {
-            stickyHeader {
+            item {
                 HomeCategoryTabs(
                     categories = homeCategories,
                     selectedCategory = selectedHomeCategory,
@@ -695,6 +717,7 @@ private fun HomeCategoryTabs(
 
     TabRow(
         selectedTabIndex = selectedIndex,
+        containerColor = Color.Transparent,
         indicator = indicator,
         modifier = modifier,
         divider = {
@@ -749,7 +772,9 @@ private fun FollowedPodcasts(
     // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
     // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
     // stable, this implementation can be updated.
-    BoxWithConstraints(modifier) {
+    BoxWithConstraints(
+        modifier = modifier.background(Color.Transparent)
+    ) {
         val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
         HorizontalPager(
             state = pagerState,
@@ -839,12 +864,13 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun HomeAppBarPreview() {
     JetcasterTheme {
         HomeAppBar(
-            isExpanded = false
+            isExpanded = false,
         )
     }
 }
