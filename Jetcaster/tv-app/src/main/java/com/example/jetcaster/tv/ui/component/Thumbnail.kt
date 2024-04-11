@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.jetcaster.core.data.database.model.Podcast
-import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
