@@ -57,8 +57,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.itemsIndexed
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
@@ -66,11 +64,11 @@ import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.tv.R
-import com.example.jetcaster.tv.model.PlayerEpisodeList
+import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.component.BackgroundContainer
 import com.example.jetcaster.tv.ui.component.EnqueueButton
-import com.example.jetcaster.tv.ui.component.EpisodeCard
 import com.example.jetcaster.tv.ui.component.EpisodeDetails
+import com.example.jetcaster.tv.ui.component.EpisodeRow
 import com.example.jetcaster.tv.ui.component.InfoButton
 import com.example.jetcaster.tv.ui.component.Loading
 import com.example.jetcaster.tv.ui.component.NextButton
@@ -142,7 +140,7 @@ private fun Player(
     if (currentEpisode != null) {
         EpisodePlayerWithBackground(
             playerEpisode = currentEpisode,
-            queue = PlayerEpisodeList(episodePlayerState.queue),
+            queue = EpisodeList(episodePlayerState.queue),
             isPlaying = episodePlayerState.isPlaying,
             timeElapsed = episodePlayerState.timeElapsed,
             play = play,
@@ -163,7 +161,7 @@ private fun Player(
 @Composable
 private fun EpisodePlayerWithBackground(
     playerEpisode: PlayerEpisode,
-    queue: PlayerEpisodeList,
+    queue: EpisodeList,
     isPlaying: Boolean,
     timeElapsed: Duration,
     play: () -> Unit,
@@ -416,40 +414,10 @@ private fun NoEpisodeInQueue(
     }
 }
 
-@Composable
-private fun PlayerQueue(
-    playerEpisodeList: PlayerEpisodeList,
-    onSelected: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier,
-    horizontalArrangement: Arrangement.Horizontal =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
-    contentPadding: PaddingValues = PaddingValues(),
-    focusRequester: FocusRequester = remember { FocusRequester() }
-) {
-    TvLazyRow(
-        modifier = modifier,
-        contentPadding = contentPadding,
-        horizontalArrangement = horizontalArrangement,
-    ) {
-        itemsIndexed(playerEpisodeList) { index, item ->
-            val cardModifier = if (index == 0) {
-                Modifier.focusRequester(focusRequester)
-            } else {
-                Modifier
-            }
-            EpisodeCard(
-                playerEpisode = item,
-                onClick = { onSelected(item) },
-                modifier = cardModifier
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PlayerQueueOverlay(
-    playerEpisodeList: PlayerEpisodeList,
+    playerEpisodeList: EpisodeList,
     onSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal =
@@ -481,7 +449,7 @@ private fun PlayerQueueOverlay(
         },
         contentAlignment = contentAlignment,
     ) {
-        PlayerQueue(
+        EpisodeRow(
             playerEpisodeList = playerEpisodeList,
             onSelected = onSelected,
             horizontalArrangement = horizontalArrangement,

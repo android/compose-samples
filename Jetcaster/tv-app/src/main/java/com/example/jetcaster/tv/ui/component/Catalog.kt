@@ -40,9 +40,9 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.StandardCardLayout
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
@@ -53,7 +53,7 @@ internal fun Catalog(
     podcastList: PodcastList,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
-    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
+    onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     state: TvLazyListState = rememberTvLazyListState(),
     header: (@Composable () -> Unit)? = null,
@@ -109,7 +109,7 @@ private fun PodcastSection(
 @Composable
 private fun LatestEpisodeSection(
     episodeList: EpisodeList,
-    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
+    onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null
 ) {
@@ -118,8 +118,8 @@ private fun LatestEpisodeSection(
         title = title
     ) {
         EpisodeRow(
-            episodeList = episodeList,
-            onEpisodeSelected = onEpisodeSelected,
+            playerEpisodeList = episodeList,
+            onSelected = onEpisodeSelected,
             modifier = Modifier.focusRestorer()
         )
     }
@@ -191,28 +191,4 @@ internal fun PodcastCard(
         },
         modifier = modifier,
     )
-}
-
-@Composable
-private fun EpisodeRow(
-    episodeList: EpisodeList,
-    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
-    horizontalArrangement: Arrangement.Horizontal =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.episodeRow),
-) {
-    TvLazyRow(
-        contentPadding = contentPadding,
-        horizontalArrangement = horizontalArrangement,
-        modifier = modifier,
-    ) {
-        items(episodeList) {
-            EpisodeCard(
-                episode = it,
-                onClick = { onEpisodeSelected(it) },
-                cardWidth = JetcasterAppDefaults.cardWidth.small
-            )
-        }
-    }
 }

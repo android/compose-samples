@@ -37,9 +37,9 @@ import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.model.PlayerEpisode
 import com.example.jetcaster.tv.model.CategoryList
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
@@ -50,7 +50,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 @Composable
 fun DiscoverScreen(
     showPodcastDetails: (Podcast) -> Unit,
-    showEpisodeDetails: (EpisodeToPodcast) -> Unit,
+    playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel()
 ) {
@@ -73,7 +73,10 @@ fun DiscoverScreen(
                 latestEpisodeList = s.latestEpisodeList,
                 onPodcastSelected = { showPodcastDetails(it.podcast) },
                 onCategorySelected = discoverScreenViewModel::selectCategory,
-                onEpisodeSelected = showEpisodeDetails,
+                onEpisodeSelected = {
+                    discoverScreenViewModel.play(it)
+                    playEpisode(it)
+                },
                 modifier = Modifier
                     .fillMaxSize()
                     .then(modifier)
@@ -90,7 +93,7 @@ private fun CatalogWithCategorySelection(
     selectedCategory: Category,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
-    onEpisodeSelected: (EpisodeToPodcast) -> Unit,
+    onEpisodeSelected: (PlayerEpisode) -> Unit,
     onCategorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier,
     state: TvLazyListState = rememberTvLazyListState(),

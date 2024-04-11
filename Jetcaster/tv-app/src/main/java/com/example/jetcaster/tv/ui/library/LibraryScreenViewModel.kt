@@ -18,9 +18,12 @@ package com.example.jetcaster.tv.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,6 +42,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val podcastsRepository: PodcastsRepository,
     private val episodeStore: EpisodeStore,
     podcastStore: PodcastStore,
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
     private val followingPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode().map {
@@ -58,8 +62,8 @@ class LibraryScreenViewModel @Inject constructor(
             } else {
                 flowOf(emptyList())
             }
-        }.map {
-            EpisodeList(it)
+        }.map { list ->
+            EpisodeList(list.map { it.toPlayerEpisode() })
         }
 
     val uiState =
@@ -79,6 +83,10 @@ class LibraryScreenViewModel @Inject constructor(
         viewModelScope.launch {
             podcastsRepository.updatePodcasts(false)
         }
+    }
+
+    fun playEpisode(playerEpisode: PlayerEpisode) {
+        episodePlayer.play(playerEpisode)
     }
 }
 

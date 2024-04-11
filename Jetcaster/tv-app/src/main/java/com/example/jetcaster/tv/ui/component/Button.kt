@@ -16,8 +16,6 @@
 
 package com.example.jetcaster.tv.ui.component
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Forward10
@@ -30,27 +28,27 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.ButtonScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
-import androidx.tv.material3.Text
 import com.example.jetcaster.tv.R
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun PlayButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scale: ButtonScale = ButtonDefaults.scale(),
 ) =
     ButtonWithIcon(
         icon = Icons.Outlined.PlayArrow,
         label = stringResource(R.string.label_play),
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
+        scale = scale
     )
 
 @OptIn(ExperimentalTvMaterial3Api::class)
@@ -80,25 +78,6 @@ internal fun InfoButton(
         )
     }
 }
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-internal fun ButtonWithIcon(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) =
-    Button(onClick = onClick, modifier = modifier) {
-        Icon(
-            icon,
-            contentDescription = null,
-            modifier = Modifier
-                .width(ButtonDefaults.IconSize)
-                .padding(end = ButtonDefaults.IconSpacing)
-        )
-        Text(text = label)
-    }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
