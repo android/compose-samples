@@ -42,7 +42,7 @@ import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
-import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
