@@ -122,8 +122,8 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     showPodcastDetails = {
                         jetcasterAppState.showPodcastDetails(it.uri)
                     },
-                    showEpisodeDetails = {
-                        jetcasterAppState.showEpisodeDetails(it.episode.uri)
+                    playEpisode = {
+                        jetcasterAppState.playEpisode()
                     },
                     modifier = Modifier
                         .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
@@ -139,8 +139,8 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     showPodcastDetails = {
                         jetcasterAppState.showPodcastDetails(it.podcast.uri)
                     },
-                    showEpisodeDetails = {
-                        jetcasterAppState.showEpisodeDetails(it.episode.uri)
+                    playEpisode = {
+                        jetcasterAppState.playEpisode()
                     },
                     modifier = Modifier
                         .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
@@ -164,8 +164,9 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
             PodcastScreen(
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
                 playEpisode = {
+                    jetcasterAppState.playEpisode()
                 },
-                showEpisodeDetails = { jetcasterAppState.showEpisodeDetails(it.episode.uri) },
+                showEpisodeDetails = { jetcasterAppState.showEpisodeDetails(it.uri) },
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
                     .fillMaxSize(),

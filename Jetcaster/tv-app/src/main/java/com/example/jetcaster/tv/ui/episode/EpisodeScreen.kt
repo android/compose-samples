@@ -146,6 +146,7 @@ private fun EpisodeInfo(
     }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun Controls(
     playEpisode: () -> Unit,
@@ -154,6 +155,7 @@ private fun Controls(
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
         PlayButton(onClick = playEpisode)

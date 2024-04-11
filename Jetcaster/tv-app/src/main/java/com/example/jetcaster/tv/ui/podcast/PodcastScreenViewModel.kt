@@ -20,8 +20,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.Podcast
+import com.example.jetcaster.core.data.model.PlayerEpisode
+import com.example.jetcaster.core.data.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +43,7 @@ class PodcastScreenViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val podcastStore: PodcastStore,
     episodeStore: EpisodeStore,
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
     private val podcastUri = handle.get<String>(Screen.Podcast.PARAMETER_NAME)
@@ -61,8 +65,8 @@ class PodcastScreenViewModel @Inject constructor(
         } else {
             flowOf(emptyList())
         }
-    }.map {
-        EpisodeList(it)
+    }.map { list ->
+        EpisodeList(list.map { it.toPlayerEpisode() })
     }
 
     private val subscribedPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode()
@@ -98,6 +102,14 @@ class PodcastScreenViewModel @Inject constructor(
                 podcastStore.togglePodcastFollowed(podcast.uri)
             }
         }
+    }
+
+    fun play(playerEpisode: PlayerEpisode) {
+        episodePlayer.play(playerEpisode)
+    }
+
+    fun enqueue(playerEpisode: PlayerEpisode) {
+        episodePlayer.addToQueue(playerEpisode)
     }
 }
 

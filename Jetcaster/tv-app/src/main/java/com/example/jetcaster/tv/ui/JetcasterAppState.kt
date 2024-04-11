@@ -70,10 +70,6 @@ class JetcasterAppState(
         navHostController.popBackStack()
         navigateToDiscover()
     }
-
-    fun navigateBack() {
-        navHostController.popBackStack()
-    }
 }
 
 @Composable
