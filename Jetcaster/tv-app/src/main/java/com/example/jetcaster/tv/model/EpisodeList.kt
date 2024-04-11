@@ -17,7 +17,6 @@
 package com.example.jetcaster.tv.model
 
 import androidx.compose.runtime.Immutable
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.model.PlayerEpisode
 
 @Immutable
