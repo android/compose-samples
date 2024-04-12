@@ -120,8 +120,8 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
 val snackDetailBoundsTransform = BoundsTransform { initialBounds: Rect, targetBounds: Rect ->
     spring(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessLow
+        dampingRatio = 0.7f,
+        stiffness = 350f
     )
 }
 

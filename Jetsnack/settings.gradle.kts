@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-val snapshotVersion : String = "11688139"//System.getenv("COMPOSE_SNAPSHOT_ID")
+val snapshotVersion : String? = "11701909"//System.getenv("COMPOSE_SNAPSHOT_ID")
 
 pluginManagement {
     repositories {
