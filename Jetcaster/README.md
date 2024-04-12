@@ -25,9 +25,7 @@ The home screen is split into sub-screens for easy re-use:
 - __Discover__, allowing the user to browse podcast categories
 - __Podcast Category__, allowing the user to see a list of recent episodes for podcasts in a given category.
 
-Multiple panes will also be shown depending on the device's [window size class][wsc]:
-
-<img src="docs/tablet.png"/>
+Multiple panes will also be shown depending on the device's [window size class][wsc].
 
 The player screen displays media controls and the currently "playing" podcast (the sample currently **does not** actually play any media—the behavior is simply mocked).
 The player screen layout is adapting to different form factors, including a tabletop layout on foldable devices:
