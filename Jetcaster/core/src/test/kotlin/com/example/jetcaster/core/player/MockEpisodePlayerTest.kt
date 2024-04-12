@@ -17,7 +17,6 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.model.PlayerEpisode
-import java.time.Duration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
@@ -25,6 +24,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.time.Duration
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MockEpisodePlayerTest {
@@ -47,7 +47,7 @@ class MockEpisodePlayerTest {
     )
 
     @Test
-    fun playerAutoPlaysNextEpisode() = runTest(testDispatcher) {
+    fun whenPlayDone_playerAutoPlaysNextEpisode() = runTest(testDispatcher) {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
@@ -63,7 +63,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNextQueueEmpty_doesNothing() {
+    fun whenNext_queueIsEmpty_doesNothing() {
         val episode = testEpisodes[0]
         mockEpisodePlayer.currentEpisode = episode
         mockEpisodePlayer.play()
@@ -74,7 +74,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenAddToQueue_queueNotEmpty() = runTest(testDispatcher) {
+    fun whenAddToQueue_queueIsNotEmpty() = runTest(testDispatcher) {
         testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
 
         advanceUntilIdle()
@@ -87,7 +87,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNextQueueNotEmpty_removeFromQueue() = runTest(testDispatcher) {
+    fun whenNext_queueIsNotEmpty_removeFromQueue() = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = PlayerEpisode(
             uri = "currentEpisode",
             duration = Duration.ofSeconds(60)
@@ -107,7 +107,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNextQueueNotEmpty_notRemovedFromQueue() = runTest(testDispatcher) {
+    fun whenNext_queueIsNotEmpty_notRemovedFromQueue() = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = PlayerEpisode(
             uri = "currentEpisode",
             duration = Duration.ofSeconds(60)
@@ -117,7 +117,6 @@ class MockEpisodePlayerTest {
         mockEpisodePlayer.play()
         advanceTimeBy(100)
 
-        // TODO override next?
         mockEpisodePlayer.next()
         advanceTimeBy(100)
 
@@ -128,7 +127,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenPreviousQueueEmpty_resetSameEpisode() = runTest(testDispatcher) {
+    fun whenPrevious_queueIsEmpty_resetSameEpisode() = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = testEpisodes[0]
         mockEpisodePlayer.play()
         advanceTimeBy(1000L)
