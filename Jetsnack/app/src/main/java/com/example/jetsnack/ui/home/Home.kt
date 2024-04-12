@@ -85,6 +85,8 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
+import com.example.jetsnack.ui.snackdetail.expressiveNormalDampingRatio
+import com.example.jetsnack.ui.snackdetail.expressiveNormalStiffness
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.util.Locale
 
@@ -181,9 +183,8 @@ fun JetsnackBottomBar(
         contentColor = contentColor
     ) {
         val springSpec = SpringSpec<Float>(
-            // Determined experimentally
-            stiffness = 800f,
-            dampingRatio = 0.8f
+            stiffness = expressiveNormalStiffness,
+            dampingRatio = expressiveNormalDampingRatio
         )
         JetsnackBottomNavLayout(
             selectedIndex = currentSection.ordinal,

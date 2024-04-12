@@ -19,11 +19,13 @@
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -96,6 +98,7 @@ import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
@@ -118,10 +121,12 @@ private val ExpandedImageSize = 300.dp
 private val CollapsedImageSize = 150.dp
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
+val expressiveNormalDampingRatio = 1f
+val expressiveNormalStiffness = 700f
 val snackDetailBoundsTransform = BoundsTransform { initialBounds: Rect, targetBounds: Rect ->
     spring(
-        dampingRatio = 0.7f,
-        stiffness = 350f
+        dampingRatio = expressiveNormalDampingRatio,
+        stiffness = expressiveNormalStiffness
     )
 }
 
@@ -559,7 +564,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun SnackDetailPreview() {
-    JetsnackTheme {
+    JetsnackPreviewWrapper {
         SnackDetail(
             snackId = 1L,
             origin = "details",

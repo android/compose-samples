@@ -303,7 +303,7 @@ private fun HighlightSnackItem(
                     )
                     .padding(bottom = 16.dp)
                     .sharedBounds(
-                        sharedContentState =  sharedContentState,
+                        sharedContentState = sharedContentState,
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = snackDetailBoundsTransform
                     )
@@ -337,10 +337,12 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
-                                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium.copy(
-                                        bottomEnd = CornerSize(0.dp),
-                                        bottomStart = CornerSize(0.dp)
-                                    )),
+                                    clipInOverlayDuringTransition = OverlayClip(
+                                        MaterialTheme.shapes.medium.copy(
+                                            bottomEnd = CornerSize(0.dp),
+                                            bottomStart = CornerSize(0.dp)
+                                        )
+                                    ),
                                     boundsTransform = snackDetailBoundsTransform
                                 )
                                 .animateEnterExit()
@@ -472,24 +474,30 @@ fun SnackImage(
 @Preview("large font", fontScale = 2f)
 @Composable
 fun SnackCardPreview() {
+    val snack = snacks.first()
+    JetsnackPreviewWrapper {
+        HighlightSnackItem(
+            snackCollectionId = 1,
+            snack = snack,
+            onSnackClick = { _, _ -> },
+            index = 0,
+            gradient = JetsnackTheme.colors.gradient6_1,
+            scrollProvider = { 0f }
+        )
+    }
+}
+
+@Composable
+fun JetsnackPreviewWrapper(content: @Composable () -> Unit) {
     JetsnackTheme {
-        val snack = snacks.first()
         SharedTransitionLayout {
             AnimatedVisibility(visible = true) {
                 CompositionLocalProvider(
                     LocalSharedTransitionScope provides this@SharedTransitionLayout,
                     LocalNavAnimatedVisibilityScope provides this
                 ) {
-                    HighlightSnackItem(
-                        snackCollectionId = 1,
-                        snack = snack,
-                        onSnackClick = { _, _ -> },
-                        index = 0,
-                        gradient = JetsnackTheme.colors.gradient6_1,
-                        scrollProvider = { 0f }
-                    )
+                    content()
                 }
-
             }
         }
     }
