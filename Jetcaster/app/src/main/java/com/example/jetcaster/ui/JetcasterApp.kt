@@ -19,7 +19,8 @@ package com.example.jetcaster.ui
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
@@ -29,12 +30,13 @@ import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.MainScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun JetcasterApp(
-    windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     appState: JetcasterAppState = rememberJetcasterAppState()
 ) {
+    val adaptiveInfo = currentWindowAdaptiveInfo()
     if (appState.isOnline) {
         NavHost(
             navController = appState.navController,
@@ -42,7 +44,7 @@ fun JetcasterApp(
         ) {
             composable(Screen.Home.route) { backStackEntry ->
                 MainScreen(
-                    windowSizeClass = windowSizeClass,
+                    windowSizeClass = adaptiveInfo.windowSizeClass,
                     navigateToPlayer = { episode ->
                         appState.navigateToPlayer(episode.uri, backStackEntry)
                     }
@@ -50,8 +52,8 @@ fun JetcasterApp(
             }
             composable(Screen.Player.route) {
                 PlayerScreen(
-                    windowSizeClass,
-                    displayFeatures,
+                    windowSizeClass = adaptiveInfo.windowSizeClass,
+                    displayFeatures = displayFeatures,
                     onBackPress = appState::navigateBack
                 )
             }

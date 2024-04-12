@@ -59,9 +59,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
@@ -80,9 +77,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
@@ -235,7 +233,7 @@ fun PlayerContent(
     // Use a two pane layout if there is a fold impacting layout (meaning it is separating
     // or non-flat) or if we have a large enough width to show both.
     if (
-        windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
+        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
         isBookPosture(foldingFeature) ||
         isTableTopPosture(foldingFeature) ||
         isSeparatingPosture(foldingFeature)
@@ -803,7 +801,6 @@ fun PlayerButtonsPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(device = Devices.PHONE)
 @Preview(device = Devices.FOLDABLE)
 @Preview(device = Devices.TABLET)
@@ -824,7 +821,7 @@ fun PlayerScreenPreview() {
                     ),
                 ),
                 displayFeatures = emptyList(),
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(maxWidth, maxHeight)),
+                windowSizeClass = WindowSizeClass.compute(maxWidth.value, maxHeight.value),
                 onBackPress = { },
                 onPlayPress = {},
                 onPausePress = {},

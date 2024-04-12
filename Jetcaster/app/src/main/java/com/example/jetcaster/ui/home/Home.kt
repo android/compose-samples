@@ -81,9 +81,6 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
 import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -101,11 +98,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.CategoryInfo
@@ -158,9 +155,9 @@ private val HomeState.showHomeCategoryTabs: Boolean
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun HomeState.showGrid(
     scaffoldValue: ThreePaneScaffoldValue
-): Boolean = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded ||
+): Boolean = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
     (
-        windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium &&
+        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
             scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
         )
 
@@ -180,17 +177,17 @@ fun calculateScaffoldDirective(
 ): PaneScaffoldDirective {
     val maxHorizontalPartitions: Int
     val verticalSpacerSize: Dp
-    if (windowAdaptiveInfo.windowSizeClass.isCompact()) {
+    if (windowAdaptiveInfo.windowSizeClass.isCompact) {
         // Window width or height is compact. Limit to 1 pane horizontally.
         maxHorizontalPartitions = 1
         verticalSpacerSize = 0.dp
     } else {
         when (windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass) {
-            androidx.window.core.layout.WindowWidthSizeClass.COMPACT -> {
+            WindowWidthSizeClass.COMPACT -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
-            androidx.window.core.layout.WindowWidthSizeClass.MEDIUM -> {
+            WindowWidthSizeClass.MEDIUM -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
@@ -235,10 +232,6 @@ private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy
         else -> emptyList()
     }
 }
-
-private fun androidx.window.core.layout.WindowSizeClass.isCompact(): Boolean =
-    windowWidthSizeClass == androidx.window.core.layout.WindowWidthSizeClass.COMPACT ||
-        windowHeightSizeClass == WindowHeightSizeClass.COMPACT
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -875,10 +868,7 @@ private fun HomeAppBarPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-private val CompactWindowSizeClass = WindowSizeClass.calculateFromSize(
-    size = DpSize(width = 360.dp, height = 780.dp)
-)
+private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
 
 @Preview(device = Devices.PHONE)
 @Composable
