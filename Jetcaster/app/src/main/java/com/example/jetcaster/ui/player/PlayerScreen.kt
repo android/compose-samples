@@ -56,6 +56,7 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -80,10 +81,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
-import androidx.core.text.HtmlCompat
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
@@ -640,9 +641,8 @@ private fun PodcastInformation(
         )
         HtmlText(
             text = summary,
-            style = MaterialTheme.typography.body2.copy(
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
-            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = LocalContentColor.current
         )
     }
 }
@@ -780,6 +780,7 @@ private fun FullScreenLoading(modifier: Modifier = Modifier) {
 private fun HtmlText(
     text: String,
     style: TextStyle,
+    color: Color
 ) {
     val annotationString = buildAnnotatedString {
         val htmlCompat = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -789,6 +790,7 @@ private fun HtmlText(
         Text(
             text = annotationString,
             style = style,
+            color = color
         )
     }
 }
