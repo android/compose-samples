@@ -625,7 +625,8 @@ private fun PodcastInformation(
 ) {
     Column(
         modifier = modifier.padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        verticalArrangement = Arrangement.spacedBy(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = name,
