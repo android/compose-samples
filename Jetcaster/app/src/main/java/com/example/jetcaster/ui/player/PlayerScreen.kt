@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -73,6 +74,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,6 +83,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.core.text.HtmlCompat
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
@@ -486,19 +489,16 @@ private fun PlayerContentBookStart(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(
-                vertical = 8.dp,
+                vertical = 40.dp,
                 horizontal = 16.dp
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceAround
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
         PodcastInformation(
-            episode.title,
-            episode.podcastName,
-            episode.summary
+            title = episode.title,
+            name = episode.podcastName,
+            summary = episode.summary,
         )
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -618,12 +618,13 @@ private fun PodcastInformation(
     title: String,
     name: String,
     summary: String,
+    modifier: Modifier = Modifier,
     titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall,
     nameTextStyle: TextStyle = MaterialTheme.typography.displaySmall,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = modifier.padding(horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         Text(
             text = name,
@@ -631,19 +632,18 @@ private fun PodcastInformation(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = title,
             style = titleTextStyle,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(
+        HtmlText(
             text = summary,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.body2.copy(
+                color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+            ),
         )
-        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
@@ -773,6 +773,23 @@ private fun FullScreenLoading(modifier: Modifier = Modifier) {
             .wrapContentSize(Alignment.Center)
     ) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun HtmlText(
+    text: String,
+    style: TextStyle,
+) {
+    val annotationString = buildAnnotatedString {
+        val htmlCompat = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        append(htmlCompat)
+    }
+    SelectionContainer {
+        Text(
+            text = annotationString,
+            style = style,
+        )
     }
 }
 
