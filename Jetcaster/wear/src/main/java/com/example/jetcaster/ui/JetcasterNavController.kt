@@ -16,7 +16,11 @@
 
 package com.example.jetcaster.ui
 
+import android.net.Uri
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.android.horologist.media.ui.navigation.NavigationScreens
 
 /**
@@ -32,6 +36,10 @@ public object JetcasterNavController {
         navigate(LatestEpisodes.destination())
     }
 
+    public fun NavController.navigateToPodcastDetails(podcastUri: String) {
+        navigate(PodcastDetails.destination(podcastUri))
+    }
+
     public fun NavController.navigateToUpNext() {
         navigate(UpNext.destination())
     }
@@ -43,6 +51,21 @@ public object YourPodcasts : NavigationScreens("yourPodcasts") {
 
 public object LatestEpisodes : NavigationScreens("latestEpisodes") {
     public fun destination(): String = navRoute
+}
+
+public object PodcastDetails : NavigationScreens("podcast?podcastUri={podcastUri}") {
+    public const val podcastUri: String = "podcastUri"
+    public fun destination(podcastUriValue: String): String {
+        val encodedUri = Uri.encode(podcastUriValue)
+        return "podcast?$podcastUri=$encodedUri"
+    }
+
+    override val arguments: List<NamedNavArgument>
+        get() = listOf(
+            navArgument(podcastUri) {
+                type = NavType.StringType
+            },
+        )
 }
 
 public object UpNext : NavigationScreens("upNext") {

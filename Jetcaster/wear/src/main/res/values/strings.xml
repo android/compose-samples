@@ -62,6 +62,7 @@
     <string name="nothing_playing">Nothing playing</string>
 
     <string name="podcasts_no_podcasts">No podcasts available at the moment</string>
+    <string name="podcasts_no_episode_podcasts">No episodes available at the moment</string>
     <string name="no_title">No title</string>
     <string name="podcasts_failed_dialog_cancel_button_content_description">Cancel</string>
 </resources>
