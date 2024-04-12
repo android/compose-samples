@@ -79,9 +79,15 @@ Looking for a sample that has the following features?
 * [Jetchat: Downloadable Fonts](https://github.com/android/compose-samples/pull/787)
 
 ### Large Screens
-* [Jetcaster - Tabletop mode](https://github.com/android/compose-samples/blob/0f7d5958c57a83ecad10136da4d359ae07046d07/Jetcaster/app/src/main/java/com/example/jetcaster/ui/player/PlayerScreen.kt#L138)
+* [Jetcaster - Supporting Pane](https://github.com/android/compose-samples/blob/3dbbf0912b57dacefcfb79191a2d7d6b053dadb8/Jetcaster/app/src/main/java/com/example/jetcaster/ui/home/Home.kt#L282)
 * [Jetnews - Window Size Classes](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/JetNews/app/src/main/java/com/example/jetnews/ui/MainActivity.kt#L36)
 * [Crane - Window Size Classes](https://github.com/android/compose-samples/blob/e7e8733f9b37d80cdc6e9e05dbabe24ccf20b38f/Crane/app/src/main/java/androidx/compose/samples/crane/home/MainActivity.kt#L72)
+
+### TV
+* [Jetcaster - TV](https://github.com/android/compose-samples/tree/3dbbf0912b57dacefcfb79191a2d7d6b053dadb8/Jetcaster/tv-app)
+
+### Wear
+* [Jetcaster - Wear](https://github.com/android/compose-samples/tree/3dbbf0912b57dacefcfb79191a2d7d6b053dadb8/Jetcaster/wear)
 
 ## Formatting
 
