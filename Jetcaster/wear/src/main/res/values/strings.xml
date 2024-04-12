@@ -65,4 +65,6 @@
     <string name="podcasts_no_episode_podcasts">No episodes available at the moment</string>
     <string name="no_title">No title</string>
     <string name="podcasts_failed_dialog_cancel_button_content_description">Cancel</string>
+
+    <string name="add_to_queue_content_description">Add to queue</string>
 </resources>
