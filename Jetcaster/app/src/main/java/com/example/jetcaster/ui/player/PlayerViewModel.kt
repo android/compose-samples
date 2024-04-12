@@ -25,16 +25,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.Duration
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.Duration
+import javax.inject.Inject
 
 data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
@@ -104,5 +105,9 @@ class PlayerViewModel @Inject constructor(
         uiState.episodePlayerState.currentEpisode?.let {
             episodePlayer.addToQueue(it)
         }
+    }
+
+    fun onPlay(episode: PlayerEpisode) {
+        episodePlayer.play(episode)
     }
 }

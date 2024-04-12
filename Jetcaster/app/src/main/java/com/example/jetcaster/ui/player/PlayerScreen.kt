@@ -18,6 +18,7 @@ package com.example.jetcaster.ui.player
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -51,8 +53,8 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.material.icons.rounded.PauseCircleFilled
-import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material.icons.outlined.Pause
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -202,7 +204,7 @@ private fun PlayerBackground(
 ) {
     ImageBackgroundColorScrim(
         url = episode?.podcastImageUrl,
-        color = Color.Black.copy(alpha = 0.68f),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
         modifier = modifier,
     )
 }
@@ -238,7 +240,7 @@ fun PlayerContentWithBackground(
             onRewindBy = onRewindBy,
             onNext = onNext,
             onPrevious = onPrevious,
-            onAddToQueue = onAddToQueue
+            onAddToQueue = onAddToQueue,
         )
     }
 }
@@ -281,7 +283,9 @@ fun PlayerContent(
         if (usingVerticalStrategy) {
             TwoPane(
                 first = {
-                    PlayerContentTableTopTop(uiState = uiState)
+                    PlayerContentTableTopTop(
+                        uiState = uiState,
+                    )
                 },
                 second = {
                     PlayerContentTableTopBottom(
@@ -618,13 +622,6 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun PlayerCarousel(
-    modifier: Modifier = Modifier
-) {
-    
-}
-
-@Composable
 private fun PlayerImage(
     podcastImageUrl: String,
     modifier: Modifier = Modifier
@@ -654,11 +651,13 @@ private fun PodcastDescription(
         text = title,
         style = titleTextStyle,
         maxLines = 1,
+        color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.basicMarquee()
     )
     Text(
         text = podcastName,
         style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurface,
         maxLines = 1
     )
 }
@@ -742,50 +741,60 @@ private fun PlayerButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        val buttonsModifier = Modifier
+        val sideButtonsModifier = Modifier
             .size(sideButtonSize)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                shape = CircleShape
+            )
+            .semantics { role = Role.Button }
+
+        val primaryButtonModifier = Modifier
+            .size(playerButtonSize)
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = CircleShape
+            )
             .semantics { role = Role.Button }
 
         Image(
             imageVector = Icons.Filled.SkipPrevious,
             contentDescription = stringResource(R.string.cd_skip_previous),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = buttonsModifier
+            contentScale = ContentScale.Inside,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+            modifier = sideButtonsModifier
                 .clickable(enabled = isPlaying, onClick = onPrevious)
         )
         Image(
             imageVector = Icons.Filled.Replay10,
             contentDescription = stringResource(R.string.cd_replay10),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Inside,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = buttonsModifier
+            modifier = sideButtonsModifier
                 .clickable {
                     onRewindBy(Duration.ofSeconds(10))
                 }
         )
         if (isPlaying) {
             Image(
-                imageVector = Icons.Rounded.PauseCircleFilled,
+                imageVector = Icons.Outlined.Pause,
                 contentDescription = stringResource(R.string.cd_pause),
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
-                modifier = Modifier
-                    .size(playerButtonSize)
-                    .semantics { role = Role.Button }
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                modifier = primaryButtonModifier
+                    .padding(8.dp)
                     .clickable {
                         onPausePress()
                     }
             )
         } else {
             Image(
-                imageVector = Icons.Rounded.PlayCircleFilled,
+                imageVector = Icons.Outlined.PlayArrow,
                 contentDescription = stringResource(R.string.cd_play),
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
-                modifier = Modifier
-                    .size(playerButtonSize)
-                    .semantics { role = Role.Button }
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                modifier = primaryButtonModifier
+                    .padding(8.dp)
                     .clickable {
                         onPlayPress()
                     }
@@ -794,9 +803,9 @@ private fun PlayerButtons(
         Image(
             imageVector = Icons.Filled.Forward10,
             contentDescription = stringResource(R.string.cd_forward10),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Inside,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = buttonsModifier
+            modifier = sideButtonsModifier
                 .clickable {
                     onAdvanceBy(Duration.ofSeconds(10))
                 }
@@ -804,9 +813,9 @@ private fun PlayerButtons(
         Image(
             imageVector = Icons.Filled.SkipNext,
             contentDescription = stringResource(R.string.cd_skip_next),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = buttonsModifier
+            contentScale = ContentScale.Inside,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+            modifier = sideButtonsModifier
                 .clickable(enabled = hasNext, onClick = onNext)
         )
     }
@@ -890,6 +899,11 @@ fun PlayerScreenPreview() {
                             podcastName = "Podcast",
                         ),
                         isPlaying = false,
+                        queue = listOf(
+                            PlayerEpisode(),
+                            PlayerEpisode(),
+                            PlayerEpisode(),
+                        )
                     ),
                 ),
                 displayFeatures = emptyList(),

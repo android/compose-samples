@@ -91,14 +91,34 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNextQueueNotEmpty_notRemovedFromQueue() {
+    fun whenNextQueueNotEmpty_notRemovedFromQueue() = runTest(testDispatcher) {
+        mockEpisodePlayer.currentEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = Duration.ofSeconds(60)
+        )
+        testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
+
+        mockEpisodePlayer.play()
+        advanceTimeBy(100)
+
+        // TODO override next?
+        mockEpisodePlayer.next()
+        advanceTimeBy(100)
+
+        assertEquals(testEpisodes.first(), mockEpisodePlayer.currentEpisode)
+
+        val queue = mockEpisodePlayer.playerState.value.queue
+        assertEquals(testEpisodes.size - 1, queue.size)
     }
 
     @Test
-    fun whenPreviousQueueEmpty_resetSameEpisode() {
-    }
+    fun whenPreviousQueueEmpty_resetSameEpisode() = runTest(testDispatcher) {
+        mockEpisodePlayer.currentEpisode = testEpisodes[0]
+        mockEpisodePlayer.play()
+        advanceTimeBy(1000L)
 
-    @Test
-    fun whenPreviousQueueNotEmpty_differentEpisode() {
+        mockEpisodePlayer.previous()
+        assertEquals(0, mockEpisodePlayer.playerState.value.timeElapsed.toMillis())
+        assertEquals(testEpisodes[0], mockEpisodePlayer.currentEpisode)
     }
 }
