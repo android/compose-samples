@@ -16,9 +16,11 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -62,6 +65,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -332,9 +337,9 @@ private fun FollowedPodcastItem(
     onPodcastUnfollowed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
-        Spacer(Modifier.height(16.dp))
-
+    Column(
+        modifier = modifier.padding(vertical = 16.dp)
+    ) {
         FollowedPodcasts(
             items = items,
             pagerState = pagerState,
@@ -345,7 +350,7 @@ private fun FollowedPodcastItem(
                 .height(200.dp)
         )
 
-        Spacer(Modifier.height(16.dp))
+        FollowedPodcastsIndicator(pagerState = pagerState)
     }
 }
 
@@ -421,6 +426,45 @@ fun FollowedPodcasts(
                 .padding(4.dp)
                 .fillMaxSize()
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun FollowedPodcastsIndicator(
+    pagerState: PagerState,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        val activeColor = MaterialTheme.colors.onSurface
+        val inactiveColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)
+
+        repeat(pagerState.pageCount) { index ->
+            val color by animateColorAsState(
+                targetValue = if (index == pagerState.currentPage) activeColor else inactiveColor,
+                label = "followedPodcastIndicatorColor",
+            )
+
+            Box(
+                Modifier
+                    .size(8.dp)
+                    .drawBehind {
+                        drawRoundRect(
+                            color = color,
+                            cornerRadius = CornerRadius(8.dp.toPx())
+                        )
+                    }
+            )
+
+            if (index < pagerState.pageCount - 1) {
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+        }
     }
 }
 
