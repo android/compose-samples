@@ -18,8 +18,10 @@ package com.example.jetcaster.ui.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.media.ui.state.model.TrackPositionUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
@@ -29,7 +31,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-@com.google.android.horologist.annotations.ExperimentalHorologistApi
+@OptIn(ExperimentalHorologistApi::class)
 data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState(),
     var trackPositionUiModel: TrackPositionUiModel = TrackPositionUiModel.Actual.ZERO
@@ -39,13 +41,22 @@ data class PlayerUiState(
  * ViewModel that handles the business logic and screen state of the Player screen
  */
 @HiltViewModel
+@OptIn(ExperimentalHorologistApi::class)
 class PlayerViewModel @Inject constructor(
     private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
     val uiState = episodePlayer.playerState.map {
-        PlayerUiState(it, buildPositionModel(it))
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PlayerUiState())
+        if (it.currentEpisode == null && it.queue.isEmpty()) {
+            PlayerScreenUiState.Empty
+        } else {
+            PlayerScreenUiState.Ready(PlayerUiState(it, buildPositionModel(it)))
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        PlayerScreenUiState.Loading
+    )
 
     private fun buildPositionModel(it: EpisodePlayerState) =
         if (it.currentEpisode != null) {
@@ -78,4 +89,17 @@ class PlayerViewModel @Inject constructor(
     fun onRewindBy() {
         episodePlayer.rewindBy(Duration.ofSeconds(10))
     }
+
+    fun addToQueue(episode: PlayerEpisode) {
+        episodePlayer.addToQueue(episode)
+    }
+}
+
+sealed class PlayerScreenUiState {
+    data object Loading : PlayerScreenUiState()
+    data class Ready(
+        val playerState: PlayerUiState
+    ) : PlayerScreenUiState()
+
+    data object Empty : PlayerScreenUiState()
 }

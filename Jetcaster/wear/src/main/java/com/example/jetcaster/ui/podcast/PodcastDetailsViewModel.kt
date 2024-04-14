@@ -61,9 +61,10 @@ class PodcastDetailsViewModel @Inject constructor(
     podcastStore: PodcastStore
 ) : ViewModel() {
 
-    private val podcastUri: String = Uri.decode(
-        savedStateHandle.get<String>(PodcastDetails.podcastUri)
-    )
+    private val podcastUri: String =
+        savedStateHandle.get<String>(PodcastDetails.podcastUri).let {
+            Uri.decode(it)
+        }
 
     private val podcastFlow = if (podcastUri != null) {
         podcastStore.podcastWithExtraInfo(podcastUri)

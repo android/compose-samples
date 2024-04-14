@@ -42,6 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.MaterialTheme
 import com.example.jetcaster.R
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.ui.components.SettingsButtons
 import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.audio.ui.VolumeViewModel
 import com.google.android.horologist.audio.ui.rotaryVolumeControlsWithFocus
@@ -49,6 +51,7 @@ import com.google.android.horologist.compose.rotaryinput.RotaryDefaults
 import com.google.android.horologist.media.ui.components.PodcastControlButtons
 import com.google.android.horologist.media.ui.components.background.ArtworkColorBackground
 import com.google.android.horologist.media.ui.components.controls.SeekButtonIncrement
+import com.google.android.horologist.media.ui.components.display.LoadingMediaDisplay
 import com.google.android.horologist.media.ui.components.display.TextMediaDisplay
 import com.google.android.horologist.media.ui.screens.player.PlayerScreen
 
@@ -60,93 +63,120 @@ fun PlayerScreen(
     playerScreenViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val volumeUiState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
-    val playerUiState by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
 
     PlayerScreen(
-        modifier = modifier,
-        playerUiState = playerUiState,
         playerScreenViewModel = playerScreenViewModel,
         volumeUiState = volumeUiState,
         onVolumeClick = onVolumeClick,
         onUpdateVolume = { newVolume -> volumeViewModel.setVolume(newVolume) },
+        onAddToQueueClick = playerScreenViewModel::addToQueue,
+        modifier = modifier
     )
 }
 
 @Composable
 private fun PlayerScreen(
-    playerUiState: PlayerUiState,
     playerScreenViewModel: PlayerViewModel,
     volumeUiState: VolumeUiState,
     onVolumeClick: () -> Unit,
+    onAddToQueueClick: (PlayerEpisode) -> Unit,
     onUpdateVolume: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val episode = playerUiState.episodePlayerState.currentEpisode
-    PlayerScreen(
-        mediaDisplay = {
-            if (episode != null && episode.title.isNotEmpty()) {
-                TextMediaDisplay(
-                    title = episode.podcastName,
-                    subtitle = episode.title
-                )
-            } else {
-                TextMediaDisplay(
-                    title = stringResource(R.string.nothing_playing),
-                    subtitle = ""
-                )
-            }
-        },
+    val uiState by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
 
-        controlButtons = {
-            if (episode != null && episode.title.isNotEmpty()) {
-                PodcastControlButtons(
-                    onPlayButtonClick = playerScreenViewModel::onPlay,
-                    onPauseButtonClick = playerScreenViewModel::onPause,
-                    playPauseButtonEnabled = true,
-                    playing = playerUiState.episodePlayerState.isPlaying,
-                    onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
-                    seekBackButtonEnabled = true,
-                    onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
-                    seekForwardButtonEnabled = true,
-                    seekBackButtonIncrement = SeekButtonIncrement.Ten,
-                    seekForwardButtonIncrement = SeekButtonIncrement.Ten,
-                    trackPositionUiModel = playerUiState.trackPositionUiModel
-                )
-            } else {
-                PodcastControlButtons(
-                    onPlayButtonClick = playerScreenViewModel::onPlay,
-                    onPauseButtonClick = playerScreenViewModel::onPause,
-                    playPauseButtonEnabled = false,
-                    playing = false,
-                    onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
-                    seekBackButtonEnabled = false,
-                    onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
-                    seekForwardButtonEnabled = false
-                )
-            }
-        },
-        buttons = {
-            SettingsButtons(
-                volumeUiState = volumeUiState,
-                onVolumeClick = onVolumeClick,
-                enabled = true,
+    when (val s = uiState) {
+        PlayerScreenUiState.Loading -> LoadingMediaDisplay(modifier)
+        PlayerScreenUiState.Empty -> {
+            PlayerScreen(
+                mediaDisplay = {
+                    TextMediaDisplay(
+                        title = stringResource(R.string.nothing_playing),
+                        subtitle = ""
+                    )
+                },
+                controlButtons = {
+                    PodcastControlButtons(
+                        onPlayButtonClick = playerScreenViewModel::onPlay,
+                        onPauseButtonClick = playerScreenViewModel::onPause,
+                        playPauseButtonEnabled = false,
+                        playing = false,
+                        onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
+                        seekBackButtonEnabled = false,
+                        onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
+                        seekForwardButtonEnabled = false
+                    )
+                },
+                buttons = {
+                    SettingsButtons(
+                        volumeUiState = volumeUiState,
+                        onVolumeClick = onVolumeClick,
+                        onAddToQueueClick = {},
+                        enabled = false,
+                    )
+                },
             )
-        },
-        modifier = modifier.rotaryVolumeControlsWithFocus(
-            volumeUiStateProvider = { volumeUiState },
-            onRotaryVolumeInput = onUpdateVolume,
-            localView = LocalView.current,
-            isLowRes = RotaryDefaults.isLowResInput(),
-        ),
-        background = {
-            if (episode != null && episode.podcastImageUrl.isNotEmpty()) {
-                val artworkUri = playerUiState.episodePlayerState.currentEpisode?.podcastImageUrl
-                ArtworkColorBackground(
-                    artworkUri = artworkUri,
-                    defaultColor = MaterialTheme.colors.primary,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
         }
-    )
+
+        is PlayerScreenUiState.Ready -> {
+            // When screen is ready, episode is always not null, however EpisodePlayerState may
+            // return a null episode
+            val episode = s.playerState.episodePlayerState.currentEpisode
+
+            PlayerScreen(
+                mediaDisplay = {
+                    if (episode != null && episode.title.isNotEmpty()) {
+                        TextMediaDisplay(
+                            title = episode.podcastName,
+                            subtitle = episode.title
+                        )
+                    } else {
+                        TextMediaDisplay(
+                            title = stringResource(R.string.nothing_playing),
+                            subtitle = ""
+                        )
+                    }
+                },
+
+                controlButtons = {
+                    PodcastControlButtons(
+                        onPlayButtonClick = playerScreenViewModel::onPlay,
+                        onPauseButtonClick = playerScreenViewModel::onPause,
+                        playPauseButtonEnabled = true,
+                        playing = s.playerState.episodePlayerState.isPlaying,
+                        onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
+                        seekBackButtonEnabled = true,
+                        onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
+                        seekForwardButtonEnabled = true,
+                        seekBackButtonIncrement = SeekButtonIncrement.Ten,
+                        seekForwardButtonIncrement = SeekButtonIncrement.Ten,
+                        trackPositionUiModel = s.playerState.trackPositionUiModel
+                    )
+                },
+                buttons = {
+                    SettingsButtons(
+                        volumeUiState = volumeUiState,
+                        onVolumeClick = onVolumeClick,
+                        onAddToQueueClick = {
+                            episode?.let { onAddToQueueClick(episode) }
+                        },
+                        enabled = true,
+                    )
+                },
+                modifier = modifier.rotaryVolumeControlsWithFocus(
+                    volumeUiStateProvider = { volumeUiState },
+                    onRotaryVolumeInput = onUpdateVolume,
+                    localView = LocalView.current,
+                    isLowRes = RotaryDefaults.isLowResInput(),
+                ),
+                background = {
+                    ArtworkColorBackground(
+                        artworkUri = episode?.let { episode.podcastImageUrl },
+                        defaultColor = MaterialTheme.colors.primary,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            )
+        }
+    }
 }
