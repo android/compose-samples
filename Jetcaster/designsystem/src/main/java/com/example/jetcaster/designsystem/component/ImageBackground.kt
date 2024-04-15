@@ -38,7 +38,7 @@ fun ImageBackgroundColorScrim(
         url = url,
         modifier = modifier,
         overlay = {
-            drawRect(color, blendMode = BlendMode.Multiply)
+            drawRect(color)
         }
     )
 }

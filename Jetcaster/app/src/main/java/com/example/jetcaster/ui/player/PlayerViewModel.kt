@@ -99,4 +99,10 @@ class PlayerViewModel @Inject constructor(
     fun onRewindBy(duration: Duration) {
         episodePlayer.rewindBy(duration)
     }
+
+    fun onAddToQueue() {
+        uiState.episodePlayerState.currentEpisode?.let {
+            episodePlayer.addToQueue(it)
+        }
+    }
 }
