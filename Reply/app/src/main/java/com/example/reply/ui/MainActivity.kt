@@ -18,6 +18,7 @@ package com.example.reply.ui
 
 import android.app.UiModeManager
 import android.content.Context
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,12 +31,12 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.layout.FoldingFeature
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ContrastAwareReplyTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
@@ -44,6 +45,7 @@ import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 class MainActivity : ComponentActivity() {
 
@@ -101,6 +103,7 @@ class MainActivity : ComponentActivity() {
             uiModeManager.removeContrastChangeListener(listener)
         }
     }
+        .distinctUntilChanged()
 }
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -171,12 +174,37 @@ fun ReplyAppPreviewDesktopPortrait() {
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, device = Devices.FOLDABLE)
 @Composable
-fun ReplayAppPreviewFoldable() {
+fun ReplayAppPreviewFoldablePortrait() {
+    ContrastAwareReplyTheme {
+        val fakeFoldingFeature = FakePreviewFoldingFeature(
+            orientation = FoldingFeature.Orientation.VERTICAL
+        )
+
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
+            windowSize = WindowSizeClass.calculateFromSize(DpSize(673.dp, 841.dp)),
+            displayFeatures = listOf(fakeFoldingFeature),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, widthDp = 841, heightDp = 673)
+@Composable
+fun ReplayAppPreviewFoldableLandscape() {
     ContrastAwareReplyTheme {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(841.dp, 673.dp)),
-            displayFeatures = emptyList(),
+            displayFeatures = listOf(FakePreviewFoldingFeature()),
         )
     }
 }
+
+class FakePreviewFoldingFeature(
+    override val state: FoldingFeature.State = FoldingFeature.State.FLAT,
+    override val bounds: Rect = Rect(),
+    override val isSeparating: Boolean = true,
+    override val occlusionType: FoldingFeature.OcclusionType = FoldingFeature.OcclusionType.NONE,
+    override val orientation: FoldingFeature.Orientation = FoldingFeature.Orientation.HORIZONTAL
+) : FoldingFeature

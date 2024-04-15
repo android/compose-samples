@@ -17,8 +17,6 @@
 package com.example.reply.ui.theme
 
 import android.app.Activity
-import android.app.UiModeManager
-import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -271,10 +269,22 @@ fun selectSchemeForContrast(
     isDark: Boolean,
     contrastLevel: Float,
 ): ColorScheme = when {
-    !isContrastAvailable() -> if (isDark) darkScheme else lightScheme
-    contrastLevel <= 0.33f -> if (isDark) darkScheme else lightScheme
-    contrastLevel <= 0.66f -> if (isDark) mediumContrastDarkColorScheme else mediumContrastLightColorScheme
-    contrastLevel <= 1.0f -> if (isDark) highContrastDarkColorScheme else highContrastLightColorScheme
+    !isContrastAvailable() -> {
+        if (isDark) darkScheme else lightScheme
+    }
+
+    contrastLevel <= 0.33f -> {
+        if (isDark) darkScheme else lightScheme
+    }
+
+    contrastLevel <= 0.66f -> {
+        if (isDark) mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+    }
+
+    contrastLevel <= 1.0f -> {
+        if (isDark) highContrastDarkColorScheme else highContrastLightColorScheme
+    }
+
     else -> if (isDark) darkScheme else lightScheme
 }
 

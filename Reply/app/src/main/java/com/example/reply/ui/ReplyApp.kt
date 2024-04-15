@@ -80,13 +80,9 @@ fun ReplyApp(
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
     val foldingDevicePosture = when {
-        isBookPosture(foldingFeature) ->
-            DevicePosture.BookPosture(foldingFeature.bounds)
-
-        isSeparating(foldingFeature) ->
-            DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
-
-        else -> DevicePosture.NormalPosture
+        isBookPosture(foldingFeature) -> DevicePosture.BOOK_POSTURE
+        isSeparating(foldingFeature) -> DevicePosture.SEPARATING
+        else -> DevicePosture.NORMAL_POSTURE
     }
 
     when (windowSize.widthSizeClass) {
@@ -96,17 +92,18 @@ fun ReplyApp(
         }
         WindowWidthSizeClass.Medium -> {
             navigationType = ReplyNavigationType.NAVIGATION_RAIL
-            contentType = if (foldingDevicePosture != DevicePosture.NormalPosture) {
-                ReplyContentType.DUAL_PANE
-            } else {
-                ReplyContentType.SINGLE_PANE
+            contentType = when (foldingDevicePosture) {
+                DevicePosture.BOOK_POSTURE -> ReplyContentType.DUAL_PANE
+                else -> ReplyContentType.SINGLE_PANE
             }
         }
         WindowWidthSizeClass.Expanded -> {
-            navigationType = if (foldingDevicePosture is DevicePosture.BookPosture) {
-                ReplyNavigationType.NAVIGATION_RAIL
-            } else {
-                ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+            navigationType = when (foldingDevicePosture) {
+                DevicePosture.BOOK_POSTURE,
+                DevicePosture.SEPARATING
+                -> ReplyNavigationType.NAVIGATION_RAIL
+
+                else -> ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
             }
             contentType = ReplyContentType.DUAL_PANE
         }
