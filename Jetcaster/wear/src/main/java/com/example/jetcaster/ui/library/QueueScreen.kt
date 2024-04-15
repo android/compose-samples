@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.podcast
+package com.example.jetcaster.ui.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -35,12 +35,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.model.PlayerEpisode
-import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.ui.components.LoadingEntityScreen
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
@@ -55,35 +54,35 @@ import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
-@Composable fun PodcastDetailsScreen(
+@Composable fun QueueScreen(
     onChangeSpeedButtonClick: () -> Unit,
     onPlayButtonClick: () -> Unit,
     onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
     onErrorDialogCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
-    podcastDetailsViewModel: PodcastDetailsViewModel = hiltViewModel()
+    queueViewModel: QueueViewModel = hiltViewModel()
 ) {
-    val uiState by podcastDetailsViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by queueViewModel.uiState.collectAsStateWithLifecycle()
 
-    PodcastDetailsScreen(
+    QueueScreen(
         viewState = uiState,
         onChangeSpeedButtonClick = onChangeSpeedButtonClick,
         onEpisodeItemClick = onEpisodeItemClick,
-        onPlayEpisode = podcastDetailsViewModel::onPlayEpisode,
         onErrorDialogCancelClick = onErrorDialogCancelClick,
         onPlayButtonClick = onPlayButtonClick,
+        queueViewModel = queueViewModel,
         modifier = modifier,
     )
 }
 
 @Composable
-fun PodcastDetailsScreen(
-    viewState: PodcastDetailsScreenState,
+fun QueueScreen(
+    viewState: QueueScreenState,
     onChangeSpeedButtonClick: () -> Unit,
     onPlayButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
-    onPlayEpisode: (PlayerEpisode) -> Unit,
+    queueViewModel: QueueViewModel,
     onErrorDialogCancelClick: () -> Unit
 ) {
     val columnState = rememberResponsiveColumnState(
@@ -97,22 +96,26 @@ fun PodcastDetailsScreen(
         modifier = modifier
     ) {
         when (viewState) {
-            is PodcastDetailsScreenState.Loaded -> {
+            is QueueScreenState.Loaded -> {
                 EntityScreen(
                     columnState = columnState,
-                    headerContent = { DefaultEntityScreenHeader(title = viewState.podcast.title) },
+                    headerContent = {
+                        DefaultEntityScreenHeader(
+                            title = stringResource(R.string.queue)
+                        )
+                    },
                     buttonsContent = {
                         ButtonsContent(
                             episodes = viewState.episodeList,
                             onChangeSpeedButtonClick = onChangeSpeedButtonClick,
                             onPlayButtonClick = onPlayButtonClick,
-                            onPlayEpisode = onPlayEpisode
+                            queueViewModel = queueViewModel
                         )
                     },
                     content = {
-                        items(count = viewState.episodeList.size) { index ->
+                        items(viewState.episodeList) { episode ->
                             MediaContent(
-                                episode = viewState.episodeList[index],
+                                episode = episode,
                                 episodeArtworkPlaceholder = rememberVectorPainter(
                                     image = Icons.Default.MusicNote,
                                     tintColor = Color.Blue,
@@ -123,16 +126,16 @@ fun PodcastDetailsScreen(
                     }
                 )
             }
-
-            PodcastDetailsScreenState.Empty -> {
+            QueueScreenState.Loading -> {
+                LoadingEntityScreen(columnState)
+            }
+            QueueScreenState.Empty -> {
                 AlertDialog(
                     showDialog = true,
-                    onDismiss = { onErrorDialogCancelClick },
-                    message = stringResource(R.string.podcasts_no_episode_podcasts)
+                    onDismiss = onErrorDialogCancelClick,
+                    title = stringResource(R.string.display_nothing_in_queue),
+                    message = stringResource(R.string.failed_loading_episodes_from_queue)
                 )
-            }
-            PodcastDetailsScreenState.Loading -> {
-                LoadingEntityScreen(columnState)
             }
         }
     }
@@ -141,11 +144,10 @@ fun PodcastDetailsScreen(
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
-    episodes: List<EpisodeToPodcast>,
+    episodes: List<PlayerEpisode>,
     onChangeSpeedButtonClick: () -> Unit,
     onPlayButtonClick: () -> Unit,
-    onPlayEpisode: (PlayerEpisode) -> Unit,
-    enabled: Boolean = true
+    queueViewModel: QueueViewModel,
 ) {
 
     Row(
@@ -159,7 +161,6 @@ fun ButtonsContent(
             imageVector = ImageVector.vectorResource(R.drawable.speed),
             contentDescription = stringResource(id = R.string.speed_button_content_description),
             onClick = { onChangeSpeedButtonClick() },
-            enabled = enabled,
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
         )
@@ -169,9 +170,8 @@ fun ButtonsContent(
             contentDescription = stringResource(id = R.string.button_play_content_description),
             onClick = {
                 onPlayButtonClick()
-                onPlayEpisode(episodes[0].toPlayerEpisode())
+                queueViewModel.onPlayEpisode(episodes[0])
             },
-            enabled = enabled,
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
         )
@@ -180,33 +180,20 @@ fun ButtonsContent(
 
 @Composable
 fun MediaContent(
-    episode: EpisodeToPodcast,
+    episode: PlayerEpisode,
     episodeArtworkPlaceholder: Painter?,
     onEpisodeItemClick: (EpisodeToPodcast) -> Unit
 ) {
-    val mediaTitle = episode.episode.title
+    val mediaTitle = episode.title
 
-    val secondaryLabel = episode.episode.author
+    val secondaryLabel = episode.author
 
     Chip(
         label = mediaTitle,
         onClick = { onEpisodeItemClick },
         secondaryLabel = secondaryLabel,
-        icon = CoilPaintable(episode.podcast.imageUrl, episodeArtworkPlaceholder),
+        icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
     )
-}
-
-@ExperimentalHorologistApi
-sealed class PodcastDetailsScreenState {
-
-    data object Loading : PodcastDetailsScreenState()
-
-    data class Loaded(
-        val episodeList: List<EpisodeToPodcast>,
-        val podcast: PodcastInfo,
-    ) : PodcastDetailsScreenState()
-
-    data object Empty : PodcastDetailsScreenState()
 }

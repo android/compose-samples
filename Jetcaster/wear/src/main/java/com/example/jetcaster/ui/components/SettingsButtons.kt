@@ -66,7 +66,7 @@ fun SettingsButtons(
 }
 
 @Composable
-public fun AddToQueueButton(
+fun AddToQueueButton(
     onAddToQueueClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
