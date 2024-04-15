@@ -62,9 +62,13 @@
     <string name="nothing_playing">Nothing playing</string>
 
     <string name="podcasts_no_podcasts">No podcasts available at the moment</string>
+    <string name="loading">Loading</string>
     <string name="podcasts_no_episode_podcasts">No episodes available at the moment</string>
     <string name="no_title">No title</string>
     <string name="podcasts_failed_dialog_cancel_button_content_description">Cancel</string>
 
+    <string name="display_nothing_in_queue">No episode in the queue</string>
+    <string name="add_episode_to_queue">Add an episode to the queue</string>
+    <string name="failed_loading_episodes_from_queue">Failed at loading episodes from the queue</string>
     <string name="add_to_queue_content_description">Add to queue</string>
 </resources>

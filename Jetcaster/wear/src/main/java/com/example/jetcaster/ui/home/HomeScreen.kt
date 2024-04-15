@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.runtime.Composable
@@ -27,9 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PodcastInfo
@@ -114,12 +119,16 @@ fun HomeScreen(
                 }
             }
             item {
-                Chip(
-                    label = stringResource(R.string.up_next),
-                    onClick = onUpNextClick,
-                    icon = DrawableResPaintable(R.drawable.up_next),
-                    colors = ChipDefaults.secondaryChipColors()
-                )
+                if (viewState.queue.isEmpty()) {
+                    QueueEmpty()
+                } else {
+                    Chip(
+                        label = stringResource(R.string.up_next),
+                        onClick = onUpNextClick,
+                        icon = DrawableResPaintable(R.drawable.up_next),
+                        colors = ChipDefaults.secondaryChipColors()
+                    )
+                }
             }
         }
     }
@@ -130,8 +139,7 @@ fun HomeScreen(
 
         content = {
             if (viewState.podcastCategoryFilterResult.topPodcasts.isNotEmpty()) {
-                val podcast = viewState.podcastCategoryFilterResult.topPodcasts.first()
-                items(viewState.podcastCategoryFilterResult.topPodcasts.take(1).size) {
+                items(viewState.podcastCategoryFilterResult.topPodcasts.take(3)) { podcast ->
                     PodcastContent(
                         podcast = podcast,
                         downloadItemArtworkPlaceholder = rememberVectorPainter(
@@ -168,5 +176,15 @@ private fun PodcastContent(
         icon = CoilPaintable(podcast.imageUrl, downloadItemArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
+    )
+}
+
+@Composable
+private fun QueueEmpty() {
+    Text(
+        text = stringResource(id = R.string.add_episode_to_queue),
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.body2,
     )
 }
