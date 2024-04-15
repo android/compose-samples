@@ -16,16 +16,22 @@
 
 package com.example.reply.ui
 
+import android.app.UiModeManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -33,6 +39,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ContrastAwareReplyTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 class MainActivity : ComponentActivity() {
 
@@ -44,7 +55,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            ContrastAwareReplyTheme {
+            val contrastLevel =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    uiModeContrastLevel().collectAsStateWithLifecycle(initialValue = 0f).value
+                } else {
+                    0f
+                }
+
+            ContrastAwareReplyTheme(
+                uiModeContrastLevel = contrastLevel
+            ) {
                 val windowSize = calculateWindowSizeClass(this)
                 val displayFeatures = calculateDisplayFeatures(this)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,6 +84,21 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private fun Context.uiModeContrastLevel(): Flow<Float> = callbackFlow {
+        val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+
+        val listener = UiModeManager.ContrastChangeListener { contrast ->
+            trySend(contrast)
+        }
+
+        uiModeManager.addContrastChangeListener(Dispatchers.Default.asExecutor(), listener)
+
+        awaitClose {
+            uiModeManager.removeContrastChangeListener(listener)
         }
     }
 }
@@ -128,6 +163,19 @@ fun ReplyAppPreviewDesktopPortrait() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
             windowSize = WindowSizeClass.calculateFromSize(DpSize(600.dp, 1100.dp)),
+            displayFeatures = emptyList(),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, device = Devices.FOLDABLE)
+@Composable
+fun ReplayAppPreviewFoldable() {
+    ContrastAwareReplyTheme {
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(emails = LocalEmailsDataProvider.allEmails),
+            windowSize = WindowSizeClass.calculateFromSize(DpSize(841.dp, 673.dp)),
             displayFeatures = emptyList(),
         )
     }

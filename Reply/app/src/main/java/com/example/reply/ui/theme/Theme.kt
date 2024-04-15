@@ -15,6 +15,7 @@
  */
 
 package com.example.reply.ui.theme
+
 import android.app.Activity
 import android.app.UiModeManager
 import android.content.Context
@@ -266,34 +267,25 @@ fun isContrastAvailable(): Boolean {
 }
 
 @Composable
-fun selectSchemeForContrast(isDark: Boolean,): ColorScheme {
-    val context = LocalContext.current
-    var colorScheme = if (isDark) darkScheme else lightScheme
-    if (isContrastAvailable()) {
-        val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        val contrastLevel = uiModeManager.contrast
-
-        colorScheme = when (contrastLevel) {
-            in 0.0f..0.33f -> if (isDark)
-                darkScheme else lightScheme
-
-            in 0.34f..0.66f -> if (isDark)
-                mediumContrastDarkColorScheme else mediumContrastLightColorScheme
-
-            in 0.67f..1.0f -> if (isDark)
-                highContrastDarkColorScheme else highContrastLightColorScheme
-
-            else -> if (isDark) darkScheme else lightScheme
-        }
-        return colorScheme
-    } else return colorScheme
+fun selectSchemeForContrast(
+    isDark: Boolean,
+    contrastLevel: Float,
+): ColorScheme = when {
+    !isContrastAvailable() -> if (isDark) darkScheme else lightScheme
+    contrastLevel <= 0.33f -> if (isDark) darkScheme else lightScheme
+    contrastLevel <= 0.66f -> if (isDark) mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+    contrastLevel <= 1.0f -> if (isDark) highContrastDarkColorScheme else highContrastLightColorScheme
+    else -> if (isDark) darkScheme else lightScheme
 }
+
 @Composable
 fun ContrastAwareReplyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
-    content: @Composable() () -> Unit
+    // Contrast color is available on Android 14+
+    uiModeContrastLevel: Float = 0f,
+    content: @Composable () -> Unit
 ) {
     val replyColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -301,7 +293,7 @@ fun ContrastAwareReplyTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        else -> selectSchemeForContrast(darkTheme)
+        else -> selectSchemeForContrast(darkTheme, uiModeContrastLevel)
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
