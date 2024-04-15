@@ -194,8 +194,7 @@ private fun Header(snackId: Long, origin: String) {
         with(animatedVisibilityScope) {
             Spacer(
                 modifier = Modifier
-                    .height(280.dp)
-                    .fillMaxWidth()
+
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -211,9 +210,12 @@ private fun Header(snackId: Long, origin: String) {
                                 bottomStart = CornerSize(0.dp)
                             )
                         ),
-                        boundsTransform = snackDetailBoundsTransform
+                        boundsTransform = snackDetailBoundsTransform,
+                        enter = fadeIn() + scaleInSharedContentToBounds(),
+                        exit = fadeOut() + scaleOutSharedContentToBounds()
                     )
-                    .animateEnterExit()
+                    .height(280.dp)
+                    .fillMaxWidth()
                     .background(Brush.horizontalGradient(JetsnackTheme.colors.tornado1))
             )
         }
@@ -384,7 +386,6 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     style = MaterialTheme.typography.h4,
                     color = JetsnackTheme.colors.textSecondary,
                     modifier = HzPadding
-                        .wrapContentWidth()
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -398,6 +399,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                             exit = fadeOut() + scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
+                        .wrapContentWidth()
                 )
                 Text(
                     text = snack.tagline,
@@ -405,7 +407,6 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     fontSize = 20.sp,
                     color = JetsnackTheme.colors.textHelp,
                     modifier = HzPadding
-                        .wrapContentWidth()
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -419,9 +420,9 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                             exit = fadeOut() + scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
+                        .wrapContentWidth()
                 )
                 Spacer(Modifier.height(4.dp))
-
 
                 Text(
                     text = formatPrice(snack.price),

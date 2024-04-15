@@ -51,7 +51,7 @@ object SnackRepo {
  */
 
 private val tastyTreats = SnackCollection(
-    id = Random.nextLong(),
+    id = 1L,
     name = "Android's picks",
     type = CollectionType.Highlight,
     snacks = snacks.subList(0, 13)

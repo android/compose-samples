@@ -35,7 +35,7 @@ data class Snack(
 
 val snacks = listOf(
     Snack(
-        id = Random.nextLong(),
+        id = 1L,
         name = "Cupcake",
         tagline = "A tag line",
         imageUrl = "https://source.unsplash.com/pGM4sjt_BdQ",

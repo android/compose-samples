@@ -39,6 +39,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -326,8 +328,7 @@ private fun HighlightSnackItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .height(100.dp)
-                                .fillMaxWidth()
+
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -343,9 +344,12 @@ private fun HighlightSnackItem(
                                             bottomStart = CornerSize(0.dp)
                                         )
                                     ),
-                                    boundsTransform = snackDetailBoundsTransform
+                                    boundsTransform = snackDetailBoundsTransform,
+                                    enter = fadeIn() + scaleInSharedContentToBounds(),
+                                    exit = fadeOut() + scaleOutSharedContentToBounds()
                                 )
-                                .animateEnterExit()
+                                .height(100.dp)
+                                .fillMaxWidth()
                                 .offsetGradientBackground(
                                     colors = gradient,
                                     width = {
@@ -364,7 +368,6 @@ private fun HighlightSnackItem(
                             imageUrl = snack.imageUrl,
                             contentDescription = null,
                             modifier = Modifier
-                                .size(120.dp)
                                 .align(Alignment.BottomCenter)
                                 .sharedBounds(
                                     rememberSharedContentState(
@@ -378,6 +381,7 @@ private fun HighlightSnackItem(
                                     exit = ExitTransition.None,
                                     boundsTransform = snackDetailBoundsTransform
                                 )
+                                .size(120.dp)
                         )
                     }
 
@@ -391,7 +395,6 @@ private fun HighlightSnackItem(
                             color = JetsnackTheme.colors.textSecondary,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
-                                .wrapContentWidth()
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -405,6 +408,7 @@ private fun HighlightSnackItem(
                                     exit = fadeOut() + scaleOutSharedContentToBounds(),
                                     boundsTransform = snackDetailBoundsTransform
                                 )
+                                .wrapContentWidth()
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -413,7 +417,6 @@ private fun HighlightSnackItem(
                             color = JetsnackTheme.colors.textHelp,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
-                                .wrapContentWidth()
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -427,6 +430,7 @@ private fun HighlightSnackItem(
                                     exit = fadeOut() + scaleOutSharedContentToBounds(),
                                     boundsTransform = snackDetailBoundsTransform
                                 )
+                                .wrapContentWidth()
                         )
                     }
 
