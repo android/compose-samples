@@ -376,7 +376,7 @@ private fun HighlightSnackItem(
                             contentDescription = null,
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .sharedElement(
+                                .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
                                             snackId = snack.id,

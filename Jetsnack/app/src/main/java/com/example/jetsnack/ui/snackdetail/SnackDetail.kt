@@ -461,7 +461,7 @@ private fun Image(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .sharedElement(
+                    .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
                                 snackId = snackId,
@@ -470,7 +470,7 @@ private fun Image(
                             )
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
-                      //  exit = ExitTransition.None,
+                        exit = ExitTransition.None,
                         boundsTransform = snackDetailBoundsTransform
                     )
 
