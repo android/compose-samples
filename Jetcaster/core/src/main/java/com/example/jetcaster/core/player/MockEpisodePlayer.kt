@@ -127,7 +127,6 @@ class MockEpisodePlayer(
         }
 
         next()
-        play()
     }
 
     override fun pause() {
@@ -168,6 +167,7 @@ class MockEpisodePlayer(
         val nextEpisode = q[0]
         currentEpisode = nextEpisode
         queue.value = q - nextEpisode
+        play()
     }
 
     override fun previous() {

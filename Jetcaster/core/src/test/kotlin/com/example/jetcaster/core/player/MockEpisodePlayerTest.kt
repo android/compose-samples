@@ -24,6 +24,7 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -60,6 +61,22 @@ class MockEpisodePlayerTest {
         advanceTimeBy(duration.toMillis() + 1)
 
         assertEquals(testEpisodes.first(), mockEpisodePlayer.currentEpisode)
+    }
+
+    @Test
+    fun whenNext_queueIsNotEmpty_autoPlaysNextEpisode() = runTest(testDispatcher) {
+        val duration = Duration.ofSeconds(60)
+        val currEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = duration
+        )
+        mockEpisodePlayer.currentEpisode = currEpisode
+        testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
+
+        mockEpisodePlayer.next()
+        advanceTimeBy(100)
+
+        assertTrue(mockEpisodePlayer.playerState.value.isPlaying)
     }
 
     @Test
