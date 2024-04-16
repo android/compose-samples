@@ -28,7 +28,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -85,8 +84,8 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
-import com.example.jetsnack.ui.snackdetail.expressiveNormalDampingRatio
-import com.example.jetsnack.ui.snackdetail.expressiveNormalStiffness
+import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
+import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.util.Locale
 
@@ -96,11 +95,11 @@ fun NavGraphBuilder.composableWithCompositionLocal(
     deepLinks: List<NavDeepLink> = emptyList(),
     enterTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
-        fadeIn()
+        fadeIn(nonSpatialExpressiveSpring())
     },
     exitTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
-        fadeOut()
+        fadeOut(nonSpatialExpressiveSpring())
     },
     popEnterTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
@@ -182,10 +181,7 @@ fun JetsnackBottomBar(
         color = color,
         contentColor = contentColor
     ) {
-        val springSpec = SpringSpec<Float>(
-            stiffness = expressiveNormalStiffness,
-            dampingRatio = expressiveNormalDampingRatio
-        )
+        val springSpec = spatialExpressiveSpring<Float>()
         JetsnackBottomNavLayout(
             selectedIndex = currentSection.ordinal,
             itemCount = routes.size,

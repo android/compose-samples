@@ -19,22 +19,15 @@
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
@@ -58,13 +51,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -77,7 +68,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -124,13 +114,17 @@ private val ExpandedImageSize = 300.dp
 private val CollapsedImageSize = 150.dp
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
-val expressiveNormalDampingRatio = 0.8f
-val expressiveNormalStiffness = 380f
+
+fun <T> spatialExpressiveSpring() = spring<T>(
+    dampingRatio = 0.8f,
+    stiffness = 380f)
+
+fun <T> nonSpatialExpressiveSpring() = spring<T>(
+    dampingRatio = 1f,
+    stiffness = 1600f)
+
 val snackDetailBoundsTransform = BoundsTransform { initialBounds: Rect, targetBounds: Rect ->
-    spring(
-        dampingRatio = expressiveNormalDampingRatio,
-        stiffness = expressiveNormalStiffness
-    )
+    spatialExpressiveSpring()
 }
 
 @Composable
@@ -162,11 +156,11 @@ fun SnackDetail(
                     animatedVisibilityScope,
                     clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium),
                     boundsTransform = snackDetailBoundsTransform,
-                    exit = fadeOut() + scaleOutSharedContentToBounds(
+                    exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(
                         contentScale = ContentScale.FillWidth,
                         alignment = Alignment.TopCenter
                     ),
-                    enter = fadeIn() +
+                    enter = fadeIn(nonSpatialExpressiveSpring()) +
                             scaleInSharedContentToBounds(
                                 contentScale = ContentScale.FillWidth,
                                 alignment = Alignment.TopCenter
@@ -208,8 +202,8 @@ private fun Header(snackId: Long, origin: String) {
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = snackDetailBoundsTransform,
-                        enter = fadeIn(),
-                        exit = fadeOut()
+                        enter = fadeIn(nonSpatialExpressiveSpring()),
+                        exit = fadeOut(nonSpatialExpressiveSpring())
                     )
                     .height(280.dp)
                     .fillMaxWidth()
@@ -391,8 +385,8 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn() + scaleInSharedContentToBounds(),
-                            exit = fadeOut() + scaleOutSharedContentToBounds(),
+                            enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                            exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                         .wrapContentWidth()
@@ -412,8 +406,8 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn() + scaleInSharedContentToBounds(),
-                            exit = fadeOut() + scaleOutSharedContentToBounds(),
+                            enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                            exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                         .wrapContentWidth()

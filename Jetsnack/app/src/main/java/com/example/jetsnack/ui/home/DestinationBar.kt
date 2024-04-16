@@ -49,6 +49,7 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
+import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.lang.IllegalStateException
@@ -61,7 +62,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
         with (navAnimatedScope){
             Column(modifier = modifier
                 .renderInSharedTransitionScopeOverlay()
-                .animateEnterExit(enter = slideInVertically { -it }, exit = slideOutVertically { -it })) {
+                .animateEnterExit(enter = slideInVertically(spatialExpressiveSpring()) { -it }, exit = slideOutVertically(spatialExpressiveSpring()) { -it })) {
                 TopAppBar(
                     backgroundColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
                     contentColor = JetsnackTheme.colors.textSecondary,

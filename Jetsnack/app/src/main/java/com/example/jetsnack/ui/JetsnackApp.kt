@@ -52,6 +52,8 @@ import com.example.jetsnack.ui.home.composableWithCompositionLocal
 import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.navigation.rememberJetsnackNavController
 import com.example.jetsnack.ui.snackdetail.SnackDetail
+import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
+import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Preview
@@ -122,12 +124,12 @@ fun MainContainer(
                                 zIndexInOverlay = 1f,
                             )
                             .animateEnterExit(
-                                enter = fadeIn() + slideInVertically(initialOffsetY = {
+                                enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(spatialExpressiveSpring()) {
                                     it
-                                }),
-                                exit = fadeOut() + slideOutVertically(targetOffsetY = {
+                                },
+                                exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(spatialExpressiveSpring()) {
                                     it
-                                })
+                                }
                             )
                     )
                 }

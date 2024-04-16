@@ -40,8 +40,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -82,6 +80,7 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
+import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
@@ -262,8 +261,8 @@ fun SnackItem(
                                     )
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
-                                enter = fadeIn() + scaleInSharedContentToBounds(),
-                                exit = fadeOut() + scaleOutSharedContentToBounds(),
+                                enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                                exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
                                 boundsTransform = snackDetailBoundsTransform
                             )
                     )
@@ -352,8 +351,8 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     boundsTransform = snackDetailBoundsTransform,
-                                    enter = fadeIn(),
-                                    exit = fadeOut()
+                                    enter = fadeIn(nonSpatialExpressiveSpring()),
+                                    exit = fadeOut(nonSpatialExpressiveSpring())
                                 )
                                 .height(100.dp)
                                 .fillMaxWidth()
@@ -410,8 +409,8 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
-                                    enter = fadeIn() + scaleInSharedContentToBounds(),
-                                    exit = fadeOut() + scaleOutSharedContentToBounds(),
+                                    enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                                    exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
                                     boundsTransform = snackDetailBoundsTransform
                                 )
                                 .wrapContentWidth()
@@ -433,8 +432,8 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
-                                    enter = fadeIn() + scaleInSharedContentToBounds(),
-                                    exit = fadeOut() + scaleOutSharedContentToBounds(),
+                                    enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                                    exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
                                     boundsTransform = snackDetailBoundsTransform
                                 )
                                 .wrapContentWidth()
