@@ -33,6 +33,8 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
@@ -62,6 +64,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -121,8 +124,8 @@ private val ExpandedImageSize = 300.dp
 private val CollapsedImageSize = 150.dp
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
-val expressiveNormalDampingRatio = 1f
-val expressiveNormalStiffness = 700f
+val expressiveNormalDampingRatio = 0.8f
+val expressiveNormalStiffness = 380f
 val snackDetailBoundsTransform = BoundsTransform { initialBounds: Rect, targetBounds: Rect ->
     spring(
         dampingRatio = expressiveNormalDampingRatio,
@@ -147,6 +150,7 @@ fun SnackDetail(
         Box(
             Modifier
                 .fillMaxSize()
+                .clip(MaterialTheme.shapes.medium)
                 .sharedBounds(
                     rememberSharedContentState(
                         key = SnackSharedElementKey(
@@ -194,7 +198,6 @@ private fun Header(snackId: Long, origin: String) {
         with(animatedVisibilityScope) {
             Spacer(
                 modifier = Modifier
-
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -204,15 +207,9 @@ private fun Header(snackId: Long, origin: String) {
                             )
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
-                        clipInOverlayDuringTransition = OverlayClip(
-                            MaterialTheme.shapes.medium.copy(
-                                bottomEnd = CornerSize(0.dp),
-                                bottomStart = CornerSize(0.dp)
-                            )
-                        ),
                         boundsTransform = snackDetailBoundsTransform,
-                        enter = fadeIn() + scaleInSharedContentToBounds(),
-                        exit = fadeOut() + scaleOutSharedContentToBounds()
+                        enter = fadeIn(),
+                        exit = fadeOut()
                     )
                     .height(280.dp)
                     .fillMaxWidth()
@@ -294,7 +291,6 @@ private fun Body(
 
                             )
                         }
-
                         val textButton = if (seeMore) {
                             stringResource(id = R.string.see_more)
                         } else {
@@ -465,7 +461,7 @@ private fun Image(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .sharedBounds(
+                    .sharedElement(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
                                 snackId = snackId,
@@ -474,7 +470,7 @@ private fun Image(
                             )
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
-                        exit = ExitTransition.None,
+                      //  exit = ExitTransition.None,
                         boundsTransform = snackDetailBoundsTransform
                     )
 

@@ -26,6 +26,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -209,22 +210,23 @@ fun SnackItem(
             end = 4.dp,
             bottom = 8.dp
         )
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable(onClick = {
-                    onSnackClick(snack.id, snackCollectionId.toString())
-                })
-                .padding(8.dp)
-        ) {
-            val sharedTransitionScope = LocalSharedTransitionScope.current
-                ?: throw IllegalStateException("No sharedTransitionScope found")
-            val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-                ?: throw IllegalStateException("No animatedVisibilityScope found")
 
-            with(sharedTransitionScope) {
-                with(animatedVisibilityScope) {
+    ) {
+        val sharedTransitionScope = LocalSharedTransitionScope.current
+            ?: throw IllegalStateException("No sharedTransitionScope found")
+        val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+            ?: throw IllegalStateException("No animatedVisibilityScope found")
+
+        with(sharedTransitionScope) {
+            with(animatedVisibilityScope) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable(onClick = {
+                            onSnackClick(snack.id, snackCollectionId.toString())
+                        })
+                        .padding(8.dp)
+                ) {
                     SnackImage(
                         imageUrl = snack.imageUrl,
                         elevation = 1.dp,
@@ -297,7 +299,7 @@ private fun HighlightSnackItem(
                 )
             )
             JetsnackCard(
-                elevation = 2.dp,
+                elevation = 0.dp,
                 modifier = modifier
                     .size(
                         width = HighlightCardWidth,
@@ -309,6 +311,12 @@ private fun HighlightSnackItem(
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = snackDetailBoundsTransform
                     )
+                    .border(
+                        1.dp,
+                        JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
+                        MaterialTheme.shapes.medium
+                    )
+
             ) {
                 Column(
                     modifier = Modifier
@@ -328,7 +336,6 @@ private fun HighlightSnackItem(
                     ) {
                         Box(
                             modifier = Modifier
-
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -345,8 +352,8 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     boundsTransform = snackDetailBoundsTransform,
-                                    enter = fadeIn() + scaleInSharedContentToBounds(),
-                                    exit = fadeOut() + scaleOutSharedContentToBounds()
+                                    enter = fadeIn(),
+                                    exit = fadeOut()
                                 )
                                 .height(100.dp)
                                 .fillMaxWidth()
@@ -369,7 +376,7 @@ private fun HighlightSnackItem(
                             contentDescription = null,
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .sharedBounds(
+                                .sharedElement(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
                                             snackId = snack.id,
@@ -378,7 +385,6 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
-                                    exit = ExitTransition.None,
                                     boundsTransform = snackDetailBoundsTransform
                                 )
                                 .size(120.dp)
@@ -411,6 +417,7 @@ private fun HighlightSnackItem(
                                 .wrapContentWidth()
                         )
                         Spacer(modifier = Modifier.height(4.dp))
+
                         Text(
                             text = snack.tagline,
                             style = MaterialTheme.typography.body1,
