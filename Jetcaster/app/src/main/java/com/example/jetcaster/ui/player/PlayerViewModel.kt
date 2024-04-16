@@ -17,81 +17,92 @@
 package com.example.jetcaster.ui.player
 
 import android.net.Uri
-import android.os.Bundle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
-import com.example.jetcaster.Graph
-import com.example.jetcaster.data.EpisodeStore
-import com.example.jetcaster.data.PodcastStore
+import com.example.jetcaster.core.data.database.model.toPlayerEpisode
+import com.example.jetcaster.core.data.repository.EpisodeStore
+import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.ui.Screen
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
-import kotlinx.coroutines.flow.first
+import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 data class PlayerUiState(
-    val title: String = "",
-    val subTitle: String = "",
-    val duration: Duration? = null,
-    val podcastName: String = "",
-    val author: String = "",
-    val summary: String = "",
-    val podcastImageUrl: String = ""
+    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
 )
 
 /**
  * ViewModel that handles the business logic and screen state of the Player screen
  */
-class PlayerViewModel(
+@OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
+class PlayerViewModel @Inject constructor(
     episodeStore: EpisodeStore,
-    podcastStore: PodcastStore,
+    private val episodePlayer: EpisodePlayer,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     // episodeUri should always be present in the PlayerViewModel.
     // If that's not the case, fail crashing the app!
-    private val episodeUri: String = Uri.decode(savedStateHandle.get<String>("episodeUri")!!)
+    private val episodeUri: String =
+        Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
 
     var uiState by mutableStateOf(PlayerUiState())
         private set
 
     init {
         viewModelScope.launch {
-            val episode = episodeStore.episodeWithUri(episodeUri).first()
-            val podcast = podcastStore.podcastWithUri(episode.podcastUri).first()
-            uiState = PlayerUiState(
-                title = episode.title,
-                duration = episode.duration,
-                podcastName = podcast.title,
-                summary = episode.summary ?: "",
-                podcastImageUrl = podcast.imageUrl ?: ""
-            )
+            episodeStore.episodeAndPodcastWithUri(episodeUri).flatMapConcat {
+                episodePlayer.currentEpisode = it.toPlayerEpisode()
+                episodePlayer.playerState
+            }.map {
+                PlayerUiState(episodePlayerState = it)
+            }.collect {
+                uiState = it
+            }
         }
     }
 
-    /**
-     * Factory for PlayerViewModel that takes EpisodeStore and PodcastStore as a dependency
-     */
-    companion object {
-        fun provideFactory(
-            episodeStore: EpisodeStore = Graph.episodeStore,
-            podcastStore: PodcastStore = Graph.podcastStore,
-            owner: SavedStateRegistryOwner,
-            defaultArgs: Bundle? = null,
-        ): AbstractSavedStateViewModelFactory =
-            object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
-                ): T {
-                    return PlayerViewModel(episodeStore, podcastStore, handle) as T
-                }
-            }
+    fun onPlay() {
+        episodePlayer.play()
+    }
+
+    fun onPause() {
+        episodePlayer.pause()
+    }
+
+    fun onStop() {
+        episodePlayer.stop()
+    }
+
+    fun onPrevious() {
+        episodePlayer.previous()
+    }
+
+    fun onNext() {
+        episodePlayer.next()
+    }
+
+    fun onAdvanceBy(duration: Duration) {
+        episodePlayer.advanceBy(duration)
+    }
+
+    fun onRewindBy(duration: Duration) {
+        episodePlayer.rewindBy(duration)
+    }
+
+    fun onAddToQueue() {
+        uiState.episodePlayerState.currentEpisode?.let {
+            episodePlayer.addToQueue(it)
+        }
     }
 }

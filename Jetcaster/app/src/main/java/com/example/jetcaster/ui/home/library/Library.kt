@@ -16,27 +16,93 @@
 
 package com.example.jetcaster.ui.home.library
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.ui.home.category.EpisodeListItem
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.example.jetcaster.R
+import com.example.jetcaster.core.model.EpisodeInfo
+import com.example.jetcaster.core.model.LibraryInfo
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.designsystem.theme.Keyline1
+import com.example.jetcaster.ui.shared.EpisodeListItem
+import com.example.jetcaster.util.fullWidthItem
 
 fun LazyListScope.libraryItems(
-    episodes: List<EpisodeToPodcast>,
-    navigateToPlayer: (String) -> Unit
+    library: LibraryInfo,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit
 ) {
-    if (episodes.isEmpty()) {
+    val podcast = library.podcast
+    if (podcast == null || library.episodes.isEmpty()) {
         // TODO: Empty state
         return
     }
 
-    items(episodes, key = { it.episode.uri }) { item ->
+    item {
+        Text(
+            text = stringResource(id = R.string.latest_episodes),
+            modifier = Modifier.padding(
+                start = Keyline1,
+                top = 16.dp,
+            ),
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+
+    items(
+        library.episodes,
+        key = { it.uri }
+    ) { item ->
         EpisodeListItem(
-            episode = item.episode,
-            podcast = item.podcast,
+            episode = item,
+            podcast = podcast,
             onClick = navigateToPlayer,
-            modifier = Modifier.fillParentMaxWidth()
+            onQueueEpisode = onQueueEpisode,
+            modifier = Modifier.fillParentMaxWidth(),
+        )
+    }
+}
+
+fun LazyGridScope.libraryItems(
+    library: LibraryInfo,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
+    onQueueEpisode: (PlayerEpisode) -> Unit
+) {
+    val podcast = library.podcast
+    if (podcast == null || library.episodes.isEmpty()) {
+        // TODO: Empty state
+        return
+    }
+
+    fullWidthItem {
+        Text(
+            text = stringResource(id = R.string.latest_episodes),
+            modifier = Modifier.padding(
+                start = Keyline1,
+                top = 16.dp,
+            ),
+            style = MaterialTheme.typography.headlineLarge,
+        )
+    }
+
+    items(
+        library.episodes,
+        key = { it.uri }
+    ) { item ->
+        EpisodeListItem(
+            episode = item,
+            podcast = podcast,
+            onClick = navigateToPlayer,
+            onQueueEpisode = onQueueEpisode,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

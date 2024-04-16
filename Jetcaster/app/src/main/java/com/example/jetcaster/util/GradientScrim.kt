@@ -17,12 +17,17 @@
 package com.example.jetcaster.util
 
 import androidx.annotation.FloatRange
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.foundation.background
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RadialGradientShader
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.node.DrawModifierNode
@@ -31,6 +36,25 @@ import androidx.compose.ui.platform.InspectorInfo
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+
+/**
+ * Applies a radial gradient scrim in the foreground emanating from the top
+ * center quarter of the element.
+ */
+fun Modifier.radialGradientScrim(color: Color): Modifier {
+    val radialGradient = object : ShaderBrush() {
+        override fun createShader(size: Size): Shader {
+            val largerDimension = max(size.height, size.width)
+            return RadialGradientShader(
+                center = size.center.copy(y = size.height / 4),
+                colors = listOf(color, Color.Transparent),
+                radius = largerDimension / 2,
+                colorStops = listOf(0f, 0.9f)
+            )
+        }
+    }
+    return this.background(radialGradient)
+}
 
 /**
  * Draws a vertical gradient scrim in the foreground.
@@ -113,7 +137,6 @@ private data class VerticalGradientElement(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 private class VerticalGradientModifier(
     var onDraw: DrawScope.() -> Unit
 ) : Modifier.Node(), DrawModifierNode {

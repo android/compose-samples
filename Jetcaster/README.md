@@ -3,7 +3,7 @@
 # Jetcaster sample 🎙️
 
 Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is to
-showcase dynamic theming and full featured architecture.
+showcase building with Compose across multiple form factors (mobile, TV, and Wear) and full featured architecture.
 
 To try out this sample app, use the latest stable version
 of [Android Studio](https://developer.android.com/studio).
@@ -11,52 +11,26 @@ You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
-### Status: 🚧 In progress 🚧
-
-Jetcaster is still in the early stages of development, and as such only one screen has been created so far. However,
-most of the app's architecture has been implemented, as well as the data layer, and early stages of dynamic theming.
-
-
 ## Screenshots
 
-<img src="docs/screenshots.png"/>
+![readme_cover](https://github.com/android/compose-samples/assets/10263978/a58ab950-71aa-48e0-8bc7-85443a1b4f6b)
 
 ## Features
 
-This sample contains 2 screens so far: the home screen, and a player screen.
+This sample has 3 components: the home screen, the podcast details screen, and the player screen
 
 The home screen is split into sub-screens for easy re-use:
 
-- __Home__, allowing the user to see their followed podcasts (top carousel), and navigate between 'Your Library' and 'Discover'
+- __Home__, allowing the user to see their subscribed podcasts (top carousel), and navigate between 'Your Library' and 'Discover'
 - __Discover__, allowing the user to browse podcast categories
 - __Podcast Category__, allowing the user to see a list of recent episodes for podcasts in a given category.
 
-The player screen displays media controls and the currently "playing" podcast (the sample currently doesn't actually play any media).
+Multiple panes will also be shown depending on the device's [window size class][wsc].
+
+The player screen displays media controls and the currently "playing" podcast (the sample currently **does not** actually play any media—the behavior is simply mocked).
 The player screen layout is adapting to different form factors, including a tabletop layout on foldable devices:
 
-<img src="docs/tabletop.png"/>
-
-### Dynamic theming
-The home screen currently implements dynamic theming, using the artwork of the currently selected podcast from the carousel to  update the  `primary` and `onPrimary` [colors](https://developer.android.com/reference/kotlin/androidx/compose/material/Colors). You can see it in action in the screenshots above: as the carousel item is changed, the background gradient is updated to match the artwork.
-
-This is implemented in [`DynamicTheming.kt`](app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt), which provides the `DynamicThemePrimaryColorsFromImage` composable, to automatically animate the theme colors based on the provided image URL, like so:
-
-``` kotlin
-val dominantColorState: DominantColorState = rememberDominantColorState()
-
-DynamicThemePrimaryColorsFromImage(dominantColorState) {
-    var imageUrl = remember { mutableStateOf("") }
-
-    // When the image url changes, call updateColorsFromImageUrl()
-    launchInComposition(imageUrl) {
-        dominantColorState.updateColorsFromImageUrl(imageUrl)
-    }
-
-    // Content which will be dynamically themed....
-}
-```
-
-Underneath, [`DominantColorState`](app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt) uses the [Coil][coil] library to fetch the artwork image 🖼️, and then [Palette][palette] to extract the dominant colors from the image 🎨.
+![readme_fold](https://github.com/android/compose-samples/assets/10263978/fe02248f-81ce-489b-a6d6-838438c8368e)
 
 
 ### Others
@@ -139,3 +113,4 @@ limitations under the License.
  [rome]: https://rometools.github.io/rome/
  [jdk8desugar]: https://developer.android.com/studio/write/java8-support#library-desugaring
  [coil]: https://coil-kt.github.io/coil/
+ [wsc]: https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
