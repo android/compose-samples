@@ -17,14 +17,15 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.model.PlayerEpisode
-import java.time.Duration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Duration
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MockEpisodePlayerTest {
@@ -60,6 +61,22 @@ class MockEpisodePlayerTest {
         advanceTimeBy(duration.toMillis() + 1)
 
         assertEquals(testEpisodes.first(), mockEpisodePlayer.currentEpisode)
+    }
+
+    @Test
+    fun whenNext_queueIsNotEmpty_autoPlaysNextEpisode() = runTest(testDispatcher) {
+        val duration = Duration.ofSeconds(60)
+        val currEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = duration
+        )
+        mockEpisodePlayer.currentEpisode = currEpisode
+        testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
+
+        mockEpisodePlayer.next()
+        advanceTimeBy(100)
+
+        assertTrue(mockEpisodePlayer.playerState.value.isPlaying)
     }
 
     @Test

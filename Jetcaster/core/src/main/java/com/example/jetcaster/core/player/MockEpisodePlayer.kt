@@ -17,8 +17,6 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.model.PlayerEpisode
-import java.time.Duration
-import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -31,6 +29,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.time.Duration
+import kotlin.reflect.KProperty
 
 class MockEpisodePlayer(
     private val mainDispatcher: CoroutineDispatcher
@@ -127,7 +127,6 @@ class MockEpisodePlayer(
         }
 
         next()
-        play()
     }
 
     override fun pause() {
@@ -168,6 +167,7 @@ class MockEpisodePlayer(
         val nextEpisode = q[0]
         currentEpisode = nextEpisode
         queue.value = q - nextEpisode
+        play()
     }
 
     override fun previous() {
