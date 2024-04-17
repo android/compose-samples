@@ -43,4 +43,7 @@ abstract class CategoriesDao : BaseDao<Category> {
 
     @Query("SELECT * FROM categories WHERE name = :name")
     abstract suspend fun getCategoryWithName(name: String): Category?
+
+    @Query("SELECT * FROM categories WHERE name = :name")
+    abstract fun observeCategory(name: String): Flow<Category?>
 }

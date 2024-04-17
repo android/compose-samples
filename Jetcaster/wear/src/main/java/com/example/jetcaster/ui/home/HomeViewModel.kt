@@ -21,12 +21,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
+import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
-import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.CategoryTechnology
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
@@ -38,7 +40,6 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -50,6 +51,7 @@ class HomeViewModel @Inject constructor(
     private val podcastsRepository: PodcastsRepository,
     private val podcastStore: PodcastStore,
     private val episodeStore: EpisodeStore,
+    private val categoryStore: CategoryStore,
     private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
     private val filterableCategoriesUseCase: FilterableCategoriesUseCase,
     private val episodePlayer: EpisodePlayer,
@@ -59,7 +61,7 @@ class HomeViewModel @Inject constructor(
     // Holds our currently selected home category
     private val selectedHomeCategory = MutableStateFlow(HomeCategory.Library)
     // Holds our currently selected category
-    private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
+    private val defaultCategory = categoryStore.getCategory(CategoryTechnology)
 
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
@@ -70,11 +72,11 @@ class HomeViewModel @Inject constructor(
         selectedHomeCategory,
         podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
         refreshing,
-        _selectedCategory.flatMapLatest { selectedCategory ->
-            filterableCategoriesUseCase(selectedCategory)
+        defaultCategory.flatMapLatest {
+            filterableCategoriesUseCase(it?.asExternalModel())
         },
-        _selectedCategory.flatMapLatest {
-            podcastCategoryFilterUseCase(it)
+        defaultCategory.flatMapLatest {
+            podcastCategoryFilterUseCase(it?.asExternalModel())
         },
         selectedLibraryPodcast.flatMapLatest {
             episodeStore.episodesInPodcast(
@@ -93,9 +95,6 @@ class HomeViewModel @Inject constructor(
             podcastCategoryFilterResult,
             libraryEpisodes,
             queue ->
-
-        _selectedCategory.value = filterableCategories.selectedCategory
-
         selectedHomeCategory.value = homeCategory
 
         HomeViewState(

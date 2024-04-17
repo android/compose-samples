@@ -25,7 +25,6 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
-
 interface CategoryStore {
     /**
      * Returns a flow containing a list of categories which is sorted by the number
@@ -61,6 +60,11 @@ interface CategoryStore {
     suspend fun addCategory(category: Category): Long
 
     suspend fun addPodcastToCategory(podcastUri: String, categoryId: Long)
+
+    /**
+     * @return gets the category with [name], if it exists, otherwise, null
+     */
+    fun getCategory(name: String): Flow<Category?>
 }
 
 /**
@@ -119,4 +123,7 @@ class LocalCategoryStore constructor(
             PodcastCategoryEntry(podcastUri = podcastUri, categoryId = categoryId)
         )
     }
+
+    override fun getCategory(name: String): Flow<Category?> =
+        categoriesDao.observeCategory(name)
 }

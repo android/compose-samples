@@ -21,6 +21,7 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
@@ -55,6 +56,8 @@ class TestCategoryStore : CategoryStore {
     override suspend fun addCategory(category: Category): Long = -1
 
     override suspend fun addPodcastToCategory(podcastUri: String, categoryId: Long) {}
+
+    override fun getCategory(name: String): Flow<Category?> = flowOf()
 
     /**
      * Test-only API for setting the list of categories backed by this [TestCategoryStore].
