@@ -38,18 +38,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
@@ -147,9 +144,11 @@ private fun CategoryPodcastRow(
                 podcastImageUrl = podcast.imageUrl,
                 isFollowed = podcast.isSubscribed ?: false,
                 onToggleFollowClicked = { onTogglePodcastFollowed(podcast) },
-                modifier = Modifier.width(128.dp).clickable {
-                    navigateToPodcastDetails(podcast)
-                }
+                modifier = Modifier
+                    .width(128.dp)
+                    .clickable {
+                        navigateToPodcastDetails(podcast)
+                    }
             )
 
             if (index < lastIndex) Spacer(Modifier.width(24.dp))
@@ -174,19 +173,12 @@ private fun TopPodcastRowItem(
                 .aspectRatio(1f)
                 .align(Alignment.CenterHorizontally)
         ) {
-            if (podcastImageUrl != null) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(podcastImageUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium),
-                )
-            }
+            PodcastImage(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.medium),
+                podcastImageUrl = podcastImageUrl,
+            )
 
             ToggleFollowPodcastIconButton(
                 onClick = onToggleFollowClicked,
