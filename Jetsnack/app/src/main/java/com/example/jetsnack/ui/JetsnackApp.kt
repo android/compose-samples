@@ -124,10 +124,14 @@ fun MainContainer(
                                 zIndexInOverlay = 1f,
                             )
                             .animateEnterExit(
-                                enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(spatialExpressiveSpring()) {
+                                enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
+                                    spatialExpressiveSpring()
+                                ) {
                                     it
                                 },
-                                exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(spatialExpressiveSpring()) {
+                                exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(
+                                    spatialExpressiveSpring()
+                                ) {
                                     it
                                 }
                             )

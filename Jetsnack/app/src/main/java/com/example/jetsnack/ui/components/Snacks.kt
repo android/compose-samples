@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class)
 
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
@@ -46,7 +49,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -56,6 +59,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -297,8 +301,16 @@ private fun HighlightSnackItem(
                     type = SnackSharedElementType.Bounds
                 )
             )
+            val roundedCornerAnim by animatedVisibilityScope.transition.animateDp(label = "rounded corner") { enterExit: EnterExitState ->
+                when (enterExit) {
+                    EnterExitState.PreEnter -> 0.dp
+                    EnterExitState.Visible -> 20.dp
+                    EnterExitState.PostExit -> 0.dp
+                }
+            }
             JetsnackCard(
                 elevation = 0.dp,
+                shape = RoundedCornerShape(roundedCornerAnim),
                 modifier = modifier
                     .size(
                         width = HighlightCardWidth,
@@ -308,12 +320,17 @@ private fun HighlightSnackItem(
                     .sharedBounds(
                         sharedContentState = sharedContentState,
                         animatedVisibilityScope = animatedVisibilityScope,
-                        boundsTransform = snackDetailBoundsTransform
+                        boundsTransform = snackDetailBoundsTransform,
+                        clipInOverlayDuringTransition = OverlayClip(
+                            RoundedCornerShape(
+                                roundedCornerAnim
+                            )
+                        )
                     )
                     .border(
                         1.dp,
                         JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                        MaterialTheme.shapes.medium
+                        RoundedCornerShape(roundedCornerAnim)
                     )
 
             ) {
@@ -344,15 +361,9 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
-                                    clipInOverlayDuringTransition = OverlayClip(
-                                        MaterialTheme.shapes.medium.copy(
-                                            bottomEnd = CornerSize(0.dp),
-                                            bottomStart = CornerSize(0.dp)
-                                        )
-                                    ),
                                     boundsTransform = snackDetailBoundsTransform,
-                                    enter = fadeIn(nonSpatialExpressiveSpring()),
-                                    exit = fadeOut(nonSpatialExpressiveSpring())
+                                    enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                                    exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds()
                                 )
                                 .height(100.dp)
                                 .fillMaxWidth()
@@ -384,6 +395,8 @@ private fun HighlightSnackItem(
                                         )
                                     ),
                                     animatedVisibilityScope = animatedVisibilityScope,
+                                    exit = fadeOut(targetAlpha = 0.99f),
+                                    enter = fadeIn(),
                                     boundsTransform = snackDetailBoundsTransform
                                 )
                                 .size(120.dp)
