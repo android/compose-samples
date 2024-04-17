@@ -790,9 +790,9 @@ private fun FollowedPodcasts(
 
 @Composable
 private fun FollowedPodcastCarouselItem(
+    podcastTitle: String,
+    podcastImageUrl: String,
     modifier: Modifier = Modifier,
-    podcastImageUrl: String? = null,
-    podcastTitle: String? = null,
     lastEpisodeDateText: String? = null,
     onUnfollowedClick: () -> Unit,
 ) {
@@ -802,15 +802,13 @@ private fun FollowedPodcastCarouselItem(
                 .size(FEATURED_PODCAST_IMAGE_SIZE_DP)
                 .align(Alignment.CenterHorizontally)
         ) {
-            if (podcastImageUrl != null) {
-                PodcastImage(
-                    podcastImageUrl = podcastImageUrl,
-                    contentDescription = podcastTitle,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(MaterialTheme.shapes.medium),
-                )
-            }
+            PodcastImage(
+                podcastImageUrl = podcastImageUrl,
+                contentDescription = podcastTitle,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.medium),
+            )
 
             ToggleFollowPodcastIconButton(
                 onClick = onUnfollowedClick,
@@ -941,6 +939,8 @@ private fun PreviewPodcastCard() {
     JetcasterTheme {
         FollowedPodcastCarouselItem(
             modifier = Modifier.size(128.dp),
+            podcastTitle = "",
+            podcastImageUrl = "",
             onUnfollowedClick = {}
         )
     }

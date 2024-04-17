@@ -159,10 +159,10 @@ private fun CategoryPodcastRow(
 @Composable
 private fun TopPodcastRowItem(
     podcastTitle: String,
+    podcastImageUrl: String,
     isFollowed: Boolean,
     modifier: Modifier = Modifier,
     onToggleFollowClicked: () -> Unit,
-    podcastImageUrl: String? = null,
 ) {
     Column(
         modifier.semantics(mergeDescendants = true) {}
@@ -178,6 +178,7 @@ private fun TopPodcastRowItem(
                     .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium),
                 podcastImageUrl = podcastImageUrl,
+                contentDescription = podcastTitle
             )
 
             ToggleFollowPodcastIconButton(

@@ -39,9 +39,9 @@ import coil.request.ImageRequest
 
 @Composable
 fun PodcastImage(
+    podcastImageUrl: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
-    podcastImageUrl: String? = null,
-    contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
 ) {
     var imagePainterState by remember {

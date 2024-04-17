@@ -205,6 +205,7 @@ fun PodcastDetailsHeaderItem(
                     .size(148.dp)
                     .clip(MaterialTheme.shapes.large),
                 podcastImageUrl = podcast.imageUrl,
+                contentDescription = podcast.title
             )
             Column(
                 modifier = Modifier.padding(start = 16.dp)
