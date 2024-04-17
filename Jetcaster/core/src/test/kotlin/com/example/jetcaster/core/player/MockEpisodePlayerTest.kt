@@ -17,7 +17,6 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.model.PlayerEpisode
-import java.time.Duration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
@@ -26,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Duration
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MockEpisodePlayerTest {
@@ -46,6 +46,22 @@ class MockEpisodePlayerTest {
             duration = Duration.ofSeconds(60)
         ),
     )
+
+    @Test
+    fun whenPlay_incrementsByPlaySpeed() = runTest(testDispatcher) {
+        val playSpeed = Duration.ofSeconds(2)
+        val currEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = Duration.ofSeconds(60)
+        )
+        mockEpisodePlayer.currentEpisode = currEpisode
+        mockEpisodePlayer.changePlaySpeed(playSpeed)
+
+        mockEpisodePlayer.play()
+        advanceTimeBy(playSpeed.toMillis() + 300)
+
+        assertEquals(playSpeed, mockEpisodePlayer.playerState.value.timeElapsed)
+    }
 
     @Test
     fun whenPlayDone_playerAutoPlaysNextEpisode() = runTest(testDispatcher) {

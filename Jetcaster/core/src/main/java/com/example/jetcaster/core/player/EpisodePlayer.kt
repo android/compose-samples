@@ -17,8 +17,8 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.model.PlayerEpisode
-import java.time.Duration
 import kotlinx.coroutines.flow.StateFlow
+import java.time.Duration
 
 data class EpisodePlayerState(
     val currentEpisode: PlayerEpisode? = null,
@@ -85,4 +85,9 @@ interface EpisodePlayer {
      * Rewinds a currently played episode by a given time interval specified in [duration].
      */
     fun rewindBy(duration: Duration)
+
+    /**
+     * Changes the speed of which the player increments
+     */
+    fun changePlaySpeed(duration: Duration)
 }
