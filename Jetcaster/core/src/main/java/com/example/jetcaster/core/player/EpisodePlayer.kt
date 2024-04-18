@@ -43,6 +43,11 @@ interface EpisodePlayer {
      */
     var currentEpisode: PlayerEpisode?
 
+    /**
+     * The speed of which the player increments
+     */
+    var playerSpeed: Duration
+
     fun addToQueue(episode: PlayerEpisode)
 
     /**

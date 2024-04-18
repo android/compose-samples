@@ -69,6 +69,8 @@ class MockEpisodePlayer(
         }
     }
 
+    override var playerSpeed: Duration = Duration.ofSeconds(1)
+
     override val playerState: StateFlow<EpisodePlayerState> = _playerState.asStateFlow()
 
     override var currentEpisode: PlayerEpisode? by _currentEpisode
@@ -90,8 +92,8 @@ class MockEpisodePlayer(
         timerJob = coroutineScope.launch {
             // Increment timer by a second
             while (isActive && timeElapsed.value < episode.duration) {
-                delay(1000L)
-                timeElapsed.update { it + Duration.ofSeconds(1) }
+                delay(playerSpeed.toMillis())
+                timeElapsed.update { it + playerSpeed }
             }
 
             // Once done playing, see if

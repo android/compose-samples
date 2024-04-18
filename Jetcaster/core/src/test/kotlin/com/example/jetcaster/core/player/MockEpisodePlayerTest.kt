@@ -48,6 +48,22 @@ class MockEpisodePlayerTest {
     )
 
     @Test
+    fun whenPlay_incrementsByPlaySpeed() = runTest(testDispatcher) {
+        val playSpeed = Duration.ofSeconds(2)
+        val currEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = Duration.ofSeconds(60)
+        )
+        mockEpisodePlayer.currentEpisode = currEpisode
+        mockEpisodePlayer.playerSpeed = playSpeed
+
+        mockEpisodePlayer.play()
+        advanceTimeBy(playSpeed.toMillis() + 300)
+
+        assertEquals(playSpeed, mockEpisodePlayer.playerState.value.timeElapsed)
+    }
+
+    @Test
     fun whenPlayDone_playerAutoPlaysNextEpisode() = runTest(testDispatcher) {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
