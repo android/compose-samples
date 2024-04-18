@@ -68,7 +68,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -127,7 +126,7 @@ fun <T> nonSpatialExpressiveSpring() = spring<T>(
     stiffness = 1600f
 )
 
-val snackDetailBoundsTransform = BoundsTransform { initialBounds: Rect, targetBounds: Rect ->
+val snackDetailBoundsTransform = BoundsTransform { _, _ ->
     spatialExpressiveSpring()
 }
 
@@ -191,28 +190,25 @@ private fun Header(snackId: Long, origin: String) {
         ?: throw IllegalArgumentException("No Scope found")
 
     with(sharedTransitionScope) {
-        with(animatedVisibilityScope) {
-            Spacer(
-                modifier = Modifier
-                    .sharedBounds(
-                        rememberSharedContentState(
-                            key = SnackSharedElementKey(
-                                snackId = snackId,
-                                origin = origin,
-                                type = SnackSharedElementType.Background
-                            )
-                        ),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        boundsTransform = snackDetailBoundsTransform,
-                        enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
-                        exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds()
-                    )
-                    .height(280.dp)
-                    .fillMaxWidth()
-                    .background(Brush.verticalGradient(JetsnackTheme.colors.tornado1))
-            )
-        }
-
+        Spacer(
+            modifier = Modifier
+                .sharedBounds(
+                    rememberSharedContentState(
+                        key = SnackSharedElementKey(
+                            snackId = snackId,
+                            origin = origin,
+                            type = SnackSharedElementType.Background
+                        )
+                    ),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = snackDetailBoundsTransform,
+                    enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
+                    exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds()
+                )
+                .height(280.dp)
+                .fillMaxWidth()
+                .background(Brush.verticalGradient(JetsnackTheme.colors.tornado1))
+        )
     }
 }
 
@@ -247,108 +243,101 @@ private fun Body(
 ) {
     val sharedTransitionScope =
         LocalSharedTransitionScope.current ?: throw IllegalStateException("No scope found")
-    val animatedVisibilityScope =
-        LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No scope found")
-    with(sharedTransitionScope) {
-        with(animatedVisibilityScope) {
-            Column(modifier = Modifier) {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .height(MinTitleOffset)
-                )
-                Column(
-                    modifier = Modifier.verticalScroll(scroll)
-                ) {
-                    Spacer(Modifier.height(GradientScroll))
-                    Spacer(Modifier.height(ImageOverlap))
-                    JetsnackSurface(
-                        Modifier
+    Column(modifier = Modifier) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .height(MinTitleOffset)
+        )
+        Column(
+            modifier = Modifier.verticalScroll(scroll)
+        ) {
+            Spacer(Modifier.height(GradientScroll))
+            Spacer(Modifier.height(ImageOverlap))
+            JetsnackSurface(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+            ) {
+                Column {
+                    Spacer(Modifier.height(TitleHeight))
+                    Text(
+                        text = stringResource(R.string.detail_header),
+                        style = MaterialTheme.typography.overline,
+                        color = JetsnackTheme.colors.textHelp,
+                        modifier = HzPadding
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    var seeMore by remember { mutableStateOf(true) }
+                    with(sharedTransitionScope) {
+                        Text(
+                            text = stringResource(R.string.detail_placeholder),
+                            style = MaterialTheme.typography.body1,
+                            color = JetsnackTheme.colors.textHelp,
+                            maxLines = if (seeMore) 5 else Int.MAX_VALUE,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = HzPadding.skipToLookaheadSize()
+
+                        )
+                    }
+                    val textButton = if (seeMore) {
+                        stringResource(id = R.string.see_more)
+                    } else {
+                        stringResource(id = R.string.see_less)
+                    }
+                    Text(
+                        text = textButton,
+                        style = MaterialTheme.typography.button,
+                        textAlign = TextAlign.Center,
+                        color = JetsnackTheme.colors.textLink,
+                        modifier = Modifier
+                            .heightIn(20.dp)
                             .fillMaxWidth()
-                            .padding(top = 16.dp),
-                    ) {
-                        Column {
-                            Spacer(Modifier.height(TitleHeight))
-                            Text(
-                                text = stringResource(R.string.detail_header),
-                                style = MaterialTheme.typography.overline,
-                                color = JetsnackTheme.colors.textHelp,
-                                modifier = HzPadding
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            var seeMore by remember { mutableStateOf(true) }
-                            with(sharedTransitionScope) {
-                                Text(
-                                    text = stringResource(R.string.detail_placeholder),
-                                    style = MaterialTheme.typography.body1,
-                                    color = JetsnackTheme.colors.textHelp,
-                                    maxLines = if (seeMore) 5 else Int.MAX_VALUE,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = HzPadding.skipToLookaheadSize()
-
-                                )
+                            .padding(top = 15.dp)
+                            .clickable {
+                                seeMore = !seeMore
                             }
-                            val textButton = if (seeMore) {
-                                stringResource(id = R.string.see_more)
-                            } else {
-                                stringResource(id = R.string.see_less)
-                            }
-                            Text(
-                                text = textButton,
-                                style = MaterialTheme.typography.button,
-                                textAlign = TextAlign.Center,
-                                color = JetsnackTheme.colors.textLink,
-                                modifier = Modifier
-                                    .heightIn(20.dp)
-                                    .fillMaxWidth()
-                                    .padding(top = 15.dp)
-                                    .clickable {
-                                        seeMore = !seeMore
-                                    }
-                            )
-                            Spacer(Modifier.height(40.dp))
-                            Text(
-                                text = stringResource(R.string.ingredients),
-                                style = MaterialTheme.typography.overline,
-                                color = JetsnackTheme.colors.textHelp,
-                                modifier = HzPadding
-                            )
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                text = stringResource(R.string.ingredients_list),
-                                style = MaterialTheme.typography.body1,
-                                color = JetsnackTheme.colors.textHelp,
-                                modifier = HzPadding
-                            )
+                    )
+                    Spacer(Modifier.height(40.dp))
+                    Text(
+                        text = stringResource(R.string.ingredients),
+                        style = MaterialTheme.typography.overline,
+                        color = JetsnackTheme.colors.textHelp,
+                        modifier = HzPadding
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.ingredients_list),
+                        style = MaterialTheme.typography.body1,
+                        color = JetsnackTheme.colors.textHelp,
+                        modifier = HzPadding
+                    )
 
-                            Spacer(Modifier.height(16.dp))
-                            JetsnackDivider()
+                    Spacer(Modifier.height(16.dp))
+                    JetsnackDivider()
 
-                            related.forEach { snackCollection ->
-                                key(snackCollection.id) {
-                                    SnackCollection(
-                                        snackCollection = snackCollection,
-                                        onSnackClick = { _, _ -> },
-                                        highlight = false
-                                    )
-                                }
-                            }
-
-                            Spacer(
-                                modifier = Modifier
-                                    .padding(bottom = BottomBarHeight)
-                                    .navigationBarsPadding()
-                                    .height(8.dp)
+                    related.forEach { snackCollection ->
+                        key(snackCollection.id) {
+                            SnackCollection(
+                                snackCollection = snackCollection,
+                                onSnackClick = { _, _ -> },
+                                highlight = false
                             )
                         }
                     }
-                }
 
+                    Spacer(
+                        modifier = Modifier
+                            .padding(bottom = BottomBarHeight)
+                            .navigationBarsPadding()
+                            .height(8.dp)
+                    )
+                }
             }
         }
-    }
 
+    }
 }
 
 @Composable
@@ -375,57 +364,56 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                 .background(JetsnackTheme.colors.uiBackground)
         ) {
             Spacer(Modifier.height(16.dp))
-            with(animatedVisibilityScope) {
-                Text(
-                    text = snack.name,
-                    style = MaterialTheme.typography.h4,
-                    color = JetsnackTheme.colors.textSecondary,
-                    modifier = HzPadding
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = origin,
-                                    type = SnackSharedElementType.Title
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = snackDetailBoundsTransform
-                        )
-                        .wrapContentWidth()
-                )
-                Text(
-                    text = snack.tagline,
-                    fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.subtitle2,
-                    fontSize = 20.sp,
-                    color = JetsnackTheme.colors.textHelp,
-                    modifier = HzPadding
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = origin,
-                                    type = SnackSharedElementType.Tagline
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = snackDetailBoundsTransform
-                        )
-                        .wrapContentWidth()
-                )
-                Spacer(Modifier.height(4.dp))
+            Text(
+                text = snack.name,
+                fontStyle = FontStyle.Italic,
+                style = MaterialTheme.typography.h4,
+                color = JetsnackTheme.colors.textSecondary,
+                modifier = HzPadding
+                    .sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = origin,
+                                type = SnackSharedElementType.Title
+                            )
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = snackDetailBoundsTransform
+                    )
+                    .wrapContentWidth()
+            )
+            Text(
+                text = snack.tagline,
+                fontStyle = FontStyle.Italic,
+                style = MaterialTheme.typography.subtitle2,
+                fontSize = 20.sp,
+                color = JetsnackTheme.colors.textHelp,
+                modifier = HzPadding
+                    .sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = origin,
+                                type = SnackSharedElementType.Tagline
+                            )
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = snackDetailBoundsTransform
+                    )
+                    .wrapContentWidth()
+            )
+            Spacer(Modifier.height(4.dp))
 
-                Text(
-                    text = formatPrice(snack.price),
-                    style = MaterialTheme.typography.h6,
-                    color = JetsnackTheme.colors.textPrimary,
-                    modifier = HzPadding
-                )
+            Text(
+                text = formatPrice(snack.price),
+                style = MaterialTheme.typography.h6,
+                color = JetsnackTheme.colors.textPrimary,
+                modifier = HzPadding
+            )
 
-                Spacer(Modifier.height(8.dp))
-                JetsnackDivider(modifier = Modifier)
-            }
+            Spacer(Modifier.height(8.dp))
+            JetsnackDivider(modifier = Modifier)
         }
     }
 }
