@@ -43,6 +43,11 @@ interface EpisodePlayer {
      */
     var currentEpisode: PlayerEpisode?
 
+    /**
+     * The speed of which the player increments
+     */
+    var playerSpeed: Duration
+
     fun addToQueue(episode: PlayerEpisode)
 
     /**
@@ -85,9 +90,4 @@ interface EpisodePlayer {
      * Rewinds a currently played episode by a given time interval specified in [duration].
      */
     fun rewindBy(duration: Duration)
-
-    /**
-     * Changes the speed of which the player increments
-     */
-    fun changePlaySpeed(duration: Duration)
 }
