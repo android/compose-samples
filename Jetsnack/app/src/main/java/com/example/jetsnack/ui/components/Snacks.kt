@@ -291,7 +291,7 @@ private fun HighlightSnackItem(
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
     with(sharedTransitionScope) {
-        val roundedCornerAnim by animatedVisibilityScope.transition.animateDp(label = "rounded corner") { enterExit: EnterExitState ->
+        val roundedCornerAnimation by animatedVisibilityScope.transition.animateDp(label = "rounded corner") { enterExit: EnterExitState ->
             when (enterExit) {
                 EnterExitState.PreEnter -> 0.dp
                 EnterExitState.Visible -> 20.dp
@@ -300,7 +300,7 @@ private fun HighlightSnackItem(
         }
         JetsnackCard(
             elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnim),
+            shape = RoundedCornerShape(roundedCornerAnimation),
             modifier = modifier
                 .size(
                     width = HighlightCardWidth,
@@ -319,14 +319,14 @@ private fun HighlightSnackItem(
                     boundsTransform = snackDetailBoundsTransform,
                     clipInOverlayDuringTransition = OverlayClip(
                         RoundedCornerShape(
-                            roundedCornerAnim
+                            roundedCornerAnimation
                         )
                     )
                 )
                 .border(
                     1.dp,
                     JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                    RoundedCornerShape(roundedCornerAnim)
+                    RoundedCornerShape(roundedCornerAnimation)
                 )
 
         ) {

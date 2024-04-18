@@ -286,19 +286,23 @@ private fun Body(
                     } else {
                         stringResource(id = R.string.see_less)
                     }
-                    Text(
-                        text = textButton,
-                        style = MaterialTheme.typography.button,
-                        textAlign = TextAlign.Center,
-                        color = JetsnackTheme.colors.textLink,
-                        modifier = Modifier
-                            .heightIn(20.dp)
-                            .fillMaxWidth()
-                            .padding(top = 15.dp)
-                            .clickable {
-                                seeMore = !seeMore
-                            }
-                    )
+                    with (sharedTransitionScope){
+                        Text(
+                            text = textButton,
+                            style = MaterialTheme.typography.button,
+                            textAlign = TextAlign.Center,
+                            color = JetsnackTheme.colors.textLink,
+                            modifier = Modifier
+                                .heightIn(20.dp)
+                                .fillMaxWidth()
+                                .padding(top = 15.dp)
+                                .clickable {
+                                    seeMore = !seeMore
+                                }
+                                .skipToLookaheadSize()
+                        )
+                    }
+
                     Spacer(Modifier.height(40.dp))
                     Text(
                         text = stringResource(R.string.ingredients),
@@ -404,14 +408,16 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     .wrapContentWidth()
             )
             Spacer(Modifier.height(4.dp))
-
-            Text(
-                text = formatPrice(snack.price),
-                style = MaterialTheme.typography.h6,
-                color = JetsnackTheme.colors.textPrimary,
-                modifier = HzPadding
-            )
-
+            with(animatedVisibilityScope) {
+                Text(
+                    text = formatPrice(snack.price),
+                    style = MaterialTheme.typography.h6,
+                    color = JetsnackTheme.colors.textPrimary,
+                    modifier = HzPadding
+                        .animateEnterExit(enter = fadeIn() + slideInVertically { -it / 3 }, exit = fadeOut() + slideOutVertically {  -it / 3 })
+                        .skipToLookaheadSize()
+                )
+            }
             Spacer(Modifier.height(8.dp))
             JetsnackDivider(modifier = Modifier)
         }
