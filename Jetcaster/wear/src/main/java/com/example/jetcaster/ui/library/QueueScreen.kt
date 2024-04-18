@@ -22,26 +22,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.model.PlayerEpisode
-import com.example.jetcaster.ui.components.LoadingEntityScreen
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
 import com.google.android.horologist.compose.layout.ScreenScaffold
@@ -49,41 +49,42 @@ import com.google.android.horologist.compose.layout.rememberResponsiveColumnStat
 import com.google.android.horologist.compose.material.AlertDialog
 import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.Chip
+import com.google.android.horologist.compose.material.ListHeaderDefaults
+import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable fun QueueScreen(
-    onChangeSpeedButtonClick: () -> Unit,
     onPlayButtonClick: () -> Unit,
     onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
-    onErrorDialogCancelClick: () -> Unit,
+    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     queueViewModel: QueueViewModel = hiltViewModel()
 ) {
     val uiState by queueViewModel.uiState.collectAsStateWithLifecycle()
 
     QueueScreen(
-        viewState = uiState,
-        onChangeSpeedButtonClick = onChangeSpeedButtonClick,
-        onEpisodeItemClick = onEpisodeItemClick,
-        onErrorDialogCancelClick = onErrorDialogCancelClick,
+        uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
-        queueViewModel = queueViewModel,
         modifier = modifier,
+        onEpisodeItemClick = onEpisodeItemClick,
+        onDeleteQueueEpisodes = queueViewModel::onDeleteQueueEpisodes,
+        onDismiss = onDismiss,
+        queueViewModel = queueViewModel
     )
 }
 
 @Composable
 fun QueueScreen(
-    viewState: QueueScreenState,
-    onChangeSpeedButtonClick: () -> Unit,
+    uiState: QueueScreenState,
     onPlayButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
-    queueViewModel: QueueViewModel,
-    onErrorDialogCancelClick: () -> Unit
+    onDeleteQueueEpisodes: () -> Unit,
+    onDismiss: () -> Unit,
+    queueViewModel: QueueViewModel
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
@@ -95,25 +96,29 @@ fun QueueScreen(
         scrollState = columnState,
         modifier = modifier
     ) {
-        when (viewState) {
+        when (uiState) {
             is QueueScreenState.Loaded -> {
                 EntityScreen(
                     columnState = columnState,
                     headerContent = {
-                        DefaultEntityScreenHeader(
-                            title = stringResource(R.string.queue)
-                        )
+                        ResponsiveListHeader(
+                            contentPadding = ListHeaderDefaults.firstItemPadding()
+                        ) {
+                            Text(text = stringResource(R.string.queue))
+                        }
                     },
                     buttonsContent = {
                         ButtonsContent(
-                            episodes = viewState.episodeList,
-                            onChangeSpeedButtonClick = onChangeSpeedButtonClick,
-                            onPlayButtonClick = onPlayButtonClick,
-                            queueViewModel = queueViewModel
+                            onPlayButtonClick =
+                            {
+                                onPlayButtonClick
+                                queueViewModel.onPlayEpisode(uiState.episodeList[0])
+                            },
+                            onDeleteQueueEpisodes = onDeleteQueueEpisodes
                         )
                     },
                     content = {
-                        items(viewState.episodeList) { episode ->
+                        items(uiState.episodeList) { episode ->
                             MediaContent(
                                 episode = episode,
                                 episodeArtworkPlaceholder = rememberVectorPainter(
@@ -127,12 +132,31 @@ fun QueueScreen(
                 )
             }
             QueueScreenState.Loading -> {
-                LoadingEntityScreen(columnState)
+                EntityScreen(
+                    columnState = columnState,
+                    headerContent = {
+                        DefaultEntityScreenHeader(
+                            title = stringResource(R.string.queue)
+                        )
+                    },
+                    buttonsContent = {
+                        ButtonsContent(
+                            onPlayButtonClick = {},
+                            onDeleteQueueEpisodes = { },
+                            enabled = false
+                        )
+                    },
+                    content = {
+                        items(count = 2) {
+                            PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+                        }
+                    }
+                )
             }
             QueueScreenState.Empty -> {
                 AlertDialog(
                     showDialog = true,
-                    onDismiss = onErrorDialogCancelClick,
+                    onDismiss = onDismiss,
                     title = stringResource(R.string.display_nothing_in_queue),
                     message = stringResource(R.string.failed_loading_episodes_from_queue)
                 )
@@ -144,10 +168,9 @@ fun QueueScreen(
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
-    episodes: List<PlayerEpisode>,
-    onChangeSpeedButtonClick: () -> Unit,
     onPlayButtonClick: () -> Unit,
-    queueViewModel: QueueViewModel,
+    onDeleteQueueEpisodes: () -> Unit,
+    enabled: Boolean = true
 ) {
 
     Row(
@@ -158,22 +181,21 @@ fun ButtonsContent(
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
     ) {
         Button(
-            imageVector = ImageVector.vectorResource(R.drawable.speed),
-            contentDescription = stringResource(id = R.string.speed_button_content_description),
-            onClick = { onChangeSpeedButtonClick() },
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-        )
-
-        Button(
-            imageVector = Icons.Filled.PlayArrow,
+            imageVector = Icons.Outlined.PlayArrow,
             contentDescription = stringResource(id = R.string.button_play_content_description),
-            onClick = {
-                onPlayButtonClick()
-                queueViewModel.onPlayEpisode(episodes[0])
-            },
+            onClick = onPlayButtonClick,
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
+            enabled = enabled
+        )
+        Button(
+            imageVector = Icons.Outlined.Delete,
+            contentDescription =
+            stringResource(id = R.string.button_delete_queue_content_description),
+            onClick = onDeleteQueueEpisodes,
+            modifier = Modifier
+                .weight(weight = 0.3F, fill = false),
+            enabled = enabled
         )
     }
 }

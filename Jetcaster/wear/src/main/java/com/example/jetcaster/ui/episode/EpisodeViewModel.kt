@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.podcast
+package com.example.jetcaster.ui.episode
 
 /*
  * Copyright 2024 The Android Open Source Project
@@ -36,41 +36,37 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.repository.EpisodeStore
-import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
-import com.example.jetcaster.ui.PodcastDetails
+import com.example.jetcaster.ui.Episode
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 /**
- * ViewModel that handles the business logic and screen state of the Podcast details screen.
+ * ViewModel that handles the business logic and screen state of the Episode screen.
  */
 @HiltViewModel
-class PodcastDetailsViewModel @Inject constructor(
+class EpisodeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     episodeStore: EpisodeStore,
     private val episodePlayer: EpisodePlayer,
-    podcastStore: PodcastStore
 ) : ViewModel() {
 
-    private val podcastUri: String =
-        savedStateHandle.get<String>(PodcastDetails.PODCAST_URI).let {
+    private val episodeUri: String =
+        savedStateHandle.get<String>(Episode.EPISODE_URI).let {
             Uri.decode(it)
         }
 
-    private val podcastFlow = if (podcastUri != null) {
-        podcastStore.podcastWithExtraInfo(podcastUri)
+    private val episodeFlow = if (episodeUri != null) {
+        episodeStore.episodeAndPodcastWithUri(episodeUri)
     } else {
         flowOf(null)
     }.stateIn(
@@ -79,38 +75,36 @@ class PodcastDetailsViewModel @Inject constructor(
         null
     )
 
-    private val episodeListFlow = podcastFlow.flatMapLatest {
-        if (it != null) {
-            episodeStore.episodesInPodcast(it.podcast.uri)
-        } else {
-            flowOf(emptyList())
-        }
-    }.map { list ->
-        list.map { it.toPlayerEpisode() }
-    }
-
-    val uiState: StateFlow<PodcastDetailsScreenState> =
-        combine(
-            podcastFlow,
-            episodeListFlow
-        ) { podcast, episodes ->
-            if (podcast != null) {
-                PodcastDetailsScreenState.Loaded(
-                    podcast = podcast.podcast.asExternalModel()
-                        .copy(isSubscribed = podcast.isFollowed),
-                    episodeList = episodes,
-                )
+    val uiState: StateFlow<EpisodeScreenState> =
+        episodeFlow.map {
+            if (it != null) {
+                EpisodeScreenState.Loaded(it)
             } else {
-                PodcastDetailsScreenState.Empty
+                EpisodeScreenState.Empty
             }
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            PodcastDetailsScreenState.Loading,
+            EpisodeScreenState.Loading,
         )
 
-    fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
-        episodePlayer.currentEpisode = episodes[0]
-        episodePlayer.play(episodes)
+    fun onPlayEpisode(episode: PlayerEpisode) {
+        episodePlayer.currentEpisode = episode
+        episodePlayer.play()
     }
+    fun addToQueue(episode: PlayerEpisode) {
+        episodePlayer.addToQueue(episode)
+    }
+}
+
+@ExperimentalHorologistApi
+sealed interface EpisodeScreenState {
+
+    data object Loading : EpisodeScreenState
+
+    data class Loaded(
+        val episode: EpisodeToPodcast
+    ) : EpisodeScreenState
+
+    data object Empty : EpisodeScreenState
 }

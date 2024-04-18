@@ -22,6 +22,7 @@ import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.model.PodcastInfo
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -60,4 +61,16 @@ object PodcastMapper {
         podcastWithExtraInfo: PodcastWithExtraInfo,
     ): PodcastInfo =
         podcastWithExtraInfo.asExternalModel()
+}
+
+@ExperimentalHorologistApi
+sealed interface PodcastsScreenState {
+
+    data object Loading : PodcastsScreenState
+
+    data class Loaded(
+        val podcastList: List<PodcastInfo>,
+    ) : PodcastsScreenState
+
+    data object Empty : PodcastsScreenState
 }

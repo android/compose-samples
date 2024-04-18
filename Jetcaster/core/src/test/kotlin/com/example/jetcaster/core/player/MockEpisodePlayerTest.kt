@@ -70,6 +70,7 @@ class MockEpisodePlayerTest {
             uri = "currentEpisode",
             duration = duration
         )
+
         mockEpisodePlayer.currentEpisode = currEpisode
         testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
 
@@ -77,6 +78,35 @@ class MockEpisodePlayerTest {
         advanceTimeBy(100)
 
         assertTrue(mockEpisodePlayer.playerState.value.isPlaying)
+    }
+    @Test
+    fun whenPlayListOfEpisodes_playerAutoPlaysNextEpisode() = runTest(testDispatcher) {
+        val duration = Duration.ofSeconds(60)
+        val currEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = duration
+        )
+        val firstEpisodeFromList = PlayerEpisode(
+            uri = "firstEpisodeFromList",
+            duration = duration
+        )
+        val secondEpisodeFromList = PlayerEpisode(
+            uri = "secondEpisodeFromList",
+            duration = duration
+        )
+        val episodeListToBeAddedToTheQueue: List<PlayerEpisode> = listOf(
+            firstEpisodeFromList, secondEpisodeFromList
+        )
+        mockEpisodePlayer.currentEpisode = currEpisode
+
+        mockEpisodePlayer.play(episodeListToBeAddedToTheQueue)
+        assertEquals(firstEpisodeFromList, mockEpisodePlayer.currentEpisode)
+
+        advanceTimeBy(duration.toMillis() + 1)
+        assertEquals(secondEpisodeFromList, mockEpisodePlayer.currentEpisode)
+
+        advanceTimeBy(duration.toMillis() + 1)
+        assertEquals(currEpisode, mockEpisodePlayer.currentEpisode)
     }
 
     @Test

@@ -18,62 +18,58 @@ package com.example.jetcaster.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
-import com.example.jetcaster.core.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class LatestEpisodeViewModel @Inject constructor(
-    private val episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase,
+    episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase,
     private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
-    // Holds our view state which the UI collects via [state]
-    private val _state = MutableStateFlow(LatestEpisodeViewState())
-    // Holds the view state if the UI is refreshing for new data
-    private val refreshing = MutableStateFlow(false)
-    val state: StateFlow<LatestEpisodeViewState>
-        get() = _state
 
-    init {
-        viewModelScope.launch {
-            // Combines the latest value from each of the flows, allowing us to generate a
-            // view state instance which only contains the latest values.
-            combine(
-                episodesFromFavouritePodcasts.invoke(),
-                refreshing
-            ) {
-                    libraryEpisodes,
-                    refreshing
-                ->
-
-                LatestEpisodeViewState(
-                    refreshing = refreshing,
-                    libraryEpisodes = libraryEpisodes,
-                    errorMessage = null, /* TODO */
+    val uiState: StateFlow<LatestEpisodeScreenState> =
+        episodesFromFavouritePodcasts.invoke().map { episodeToPodcastList ->
+            if (episodeToPodcastList.isNotEmpty()) {
+                LatestEpisodeScreenState.Loaded(
+                    episodeToPodcastList.map {
+                        it.toPlayerEpisode()
+                    }
                 )
-            }.catch { throwable ->
-                // TODO: emit a UI error here. For now we'll just rethrow
-                throw throwable
-            }.collect {
-                _state.value = it
+            } else {
+                LatestEpisodeScreenState.Empty
             }
-        }
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            LatestEpisodeScreenState.Loading,
+        )
+
+    fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
+        episodePlayer.currentEpisode = episodes[0]
+        episodePlayer.play(episodes)
     }
+
     fun onPlayEpisode(episode: PlayerEpisode) {
         episodePlayer.currentEpisode = episode
         episodePlayer.play()
     }
 }
-data class LatestEpisodeViewState(
-    val refreshing: Boolean = false,
-    val libraryEpisodes: List<EpisodeToPodcast> = emptyList(),
-    val errorMessage: String? = null
-)
+
+sealed interface LatestEpisodeScreenState {
+
+    data object Loading : LatestEpisodeScreenState
+
+    data class Loaded(
+        val episodeList: List<PlayerEpisode>
+    ) : LatestEpisodeScreenState
+
+    data object Empty : LatestEpisodeScreenState
+}

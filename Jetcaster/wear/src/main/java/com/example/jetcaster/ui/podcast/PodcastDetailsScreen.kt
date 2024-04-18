@@ -16,61 +16,54 @@
 
 package com.example.jetcaster.ui.podcast
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
-import com.example.jetcaster.ui.components.LoadingEntityScreen
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
-import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.Chip
+import com.google.android.horologist.compose.material.ListHeaderDefaults
+import com.google.android.horologist.compose.material.ResponsiveListHeader
+import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
-import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable fun PodcastDetailsScreen(
-    onChangeSpeedButtonClick: () -> Unit,
     onPlayButtonClick: () -> Unit,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
-    onErrorDialogCancelClick: () -> Unit,
+    onEpisodeItemClick: (PlayerEpisode) -> Unit,
+    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     podcastDetailsViewModel: PodcastDetailsViewModel = hiltViewModel()
 ) {
     val uiState by podcastDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
     PodcastDetailsScreen(
-        viewState = uiState,
-        onChangeSpeedButtonClick = onChangeSpeedButtonClick,
+        uiState = uiState,
         onEpisodeItemClick = onEpisodeItemClick,
-        onPlayEpisode = podcastDetailsViewModel::onPlayEpisode,
-        onErrorDialogCancelClick = onErrorDialogCancelClick,
+        onPlayEpisode = podcastDetailsViewModel::onPlayEpisodes,
+        onDismiss = onDismiss,
         onPlayButtonClick = onPlayButtonClick,
         modifier = modifier,
     )
@@ -78,13 +71,12 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable
 fun PodcastDetailsScreen(
-    viewState: PodcastDetailsScreenState,
-    onChangeSpeedButtonClick: () -> Unit,
+    uiState: PodcastDetailsScreenState,
     onPlayButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
-    onPlayEpisode: (PlayerEpisode) -> Unit,
-    onErrorDialogCancelClick: () -> Unit
+    onEpisodeItemClick: (PlayerEpisode) -> Unit,
+    onPlayEpisode: (List<PlayerEpisode>) -> Unit,
+    onDismiss: () -> Unit
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
@@ -96,23 +88,28 @@ fun PodcastDetailsScreen(
         scrollState = columnState,
         modifier = modifier
     ) {
-        when (viewState) {
+        when (uiState) {
             is PodcastDetailsScreenState.Loaded -> {
                 EntityScreen(
                     columnState = columnState,
-                    headerContent = { DefaultEntityScreenHeader(title = viewState.podcast.title) },
+                    headerContent = {
+                        ResponsiveListHeader(
+                            contentPadding = ListHeaderDefaults.firstItemPadding()
+                        ) {
+                            Text(text = uiState.podcast.title)
+                        }
+                    },
                     buttonsContent = {
                         ButtonsContent(
-                            episodes = viewState.episodeList,
-                            onChangeSpeedButtonClick = onChangeSpeedButtonClick,
+                            episodes = uiState.episodeList,
                             onPlayButtonClick = onPlayButtonClick,
                             onPlayEpisode = onPlayEpisode
                         )
                     },
                     content = {
-                        items(count = viewState.episodeList.size) { index ->
+                        items(uiState.episodeList) { episode ->
                             MediaContent(
-                                episode = viewState.episodeList[index],
+                                episode = episode,
                                 episodeArtworkPlaceholder = rememberVectorPainter(
                                     image = Icons.Default.MusicNote,
                                     tintColor = Color.Blue,
@@ -127,12 +124,33 @@ fun PodcastDetailsScreen(
             PodcastDetailsScreenState.Empty -> {
                 AlertDialog(
                     showDialog = true,
-                    onDismiss = { onErrorDialogCancelClick },
+                    onDismiss = { onDismiss },
                     message = stringResource(R.string.podcasts_no_episode_podcasts)
                 )
             }
             PodcastDetailsScreenState.Loading -> {
-                LoadingEntityScreen(columnState)
+                EntityScreen(
+                    columnState = columnState,
+                    headerContent = {
+                        ResponsiveListHeader(
+                            contentPadding = ListHeaderDefaults.firstItemPadding()
+                        ) {
+                            Text(text = stringResource(id = R.string.loading))
+                        }
+                    },
+                    buttonsContent = {
+                        ButtonsContent(
+                            episodes = emptyList(),
+                            onPlayButtonClick = { },
+                            onPlayEpisode = { }
+                        )
+                    },
+                    content = {
+                        items(count = 2) {
+                            PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+                        }
+                    }
+                )
             }
         }
     }
@@ -141,58 +159,37 @@ fun PodcastDetailsScreen(
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
-    episodes: List<EpisodeToPodcast>,
-    onChangeSpeedButtonClick: () -> Unit,
+    episodes: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
-    onPlayEpisode: (PlayerEpisode) -> Unit,
-    enabled: Boolean = true
+    onPlayEpisode: (List<PlayerEpisode>) -> Unit,
 ) {
 
-    Row(
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .height(52.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
-    ) {
-        Button(
-            imageVector = ImageVector.vectorResource(R.drawable.speed),
-            contentDescription = stringResource(id = R.string.speed_button_content_description),
-            onClick = { onChangeSpeedButtonClick() },
-            enabled = enabled,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-        )
-
-        Button(
-            imageVector = Icons.Filled.PlayArrow,
-            contentDescription = stringResource(id = R.string.button_play_content_description),
-            onClick = {
-                onPlayButtonClick()
-                onPlayEpisode(episodes[0].toPlayerEpisode())
-            },
-            enabled = enabled,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-        )
-    }
+    Chip(
+        label = stringResource(id = R.string.button_play_content_description),
+        onClick = {
+            onPlayButtonClick()
+            onPlayEpisode(episodes)
+        },
+        modifier = Modifier.padding(bottom = 16.dp),
+        icon = Icons.Outlined.PlayArrow.asPaintable(),
+    )
 }
 
 @Composable
 fun MediaContent(
-    episode: EpisodeToPodcast,
+    episode: PlayerEpisode,
     episodeArtworkPlaceholder: Painter?,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit
+    onEpisodeItemClick: (PlayerEpisode) -> Unit
 ) {
-    val mediaTitle = episode.episode.title
+    val mediaTitle = episode.title
 
-    val secondaryLabel = episode.episode.author
+    val secondaryLabel = episode.author
 
     Chip(
         label = mediaTitle,
-        onClick = { onEpisodeItemClick },
+        onClick = { onEpisodeItemClick(episode) },
         secondaryLabel = secondaryLabel,
-        icon = CoilPaintable(episode.podcast.imageUrl, episodeArtworkPlaceholder),
+        icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
     )
@@ -204,7 +201,7 @@ sealed class PodcastDetailsScreenState {
     data object Loading : PodcastDetailsScreenState()
 
     data class Loaded(
-        val episodeList: List<EpisodeToPodcast>,
+        val episodeList: List<PlayerEpisode>,
         val podcast: PodcastInfo,
     ) : PodcastDetailsScreenState()
 
