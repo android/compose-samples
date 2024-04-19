@@ -43,6 +43,10 @@ public object JetcasterNavController {
     public fun NavController.navigateToUpNext() {
         navigate(UpNext.destination())
     }
+
+    public fun NavController.navigateToEpisode(episodeUri: String) {
+        navigate(Episode.destination(episodeUri))
+    }
 }
 
 public object YourPodcasts : NavigationScreens("yourPodcasts") {
@@ -54,15 +58,30 @@ public object LatestEpisodes : NavigationScreens("latestEpisodes") {
 }
 
 public object PodcastDetails : NavigationScreens("podcast?podcastUri={podcastUri}") {
-    public const val podcastUri: String = "podcastUri"
-    public fun destination(podcastUriValue: String): String {
-        val encodedUri = Uri.encode(podcastUriValue)
-        return "podcast?$podcastUri=$encodedUri"
+    public const val PODCAST_URI: String = "podcastUri"
+    public fun destination(podcastUri: String): String {
+        val encodedUri = Uri.encode(podcastUri)
+        return "podcast?$PODCAST_URI=$encodedUri"
     }
 
     override val arguments: List<NamedNavArgument>
         get() = listOf(
-            navArgument(podcastUri) {
+            navArgument(PODCAST_URI) {
+                type = NavType.StringType
+            },
+        )
+}
+
+public object Episode : NavigationScreens("episode?episodeUri={episodeUri}") {
+    public const val EPISODE_URI: String = "episodeUri"
+    public fun destination(episodeUri: String): String {
+        val encodedUri = Uri.encode(episodeUri)
+        return "episode?$EPISODE_URI=$encodedUri"
+    }
+
+    override val arguments: List<NamedNavArgument>
+        get() = listOf(
+            navArgument(EPISODE_URI) {
                 type = NavType.StringType
             },
         )

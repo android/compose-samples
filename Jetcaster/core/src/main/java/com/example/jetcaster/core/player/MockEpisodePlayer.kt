@@ -80,6 +80,10 @@ class MockEpisodePlayer(
         }
     }
 
+    override fun removeAllFromQueue() {
+        queue.value = emptyList()
+    }
+
     override fun play() {
         // Do nothing if already playing
         if (isPlaying.value) {
@@ -107,24 +111,31 @@ class MockEpisodePlayer(
     }
 
     override fun play(playerEpisode: PlayerEpisode) {
+        play(listOf(playerEpisode))
+    }
+
+    override fun play(playerEpisodes: List<PlayerEpisode>) {
         if (isPlaying.value) {
             pause()
         }
 
         // Keep the currently playing episode in the queue
         val playingEpisode = _currentEpisode.value
-        queue.update {
-            val previousList = if (it.contains(playerEpisode)) {
-                val mutableList = it.toMutableList()
-                mutableList.remove(playerEpisode)
-                mutableList
-            } else {
-                it
+        var previousList: List<PlayerEpisode> = emptyList()
+        queue.update { queue ->
+            playerEpisodes.map { episode ->
+                if (queue.contains(episode)) {
+                    val mutableList = queue.toMutableList()
+                    mutableList.remove(episode)
+                    previousList = mutableList
+                } else {
+                    previousList = queue
+                }
             }
             if (playingEpisode != null) {
-                listOf(playerEpisode, playingEpisode) + previousList
+                playerEpisodes + listOf(playingEpisode) + previousList
             } else {
-                listOf(playerEpisode) + previousList
+                playerEpisodes + previousList
             }
         }
 

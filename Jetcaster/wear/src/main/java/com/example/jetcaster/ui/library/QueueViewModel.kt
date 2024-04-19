@@ -52,16 +52,20 @@ class QueueViewModel @Inject constructor(
         episodePlayer.currentEpisode = episode
         episodePlayer.play()
     }
+
+    fun onDeleteQueueEpisodes() {
+        episodePlayer.removeAllFromQueue()
+    }
 }
 
 @ExperimentalHorologistApi
-sealed class QueueScreenState {
+sealed interface QueueScreenState {
 
-    data object Loading : QueueScreenState()
+    data object Loading : QueueScreenState
 
     data class Loaded(
         val episodeList: List<PlayerEpisode>
-    ) : QueueScreenState()
+    ) : QueueScreenState
 
-    data object Empty : QueueScreenState()
+    data object Empty : QueueScreenState
 }

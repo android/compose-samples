@@ -49,16 +49,17 @@ import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.Chip
+import com.google.android.horologist.compose.material.ListHeaderDefaults
+import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
-import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable
 fun PodcastsScreen(
     podcastsViewModel: PodcastsViewModel = hiltViewModel(),
     onPodcastsItemClick: (PodcastInfo) -> Unit,
-    onErrorDialogCancelClick: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     val uiState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -84,7 +85,7 @@ fun PodcastsScreen(
 
     Dialog(
         showDialog = modifiedState == PodcastsScreenState.Empty,
-        onDismissRequest = onErrorDialogCancelClick,
+        onDismissRequest = onDismiss,
         scrollState = rememberScalingLazyListState(),
     ) {
         Alert(
@@ -108,7 +109,7 @@ fun PodcastsScreen(
                             id = R.string
                                 .podcasts_failed_dialog_cancel_button_content_description,
                         ),
-                        onClick = onErrorDialogCancelClick,
+                        onClick = onDismiss,
                         modifier = Modifier
                             .size(24.dp)
                             .wrapContentSize(align = Alignment.Center),
@@ -138,11 +139,11 @@ fun PodcastsScreen(
                 EntityScreen(
                     columnState = columnState,
                     headerContent = {
-                        DefaultEntityScreenHeader(
-                            title = stringResource(
-                                R.string.podcasts
-                            )
-                        )
+                        ResponsiveListHeader(
+                            contentPadding = ListHeaderDefaults.firstItemPadding()
+                        ) {
+                            Text(text = stringResource(id = R.string.podcasts))
+                        }
                     },
                     content = {
                         items(count = podcastsScreenState.podcastList.size) {
@@ -188,16 +189,4 @@ fun MediaContent(
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
     )
-}
-
-@ExperimentalHorologistApi
-sealed class PodcastsScreenState {
-
-    data object Loading : PodcastsScreenState()
-
-    data class Loaded(
-        val podcastList: List<PodcastInfo>,
-    ) : PodcastsScreenState()
-
-    data object Empty : PodcastsScreenState()
 }

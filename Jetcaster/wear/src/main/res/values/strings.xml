@@ -31,7 +31,9 @@
     <string name="entity_no_featured_podcasts_dialog_refresh_button_content_description">Refresh</string>
 
     <string name="speed_button_content_description">Change Speed</string>
-    <string name="button_play_content_description">Play</string>
+    <string name="download_button_content_description">Download</string>
+    <string name="button_play_content_description">Play episodes</string>
+    <string name="button_delete_queue_content_description">Delete queue</string>
     <string name="updated_longer">Updated a while ago</string>
     <plurals name="updated_weeks_ago">
         <item quantity="one">Updated %d week ago</item>
@@ -71,4 +73,5 @@
     <string name="add_episode_to_queue">Add an episode to the queue</string>
     <string name="failed_loading_episodes_from_queue">Failed at loading episodes from the queue</string>
     <string name="add_to_queue_content_description">Add to queue</string>
+    <string name="episode_info_not_available">Episode info not available at the moment</string>
 </resources>

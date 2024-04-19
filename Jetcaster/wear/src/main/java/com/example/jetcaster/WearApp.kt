@@ -25,6 +25,8 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
 import com.example.jetcaster.theme.WearAppTheme
+import com.example.jetcaster.ui.Episode
+import com.example.jetcaster.ui.JetcasterNavController.navigateToEpisode
 import com.example.jetcaster.ui.JetcasterNavController.navigateToLatestEpisode
 import com.example.jetcaster.ui.JetcasterNavController.navigateToPodcastDetails
 import com.example.jetcaster.ui.JetcasterNavController.navigateToUpNext
@@ -33,6 +35,7 @@ import com.example.jetcaster.ui.LatestEpisodes
 import com.example.jetcaster.ui.PodcastDetails
 import com.example.jetcaster.ui.UpNext
 import com.example.jetcaster.ui.YourPodcasts
+import com.example.jetcaster.ui.episode.EpisodeScreen
 import com.example.jetcaster.ui.home.HomeScreen
 import com.example.jetcaster.ui.library.LatestEpisodesScreen
 import com.example.jetcaster.ui.library.PodcastsScreen
@@ -90,39 +93,45 @@ fun WearApp() {
                 ) {
                     LatestEpisodesScreen(
                         playlistName = stringResource(id = R.string.latest_episodes),
-                        // TODO implement change speed
-                        onChangeSpeedButtonClick = {},
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
-                        }
+                        },
+                        onDismiss = { navController.popBackStack() }
                     )
                 }
                 composable(route = YourPodcasts.navRoute) {
                     PodcastsScreen(
                         onPodcastsItemClick = { navController.navigateToPodcastDetails(it.uri) },
-                        onErrorDialogCancelClick = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() }
                     )
                 }
                 composable(route = PodcastDetails.navRoute) {
                     PodcastDetailsScreen(
-                        // TODO implement change speed
-                        onChangeSpeedButtonClick = {},
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         },
-                        onEpisodeItemClick = { navController.navigateToPlayer() },
-                        onErrorDialogCancelClick = { navController.popBackStack() }
+                        onEpisodeItemClick = { navController.navigateToEpisode(it.uri) },
+                        onDismiss = { navController.popBackStack() }
                     )
                 }
                 composable(route = UpNext.navRoute) {
                     QueueScreen(
-                        // TODO implement change speed
-                        onChangeSpeedButtonClick = {},
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         },
                         onEpisodeItemClick = { navController.navigateToPlayer() },
-                        onErrorDialogCancelClick = {
+                        onDismiss = {
+                            navController.popBackStack()
+                            navController.navigateToYourPodcast()
+                        }
+                    )
+                }
+                composable(route = Episode.navRoute) {
+                    EpisodeScreen(
+                        onPlayButtonClick = {
+                            navController.navigateToPlayer()
+                        },
+                        onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
                         }
