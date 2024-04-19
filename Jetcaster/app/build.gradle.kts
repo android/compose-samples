@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -84,6 +85,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:model"))
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -95,14 +97,20 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.palette)
 
+    // Dependency injection
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Compose
     implementation(libs.androidx.activity.compose)
-
-    implementation(libs.androidx.constraintlayout.compose)
-
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
+    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
@@ -112,20 +120,14 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.window)
+    implementation(libs.androidx.window.core)
 
     implementation(libs.accompanist.adaptive)
 
     implementation(libs.coil.kt.compose)
 
-    implementation(libs.okhttp3)
-    implementation(libs.okhttp.logging)
+    implementation(project(":core"))
+    implementation(project(":designsystem"))
 
-    implementation(libs.rometools.rome)
-    implementation(libs.rometools.modules)
-
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-
-    ksp(libs.androidx.room.compiler)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 }

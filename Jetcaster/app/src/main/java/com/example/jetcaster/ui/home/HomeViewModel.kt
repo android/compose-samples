@@ -18,17 +18,23 @@ package com.example.jetcaster.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.Graph
-import com.example.jetcaster.data.Category
-import com.example.jetcaster.data.CategoryStore
-import com.example.jetcaster.data.EpisodeStore
-import com.example.jetcaster.data.EpisodeToPodcast
-import com.example.jetcaster.data.PodcastStore
-import com.example.jetcaster.data.PodcastWithExtraInfo
-import com.example.jetcaster.data.PodcastsRepository
-import com.example.jetcaster.ui.home.category.PodcastCategoryViewState
-import com.example.jetcaster.ui.home.discover.DiscoverViewState
-import com.example.jetcaster.util.combine
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.asExternalModel
+import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
+import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
+import com.example.jetcaster.core.data.repository.EpisodeStore
+import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.FilterableCategoriesModel
+import com.example.jetcaster.core.model.LibraryInfo
+import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastCategoryFilterResult
+import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.util.combine
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -36,86 +42,31 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
-    private val podcastsRepository: PodcastsRepository = Graph.podcastRepository,
-    private val categoryStore: CategoryStore = Graph.categoryStore,
-    private val podcastStore: PodcastStore = Graph.podcastStore,
-    private val episodeStore: EpisodeStore = Graph.episodeStore
+@OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val podcastsRepository: PodcastsRepository,
+    private val podcastStore: PodcastStore,
+    private val episodeStore: EpisodeStore,
+    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
+    private val filterableCategoriesUseCase: FilterableCategoriesUseCase,
+    private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
+    // Holds our currently selected podcast in the library
+    private val selectedLibraryPodcast = MutableStateFlow<PodcastInfo?>(null)
     // Holds our currently selected home category
     private val selectedHomeCategory = MutableStateFlow(HomeCategory.Discover)
     // Holds the currently available home categories
     private val homeCategories = MutableStateFlow(HomeCategory.entries)
     // Holds our currently selected category
-    private val _selectedCategory = MutableStateFlow<Category?>(null)
+    private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
     // Holds our view state which the UI collects via [state]
     private val _state = MutableStateFlow(HomeViewState())
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val libraryEpisodes =
-        podcastStore.followedPodcastsSortedByLastEpisode()
-            .flatMapLatest { followedPodcasts ->
-                if (followedPodcasts.isEmpty()) {
-                    flowOf(emptyList())
-                } else {
-                    combine(
-                        followedPodcasts.map { p ->
-                            episodeStore.episodesInPodcast(p.podcast.uri, 5)
-                        }
-                    ) { allEpisodes ->
-                        allEpisodes.toList().flatten().sortedByDescending { it.episode.published }
-                    }
-                }
-            }
-
-    private val discover = combine(
-        categoryStore.categoriesSortedByPodcastCount()
-            .onEach { categories ->
-                // If we haven't got a selected category yet, select the first
-                if (categories.isNotEmpty() && _selectedCategory.value == null) {
-                    _selectedCategory.value = categories[0]
-                }
-            },
-        _selectedCategory
-    ) { categories, selectedCategory ->
-        DiscoverViewState(
-            categories = categories,
-            selectedCategory = selectedCategory
-        )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val podcastCategory = _selectedCategory.flatMapLatest { category ->
-        if (category == null) {
-            return@flatMapLatest flowOf(PodcastCategoryViewState())
-        }
-
-        val recentPodcastsFlow = categoryStore.podcastsInCategorySortedByPodcastCount(
-            category.id,
-            limit = 10
-        )
-
-        val episodesFlow = categoryStore.episodesFromPodcastsInCategory(
-            category.id,
-            limit = 20
-        )
-
-        // Combine our flows and collect them into the view state StateFlow
-        combine(recentPodcastsFlow, episodesFlow) { topPodcasts, episodes ->
-            PodcastCategoryViewState(
-                topPodcasts = topPodcasts,
-                episodes = episodes
-            )
-        }
-    }
 
     val state: StateFlow<HomeViewState>
         get() = _state
@@ -127,26 +78,43 @@ class HomeViewModel(
             combine(
                 homeCategories,
                 selectedHomeCategory,
-                podcastStore.followedPodcastsSortedByLastEpisode(limit = 20),
+                podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
                 refreshing,
-                discover,
-                podcastCategory,
-                libraryEpisodes
+                _selectedCategory.flatMapLatest { selectedCategory ->
+                    filterableCategoriesUseCase(selectedCategory)
+                },
+                _selectedCategory.flatMapLatest {
+                    podcastCategoryFilterUseCase(it)
+                },
+                selectedLibraryPodcast.flatMapLatest {
+                    episodeStore.episodesInPodcast(
+                        podcastUri = it?.uri ?: "",
+                        limit = 20
+                    )
+                }
             ) { homeCategories,
-                selectedHomeCategory,
+                homeCategory,
                 podcasts,
                 refreshing,
-                discoverViewState,
-                podcastCategoryViewState,
+                filterableCategories,
+                podcastCategoryFilterResult,
                 libraryEpisodes ->
+
+                _selectedCategory.value = filterableCategories.selectedCategory
+
+                // Override selected home category to show 'DISCOVER' if there are no
+                // featured podcasts
+                selectedHomeCategory.value =
+                    if (podcasts.isEmpty()) HomeCategory.Discover else homeCategory
+
                 HomeViewState(
                     homeCategories = homeCategories,
-                    selectedHomeCategory = selectedHomeCategory,
-                    featuredPodcasts = podcasts.toPersistentList(),
+                    selectedHomeCategory = homeCategory,
+                    featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
                     refreshing = refreshing,
-                    discoverViewState = discoverViewState,
-                    podcastCategoryViewState = podcastCategoryViewState,
-                    libraryEpisodes = libraryEpisodes,
+                    filterableCategoriesModel = filterableCategories,
+                    podcastCategoryFilterResult = podcastCategoryFilterResult,
+                    library = libraryEpisodes.asLibrary(),
                     errorMessage = null, /* TODO */
                 )
             }.catch { throwable ->
@@ -172,7 +140,7 @@ class HomeViewModel(
         }
     }
 
-    fun onCategorySelected(category: Category) {
+    fun onCategorySelected(category: CategoryInfo) {
         _selectedCategory.value = category
     }
 
@@ -180,30 +148,44 @@ class HomeViewModel(
         selectedHomeCategory.value = category
     }
 
-    fun onPodcastUnfollowed(podcastUri: String) {
+    fun onPodcastUnfollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
-            podcastStore.unfollowPodcast(podcastUri)
+            podcastStore.unfollowPodcast(podcast.uri)
         }
     }
 
-    fun onTogglePodcastFollowed(podcastUri: String) {
+    fun onTogglePodcastFollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
-            podcastStore.togglePodcastFollowed(podcastUri)
+            podcastStore.togglePodcastFollowed(podcast.uri)
         }
     }
+
+    fun onLibraryPodcastSelected(podcast: PodcastInfo?) {
+        selectedLibraryPodcast.value = podcast
+    }
+
+    fun onQueueEpisode(episode: PlayerEpisode) {
+        episodePlayer.addToQueue(episode)
+    }
 }
+
+private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
+    LibraryInfo(
+        podcast = this.firstOrNull()?.podcast?.asExternalModel(),
+        episodes = this.map { it.episode.asExternalModel() }
+    )
 
 enum class HomeCategory {
     Library, Discover
 }
 
 data class HomeViewState(
-    val featuredPodcasts: PersistentList<PodcastWithExtraInfo> = persistentListOf(),
+    val featuredPodcasts: PersistentList<PodcastInfo> = persistentListOf(),
     val refreshing: Boolean = false,
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),
-    val discoverViewState: DiscoverViewState = DiscoverViewState(),
-    val podcastCategoryViewState: PodcastCategoryViewState = PodcastCategoryViewState(),
-    val libraryEpisodes: List<EpisodeToPodcast> = emptyList(),
+    val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),
+    val podcastCategoryFilterResult: PodcastCategoryFilterResult = PodcastCategoryFilterResult(),
+    val library: LibraryInfo = LibraryInfo(),
     val errorMessage: String? = null
 )

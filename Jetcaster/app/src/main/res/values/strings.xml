@@ -40,19 +40,27 @@
 
     <string name="episode_date_duration">%1$s &#8226; %2$d mins</string>
 
-    <string name="cd_search">Search</string>
     <string name="cd_account">Account</string>
     <string name="cd_add">Add</string>
     <string name="cd_back">Back</string>
-    <string name="cd_more">More</string>
-    <string name="cd_play">Play</string>
-    <string name="cd_skip_previous">Skip previous</string>
-    <string name="cd_reply10">Reply 10 seconds</string>
-    <string name="cd_forward30">Forward 30 seconds</string>
-    <string name="cd_skip_next">Skip next</string>
-    <string name="cd_unfollow">Unfollow</string>
     <string name="cd_follow">Follow</string>
     <string name="cd_following">Following</string>
+    <string name="cd_forward10">Forward 10 seconds</string>
+    <string name="cd_more">More</string>
     <string name="cd_not_following">Not following</string>
+    <string name="cd_pause">Pause</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_replay10">Replay 10 seconds</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_selected_category">Selected category</string>
+    <string name="cd_skip_next">Skip next</string>
+    <string name="cd_skip_previous">Skip previous</string>
+    <string name="cd_unfollow">Unfollow</string>
+    <string name="episode_added_to_your_queue">Episode added to your queue</string>
+    <string name="cd_podcast_image">Podcast image</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribed">Subscribed</string>
+  <string name="see_more">see more</string>
+  <string name="search_for_a_podcast">Search for a podcast</string>
 
 </resources>

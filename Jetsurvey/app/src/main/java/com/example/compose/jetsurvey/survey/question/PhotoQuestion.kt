@@ -89,7 +89,7 @@ fun PhotoQuestion(
         OutlinedButton(
             onClick = {
                 newImageUri = getNewImageUri()
-                cameraLauncher.launch(newImageUri)
+                cameraLauncher.launch(newImageUri!!)
             },
             shape = MaterialTheme.shapes.small,
             contentPadding = PaddingValues()
