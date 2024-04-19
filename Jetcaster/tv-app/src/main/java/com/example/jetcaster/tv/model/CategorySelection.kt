@@ -17,9 +17,9 @@
 package com.example.jetcaster.tv.model
 
 import androidx.compose.runtime.Immutable
-import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.model.CategoryInfo
 
-data class CategorySelection(val category: Category, val isSelected: Boolean = false)
+data class CategorySelection(val categoryInfo: CategoryInfo, val isSelected: Boolean = false)
 
 @Immutable
 data class CategorySelectionList(

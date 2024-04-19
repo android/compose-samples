@@ -55,8 +55,8 @@ import androidx.tv.material3.FilterChip
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.CategorySelectionList
 import com.example.jetcaster.tv.model.PodcastList
@@ -101,8 +101,8 @@ private fun Ready(
     keyword: String,
     categorySelectionList: CategorySelectionList,
     onKeywordInput: (String) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    onCategoryUnselected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onCategoryUnselected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Controls(
@@ -122,8 +122,8 @@ private fun HasResult(
     categorySelectionList: CategorySelectionList,
     podcastList: PodcastList,
     onKeywordInput: (String) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    onCategoryUnselected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onCategoryUnselected: (CategoryInfo) -> Unit,
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -149,8 +149,8 @@ private fun Controls(
     keyword: String,
     categorySelectionList: CategorySelectionList,
     onKeywordInput: (String) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    onCategoryUnselected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onCategoryUnselected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() },
     toRequestFocus: Boolean = false
@@ -226,8 +226,8 @@ private fun KeywordInput(
 @Composable
 private fun CategorySelection(
     categorySelectionList: CategorySelectionList,
-    onCategorySelected: (Category) -> Unit,
-    onCategoryUnselected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
+    onCategoryUnselected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     FlowRow(
@@ -240,13 +240,13 @@ private fun CategorySelection(
                 selected = it.isSelected,
                 onClick = {
                     if (it.isSelected) {
-                        onCategoryUnselected(it.category)
+                        onCategoryUnselected(it.categoryInfo)
                     } else {
-                        onCategorySelected(it.category)
+                        onCategorySelected(it.categoryInfo)
                     }
                 }
             ) {
-                Text(text = it.category.name)
+                Text(text = it.categoryInfo.name)
             }
         }
     }
