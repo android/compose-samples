@@ -19,14 +19,16 @@ package com.example.jetcaster.tv.ui.component
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardScale
@@ -35,19 +37,8 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.WideCardLayout
 import coil.compose.AsyncImage
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
-
-@Composable
-internal fun EpisodeCard(
-    episode: EpisodeToPodcast,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    cardWidth: Dp = JetcasterAppDefaults.cardWidth.small,
-) =
-    EpisodeCard(episode.toPlayerEpisode(), onClick, modifier, cardWidth)
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -55,11 +46,11 @@ internal fun EpisodeCard(
     playerEpisode: PlayerEpisode,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    cardWidth: Dp = JetcasterAppDefaults.cardWidth.small,
+    cardSize: DpSize = JetcasterAppDefaults.thumbnailSize.episode,
 ) {
     WideCardLayout(
         imageCard = {
-            EpisodeThumbnail(playerEpisode, onClick = onClick, modifier = Modifier.width(cardWidth))
+            EpisodeThumbnail(playerEpisode, onClick = onClick, modifier = Modifier.size(cardSize))
         },
         title = {
             EpisodeMetaData(
@@ -87,7 +78,12 @@ private fun EpisodeThumbnail(
         scale = CardScale.None,
         modifier = modifier,
     ) {
-        AsyncImage(model = playerEpisode.podcastImageUrl, contentDescription = null)
+        AsyncImage(
+            model = playerEpisode.podcastImageUrl,
+            contentDescription = null,
+            placeholder = thumbnailPlaceholder(),
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
