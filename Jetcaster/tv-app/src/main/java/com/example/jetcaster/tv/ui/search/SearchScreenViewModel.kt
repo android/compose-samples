@@ -51,8 +51,11 @@ class SearchScreenViewModel @Inject constructor(
         categoryStore.categoriesSortedByPodcastCount().map(CategoryInfoList::from)
 
     private val searchConditionFlow =
-        combine(keywordFlow, selectedCategoryListFlow) { keyword, selectedCategories ->
-            SearchCondition(keyword, selectedCategories)
+        combine(keywordFlow, selectedCategoryListFlow, categoryInfoListFlow) { keyword, selectedCategories, categories ->
+            val selected  = selectedCategories.ifEmpty {
+                categories
+            }
+            SearchCondition(keyword, selected)
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
