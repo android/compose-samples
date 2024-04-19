@@ -19,7 +19,6 @@ package com.example.jetcaster.tv.ui.discover
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.toPlayerEpisode
-import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.model.CategoryInfo
