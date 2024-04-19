@@ -243,50 +243,52 @@ private fun Body(
 ) {
     val sharedTransitionScope =
         LocalSharedTransitionScope.current ?: throw IllegalStateException("No scope found")
-    Column(modifier = Modifier) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .height(MinTitleOffset)
-        )
-        Column(
-            modifier = Modifier.verticalScroll(scroll)
-        ) {
-            Spacer(Modifier.height(GradientScroll))
-            Spacer(Modifier.height(ImageOverlap))
-            JetsnackSurface(
-                Modifier
+    with(sharedTransitionScope) {
+        Column(modifier = Modifier.skipToLookaheadSize()) {
+            Spacer(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
-            ) {
-                Column {
-                    Spacer(Modifier.height(TitleHeight))
-                    Text(
-                        text = stringResource(R.string.detail_header),
-                        style = MaterialTheme.typography.overline,
-                        color = JetsnackTheme.colors.textHelp,
-                        modifier = HzPadding
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    var seeMore by remember { mutableStateOf(true) }
-                    with(sharedTransitionScope) {
-                        Text(
-                            text = stringResource(R.string.detail_placeholder),
-                            style = MaterialTheme.typography.body1,
-                            color = JetsnackTheme.colors.textHelp,
-                            maxLines = if (seeMore) 5 else Int.MAX_VALUE,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = HzPadding.skipToLookaheadSize()
+                    .statusBarsPadding()
+                    .height(MinTitleOffset)
+            )
 
+            Column(
+                modifier = Modifier.verticalScroll(scroll)
+            ) {
+                Spacer(Modifier.height(GradientScroll))
+                Spacer(Modifier.height(ImageOverlap))
+                JetsnackSurface(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                ) {
+                    Column {
+                        Spacer(Modifier.height(TitleHeight))
+                        Text(
+                            text = stringResource(R.string.detail_header),
+                            style = MaterialTheme.typography.overline,
+                            color = JetsnackTheme.colors.textHelp,
+                            modifier = HzPadding
                         )
-                    }
-                    val textButton = if (seeMore) {
-                        stringResource(id = R.string.see_more)
-                    } else {
-                        stringResource(id = R.string.see_less)
-                    }
-                    with (sharedTransitionScope){
+                        Spacer(Modifier.height(16.dp))
+                        var seeMore by remember { mutableStateOf(true) }
+                        with(sharedTransitionScope) {
+                            Text(
+                                text = stringResource(R.string.detail_placeholder),
+                                style = MaterialTheme.typography.body1,
+                                color = JetsnackTheme.colors.textHelp,
+                                maxLines = if (seeMore) 5 else Int.MAX_VALUE,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = HzPadding.skipToLookaheadSize()
+
+                            )
+                        }
+                        val textButton = if (seeMore) {
+                            stringResource(id = R.string.see_more)
+                        } else {
+                            stringResource(id = R.string.see_less)
+                        }
+
                         Text(
                             text = textButton,
                             style = MaterialTheme.typography.button,
@@ -301,46 +303,46 @@ private fun Body(
                                 }
                                 .skipToLookaheadSize()
                         )
-                    }
 
-                    Spacer(Modifier.height(40.dp))
-                    Text(
-                        text = stringResource(R.string.ingredients),
-                        style = MaterialTheme.typography.overline,
-                        color = JetsnackTheme.colors.textHelp,
-                        modifier = HzPadding
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.ingredients_list),
-                        style = MaterialTheme.typography.body1,
-                        color = JetsnackTheme.colors.textHelp,
-                        modifier = HzPadding
-                    )
 
-                    Spacer(Modifier.height(16.dp))
-                    JetsnackDivider()
+                        Spacer(Modifier.height(40.dp))
+                        Text(
+                            text = stringResource(R.string.ingredients),
+                            style = MaterialTheme.typography.overline,
+                            color = JetsnackTheme.colors.textHelp,
+                            modifier = HzPadding
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = stringResource(R.string.ingredients_list),
+                            style = MaterialTheme.typography.body1,
+                            color = JetsnackTheme.colors.textHelp,
+                            modifier = HzPadding
+                        )
 
-                    related.forEach { snackCollection ->
-                        key(snackCollection.id) {
-                            SnackCollection(
-                                snackCollection = snackCollection,
-                                onSnackClick = { _, _ -> },
-                                highlight = false
-                            )
+                        Spacer(Modifier.height(16.dp))
+                        JetsnackDivider()
+
+                        related.forEach { snackCollection ->
+                            key(snackCollection.id) {
+                                SnackCollection(
+                                    snackCollection = snackCollection,
+                                    onSnackClick = { _, _ -> },
+                                    highlight = false
+                                )
+                            }
                         }
-                    }
 
-                    Spacer(
-                        modifier = Modifier
-                            .padding(bottom = BottomBarHeight)
-                            .navigationBarsPadding()
-                            .height(8.dp)
-                    )
+                        Spacer(
+                            modifier = Modifier
+                                .padding(bottom = BottomBarHeight)
+                                .navigationBarsPadding()
+                                .height(8.dp)
+                        )
+                    }
                 }
             }
         }
-
     }
 }
 
@@ -414,7 +416,9 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     style = MaterialTheme.typography.h6,
                     color = JetsnackTheme.colors.textPrimary,
                     modifier = HzPadding
-                        .animateEnterExit(enter = fadeIn() + slideInVertically { -it / 3 }, exit = fadeOut() + slideOutVertically {  -it / 3 })
+                        .animateEnterExit(
+                            enter = fadeIn() + slideInVertically { -it / 3 },
+                            exit = fadeOut() + slideOutVertically { -it / 3 })
                         .skipToLookaheadSize()
                 )
             }

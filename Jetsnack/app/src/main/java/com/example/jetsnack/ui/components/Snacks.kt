@@ -391,7 +391,7 @@ private fun HighlightSnackItem(
                                     )
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
-                                exit = fadeOut(targetAlpha = 0.99f),
+                                exit = fadeOut(),
                                 enter = fadeIn(),
                                 boundsTransform = snackDetailBoundsTransform
                             )
