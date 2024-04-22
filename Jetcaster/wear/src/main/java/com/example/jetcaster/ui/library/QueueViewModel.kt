@@ -53,6 +53,11 @@ class QueueViewModel @Inject constructor(
         episodePlayer.play()
     }
 
+    fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
+        episodePlayer.currentEpisode = episodes[0]
+        episodePlayer.play(episodes)
+    }
+
     fun onDeleteQueueEpisodes() {
         episodePlayer.removeAllFromQueue()
     }

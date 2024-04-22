@@ -68,11 +68,11 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     QueueScreen(
         uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
+        onPlayEpisodes = queueViewModel::onPlayEpisodes,
         modifier = modifier,
         onEpisodeItemClick = onEpisodeItemClick,
         onDeleteQueueEpisodes = queueViewModel::onDeleteQueueEpisodes,
-        onDismiss = onDismiss,
-        queueViewModel = queueViewModel
+        onDismiss = onDismiss
     )
 }
 
@@ -80,11 +80,11 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 fun QueueScreen(
     uiState: QueueScreenState,
     onPlayButtonClick: () -> Unit,
+    onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     modifier: Modifier = Modifier,
     onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
-    onDismiss: () -> Unit,
-    queueViewModel: QueueViewModel
+    onDismiss: () -> Unit
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
@@ -109,11 +109,9 @@ fun QueueScreen(
                     },
                     buttonsContent = {
                         ButtonsContent(
-                            onPlayButtonClick =
-                            {
-                                onPlayButtonClick
-                                queueViewModel.onPlayEpisode(uiState.episodeList[0])
-                            },
+                            episodes = uiState.episodeList,
+                            onPlayButtonClick = onPlayButtonClick,
+                            onPlayEpisodes = onPlayEpisodes,
                             onDeleteQueueEpisodes = onDeleteQueueEpisodes
                         )
                     },
@@ -141,7 +139,9 @@ fun QueueScreen(
                     },
                     buttonsContent = {
                         ButtonsContent(
+                            episodes = emptyList(),
                             onPlayButtonClick = {},
+                            onPlayEpisodes = {},
                             onDeleteQueueEpisodes = { },
                             enabled = false
                         )
@@ -158,7 +158,7 @@ fun QueueScreen(
                     showDialog = true,
                     onDismiss = onDismiss,
                     title = stringResource(R.string.display_nothing_in_queue),
-                    message = stringResource(R.string.failed_loading_episodes_from_queue)
+                    message = stringResource(R.string.no_episodes_from_queue)
                 )
             }
         }
@@ -168,7 +168,9 @@ fun QueueScreen(
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
+    episodes: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
+    onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     enabled: Boolean = true
 ) {
@@ -183,7 +185,10 @@ fun ButtonsContent(
         Button(
             imageVector = Icons.Outlined.PlayArrow,
             contentDescription = stringResource(id = R.string.button_play_content_description),
-            onClick = onPlayButtonClick,
+            onClick = {
+                onPlayButtonClick()
+                onPlayEpisodes(episodes)
+            },
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
             enabled = enabled

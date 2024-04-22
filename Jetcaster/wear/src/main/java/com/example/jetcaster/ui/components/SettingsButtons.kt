@@ -19,13 +19,14 @@ package com.example.jetcaster.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import com.example.jetcaster.R
+import com.example.jetcaster.ui.player.PlayerUiState
 import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.audio.ui.components.SettingsButtonsDefaults
 import com.google.android.horologist.audio.ui.components.actions.SetVolumeButton
@@ -40,7 +41,8 @@ import com.google.android.horologist.compose.material.IconRtlMode
 fun SettingsButtons(
     volumeUiState: VolumeUiState,
     onVolumeClick: () -> Unit,
-    onAddToQueueClick: () -> Unit,
+    playerUiState: PlayerUiState,
+    onPlaybackSpeedChange: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
@@ -49,8 +51,11 @@ fun SettingsButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        AddToQueueButton(
-            onAddToQueueClick = onAddToQueueClick,
+        PlaybackSpeedButton(
+            currentPlayerSpeed = playerUiState.episodePlayerState
+                .playbackSpeed.toMillis().toFloat() / 1000,
+            onPlaybackSpeedChange = onPlaybackSpeedChange,
+            enabled = enabled
         )
 
         SettingsButtonsDefaults.BrandIcon(
@@ -61,22 +66,29 @@ fun SettingsButtons(
         SetVolumeButton(
             onVolumeClick = onVolumeClick,
             volumeUiState = volumeUiState,
+            enabled = enabled
         )
     }
 }
 
 @Composable
-fun AddToQueueButton(
-    onAddToQueueClick: () -> Unit,
+fun PlaybackSpeedButton(
+    currentPlayerSpeed: Float,
+    onPlaybackSpeedChange: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
     SettingsButton(
         modifier = modifier,
-        onClick = onAddToQueueClick,
+        onClick = onPlaybackSpeedChange,
         enabled = enabled,
-        imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+        imageVector =
+        when (currentPlayerSpeed) {
+            1f -> ImageVector.vectorResource(R.drawable.speed_1x)
+            1.5f -> ImageVector.vectorResource(R.drawable.speed_15x)
+            else -> { ImageVector.vectorResource(R.drawable.speed_2x) }
+        },
         iconRtlMode = IconRtlMode.Mirrored,
-        contentDescription = stringResource(R.string.add_to_queue_content_description),
+        contentDescription = stringResource(R.string.change_playback_speed_content_description),
     )
 }

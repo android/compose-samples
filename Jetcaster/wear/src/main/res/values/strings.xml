@@ -63,6 +63,11 @@
     <string name="cd_not_following">Not following</string>
     <string name="nothing_playing">Nothing playing</string>
 
+    <string name="speed">Speed</string>
+    <string name="increase_playback_speed">Increase playback speed</string>
+    <string name="decrease_playback_speed">Decrease playback speed</string>
+    <string name="change_playback_speed_content_description">Change playback speed</string>
+
     <string name="podcasts_no_podcasts">No podcasts available at the moment</string>
     <string name="loading">Loading</string>
     <string name="podcasts_no_episode_podcasts">No episodes available at the moment</string>
@@ -71,7 +76,7 @@
 
     <string name="display_nothing_in_queue">No episode in the queue</string>
     <string name="add_episode_to_queue">Add an episode to the queue</string>
-    <string name="failed_loading_episodes_from_queue">Failed at loading episodes from the queue</string>
+    <string name="no_episodes_from_queue">There are no episodes from the queue</string>
     <string name="add_to_queue_content_description">Add to queue</string>
     <string name="episode_info_not_available">Episode info not available at the moment</string>
 </resources>

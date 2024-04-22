@@ -18,7 +18,6 @@ package com.example.jetcaster.ui.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
@@ -88,10 +87,6 @@ class PlayerViewModel @Inject constructor(
 
     fun onRewindBy() {
         episodePlayer.rewindBy(Duration.ofSeconds(10))
-    }
-
-    fun addToQueue(episode: PlayerEpisode) {
-        episodePlayer.addToQueue(episode)
     }
 }
 
