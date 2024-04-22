@@ -18,6 +18,7 @@ package com.example.jetcaster.tv.ui
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -26,36 +27,44 @@ import com.example.jetcaster.core.model.PlayerEpisode
 class JetcasterAppState(
     val navHostController: NavHostController
 ) {
+
+    private var _currentScreenState = mutableStateOf<Screen>(Screen.Discover)
+    val currentScreenState = _currentScreenState
+    private fun navigate(screen: Screen) {
+        _currentScreenState.value = screen
+        navHostController.navigate(screen.route)
+    }
+
     fun navigateToDiscover() {
-        navHostController.navigate(Screen.Discover.route)
+        navigate(Screen.Discover)
     }
 
     fun navigateToLibrary() {
-        navHostController.navigate(Screen.Library.route)
+        navigate(Screen.Library)
     }
 
     fun navigateToProfile() {
-        navHostController.navigate(Screen.Profile.route)
+        navigate(Screen.Profile)
     }
 
     fun navigateToSearch() {
-        navHostController.navigate(Screen.Search.route)
+        navigate(Screen.Search)
     }
 
     fun navigateToSettings() {
-        navHostController.navigate(Screen.Settings.route)
+        navigate(Screen.Settings)
     }
 
     fun showPodcastDetails(podcastUri: String) {
         val encodedUrL = Uri.encode(podcastUri)
         val screen = Screen.Podcast(encodedUrL)
-        navHostController.navigate(screen.route)
+        navigate(screen)
     }
 
     fun showEpisodeDetails(episodeUri: String) {
         val encodeUrl = Uri.encode(episodeUri)
         val screen = Screen.Episode(encodeUrl)
-        navHostController.navigate(screen.route)
+        navigate(screen)
     }
 
     fun showEpisodeDetails(playerEpisode: PlayerEpisode) {
@@ -63,7 +72,7 @@ class JetcasterAppState(
     }
 
     fun playEpisode() {
-        navHostController.navigate(Screen.Player.route)
+        navigate(Screen.Player)
     }
 
     fun backToHome() {
@@ -82,48 +91,60 @@ fun rememberJetcasterAppState(
 
 sealed interface Screen {
     val route: String
+    val index: Int
 
     data object Discover : Screen {
         override val route = "/discover"
+        override val index = 0
     }
 
     data object Library : Screen {
         override val route = "library"
+        override val index = 1
     }
 
     data object Search : Screen {
         override val route = "search"
+        override val index = 2
     }
 
     data object Profile : Screen {
         override val route = "profile"
+        override val index = 3
     }
 
     data object Settings : Screen {
         override val route: String = "settings"
+        override val index = 4
     }
 
     data class Podcast(private val podcastUri: String) : Screen {
         override val route = "$ROOT/$podcastUri"
+        override val index = Companion.index
 
         companion object : Screen {
             private const val ROOT = "podcast"
             const val PARAMETER_NAME = "podcastUri"
             override val route = "$ROOT/{$PARAMETER_NAME}"
+            override val index = 5
         }
     }
 
     data class Episode(private val episodeUri: String) : Screen {
 
         override val route: String = "$ROOT/$episodeUri"
+        override val index = Companion.index
+
         companion object : Screen {
             private const val ROOT = "episode"
             const val PARAMETER_NAME = "episodeUri"
             override val route = "$ROOT/{$PARAMETER_NAME}"
+            override val index = 6
         }
     }
 
     data object Player : Screen {
         override val route = "player"
+        override val index = 7
     }
 }

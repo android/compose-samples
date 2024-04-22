@@ -18,6 +18,7 @@ package com.example.jetcaster.tv.model
 
 import androidx.compose.runtime.Immutable
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.model.CategoryInfo
 
 @Immutable
@@ -29,7 +30,7 @@ data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo>
 
     companion object {
         fun from(list: List<Category>): CategoryInfoList {
-            val member = list.map(Category::intoCategoryInfo)
+            val member = list.map(Category::asExternalModel)
             return CategoryInfoList(member)
         }
     }
@@ -37,8 +38,4 @@ data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo>
 
 private fun CategoryInfo.intoCategory(): Category {
     return Category(id, name)
-}
-
-private fun Category.intoCategoryInfo(): CategoryInfo {
-    return CategoryInfo(id, name)
 }

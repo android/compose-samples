@@ -27,9 +27,11 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
@@ -58,15 +60,17 @@ private fun WithGlobalNavigation(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val currentScreen by jetcasterAppState.currentScreenState
+
     NavigationDrawer(
         drawerContent = {
+            val isClosed = it == DrawerValue.Closed
             Column(
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
             ) {
-
                 NavigationDrawerItem(
-                    selected = false,
+                    selected = isClosed && currentScreen.index == Screen.Profile.index,
                     onClick = jetcasterAppState::navigateToProfile,
                     leadingContent = { Icon(Icons.Default.Person, contentDescription = null) },
                 ) {
@@ -77,21 +81,21 @@ private fun WithGlobalNavigation(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
-                    selected = false,
+                    selected = isClosed && currentScreen.index == Screen.Search.index,
                     onClick = jetcasterAppState::navigateToSearch,
                     leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
                 ) {
                     Text(text = "Search")
                 }
                 NavigationDrawerItem(
-                    selected = false,
+                    selected = isClosed && currentScreen.index == Screen.Discover.index,
                     onClick = jetcasterAppState::navigateToDiscover,
                     leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
                 ) {
                     Text(text = "Discover")
                 }
                 NavigationDrawerItem(
-                    selected = false,
+                    selected = isClosed && currentScreen.index == Screen.Library.index,
                     onClick = jetcasterAppState::navigateToLibrary,
                     leadingContent = { Icon(Icons.Default.VideoLibrary, contentDescription = null) }
                 ) {
@@ -99,7 +103,7 @@ private fun WithGlobalNavigation(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
-                    selected = false,
+                    selected = isClosed && currentScreen.index == Screen.Settings.index,
                     onClick = jetcasterAppState::navigateToSettings,
                     leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
                 ) {
