@@ -17,8 +17,6 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.model.PlayerEpisode
-import java.time.Duration
-import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -31,6 +29,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.time.Duration
+import kotlin.reflect.KProperty
 
 class MockEpisodePlayer(
     private val mainDispatcher: CoroutineDispatcher
@@ -41,6 +41,7 @@ class MockEpisodePlayer(
     private val queue = MutableStateFlow<List<PlayerEpisode>>(emptyList())
     private val isPlaying = MutableStateFlow(false)
     private val timeElapsed = MutableStateFlow(Duration.ZERO)
+    private val _playerSpeed = MutableStateFlow(DefaultPlaybackSpeed)
     private val coroutineScope = CoroutineScope(mainDispatcher)
 
     private var timerJob: Job? = null
@@ -52,13 +53,15 @@ class MockEpisodePlayer(
                 _currentEpisode,
                 queue,
                 isPlaying,
-                timeElapsed
-            ) { currentEpisode, queue, isPlaying, timeElapsed ->
+                timeElapsed,
+                _playerSpeed
+            ) { currentEpisode, queue, isPlaying, timeElapsed, playerSpeed ->
                 EpisodePlayerState(
                     currentEpisode = currentEpisode,
                     queue = queue,
                     isPlaying = isPlaying,
-                    timeElapsed = timeElapsed
+                    timeElapsed = timeElapsed,
+                    playbackSpeed = playerSpeed
                 )
             }.catch {
                 // TODO handle error state
@@ -69,7 +72,7 @@ class MockEpisodePlayer(
         }
     }
 
-    override var playerSpeed: Duration = Duration.ofSeconds(1)
+    override var playerSpeed: Duration = _playerSpeed.value
 
     override val playerState: StateFlow<EpisodePlayerState> = _playerState.asStateFlow()
 
