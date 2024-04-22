@@ -41,7 +41,7 @@ internal fun EpisodeDetails(
         first = {
             Thumbnail(
                 playerEpisode,
-                size = JetcasterAppDefaults.thumbnailSize.episode
+                size = JetcasterAppDefaults.thumbnailSize.episodeDetails
             )
         },
         second = {

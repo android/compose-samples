@@ -18,13 +18,13 @@ package com.example.jetcaster.tv.ui.discover
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
-import com.example.jetcaster.tv.model.CategoryList
+import com.example.jetcaster.tv.model.CategoryInfoList
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,13 +46,13 @@ class DiscoverScreenViewModel @Inject constructor(
     private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
-    private val _selectedCategory = MutableStateFlow<Category?>(null)
+    private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
 
     private val categoryListFlow = categoryStore
         .categoriesSortedByPodcastCount()
         .map { categoryList ->
             categoryList.map { category ->
-                Category(
+                CategoryInfo(
                     id = category.id,
                     name = category.name.filter { !it.isWhitespace() }
                 )
@@ -69,7 +69,7 @@ class DiscoverScreenViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val podcastInSelectedCategory = selectedCategoryFlow.flatMapLatest {
         if (it != null) {
-            categoryStore.podcastsInCategorySortedByPodcastCount(it.id)
+            categoryStore.podcastsInCategorySortedByPodcastCount(it.id, limit = 10)
         } else {
             flowOf(emptyList())
         }
@@ -96,7 +96,7 @@ class DiscoverScreenViewModel @Inject constructor(
     ) { categoryList, category, podcastList, latestEpisodes ->
         if (category != null) {
             DiscoverScreenUiState.Ready(
-                CategoryList(categoryList),
+                CategoryInfoList(categoryList),
                 category,
                 podcastList,
                 latestEpisodes
@@ -114,7 +114,7 @@ class DiscoverScreenViewModel @Inject constructor(
         refresh()
     }
 
-    fun selectCategory(category: Category) {
+    fun selectCategory(category: CategoryInfo) {
         _selectedCategory.value = category
     }
 
@@ -132,8 +132,8 @@ class DiscoverScreenViewModel @Inject constructor(
 sealed interface DiscoverScreenUiState {
     data object Loading : DiscoverScreenUiState
     data class Ready(
-        val categoryList: CategoryList,
-        val selectedCategory: Category,
+        val categoryInfoList: CategoryInfoList,
+        val selectedCategory: CategoryInfo,
         val podcastList: PodcastList,
         val latestEpisodeList: EpisodeList,
     ) : DiscoverScreenUiState

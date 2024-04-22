@@ -67,7 +67,9 @@ internal data class CardWidth(
 )
 
 internal data class ThumbnailSize(
-    val episode: DpSize = DpSize(266.dp, 266.dp),
+    val episodeDetails: DpSize = DpSize(266.dp, 266.dp),
+    val podcast: DpSize = DpSize(196.dp, 196.dp),
+    val episode: DpSize = DpSize(124.dp, 124.dp)
 )
 
 internal data class PaddingSettings(

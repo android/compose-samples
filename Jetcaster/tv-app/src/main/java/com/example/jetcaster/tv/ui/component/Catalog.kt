@@ -27,20 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
-import androidx.tv.material3.Card
-import androidx.tv.material3.CardScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.StandardCardLayout
 import androidx.tv.material3.Text
-import coil.compose.AsyncImage
-import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.R
@@ -167,28 +161,4 @@ private fun PodcastRow(
             )
         }
     }
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-internal fun PodcastCard(
-    podcast: Podcast,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    StandardCardLayout(
-        imageCard = {
-            Card(
-                onClick = onClick,
-                interactionSource = it,
-                scale = CardScale.None,
-            ) {
-                AsyncImage(model = podcast.imageUrl, contentDescription = null)
-            }
-        },
-        title = {
-            Text(text = podcast.title, modifier = Modifier.padding(top = 12.dp))
-        },
-        modifier = modifier,
-    )
 }

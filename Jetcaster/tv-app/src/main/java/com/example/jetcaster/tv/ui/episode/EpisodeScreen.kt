@@ -102,7 +102,7 @@ private fun EpisodeDetails(
         first = {
             Thumbnail(
                 podcast = episodeToPodcast.podcast,
-                size = JetcasterAppDefaults.thumbnailSize.episode
+                size = JetcasterAppDefaults.thumbnailSize.episodeDetails
             )
         },
         second = {

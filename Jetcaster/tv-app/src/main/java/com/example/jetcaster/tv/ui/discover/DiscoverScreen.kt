@@ -36,11 +36,11 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.PlayerEpisode
-import com.example.jetcaster.tv.model.CategoryList
+import com.example.jetcaster.tv.model.CategoryInfoList
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
 import com.example.jetcaster.tv.ui.component.Catalog
@@ -67,7 +67,7 @@ fun DiscoverScreen(
 
         is DiscoverScreenUiState.Ready -> {
             CatalogWithCategorySelection(
-                categoryList = s.categoryList,
+                categoryInfoList = s.categoryInfoList,
                 podcastList = s.podcastList,
                 selectedCategory = s.selectedCategory,
                 latestEpisodeList = s.latestEpisodeList,
@@ -88,13 +88,14 @@ fun DiscoverScreen(
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun CatalogWithCategorySelection(
-    categoryList: CategoryList,
+    categoryInfoList: CategoryInfoList,
     podcastList: PodcastList,
-    selectedCategory: Category,
+
+    selectedCategory: CategoryInfo,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
     onEpisodeSelected: (PlayerEpisode) -> Unit,
-    onCategorySelected: (Category) -> Unit,
+    onCategorySelected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier,
     state: TvLazyListState = rememberTvLazyListState(),
 ) {
@@ -104,7 +105,7 @@ private fun CatalogWithCategorySelection(
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
-    val selectedTabIndex = categoryList.indexOf(selectedCategory)
+    val selectedTabIndex = categoryInfoList.indexOf(selectedCategory)
 
     Catalog(
         podcastList = podcastList,
@@ -131,7 +132,7 @@ private fun CatalogWithCategorySelection(
                 }
             }
         ) {
-            categoryList.forEachIndexed { index, category ->
+            categoryInfoList.forEachIndexed { index, category ->
                 val tabModifier = if (selectedTabIndex == index) {
                     Modifier.focusRequester(selectedTab)
                 } else {

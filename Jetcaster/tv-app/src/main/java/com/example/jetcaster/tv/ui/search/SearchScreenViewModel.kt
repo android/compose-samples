@@ -18,11 +18,11 @@ package com.example.jetcaster.tv.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
-import com.example.jetcaster.tv.model.CategoryList
+import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.tv.model.CategoryInfoList
 import com.example.jetcaster.tv.model.CategorySelection
 import com.example.jetcaster.tv.model.CategorySelectionList
 import com.example.jetcaster.tv.model.PodcastList
@@ -45,20 +45,29 @@ class SearchScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val keywordFlow = MutableStateFlow("")
-    private val selectedCategoryListFlow = MutableStateFlow<List<Category>>(emptyList())
+    private val selectedCategoryListFlow = MutableStateFlow<List<CategoryInfo>>(emptyList())
 
-    private val categoryListFlow = categoryStore.categoriesSortedByPodcastCount().map {
-        CategoryList(it)
-    }
+    private val categoryInfoListFlow =
+        categoryStore.categoriesSortedByPodcastCount().map(CategoryInfoList::from)
 
     private val searchConditionFlow =
-        combine(keywordFlow, selectedCategoryListFlow) { keyword, selectedCategories ->
-            SearchCondition(keyword, selectedCategories)
+        combine(
+            keywordFlow,
+            selectedCategoryListFlow,
+            categoryInfoListFlow
+        ) { keyword, selectedCategories, categories ->
+            val selected = selectedCategories.ifEmpty {
+                categories
+            }
+            SearchCondition(keyword, selected)
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val searchResultFlow = searchConditionFlow.flatMapLatest {
-        podcastStore.searchPodcastByTitleAndCategories(it.keyword, it.selectedCategories)
+        podcastStore.searchPodcastByTitleAndCategories(
+            it.keyword,
+            it.selectedCategories.intoCategoryList()
+        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
@@ -66,7 +75,10 @@ class SearchScreenViewModel @Inject constructor(
     )
 
     private val categorySelectionFlow =
-        combine(categoryListFlow, selectedCategoryListFlow) { categoryList, selectedCategories ->
+        combine(
+            categoryInfoListFlow,
+            selectedCategoryListFlow
+        ) { categoryList, selectedCategories ->
             val list = categoryList.map {
                 CategorySelection(it, selectedCategories.contains(it))
             }
@@ -94,14 +106,14 @@ class SearchScreenViewModel @Inject constructor(
         keywordFlow.value = keyword
     }
 
-    fun addCategoryToSelectedCategoryList(category: Category) {
+    fun addCategoryToSelectedCategoryList(category: CategoryInfo) {
         val list = selectedCategoryListFlow.value
         if (!list.contains(category)) {
             selectedCategoryListFlow.value = list + listOf(category)
         }
     }
 
-    fun removeCategoryFromSelectedCategoryList(category: Category) {
+    fun removeCategoryFromSelectedCategoryList(category: CategoryInfo) {
         val list = selectedCategoryListFlow.value
         if (list.contains(category)) {
             val mutable = list.toMutableList()
@@ -117,7 +129,12 @@ class SearchScreenViewModel @Inject constructor(
     }
 }
 
-private data class SearchCondition(val keyword: String, val selectedCategories: List<Category>)
+private data class SearchCondition(val keyword: String, val selectedCategories: CategoryInfoList) {
+    constructor(keyword: String, categoryInfoList: List<CategoryInfo>) : this(
+        keyword,
+        CategoryInfoList(categoryInfoList)
+    )
+}
 
 sealed interface SearchScreenUiState {
     data object Loading : SearchScreenUiState
