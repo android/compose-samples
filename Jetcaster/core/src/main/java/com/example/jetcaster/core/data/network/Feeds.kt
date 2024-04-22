@@ -20,8 +20,8 @@ package com.example.jetcaster.core.data.network
  * A hand selected list of feeds URLs used for the purposes of displaying real information
  * in this sample app.
  */
-const val NowInAndroid = "https://feeds.libsyn.com/244409/rss"
-const val AndroidDevelopersBackstage =
+private const val NowInAndroid = "https://feeds.libsyn.com/244409/rss"
+private const val AndroidDevelopersBackstage =
     "https://feeds.feedburner.com/blogspot/AndroidDevelopersBackstage"
 
 val SampleFeeds = listOf(
