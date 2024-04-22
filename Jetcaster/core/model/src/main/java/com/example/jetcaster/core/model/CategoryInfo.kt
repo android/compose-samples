@@ -20,3 +20,5 @@ data class CategoryInfo(
     val id: Long,
     val name: String
 )
+
+const val CategoryTechnology = "Technology"
