@@ -102,4 +102,14 @@ interface EpisodePlayer {
      * Rewinds a currently played episode by a given time interval specified in [duration].
      */
     fun rewindBy(duration: Duration)
+
+    /**
+     * Increases the speed of Player playback by a given time specified in [duration].
+     */
+    fun increaseSpeed(speed: Duration = Duration.ofMillis(500))
+
+    /**
+     * Decreases the speed of Player playback by a given time specified in [duration].
+     */
+    fun decreaseSpeed(speed: Duration = Duration.ofMillis(500))
 }

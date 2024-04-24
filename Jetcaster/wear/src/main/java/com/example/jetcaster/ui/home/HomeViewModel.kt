@@ -121,12 +121,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onPodcastUnfollowed(podcastUri: String) {
-        viewModelScope.launch {
-            podcastStore.unfollowPodcast(podcastUri)
-        }
-    }
-
     fun onTogglePodcastFollowed(podcastUri: String) {
         viewModelScope.launch {
             podcastStore.togglePodcastFollowed(podcastUri)
