@@ -194,8 +194,10 @@ sealed interface HomeScreenUiState {
         val featuredPodcasts: PersistentList<PodcastInfo> = persistentListOf(),
         val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
         val homeCategories: List<HomeCategory> = emptyList(),
-        val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),
-        val podcastCategoryFilterResult: PodcastCategoryFilterResult = PodcastCategoryFilterResult(),
+        val filterableCategoriesModel: FilterableCategoriesModel =
+            FilterableCategoriesModel(),
+        val podcastCategoryFilterResult: PodcastCategoryFilterResult =
+            PodcastCategoryFilterResult(),
         val library: LibraryInfo = LibraryInfo(),
     ) : HomeScreenUiState
 }
