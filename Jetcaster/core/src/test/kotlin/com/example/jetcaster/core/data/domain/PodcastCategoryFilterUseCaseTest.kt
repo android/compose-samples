@@ -113,6 +113,24 @@ class PodcastCategoryFilterUseCaseTest {
             result.episodes
         )
     }
+
+    @Test
+    fun whenCategoryInfoNotNull_verifyLimitFlow() = runTest {
+        val resultFlow = useCase(testCategory.asExternalModel())
+
+        categoriesStore.setEpisodesFromPodcast(
+            testCategory.id,
+            List(8) { testEpisodeToPodcast }.flatten()
+        )
+        categoriesStore.setPodcastsInCategory(
+            testCategory.id,
+            List(4) { testPodcasts }.flatten()
+        )
+
+        val result = resultFlow.first()
+        assertEquals(20, result.episodes.size)
+        assertEquals(10, result.topPodcasts.size)
+    }
 }
 
 val testPodcasts = listOf(

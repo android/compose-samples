@@ -43,14 +43,14 @@ class TestCategoryStore : CategoryStore {
         categoryId: Long,
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> = podcastsInCategoryFlow.map {
-        it[categoryId] ?: emptyList()
+        it[categoryId]?.take(limit) ?: emptyList()
     }
 
     override fun episodesFromPodcastsInCategory(
         categoryId: Long,
         limit: Int
     ): Flow<List<EpisodeToPodcast>> = episodesFromPodcasts.map {
-        it[categoryId] ?: emptyList()
+        it[categoryId]?.take(limit) ?: emptyList()
     }
 
     override suspend fun addCategory(category: Category): Long = -1
