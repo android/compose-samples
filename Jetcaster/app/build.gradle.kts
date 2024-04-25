@@ -35,7 +35,7 @@ android {
     }
 
     signingConfigs {
-        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        // Important: change the keystore for a production deployment
         named("debug") {
             storeFile = File(System.getProperty("user.home"), ".android/debug.keystore")
             storePassword = "android"
