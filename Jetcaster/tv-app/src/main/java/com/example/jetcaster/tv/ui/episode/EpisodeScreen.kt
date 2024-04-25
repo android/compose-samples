@@ -17,11 +17,9 @@
 package com.example.jetcaster.tv.ui.episode
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -34,11 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.Episode
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.model.PlayerEpisode
-import com.example.jetcaster.tv.ui.component.Background
+import com.example.jetcaster.tv.ui.component.BackgroundContainer
 import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration
 import com.example.jetcaster.tv.ui.component.ErrorState
@@ -62,7 +57,7 @@ fun EpisodeScreen(
         EpisodeScreenUiState.Loading -> Loading(modifier = modifier)
         EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = modifier)
         is EpisodeScreenUiState.Ready -> EpisodeDetailsWithBackground(
-            episodeToPodcast = s.episodeToPodcast,
+            playerEpisode = s.playerEpisode,
             playEpisode = {
                 episodeScreenViewModel.play(it)
                 playEpisode()
@@ -74,15 +69,18 @@ fun EpisodeScreen(
 
 @Composable
 private fun EpisodeDetailsWithBackground(
-    episodeToPodcast: EpisodeToPodcast,
+    playerEpisode: PlayerEpisode,
     playEpisode: (PlayerEpisode) -> Unit,
     addPlayList: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Background(podcast = episodeToPodcast.podcast, modifier = Modifier.fillMaxSize())
+    BackgroundContainer(
+        playerEpisode = playerEpisode,
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+    ) {
         EpisodeDetails(
-            episodeToPodcast = episodeToPodcast,
+            playerEpisode = playerEpisode,
             playEpisode = playEpisode,
             addPlayList = addPlayList,
             modifier = Modifier
@@ -93,7 +91,7 @@ private fun EpisodeDetailsWithBackground(
 
 @Composable
 private fun EpisodeDetails(
-    episodeToPodcast: EpisodeToPodcast,
+    playerEpisode: PlayerEpisode,
     playEpisode: (PlayerEpisode) -> Unit,
     addPlayList: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
@@ -101,15 +99,15 @@ private fun EpisodeDetails(
     TwoColumn(
         first = {
             Thumbnail(
-                podcast = episodeToPodcast.podcast,
+                episode = playerEpisode,
                 size = JetcasterAppDefaults.thumbnailSize.episodeDetails
             )
         },
         second = {
             EpisodeInfo(
-                episode = episodeToPodcast.episode,
-                playEpisode = { playEpisode(episodeToPodcast.toPlayerEpisode()) },
-                addPlayList = { addPlayList(episodeToPodcast.toPlayerEpisode()) },
+                playerEpisode = playerEpisode,
+                playEpisode = { playEpisode(playerEpisode) },
+                addPlayList = { addPlayList(playerEpisode) },
                 modifier = Modifier.weight(1f)
             )
         },
@@ -120,27 +118,26 @@ private fun EpisodeDetails(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun EpisodeInfo(
-    episode: Episode,
+    playerEpisode: PlayerEpisode,
     playEpisode: () -> Unit,
     addPlayList: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val author = episode.author
-    val duration = episode.duration
-    val summary = episode.summary
+    val duration = playerEpisode.duration
 
     Column(modifier) {
-        if (author != null) {
-            Text(text = author, style = MaterialTheme.typography.bodySmall)
-        }
-        Text(text = episode.title, style = MaterialTheme.typography.headlineLarge)
+        Text(text = playerEpisode.author, style = MaterialTheme.typography.bodySmall)
+        Text(text = playerEpisode.title, style = MaterialTheme.typography.headlineLarge)
         if (duration != null) {
-            EpisodeDataAndDuration(offsetDateTime = episode.published, duration = duration)
+            EpisodeDataAndDuration(offsetDateTime = playerEpisode.published, duration = duration)
         }
-        if (summary != null) {
-            Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
-            Text(text = summary, softWrap = true, maxLines = 5, overflow = TextOverflow.Ellipsis)
-        }
+        Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
+        Text(
+            text = playerEpisode.summary,
+            softWrap = true,
+            maxLines = 5,
+            overflow = TextOverflow.Ellipsis
+        )
         Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
         Controls(playEpisode = playEpisode, addPlayList = addPlayList)
     }

@@ -55,8 +55,8 @@ import androidx.tv.material3.FilterChip
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.CategorySelectionList
 import com.example.jetcaster.tv.model.PodcastList
@@ -66,7 +66,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun SearchScreen(
-    onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onPodcastSelected: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
     searchScreenViewModel: SearchScreenViewModel = hiltViewModel()
 ) {
@@ -124,7 +124,7 @@ private fun HasResult(
     onKeywordInput: (String) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     onCategoryUnselected: (CategoryInfo) -> Unit,
-    onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onPodcastSelected: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SearchResult(
@@ -255,7 +255,7 @@ private fun CategorySelection(
 @Composable
 private fun SearchResult(
     podcastList: PodcastList,
-    onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onPodcastSelected: (PodcastInfo) -> Unit,
     header: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -270,7 +270,7 @@ private fun SearchResult(
             header()
         }
         items(podcastList) {
-            PodcastCard(podcast = it.podcast, onClick = { onPodcastSelected(it) })
+            PodcastCard(podcastInfo = it, onClick = { onPodcastSelected(it) })
         }
     }
 }

@@ -18,6 +18,7 @@ package com.example.jetcaster.tv.ui.discover
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -73,8 +74,8 @@ class DiscoverScreenViewModel @Inject constructor(
         } else {
             flowOf(emptyList())
         }
-    }.map {
-        PodcastList(it)
+    }.map { list ->
+        PodcastList(list.map { it.asExternalModel() })
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
