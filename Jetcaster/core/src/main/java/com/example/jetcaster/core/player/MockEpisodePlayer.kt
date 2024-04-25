@@ -173,6 +173,14 @@ class MockEpisodePlayer(
         }
     }
 
+    override fun increaseSpeed(speed: Duration) {
+        _playerSpeed.value += speed
+    }
+
+    override fun decreaseSpeed(speed: Duration) {
+        _playerSpeed.value -= speed
+    }
+
     override fun next() {
         val q = queue.value
         if (q.isEmpty()) {

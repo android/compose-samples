@@ -36,18 +36,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
+import androidx.wear.compose.foundation.rememberActiveFocusRequester
+import androidx.wear.compose.foundation.rotary.rotary
 import androidx.wear.compose.material.MaterialTheme
 import com.example.jetcaster.R
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.ui.components.SettingsButtons
 import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.audio.ui.VolumeViewModel
-import com.google.android.horologist.audio.ui.rotaryVolumeControlsWithFocus
-import com.google.android.horologist.compose.rotaryinput.RotaryDefaults
+import com.google.android.horologist.audio.ui.volumeRotaryBehavior
+import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.components.PodcastControlButtons
 import com.google.android.horologist.media.ui.components.background.ArtworkColorBackground
 import com.google.android.horologist.media.ui.components.controls.SeekButtonIncrement
@@ -59,6 +60,7 @@ import com.google.android.horologist.media.ui.screens.player.PlayerScreen
 fun PlayerScreen(
     volumeViewModel: VolumeViewModel,
     onVolumeClick: () -> Unit,
+    onPlaybackSpeedChangeClick: () -> Unit,
     modifier: Modifier = Modifier,
     playerScreenViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -69,23 +71,24 @@ fun PlayerScreen(
         volumeUiState = volumeUiState,
         onVolumeClick = onVolumeClick,
         onUpdateVolume = { newVolume -> volumeViewModel.setVolume(newVolume) },
-        onAddToQueueClick = playerScreenViewModel::addToQueue,
+        onPlaybackSpeedChangeClick = onPlaybackSpeedChangeClick,
         modifier = modifier
     )
 }
 
+@OptIn(ExperimentalWearFoundationApi::class)
 @Composable
 private fun PlayerScreen(
     playerScreenViewModel: PlayerViewModel,
     volumeUiState: VolumeUiState,
     onVolumeClick: () -> Unit,
-    onAddToQueueClick: (PlayerEpisode) -> Unit,
+    onPlaybackSpeedChangeClick: () -> Unit,
     onUpdateVolume: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val uiState by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
 
-    when (val s = uiState) {
+    when (val state = uiState) {
         PlayerScreenUiState.Loading -> LoadingMediaDisplay(modifier)
         PlayerScreenUiState.Empty -> {
             PlayerScreen(
@@ -111,7 +114,8 @@ private fun PlayerScreen(
                     SettingsButtons(
                         volumeUiState = volumeUiState,
                         onVolumeClick = onVolumeClick,
-                        onAddToQueueClick = {},
+                        playerUiState = PlayerUiState(),
+                        onPlaybackSpeedChange = onPlaybackSpeedChangeClick,
                         enabled = false,
                     )
                 },
@@ -121,7 +125,7 @@ private fun PlayerScreen(
         is PlayerScreenUiState.Ready -> {
             // When screen is ready, episode is always not null, however EpisodePlayerState may
             // return a null episode
-            val episode = s.playerState.episodePlayerState.currentEpisode
+            val episode = state.playerState.episodePlayerState.currentEpisode
 
             PlayerScreen(
                 mediaDisplay = {
@@ -143,35 +147,36 @@ private fun PlayerScreen(
                         onPlayButtonClick = playerScreenViewModel::onPlay,
                         onPauseButtonClick = playerScreenViewModel::onPause,
                         playPauseButtonEnabled = true,
-                        playing = s.playerState.episodePlayerState.isPlaying,
+                        playing = state.playerState.episodePlayerState.isPlaying,
                         onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
                         seekBackButtonEnabled = true,
                         onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
                         seekForwardButtonEnabled = true,
                         seekBackButtonIncrement = SeekButtonIncrement.Ten,
                         seekForwardButtonIncrement = SeekButtonIncrement.Ten,
-                        trackPositionUiModel = s.playerState.trackPositionUiModel
+                        trackPositionUiModel = state.playerState.trackPositionUiModel
                     )
                 },
                 buttons = {
                     SettingsButtons(
                         volumeUiState = volumeUiState,
                         onVolumeClick = onVolumeClick,
-                        onAddToQueueClick = {
-                            episode?.let { onAddToQueueClick(episode) }
-                        },
+                        playerUiState = state.playerState,
+                        onPlaybackSpeedChange = onPlaybackSpeedChangeClick,
                         enabled = true,
                     )
                 },
-                modifier = modifier.rotaryVolumeControlsWithFocus(
-                    volumeUiStateProvider = { volumeUiState },
-                    onRotaryVolumeInput = onUpdateVolume,
-                    localView = LocalView.current,
-                    isLowRes = RotaryDefaults.isLowResInput(),
-                ),
+                modifier = modifier
+                    .rotary(
+                        volumeRotaryBehavior(
+                            volumeUiStateProvider = { volumeUiState },
+                            onRotaryVolumeInput = { onUpdateVolume },
+                        ),
+                        focusRequester = rememberActiveFocusRequester(),
+                    ),
                 background = {
                     ArtworkColorBackground(
-                        artworkUri = episode?.let { episode.podcastImageUrl },
+                        paintable = episode?.let { CoilPaintable(episode.podcastImageUrl) },
                         defaultColor = MaterialTheme.colors.primary,
                         modifier = Modifier.fillMaxSize(),
                     )
