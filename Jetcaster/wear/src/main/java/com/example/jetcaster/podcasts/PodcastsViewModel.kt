@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.library
+package com.example.jetcaster.podcasts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
