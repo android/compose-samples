@@ -181,7 +181,8 @@ fun PodcastDetailsContent(
                 onClick = navigateToPlayer,
                 onQueueEpisode = onQueueEpisode,
                 modifier = Modifier.fillMaxWidth(),
-                showPodcastImage = false
+                showPodcastImage = false,
+                showSummary = true
             )
         }
     }
