@@ -19,7 +19,7 @@ package com.example.jetcaster.tv.ui.episode
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.model.PlayerEpisode
@@ -60,7 +60,7 @@ class EpisodeScreenViewModel @Inject constructor(
 
     val uiStateFlow = episodeToPodcastFlow.map {
         if (it != null) {
-            EpisodeScreenUiState.Ready(it)
+            EpisodeScreenUiState.Ready(it.toPlayerEpisode())
         } else {
             EpisodeScreenUiState.Error
         }
@@ -88,5 +88,5 @@ class EpisodeScreenViewModel @Inject constructor(
 sealed interface EpisodeScreenUiState {
     data object Loading : EpisodeScreenUiState
     data object Error : EpisodeScreenUiState
-    data class Ready(val episodeToPodcast: EpisodeToPodcast) : EpisodeScreenUiState
+    data class Ready(val playerEpisode: PlayerEpisode) : EpisodeScreenUiState
 }

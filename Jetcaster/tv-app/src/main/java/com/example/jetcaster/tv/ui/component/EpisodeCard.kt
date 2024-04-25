@@ -19,7 +19,6 @@ package com.example.jetcaster.tv.ui.component
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,7 +35,6 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.WideCardLayout
-import coil.compose.AsyncImage
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
@@ -78,12 +76,7 @@ private fun EpisodeThumbnail(
         scale = CardScale.None,
         modifier = modifier,
     ) {
-        AsyncImage(
-            model = playerEpisode.podcastImageUrl,
-            contentDescription = null,
-            placeholder = thumbnailPlaceholder(),
-            modifier = Modifier.fillMaxSize()
-        )
+        Thumbnail(episode = playerEpisode, size = JetcasterAppDefaults.thumbnailSize.episode)
     }
 }
 

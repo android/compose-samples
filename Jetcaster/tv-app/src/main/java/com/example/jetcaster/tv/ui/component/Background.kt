@@ -23,33 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.designsystem.component.ImageBackgroundRadialGradientScrim
-
-@Composable
-internal fun Background(
-    podcast: Podcast,
-    modifier: Modifier = Modifier,
-) = Background(imageUrl = podcast.imageUrl, modifier)
-
-@Composable
-internal fun Background(
-    episode: PlayerEpisode,
-    modifier: Modifier = Modifier,
-) = Background(imageUrl = episode.podcastImageUrl, modifier)
-
-@Composable
-internal fun Background(
-    imageUrl: String?,
-    modifier: Modifier = Modifier,
-) {
-    ImageBackgroundRadialGradientScrim(
-        url = imageUrl,
-        colors = listOf(Color.Black, Color.Transparent),
-        modifier = modifier,
-    )
-}
 
 @Composable
 internal fun BackgroundContainer(
@@ -57,9 +33,44 @@ internal fun BackgroundContainer(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
     content: @Composable BoxScope.() -> Unit
+) =
+    BackgroundContainer(
+        imageUrl = playerEpisode.podcastImageUrl,
+        modifier,
+        contentAlignment,
+        content
+    )
+
+@Composable
+internal fun BackgroundContainer(
+    podcastInfo: PodcastInfo,
+    modifier: Modifier = Modifier,
+    contentAlignment: Alignment = Alignment.Center,
+    content: @Composable BoxScope.() -> Unit
+) =
+    BackgroundContainer(imageUrl = podcastInfo.imageUrl, modifier, contentAlignment, content)
+
+@Composable
+internal fun BackgroundContainer(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    contentAlignment: Alignment = Alignment.Center,
+    content: @Composable BoxScope.() -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = contentAlignment) {
-        Background(episode = playerEpisode, modifier = Modifier.fillMaxSize())
+        Background(imageUrl = imageUrl, modifier = Modifier.fillMaxSize())
         content()
     }
+}
+
+@Composable
+private fun Background(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+) {
+    ImageBackgroundRadialGradientScrim(
+        url = imageUrl,
+        colors = listOf(Color.Black, Color.Transparent),
+        modifier = modifier,
+    )
 }

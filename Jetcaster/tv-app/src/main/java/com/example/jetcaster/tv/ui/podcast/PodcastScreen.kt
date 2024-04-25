@@ -58,11 +58,11 @@ import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
-import com.example.jetcaster.tv.ui.component.Background
+import com.example.jetcaster.tv.ui.component.BackgroundContainer
 import com.example.jetcaster.tv.ui.component.ButtonWithIcon
 import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration
@@ -87,7 +87,7 @@ fun PodcastScreen(
         PodcastScreenUiState.Loading -> Loading(modifier = modifier)
         PodcastScreenUiState.Error -> ErrorState(backToHome = backToHomeScreen, modifier = modifier)
         is PodcastScreenUiState.Ready -> PodcastDetailsWithBackground(
-            podcast = s.podcast,
+            podcastInfo = s.podcastInfo,
             episodeList = s.episodeList,
             isSubscribed = s.isSubscribed,
             subscribe = podcastScreenViewModel::subscribe,
@@ -104,21 +104,21 @@ fun PodcastScreen(
 
 @Composable
 private fun PodcastDetailsWithBackground(
-    podcast: Podcast,
+    podcastInfo: PodcastInfo,
     episodeList: EpisodeList,
     isSubscribed: Boolean,
-    subscribe: (Podcast, Boolean) -> Unit,
-    unsubscribe: (Podcast, Boolean) -> Unit,
+    subscribe: (PodcastInfo, Boolean) -> Unit,
+    unsubscribe: (PodcastInfo, Boolean) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     showEpisodeDetails: (PlayerEpisode) -> Unit,
     enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
-    Box(modifier = modifier) {
-        Background(podcast = podcast)
+
+    BackgroundContainer(podcastInfo = podcastInfo, modifier = modifier) {
         PodcastDetails(
-            podcast = podcast,
+            podcastInfo = podcastInfo,
             episodeList = episodeList,
             isSubscribed = isSubscribed,
             subscribe = subscribe,
@@ -137,11 +137,11 @@ private fun PodcastDetailsWithBackground(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PodcastDetails(
-    podcast: Podcast,
+    podcastInfo: PodcastInfo,
     episodeList: EpisodeList,
     isSubscribed: Boolean,
-    subscribe: (Podcast, Boolean) -> Unit,
-    unsubscribe: (Podcast, Boolean) -> Unit,
+    subscribe: (PodcastInfo, Boolean) -> Unit,
+    unsubscribe: (PodcastInfo, Boolean) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     showEpisodeDetails: (PlayerEpisode) -> Unit,
     enqueue: (PlayerEpisode) -> Unit,
@@ -154,7 +154,7 @@ private fun PodcastDetails(
         Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
         first = {
             PodcastInfo(
-                podcast = podcast,
+                podcastInfo = podcastInfo,
                 isSubscribed = isSubscribed,
                 subscribe = subscribe,
                 unsubscribe = unsubscribe,
@@ -183,38 +183,32 @@ private fun PodcastDetails(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun PodcastInfo(
-    podcast: Podcast,
+    podcastInfo: PodcastInfo,
     isSubscribed: Boolean,
-    subscribe: (Podcast, Boolean) -> Unit,
-    unsubscribe: (Podcast, Boolean) -> Unit,
+    subscribe: (PodcastInfo, Boolean) -> Unit,
+    unsubscribe: (PodcastInfo, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val author = podcast.author
-    val description = podcast.description
-
     Column(modifier = modifier) {
-        Thumbnail(podcast = podcast)
+        Thumbnail(podcastInfo = podcastInfo)
         Spacer(modifier = Modifier.height(16.dp))
-        if (author != null) {
-            Text(
-                text = author,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
+
         Text(
-            text = podcast.title,
+            text = podcastInfo.author,
+            style = MaterialTheme.typography.bodySmall
+        )
+        Text(
+            text = podcastInfo.title,
             style = MaterialTheme.typography.headlineSmall,
         )
-        if (description != null) {
-            Text(
-                text = description,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+        Text(
+            text = podcastInfo.description,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodyMedium
+        )
         ToggleSubscriptionButton(
-            podcast,
+            podcastInfo,
             isSubscribed,
             subscribe,
             unsubscribe,
@@ -227,10 +221,10 @@ private fun PodcastInfo(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun ToggleSubscriptionButton(
-    podcast: Podcast,
+    podcastInfo: PodcastInfo,
     isSubscribed: Boolean,
-    subscribe: (Podcast, Boolean) -> Unit,
-    unsubscribe: (Podcast, Boolean) -> Unit,
+    subscribe: (PodcastInfo, Boolean) -> Unit,
+    unsubscribe: (PodcastInfo, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val icon = if (isSubscribed) {
@@ -251,7 +245,7 @@ private fun ToggleSubscriptionButton(
     ButtonWithIcon(
         label = label,
         icon = icon,
-        onClick = { action(podcast, isSubscribed) },
+        onClick = { action(podcastInfo, isSubscribed) },
         scale = ButtonDefaults.scale(scale = 1f),
         modifier = modifier
     )

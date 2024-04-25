@@ -36,8 +36,8 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
@@ -49,7 +49,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 fun LibraryScreen(
     modifier: Modifier = Modifier,
     navigateToDiscover: () -> Unit,
-    showPodcastDetails: (PodcastWithExtraInfo) -> Unit,
+    showPodcastDetails: (PodcastInfo) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel()
 ) {
@@ -78,7 +78,7 @@ fun LibraryScreen(
 private fun Library(
     podcastList: PodcastList,
     episodeList: EpisodeList,
-    showPodcastDetails: (PodcastWithExtraInfo) -> Unit,
+    showPodcastDetails: (PodcastInfo) -> Unit,
     onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() },

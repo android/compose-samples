@@ -18,6 +18,7 @@ package com.example.jetcaster.tv.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -91,7 +92,7 @@ class SearchScreenViewModel @Inject constructor(
             categorySelectionFlow,
             searchResultFlow
         ) { keyword, categorySelection, result ->
-            val podcastList = PodcastList(result)
+            val podcastList = PodcastList(result.map { it.asExternalModel() })
             when {
                 result.isEmpty() -> SearchScreenUiState.Ready(keyword, categorySelection)
                 else -> SearchScreenUiState.HasResult(keyword, categorySelection, podcastList)

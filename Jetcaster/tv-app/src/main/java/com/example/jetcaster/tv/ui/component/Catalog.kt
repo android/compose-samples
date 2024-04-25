@@ -35,8 +35,8 @@ import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
@@ -46,7 +46,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 internal fun Catalog(
     podcastList: PodcastList,
     latestEpisodeList: EpisodeList,
-    onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onPodcastSelected: (PodcastInfo) -> Unit,
     onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     state: TvLazyListState = rememberTvLazyListState(),
@@ -83,7 +83,7 @@ internal fun Catalog(
 @Composable
 private fun PodcastSection(
     podcastList: PodcastList,
-    onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onPodcastSelected: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null,
 ) {
@@ -142,7 +142,7 @@ private fun Section(
 @Composable
 private fun PodcastRow(
     podcastList: PodcastList,
-    onPodcastSelected: (PodcastWithExtraInfo) -> Unit,
+    onPodcastSelected: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     horizontalArrangement: Arrangement.Horizontal =
@@ -155,7 +155,7 @@ private fun PodcastRow(
     ) {
         items(podcastList) {
             PodcastCard(
-                podcast = it.podcast,
+                podcastInfo = it,
                 onClick = { onPodcastSelected(it) },
                 modifier = Modifier.width(JetcasterAppDefaults.cardWidth.medium)
             )

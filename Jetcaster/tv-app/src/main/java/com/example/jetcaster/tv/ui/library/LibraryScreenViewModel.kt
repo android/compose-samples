@@ -18,6 +18,7 @@ package com.example.jetcaster.tv.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
@@ -45,9 +46,10 @@ class LibraryScreenViewModel @Inject constructor(
     private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
-    private val followingPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode().map {
-        PodcastList(it)
-    }
+    private val followingPodcastListFlow =
+        podcastStore.followedPodcastsSortedByLastEpisode().map { list ->
+            PodcastList(list.map { it.asExternalModel() })
+        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val latestEpisodeListFlow = podcastStore

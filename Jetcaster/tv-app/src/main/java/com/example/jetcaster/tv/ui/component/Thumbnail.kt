@@ -24,14 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
 fun Thumbnail(
-    podcast: Podcast,
+    podcastInfo: PodcastInfo,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     size: DpSize = DpSize(
@@ -41,7 +41,7 @@ fun Thumbnail(
     contentScale: ContentScale = ContentScale.Crop
 ) =
     Thumbnail(
-        podcast.imageUrl,
+        podcastInfo.imageUrl,
         modifier,
         shape,
         size,
@@ -69,7 +69,7 @@ fun Thumbnail(
 
 @Composable
 fun Thumbnail(
-    url: String?,
+    url: String,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     size: DpSize = DpSize(
@@ -78,12 +78,11 @@ fun Thumbnail(
     ),
     contentScale: ContentScale = ContentScale.Crop
 ) =
-    AsyncImage(
-        model = url,
+    PodcastImage(
+        podcastImageUrl = url,
         contentDescription = null,
         contentScale = contentScale,
-        modifier = Modifier
-            .size(size)
+        modifier = modifier
             .clip(shape)
-            .then(modifier)
+            .size(size),
     )
