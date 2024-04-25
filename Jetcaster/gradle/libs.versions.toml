@@ -59,6 +59,10 @@ secrets = "2.0.1"
 # @keep
 targetSdk = "33"
 version-catalog-update = "0.8.4"
+glanceAppwidget = "1.1.0-beta02"
+glanceMaterial3 = "1.1.0-beta02"
+glance = "1.1.0-beta02"
+composeBom = "2024.04.01"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -167,6 +171,12 @@ rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }
 wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx-wear-compose" }
 wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "androidx-wear-compose" }
+
+glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glanceAppwidget" }
+glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glanceMaterial3" }
+glance = { group = "androidx.glance", name = "glance", version.ref = "glance" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

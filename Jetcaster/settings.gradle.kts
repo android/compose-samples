@@ -46,3 +46,4 @@ include(
     ":wear"
 )
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":glancewidget")
