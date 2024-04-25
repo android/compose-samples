@@ -132,7 +132,7 @@ class HomeViewModel @Inject constructor(
         refresh(force = false)
     }
 
-    private fun refresh(force: Boolean) {
+    fun refresh(force: Boolean = true) {
         viewModelScope.launch {
             runCatching {
                 refreshing.value = true

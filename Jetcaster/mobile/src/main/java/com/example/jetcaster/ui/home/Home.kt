@@ -50,6 +50,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -239,7 +240,7 @@ fun MainScreen(
     val homeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
     when (val uiState = homeScreenUiState) {
         is HomeScreenUiState.Loading -> HomeScreenLoading()
-        is HomeScreenUiState.Error -> HomeScreenError()
+        is HomeScreenUiState.Error -> HomeScreenError(onRetry = viewModel::refresh)
         is HomeScreenUiState.Ready -> {
             HomeScreenReady(
                 uiState = uiState,
@@ -252,8 +253,8 @@ fun MainScreen(
 }
 
 @Composable
-private fun HomeScreenLoading() {
-    Surface(Modifier.fillMaxSize()) {
+private fun HomeScreenLoading(modifier: Modifier = Modifier) {
+    Surface(modifier.fillMaxSize()) {
         Box {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center)
@@ -263,8 +264,30 @@ private fun HomeScreenLoading() {
 }
 
 @Composable
-private fun HomeScreenError() {
+private fun HomeScreenError(onRetry: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(modifier = modifier) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Text(
+                text = "An error has occurred.",
+                modifier = Modifier.padding(16.dp)
+            )
+            Button(onClick = onRetry) {
+                Text(text = stringResource(id = R.string.retry_label))
+            }
+        }
+    }
+}
 
+@Preview
+@Composable
+fun HomeScreenErrorPreview() {
+    JetcasterTheme {
+        HomeScreenError(onRetry = {})
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)

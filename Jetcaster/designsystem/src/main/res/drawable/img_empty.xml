@@ -7,14 +7,14 @@
   <path
       android:pathData="M0,0h180v180h-180z">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startX="90"
           android:startY="0"
           android:endX="90"
           android:endY="180"
           android:type="linear">
-        <item android:offset="0" android:color="#FF42372D"/>
-        <item android:offset="1" android:color="#FF1A120A"/>
+        <item android:offset="0" android:color="@color/surface_bright"/>
+        <item android:offset="1" android:color="@color/background"/>
       </gradient>
     </aapt:attr>
   </path>

@@ -71,13 +71,7 @@ fun PodcastImage(
         contentAlignment = Alignment.Center
     ) {
         when (imagePainterState) {
-            is AsyncImagePainter.State.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                )
-            }
+            is AsyncImagePainter.State.Loading,
             is AsyncImagePainter.State.Error -> {
                 Image(
                     painter = painterResource(id = R.drawable.img_empty),
