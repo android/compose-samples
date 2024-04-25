@@ -19,7 +19,6 @@ package com.example.jetcaster.tv.ui.podcast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
@@ -30,7 +29,6 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -39,6 +37,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class PodcastScreenViewModel @Inject constructor(

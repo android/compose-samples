@@ -21,16 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.BrushPainter
 import com.example.jetcaster.designsystem.theme.surfaceVariantDark
 import com.example.jetcaster.designsystem.theme.surfaceVariantLight
-
-@Composable
-fun thumbnailPlaceholder(
-    brush: Brush = thumbnailPlaceholderDefaultBrush()
-): BrushPainter {
-    return BrushPainter(brush)
-}
 
 @Composable
 internal fun thumbnailPlaceholderDefaultBrush(
