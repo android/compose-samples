@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.asExternalModel
+import com.example.jetcaster.core.data.database.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.repository.EpisodeStore
@@ -35,7 +36,6 @@ import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 
@@ -70,6 +71,8 @@ class HomeViewModel @Inject constructor(
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
 
+    private val followedPodcasts = podcastStore.followedPodcastsSortedByLastEpisode(limit = 10)
+
     val state: StateFlow<HomeScreenUiState>
         get() = _state
 
@@ -80,7 +83,7 @@ class HomeViewModel @Inject constructor(
             combine(
                 homeCategories,
                 selectedHomeCategory,
-                podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
+                followedPodcasts,
                 refreshing,
                 _selectedCategory.flatMapLatest { selectedCategory ->
                     filterableCategoriesUseCase(selectedCategory)
@@ -88,9 +91,9 @@ class HomeViewModel @Inject constructor(
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
                 },
-                selectedLibraryPodcast.flatMapLatest {
-                    episodeStore.episodesInPodcast(
-                        podcastUri = it?.uri ?: "",
+                followedPodcasts.flatMapLatest { podcast ->
+                    episodeStore.episodesInPodcasts(
+                        podcastUris = podcast.map { it.podcast.uri },
                         limit = 20
                     )
                 }
@@ -175,8 +178,7 @@ class HomeViewModel @Inject constructor(
 
 private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
     LibraryInfo(
-        podcast = this.firstOrNull()?.podcast?.asExternalModel(),
-        episodes = this.map { it.episode.asExternalModel() }
+        episodes = this.map { it.asPodcastToEpisodeInfo() }
     )
 
 enum class HomeCategory {

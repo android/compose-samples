@@ -20,7 +20,7 @@ import androidx.room.Embedded
 import androidx.room.Ignore
 import androidx.room.Relation
 import com.example.jetcaster.core.model.PlayerEpisode
-import com.example.jetcaster.core.model.PodcastCategoryEpisode
+import com.example.jetcaster.core.model.PodcastToEpisodeInfo
 import java.util.Objects
 
 class EpisodeToPodcast {
@@ -62,8 +62,8 @@ fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
         podcastImageUrl = podcast.imageUrl ?: "",
     )
 
-fun EpisodeToPodcast.asPodcastCategoryEpisode(): PodcastCategoryEpisode =
-    PodcastCategoryEpisode(
+fun EpisodeToPodcast.asPodcastToEpisodeInfo(): PodcastToEpisodeInfo =
+    PodcastToEpisodeInfo(
         episode = episode.asExternalModel(),
         podcast = podcast.asExternalModel(),
     )

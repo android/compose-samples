@@ -18,7 +18,7 @@ package com.example.jetcaster.core.data.domain
 
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.database.model.asPodcastCategoryEpisode
+import com.example.jetcaster.core.data.database.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
@@ -52,7 +52,7 @@ class PodcastCategoryFilterUseCase @Inject constructor(
         return combine(recentPodcastsFlow, episodesFlow) { topPodcasts, episodes ->
             PodcastCategoryFilterResult(
                 topPodcasts = topPodcasts.map { it.asExternalModel() },
-                episodes = episodes.map { it.asPodcastCategoryEpisode() }
+                episodes = episodes.map { it.asPodcastToEpisodeInfo() }
             )
         }
     }

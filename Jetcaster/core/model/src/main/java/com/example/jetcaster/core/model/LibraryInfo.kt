@@ -17,6 +17,5 @@
 package com.example.jetcaster.core.model
 
 data class LibraryInfo(
-    val podcast: PodcastInfo? = null,
-    val episodes: List<EpisodeInfo> = emptyList()
-)
+    val episodes: List<PodcastToEpisodeInfo> = emptyList()
+) : List<PodcastToEpisodeInfo> by episodes

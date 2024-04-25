@@ -121,12 +121,12 @@ import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -921,7 +921,7 @@ private fun PreviewHomeContent() {
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
+                episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
             onCategorySelected = {},
@@ -957,7 +957,7 @@ private fun PreviewHomeContentExpanded() {
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
+                episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
             onCategorySelected = {},
