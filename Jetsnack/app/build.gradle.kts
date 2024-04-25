@@ -35,8 +35,9 @@ android {
 
     signingConfigs {
         // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        // TODO in your apps you'd want to sign with your correct signing certificate
         named("debug") {
-            storeFile = rootProject.file("debug.keystore")
+            storeFile = File(System.getProperty("user.home"), ".android/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
