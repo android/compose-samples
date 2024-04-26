@@ -110,8 +110,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import java.time.Duration
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 /**
  * Stateful version of the Podcast player
@@ -129,16 +129,18 @@ fun PlayerScreen(
         windowSizeClass = windowSizeClass,
         displayFeatures = displayFeatures,
         onBackPress = onBackPress,
-        onPlayPress = viewModel::onPlay,
-        onPausePress = viewModel::onPause,
-        onAdvanceBy = viewModel::onAdvanceBy,
-        onRewindBy = viewModel::onRewindBy,
-        onSeekingStarted = viewModel::onSeekingStarted,
-        onSeekingFinished = viewModel::onSeekingFinished,
-        onStop = viewModel::onStop,
-        onNext = viewModel::onNext,
-        onPrevious = viewModel::onPrevious,
         onAddToQueue = viewModel::onAddToQueue,
+        onStop = viewModel::onStop,
+        playerControlActions = PlayerControlActions(
+            onPlayPress = viewModel::onPlay,
+            onPausePress = viewModel::onPause,
+            onAdvanceBy = viewModel::onAdvanceBy,
+            onRewindBy = viewModel::onRewindBy,
+            onSeekingStarted = viewModel::onSeekingStarted,
+            onSeekingFinished = viewModel::onSeekingFinished,
+            onNext = viewModel::onNext,
+            onPrevious = viewModel::onPrevious,
+        ),
     )
 }
 
@@ -151,16 +153,9 @@ private fun PlayerScreen(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onSeekingStarted: () -> Unit,
-    onSeekingFinished: (Duration) -> Unit,
-    onStop: () -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
+    onStop: () -> Unit,
+    playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
     DisposableEffect(Unit) {
@@ -184,20 +179,13 @@ private fun PlayerScreen(
                 windowSizeClass = windowSizeClass,
                 displayFeatures = displayFeatures,
                 onBackPress = onBackPress,
-                onPlayPress = onPlayPress,
-                onPausePress = onPausePress,
-                onAdvanceBy = onAdvanceBy,
-                onRewindBy = onRewindBy,
-                onSeekingStarted = onSeekingStarted,
-                onSeekingFinished = onSeekingFinished,
-                onNext = onNext,
-                onPrevious = onPrevious,
                 onAddToQueue = {
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(snackBarText)
                     }
                     onAddToQueue()
                 },
+                playerControlActions = playerControlActions,
                 modifier = Modifier.padding(contentPadding)
             )
         } else {
@@ -224,15 +212,8 @@ fun PlayerContentWithBackground(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onSeekingStarted: () -> Unit,
-    onSeekingFinished: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
+    playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -245,18 +226,25 @@ fun PlayerContentWithBackground(
             windowSizeClass = windowSizeClass,
             displayFeatures = displayFeatures,
             onBackPress = onBackPress,
-            onPlayPress = onPlayPress,
-            onPausePress = onPausePress,
-            onAdvanceBy = onAdvanceBy,
-            onRewindBy = onRewindBy,
-            onSeekingStarted = onSeekingStarted,
-            onSeekingFinished = onSeekingFinished,
-            onNext = onNext,
-            onPrevious = onPrevious,
             onAddToQueue = onAddToQueue,
+            playerControlActions = playerControlActions,
         )
     }
 }
+
+/**
+ * Wrapper around all actions for the player controls.
+ */
+data class PlayerControlActions(
+    val onPlayPress: () -> Unit,
+    val onPausePress: () -> Unit,
+    val onAdvanceBy: (Duration) -> Unit,
+    val onRewindBy: (Duration) -> Unit,
+    val onNext: () -> Unit,
+    val onPrevious: () -> Unit,
+    val onSeekingStarted: () -> Unit,
+    val onSeekingFinished: (newElapsed: Duration) -> Unit,
+)
 
 @Composable
 fun PlayerContent(
@@ -264,15 +252,8 @@ fun PlayerContent(
     windowSizeClass: WindowSizeClass,
     displayFeatures: List<DisplayFeature>,
     onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onSeekingStarted: () -> Unit,
-    onSeekingFinished: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
+    playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
@@ -290,10 +271,10 @@ fun PlayerContent(
         // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
         val usingVerticalStrategy =
             isTableTopPosture(foldingFeature) ||
-                (
-                    isSeparatingPosture(foldingFeature) &&
-                        foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
-                    )
+                    (
+                            isSeparatingPosture(foldingFeature) &&
+                                    foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                            )
 
         if (usingVerticalStrategy) {
             TwoPane(
@@ -306,15 +287,8 @@ fun PlayerContent(
                     PlayerContentTableTopBottom(
                         uiState = uiState,
                         onBackPress = onBackPress,
-                        onPlayPress = onPlayPress,
-                        onPausePress = onPausePress,
-                        onAdvanceBy = onAdvanceBy,
-                        onRewindBy = onRewindBy,
-                        onSeekingStarted = onSeekingStarted,
-                        onSeekingFinished = onSeekingFinished,
-                        onNext = onNext,
-                        onPrevious = onPrevious,
                         onAddToQueue = onAddToQueue,
+                        playerControlActions = playerControlActions,
                     )
                 },
                 strategy = VerticalTwoPaneStrategy(splitFraction = 0.5f),
@@ -344,14 +318,7 @@ fun PlayerContent(
                     second = {
                         PlayerContentBookEnd(
                             uiState = uiState,
-                            onPlayPress = onPlayPress,
-                            onPausePress = onPausePress,
-                            onAdvanceBy = onAdvanceBy,
-                            onRewindBy = onRewindBy,
-                            onSeekingStarted = onSeekingStarted,
-                            onSeeking = onSeekingFinished,
-                            onNext = onNext,
-                            onPrevious = onPrevious,
+                            playerControlActions = playerControlActions,
                         )
                     },
                     strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
@@ -363,15 +330,8 @@ fun PlayerContent(
         PlayerContentRegular(
             uiState = uiState,
             onBackPress = onBackPress,
-            onPlayPress = onPlayPress,
-            onPausePress = onPausePress,
-            onAdvanceBy = onAdvanceBy,
-            onRewindBy = onRewindBy,
-            onSeekingStarted = onSeekingStarted,
-            onSeeking = onSeekingFinished,
-            onNext = onNext,
-            onPrevious = onPrevious,
             onAddToQueue = onAddToQueue,
+            playerControlActions = playerControlActions,
             modifier = modifier,
         )
     }
@@ -384,15 +344,8 @@ fun PlayerContent(
 private fun PlayerContentRegular(
     uiState: PlayerUiState,
     onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onSeekingStarted: () -> Unit,
-    onSeeking: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
+    playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
     val playerEpisode = uiState.episodePlayerState
@@ -431,18 +384,18 @@ private fun PlayerContentRegular(
                 PlayerSlider(
                     timeElapsed = playerEpisode.timeElapsed,
                     episodeDuration = currentEpisode.duration,
-                    onSeekingStarted = onSeekingStarted,
-                    onSeekingFinished = onSeeking
+                    onSeekingStarted = playerControlActions.onSeekingStarted,
+                    onSeekingFinished = playerControlActions.onSeekingFinished
                 )
                 PlayerButtons(
                     hasNext = playerEpisode.queue.isNotEmpty(),
                     isPlaying = playerEpisode.isPlaying,
-                    onPlayPress = onPlayPress,
-                    onPausePress = onPausePress,
-                    onAdvanceBy = onAdvanceBy,
-                    onRewindBy = onRewindBy,
-                    onNext = onNext,
-                    onPrevious = onPrevious,
+                    onPlayPress = playerControlActions.onPlayPress,
+                    onPausePress = playerControlActions.onPausePress,
+                    onAdvanceBy = playerControlActions.onAdvanceBy,
+                    onRewindBy = playerControlActions.onRewindBy,
+                    onNext = playerControlActions.onNext,
+                    onPrevious = playerControlActions.onPrevious,
                     Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -488,15 +441,8 @@ private fun PlayerContentTableTopTop(
 private fun PlayerContentTableTopBottom(
     uiState: PlayerUiState,
     onBackPress: () -> Unit,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onSeekingStarted: () -> Unit,
-    onSeekingFinished: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
+    playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
     val episodePlayerState = uiState.episodePlayerState
@@ -529,20 +475,20 @@ private fun PlayerContentTableTopBottom(
             PlayerButtons(
                 hasNext = episodePlayerState.queue.isNotEmpty(),
                 isPlaying = episodePlayerState.isPlaying,
-                onPlayPress = onPlayPress,
-                onPausePress = onPausePress,
+                onPlayPress = playerControlActions.onPlayPress,
+                onPausePress = playerControlActions.onPausePress,
                 playerButtonSize = 92.dp,
-                onAdvanceBy = onAdvanceBy,
-                onRewindBy = onRewindBy,
-                onNext = onNext,
-                onPrevious = onPrevious,
+                onAdvanceBy = playerControlActions.onAdvanceBy,
+                onRewindBy = playerControlActions.onRewindBy,
+                onNext = playerControlActions.onNext,
+                onPrevious = playerControlActions.onPrevious,
                 modifier = Modifier.padding(top = 8.dp)
             )
             PlayerSlider(
                 timeElapsed = episodePlayerState.timeElapsed,
                 episodeDuration = episode.duration,
-                onSeekingStarted = onSeekingStarted,
-                onSeekingFinished = onSeekingFinished
+                onSeekingStarted = playerControlActions.onSeekingStarted,
+                onSeekingFinished = playerControlActions.onSeekingFinished
             )
         }
     }
@@ -581,14 +527,7 @@ private fun PlayerContentBookStart(
 @Composable
 private fun PlayerContentBookEnd(
     uiState: PlayerUiState,
-    onPlayPress: () -> Unit,
-    onPausePress: () -> Unit,
-    onAdvanceBy: (Duration) -> Unit,
-    onRewindBy: (Duration) -> Unit,
-    onSeekingStarted: () -> Unit,
-    onSeeking: (Duration) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
+    playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
     val episodePlayerState = uiState.episodePlayerState
@@ -609,18 +548,18 @@ private fun PlayerContentBookEnd(
         PlayerSlider(
             timeElapsed = episodePlayerState.timeElapsed,
             episodeDuration = episode.duration,
-            onSeekingStarted = onSeekingStarted,
-            onSeekingFinished = onSeeking,
+            onSeekingStarted = playerControlActions.onSeekingStarted,
+            onSeekingFinished = playerControlActions.onSeekingFinished,
         )
         PlayerButtons(
             hasNext = episodePlayerState.queue.isNotEmpty(),
             isPlaying = episodePlayerState.isPlaying,
-            onPlayPress = onPlayPress,
-            onPausePress = onPausePress,
-            onAdvanceBy = onAdvanceBy,
-            onRewindBy = onRewindBy,
-            onNext = onNext,
-            onPrevious = onPrevious,
+            onPlayPress = playerControlActions.onPlayPress,
+            onPausePress = playerControlActions.onPausePress,
+            onAdvanceBy = playerControlActions.onAdvanceBy,
+            onRewindBy = playerControlActions.onRewindBy,
+            onNext = playerControlActions.onNext,
+            onPrevious = playerControlActions.onPrevious,
             Modifier.padding(vertical = 8.dp)
         )
     }
@@ -957,16 +896,18 @@ fun PlayerScreenPreview() {
                 displayFeatures = emptyList(),
                 windowSizeClass = WindowSizeClass.compute(maxWidth.value, maxHeight.value),
                 onBackPress = { },
-                onPlayPress = {},
-                onPausePress = {},
-                onAdvanceBy = {},
-                onRewindBy = {},
-                onSeekingStarted = {},
-                onSeekingFinished = {},
-                onStop = {},
-                onNext = {},
-                onPrevious = {},
                 onAddToQueue = {},
+                onStop = {},
+                playerControlActions = PlayerControlActions(
+                    onPlayPress = {},
+                    onPausePress = {},
+                    onAdvanceBy = {},
+                    onRewindBy = {},
+                    onSeekingStarted = {},
+                    onSeekingFinished = {},
+                    onNext = {},
+                    onPrevious = {},
+                )
             )
         }
     }
