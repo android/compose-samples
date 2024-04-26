@@ -57,6 +57,10 @@ jobs:
       - name: Build release
         working-directory: ${{ inputs.path }}
         run: ./gradlew assembleRelease --stacktrace
+        env:
+          compose_store_password: ${{secrets.compose_store_password}}
+          compose_key_alias: $${{secrets.compose_key_alias}}
+          compose_key_password: $${{secrets.compose_key_password}}
 
       - name: Run local tests
         working-directory: ${{ inputs.path }}
