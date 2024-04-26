@@ -100,6 +100,14 @@ class PlayerViewModel @Inject constructor(
         episodePlayer.rewindBy(duration)
     }
 
+    fun onSeekingStarted() {
+        episodePlayer.onSeekingStarted()
+    }
+
+    fun onSeekingFinished(duration: Duration) {
+        episodePlayer.onSeekingFinished(duration)
+    }
+
     fun onAddToQueue() {
         uiState.episodePlayerState.currentEpisode?.let {
             episodePlayer.addToQueue(it)

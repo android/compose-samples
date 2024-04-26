@@ -67,8 +67,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -130,6 +133,8 @@ fun PlayerScreen(
         onPausePress = viewModel::onPause,
         onAdvanceBy = viewModel::onAdvanceBy,
         onRewindBy = viewModel::onRewindBy,
+        onSeekingStarted = viewModel::onSeekingStarted,
+        onSeekingFinished = viewModel::onSeekingFinished,
         onStop = viewModel::onStop,
         onNext = viewModel::onNext,
         onPrevious = viewModel::onPrevious,
@@ -150,6 +155,8 @@ private fun PlayerScreen(
     onPausePress: () -> Unit,
     onAdvanceBy: (Duration) -> Unit,
     onRewindBy: (Duration) -> Unit,
+    onSeekingStarted: () -> Unit,
+    onSeekingFinished: (Duration) -> Unit,
     onStop: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -181,6 +188,8 @@ private fun PlayerScreen(
                 onPausePress = onPausePress,
                 onAdvanceBy = onAdvanceBy,
                 onRewindBy = onRewindBy,
+                onSeekingStarted = onSeekingStarted,
+                onSeekingFinished = onSeekingFinished,
                 onNext = onNext,
                 onPrevious = onPrevious,
                 onAddToQueue = {
@@ -219,6 +228,8 @@ fun PlayerContentWithBackground(
     onPausePress: () -> Unit,
     onAdvanceBy: (Duration) -> Unit,
     onRewindBy: (Duration) -> Unit,
+    onSeekingStarted: () -> Unit,
+    onSeekingFinished: (Duration) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
@@ -238,6 +249,8 @@ fun PlayerContentWithBackground(
             onPausePress = onPausePress,
             onAdvanceBy = onAdvanceBy,
             onRewindBy = onRewindBy,
+            onSeekingStarted = onSeekingStarted,
+            onSeekingFinished = onSeekingFinished,
             onNext = onNext,
             onPrevious = onPrevious,
             onAddToQueue = onAddToQueue,
@@ -255,6 +268,8 @@ fun PlayerContent(
     onPausePress: () -> Unit,
     onAdvanceBy: (Duration) -> Unit,
     onRewindBy: (Duration) -> Unit,
+    onSeekingStarted: () -> Unit,
+    onSeekingFinished: (Duration) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
@@ -295,6 +310,8 @@ fun PlayerContent(
                         onPausePress = onPausePress,
                         onAdvanceBy = onAdvanceBy,
                         onRewindBy = onRewindBy,
+                        onSeekingStarted = onSeekingStarted,
+                        onSeekingFinished = onSeekingFinished,
                         onNext = onNext,
                         onPrevious = onPrevious,
                         onAddToQueue = onAddToQueue,
@@ -331,6 +348,8 @@ fun PlayerContent(
                             onPausePress = onPausePress,
                             onAdvanceBy = onAdvanceBy,
                             onRewindBy = onRewindBy,
+                            onSeekingStarted = onSeekingStarted,
+                            onSeeking = onSeekingFinished,
                             onNext = onNext,
                             onPrevious = onPrevious,
                         )
@@ -348,6 +367,8 @@ fun PlayerContent(
             onPausePress = onPausePress,
             onAdvanceBy = onAdvanceBy,
             onRewindBy = onRewindBy,
+            onSeekingStarted = onSeekingStarted,
+            onSeeking = onSeekingFinished,
             onNext = onNext,
             onPrevious = onPrevious,
             onAddToQueue = onAddToQueue,
@@ -367,6 +388,8 @@ private fun PlayerContentRegular(
     onPausePress: () -> Unit,
     onAdvanceBy: (Duration) -> Unit,
     onRewindBy: (Duration) -> Unit,
+    onSeekingStarted: () -> Unit,
+    onSeeking: (Duration) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
@@ -407,7 +430,9 @@ private fun PlayerContentRegular(
             ) {
                 PlayerSlider(
                     timeElapsed = playerEpisode.timeElapsed,
-                    episodeDuration = currentEpisode.duration
+                    episodeDuration = currentEpisode.duration,
+                    onSeekingStarted = onSeekingStarted,
+                    onSeekingFinished = onSeeking
                 )
                 PlayerButtons(
                     hasNext = playerEpisode.queue.isNotEmpty(),
@@ -467,6 +492,8 @@ private fun PlayerContentTableTopBottom(
     onPausePress: () -> Unit,
     onAdvanceBy: (Duration) -> Unit,
     onRewindBy: (Duration) -> Unit,
+    onSeekingStarted: () -> Unit,
+    onSeekingFinished: (Duration) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onAddToQueue: () -> Unit,
@@ -513,7 +540,9 @@ private fun PlayerContentTableTopBottom(
             )
             PlayerSlider(
                 timeElapsed = episodePlayerState.timeElapsed,
-                episodeDuration = episode.duration
+                episodeDuration = episode.duration,
+                onSeekingStarted = onSeekingStarted,
+                onSeekingFinished = onSeekingFinished
             )
         }
     }
@@ -556,6 +585,8 @@ private fun PlayerContentBookEnd(
     onPausePress: () -> Unit,
     onAdvanceBy: (Duration) -> Unit,
     onRewindBy: (Duration) -> Unit,
+    onSeekingStarted: () -> Unit,
+    onSeeking: (Duration) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     modifier: Modifier = Modifier
@@ -577,7 +608,9 @@ private fun PlayerContentBookEnd(
         )
         PlayerSlider(
             timeElapsed = episodePlayerState.timeElapsed,
-            episodeDuration = episode.duration
+            episodeDuration = episode.duration,
+            onSeekingStarted = onSeekingStarted,
+            onSeekingFinished = onSeeking,
         )
         PlayerButtons(
             hasNext = episodePlayerState.queue.isNotEmpty(),
@@ -703,21 +736,36 @@ fun Duration.formatString(): String {
 }
 
 @Composable
-private fun PlayerSlider(timeElapsed: Duration?, episodeDuration: Duration?) {
-    Column(Modifier.fillMaxWidth()) {
+private fun PlayerSlider(
+    timeElapsed: Duration,
+    episodeDuration: Duration?,
+    onSeekingStarted: () -> Unit,
+    onSeekingFinished: (newElapsed: Duration) -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        var sliderValue by remember(timeElapsed) { mutableStateOf(timeElapsed) }
+        val maxRange = (episodeDuration?.toSeconds() ?: 0).toFloat()
+
         Row(Modifier.fillMaxWidth()) {
             Text(
-                text = "${timeElapsed?.formatString()} • ${episodeDuration?.formatString()}",
+                text = "${sliderValue.formatString()} • ${episodeDuration?.formatString()}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        val sliderValue = (timeElapsed?.toSeconds() ?: 0).toFloat()
-        val maxRange = (episodeDuration?.toSeconds() ?: 0).toFloat()
+
         Slider(
-            value = sliderValue,
+            value = sliderValue.seconds.toFloat(),
             valueRange = 0f..maxRange,
-            onValueChange = { }
+            onValueChange = {
+                onSeekingStarted()
+                sliderValue = Duration.ofSeconds(it.toLong())
+            },
+            onValueChangeFinished = { onSeekingFinished(sliderValue) }
         )
     }
 }
@@ -913,6 +961,8 @@ fun PlayerScreenPreview() {
                 onPausePress = {},
                 onAdvanceBy = {},
                 onRewindBy = {},
+                onSeekingStarted = {},
+                onSeekingFinished = {},
                 onStop = {},
                 onNext = {},
                 onPrevious = {},
