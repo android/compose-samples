@@ -72,6 +72,7 @@ fun EpisodeListItem(
     onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     showPodcastImage: Boolean = true,
+    showSummary: Boolean = false,
 ) {
     Box(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
         Surface(
@@ -90,7 +91,8 @@ fun EpisodeListItem(
                     episode = episode,
                     podcast = podcast,
                     showPodcastImage = showPodcastImage,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    showSummary = showSummary,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
 
                 // Bottom Part
@@ -183,10 +185,11 @@ private fun EpisodeListItemFooter(
 }
 
 @Composable
-fun EpisodeListItemHeader(
+private fun EpisodeListItemHeader(
     episode: EpisodeInfo,
     podcast: PodcastInfo,
     showPodcastImage: Boolean,
+    showSummary: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier) {
@@ -199,16 +202,16 @@ fun EpisodeListItemHeader(
             Text(
                 text = episode.title,
                 maxLines = 2,
-                minLines = 2,
+                minLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 2.dp)
             )
 
             Text(
-                text = podcast.title,
+                text = if (showSummary) episode.summary else podcast.title,
                 maxLines = 2,
-                minLines = 2,
+                minLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall,
             )
@@ -261,7 +264,8 @@ private fun EpisodeListItemPreview() {
             episode = PreviewEpisodes[0],
             podcast = PreviewPodcasts[0],
             onClick = {},
-            onQueueEpisode = {}
+            onQueueEpisode = {},
+            showSummary = true
         )
     }
 }
