@@ -25,7 +25,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macOS-latest # enables hardware acceleration in the virtual machine
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       matrix:

@@ -17,7 +17,6 @@
 package com.example.jetcaster.tv.ui.component
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,14 +25,13 @@ import androidx.tv.material3.CardScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.StandardCardLayout
 import androidx.tv.material3.Text
-import coil.compose.AsyncImage
-import com.example.jetcaster.core.data.database.model.Podcast
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun PodcastCard(
-    podcast: Podcast,
+    podcastInfo: PodcastInfo,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -44,16 +42,14 @@ internal fun PodcastCard(
                 interactionSource = it,
                 scale = CardScale.None,
             ) {
-                AsyncImage(
-                    model = podcast.imageUrl,
-                    contentDescription = null,
-                    placeholder = thumbnailPlaceholder(),
-                    modifier = Modifier.size(JetcasterAppDefaults.thumbnailSize.podcast)
+                Thumbnail(
+                    podcastInfo = podcastInfo,
+                    size = JetcasterAppDefaults.thumbnailSize.podcast
                 )
             }
         },
         title = {
-            Text(text = podcast.title, modifier = Modifier.padding(top = 12.dp))
+            Text(text = podcastInfo.title, modifier = Modifier.padding(top = 12.dp))
         },
         modifier = modifier,
     )

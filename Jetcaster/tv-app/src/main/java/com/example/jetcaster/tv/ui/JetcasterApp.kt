@@ -141,7 +141,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                 LibraryScreen(
                     navigateToDiscover = jetcasterAppState::navigateToDiscover,
                     showPodcastDetails = {
-                        jetcasterAppState.showPodcastDetails(it.podcast.uri)
+                        jetcasterAppState.showPodcastDetails(it.uri)
                     },
                     playEpisode = {
                         jetcasterAppState.playEpisode()
@@ -156,7 +156,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         composable(Screen.Search.route) {
             SearchScreen(
                 onPodcastSelected = {
-                    jetcasterAppState.showPodcastDetails(it.podcast.uri)
+                    jetcasterAppState.showPodcastDetails(it.uri)
                 },
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
