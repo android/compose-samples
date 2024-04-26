@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
@@ -46,6 +47,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val podcastsRepository: PodcastsRepository,
@@ -64,11 +66,11 @@ class HomeViewModel @Inject constructor(
     // Holds our currently selected category
     private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
     // Holds our view state which the UI collects via [state]
-    private val _state = MutableStateFlow(HomeViewState())
+    private val _state = MutableStateFlow<HomeScreenUiState>(HomeScreenUiState.Loading)
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
 
-    val state: StateFlow<HomeViewState>
+    val state: StateFlow<HomeScreenUiState>
         get() = _state
 
     init {
@@ -100,6 +102,11 @@ class HomeViewModel @Inject constructor(
                 podcastCategoryFilterResult,
                 libraryEpisodes ->
 
+                if (refreshing) {
+                    Log.d("Jetcaster", "refreshing: $refreshing, podcasts $podcasts")
+                    return@combine HomeScreenUiState.Loading
+                }
+
                 _selectedCategory.value = filterableCategories.selectedCategory
 
                 // Override selected home category to show 'DISCOVER' if there are no
@@ -107,19 +114,16 @@ class HomeViewModel @Inject constructor(
                 selectedHomeCategory.value =
                     if (podcasts.isEmpty()) HomeCategory.Discover else homeCategory
 
-                HomeViewState(
+                HomeScreenUiState.Ready(
                     homeCategories = homeCategories,
                     selectedHomeCategory = homeCategory,
                     featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
-                    refreshing = refreshing,
                     filterableCategoriesModel = filterableCategories,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    library = libraryEpisodes.asLibrary(),
-                    errorMessage = null, /* TODO */
+                    library = libraryEpisodes.asLibrary()
                 )
             }.catch { throwable ->
-                // TODO: emit a UI error here. For now we'll just rethrow
-                throw throwable
+                _state.value = HomeScreenUiState.Error(throwable.message)
             }.collect {
                 _state.value = it
             }
@@ -128,7 +132,7 @@ class HomeViewModel @Inject constructor(
         refresh(force = false)
     }
 
-    private fun refresh(force: Boolean) {
+    fun refresh(force: Boolean = true) {
         viewModelScope.launch {
             runCatching {
                 refreshing.value = true
@@ -179,13 +183,21 @@ enum class HomeCategory {
     Library, Discover
 }
 
-data class HomeViewState(
-    val featuredPodcasts: PersistentList<PodcastInfo> = persistentListOf(),
-    val refreshing: Boolean = false,
-    val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
-    val homeCategories: List<HomeCategory> = emptyList(),
-    val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),
-    val podcastCategoryFilterResult: PodcastCategoryFilterResult = PodcastCategoryFilterResult(),
-    val library: LibraryInfo = LibraryInfo(),
-    val errorMessage: String? = null
-)
+sealed interface HomeScreenUiState {
+    data object Loading : HomeScreenUiState
+
+    data class Error(
+        val errorMessage: String? = null
+    ) : HomeScreenUiState
+
+    data class Ready(
+        val featuredPodcasts: PersistentList<PodcastInfo> = persistentListOf(),
+        val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
+        val homeCategories: List<HomeCategory> = emptyList(),
+        val filterableCategoriesModel: FilterableCategoriesModel =
+            FilterableCategoriesModel(),
+        val podcastCategoryFilterResult: PodcastCategoryFilterResult =
+            PodcastCategoryFilterResult(),
+        val library: LibraryInfo = LibraryInfo(),
+    ) : HomeScreenUiState
+}
