@@ -9,6 +9,9 @@ on:
       path:
         required: true
         type: string
+      module:
+        default: "app"
+        type: string
 env:
   compose_store_password: ${{secrets.compose_store_password}}
   compose_key_alias: $${{secrets.compose_key_alias}}

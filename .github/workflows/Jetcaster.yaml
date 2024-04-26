@@ -19,3 +19,4 @@ jobs:
     with:
       name: Jetcaster
       path: Jetcaster
+      module: mobile
