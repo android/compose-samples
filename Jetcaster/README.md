@@ -87,7 +87,7 @@ refer to the [Media Toolkit sample][mediatoolkitsample] to learn how to implemen
 
 ### Architecture
 The architecture of the Wear app is similar to the phone app architecture: each UI 'screen' has its 
-own [ViewModel][viewmodel] which exposes a `StateFlow<HomeViewState>` for the UI to observe.
+own [ViewModel][viewmodel] which exposes a `StateFlow<ScreenState>` for the UI to observe.
 
 ## Data
 
