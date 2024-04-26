@@ -110,8 +110,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import kotlinx.coroutines.launch
 import java.time.Duration
+import kotlinx.coroutines.launch
 
 /**
  * Stateful version of the Podcast player
@@ -271,10 +271,10 @@ fun PlayerContent(
         // or we have an impactful horizontal fold. Otherwise, we'll use a horizontal strategy.
         val usingVerticalStrategy =
             isTableTopPosture(foldingFeature) ||
-                    (
-                            isSeparatingPosture(foldingFeature) &&
-                                    foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
-                            )
+                (
+                    isSeparatingPosture(foldingFeature) &&
+                        foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                    )
 
         if (usingVerticalStrategy) {
             TwoPane(
