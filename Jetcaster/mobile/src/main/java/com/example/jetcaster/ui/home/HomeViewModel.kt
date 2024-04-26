@@ -36,16 +36,18 @@ import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 
@@ -71,7 +73,8 @@ class HomeViewModel @Inject constructor(
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
 
-    private val followedPodcasts = podcastStore.followedPodcastsSortedByLastEpisode(limit = 10)
+    private val subscribedPodcasts = podcastStore.followedPodcastsSortedByLastEpisode(limit = 10)
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
 
     val state: StateFlow<HomeScreenUiState>
         get() = _state
@@ -83,7 +86,7 @@ class HomeViewModel @Inject constructor(
             combine(
                 homeCategories,
                 selectedHomeCategory,
-                followedPodcasts,
+                subscribedPodcasts,
                 refreshing,
                 _selectedCategory.flatMapLatest { selectedCategory ->
                     filterableCategoriesUseCase(selectedCategory)
@@ -91,9 +94,9 @@ class HomeViewModel @Inject constructor(
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
                 },
-                followedPodcasts.flatMapLatest { podcast ->
+                subscribedPodcasts.flatMapLatest { podcasts ->
                     episodeStore.episodesInPodcasts(
-                        podcastUris = podcast.map { it.podcast.uri },
+                        podcastUris = podcasts.map { it.podcast.uri },
                         limit = 20
                     )
                 }
