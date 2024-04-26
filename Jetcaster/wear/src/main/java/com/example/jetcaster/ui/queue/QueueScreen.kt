@@ -31,12 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.player.model.PlayerEpisode
@@ -44,6 +47,7 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -55,6 +59,8 @@ import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable fun QueueScreen(
     onPlayButtonClick: () -> Unit,
@@ -97,72 +103,104 @@ fun QueueScreen(
         modifier = modifier
     ) {
         when (uiState) {
-            is QueueScreenState.Loaded -> {
-                EntityScreen(
-                    columnState = columnState,
-                    headerContent = {
-                        ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding()
-                        ) {
-                            Text(text = stringResource(R.string.queue))
-                        }
-                    },
-                    buttonsContent = {
-                        ButtonsContent(
-                            episodes = uiState.episodeList,
-                            onPlayButtonClick = onPlayButtonClick,
-                            onPlayEpisodes = onPlayEpisodes,
-                            onDeleteQueueEpisodes = onDeleteQueueEpisodes
-                        )
-                    },
-                    content = {
-                        items(uiState.episodeList) { episode ->
-                            MediaContent(
-                                episode = episode,
-                                episodeArtworkPlaceholder = rememberVectorPainter(
-                                    image = Icons.Default.MusicNote,
-                                    tintColor = Color.Blue,
-                                ),
-                                onEpisodeItemClick
-                            )
-                        }
-                    }
-                )
+            is QueueScreenState.Loaded -> QueueScreenLoaded(
+                columnState = columnState,
+                episodeList = uiState.episodeList,
+                onDeleteQueueEpisodes = onDeleteQueueEpisodes,
+                onPlayEpisodes = onPlayEpisodes,
+                onPlayButtonClick = onPlayButtonClick,
+                onEpisodeItemClick = onEpisodeItemClick
+            )
+            QueueScreenState.Loading -> QueueScreenLoading(columnState)
+            QueueScreenState.Empty -> QueueScreenEmpty(onDismiss)
+        }
+    }
+}
+
+@Composable
+fun QueueScreenLoaded(
+    columnState: ScalingLazyColumnState,
+    episodeList: List<PlayerEpisode>,
+    onPlayButtonClick: () -> Unit,
+    onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
+    onDeleteQueueEpisodes: () -> Unit,
+    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    EntityScreen(
+        columnState = columnState,
+        modifier = modifier,
+        headerContent = {
+            ResponsiveListHeader(
+                contentPadding = ListHeaderDefaults.firstItemPadding()
+            ) {
+                Text(text = stringResource(R.string.queue))
             }
-            QueueScreenState.Loading -> {
-                EntityScreen(
-                    columnState = columnState,
-                    headerContent = {
-                        DefaultEntityScreenHeader(
-                            title = stringResource(R.string.queue)
-                        )
-                    },
-                    buttonsContent = {
-                        ButtonsContent(
-                            episodes = emptyList(),
-                            onPlayButtonClick = {},
-                            onPlayEpisodes = {},
-                            onDeleteQueueEpisodes = { },
-                            enabled = false
-                        )
-                    },
-                    content = {
-                        items(count = 2) {
-                            PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-                        }
-                    }
-                )
-            }
-            QueueScreenState.Empty -> {
-                AlertDialog(
-                    showDialog = true,
-                    onDismiss = onDismiss,
-                    title = stringResource(R.string.display_nothing_in_queue),
-                    message = stringResource(R.string.no_episodes_from_queue)
+        },
+        buttonsContent = {
+            ButtonsContent(
+                episodes = episodeList,
+                onPlayButtonClick = onPlayButtonClick,
+                onPlayEpisodes = onPlayEpisodes,
+                onDeleteQueueEpisodes = onDeleteQueueEpisodes
+            )
+        },
+        content = {
+            items(episodeList) { episode ->
+                MediaContent(
+                    episode = episode,
+                    episodeArtworkPlaceholder = rememberVectorPainter(
+                        image = Icons.Default.MusicNote,
+                        tintColor = Color.Blue,
+                    ),
+                    onEpisodeItemClick
                 )
             }
         }
-    }
+    )
+}
+
+@Composable
+fun QueueScreenLoading(
+    columnState: ScalingLazyColumnState,
+    modifier: Modifier = Modifier
+) {
+    EntityScreen(
+        columnState = columnState,
+        modifier = modifier,
+        headerContent = {
+            DefaultEntityScreenHeader(
+                title = stringResource(R.string.queue)
+            )
+        },
+        buttonsContent = {
+            ButtonsContent(
+                episodes = emptyList(),
+                onPlayButtonClick = {},
+                onPlayEpisodes = {},
+                onDeleteQueueEpisodes = { },
+                enabled = false
+            )
+        },
+        content = {
+            items(count = 2) {
+                PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+            }
+        }
+    )
+}
+
+@Composable
+fun QueueScreenEmpty(
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        showDialog = true,
+        onDismiss = onDismiss,
+        title = stringResource(R.string.display_nothing_in_queue),
+        message = stringResource(R.string.no_episodes_from_queue)
+    )
 }
 
 @OptIn(ExperimentalHorologistApi::class)
@@ -172,11 +210,12 @@ fun ButtonsContent(
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 16.dp)
             .height(52.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -209,13 +248,28 @@ fun ButtonsContent(
 fun MediaContent(
     episode: PlayerEpisode,
     episodeArtworkPlaceholder: Painter?,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit
+    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val mediaTitle = episode.title
+    val duration = episode.duration
 
-    val secondaryLabel = episode.author
+    val secondaryLabel = when {
+        duration != null -> {
+            // If we have the duration, we combine the date/duration via a
+            // formatted string
+            stringResource(
+                R.string.episode_date_duration,
+                MediumDateFormatter.format(episode.published),
+                duration.toMinutes().toInt()
+            )
+        }
+        // Otherwise we just use the date
+        else -> MediumDateFormatter.format(episode.published)
+    }
 
     Chip(
+        modifier = modifier,
         label = mediaTitle,
         onClick = { onEpisodeItemClick },
         secondaryLabel = secondaryLabel,
@@ -223,4 +277,50 @@ fun MediaContent(
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
     )
+}
+
+private val MediumDateFormatter by lazy {
+    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun QueueScreenLoadedPreview(@PreviewParameter(WearPreviewQueue::class) episode: PlayerEpisode,) {
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
+    QueueScreenLoaded(
+        columnState = columnState,
+        episodeList = listOf(episode),
+        onPlayButtonClick = { },
+        onPlayEpisodes = { },
+        onEpisodeItemClick = { },
+        onDeleteQueueEpisodes = { }
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun QueueScreenLoadingPreview() {
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
+    QueueScreenLoading(
+        columnState = columnState,
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun QueueScreenEmptyPreview() {
+    QueueScreenEmpty(onDismiss = {})
 }
