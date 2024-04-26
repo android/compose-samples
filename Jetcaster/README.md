@@ -14,8 +14,9 @@ project from Android Studio following the steps
 ## Screenshots
 
 ![readme_cover](https://github.com/android/compose-samples/assets/10263978/a58ab950-71aa-48e0-8bc7-85443a1b4f6b)
+## Phone app
 
-## Features
+### Features
 
 This sample has 3 components: the home screen, the podcast details screen, and the player screen
 
@@ -38,7 +39,7 @@ Some other notable things which are implemented:
 
 * Images are all provided from each podcast's RSS feed, and loaded using [Coil][coil] library.
 
-## Architecture
+### Architecture
 The app is built in a Redux-style, where each UI 'screen' has its own [ViewModel][viewmodel], which exposes a single [StateFlow][stateflow] containing the entire view state. Each [ViewModel][viewmodel] is responsible for subscribing to any data streams required for the view, as well as exposing functions which allow the UI to send events.
 
 Using the example of the home screen in the [`com.example.jetcaster.ui.home`](app/src/main/java/com/example/jetcaster/ui/home) package:
@@ -57,6 +58,36 @@ This pattern is used across the different screens:
 - __Home:__ [`com.example.jetcaster.ui.home`](app/src/main/java/com/example/jetcaster/ui/home)
 - __Discover:__ [`com.example.jetcaster.ui.home.discover`](app/src/main/java/com/example/jetcaster/ui/home/discover)
 - __Podcast Category:__ [`com.example.jetcaster.ui.category`](app/src/main/java/com/example/jetcaster/ui/home/category)
+
+## Wear
+
+This sample showcases a 2-screen pager which allows navigation between the Player and the Library.
+From the Library, users can access latest episodes from subscribed podcasts, and queue.
+From the podcast, users can access episode details and add episodes to the queue.
+From the Player screen, users can access a volume screen and a playback speed screen.
+
+The sample implements [Wear UX best practices for media apps][mediappsbestpractices], such as:
+- Support rotating side button (RSB) and Bezel for scrollable screens
+- Display scrollbar on scrolling
+- Display the time on top of the screens
+
+The sample is built using the [Media Toolkit][[mediatoolkit]] which is an open source
+project part of [Horologist][horologist] to ease the development of media apps on Wear OS built on top of Compose for Wear.
+It provides ready to use UI screens, such the [EntityScreen][entityscreen]
+that is used in this sample to implement many screens such as Podcast, LatestEpisodes and Queue. [Horologist][horologist] also provides
+a VolumeScreen that can be reused by media apps to conveniently control volume either by interacting with the rotating side button(RSB)/Bezel or by
+using the provided buttons.
+For simplicity, this sample uses a mock Player which is reused across form factors,
+if you want to see an advanced Media sample built on Compose that uses Exoplayer and plays media content,
+refer to the [Media Toolkit sample][mediatoolkitsample].
+
+The [official media app guidance for Wear OS][ [wearmediaguidance]]
+advices to download content on the watch before listening to preserve power, this feature will be added to this sample in future iterations. You can
+refer to the [Media Toolkit sample][mediatoolkitsample] to learn how to implement the media download feature.
+
+### Architecture
+The architecture of the Wear app is similar to the phone app architecture: each UI 'screen' has its 
+own [ViewModel][viewmodel] which exposes a `StateFlow<ScreenState>` for the UI to observe.
 
 ## Data
 
@@ -114,3 +145,9 @@ limitations under the License.
  [jdk8desugar]: https://developer.android.com/studio/write/java8-support#library-desugaring
  [coil]: https://coil-kt.github.io/coil/
  [wsc]: https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
+ [mediatoolkit]: https://google.github.io/horologist/media-toolkit/
+ [mediatoolkitsample]: https://google.github.io/horologist/media-sample/
+ [wearmediaguidance]: https://developer.android.com/media/implement/surfaces/wear-os#play-downloaded-content
+ [horologist]: https://google.github.io/horologist/
+ [entityscreen]: https://github.com/google/horologist/blob/main/media/ui/src/main/java/com/google/android/horologist/media/ui/screens/entity/EntityScreen.kt
+ [mediappsbestpractices]: https://developer.android.com/design/ui/wear/guides/foundations/media-apps
