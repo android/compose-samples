@@ -63,7 +63,7 @@ This pattern is used across the different screens:
 
 This sample showcases a 2-screen pager which allows navigation between the Player and the Library.
 From the Library, users can access latest episodes from subscribed podcasts, and queue.
-From the podcast, users can access to episode details and add the episode to the queue.
+From the podcast, users can access episode details and add episodes to the queue.
 From the Player screen, users can access a volume screen and a playback speed screen.
 
 The sample implements [Wear UX best practices for media apps][mediappsbestpractices], such as:
