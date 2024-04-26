@@ -62,5 +62,6 @@
     <string name="subscribed">Subscribed</string>
   <string name="see_more">see more</string>
   <string name="search_for_a_podcast">Search for a podcast</string>
+  <string name="an_error_has_occurred">An error has occurred.</string>
 
 </resources>
