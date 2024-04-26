@@ -72,7 +72,7 @@ The sample implements [Wear UX best practices for media apps][mediappsbestpracti
 - Display the time on top of the screens
 
 The sample is built using the [Media Toolkit][[mediatoolkit]] which is an open source
-project part of [Horologist][horologist]  to ease the development of media apps on Wear OS built on top of Compose for Wear.
+project part of [Horologist][horologist] to ease the development of media apps on Wear OS built on top of Compose for Wear.
 It provides ready to use UI screens, such the [EntityScreen][entityscreen]
 that is used in this sample to implement many screens such as Podcast, LatestEpisodes and Queue. [Horologist][horologist] also provides
 a VolumeScreen that can be reused by media apps to conveniently control volume either by interacting with the rotating side button(RSB)/Bezel or by
