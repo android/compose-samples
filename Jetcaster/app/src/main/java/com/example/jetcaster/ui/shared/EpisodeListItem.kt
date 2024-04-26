@@ -76,14 +76,11 @@ fun EpisodeListItem(
     Box(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
         Surface(
             shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surfaceContainer
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            onClick = { onClick(episode) }
         ) {
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .clickable {
-                        onClick(episode)
-                    },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 // Top Part
                 EpisodeListItemHeader(
