@@ -25,14 +25,16 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -139,61 +141,65 @@ private fun PodcastCategoryTabs(
         modifier = modifier
     ) {
         filterableCategoriesModel.categories.forEachIndexed { index, category ->
-            Tab(
+            ChoiceChipContent(
+                text = category.name,
                 selected = index == selectedIndex,
-                onClick = { onCategorySelected(category) }
-            ) {
-                ChoiceChipContent(
-                    text = category.name,
-                    selected = index == selectedIndex,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
-                )
-            }
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp),
+                onClick = { onCategorySelected(category) },
+            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChoiceChipContent(
     text: String,
     selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        color = when {
-            selected -> MaterialTheme.colorScheme.secondaryContainer
-            else -> MaterialTheme.colorScheme.surfaceContainer
-        },
-        contentColor = when {
-            selected -> MaterialTheme.colorScheme.onSecondaryContainer
-            else -> MaterialTheme.colorScheme.onSurfaceVariant
-        },
-        shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(
-                horizontal = when {
-                    selected -> 8.dp
-                    else -> 16.dp
-                },
-                vertical = 8.dp
-            )
+    // When adding onClick to Surface, it automatically makes this item higher.
+    // On the other hand, adding .clickable modifier, doesn't use the same shape as Surface.
+    // This way we disable the minimum height requirement
+    CompositionLocalProvider(value = LocalMinimumInteractiveComponentEnforcement provides false) {
+        Surface(
+            color = when {
+                selected -> MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.surfaceContainer
+            },
+            contentColor = when {
+                selected -> MaterialTheme.colorScheme.onSecondaryContainer
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            },
+            shape = MaterialTheme.shapes.medium,
+            modifier = modifier,
+            onClick = onClick,
         ) {
-            if (selected) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = stringResource(id = R.string.cd_selected_category),
-                    modifier = Modifier
-                        .height(18.dp)
-                        .padding(end = 8.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(
+                    horizontal = when {
+                        selected -> 8.dp
+                        else -> 16.dp
+                    },
+                    vertical = 8.dp
+                )
+            ) {
+                if (selected) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = stringResource(id = R.string.cd_selected_category),
+                        modifier = Modifier
+                            .height(18.dp)
+                            .padding(end = 8.dp)
+                    )
+                }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-            )
         }
     }
 }
