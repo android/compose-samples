@@ -25,7 +25,10 @@ on:
 concurrency:
   group: ${{ inputs.name }}-build-${{ github.ref }}
   cancel-in-progress: true
-
+env:
+  compose_store_password: ${{ secrets.compose_store_password }}
+  compose_key_alias: $${{ secrets.compose_key_alias }}
+  compose_key_password: $${{ secrets.compose_key_password }}
 jobs:
   build:
     runs-on: ubuntu-latest
