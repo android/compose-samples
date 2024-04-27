@@ -15,7 +15,9 @@ on:
 
 env:
   SAMPLE_PATH: Owl
-
+  compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+  compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
+  compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
 jobs:
   build:
     uses: ./.github/workflows/build-sample.yml

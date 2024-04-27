@@ -15,7 +15,9 @@ on:
 
 env:
   SAMPLE_PATH: Jetchat
-
+  compose_store_password: ${{ secrets.compose_store_password }}
+  compose_key_alias: ${{ secrets.compose_key_alias }}
+  compose_key_password: ${{ secrets.compose_key_password }}
 jobs:
   build:
     uses: ./.github/workflows/build-sample.yml
