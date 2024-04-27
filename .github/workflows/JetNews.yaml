@@ -22,6 +22,9 @@ jobs:
     with:
       name: JetNews
       path: JetNews
+      compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+      compose_key_alias: $${{ secrets.COMPOSE_KEY_ALIAS }}
+      compose_key_password: $${{ secrets.COMPOSE_KEY_PASSWORD }}
 
   androidTest:
     needs: build
