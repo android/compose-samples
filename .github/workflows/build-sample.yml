@@ -13,9 +13,9 @@ on:
         default: "app"
         type: string
 env:
-  compose_store_password: ${{secrets.compose_store_password}}
-  compose_key_alias: $${{secrets.compose_key_alias}}
-  compose_key_password: $${{secrets.compose_key_password}}
+  compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+  compose_key_alias: $${{ secrets.COMPOSE_KEY_ALIAS }}
+  compose_key_password: $${{ secrets.COMPOSE_KEY_PASSWORD }}
 
 concurrency:
   group: ${{ inputs.name }}-build-${{ github.ref }}
