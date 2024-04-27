@@ -27,8 +27,8 @@ concurrency:
   cancel-in-progress: true
 env:
   compose_store_password: ${{ secrets.compose_store_password }}
-  compose_key_alias: $${{ secrets.compose_key_alias }}
-  compose_key_password: $${{ secrets.compose_key_password }}
+  compose_key_alias: ${{ secrets.compose_key_alias }}
+  compose_key_password: ${{ secrets.compose_key_password }}
 jobs:
   build:
     runs-on: ubuntu-latest
