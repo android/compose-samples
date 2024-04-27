@@ -12,7 +12,16 @@ on:
       module:
         default: "app"
         type: string
-        
+    secrets:
+      compose_store_password:
+        description: 'password for the keystore'
+        required: true
+      compose_key_alias:
+        description: 'alias for the keystore'
+        required: true
+      compose_key_password:
+        description: 'password for the key'
+        required: true
 concurrency:
   group: ${{ inputs.name }}-build-${{ github.ref }}
   cancel-in-progress: true
