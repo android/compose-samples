@@ -173,6 +173,17 @@ class MockEpisodePlayer(
         }
     }
 
+    override fun onSeekingStarted() {
+        // Need to pause the player so that it doesn't compete with timeline progression.
+        pause()
+    }
+
+    override fun onSeekingFinished(duration: Duration) {
+        val currentEpisodeDuration = _currentEpisode.value?.duration ?: return
+        timeElapsed.update { duration.coerceIn(Duration.ZERO, currentEpisodeDuration) }
+        play()
+    }
+
     override fun increaseSpeed(speed: Duration) {
         _playerSpeed.value += speed
     }

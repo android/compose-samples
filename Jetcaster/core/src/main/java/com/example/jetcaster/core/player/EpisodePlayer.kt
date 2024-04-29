@@ -104,6 +104,16 @@ interface EpisodePlayer {
     fun rewindBy(duration: Duration)
 
     /**
+     * Signal that user started seeking.
+     */
+    fun onSeekingStarted()
+
+    /**
+     * Seeks to a given time interval specified in [duration].
+     */
+    fun onSeekingFinished(duration: Duration)
+
+    /**
      * Increases the speed of Player playback by a given time specified in [duration].
      */
     fun increaseSpeed(speed: Duration = Duration.ofMillis(500))
