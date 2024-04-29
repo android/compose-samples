@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -47,7 +46,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -78,16 +76,11 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackScaffold
-import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
-import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
 import com.example.jetsnack.ui.home.DestinationBar
-import com.example.jetsnack.ui.home.HomeSections
-import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
@@ -504,7 +497,7 @@ private fun CartPreview() {
             increaseItemCount = {},
             decreaseItemCount = {},
             inspiredByCart = SnackRepo.getInspiredByCart(),
-            onSnackClick = {_ , _ -> }
+            onSnackClick = { _, _ -> }
         )
     }
 }

@@ -264,14 +264,14 @@ fun SnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
+                            enter = fadeIn(nonSpatialExpressiveSpring()) +
+                                scaleInSharedContentToBounds(),
+                            exit = fadeOut(nonSpatialExpressiveSpring()) +
+                                scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                 )
             }
-
-
         }
     }
 }
@@ -291,13 +291,14 @@ private fun HighlightSnackItem(
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
     with(sharedTransitionScope) {
-        val roundedCornerAnimation by animatedVisibilityScope.transition.animateDp(label = "rounded corner") { enterExit: EnterExitState ->
-            when (enterExit) {
-                EnterExitState.PreEnter -> 0.dp
-                EnterExitState.Visible -> 20.dp
-                EnterExitState.PostExit -> 0.dp
+        val roundedCornerAnimation by animatedVisibilityScope.transition
+            .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
+                when (enterExit) {
+                    EnterExitState.PreEnter -> 0.dp
+                    EnterExitState.Visible -> 20.dp
+                    EnterExitState.PostExit -> 0.dp
+                }
             }
-        }
         JetsnackCard(
             elevation = 0.dp,
             shape = RoundedCornerShape(roundedCornerAnimation),
@@ -358,15 +359,18 @@ private fun HighlightSnackItem(
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = snackDetailBoundsTransform,
-                                enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
-                                exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds()
+                                enter = fadeIn(nonSpatialExpressiveSpring()) +
+                                    scaleInSharedContentToBounds(),
+                                exit = fadeOut(nonSpatialExpressiveSpring()) +
+                                    scaleOutSharedContentToBounds()
                             )
                             .height(100.dp)
                             .fillMaxWidth()
                             .offsetGradientBackground(
                                 colors = gradient,
                                 width = {
-                                    // The Cards show a gradient which spans 6 cards and scrolls with parallax.
+                                    // The Cards show a gradient which spans 6 cards and
+                                    // scrolls with parallax.
                                     6 * cardWidthWithPaddingPx
                                 },
                                 offset = {
@@ -417,8 +421,10 @@ private fun HighlightSnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
+                            enter = fadeIn(nonSpatialExpressiveSpring()) +
+                                scaleInSharedContentToBounds(),
+                            exit = fadeOut(nonSpatialExpressiveSpring()) +
+                                scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                         .wrapContentWidth()
@@ -440,13 +446,14 @@ private fun HighlightSnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds(),
+                            enter = fadeIn(nonSpatialExpressiveSpring()) +
+                                scaleInSharedContentToBounds(),
+                            exit = fadeOut(nonSpatialExpressiveSpring()) +
+                                scaleOutSharedContentToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                         .wrapContentWidth()
                 )
-
             }
         }
     }

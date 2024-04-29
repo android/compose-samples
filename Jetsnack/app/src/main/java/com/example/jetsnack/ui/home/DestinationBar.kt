@@ -67,7 +67,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     .renderInSharedTransitionScopeOverlay()
                     .animateEnterExit(
                         enter = slideInVertically(spatialExpressiveSpring()) { -it },
-                        exit = slideOutVertically(spatialExpressiveSpring()) { -it })
+                        exit = slideOutVertically(spatialExpressiveSpring()) { -it }
+                    )
             ) {
                 TopAppBar(
                     backgroundColor = JetsnackTheme.colors.uiBackground
@@ -101,12 +102,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                 }
                 JetsnackDivider()
             }
-
         }
-
     }
-
-
 }
 
 @Preview("default")

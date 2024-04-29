@@ -115,7 +115,6 @@ private val ExpandedImageSize = 300.dp
 private val CollapsedImageSize = 150.dp
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
-
 fun <T> spatialExpressiveSpring() = spring<T>(
     dampingRatio = 0.8f,
     stiffness = 380f
@@ -142,13 +141,14 @@ fun SnackDetail(
         ?: throw IllegalStateException("No Scope found")
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
-    val roundedCornerAnim by animatedVisibilityScope.transition.animateDp(label = "rounded corner") { enterExit: EnterExitState ->
-        when (enterExit) {
-            EnterExitState.PreEnter -> 20.dp
-            EnterExitState.Visible -> 0.dp
-            EnterExitState.PostExit -> 20.dp
+    val roundedCornerAnim by animatedVisibilityScope.transition
+        .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
+            when (enterExit) {
+                EnterExitState.PreEnter -> 20.dp
+                EnterExitState.Visible -> 0.dp
+                EnterExitState.PostExit -> 20.dp
+            }
         }
-    }
     with(sharedTransitionScope) {
         Box(
             Modifier
@@ -162,7 +162,8 @@ fun SnackDetail(
                         )
                     ),
                     animatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(roundedCornerAnim)),
+                    clipInOverlayDuringTransition =
+                    OverlayClip(RoundedCornerShape(roundedCornerAnim)),
                     boundsTransform = snackDetailBoundsTransform,
                     exit = fadeOut(nonSpatialExpressiveSpring()),
                     enter = fadeIn(nonSpatialExpressiveSpring()),
@@ -178,7 +179,6 @@ fun SnackDetail(
             Up(upPress)
             CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
         }
-
     }
 }
 
@@ -304,7 +304,6 @@ private fun Body(
                                 .skipToLookaheadSize()
                         )
 
-
                         Spacer(Modifier.height(40.dp))
                         Text(
                             text = stringResource(R.string.ingredients),
@@ -418,7 +417,8 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     modifier = HzPadding
                         .animateEnterExit(
                             enter = fadeIn() + slideInVertically { -it / 3 },
-                            exit = fadeOut() + slideOutVertically { -it / 3 })
+                            exit = fadeOut() + slideOutVertically { -it / 3 }
+                        )
                         .skipToLookaheadSize()
                 )
             }
@@ -517,7 +517,8 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
         modifier = modifier,
         visible = !sharedTransitionScope.isTransitionActive,
         enter = slideInVertically { it } + fadeIn(),
-        exit = slideOutVertically { it } + fadeOut()) {
+        exit = slideOutVertically { it } + fadeOut()
+    ) {
         JetsnackSurface {
             Column {
                 JetsnackDivider()

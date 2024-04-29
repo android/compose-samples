@@ -93,19 +93,27 @@ fun NavGraphBuilder.composableWithCompositionLocal(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
-    enterTransition: (@JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
+    enterTransition: (
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+    )? = {
         fadeIn(nonSpatialExpressiveSpring())
     },
-    exitTransition: (@JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
+    exitTransition: (
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+    )? = {
         fadeOut(nonSpatialExpressiveSpring())
     },
-    popEnterTransition: (@JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
+    popEnterTransition: (
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+    )? =
         enterTransition,
-    popExitTransition: (@JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
+    popExitTransition: (
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+    )? =
         exitTransition,
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
 ) {
@@ -136,7 +144,7 @@ fun NavGraphBuilder.addHomeGraph(
             modifier
         )
     }
-    composable( HomeSections.SEARCH.route) { from ->
+    composable(HomeSections.SEARCH.route) { from ->
         Search(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
             modifier
@@ -200,7 +208,8 @@ fun JetsnackBottomBar(
                         JetsnackTheme.colors.iconInteractive
                     } else {
                         JetsnackTheme.colors.iconInteractiveInactive
-                    }, label = "tint"
+                    },
+                    label = "tint"
                 )
 
                 val text = stringResource(section.title).uppercase(currentLocale)

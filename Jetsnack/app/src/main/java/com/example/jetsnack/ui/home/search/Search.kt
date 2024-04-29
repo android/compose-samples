@@ -60,10 +60,7 @@ import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
-import com.example.jetsnack.ui.home.HomeSections
-import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringBackIcon
 
