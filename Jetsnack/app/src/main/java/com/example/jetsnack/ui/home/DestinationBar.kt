@@ -56,17 +56,25 @@ import java.lang.IllegalStateException
 
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {
-    val sharedElementScope = LocalSharedTransitionScope.current ?: throw IllegalStateException("No shared element scope")
-    val navAnimatedScope = LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No nav scope")
-    with(sharedElementScope){
-        with (navAnimatedScope){
-            Column(modifier = modifier
-                .renderInSharedTransitionScopeOverlay()
-                .animateEnterExit(enter = slideInVertically(spatialExpressiveSpring()) { -it }, exit = slideOutVertically(spatialExpressiveSpring()) { -it })) {
+    val sharedElementScope =
+        LocalSharedTransitionScope.current ?: throw IllegalStateException("No shared element scope")
+    val navAnimatedScope =
+        LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No nav scope")
+    with(sharedElementScope) {
+        with(navAnimatedScope) {
+            Column(
+                modifier = modifier
+                    .renderInSharedTransitionScopeOverlay()
+                    .animateEnterExit(
+                        enter = slideInVertically(spatialExpressiveSpring()) { -it },
+                        exit = slideOutVertically(spatialExpressiveSpring()) { -it })
+            ) {
                 TopAppBar(
-                    backgroundColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
+                    backgroundColor = JetsnackTheme.colors.uiBackground
+                        .copy(alpha = AlphaNearOpaque),
                     contentColor = JetsnackTheme.colors.textSecondary,
-                    contentPadding = WindowInsets.systemBars.only(Horizontal + Top).asPaddingValues(),
+                    contentPadding = WindowInsets.systemBars.only(Horizontal + Top)
+                        .asPaddingValues(),
                     elevation = 0.dp,
                 ) {
                     Text(
