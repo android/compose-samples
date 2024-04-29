@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -186,7 +187,7 @@ private fun PlayerScreen(
                     onAddToQueue()
                 },
                 playerControlActions = playerControlActions,
-                modifier = Modifier.padding(contentPadding)
+                contentPadding = contentPadding,
             )
         } else {
             FullScreenLoading()
@@ -214,12 +215,15 @@ fun PlayerContentWithBackground(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         PlayerBackground(
             episode = uiState.episodePlayerState.currentEpisode,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         )
         PlayerContent(
             uiState = uiState,
