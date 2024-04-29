@@ -20,8 +20,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.jetcaster.designsystem.R
 
 @Composable
 fun PodcastImage(
@@ -45,6 +46,11 @@ fun PodcastImage(
     contentScale: ContentScale = ContentScale.Crop,
     placeholderBrush: Brush = thumbnailPlaceholderDefaultBrush(),
 ) {
+    if (LocalInspectionMode.current) {
+        Box(modifier = modifier.background(MaterialTheme.colorScheme.primary))
+        return
+    }
+
     var imagePainterState by remember {
         mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty)
     }
@@ -63,14 +69,15 @@ fun PodcastImage(
         contentAlignment = Alignment.Center
     ) {
         when (imagePainterState) {
-            is AsyncImagePainter.State.Loading -> {
-                CircularProgressIndicator(
+            is AsyncImagePainter.State.Loading,
+            is AsyncImagePainter.State.Error -> {
+                Image(
+                    painter = painterResource(id = R.drawable.img_empty),
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.Center)
+                        .fillMaxSize()
                 )
             }
-
             else -> {
                 Box(
                     modifier = Modifier
