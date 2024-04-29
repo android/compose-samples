@@ -44,7 +44,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -76,7 +75,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -85,13 +83,11 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
@@ -103,6 +99,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
+import com.example.jetcaster.ui.shared.HtmlTextContainer
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
@@ -111,8 +108,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import java.time.Duration
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 /**
  * Stateful version of the Podcast player
@@ -664,11 +661,13 @@ private fun PodcastInformation(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        HtmlText(
-            text = summary,
-            style = MaterialTheme.typography.bodyMedium,
-            color = LocalContentColor.current
-        )
+        HtmlTextContainer(text = summary) {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyMedium,
+                color = LocalContentColor.current
+            )
+        }
     }
 }
 
@@ -823,25 +822,6 @@ private fun FullScreenLoading(modifier: Modifier = Modifier) {
             .wrapContentSize(Alignment.Center)
     ) {
         CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun HtmlText(
-    text: String,
-    style: TextStyle,
-    color: Color
-) {
-    val annotationString = buildAnnotatedString {
-        val htmlCompat = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        append(htmlCompat)
-    }
-    SelectionContainer {
-        Text(
-            text = annotationString,
-            style = style,
-            color = color
-        )
     }
 }
 
