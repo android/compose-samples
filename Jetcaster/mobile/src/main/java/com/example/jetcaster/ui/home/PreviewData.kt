@@ -18,8 +18,8 @@ package com.example.jetcaster.ui.home
 
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
-import com.example.jetcaster.core.model.PodcastCategoryEpisode
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.PodcastToEpisodeInfo
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -58,8 +58,8 @@ val PreviewEpisodes = listOf(
     )
 )
 
-val PreviewPodcastCategoryEpisodes = listOf(
-    PodcastCategoryEpisode(
+val PreviewPodcastEpisodes = listOf(
+    PodcastToEpisodeInfo(
         podcast = PreviewPodcasts[0],
         episode = PreviewEpisodes[0],
     )

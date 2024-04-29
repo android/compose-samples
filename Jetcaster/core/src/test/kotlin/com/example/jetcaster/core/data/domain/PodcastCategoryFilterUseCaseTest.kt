@@ -22,7 +22,7 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.database.model.asPodcastCategoryEpisode
+import com.example.jetcaster.core.data.database.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.data.repository.TestCategoryStore
 import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
@@ -109,7 +109,7 @@ class PodcastCategoryFilterUseCaseTest {
             result.topPodcasts
         )
         assertEquals(
-            testEpisodeToPodcast.map { it.asPodcastCategoryEpisode() },
+            testEpisodeToPodcast.map { it.asPodcastToEpisodeInfo() },
             result.episodes
         )
     }

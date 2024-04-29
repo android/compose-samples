@@ -921,7 +921,7 @@ private fun PreviewHomeContent() {
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
+                episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
             onCategorySelected = {},
@@ -957,7 +957,7 @@ private fun PreviewHomeContentExpanded() {
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
+                episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
             onCategorySelected = {},

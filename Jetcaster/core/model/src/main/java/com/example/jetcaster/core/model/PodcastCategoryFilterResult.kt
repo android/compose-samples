@@ -21,10 +21,5 @@ package com.example.jetcaster.core.model
  */
 data class PodcastCategoryFilterResult(
     val topPodcasts: List<PodcastInfo> = emptyList(),
-    val episodes: List<PodcastCategoryEpisode> = emptyList()
-)
-
-data class PodcastCategoryEpisode(
-    val episode: EpisodeInfo,
-    val podcast: PodcastInfo,
+    val episodes: List<PodcastToEpisodeInfo> = emptyList()
 )
