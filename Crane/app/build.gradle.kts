@@ -45,18 +45,19 @@ android {
     }
 
     signingConfigs {
-        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        val userKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
+        val localKeystore = rootProject.file("debug_2.keystore")
+        val hasKeyInfo = userKeystore.exists()
         named("debug") {
-            storeFile = rootProject.file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+            storeFile = if (hasKeyInfo) userKeystore else localKeystore
+            storePassword = if (hasKeyInfo) "android" else System.getenv("compose_store_password")
+            keyAlias = if (hasKeyInfo) "androiddebugkey" else System.getenv("compose_key_alias")
+            keyPassword = if (hasKeyInfo) "android" else System.getenv("compose_key_password")
         }
     }
 
     buildTypes {
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
         }
 
         getByName("release") {
