@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     namespace = "com.example.jetcaster"
@@ -35,25 +36,31 @@ android {
     }
 
     signingConfigs {
-        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        // Important: change the keystore for a production deployment
+        val userKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
+        val localKeystore = rootProject.file("debug_2.keystore")
+        val hasKeyInfo = userKeystore.exists()
         named("debug") {
-            storeFile = rootProject.file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+            // get from env variables
+            storeFile = if (hasKeyInfo) userKeystore else localKeystore
+            storePassword = if (hasKeyInfo) "android" else System.getenv("compose_store_password")
+            keyAlias = if (hasKeyInfo) "androiddebugkey" else System.getenv("compose_key_alias")
+            keyPassword = if (hasKeyInfo) "android" else System.getenv("compose_key_password")
         }
     }
 
     buildTypes {
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
+
         }
 
         getByName("release") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("debug")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 

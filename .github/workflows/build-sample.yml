@@ -12,11 +12,23 @@ on:
       module:
         default: "app"
         type: string
-
+    secrets:
+      compose_store_password:
+        description: 'password for the keystore'
+        required: true
+      compose_key_alias:
+        description: 'alias for the keystore'
+        required: true
+      compose_key_password:
+        description: 'password for the key'
+        required: true
 concurrency:
   group: ${{ inputs.name }}-build-${{ github.ref }}
   cancel-in-progress: true
-
+env:
+  compose_store_password: ${{ secrets.compose_store_password }}
+  compose_key_alias: ${{ secrets.compose_key_alias }}
+  compose_key_password: ${{ secrets.compose_key_password }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -69,11 +81,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-outputs
-          path: ${{ inputs.path }}/${{ inputs.module }}/build/outputs
+          path: ${{ inputs.path }}/app/build/outputs
 
       - name: Upload build reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: build-reports
-          path: ${{ inputs.path }}/${{ inputs.module }}/build/reports
+          path: ${{ inputs.path }}/app/build/reports
