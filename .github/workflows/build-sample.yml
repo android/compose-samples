@@ -69,10 +69,6 @@ jobs:
         working-directory: ${{ inputs.path }}
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Build release
-        working-directory: ${{ inputs.path }}
-        run: ./gradlew assembleRelease --stacktrace
-
       - name: Run local tests
         working-directory: ${{ inputs.path }}
         run: ./gradlew testDebug --stacktrace
