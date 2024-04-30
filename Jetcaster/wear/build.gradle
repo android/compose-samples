@@ -75,7 +75,6 @@ android {
 dependencies {
 
 
-    implementation project(':core:model')
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies
@@ -130,8 +129,8 @@ dependencies {
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
     implementation projects.core
-    implementation projects.designsystem
-
+    implementation projects.core.designsystem
+    implementation projects.core.domain
 
     // Testing
     testImplementation libs.androidx.ui.test.junit4

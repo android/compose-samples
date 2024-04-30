@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
-    namespace = "com.example.jetcaster.core.model"
+    namespace = "com.example.jetcaster.core.domain"
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
