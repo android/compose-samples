@@ -48,7 +48,7 @@ android {
         val userKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
         val localKeystore = rootProject.file("debug_2.keystore")
         val hasKeyInfo = userKeystore.exists()
-        named("release") {
+        create("release") {
             storeFile = if (hasKeyInfo) userKeystore else localKeystore
             storePassword = if (hasKeyInfo) "android" else System.getenv("compose_store_password")
             keyAlias = if (hasKeyInfo) "androiddebugkey" else System.getenv("compose_key_alias")
