@@ -22,8 +22,8 @@ import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.asExternalModel
-import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.tv.model.CategoryInfoList
 import com.example.jetcaster.tv.model.EpisodeList

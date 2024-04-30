@@ -17,8 +17,8 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.player.model.PlayerEpisode
-import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
+import kotlinx.coroutines.flow.StateFlow
 
 val DefaultPlaybackSpeed = Duration.ofSeconds(1)
 data class EpisodePlayerState(
