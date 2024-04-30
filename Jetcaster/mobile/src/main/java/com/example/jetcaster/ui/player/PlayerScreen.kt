@@ -98,8 +98,8 @@ import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
-import com.example.jetcaster.ui.shared.HtmlTextContainer
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
