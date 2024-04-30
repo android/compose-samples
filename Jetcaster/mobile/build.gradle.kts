@@ -132,7 +132,7 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
 
-    implementation(projects.core)
+    implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
 

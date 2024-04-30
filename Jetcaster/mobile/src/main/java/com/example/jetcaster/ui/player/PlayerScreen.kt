@@ -95,7 +95,7 @@ import androidx.window.layout.FoldingFeature
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetcaster.R
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim

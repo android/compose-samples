@@ -36,7 +36,7 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.jetcaster.designsystem.R
+import com.example.jetcaster.core.designsystem.R
 
 @Composable
 fun PodcastImage(

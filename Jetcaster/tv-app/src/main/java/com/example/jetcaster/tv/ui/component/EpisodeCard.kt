@@ -35,7 +35,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.WideCardLayout
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @OptIn(ExperimentalTvMaterial3Api::class)

@@ -128,7 +128,7 @@ dependencies {
 
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
-    implementation projects.core
+    implementation projects.core.data
     implementation projects.core.designsystem
     implementation projects.core.domain
 

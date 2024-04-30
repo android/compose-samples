@@ -19,7 +19,7 @@ package com.example.jetcaster.designsystem.theme
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.example.jetcaster.designsystem.R
+import com.example.jetcaster.core.designsystem.R
 
 val Montserrat = FontFamily(
     Font(R.font.montserrat_light, FontWeight.Light),

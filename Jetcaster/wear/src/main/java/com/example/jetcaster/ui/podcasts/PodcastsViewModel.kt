@@ -19,9 +19,9 @@ package com.example.jetcaster.ui.podcasts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
-import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.asExternalModel
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

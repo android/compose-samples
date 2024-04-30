@@ -87,7 +87,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    implementation(projects.core)
+    implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
 

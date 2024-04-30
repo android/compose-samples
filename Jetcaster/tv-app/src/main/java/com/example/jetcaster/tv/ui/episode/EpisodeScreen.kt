@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.component.BackgroundContainer
 import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDataAndDuration

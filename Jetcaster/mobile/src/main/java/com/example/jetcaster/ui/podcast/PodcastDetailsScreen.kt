@@ -69,7 +69,7 @@ import androidx.compose.ui.unit.min
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.EpisodeInfo
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.designsystem.theme.Keyline1

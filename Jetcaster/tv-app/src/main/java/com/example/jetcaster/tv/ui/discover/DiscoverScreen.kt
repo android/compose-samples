@@ -37,7 +37,7 @@ import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.CategoryInfo
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.model.CategoryInfoList
 import com.example.jetcaster.tv.model.EpisodeList
