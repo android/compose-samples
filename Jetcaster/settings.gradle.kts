@@ -39,6 +39,7 @@ include(
     ":mobile",
     ":core:data",
     ":core:domain",
+    ":core:domain-testing",
     ":core:designsystem",
     ":tv-app",
     ":wear"
