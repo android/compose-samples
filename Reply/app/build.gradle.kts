@@ -38,7 +38,7 @@ android {
         val userKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
         val localKeystore = rootProject.file("debug_2.keystore")
         val hasKeyInfo = userKeystore.exists()
-        named("debug") {
+        create("release") {
             // get from env variables
             storeFile = if (hasKeyInfo) userKeystore else localKeystore
             storePassword = if (hasKeyInfo) "android" else System.getenv("compose_store_password")
@@ -54,7 +54,7 @@ android {
 
         getByName("release") {
             isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro")
         }
