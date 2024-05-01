@@ -87,7 +87,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -104,6 +103,7 @@ import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
 import com.example.jetcaster.ui.theme.JetcasterTheme
+import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
@@ -111,8 +111,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import java.time.Duration
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 /**
  * Stateful version of the Podcast player
@@ -873,10 +873,7 @@ fun PlayerButtonsPreview() {
     }
 }
 
-@Preview(device = Devices.PHONE)
-@Preview(device = Devices.FOLDABLE)
-@Preview(device = Devices.TABLET)
-@Preview(device = Devices.DESKTOP)
+@DevicePreviews
 @Composable
 fun PlayerScreenPreview() {
     JetcasterTheme {

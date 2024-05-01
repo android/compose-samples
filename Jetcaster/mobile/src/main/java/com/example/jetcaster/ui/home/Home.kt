@@ -94,7 +94,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -116,17 +115,18 @@ import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 import com.example.jetcaster.ui.theme.JetcasterTheme
+import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -906,9 +906,9 @@ private fun HomeAppBarPreview() {
 
 private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
 
-@Preview(device = Devices.PHONE)
+@DevicePreviews
 @Composable
-private fun PreviewHomeContent() {
+private fun PreviewHome() {
     JetcasterTheme {
         val homeState = HomeState(
             windowSizeClass = CompactWindowSizeClass,
@@ -936,42 +936,6 @@ private fun PreviewHomeContent() {
         HomeScreen(
             homeState = homeState,
             showGrid = false
-        )
-    }
-}
-
-@Preview(device = Devices.FOLDABLE)
-@Preview(device = Devices.TABLET)
-@Preview(device = Devices.DESKTOP)
-@Composable
-private fun PreviewHomeContentExpanded() {
-    JetcasterTheme {
-        val homeState = HomeState(
-            windowSizeClass = CompactWindowSizeClass,
-            featuredPodcasts = PreviewPodcasts.toPersistentList(),
-            homeCategories = HomeCategory.entries,
-            selectedHomeCategory = HomeCategory.Discover,
-            filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
-            ),
-            podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastEpisodes
-            ),
-            library = LibraryInfo(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
-            navigateToPodcastDetails = {},
-            navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
-            onQueueEpisode = {}
-        )
-        HomeScreen(
-            homeState = homeState,
-            showGrid = true
         )
     }
 }
