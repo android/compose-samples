@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.latest_episodes
+package com.example.jetcaster.ui.latest_episodes
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

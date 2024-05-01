@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.latest_episodes
+package com.example.jetcaster.ui.queue
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
-import com.example.jetcaster.core.data.domain.GetLatestFollowedEpisodesUseCase
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,47 +28,50 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
+/**
+ * ViewModel that handles the business logic and screen state of the Queue screen.
+ */
 @HiltViewModel
-class LatestEpisodeViewModel @Inject constructor(
-    episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase,
+class QueueViewModel @Inject constructor(
     private val episodePlayer: EpisodePlayer,
+
 ) : ViewModel() {
 
-    val uiState: StateFlow<LatestEpisodeScreenState> =
-        episodesFromFavouritePodcasts.invoke().map { episodeToPodcastList ->
-            if (episodeToPodcastList.isNotEmpty()) {
-                LatestEpisodeScreenState.Loaded(
-                    episodeToPodcastList.map {
-                        it.toPlayerEpisode()
-                    }
-                )
-            } else {
-                LatestEpisodeScreenState.Empty
-            }
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            LatestEpisodeScreenState.Loading,
-        )
+    val uiState: StateFlow<QueueScreenState> = episodePlayer.playerState.map {
+        if (it.queue.isNotEmpty()) {
+            QueueScreenState.Loaded(it.queue)
+        } else {
+            QueueScreenState.Empty
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        QueueScreenState.Loading,
+    )
+
+    fun onPlayEpisode(episode: PlayerEpisode) {
+        episodePlayer.currentEpisode = episode
+        episodePlayer.play()
+    }
 
     fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
         episodePlayer.currentEpisode = episodes[0]
         episodePlayer.play(episodes)
     }
 
-    fun onPlayEpisode(episode: PlayerEpisode) {
-        episodePlayer.currentEpisode = episode
-        episodePlayer.play()
+    fun onDeleteQueueEpisodes() {
+        episodePlayer.removeAllFromQueue()
     }
 }
 
-sealed interface LatestEpisodeScreenState {
+@ExperimentalHorologistApi
+sealed interface QueueScreenState {
 
-    data object Loading : LatestEpisodeScreenState
+    data object Loading : QueueScreenState
 
     data class Loaded(
         val episodeList: List<PlayerEpisode>
-    ) : LatestEpisodeScreenState
+    ) : QueueScreenState
 
-    data object Empty : LatestEpisodeScreenState
+    data object Empty : QueueScreenState
 }

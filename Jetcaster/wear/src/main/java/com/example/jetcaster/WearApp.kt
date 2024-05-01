@@ -16,17 +16,20 @@
 
 package com.example.jetcaster
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
-import com.example.jetcaster.latest_episodes.LatestEpisodesScreen
-import com.example.jetcaster.podcasts.PodcastsScreen
-import com.example.jetcaster.queue.QueueScreen
 import com.example.jetcaster.theme.WearAppTheme
 import com.example.jetcaster.ui.Episode
 import com.example.jetcaster.ui.JetcasterNavController.navigateToEpisode
@@ -41,16 +44,22 @@ import com.example.jetcaster.ui.PodcastDetails
 import com.example.jetcaster.ui.UpNext
 import com.example.jetcaster.ui.YourPodcasts
 import com.example.jetcaster.ui.episode.EpisodeScreen
+import com.example.jetcaster.ui.latest_episodes.LatestEpisodesScreen
 import com.example.jetcaster.ui.library.LibraryScreen
 import com.example.jetcaster.ui.player.PlaybackSpeedScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
+import com.example.jetcaster.ui.podcasts.PodcastsScreen
+import com.example.jetcaster.ui.queue.QueueScreen
+import com.google.android.horologist.audio.ui.VolumeScreen
 import com.google.android.horologist.audio.ui.VolumeViewModel
+import com.google.android.horologist.compose.layout.AppScaffold
+import com.google.android.horologist.compose.layout.ResponsiveTimeText
+import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToPlayer
 import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToVolume
-import com.google.android.horologist.media.ui.navigation.MediaPlayerScaffold
-import com.google.android.horologist.media.ui.snackbar.SnackbarManager
-import com.google.android.horologist.media.ui.snackbar.SnackbarViewModel
+import com.google.android.horologist.media.ui.navigation.NavigationScreens
+import com.google.android.horologist.media.ui.screens.playerlibrarypager.PlayerLibraryPagerScreen
 
 @Composable
 fun WearApp() {
@@ -59,41 +68,61 @@ fun WearApp() {
     val navHostState = rememberSwipeDismissableNavHostState()
     val volumeViewModel: VolumeViewModel = viewModel(factory = VolumeViewModel.Factory)
 
-    // TODO remove from MediaPlayerScaffold
-    val snackBarManager: SnackbarManager = SnackbarManager()
-    val snackbarViewModel: SnackbarViewModel = SnackbarViewModel(snackBarManager)
-
     WearAppTheme {
-        MediaPlayerScaffold(
-            playerScreen = {
-                PlayerScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    volumeViewModel = volumeViewModel,
-                    onVolumeClick = {
-                        navController.navigateToVolume()
-                    },
-                    onPlaybackSpeedChangeClick = {
-                        navController.navigateToPlaybackSpeed()
-                    },
-                )
-            },
-            libraryScreen = {
-                LibraryScreen(
-                    onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
-                    onYourPodcastClick = { navController.navigateToYourPodcast() },
-                    onUpNextClick = { navController.navigateToUpNext() },
-                )
-            },
-            categoryEntityScreen = { _, _ -> },
-            mediaEntityScreen = {},
-            playlistsScreen = {},
-            settingsScreen = {},
-            navHostState = navHostState,
-            snackbarViewModel = snackbarViewModel,
-            volumeViewModel = volumeViewModel,
-            deepLinkPrefix = "",
-            navController = navController,
-            additionalNavRoutes = {
+        AppScaffold(
+            timeText = { ResponsiveTimeText() },
+        ) {
+            SwipeDismissableNavHost(
+                startDestination = NavigationScreens.Player.navRoute,
+                navController = navController,
+                modifier = Modifier.background(Color.Transparent),
+                state = navHostState,
+            ) {
+                composable(
+                    route = NavigationScreens.Player.navRoute,
+                    arguments = NavigationScreens.Player.arguments,
+                    deepLinks = NavigationScreens.Player.deepLinks(""),
+                ) {
+                    val volumeState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
+                    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
+
+                    PlayerLibraryPagerScreen(
+                        pagerState = pagerState,
+                        volumeUiState = { volumeState },
+                        displayVolumeIndicatorEvents = volumeViewModel.displayIndicatorEvents,
+                        playerScreen = {
+                            PlayerScreen(
+                                modifier = Modifier.fillMaxSize(),
+                                volumeViewModel = volumeViewModel,
+                                onVolumeClick = {
+                                    navController.navigateToVolume()
+                                },
+                                onPlaybackSpeedChangeClick = {
+                                    navController.navigateToPlaybackSpeed()
+                                },
+                            )
+                        },
+                        libraryScreen = {
+                            LibraryScreen(
+                                onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
+                                onYourPodcastClick = { navController.navigateToYourPodcast() },
+                                onUpNextClick = { navController.navigateToUpNext() },
+                            )
+                        },
+                        backStack = it,
+                    )
+                }
+
+                composable(
+                    route = NavigationScreens.Volume.navRoute,
+                    arguments = NavigationScreens.Volume.arguments,
+                    deepLinks = NavigationScreens.Volume.deepLinks(""),
+                ) {
+                    ScreenScaffold(timeText = {}) {
+                        VolumeScreen(volumeViewModel = volumeViewModel)
+                    }
+                }
+
                 composable(
                     route = LatestEpisodes.navRoute,
                 ) {
@@ -146,8 +175,7 @@ fun WearApp() {
                 composable(route = PlaybackSpeed.navRoute) {
                     PlaybackSpeedScreen()
                 }
-            },
-
-        )
+            }
+        }
     }
 }

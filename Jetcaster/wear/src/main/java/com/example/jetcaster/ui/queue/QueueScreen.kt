@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.queue
+package com.example.jetcaster.ui.queue
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
