@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.podcasts
+package com.example.jetcaster.ui.podcasts
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
