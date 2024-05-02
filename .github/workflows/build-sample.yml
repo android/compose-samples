@@ -77,11 +77,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-outputs
-          path: ${{ inputs.path }}/app/build/outputs
+          path: ${{ inputs.path }}/${{ inputs.module }}/build/outputs
 
       - name: Upload build reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: build-reports
-          path: ${{ inputs.path }}/app/build/reports
+          path: ${{ inputs.path }}/${{ inputs.module }}/build/reports
