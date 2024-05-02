@@ -80,7 +80,7 @@ dependencies {
     // General compose dependencies
     implementation composeBom
     implementation libs.androidx.activity.compose
-    implementation libs.androidx.splashscreen
+    implementation libs.androidx.core.splashscreen
 
     // Compose for Wear OS Dependencies
     // NOTE: DO NOT INCLUDE a dependency on androidx.compose.material:material.
@@ -114,7 +114,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Preview Tooling
-    implementation libs.compose.ui.tooling.preview
+    implementation libs.androidx.compose.ui.tooling.preview
     implementation(libs.androidx.compose.ui.tooling)
     implementation libs.androidx.wear.compose.ui.tooling
 
@@ -122,7 +122,7 @@ dependencies {
     // androidx.navigation:navigation-compose version), that is, uncomment the line below.
     implementation libs.wear.compose.navigation
 
-    implementation libs.androidx.ui.test.manifest
+    implementation libs.androidx.compose.ui.test.manifest
 
     implementation(libs.coil.kt.compose)
 
@@ -133,7 +133,7 @@ dependencies {
     implementation projects.core.domain
 
     // Testing
-    testImplementation libs.androidx.ui.test.junit4
+    testImplementation libs.androidx.compose.ui.test.junit4
     testImplementation libs.junit
     testImplementation libs.robolectric
     testImplementation libs.roborazzi
@@ -143,12 +143,12 @@ dependencies {
       exclude(group: "com.github.QuickBirdEng.kotlin-snapshot-testing")
     }
 
-    androidTestImplementation libs.test.ext.junit
-    androidTestImplementation libs.test.espresso.core
-    androidTestImplementation libs.compose.ui.test.junit4
+    androidTestImplementation libs.androidx.test.ext.junit
+    androidTestImplementation libs.androidx.test.espresso.core
+    androidTestImplementation libs.androidx.compose.ui.test.junit4
     androidTestImplementation composeBom
 
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation libs.androidx.ui.test.manifest
+    debugImplementation libs.androidx.compose.ui.test.manifest
     debugImplementation composeBom
 }
