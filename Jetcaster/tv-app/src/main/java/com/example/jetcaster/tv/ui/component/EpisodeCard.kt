@@ -34,7 +34,7 @@ import androidx.tv.material3.CardScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import androidx.tv.material3.WideCardLayout
+import androidx.tv.material3.WideCardContainer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
@@ -46,7 +46,7 @@ internal fun EpisodeCard(
     modifier: Modifier = Modifier,
     cardSize: DpSize = JetcasterAppDefaults.thumbnailSize.episode,
 ) {
-    WideCardLayout(
+    WideCardContainer(
         imageCard = {
             EpisodeThumbnail(playerEpisode, onClick = onClick, modifier = Modifier.size(cardSize))
         },
