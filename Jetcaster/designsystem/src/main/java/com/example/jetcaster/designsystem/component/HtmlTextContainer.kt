@@ -26,6 +26,10 @@ import androidx.core.text.HtmlCompat
 /**
  * A container for text that should be HTML formatted. This container will handle building the
  * annotated string from [text], and enable text selection if [text] has any selectable element.
+ *
+ * TODO: Remove/update once the project is using Compose 1.7 as that version provides improved
+ * support for HTML formatting.
+ * See: https://developer.android.com/jetpack/androidx/releases/compose-foundation#1.7.0-alpha07
  */
 @Composable
 fun HtmlTextContainer(
