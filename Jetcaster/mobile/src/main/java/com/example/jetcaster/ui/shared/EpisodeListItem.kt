@@ -53,6 +53,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.ui.home.PreviewEpisodes
 import com.example.jetcaster.ui.home.PreviewPodcasts
@@ -201,13 +202,25 @@ private fun EpisodeListItemHeader(
                 modifier = Modifier.padding(vertical = 2.dp)
             )
 
-            Text(
-                text = if (showSummary) episode.summary else podcast.title,
-                maxLines = 2,
-                minLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            if (showSummary) {
+                HtmlTextContainer(text = episode.summary) {
+                    Text(
+                        text = it,
+                        maxLines = 2,
+                        minLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
+            } else {
+                Text(
+                    text = podcast.title,
+                    maxLines = 2,
+                    minLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
         }
         if (showPodcastImage) {
             EpisodeListItemImage(
