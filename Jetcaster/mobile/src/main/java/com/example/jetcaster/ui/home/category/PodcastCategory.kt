@@ -42,9 +42,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.core.model.EpisodeInfo
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.PreviewEpisodes

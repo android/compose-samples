@@ -85,11 +85,11 @@ dependencies {
     // Dependency injection
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    implementation(project(":core:model"))
     ksp(libs.hilt.compiler)
 
-    implementation(project(":core"))
-    implementation(project(":designsystem"))
+    implementation(projects.core.data)
+    implementation(projects.core.designsystem)
+    implementation(projects.core.domain)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

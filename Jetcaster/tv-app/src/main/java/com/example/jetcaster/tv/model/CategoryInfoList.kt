@@ -18,8 +18,8 @@ package com.example.jetcaster.tv.model
 
 import androidx.compose.runtime.Immutable
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.asExternalModel
 
 @Immutable
 data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo> by member {

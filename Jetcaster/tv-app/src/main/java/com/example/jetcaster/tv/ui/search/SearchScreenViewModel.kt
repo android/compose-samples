@@ -18,11 +18,11 @@ package com.example.jetcaster.tv.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.tv.model.CategoryInfoList
 import com.example.jetcaster.tv.model.CategorySelection
 import com.example.jetcaster.tv.model.CategorySelectionList

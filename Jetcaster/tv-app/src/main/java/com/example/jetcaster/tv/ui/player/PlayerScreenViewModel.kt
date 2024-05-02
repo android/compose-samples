@@ -18,9 +18,9 @@ package com.example.jetcaster.tv.ui.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import javax.inject.Inject

@@ -25,7 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.itemsIndexed
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 

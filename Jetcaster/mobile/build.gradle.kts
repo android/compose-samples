@@ -92,7 +92,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -133,8 +132,9 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
 
-    implementation(project(":core"))
-    implementation(project(":designsystem"))
+    implementation(projects.core.data)
+    implementation(projects.core.designsystem)
+    implementation(projects.core.domain)
 
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 }

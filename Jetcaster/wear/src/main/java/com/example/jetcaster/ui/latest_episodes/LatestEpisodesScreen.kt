@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScreenScaffold

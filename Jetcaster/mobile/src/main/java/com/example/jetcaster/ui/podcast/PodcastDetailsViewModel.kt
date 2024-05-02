@@ -19,13 +19,13 @@ package com.example.jetcaster.ui.podcast
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.asExternalModel
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.model.EpisodeInfo
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

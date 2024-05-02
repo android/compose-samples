@@ -20,21 +20,20 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.database.model.asPodcastToEpisodeInfo
-import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
-import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.domain.FilterableCategoriesUseCase
+import com.example.jetcaster.core.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.asExternalModel
+import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.player.EpisodePlayer
-import com.example.jetcaster.core.util.combine
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
@@ -83,7 +82,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
-            combine(
+            com.example.jetcaster.core.util.combine(
                 homeCategories,
                 selectedHomeCategory,
                 subscribedPodcasts,

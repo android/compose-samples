@@ -18,8 +18,8 @@ package com.example.jetcaster.ui.queue
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.player.EpisodePlayer
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
