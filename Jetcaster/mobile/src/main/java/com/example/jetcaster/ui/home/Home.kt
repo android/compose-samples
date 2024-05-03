@@ -102,6 +102,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.jetcaster.R
+import com.example.jetcaster.core.domain.testing.PreviewCategories
+import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
+import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel

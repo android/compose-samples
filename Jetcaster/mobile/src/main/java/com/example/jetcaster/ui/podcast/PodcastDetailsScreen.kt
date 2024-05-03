@@ -68,13 +68,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetcaster.R
+import com.example.jetcaster.core.domain.testing.PreviewEpisodes
+import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.designsystem.theme.Keyline1
-import com.example.jetcaster.ui.home.PreviewEpisodes
-import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.ui.shared.Loading
 import com.example.jetcaster.ui.tooling.DevicePreviews
