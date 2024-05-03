@@ -20,6 +20,7 @@ import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.model.PodcastToEpisodeInfo
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -55,6 +56,13 @@ val PreviewEpisodes = listOf(
             2020, 6, 2, 9,
             27, 0, 0, ZoneOffset.of("-0800")
         )
+    )
+)
+
+val PreviewPlayerEpisodes = listOf(
+    PlayerEpisode(
+        PreviewPodcasts[0],
+        PreviewEpisodes[0]
     )
 )
 

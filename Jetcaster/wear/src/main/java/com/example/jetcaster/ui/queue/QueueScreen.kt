@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -41,8 +40,9 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
-import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.player.model.PlayerEpisode
+import com.example.jetcaster.ui.components.MediaContent
+import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
@@ -52,19 +52,15 @@ import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
 import com.google.android.horologist.compose.material.Button
-import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.compose.material.ListHeaderDefaults
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.util.rememberVectorPainter
-import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable fun QueueScreen(
     onPlayButtonClick: () -> Unit,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
+    onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     queueViewModel: QueueViewModel = hiltViewModel()
@@ -88,7 +84,7 @@ fun QueueScreen(
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     modifier: Modifier = Modifier,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
+    onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -124,7 +120,7 @@ fun QueueScreenLoaded(
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
+    onEpisodeItemClick: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     EntityScreen(
@@ -153,7 +149,7 @@ fun QueueScreenLoaded(
                         image = Icons.Default.MusicNote,
                         tintColor = Color.Blue,
                     ),
-                    onEpisodeItemClick
+                    onItemClick = onEpisodeItemClick
                 )
             }
         }
@@ -199,7 +195,8 @@ fun QueueScreenEmpty(
         showDialog = true,
         onDismiss = onDismiss,
         title = stringResource(R.string.display_nothing_in_queue),
-        message = stringResource(R.string.no_episodes_from_queue)
+        message = stringResource(R.string.no_episodes_from_queue),
+        modifier = modifier
     )
 }
 
@@ -244,49 +241,13 @@ fun ButtonsContent(
     }
 }
 
-@Composable
-fun MediaContent(
-    episode: PlayerEpisode,
-    episodeArtworkPlaceholder: Painter?,
-    onEpisodeItemClick: (EpisodeToPodcast) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val mediaTitle = episode.title
-    val duration = episode.duration
-
-    val secondaryLabel = when {
-        duration != null -> {
-            // If we have the duration, we combine the date/duration via a
-            // formatted string
-            stringResource(
-                R.string.episode_date_duration,
-                MediumDateFormatter.format(episode.published),
-                duration.toMinutes().toInt()
-            )
-        }
-        // Otherwise we just use the date
-        else -> MediumDateFormatter.format(episode.published)
-    }
-
-    Chip(
-        modifier = modifier,
-        label = mediaTitle,
-        onClick = { onEpisodeItemClick },
-        secondaryLabel = secondaryLabel,
-        icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
-        largeIcon = true,
-        colors = ChipDefaults.secondaryChipColors(),
-    )
-}
-
-private val MediumDateFormatter by lazy {
-    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-}
-
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
-fun QueueScreenLoadedPreview(@PreviewParameter(WearPreviewQueue::class) episode: PlayerEpisode,) {
+fun QueueScreenLoadedPreview(
+    @PreviewParameter(WearPreviewEpisodes::class)
+    episode: PlayerEpisode
+) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,

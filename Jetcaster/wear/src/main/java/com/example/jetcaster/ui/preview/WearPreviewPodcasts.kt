@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.podcasts
+package com.example.jetcaster.ui.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.PodcastInfo

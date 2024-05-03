@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.queue
+package com.example.jetcaster.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.example.jetcaster.core.domain.testing.PreviewEpisodes
+import com.example.jetcaster.core.domain.testing.PreviewPlayerEpisodes
 import com.example.jetcaster.core.player.model.PlayerEpisode
 
-public class WearPreviewQueue : PreviewParameterProvider<PlayerEpisode> {
+public class WearPreviewEpisodes : PreviewParameterProvider<PlayerEpisode> {
     public override val values: Sequence<PlayerEpisode>
-        get() = PreviewEpisodes.map {
-            PlayerEpisode(
-                uri = it.uri,
-                author = it.author,
-                title = it.title,
-                published = it.published
-            )
-        }.asSequence()
+        get() = PreviewPlayerEpisodes.asSequence()
 }

@@ -16,8 +16,6 @@
 
 package com.example.jetcaster.ui.player
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.player.EpisodePlayer
@@ -55,9 +53,5 @@ public open class PlaybackSpeedViewModel @Inject constructor(
 
     public fun decreaseSpeed() {
         episodePlayer.decreaseSpeed()
-    }
-
-    private fun notSupported() {
-        Log.i(TAG, "Effect not supported")
     }
 }
