@@ -45,3 +45,4 @@ include(
     ":wear"
 )
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":core:data-testing")

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.jetcaster.core.domain.testing"
+    namespace = "com.example.jetcaster.core.data.testing"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -31,11 +31,9 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.domain)
-
+    implementation(libs.androidx.core.ktx)
+    implementation(projects.core.data)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
-
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
