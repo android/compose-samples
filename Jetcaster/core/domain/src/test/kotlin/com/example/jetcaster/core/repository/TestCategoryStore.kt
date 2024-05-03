@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.core.data.repository
+package com.example.jetcaster.core.repository
 
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import com.example.jetcaster.core.data.repository.CategoryStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -27,6 +28,8 @@ import kotlinx.coroutines.flow.update
 
 /**
  * A [CategoryStore] used for testing.
+ *
+ * // TODO: Move to :testing module upon merging PR #1379
  */
 class TestCategoryStore : CategoryStore {
 

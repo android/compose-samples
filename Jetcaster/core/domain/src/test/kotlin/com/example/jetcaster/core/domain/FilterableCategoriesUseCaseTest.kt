@@ -17,8 +17,8 @@
 package com.example.jetcaster.core.domain
 
 import com.example.jetcaster.core.data.database.model.Category
-import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.repository.TestCategoryStore
+import com.example.jetcaster.core.model.asExternalModel
+import com.example.jetcaster.core.repository.TestCategoryStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -27,7 +27,7 @@ import org.junit.Test
 
 class FilterableCategoriesUseCaseTest {
 
-    private val categoriesStore = com.example.jetcaster.core.data.repository.TestCategoryStore()
+    private val categoriesStore = TestCategoryStore()
     private val testCategories = listOf(
         Category(1, "News"),
         Category(2, "Arts"),

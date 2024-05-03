@@ -21,19 +21,19 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
-import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.database.model.asPodcastToEpisodeInfo
-import com.example.jetcaster.core.data.repository.TestCategoryStore
-import java.time.OffsetDateTime
+import com.example.jetcaster.core.model.asExternalModel
+import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
+import com.example.jetcaster.core.repository.TestCategoryStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.OffsetDateTime
 
 class PodcastCategoryFilterUseCaseTest {
 
-    private val categoriesStore = com.example.jetcaster.core.data.repository.TestCategoryStore()
+    private val categoriesStore = TestCategoryStore()
     private val testEpisodeToPodcast = listOf(
         EpisodeToPodcast().apply {
             episode = Episode(

@@ -17,18 +17,18 @@
 package com.example.jetcaster.core.domain
 
 import com.example.jetcaster.core.data.database.model.Episode
-import com.example.jetcaster.core.data.repository.TestEpisodeStore
-import com.example.jetcaster.core.data.repository.TestPodcastStore
-import java.time.OffsetDateTime
+import com.example.jetcaster.core.repository.TestEpisodeStore
+import com.example.jetcaster.core.repository.TestPodcastStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.OffsetDateTime
 
 class GetLatestFollowedEpisodesUseCaseTest {
 
-    private val episodeStore = com.example.jetcaster.core.data.repository.TestEpisodeStore()
-    private val podcastStore = com.example.jetcaster.core.data.repository.TestPodcastStore()
+    private val episodeStore = TestEpisodeStore()
+    private val podcastStore = TestPodcastStore()
 
     val useCase = GetLatestFollowedEpisodesUseCase(
         episodeStore = episodeStore,
