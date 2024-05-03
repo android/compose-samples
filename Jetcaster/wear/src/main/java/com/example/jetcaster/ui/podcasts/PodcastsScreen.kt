@@ -16,43 +16,37 @@
 
 package com.example.jetcaster.ui.podcasts
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.dialog.Alert
-import androidx.wear.compose.material.dialog.Dialog
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.podcasts.WearPreviewPodcasts
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
-import com.google.android.horologist.compose.material.Button
+import com.google.android.horologist.compose.material.AlertDialog
 import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.compose.material.ListHeaderDefaults
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
+import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable
@@ -80,45 +74,9 @@ fun PodcastsScreen(
 
     PodcastsScreen(
         podcastsScreenState = modifiedState,
-        onPodcastsItemClick = onPodcastsItemClick
+        onPodcastsItemClick = onPodcastsItemClick,
+        onDismiss = onDismiss
     )
-
-    Dialog(
-        showDialog = modifiedState == PodcastsScreenState.Empty,
-        onDismissRequest = onDismiss,
-        scrollState = rememberScalingLazyListState(),
-    ) {
-        Alert(
-            title = {
-                Text(
-                    text = stringResource(R.string.podcasts_no_podcasts),
-                    color = MaterialTheme.colors.onBackground,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.title3,
-                )
-            },
-        ) {
-            item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    Button(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(
-                            id = R.string
-                                .podcasts_failed_dialog_cancel_button_content_description,
-                        ),
-                        onClick = onDismiss,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .wrapContentSize(align = Alignment.Center),
-                        colors = ButtonDefaults.secondaryButtonColors()
-                    )
-                }
-            }
-        }
-    }
 }
 
 @ExperimentalHorologistApi
@@ -126,6 +84,7 @@ fun PodcastsScreen(
 fun PodcastsScreen(
     podcastsScreenState: PodcastsScreenState,
     onPodcastsItemClick: (PodcastInfo) -> Unit,
+    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -135,40 +94,124 @@ fun PodcastsScreen(
         modifier = modifier
     ) {
         when (podcastsScreenState) {
-            is PodcastsScreenState.Loaded -> {
-                EntityScreen(
-                    columnState = columnState,
-                    headerContent = {
-                        ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding()
-                        ) {
-                            Text(text = stringResource(id = R.string.podcasts))
-                        }
-                    },
-                    content = {
-                        items(count = podcastsScreenState.podcastList.size) {
-                                index ->
-                            MediaContent(
-                                podcast = podcastsScreenState.podcastList[index],
-                                downloadItemArtworkPlaceholder = rememberVectorPainter(
-                                    image = Icons.Default.MusicNote,
-                                    tintColor = Color.Blue,
-                                ),
-                                onPodcastsItemClick = onPodcastsItemClick
-
-                            )
-                        }
-                    }
-                )
-            }
-            PodcastsScreenState.Empty,
-            PodcastsScreenState.Loading -> {
-                Column {
-                    PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-                }
-            }
+            is PodcastsScreenState.Loaded -> PodcastScreenLoaded(
+                columnState = columnState,
+                podcastList = podcastsScreenState.podcastList,
+                onPodcastsItemClick = onPodcastsItemClick
+            )
+            PodcastsScreenState.Empty ->
+                PodcastScreenEmpty(onDismiss)
+            PodcastsScreenState.Loading ->
+                PodcastScreenLoading(columnState)
         }
     }
+}
+
+@Composable
+fun PodcastScreenLoaded(
+    columnState: ScalingLazyColumnState,
+    podcastList: List<PodcastInfo>,
+    onPodcastsItemClick: (PodcastInfo) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    EntityScreen(
+        columnState = columnState,
+        modifier = modifier,
+        headerContent = {
+            ResponsiveListHeader(
+                contentPadding = ListHeaderDefaults.firstItemPadding()
+            ) {
+                Text(text = stringResource(id = R.string.podcasts))
+            }
+        },
+        content = {
+            items(count = podcastList.size) {
+                    index ->
+                MediaContent(
+                    podcast = podcastList[index],
+                    downloadItemArtworkPlaceholder = rememberVectorPainter(
+                        image = Icons.Default.MusicNote,
+                        tintColor = Color.Blue,
+                    ),
+                    onPodcastsItemClick = onPodcastsItemClick
+
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun PodcastScreenEmpty(
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        showDialog = true,
+        message = stringResource(R.string.podcasts_no_podcasts),
+        onDismiss = onDismiss,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun PodcastScreenLoading(
+    columnState: ScalingLazyColumnState,
+    modifier: Modifier = Modifier
+) {
+    EntityScreen(
+        columnState = columnState,
+        modifier = modifier,
+        headerContent = {
+            DefaultEntityScreenHeader(
+                title = stringResource(R.string.podcasts)
+            )
+        },
+        content = {
+            items(count = 2) {
+                PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+            }
+        }
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastScreenLoadedPreview(
+    @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
+) {
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = ScalingLazyColumnDefaults.padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
+    PodcastScreenLoaded(
+        columnState = columnState,
+        podcastList = listOf(podcasts),
+        onPodcastsItemClick = {}
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastScreenLoadingPreview() {
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = ScalingLazyColumnDefaults.padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
+    PodcastScreenLoading(columnState)
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastScreenEmptyPreview() {
+    PodcastScreenEmpty(onDismiss = {})
 }
 
 @Composable
