@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.core.data.repository
+package com.example.jetcaster.core.repository
 
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.repository.EpisodeStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
+// TODO: Move to :testing module upon merging PR #1379
 class TestEpisodeStore : EpisodeStore {
 
     private val episodesFlow = MutableStateFlow<List<Episode>>(listOf())
