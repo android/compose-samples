@@ -713,9 +713,6 @@ private fun PlayerSlider(
     }
 }
 
-private fun Modifier.invisibleWhen(predicate: () -> Boolean): Modifier =
-    Modifier.alpha(if (predicate()) 0f else 1f) then this
-
 @Composable
 private fun PlayerButtons(
     hasNext: Boolean,
