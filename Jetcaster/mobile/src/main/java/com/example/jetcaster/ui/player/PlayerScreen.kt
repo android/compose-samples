@@ -74,6 +74,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -754,6 +755,7 @@ private fun PlayerButtons(
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
             modifier = sideButtonsModifier
                 .clickable(enabled = isPlaying, onClick = onPrevious)
+                .alpha(if (isPlaying) 1f else 0.25f)
         )
         Image(
             imageVector = Icons.Filled.Replay10,
@@ -807,6 +809,7 @@ private fun PlayerButtons(
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
             modifier = sideButtonsModifier
                 .clickable(enabled = hasNext, onClick = onNext)
+                .alpha(if (hasNext) 1f else 0.25f)
         )
     }
 }
