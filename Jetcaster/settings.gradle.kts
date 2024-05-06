@@ -38,6 +38,7 @@ rootProject.name = "Jetcaster"
 include(
     ":mobile",
     ":core:data",
+    ":core:data-testing",
     ":core:domain",
     ":core:domain-testing",
     ":core:designsystem",
@@ -45,4 +46,3 @@ include(
     ":wear"
 )
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-include(":core:data-testing")
