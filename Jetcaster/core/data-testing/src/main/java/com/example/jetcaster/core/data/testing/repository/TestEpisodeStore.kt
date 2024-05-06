@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.core.repository
+package com.example.jetcaster.core.data.testing.repository
 
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
