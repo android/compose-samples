@@ -109,8 +109,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import kotlinx.coroutines.launch
 import java.time.Duration
+import kotlinx.coroutines.launch
 
 /**
  * Stateful version of the Podcast player
