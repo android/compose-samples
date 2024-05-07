@@ -24,8 +24,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 

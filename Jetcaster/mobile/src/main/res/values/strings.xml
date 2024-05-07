@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2020 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+    <string name="app_name">Jetcaster</string>
+
+    <string name="connection_error_title">Connection error</string>
+    <string name="connection_error_message">Unable to fetch podcasts feeds.\nCheck your internet connection and try again.</string>
+    <string name="retry_label">Retry</string>
+    
+    <string name="your_podcasts">Your podcasts</string>
+    <string name="latest_episodes">Latest episodes</string>
+
+    <string name="home_library">Your library</string>
+    <string name="home_discover">Discover</string>
+
+    <string name="updated_longer">Updated a while ago</string>
+    <plurals name="updated_weeks_ago">
+        <item quantity="one">Updated %d week ago</item>
+        <item quantity="other">Updated %d weeks ago</item>
+    </plurals>
+    <plurals name="updated_days_ago">
+        <item quantity="one">Updated yesterday</item>
+        <item quantity="other">Updated %d days ago</item>
+    </plurals>
+    <string name="updated_today">Updated today</string>
+
+    <string name="episode_date_duration">%1$s &#8226; %2$d mins</string>
+
+    <string name="cd_account">Account</string>
+    <string name="cd_add">Add</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_follow">Follow</string>
+    <string name="cd_following">Following</string>
+    <string name="cd_forward10">Forward 10 seconds</string>
+    <string name="cd_more">More</string>
+    <string name="cd_not_following">Not following</string>
+    <string name="cd_pause">Pause</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_replay10">Replay 10 seconds</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_selected_category">Selected category</string>
+    <string name="cd_skip_next">Skip next</string>
+    <string name="cd_skip_previous">Skip previous</string>
+    <string name="cd_unfollow">Unfollow</string>
+    <string name="episode_added_to_your_queue">Episode added to your queue</string>
+    <string name="cd_podcast_image">Podcast image</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribed">Subscribed</string>
+  <string name="see_more">see more</string>
+  <string name="search_for_a_podcast">Search for a podcast</string>
+  <string name="an_error_has_occurred">An error has occurred.</string>
+
+</resources>

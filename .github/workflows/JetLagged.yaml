@@ -15,13 +15,19 @@ on:
 
 env:
   SAMPLE_PATH: JetLagged
-
+  compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+  compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
+  compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
 jobs:
   build:
     uses: ./.github/workflows/build-sample.yml
     with:
       name: JetLagged
       path: JetLagged
+    secrets:
+      compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+      compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
+      compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
 
   test:
     needs: build

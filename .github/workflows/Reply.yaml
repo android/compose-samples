@@ -15,17 +15,23 @@ on:
 
 env:
   SAMPLE_PATH: Reply
-
+  compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+  compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
+  compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
 jobs:
   build:
     uses: ./.github/workflows/build-sample.yml
     with:
       name: Reply
       path: Reply
+    secrets:
+      compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+      compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
+      compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
 
   test:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # enables hardware acceleration in the virtual machine
     timeout-minutes: 30
     strategy:
       matrix:

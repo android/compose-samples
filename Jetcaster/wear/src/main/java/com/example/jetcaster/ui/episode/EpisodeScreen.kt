@@ -39,8 +39,8 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults

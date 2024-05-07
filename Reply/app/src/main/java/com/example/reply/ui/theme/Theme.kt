@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -269,7 +270,9 @@ fun isContrastAvailable(): Boolean {
 fun selectSchemeForContrast(isDark: Boolean,): ColorScheme {
     val context = LocalContext.current
     var colorScheme = if (isDark) darkScheme else lightScheme
-    if (isContrastAvailable()) {
+    val isPreview = LocalInspectionMode.current
+    // TODO(b/336693596): UIModeManager is not yet supported in preview
+    if (!isPreview && isContrastAvailable()) {
         val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         val contrastLevel = uiModeManager.contrast
 

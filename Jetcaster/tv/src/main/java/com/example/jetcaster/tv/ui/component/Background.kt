@@ -23,8 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.ImageBackgroundRadialGradientScrim
 
 @Composable

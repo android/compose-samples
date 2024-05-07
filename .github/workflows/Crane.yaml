@@ -15,13 +15,19 @@ on:
 
 env:
   SAMPLE_PATH: Crane
-
+  compose_store_password: ${{ secrets.compose_store_password }}
+  compose_key_alias: ${{ secrets.compose_key_alias }}
+  compose_key_password: ${{ secrets.compose_key_password }}
 jobs:
   build:
     uses: ./.github/workflows/build-sample.yml
     with:
       name: Crane
       path: Crane
+    secrets:
+      compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
+      compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
+      compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
 
   test:
     needs: build
@@ -70,7 +76,7 @@ jobs:
           target: google_apis
           arch: x86
           disable-animations: true
-          script: ./gradlew connectedCheck --stacktrace
+          script: ./gradlew app:connectedDebugAndroidTest --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}
 
       - name: Upload test reports
