@@ -19,7 +19,7 @@ package com.example.jetcaster.core.data.database
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-val MIGRATION_1_2 = object : Migration(1, 2) {
+internal val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
         if (!columnExists(db, "episodes", "enclosure")) {
             db.execSQL("ALTER TABLE episodes ADD COLUMN enclosure STRING")
