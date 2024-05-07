@@ -338,7 +338,7 @@ private fun PlayerControl(
             )
         }
         if (length != null) {
-            ElapsedTimeIndicator(timeElapsed, length)
+            ElapsedTimeIndicator(timeElapsed, length, skip, rewind)
         }
     }
 }
@@ -347,6 +347,8 @@ private fun PlayerControl(
 private fun ElapsedTimeIndicator(
     timeElapsed: Duration,
     length: Duration,
+    skip: () -> Unit,
+    rewind: () -> Unit,
     modifier: Modifier = Modifier,
     knobSize: Dp = 8.dp
 ) {
@@ -359,6 +361,8 @@ private fun ElapsedTimeIndicator(
             timeElapsed = timeElapsed,
             length = length,
             knobSize = knobSize,
+            onMoveLeft = rewind,
+            onMoveRight = skip,
             modifier = Modifier.fillMaxWidth()
         )
     }
