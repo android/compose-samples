@@ -42,7 +42,7 @@ include(
     ":core:domain",
     ":core:domain-testing",
     ":core:designsystem",
-    ":tv-app",
+    ":tv",
     ":wear"
 )
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
