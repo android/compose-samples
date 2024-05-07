@@ -42,7 +42,7 @@ import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
         Category::class,
         PodcastFollowedEntry::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateTimeTypeConverters::class)
