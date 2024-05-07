@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusRestorer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
@@ -116,12 +115,9 @@ private fun CatalogWithCategorySelection(
             focusRequester.saveFocusedChild()
             onEpisodeSelected(it)
         },
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .focusRestorer(),
+        modifier = modifier.focusRequester(focusRequester),
         state = state,
     ) {
-
         TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = Modifier.focusProperties {
