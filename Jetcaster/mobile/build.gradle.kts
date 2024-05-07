@@ -136,6 +136,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
     implementation(projects.core.domainTesting)
+    implementation(projects.core.notification)
 
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 }

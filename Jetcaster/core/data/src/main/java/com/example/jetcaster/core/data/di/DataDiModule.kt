@@ -23,6 +23,7 @@ import com.example.jetcaster.core.data.BuildConfig
 import com.example.jetcaster.core.data.Dispatcher
 import com.example.jetcaster.core.data.JetcasterDispatchers
 import com.example.jetcaster.core.data.database.JetcasterDatabase
+import com.example.jetcaster.core.data.database.MIGRATION_1_2
 import com.example.jetcaster.core.data.database.dao.CategoriesDao
 import com.example.jetcaster.core.data.database.dao.EpisodesDao
 import com.example.jetcaster.core.data.database.dao.PodcastCategoryEntryDao
@@ -73,6 +74,7 @@ object DataDiModule {
             // This is not recommended for normal apps, but the goal of this sample isn't to
             // showcase all of Room.
             .fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_2)
             .build()
 
     @Provides

@@ -16,6 +16,9 @@
 
 package com.example.jetcaster.core.player.model
 
+import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PodcastInfo
@@ -35,6 +38,7 @@ data class PlayerEpisode(
     val author: String = "",
     val summary: String = "",
     val podcastImageUrl: String = "",
+    val enclosure: String = "",
 ) {
     constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo) : this(
         title = episodeInfo.title,
@@ -45,7 +49,8 @@ data class PlayerEpisode(
         author = episodeInfo.author,
         summary = episodeInfo.summary,
         podcastImageUrl = podcastInfo.imageUrl,
-        uri = episodeInfo.uri
+        uri = episodeInfo.uri,
+        enclosure = episodeInfo.enclosure,
     )
 }
 
@@ -60,4 +65,21 @@ fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
         author = episode.author ?: podcast.author ?: "",
         summary = episode.summary ?: "",
         podcastImageUrl = podcast.imageUrl ?: "",
+        enclosure = episode.enclosure ?: "",
     )
+
+fun PlayerEpisode.toMediaItem(): MediaItem =
+    MediaItem.Builder()
+        .setMediaId(this.uri)
+        .setUri(this.enclosure.toUri())
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(this.title)
+                .setSubtitle(this.subTitle)
+                .setAlbumTitle(this.podcastName)
+                .setArtist(this.author)
+                .setArtworkUri(this.podcastImageUrl.toUri())
+                .setDescription(this.summary)
+                .build()
+        )
+        .build()

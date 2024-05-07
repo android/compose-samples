@@ -41,6 +41,7 @@ include(
     ":core:domain",
     ":core:domain-testing",
     ":core:designsystem",
+    ":core:notification",
     ":tv-app",
     ":wear"
 )

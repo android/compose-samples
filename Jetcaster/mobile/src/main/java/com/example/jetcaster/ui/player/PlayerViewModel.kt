@@ -17,38 +17,27 @@
 package com.example.jetcaster.ui.player
 
 import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.repository.EpisodeStore
-import com.example.jetcaster.core.player.EpisodePlayer
-import com.example.jetcaster.core.player.EpisodePlayerState
-import com.example.jetcaster.core.player.model.toPlayerEpisode
+import com.example.jetcaster.core.player.MediaPlayerUseCase
+import com.example.jetcaster.core.player.PlayerUiState
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-
-data class PlayerUiState(
-    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
-)
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 
 /**
  * ViewModel that handles the business logic and screen state of the Player screen
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    episodeStore: EpisodeStore,
-    private val episodePlayer: EpisodePlayer,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val useCase: MediaPlayerUseCase,
 ) : ViewModel() {
 
     // episodeUri should always be present in the PlayerViewModel.
@@ -56,61 +45,59 @@ class PlayerViewModel @Inject constructor(
     private val episodeUri: String =
         Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
 
-    var uiState by mutableStateOf(PlayerUiState())
-        private set
+    val playerEpisodeState: StateFlow<PlayerEpisode> =
+        useCase.playerEpisodeFlow(episodeUri)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = PlayerEpisode()
+            )
 
-    init {
-        viewModelScope.launch {
-            episodeStore.episodeAndPodcastWithUri(episodeUri).flatMapConcat {
-                episodePlayer.currentEpisode = it.toPlayerEpisode()
-                episodePlayer.playerState
-            }.map {
-                PlayerUiState(episodePlayerState = it)
-            }.collect {
-                uiState = it
-            }
-        }
-    }
+    val playerUiState: StateFlow<PlayerUiState> =
+        useCase.playerUiStateFlow(episodeUri)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = PlayerUiState()
+            )
 
     fun onPlay() {
-        episodePlayer.play()
+        useCase.play(playerEpisodeState.value)
     }
 
     fun onPause() {
-        episodePlayer.pause()
+        useCase.pause()
     }
 
     fun onStop() {
-        episodePlayer.stop()
+        useCase.stop()
     }
 
     fun onPrevious() {
-        episodePlayer.previous()
+        useCase.previous()
     }
 
     fun onNext() {
-        episodePlayer.next()
+        useCase.next()
     }
 
-    fun onAdvanceBy(duration: Duration) {
-        episodePlayer.advanceBy(duration)
+    fun onAdvanceBy() {
+        useCase.advanceBy()
     }
 
-    fun onRewindBy(duration: Duration) {
-        episodePlayer.rewindBy(duration)
+    fun onRewindBy() {
+        useCase.rewindBy()
     }
 
     fun onSeekingStarted() {
-        episodePlayer.onSeekingStarted()
+        useCase.onSeekingStarted()
     }
 
     fun onSeekingFinished(duration: Duration) {
-        episodePlayer.onSeekingFinished(duration)
+        useCase.onSeekingFinished(duration)
     }
 
     fun onAddToQueue() {
-        uiState.episodePlayerState.currentEpisode?.let {
-            episodePlayer.addToQueue(it)
-        }
+        useCase.addMediaItem(playerEpisodeState.value)
     }
 }
