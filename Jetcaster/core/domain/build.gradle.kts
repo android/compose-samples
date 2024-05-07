@@ -35,6 +35,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.core.jdk.desugaring)
     implementation(projects.core.data)
+    implementation(projects.core.dataTesting)
     implementation(projects.core.notification)
 
     // Dependency injection
