@@ -55,7 +55,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.ButtonDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.PodcastInfo
@@ -180,7 +179,6 @@ private fun PodcastDetails(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun PodcastInfo(
     podcastInfo: PodcastInfo,
@@ -218,7 +216,6 @@ private fun PodcastInfo(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun ToggleSubscriptionButton(
     podcastInfo: PodcastInfo,
@@ -274,7 +271,6 @@ private fun PodcastEpisodeList(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun EpisodeListItem(
     playerEpisode: PlayerEpisode,
@@ -324,7 +320,6 @@ private fun EpisodeListItem(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun EpisodeListItemContentLayer(
     playerEpisode: PlayerEpisode,
@@ -365,7 +360,6 @@ private fun EpisodeListItemContentLayer(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun EpisodeTitle(playerEpisode: PlayerEpisode, modifier: Modifier = Modifier) {
     Text(

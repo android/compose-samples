@@ -38,7 +38,6 @@ import androidx.tv.material3.WideCardContainer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun EpisodeCard(
     playerEpisode: PlayerEpisode,

@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui.component
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Forward10
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ButtonScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -120,7 +122,7 @@ internal fun PlayPauseButton(
         Icons.Default.PlayArrow to stringResource(R.string.label_play)
     }
     IconButton(onClick = onClick, modifier = modifier) {
-        Icon(icon, description)
+        Icon(icon, description, modifier = Modifier.size(48.dp))
     }
 }
 

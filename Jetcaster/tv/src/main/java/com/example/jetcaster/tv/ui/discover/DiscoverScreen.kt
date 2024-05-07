@@ -28,11 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusRestorer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
@@ -84,7 +82,7 @@ fun DiscoverScreen(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun CatalogWithCategorySelection(
     categoryInfoList: CategoryInfoList,
@@ -117,12 +115,9 @@ private fun CatalogWithCategorySelection(
             focusRequester.saveFocusedChild()
             onEpisodeSelected(it)
         },
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .focusRestorer(),
+        modifier = modifier.focusRequester(focusRequester),
         state = state,
     ) {
-
         TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = Modifier.focusProperties {

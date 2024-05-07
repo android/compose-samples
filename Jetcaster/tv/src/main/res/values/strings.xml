@@ -26,7 +26,7 @@
     <string name="section_podcast">Podcast</string>
     <string name="section_latest_episodes">Latest Episodes</string>
     <string name="label_subscribe">Subscribe</string>
-    <string name="label_unsubscribe">Unsubscribe</string>
+    <string name="label_unsubscribe">Subscribed</string>
     <string name="label_info">Info</string>
     <string name="label_play">Play</string>
     <string name="label_pause">Pause</string>

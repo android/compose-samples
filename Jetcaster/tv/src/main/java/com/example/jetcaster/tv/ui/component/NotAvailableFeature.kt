@@ -19,11 +19,9 @@ package com.example.jetcaster.tv.ui.component
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.example.jetcaster.tv.R
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun NotAvailableFeature(
     modifier: Modifier = Modifier,
