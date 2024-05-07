@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.player.model.PlayerEpisode
@@ -60,7 +59,6 @@ internal fun EpisodeDetails(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun EpisodeAuthor(
     playerEpisode: PlayerEpisode,
@@ -70,7 +68,6 @@ internal fun EpisodeAuthor(
     Text(text = playerEpisode.author, modifier = modifier, style = style)
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun EpisodeTitle(
     playerEpisode: PlayerEpisode,

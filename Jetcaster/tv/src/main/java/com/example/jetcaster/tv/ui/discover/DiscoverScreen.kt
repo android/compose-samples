@@ -32,7 +32,6 @@ import androidx.compose.ui.focus.focusRestorer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
@@ -84,7 +83,7 @@ fun DiscoverScreen(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun CatalogWithCategorySelection(
     categoryInfoList: CategoryInfoList,

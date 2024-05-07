@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.player.model.PlayerEpisode
@@ -115,7 +114,6 @@ private fun EpisodeDetails(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun EpisodeInfo(
     playerEpisode: PlayerEpisode,
@@ -143,7 +141,6 @@ private fun EpisodeInfo(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun Controls(
     playEpisode: () -> Unit,

@@ -24,11 +24,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import java.time.Duration
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun Seekbar(
     timeElapsed: Duration,

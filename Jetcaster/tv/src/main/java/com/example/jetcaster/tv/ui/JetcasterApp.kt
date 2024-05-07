@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.tv.material3.DrawerValue
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.NavigationDrawer
@@ -53,7 +52,6 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
     Route(jetcasterAppState = jetcasterAppState)
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun WithGlobalNavigation(
     jetcasterAppState: JetcasterAppState,
@@ -116,7 +114,6 @@ private fun WithGlobalNavigation(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun Route(jetcasterAppState: JetcasterAppState) {
     NavHost(navController = jetcasterAppState.navHostController, Screen.Discover.route) {

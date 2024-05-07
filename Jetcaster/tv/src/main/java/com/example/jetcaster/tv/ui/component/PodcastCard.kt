@@ -22,13 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardScale
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.StandardCardContainer
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun PodcastCard(
     podcastInfo: PodcastInfo,

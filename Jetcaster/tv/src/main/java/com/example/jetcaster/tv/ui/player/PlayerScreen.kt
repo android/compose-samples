@@ -58,7 +58,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.player.EpisodePlayerState
@@ -284,7 +283,6 @@ private fun EpisodeControl(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PlayerControl(
     isPlaying: Boolean,
@@ -366,7 +364,6 @@ private fun ElapsedTimeIndicator(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun ElapsedTime(
     timeElapsed: Duration,
@@ -389,7 +386,6 @@ private fun ElapsedTime(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun NoEpisodeInQueue(
     backToHome: () -> Unit,
