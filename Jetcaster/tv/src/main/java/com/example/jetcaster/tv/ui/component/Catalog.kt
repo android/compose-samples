@@ -175,10 +175,10 @@ private fun PodcastRow(
                 }
             },
     ) {
-        itemsIndexed(podcastList){index, podcastInfo ->
-            val cardModifier = if(index == 0) {
+        itemsIndexed(podcastList) { index, podcastInfo ->
+            val cardModifier = if (index == 0) {
                 Modifier.focusRequester(firstItem)
-            }else{
+            } else {
                 Modifier
             }
             PodcastCard(
