@@ -35,12 +35,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.LocalContentColor
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
+import com.example.jetcaster.designsystem.component.HtmlTextContainer
+import com.example.jetcaster.ui.components.MediumDateFormatter
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
@@ -54,8 +57,6 @@ import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.ListHeaderDefaults
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable
 fun EpisodeScreen(
@@ -69,10 +70,10 @@ fun EpisodeScreen(
     EpisodeScreen(
         uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
-        modifier = modifier,
         onPlayEpisode = episodeViewModel::onPlayEpisode,
         onAddToQueue = episodeViewModel::addToQueue,
         onDismiss = onDismiss,
+        modifier = modifier,
     )
 }
 
@@ -80,10 +81,10 @@ fun EpisodeScreen(
 fun EpisodeScreen(
     uiState: EpisodeScreenState,
     onPlayButtonClick: () -> Unit,
-    modifier: Modifier = Modifier,
     onPlayEpisode: (PlayerEpisode) -> Unit,
     onAddToQueue: (PlayerEpisode) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
@@ -276,14 +277,14 @@ private fun ScalingLazyListScope.episodeInfoContent(episode: EpisodeToPodcast) {
     if (summary != null) {
         val summaryInParagraphs = summary.split("\n+".toRegex()).orEmpty()
         items(summaryInParagraphs) {
-            Text(
-                text = it,
-                modifier = Modifier.listTextPadding()
-            )
+            HtmlTextContainer(text = summary) {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.body2,
+                    color = LocalContentColor.current,
+                    modifier = Modifier.listTextPadding()
+                )
+            }
         }
     }
-}
-
-private val MediumDateFormatter by lazy {
-    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 }

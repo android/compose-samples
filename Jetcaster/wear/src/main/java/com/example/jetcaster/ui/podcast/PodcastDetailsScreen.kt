@@ -24,17 +24,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
+import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
+import com.example.jetcaster.ui.components.MediaContent
+import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
@@ -47,7 +52,6 @@ import com.google.android.horologist.compose.material.ListHeaderDefaults
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
 import com.google.android.horologist.images.base.util.rememberVectorPainter
-import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable fun PodcastDetailsScreen(
@@ -175,26 +179,6 @@ fun ButtonsContent(
     )
 }
 
-@Composable
-fun MediaContent(
-    episode: PlayerEpisode,
-    episodeArtworkPlaceholder: Painter?,
-    onEpisodeItemClick: (PlayerEpisode) -> Unit
-) {
-    val mediaTitle = episode.title
-
-    val secondaryLabel = episode.author
-
-    Chip(
-        label = mediaTitle,
-        onClick = { onEpisodeItemClick(episode) },
-        secondaryLabel = secondaryLabel,
-        icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
-        largeIcon = true,
-        colors = ChipDefaults.secondaryChipColors(),
-    )
-}
-
 @ExperimentalHorologistApi
 sealed class PodcastDetailsScreenState {
 
@@ -206,4 +190,39 @@ sealed class PodcastDetailsScreenState {
     ) : PodcastDetailsScreenState()
 
     data object Empty : PodcastDetailsScreenState()
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastDetailsScreenLoadedPreview(
+    @PreviewParameter(WearPreviewEpisodes::class)
+    episode: PlayerEpisode
+) {
+    PodcastDetailsScreen(
+        uiState = PodcastDetailsScreenState.Loaded(
+            episodeList = listOf(episode),
+            podcast = PreviewPodcastEpisodes.first().podcast
+        ),
+        onPlayButtonClick = { },
+        onEpisodeItemClick = {},
+        onPlayEpisode = {},
+        onDismiss = {}
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastDetailsScreenLoadingPreview(
+    @PreviewParameter(WearPreviewEpisodes::class)
+    episode: PlayerEpisode
+) {
+    PodcastDetailsScreen(
+        uiState = PodcastDetailsScreenState.Loading,
+        onPlayButtonClick = { },
+        onEpisodeItemClick = {},
+        onPlayEpisode = {},
+        onDismiss = {}
+    )
 }

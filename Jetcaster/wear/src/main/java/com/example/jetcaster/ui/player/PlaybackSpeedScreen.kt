@@ -16,16 +16,13 @@
 
 package com.example.jetcaster.ui.player
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.material.ContentAlpha
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.InlineSlider
@@ -38,13 +35,11 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.listTextPadding
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
-import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 
 /**
  * Playback Speed Screen with an [InlineSlider].
  */
-@OptIn(ExperimentalWearFoundationApi::class)
 @Composable
 public fun PlaybackSpeedScreen(
     modifier: Modifier = Modifier,

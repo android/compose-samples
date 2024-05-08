@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
@@ -127,7 +126,6 @@ fun WearApp() {
                     route = LatestEpisodes.navRoute,
                 ) {
                     LatestEpisodesScreen(
-                        playlistName = stringResource(id = R.string.latest_episodes),
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         },

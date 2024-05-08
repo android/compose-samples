@@ -33,7 +33,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PodcastInfo
-import com.example.jetcaster.podcasts.WearPreviewPodcasts
+import com.example.jetcaster.ui.preview.WearPreviewPodcasts
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults

@@ -24,30 +24,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.player.model.PlayerEpisode
+import com.example.jetcaster.ui.components.MediaContent
+import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.rememberColumnState
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
 import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.compose.material.ListHeaderDefaults
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
 import com.google.android.horologist.images.base.util.rememberVectorPainter
-import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable fun LatestEpisodesScreen(
-    playlistName: String,
     onPlayButtonClick: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -56,7 +61,6 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     val uiState by latestEpisodeViewModel.uiState.collectAsStateWithLifecycle()
     LatestEpisodeScreen(
         modifier = modifier,
-        playlistName = playlistName,
         uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
         onDismiss = onDismiss,
@@ -67,7 +71,6 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable
 fun LatestEpisodeScreen(
-    playlistName: String,
     uiState: LatestEpisodeScreenState,
     onPlayButtonClick: () -> Unit,
     onDismiss: () -> Unit,
@@ -75,43 +78,25 @@ fun LatestEpisodeScreen(
     onPlayEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val columnState = rememberColumnState()
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
     ScreenScaffold(
         scrollState = columnState,
         modifier = modifier
     ) {
         when (uiState) {
             is LatestEpisodeScreenState.Loaded -> {
-                EntityScreen(
-                    modifier = modifier,
+                LatestEpisodesScreen(
                     columnState = columnState,
-                    headerContent = {
-                        ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding()
-                        ) {
-                            Text(text = playlistName)
-                        }
-                    },
-                    content = {
-                        items(count = uiState.episodeList.size) { index ->
-                            MediaContent(
-                                episode = uiState.episodeList[index],
-                                downloadItemArtworkPlaceholder = rememberVectorPainter(
-                                    image = Icons.Default.MusicNote,
-                                    tintColor = Color.Blue,
-                                ),
-                                onPlayButtonClick = onPlayButtonClick,
-                                onPlayEpisode = onPlayEpisode
-                            )
-                        }
-                    },
-                    buttonsContent = {
-                        ButtonsContent(
-                            episodes = uiState.episodeList,
-                            onPlayButtonClick = onPlayButtonClick,
-                            onPlayEpisodes = onPlayEpisodes
-                        )
-                    },
+                    episodeList = uiState.episodeList,
+                    onPlayButtonClick = onPlayButtonClick,
+                    onPlayEpisode = onPlayEpisode,
+                    onPlayEpisodes = onPlayEpisodes,
+                    modifier = modifier
                 )
             }
 
@@ -124,57 +109,53 @@ fun LatestEpisodeScreen(
             }
 
             is LatestEpisodeScreenState.Loading -> {
-                EntityScreen(
-                    modifier = modifier,
+                LatestEpisodesScreenLoading(
                     columnState = columnState,
-                    headerContent = {
-                        ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding()
-                        ) {
-                            Text(text = playlistName)
-                        }
-                    },
-                    content = {
-                        items(count = 2) {
-                            PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-                        }
-                    },
-                    buttonsContent = {
-                        ButtonsContent(
-                            episodes = emptyList(),
-                            onPlayButtonClick = { },
-                            onPlayEpisodes = { },
-                        )
-                    },
+                    modifier = modifier
                 )
             }
         }
     }
 }
 
-@Composable
-fun MediaContent(
-    episode: PlayerEpisode,
-    downloadItemArtworkPlaceholder: Painter?,
-    onPlayButtonClick: () -> Unit,
-    onPlayEpisode: (PlayerEpisode) -> Unit
-) {
-    val mediaTitle = episode.title
-
-    val secondaryLabel = episode.author
-
-    Chip(
-        label = mediaTitle,
-        onClick = {
-            onPlayButtonClick()
-            onPlayEpisode(episode)
-        },
-        secondaryLabel = secondaryLabel,
-        icon = CoilPaintable(episode.podcastImageUrl, downloadItemArtworkPlaceholder),
-        largeIcon = true,
-        colors = ChipDefaults.secondaryChipColors(),
-    )
-}
+// @Composable
+// fun MediaContent(
+//    episode: PlayerEpisode,
+//    episodeArtworkPlaceholder: Painter?,
+//    onPlayButtonClick: () -> Unit,
+//    onPlayEpisode: (PlayerEpisode) -> Unit,
+//    modifier: Modifier = Modifier
+// ) {
+//    val mediaTitle = episode.title
+//    val duration = episode.duration
+//
+//    val secondaryLabel = when {
+//        duration != null -> {
+//            // If we have the duration, we combine the date/duration via a
+//            // formatted string
+//            stringResource(
+//                R.string.episode_date_duration,
+//                MediumDateFormatter.format(episode.published),
+//                duration.toMinutes().toInt()
+//            )
+//        }
+//        // Otherwise we just use the date
+//        else -> MediumDateFormatter.format(episode.published)
+//    }
+//
+//    Chip(
+//        label = mediaTitle,
+//        onClick = {
+//            onPlayButtonClick()
+//            onPlayEpisode(episode)
+//        },
+//        secondaryLabel = secondaryLabel,
+//        icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
+//        largeIcon = true,
+//        colors = ChipDefaults.secondaryChipColors(),
+//        modifier = modifier
+//    )
+// }
 
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
@@ -182,6 +163,7 @@ fun ButtonsContent(
     episodes: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Chip(
         label = stringResource(id = R.string.button_play_content_description),
@@ -189,7 +171,118 @@ fun ButtonsContent(
             onPlayButtonClick()
             onPlayEpisodes(episodes)
         },
-        modifier = Modifier.padding(bottom = 16.dp),
+        modifier = modifier.padding(bottom = 16.dp),
         icon = Icons.Outlined.PlayArrow.asPaintable(),
+    )
+}
+
+@Composable
+fun LatestEpisodesScreen(
+    columnState: ScalingLazyColumnState,
+    episodeList: List<PlayerEpisode>,
+    onPlayButtonClick: () -> Unit,
+    onPlayEpisode: (PlayerEpisode) -> Unit,
+    onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    EntityScreen(
+        modifier = modifier,
+        columnState = columnState,
+        headerContent = {
+            ResponsiveListHeader(
+                contentPadding = ListHeaderDefaults.firstItemPadding()
+            ) {
+                Text(text = stringResource(id = R.string.latest_episodes),)
+            }
+        },
+        content = {
+            items(count = episodeList.size) { index ->
+                MediaContent(
+                    episode = episodeList[index],
+                    episodeArtworkPlaceholder = rememberVectorPainter(
+                        image = Icons.Default.MusicNote,
+                        tintColor = Color.Blue,
+                    ),
+                    onItemClick = {
+                        onPlayButtonClick()
+                        onPlayEpisode(episodeList[index])
+                    }
+                )
+            }
+        },
+        buttonsContent = {
+            ButtonsContent(
+                episodes = episodeList,
+                onPlayButtonClick = onPlayButtonClick,
+                onPlayEpisodes = onPlayEpisodes
+            )
+        },
+    )
+}
+
+@Composable
+fun LatestEpisodesScreenLoading(
+    columnState: ScalingLazyColumnState,
+    modifier: Modifier = Modifier
+) {
+    EntityScreen(
+        modifier = modifier,
+        columnState = columnState,
+        headerContent = {
+            ResponsiveListHeader(
+                contentPadding = ListHeaderDefaults.firstItemPadding()
+            ) {
+                Text(text = stringResource(id = R.string.latest_episodes),)
+            }
+        },
+        content = {
+            items(count = 2) {
+                PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+            }
+        },
+        buttonsContent = {
+            ButtonsContent(
+                episodes = emptyList(),
+                onPlayButtonClick = { },
+                onPlayEpisodes = { },
+            )
+        },
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun LatestEpisodeScreenLoadedPreview(
+    @PreviewParameter(WearPreviewEpisodes::class)
+    episode: PlayerEpisode
+) {
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
+    LatestEpisodesScreen(
+        columnState = columnState,
+        episodeList = listOf(episode),
+        onPlayButtonClick = { },
+        onPlayEpisode = { },
+        onPlayEpisodes = { }
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun LatestEpisodeScreenLoadingPreview() {
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ScalingLazyColumnDefaults.ItemType.Text,
+            last = ScalingLazyColumnDefaults.ItemType.Chip
+        )
+    )
+    LatestEpisodesScreenLoading(
+        columnState = columnState,
     )
 }
