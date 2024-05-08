@@ -20,6 +20,7 @@ package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -27,8 +28,11 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
@@ -69,6 +73,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -214,23 +219,26 @@ private fun Header(snackId: Long, origin: String) {
 
 @Composable
 private fun SharedTransitionScope.Up(upPress: () -> Unit) {
-    if (!isTransitionActive) {
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+        ?: throw IllegalArgumentException("No Scope found")
+    with (animatedVisibilityScope){
         IconButton(
             onClick = upPress,
             modifier = Modifier
+                .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 3f)
                 .statusBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 10.dp)
                 .size(36.dp)
+                .animateEnterExit(enter = scaleIn(tween(300, delayMillis = 300)), exit = scaleOut(tween(20)))
                 .background(
                     color = Neutral8.copy(alpha = 0.32f),
                     shape = CircleShape
                 )
-
         ) {
             Icon(
                 imageVector = mirroringBackIcon(),
                 tint = JetsnackTheme.colors.iconInteractive,
-                contentDescription = stringResource(R.string.label_back)
+                contentDescription = stringResource(R.string.label_back),
             )
         }
     }
