@@ -41,7 +41,7 @@ import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.episode.EpisodeScreen
 import com.example.jetcaster.tv.ui.library.LibraryScreen
 import com.example.jetcaster.tv.ui.player.PlayerScreen
-import com.example.jetcaster.tv.ui.podcast.PodcastScreen
+import com.example.jetcaster.tv.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.tv.ui.profile.ProfileScreen
 import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
@@ -162,7 +162,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         }
 
         composable(Screen.Podcast.route) {
-            PodcastScreen(
+            PodcastDetailsScreen(
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
                 playEpisode = {
                     jetcasterAppState.playEpisode()

@@ -74,14 +74,14 @@ import com.example.jetcaster.tv.ui.component.TwoColumn
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
-fun PodcastScreen(
+fun PodcastDetailsScreen(
     backToHomeScreen: () -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     showEpisodeDetails: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    podcastScreenViewModel: PodcastScreenViewModel = hiltViewModel(),
+    podcastDetailsScreenViewModel: PodcastDetailsScreenViewModel = hiltViewModel(),
 ) {
-    val uiState by podcastScreenViewModel.uiStateFlow.collectAsState()
+    val uiState by podcastDetailsScreenViewModel.uiStateFlow.collectAsState()
     when (val s = uiState) {
         PodcastScreenUiState.Loading -> Loading(modifier = modifier)
         PodcastScreenUiState.Error -> ErrorState(backToHome = backToHomeScreen, modifier = modifier)
@@ -89,13 +89,13 @@ fun PodcastScreen(
             podcastInfo = s.podcastInfo,
             episodeList = s.episodeList,
             isSubscribed = s.isSubscribed,
-            subscribe = podcastScreenViewModel::subscribe,
-            unsubscribe = podcastScreenViewModel::unsubscribe,
+            subscribe = podcastDetailsScreenViewModel::subscribe,
+            unsubscribe = podcastDetailsScreenViewModel::unsubscribe,
             playEpisode = {
-                podcastScreenViewModel.play(it)
+                podcastDetailsScreenViewModel.play(it)
                 playEpisode(it)
             },
-            enqueue = podcastScreenViewModel::enqueue,
+            enqueue = podcastDetailsScreenViewModel::enqueue,
             showEpisodeDetails = showEpisodeDetails,
         )
     }
