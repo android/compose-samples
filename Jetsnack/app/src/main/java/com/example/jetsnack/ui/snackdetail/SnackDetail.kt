@@ -221,7 +221,7 @@ private fun Header(snackId: Long, origin: String) {
 private fun SharedTransitionScope.Up(upPress: () -> Unit) {
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalArgumentException("No Scope found")
-    with (animatedVisibilityScope){
+    with(animatedVisibilityScope) {
         IconButton(
             onClick = upPress,
             modifier = Modifier
@@ -229,7 +229,10 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
                 .statusBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 10.dp)
                 .size(36.dp)
-                .animateEnterExit(enter = scaleIn(tween(300, delayMillis = 300)), exit = scaleOut(tween(20)))
+                .animateEnterExit(
+                    enter = scaleIn(tween(300, delayMillis = 300)),
+                    exit = scaleOut(tween(20))
+                )
                 .background(
                     color = Neutral8.copy(alpha = 0.32f),
                     shape = CircleShape
@@ -521,39 +524,42 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
     val (count, updateCount) = remember { mutableIntStateOf(1) }
     val sharedTransitionScope =
         LocalSharedTransitionScope.current ?: throw IllegalStateException("No Shared scope")
-    AnimatedVisibility(
-        modifier = modifier,
-        visible = !sharedTransitionScope.isTransitionActive,
-        enter = slideInVertically { it } + fadeIn(),
-        exit = slideOutVertically { it } + fadeOut()
-    ) {
-        JetsnackSurface {
-            Column {
-                JetsnackDivider()
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .then(HzPadding)
-                        .heightIn(min = BottomBarHeight)
-                ) {
-                    QuantitySelector(
-                        count = count,
-                        decreaseItemCount = { if (count > 0) updateCount(count - 1) },
-                        increaseItemCount = { updateCount(count + 1) }
-                    )
-                    Spacer(Modifier.width(16.dp))
-                    JetsnackButton(
-                        onClick = { /* todo */ },
-                        modifier = Modifier.weight(1f)
+    val animatedVisibilityScope =
+        LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No Shared scope")
+    with(sharedTransitionScope) {
+        with(animatedVisibilityScope) {
+            JetsnackSurface(modifier = modifier
+                .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 4f)
+                .animateEnterExit(enter = slideInVertically(tween(300, delayMillis = 300)) { it } + fadeIn(tween(300, delayMillis = 300)),
+                    exit = slideOutVertically(tween(50)) { it } + fadeOut(tween(50)))) {
+                Column {
+                    JetsnackDivider()
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .then(HzPadding)
+                            .heightIn(min = BottomBarHeight)
                     ) {
-                        Text(
-                            text = stringResource(R.string.add_to_cart),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            maxLines = 1
+                        QuantitySelector(
+                            count = count,
+                            decreaseItemCount = { if (count > 0) updateCount(count - 1) },
+                            increaseItemCount = { updateCount(count + 1) }
                         )
+                        Spacer(Modifier.width(16.dp))
+                        JetsnackButton(
+                            onClick = { /* todo */ },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.add_to_cart),
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                maxLines = 1
+                            )
+                        }
                     }
+
                 }
             }
         }
