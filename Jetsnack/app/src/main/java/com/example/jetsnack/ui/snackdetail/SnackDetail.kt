@@ -454,7 +454,6 @@ private fun Image(
                 imageUrl = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
                     .sharedBounds(
                         rememberSharedContentState(
                             key = SnackSharedElementKey(
@@ -468,6 +467,7 @@ private fun Image(
                         enter = fadeIn(),
                         boundsTransform = snackDetailBoundsTransform
                     )
+                    .fillMaxSize()
 
             )
         }

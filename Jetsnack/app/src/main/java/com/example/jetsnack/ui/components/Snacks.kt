@@ -244,7 +244,6 @@ fun SnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            exit = ExitTransition.None,
                             boundsTransform = snackDetailBoundsTransform
                         )
                 )
@@ -296,17 +295,13 @@ private fun HighlightSnackItem(
                 when (enterExit) {
                     EnterExitState.PreEnter -> 0.dp
                     EnterExitState.Visible -> 20.dp
-                    EnterExitState.PostExit -> 0.dp
+                    EnterExitState.PostExit -> 20.dp
                 }
             }
         JetsnackCard(
             elevation = 0.dp,
             shape = RoundedCornerShape(roundedCornerAnimation),
             modifier = modifier
-                .size(
-                    width = HighlightCardWidth,
-                    height = 250.dp
-                )
                 .padding(bottom = 16.dp)
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(
@@ -322,7 +317,13 @@ private fun HighlightSnackItem(
                         RoundedCornerShape(
                             roundedCornerAnimation
                         )
-                    )
+                    ),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                )
+                .size(
+                    width = HighlightCardWidth,
+                    height = 250.dp
                 )
                 .border(
                     1.dp,
@@ -385,7 +386,6 @@ private fun HighlightSnackItem(
                         imageUrl = snack.imageUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
                             .sharedBounds(
                                 rememberSharedContentState(
                                     key = SnackSharedElementKey(
@@ -395,10 +395,11 @@ private fun HighlightSnackItem(
                                     )
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
-                                exit = fadeOut(),
-                                enter = fadeIn(),
+                                exit = fadeOut(nonSpatialExpressiveSpring()),
+                                enter = fadeIn(nonSpatialExpressiveSpring()),
                                 boundsTransform = snackDetailBoundsTransform
                             )
+                            .align(Alignment.BottomCenter)
                             .size(120.dp)
                     )
                 }
@@ -483,6 +484,8 @@ fun SnackImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
                 .crossfade(true)
+                .placeholderMemoryCacheKey(imageUrl)
+                .memoryCacheKey(imageUrl)
                 .build(),
             placeholder = debugPlaceholder(debugPreview = R.drawable.placeholder),
             contentDescription = contentDescription,
