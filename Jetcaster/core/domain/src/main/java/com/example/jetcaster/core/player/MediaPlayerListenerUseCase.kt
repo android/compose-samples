@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.updateAndGet
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -69,12 +69,12 @@ class MediaPlayerListenerUseCaseImpl @Inject constructor(
         val playerListener = object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-                currentPlayerUiState.updateAndGet { it.copy(isPlaying = isPlaying) }
+                currentPlayerUiState.update { it.copy(isPlaying = isPlaying) }
             }
 
             override fun onIsLoadingChanged(isLoading: Boolean) {
                 super.onIsLoadingChanged(isLoading)
-                currentPlayerUiState.updateAndGet { it.copy(isLoading = isLoading) }
+                currentPlayerUiState.update { it.copy(isLoading = isLoading) }
             }
 
             override fun onPositionDiscontinuity(
@@ -84,7 +84,7 @@ class MediaPlayerListenerUseCaseImpl @Inject constructor(
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                 if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-                    currentPlayerUiState.updateAndGet {
+                    currentPlayerUiState.update {
                         it.copy(timeElapsed = Duration.ofMillis(newPosition.positionMs))
                     }
                 }
@@ -106,7 +106,7 @@ class MediaPlayerListenerUseCaseImpl @Inject constructor(
                             while (isActive && startDuration <= maxDuration) {
                                 delay(playerSpeed.toMillis())
                                 // Update time elapsed
-                                currentPlayerUiState.updateAndGet {
+                                currentPlayerUiState.update {
                                     it.copy(timeElapsed = it.timeElapsed + playerSpeed)
                                 }
                             }
