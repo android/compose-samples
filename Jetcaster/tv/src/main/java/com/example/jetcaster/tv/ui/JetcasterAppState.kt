@@ -18,20 +18,21 @@ package com.example.jetcaster.tv.ui
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.jetcaster.core.player.model.PlayerEpisode
+import kotlinx.coroutines.flow.map
 
 class JetcasterAppState(
     val navHostController: NavHostController
 ) {
 
-    private var _currentScreenState = mutableStateOf<Screen>(Screen.Discover)
-    val currentScreenState = _currentScreenState
+    val currentRouteFlow = navHostController.currentBackStackEntryFlow.map {
+        it.destination.route
+    }
+
     private fun navigate(screen: Screen) {
-        _currentScreenState.value = screen
         navHostController.navigate(screen.route)
     }
 
@@ -91,60 +92,49 @@ fun rememberJetcasterAppState(
 
 sealed interface Screen {
     val route: String
-    val index: Int
 
     data object Discover : Screen {
         override val route = "/discover"
-        override val index = 0
     }
 
     data object Library : Screen {
-        override val route = "library"
-        override val index = 1
+        override val route = "/library"
     }
 
     data object Search : Screen {
-        override val route = "search"
-        override val index = 2
+        override val route = "/search"
     }
 
     data object Profile : Screen {
-        override val route = "profile"
-        override val index = 3
+        override val route = "/profile"
     }
 
     data object Settings : Screen {
         override val route: String = "settings"
-        override val index = 4
     }
 
     data class Podcast(private val podcastUri: String) : Screen {
         override val route = "$ROOT/$podcastUri"
-        override val index = Companion.index
 
         companion object : Screen {
-            private const val ROOT = "podcast"
+            private const val ROOT = "/podcast"
             const val PARAMETER_NAME = "podcastUri"
             override val route = "$ROOT/{$PARAMETER_NAME}"
-            override val index = 5
         }
     }
 
     data class Episode(private val episodeUri: String) : Screen {
 
         override val route: String = "$ROOT/$episodeUri"
-        override val index = Companion.index
 
         companion object : Screen {
-            private const val ROOT = "episode"
+            private const val ROOT = "/episode"
             const val PARAMETER_NAME = "episodeUri"
             override val route = "$ROOT/{$PARAMETER_NAME}"
-            override val index = 6
         }
     }
 
     data object Player : Screen {
         override val route = "player"
-        override val index = 7
     }
 }
