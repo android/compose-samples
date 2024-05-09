@@ -13,7 +13,8 @@ project from Android Studio following the steps
 
 ## Screenshots
 
-![readme_cover](https://github.com/android/compose-samples/assets/10263978/a58ab950-71aa-48e0-8bc7-85443a1b4f6b)
+<img src="../readme/jetcaster-hero.png"></img>
+
 ## Phone app
 
 ### Features
