@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_widget_description">Play your podcasts</string>
+    <string name="content_description_play">Play</string>
+    <string name="content_description_pause">Pause</string>
+</resources>

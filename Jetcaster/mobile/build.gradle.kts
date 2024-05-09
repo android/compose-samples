@@ -135,6 +135,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
+    implementation(project(":glancewidget"))
     implementation(projects.core.domainTesting)
 
     coreLibraryDesugaring(libs.core.jdk.desugaring)
