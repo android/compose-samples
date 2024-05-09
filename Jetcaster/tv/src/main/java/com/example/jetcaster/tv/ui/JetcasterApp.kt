@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,9 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,7 +61,7 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun WithGlobalNavigation(
+private fun GlobalNavigationContainer(
     jetcasterAppState: JetcasterAppState,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -76,16 +76,16 @@ private fun WithGlobalNavigation(
             Column(
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
-                    .focusTarget()
-                    .focusProperties {
-                        enter = {
+                    .onFocusChanged { focusState ->
+                        if (focusState.isFocused) {
                             when (currentRoute) {
                                 Screen.Discover.route -> discover
                                 Screen.Library.route -> library
                                 else -> FocusRequester.Default
-                            }
+                            }.requestFocus()
                         }
                     }
+                    .focusable()
             ) {
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Profile.route,
@@ -145,7 +145,7 @@ private fun WithGlobalNavigation(
 private fun Route(jetcasterAppState: JetcasterAppState) {
     NavHost(navController = jetcasterAppState.navHostController, Screen.Discover.route) {
         composable(Screen.Discover.route) {
-            WithGlobalNavigation(jetcasterAppState = jetcasterAppState) {
+            GlobalNavigationContainer(jetcasterAppState = jetcasterAppState) {
                 DiscoverScreen(
                     showPodcastDetails = {
                         jetcasterAppState.showPodcastDetails(it.uri)
@@ -161,7 +161,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         }
 
         composable(Screen.Library.route) {
-            WithGlobalNavigation(jetcasterAppState = jetcasterAppState) {
+            GlobalNavigationContainer(jetcasterAppState = jetcasterAppState) {
                 LibraryScreen(
                     navigateToDiscover = jetcasterAppState::navigateToDiscover,
                     showPodcastDetails = {
