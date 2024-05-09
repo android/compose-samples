@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.itemsIndexed
 import com.example.jetcaster.core.player.model.PlayerEpisode
@@ -43,21 +44,23 @@ internal fun EpisodeRow(
     horizontalArrangement: Arrangement.Horizontal =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
     contentPadding: PaddingValues = PaddingValues(),
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    lazyListState: TvLazyListState = remember(playerEpisodeList) { TvLazyListState() }
 ) {
     val firstItem = remember { FocusRequester() }
     var previousEpisodeListHash by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
     val isSameList = previousEpisodeListHash == playerEpisodeList.hashCode()
 
     TvLazyRow(
-        modifier = modifier
+        state = lazyListState,
+        modifier = Modifier
             .focusRequester(focusRequester)
             .focusProperties {
                 enter = {
-                    if (isSameList && focusRequester.restoreFocusedChild()) {
-                        FocusRequester.Cancel
-                    } else {
-                        firstItem
+                    when {
+                        lazyListState.layoutInfo.visibleItemsInfo.isEmpty() -> FocusRequester.Cancel
+                        isSameList && focusRequester.restoreFocusedChild() -> FocusRequester.Cancel
+                        else -> firstItem
                     }
                 }
                 exit = {
@@ -65,7 +68,8 @@ internal fun EpisodeRow(
                     focusRequester.saveFocusedChild()
                     FocusRequester.Default
                 }
-            },
+            }
+            .then(modifier),
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
     ) {
