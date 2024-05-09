@@ -39,12 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -174,6 +173,8 @@ private fun EpisodePlayerWithBackground(
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val episodePlayer = remember { FocusRequester() }
+
     BackgroundContainer(
         playerEpisode = playerEpisode,
         modifier = modifier,
@@ -192,6 +193,7 @@ private fun EpisodePlayerWithBackground(
             rewind = rewind,
             enqueue = enqueue,
             showDetails = showDetails,
+            focusRequester = episodePlayer,
             modifier = Modifier
                 .padding(JetcasterAppDefaults.overScanMargin.player.intoPaddingValues())
         )
@@ -202,7 +204,8 @@ private fun EpisodePlayerWithBackground(
             modifier = Modifier.fillMaxSize(),
             contentPadding = JetcasterAppDefaults.overScanMargin.player.copy(top = 0.dp)
                 .intoPaddingValues(),
-            offset = DpOffset(0.dp, 136.dp)
+            offset = DpOffset(0.dp, 136.dp),
+            previousComponent = episodePlayer
         )
     }
 }
@@ -224,6 +227,7 @@ private fun EpisodePlayer(
     modifier: Modifier = Modifier,
     bringIntoViewRequester: BringIntoViewRequester = remember { BringIntoViewRequester() },
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
@@ -257,7 +261,8 @@ private fun EpisodePlayer(
             previous = previous,
             next = next,
             skip = skip,
-            rewind = rewind
+            rewind = rewind,
+            focusRequester = focusRequester
         )
     }
 }
@@ -295,6 +300,7 @@ private fun PlayerControl(
     skip: () -> Unit,
     rewind: () -> Unit,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
@@ -327,6 +333,7 @@ private fun PlayerControl(
                 },
                 modifier = Modifier
                     .size(JetcasterAppDefaults.iconButtonSize.large.intoDpSize())
+                    .focusRequester(focusRequester)
             )
             SkipButton(
                 onClick = skip,
@@ -414,7 +421,6 @@ private fun NoEpisodeInQueue(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PlayerQueueOverlay(
     playerEpisodeList: EpisodeList,
@@ -431,7 +437,7 @@ private fun PlayerQueueOverlay(
         drawRect(brush, blendMode = BlendMode.Multiply)
     },
     offset: DpOffset = DpOffset.Zero,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    previousComponent: FocusRequester = FocusRequester.Default,
 ) {
     var hasFocus by remember { mutableStateOf(false) }
     val actualOffset = if (hasFocus) {
@@ -456,9 +462,12 @@ private fun PlayerQueueOverlay(
             contentPadding = contentPadding,
             modifier = Modifier
                 .offset(actualOffset.x, actualOffset.y)
-                .focusRestorer { focusRequester }
-                .onFocusChanged { hasFocus = it.hasFocus },
-            focusRequester = focusRequester
+                .onFocusChanged { hasFocus = it.hasFocus }
+                .focusProperties {
+                    previous = previousComponent
+                    next = previous
+                    up = previous
+                },
         )
     }
 }

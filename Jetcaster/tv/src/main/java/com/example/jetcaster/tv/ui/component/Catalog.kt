@@ -22,15 +22,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.items
+import androidx.tv.foundation.lazy.list.itemsIndexed
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
@@ -79,7 +85,6 @@ internal fun Catalog(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PodcastSection(
     podcastList: PodcastList,
@@ -94,12 +99,10 @@ private fun PodcastSection(
         PodcastRow(
             podcastList = podcastList,
             onPodcastSelected = onPodcastSelected,
-            modifier = Modifier.focusRestorer()
         )
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun LatestEpisodeSection(
     episodeList: EpisodeList,
@@ -114,7 +117,6 @@ private fun LatestEpisodeSection(
         EpisodeRow(
             playerEpisodeList = episodeList,
             onSelected = onEpisodeSelected,
-            modifier = Modifier.focusRestorer()
         )
     }
 }
@@ -139,6 +141,7 @@ private fun Section(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PodcastRow(
     podcastList: PodcastList,
@@ -148,16 +151,40 @@ private fun PodcastRow(
     horizontalArrangement: Arrangement.Horizontal =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
 ) {
+    val (focusRequester, firstItem) = remember { FocusRequester.createRefs() }
+    var previousPodcastListHash by remember { mutableIntStateOf(podcastList.hashCode()) }
+    val isSamePodcastList = previousPodcastListHash == podcastList.hashCode()
+
     TvLazyRow(
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
-        modifier = modifier,
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .focusProperties {
+                exit = {
+                    previousPodcastListHash = podcastList.hashCode()
+                    focusRequester.saveFocusedChild()
+                    FocusRequester.Default
+                }
+                enter = {
+                    if (isSamePodcastList && focusRequester.restoreFocusedChild()) {
+                        FocusRequester.Cancel
+                    } else {
+                        firstItem
+                    }
+                }
+            },
     ) {
-        items(podcastList) {
+        itemsIndexed(podcastList) { index, podcastInfo ->
+            val cardModifier = if (index == 0) {
+                Modifier.focusRequester(firstItem)
+            } else {
+                Modifier
+            }
             PodcastCard(
-                podcastInfo = it,
-                onClick = { onPodcastSelected(it) },
-                modifier = Modifier.width(JetcasterAppDefaults.cardWidth.medium)
+                podcastInfo = podcastInfo,
+                onClick = { onPodcastSelected(podcastInfo) },
+                modifier = cardModifier.width(JetcasterAppDefaults.cardWidth.medium)
             )
         }
     }

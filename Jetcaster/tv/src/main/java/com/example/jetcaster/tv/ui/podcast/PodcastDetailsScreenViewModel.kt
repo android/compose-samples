@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class PodcastScreenViewModel @Inject constructor(
+class PodcastDetailsScreenViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val podcastStore: PodcastStore,
     episodeStore: EpisodeStore,

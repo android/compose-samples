@@ -28,7 +28,14 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.tv.material3.DrawerValue
@@ -41,7 +48,7 @@ import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.episode.EpisodeScreen
 import com.example.jetcaster.tv.ui.library.LibraryScreen
 import com.example.jetcaster.tv.ui.player.PlayerScreen
-import com.example.jetcaster.tv.ui.podcast.PodcastScreen
+import com.example.jetcaster.tv.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.tv.ui.profile.ProfileScreen
 import com.example.jetcaster.tv.ui.search.SearchScreen
 import com.example.jetcaster.tv.ui.settings.SettingsScreen
@@ -52,13 +59,16 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
     Route(jetcasterAppState = jetcasterAppState)
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun WithGlobalNavigation(
     jetcasterAppState: JetcasterAppState,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val currentScreen by jetcasterAppState.currentScreenState
+    val (discover, library) = remember { FocusRequester.createRefs() }
+    val currentRoute
+        by jetcasterAppState.currentRouteFlow.collectAsStateWithLifecycle(initialValue = null)
 
     NavigationDrawer(
         drawerContent = {
@@ -66,9 +76,19 @@ private fun WithGlobalNavigation(
             Column(
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
+                    .focusTarget()
+                    .focusProperties {
+                        enter = {
+                            when (currentRoute) {
+                                Screen.Discover.route -> discover
+                                Screen.Library.route -> library
+                                else -> FocusRequester.Default
+                            }
+                        }
+                    }
             ) {
                 NavigationDrawerItem(
-                    selected = isClosed && currentScreen.index == Screen.Profile.index,
+                    selected = isClosed && currentRoute == Screen.Profile.route,
                     onClick = jetcasterAppState::navigateToProfile,
                     leadingContent = { Icon(Icons.Default.Person, contentDescription = null) },
                 ) {
@@ -79,29 +99,36 @@ private fun WithGlobalNavigation(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
-                    selected = isClosed && currentScreen.index == Screen.Search.index,
+                    selected = isClosed && currentRoute == Screen.Search.route,
                     onClick = jetcasterAppState::navigateToSearch,
                     leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
                 ) {
                     Text(text = "Search")
                 }
                 NavigationDrawerItem(
-                    selected = isClosed && currentScreen.index == Screen.Discover.index,
+                    selected = isClosed && currentRoute == Screen.Discover.route,
                     onClick = jetcasterAppState::navigateToDiscover,
                     leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
+                    modifier = Modifier.focusRequester(discover)
                 ) {
                     Text(text = "Discover")
                 }
                 NavigationDrawerItem(
-                    selected = isClosed && currentScreen.index == Screen.Library.index,
+                    selected = isClosed && currentRoute == Screen.Library.route,
                     onClick = jetcasterAppState::navigateToLibrary,
-                    leadingContent = { Icon(Icons.Default.VideoLibrary, contentDescription = null) }
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.VideoLibrary,
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier.focusRequester(library)
                 ) {
                     Text(text = "Library")
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
-                    selected = isClosed && currentScreen.index == Screen.Settings.index,
+                    selected = isClosed && currentRoute == Screen.Settings.route,
                     onClick = jetcasterAppState::navigateToSettings,
                     leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
                 ) {
@@ -110,7 +137,7 @@ private fun WithGlobalNavigation(
             }
         },
         content = content,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -162,7 +189,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         }
 
         composable(Screen.Podcast.route) {
-            PodcastScreen(
+            PodcastDetailsScreen(
                 backToHomeScreen = jetcasterAppState::navigateToDiscover,
                 playEpisode = {
                     jetcasterAppState.playEpisode()

@@ -19,9 +19,14 @@ package com.example.jetcaster.tv.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.itemsIndexed
@@ -29,6 +34,7 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun EpisodeRow(
     playerEpisodeList: EpisodeList,
@@ -39,14 +45,33 @@ internal fun EpisodeRow(
     contentPadding: PaddingValues = PaddingValues(),
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
+    val firstItem = remember { FocusRequester() }
+    var previousEpisodeListHash by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
+    val isSameList = previousEpisodeListHash == playerEpisodeList.hashCode()
+
     TvLazyRow(
-        modifier = modifier,
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .focusProperties {
+                enter = {
+                    if (isSameList && focusRequester.restoreFocusedChild()) {
+                        FocusRequester.Cancel
+                    } else {
+                        firstItem
+                    }
+                }
+                exit = {
+                    previousEpisodeListHash = playerEpisodeList.hashCode()
+                    focusRequester.saveFocusedChild()
+                    FocusRequester.Default
+                }
+            },
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
     ) {
         itemsIndexed(playerEpisodeList) { index, item ->
             val cardModifier = if (index == 0) {
-                Modifier.focusRequester(focusRequester)
+                Modifier.focusRequester(firstItem)
             } else {
                 Modifier
             }
