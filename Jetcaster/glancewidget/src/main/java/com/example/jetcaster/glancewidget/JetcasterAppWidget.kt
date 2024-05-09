@@ -117,21 +117,19 @@ class JetcasterAppWidget : GlanceAppWidget() {
             val artUri = Uri.parse(testState.albumArtUri)
 
             GlanceTheme(colors = ColorProviders(light = lightColorScheme(), dark = darkColorScheme())) {
-
-            }
-
-            when (sizeBucket) {
-                SizeBucket.Invalid -> WidgetUiInvalidSize()
-                SizeBucket.Narrow -> WidgetUiNarrow(
-                    imageUri = artUri ,
-                    playPauseIcon = playPauseIcon
-                )
-                SizeBucket.Normal -> WidgetUiNormal(
-                    title = testState.episodeTitle,
-                    subtitle = testState.podcastTitle,
-                    imageUri = artUri,
-                    playPauseIcon = playPauseIcon
-                )
+                when (sizeBucket) {
+                    SizeBucket.Invalid -> WidgetUiInvalidSize()
+                    SizeBucket.Narrow -> WidgetUiNarrow(
+                        imageUri = artUri ,
+                        playPauseIcon = playPauseIcon
+                    )
+                    SizeBucket.Normal -> WidgetUiNormal(
+                        title = testState.episodeTitle,
+                        subtitle = testState.podcastTitle,
+                        imageUri = artUri,
+                        playPauseIcon = playPauseIcon
+                    )
+                }
             }
         }
     }
@@ -194,11 +192,13 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
         Text(
             text = title,
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = fgColor),
+            maxLines = 2,
             modifier = GlanceModifier.padding(bottom = 8.dp)
         )
         Text(
             text = subtitle,
-            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = fgColor),
+            style = TextStyle(fontSize = 14.sp, color = fgColor),
+            maxLines = 2,
             modifier = GlanceModifier.padding(bottom = 8.dp)
         )
     }
