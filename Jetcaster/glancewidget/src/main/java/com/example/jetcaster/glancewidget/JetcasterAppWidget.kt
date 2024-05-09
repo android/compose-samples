@@ -6,6 +6,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +34,7 @@ import androidx.glance.appwidget.components.SquareIconButton
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
+import androidx.glance.material3.ColorProviders
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -64,10 +67,11 @@ class JetcasterAppWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 
 data class JetcasterAppWidgetViewState(
-    val trackTitle: String,
-    val trackSubtitle: String,
+    val episodeTitle: String,
+    val podcastTitle: String,
     val isPlaying: Boolean,
-    val albumArtUri: String
+    val albumArtUri: String,
+    val useDynamicColor: Boolean
 )
 
 private object Sizes {
@@ -92,17 +96,18 @@ private fun calculateSizeBucket(): SizeBucket {
     }
 }
 
-class JetcasterAppWidget() : GlanceAppWidget() {
+class JetcasterAppWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
         val testState = JetcasterAppWidgetViewState(
-            trackTitle = "Serifs afoot",
-            trackSubtitle =  "Roboto Beach",
+            episodeTitle = "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
+            podcastTitle =  "Now in Android",
             isPlaying = false,
-            albumArtUri = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Longsbear.JPG/320px-Longsbear.JPG"
+            albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
+            useDynamicColor = false
         )
 
 
@@ -111,6 +116,10 @@ class JetcasterAppWidget() : GlanceAppWidget() {
             val playPauseIcon = if (testState.isPlaying) PlayPauseIcon.Pause else PlayPauseIcon.Play
             val artUri = Uri.parse(testState.albumArtUri)
 
+            GlanceTheme(colors = ColorProviders(light = lightColorScheme(), dark = darkColorScheme())) {
+
+            }
+
             when (sizeBucket) {
                 SizeBucket.Invalid -> WidgetUiInvalidSize()
                 SizeBucket.Narrow -> WidgetUiNarrow(
@@ -118,8 +127,8 @@ class JetcasterAppWidget() : GlanceAppWidget() {
                     playPauseIcon = playPauseIcon
                 )
                 SizeBucket.Normal -> WidgetUiNormal(
-                    title = testState.trackTitle,
-                    subtitle = testState.trackSubtitle,
+                    title = testState.episodeTitle,
+                    subtitle = testState.podcastTitle,
                     imageUri = artUri,
                     playPauseIcon = playPauseIcon
                 )
