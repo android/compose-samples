@@ -68,7 +68,7 @@ private fun GlobalNavigationContainer(
 ) {
     val (discover, library) = remember { FocusRequester.createRefs() }
     val currentRoute
-            by jetcasterAppState.currentRouteFlow.collectAsStateWithLifecycle(initialValue = null)
+        by jetcasterAppState.currentRouteFlow.collectAsStateWithLifecycle(initialValue = null)
 
     NavigationDrawer(
         drawerContent = {

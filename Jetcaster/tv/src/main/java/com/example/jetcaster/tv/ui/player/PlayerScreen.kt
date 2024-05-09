@@ -77,9 +77,9 @@ import com.example.jetcaster.tv.ui.component.RewindButton
 import com.example.jetcaster.tv.ui.component.Seekbar
 import com.example.jetcaster.tv.ui.component.SkipButton
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
+import java.time.Duration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.time.Duration
 
 @Composable
 fun PlayerScreen(
