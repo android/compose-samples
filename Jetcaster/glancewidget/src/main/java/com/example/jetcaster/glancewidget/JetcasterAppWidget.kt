@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.jetcaster.glancewidget
 
 import android.content.Context
@@ -34,7 +50,6 @@ import androidx.glance.appwidget.components.SquareIconButton
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
-import androidx.glance.material3.ColorProviders
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -44,6 +59,7 @@ import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.material3.ColorProviders
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -62,8 +78,6 @@ internal val TAG = "JetcasterAppWidegt"
 class JetcasterAppWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
         get() = JetcasterAppWidget()
-
-
 }
 
 data class JetcasterAppWidgetViewState(
@@ -103,26 +117,33 @@ class JetcasterAppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
         val testState = JetcasterAppWidgetViewState(
-            episodeTitle = "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
-            podcastTitle =  "Now in Android",
+            episodeTitle =
+            "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
+            podcastTitle = "Now in Android",
             isPlaying = false,
-            albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
+            albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
+                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
             useDynamicColor = false
         )
-
 
         provideContent {
             val sizeBucket = calculateSizeBucket()
             val playPauseIcon = if (testState.isPlaying) PlayPauseIcon.Pause else PlayPauseIcon.Play
             val artUri = Uri.parse(testState.albumArtUri)
 
-            GlanceTheme(colors = ColorProviders(light = lightColorScheme(), dark = darkColorScheme())) {
+            GlanceTheme(
+                colors = ColorProviders(
+                    light = lightColorScheme(),
+                    dark = darkColorScheme()
+                )
+            ) {
                 when (sizeBucket) {
                     SizeBucket.Invalid -> WidgetUiInvalidSize()
                     SizeBucket.Narrow -> WidgetUiNarrow(
-                        imageUri = artUri ,
+                        imageUri = artUri,
                         playPauseIcon = playPauseIcon
                     )
+
                     SizeBucket.Normal -> WidgetUiNormal(
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
@@ -223,7 +244,6 @@ private fun PlayPauseButton(state: PlayPauseIcon, onClick: () -> Unit) {
 
 enum class PlayPauseIcon { Play, Pause }
 
-
 /**
  * Uses Coil to load images.
  */
@@ -260,7 +280,7 @@ private fun WidgetAsyncImage(
             provider = ImageProvider(bitmap),
             contentDescription = contentDescription,
             contentScale = ContentScale.FillBounds,
-            modifier = modifier.cornerRadius(12.dp)// TODO: confirm radius with design
+            modifier = modifier.cornerRadius(12.dp) // TODO: confirm radius with design
         )
     }
 }
