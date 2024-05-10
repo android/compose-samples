@@ -177,7 +177,8 @@ private fun CartContent(
                 modifier = Modifier.animateItem(
                     fadeInSpec = itemAnimationSpecFade,
                     fadeOutSpec = itemAnimationSpecFade,
-                    placementSpec = itemPlacementSpec),
+                    placementSpec = itemPlacementSpec
+                ),
                 background = { offsetX ->
                     SwipeDismissItemBackground(offsetX)
                 },
@@ -196,7 +197,8 @@ private fun CartContent(
                 modifier = Modifier.animateItem(
                     fadeInSpec = itemAnimationSpecFade,
                     fadeOutSpec = itemAnimationSpecFade,
-                    placementSpec = itemPlacementSpec),
+                    placementSpec = itemPlacementSpec
+                ),
                 subtotal = orderLines.map { it.snack.price * it.count }.sum(),
                 shippingCosts = 369
             )
@@ -206,7 +208,8 @@ private fun CartContent(
                 modifier = Modifier.animateItem(
                     fadeInSpec = itemAnimationSpecFade,
                     fadeOutSpec = itemAnimationSpecFade,
-                    placementSpec = itemPlacementSpec),
+                    placementSpec = itemPlacementSpec
+                ),
                 snackCollection = inspiredByCart,
                 onSnackClick = onSnackClick,
                 highlight = false
