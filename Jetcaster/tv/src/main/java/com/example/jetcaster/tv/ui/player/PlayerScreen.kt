@@ -176,6 +176,10 @@ private fun EpisodePlayerWithBackground(
 ) {
     val episodePlayer = remember { FocusRequester() }
 
+    LaunchedEffect(Unit) {
+        episodePlayer.requestFocus()
+    }
+
     BackgroundContainer(
         playerEpisode = playerEpisode,
         modifier = modifier,
