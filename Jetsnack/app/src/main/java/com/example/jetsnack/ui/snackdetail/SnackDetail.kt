@@ -19,8 +19,6 @@
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -73,7 +71,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -528,17 +525,20 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
         LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No Shared scope")
     with(sharedTransitionScope) {
         with(animatedVisibilityScope) {
-            JetsnackSurface(modifier = modifier
-                .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 4f)
-                .animateEnterExit(
-                    enter = slideInVertically(
-                        tween(
-                            300,
-                            delayMillis = 300
-                        )
-                    ) { it } + fadeIn(tween(300, delayMillis = 300)),
-                    exit = slideOutVertically(tween(50)) { it } +
-                            fadeOut(tween(50)))) {
+            JetsnackSurface(
+                modifier = modifier
+                    .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 4f)
+                    .animateEnterExit(
+                        enter = slideInVertically(
+                            tween(
+                                300,
+                                delayMillis = 300
+                            )
+                        ) { it } + fadeIn(tween(300, delayMillis = 300)),
+                        exit = slideOutVertically(tween(50)) { it } +
+                            fadeOut(tween(50))
+                    )
+            ) {
                 Column {
                     JetsnackDivider()
                     Row(
@@ -566,7 +566,6 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                             )
                         }
                     }
-
                 }
             }
         }
