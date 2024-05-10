@@ -530,8 +530,15 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
         with(animatedVisibilityScope) {
             JetsnackSurface(modifier = modifier
                 .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 4f)
-                .animateEnterExit(enter = slideInVertically(tween(300, delayMillis = 300)) { it } + fadeIn(tween(300, delayMillis = 300)),
-                    exit = slideOutVertically(tween(50)) { it } + fadeOut(tween(50)))) {
+                .animateEnterExit(
+                    enter = slideInVertically(
+                        tween(
+                            300,
+                            delayMillis = 300
+                        )
+                    ) { it } + fadeIn(tween(300, delayMillis = 300)),
+                    exit = slideOutVertically(tween(50)) { it } +
+                            fadeOut(tween(50)))) {
                 Column {
                     JetsnackDivider()
                     Row(
