@@ -214,13 +214,11 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
             text = title,
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = fgColor),
             maxLines = 2,
-            modifier = GlanceModifier.padding(bottom = 8.dp)
         )
         Text(
             text = subtitle,
             style = TextStyle(fontSize = 14.sp, color = fgColor),
             maxLines = 2,
-            modifier = GlanceModifier.padding(bottom = 8.dp)
         )
     }
 }
