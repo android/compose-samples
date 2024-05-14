@@ -25,6 +25,7 @@ import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -262,10 +263,9 @@ fun SnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()) +
-                                scaleInSharedContentToBounds(),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) +
-                                scaleOutSharedContentToBounds(),
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            exit = fadeOut(nonSpatialExpressiveSpring()) ,
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                 )
@@ -359,11 +359,10 @@ private fun HighlightSnackItem(
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = snackDetailBoundsTransform,
-                                enter = fadeIn(nonSpatialExpressiveSpring()) +
-                                    scaleInSharedContentToBounds(),
-                                exit = fadeOut(nonSpatialExpressiveSpring()) +
-                                    scaleOutSharedContentToBounds()
-                            )
+                                enter = fadeIn(nonSpatialExpressiveSpring()),
+                                exit = fadeOut(nonSpatialExpressiveSpring()),
+                                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                                )
                             .height(100.dp)
                             .fillMaxWidth()
                             .offsetGradientBackground(
@@ -421,12 +420,11 @@ private fun HighlightSnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()) +
-                                scaleInSharedContentToBounds(),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) +
-                                scaleOutSharedContentToBounds(),
-                            boundsTransform = snackDetailBoundsTransform
-                        )
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            boundsTransform = snackDetailBoundsTransform,
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            )
                         .wrapContentWidth()
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -446,12 +444,11 @@ private fun HighlightSnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()) +
-                                scaleInSharedContentToBounds(),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) +
-                                scaleOutSharedContentToBounds(),
-                            boundsTransform = snackDetailBoundsTransform
-                        )
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            boundsTransform = snackDetailBoundsTransform,
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            )
                         .wrapContentWidth()
                 )
             }

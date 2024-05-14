@@ -204,9 +204,10 @@ private fun Header(snackId: Long, origin: String) {
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = snackDetailBoundsTransform,
-                    enter = fadeIn(nonSpatialExpressiveSpring()) + scaleInSharedContentToBounds(),
-                    exit = fadeOut(nonSpatialExpressiveSpring()) + scaleOutSharedContentToBounds()
-                )
+                    enter = fadeIn(nonSpatialExpressiveSpring()),
+                    exit = fadeOut(nonSpatialExpressiveSpring()),
+                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
                 .height(280.dp)
                 .fillMaxWidth()
                 .background(Brush.verticalGradient(JetsnackTheme.colors.tornado1))
