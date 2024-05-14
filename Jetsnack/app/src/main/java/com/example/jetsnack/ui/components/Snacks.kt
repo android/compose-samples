@@ -264,7 +264,7 @@ fun SnackItem(
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()) ,
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
                             resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
@@ -362,7 +362,7 @@ private fun HighlightSnackItem(
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
                                 resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
-                                )
+                            )
                             .height(100.dp)
                             .fillMaxWidth()
                             .offsetGradientBackground(
@@ -424,7 +424,7 @@ private fun HighlightSnackItem(
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
                             resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
-                            )
+                        )
                         .wrapContentWidth()
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -448,7 +448,7 @@ private fun HighlightSnackItem(
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
                             resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
-                            )
+                        )
                         .wrapContentWidth()
                 )
             }

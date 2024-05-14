@@ -207,7 +207,7 @@ private fun Header(snackId: Long, origin: String) {
                     enter = fadeIn(nonSpatialExpressiveSpring()),
                     exit = fadeOut(nonSpatialExpressiveSpring()),
                     resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
-                    )
+                )
                 .height(280.dp)
                 .fillMaxWidth()
                 .background(Brush.verticalGradient(JetsnackTheme.colors.tornado1))
