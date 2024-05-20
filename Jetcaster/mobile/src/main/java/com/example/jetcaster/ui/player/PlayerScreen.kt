@@ -100,6 +100,7 @@ import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
+import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.isBookPosture
@@ -600,11 +601,8 @@ private fun PlayerImage(
     podcastImageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(podcastImageUrl)
-            .crossfade(true)
-            .build(),
+    PodcastImage(
+        podcastImageUrl = podcastImageUrl,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier
