@@ -78,7 +78,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -93,8 +92,6 @@ import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.jetcaster.R
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.PlayerEpisode
