@@ -143,7 +143,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             val intent = Intent().apply {
                 action = Intent.ACTION_VIEW
                 component = ComponentName(context, "com.example.jetcaster.ui.MainActivity")
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 data = "https://jetcaster.google.com/player/$episodeUri".toUri()
             }
 
