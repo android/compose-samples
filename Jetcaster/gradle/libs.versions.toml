@@ -14,7 +14,7 @@ androidx-compose-material3-adaptive = "1.0.0-alpha12"
 androidx-constraintlayout = "1.0.1"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.13.1"
-androidx-glance = "1.0.0"
+androidx-glance = "1.1.0-rc01"
 androidx-lifecycle = "2.7.0"
 androidx-navigation = "2.7.7"
 androidx-palette = "1.0.0"
@@ -59,9 +59,6 @@ secrets = "2.0.1"
 # @keep
 targetSdk = "33"
 version-catalog-update = "0.8.4"
-glanceAppwidget = "1.1.0-beta02"
-glanceMaterial3 = "1.1.0-beta02"
-glance = "1.1.0-beta02"
 composeBom = "2024.04.01"
 
 [libraries]
@@ -172,9 +169,6 @@ wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation",
 wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx-wear-compose" }
 wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "androidx-wear-compose" }
 
-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glanceAppwidget" }
-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glanceMaterial3" }
-glance = { group = "androidx.glance", name = "glance", version.ref = "glance" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 
 

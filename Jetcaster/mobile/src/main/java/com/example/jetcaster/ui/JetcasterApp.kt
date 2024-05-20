@@ -23,10 +23,14 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.window.layout.DisplayFeature
 import com.example.jetcaster.R
+import com.example.jetcaster.ui.Screen.Companion.PLAYER_DEEP_LINK_URI_PATTERN
 import com.example.jetcaster.ui.home.MainScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 
@@ -50,7 +54,15 @@ fun JetcasterApp(
                     }
                 )
             }
-            composable(Screen.Player.route) {
+            composable(
+                route = Screen.Player.route,
+                deepLinks = listOf(
+                    navDeepLink { uriPattern = PLAYER_DEEP_LINK_URI_PATTERN }
+                ),
+                arguments = listOf(
+                    navArgument(Screen.ARG_EPISODE_URI) { type = NavType.StringType }
+                )
+            ) {
                 PlayerScreen(
                     windowSizeClass = adaptiveInfo.windowSizeClass,
                     displayFeatures = displayFeatures,

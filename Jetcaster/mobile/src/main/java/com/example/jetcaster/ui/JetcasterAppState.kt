@@ -51,6 +51,7 @@ sealed class Screen(val route: String) {
     companion object {
         val ARG_PODCAST_URI = "podcastUri"
         val ARG_EPISODE_URI = "episodeUri"
+        val PLAYER_DEEP_LINK_URI_PATTERN = "https://jetcaster.google.com/player/{$ARG_EPISODE_URI}"
     }
 }
 
