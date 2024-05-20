@@ -47,8 +47,11 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import com.example.jetnews.JetnewsApplication
 import com.example.jetnews.R
+import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.data.successOr
 import com.example.jetnews.glance.ui.theme.JetnewsGlanceColorScheme
 import com.example.jetnews.model.Post
@@ -98,78 +101,93 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
             }
         }
     }
+}
 
-    @Composable
-    private fun JetnewsContent(
-        posts: List<Post>,
-        bookmarks: Set<String>?,
-        onToggleBookmark: (String) -> Unit
+@Composable
+private fun JetnewsContent(
+    posts: List<Post>,
+    bookmarks: Set<String>?,
+    onToggleBookmark: (String) -> Unit
+) {
+    Column(
+        modifier = GlanceModifier
+            .background(GlanceTheme.colors.surface)
+            .cornerRadius(24.dp)
     ) {
-        Column(
-            modifier = GlanceModifier
-                .background(GlanceTheme.colors.surface)
-                .cornerRadius(24.dp)
-        ) {
-            Header(modifier = GlanceModifier.fillMaxWidth())
-            // Set key for each size so that the onToggleBookmark lambda is called only once for the
-            // active size.
-            key(LocalSize.current) {
-                Body(
-                    modifier = GlanceModifier.fillMaxWidth(),
-                    posts = posts,
-                    bookmarks = bookmarks ?: setOf(),
-                    onToggleBookmark = onToggleBookmark
+        Header(modifier = GlanceModifier.fillMaxWidth())
+        // Set key for each size so that the onToggleBookmark lambda is called only once for the
+        // active size.
+        key(LocalSize.current) {
+            Body(
+                modifier = GlanceModifier.fillMaxWidth(),
+                posts = posts,
+                bookmarks = bookmarks ?: setOf(),
+                onToggleBookmark = onToggleBookmark
+            )
+        }
+    }
+}
+
+@Composable
+private fun Header(modifier: GlanceModifier) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(horizontal = 10.dp, vertical = 20.dp)
+    ) {
+        val context = LocalContext.current
+        Image(
+            provider = ImageProvider(R.drawable.ic_jetnews_logo),
+            colorFilter = ColorFilter.tint(GlanceTheme.colors.primary),
+            contentDescription = null,
+            modifier = GlanceModifier.size(24.dp)
+        )
+        Spacer(modifier = GlanceModifier.width(8.dp))
+        Image(
+            contentDescription = context.getString(R.string.app_name),
+            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+            provider = ImageProvider(R.drawable.ic_jetnews_wordmark)
+        )
+    }
+}
+
+@Composable
+private fun Body(
+    modifier: GlanceModifier,
+    posts: List<Post>,
+    bookmarks: Set<String>,
+    onToggleBookmark: (String) -> Unit,
+) {
+    val postLayout = LocalSize.current.toPostLayout()
+    LazyColumn(modifier = modifier.background(GlanceTheme.colors.background)) {
+        itemsIndexed(posts) { index, post ->
+            Column(modifier = GlanceModifier.padding(horizontal = 14.dp)) {
+                Post(
+                    post = post,
+                    bookmarks = bookmarks,
+                    onToggleBookmark = onToggleBookmark,
+                    modifier = GlanceModifier.fillMaxWidth().padding(15.dp),
+                    postLayout = postLayout,
                 )
-            }
-        }
-    }
-
-    @Composable
-    fun Header(modifier: GlanceModifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(horizontal = 10.dp, vertical = 20.dp)
-        ) {
-            val context = LocalContext.current
-            Image(
-                provider = ImageProvider(R.drawable.ic_jetnews_logo),
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.primary),
-                contentDescription = null,
-                modifier = GlanceModifier.size(24.dp)
-            )
-            Spacer(modifier = GlanceModifier.width(8.dp))
-            Image(
-                contentDescription = context.getString(R.string.app_name),
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-                provider = ImageProvider(R.drawable.ic_jetnews_wordmark)
-            )
-        }
-    }
-
-    @Composable
-    fun Body(
-        modifier: GlanceModifier,
-        posts: List<Post>,
-        bookmarks: Set<String>,
-        onToggleBookmark: (String) -> Unit,
-    ) {
-        val postLayout = LocalSize.current.toPostLayout()
-        LazyColumn(modifier = modifier.background(GlanceTheme.colors.background)) {
-            itemsIndexed(posts) { index, post ->
-                Column(modifier = GlanceModifier.padding(horizontal = 14.dp)) {
-                    Post(
-                        post = post,
-                        bookmarks = bookmarks,
-                        onToggleBookmark = onToggleBookmark,
-                        modifier = GlanceModifier.fillMaxWidth().padding(15.dp),
-                        postLayout = postLayout,
-                    )
-                    if (index < posts.lastIndex) {
-                        Divider()
-                    }
+                if (index < posts.lastIndex) {
+                    Divider()
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(widthDp = 400, heightDp = 400)
+@Composable
+private fun PreviewJetNewsGlanceAppWidget() {
+    GlanceTheme(
+        colors = JetnewsGlanceColorScheme.colors
+    ) {
+        JetnewsContent(
+            posts = posts.recommendedPosts,
+            bookmarks = setOf(posts.recommendedPosts.first().id),
+            onToggleBookmark = {}
+        )
     }
 }
