@@ -16,23 +16,14 @@
 
 package com.example.reply.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -41,20 +32,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
-import com.example.reply.ui.navigation.ModalNavigationDrawerContent
-import com.example.reply.ui.navigation.PermanentNavigationDrawerContent
-import com.example.reply.ui.navigation.ReplyBottomNavigationBar
 import com.example.reply.ui.navigation.ReplyNavigationActions
-import com.example.reply.ui.navigation.ReplyNavigationRail
+import com.example.reply.ui.navigation.ReplyNavigationWrapper
 import com.example.reply.ui.navigation.ReplyRoute
-import com.example.reply.ui.navigation.ReplyTopLevelDestination
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import com.example.reply.ui.utils.ReplyNavigationType
 import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
-import kotlinx.coroutines.launch
+
+private fun NavigationSuiteType.toReplyNavType() = when (this) {
+    NavigationSuiteType.NavigationBar -> ReplyNavigationType.BOTTOM_NAVIGATION
+    NavigationSuiteType.NavigationRail -> ReplyNavigationType.NAVIGATION_RAIL
+    NavigationSuiteType.NavigationDrawer -> ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+    else -> ReplyNavigationType.BOTTOM_NAVIGATION
+}
 
 @Composable
 fun ReplyApp(
@@ -133,32 +126,6 @@ fun ReplyApp(
         }
     }
 
-    ReplyNavigationWrapper(
-        navigationType = navigationType,
-        contentType = contentType,
-        displayFeatures = displayFeatures,
-        navigationContentPosition = navigationContentPosition,
-        replyHomeUIState = replyHomeUIState,
-        closeDetailScreen = closeDetailScreen,
-        navigateToDetail = navigateToDetail,
-        toggleSelectedEmail = toggleSelectedEmail
-    )
-}
-
-@Composable
-private fun ReplyNavigationWrapper(
-    navigationType: ReplyNavigationType,
-    contentType: ReplyContentType,
-    displayFeatures: List<DisplayFeature>,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    replyHomeUIState: ReplyHomeUIState,
-    closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long, ReplyContentType) -> Unit,
-    toggleSelectedEmail: (Long) -> Unit
-) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
     val navController = rememberNavController()
     val navigationActions = remember(navController) {
         ReplyNavigationActions(navController)
@@ -167,113 +134,21 @@ private fun ReplyNavigationWrapper(
     val selectedDestination =
         navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
 
-    if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
-        // TODO check on custom width of PermanentNavigationDrawer: b/232495216
-        PermanentNavigationDrawer(drawerContent = {
-            PermanentNavigationDrawerContent(
-                selectedDestination = selectedDestination,
-                navigationContentPosition = navigationContentPosition,
-                navigateToTopLevelDestination = navigationActions::navigateTo,
-            )
-        }) {
-            ReplyAppContent(
-                navigationType = navigationType,
-                contentType = contentType,
-                displayFeatures = displayFeatures,
-                navigationContentPosition = navigationContentPosition,
-                replyHomeUIState = replyHomeUIState,
-                navController = navController,
-                selectedDestination = selectedDestination,
-                navigateToTopLevelDestination = navigationActions::navigateTo,
-                closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail,
-                toggleSelectedEmail = toggleSelectedEmail
-            )
-        }
-    } else {
-        ModalNavigationDrawer(
-            drawerContent = {
-                ModalNavigationDrawerContent(
-                    selectedDestination = selectedDestination,
-                    navigationContentPosition = navigationContentPosition,
-                    navigateToTopLevelDestination = navigationActions::navigateTo,
-                    onDrawerClicked = {
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    }
-                )
-            },
-            drawerState = drawerState
-        ) {
-            ReplyAppContent(
-                navigationType = navigationType,
-                contentType = contentType,
-                displayFeatures = displayFeatures,
-                navigationContentPosition = navigationContentPosition,
-                replyHomeUIState = replyHomeUIState,
-                navController = navController,
-                selectedDestination = selectedDestination,
-                navigateToTopLevelDestination = navigationActions::navigateTo,
-                closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail,
-                toggleSelectedEmail = toggleSelectedEmail
-            ) {
-                scope.launch {
-                    drawerState.open()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ReplyAppContent(
-    modifier: Modifier = Modifier,
-    navigationType: ReplyNavigationType,
-    contentType: ReplyContentType,
-    displayFeatures: List<DisplayFeature>,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    replyHomeUIState: ReplyHomeUIState,
-    navController: NavHostController,
-    selectedDestination: String,
-    navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
-    closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long, ReplyContentType) -> Unit,
-    toggleSelectedEmail: (Long) -> Unit,
-    onDrawerClicked: () -> Unit = {}
-) {
-    Row(modifier = modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-            ReplyNavigationRail(
-                selectedDestination = selectedDestination,
-                navigationContentPosition = navigationContentPosition,
-                navigateToTopLevelDestination = navigateToTopLevelDestination,
-                onDrawerClicked = onDrawerClicked,
-            )
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+    Surface {
+        ReplyNavigationWrapper(
+            selectedDestination = selectedDestination,
+            navigateToTopLevelDestination = navigationActions::navigateTo
         ) {
             ReplyNavHost(
                 navController = navController,
                 contentType = contentType,
                 displayFeatures = displayFeatures,
                 replyHomeUIState = replyHomeUIState,
-                navigationType = navigationType,
+                navigationType = navSuiteType.toReplyNavType(),
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
                 toggleSelectedEmail = toggleSelectedEmail,
-                modifier = Modifier.weight(1f),
             )
-            AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                ReplyBottomNavigationBar(
-                    selectedDestination = selectedDestination,
-                    navigateToTopLevelDestination = navigateToTopLevelDestination
-                )
-            }
         }
     }
 }

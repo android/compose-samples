@@ -33,7 +33,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -49,6 +48,10 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowSize
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,12 +60,69 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
+import androidx.compose.ui.unit.toSize
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.reply.R
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
+
+private fun WindowSizeClass.isCompact() =
+    windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
+        windowHeightSizeClass == WindowHeightSizeClass.COMPACT
+
+class ReplyNavSuiteScope(
+    val navSuiteType: NavigationSuiteType
+)
+
+@Composable
+fun ReplyNavigationWrapper(
+    selectedDestination: String,
+    navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
+    content: @Composable ReplyNavSuiteScope.() -> Unit
+) {
+    val adaptiveInfo = currentWindowAdaptiveInfo()
+    val windowSize = with(LocalDensity.current) {
+        currentWindowSize().toSize().toDpSize()
+    }
+
+    val navLayoutType = when {
+        adaptiveInfo.windowPosture.isTabletop -> NavigationSuiteType.NavigationBar
+        adaptiveInfo.windowSizeClass.isCompact() -> NavigationSuiteType.NavigationBar
+        adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED &&
+            windowSize.width >= 1200.dp -> NavigationSuiteType.NavigationDrawer
+        else -> NavigationSuiteType.NavigationRail
+    }
+
+    NavigationSuiteScaffoldLayout(
+        layoutType = navLayoutType,
+        navigationSuite = {
+            when (navLayoutType) {
+                NavigationSuiteType.NavigationBar -> ReplyBottomNavigationBar(
+                    selectedDestination = selectedDestination,
+                    navigateToTopLevelDestination = navigateToTopLevelDestination
+                )
+                NavigationSuiteType.NavigationRail -> ReplyNavigationRail(
+                    selectedDestination = selectedDestination,
+                    navigationContentPosition = ReplyNavigationContentPosition.CENTER,
+                    navigateToTopLevelDestination = navigateToTopLevelDestination
+                )
+                NavigationSuiteType.NavigationDrawer -> PermanentNavigationDrawerContent(
+                    selectedDestination = selectedDestination,
+                    navigationContentPosition = ReplyNavigationContentPosition.CENTER,
+                    navigateToTopLevelDestination = navigateToTopLevelDestination
+                )
+            }
+        }
+    ) {
+        ReplyNavSuiteScope(navLayoutType).content()
+    }
+}
 
 @Composable
 fun ReplyNavigationRail(
