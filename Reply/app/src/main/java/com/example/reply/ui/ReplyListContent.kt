@@ -125,7 +125,7 @@ fun ReplyInboxScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = stringResource(id = R.string.edit),
+                        contentDescription = stringResource(id = R.string.compose),
                         modifier = Modifier.size(28.dp)
                     )
                 }

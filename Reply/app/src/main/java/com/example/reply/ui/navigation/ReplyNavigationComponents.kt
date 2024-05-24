@@ -106,9 +106,14 @@ fun ReplyNavigationWrapper(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
+    // Avoid opening the modal drawer when there is a permanent drawer or a bottom nav bar,
+    // but always allow closing an open drawer.
+    val gesturesEnabled =
+        drawerState.isOpen || navLayoutType == NavigationSuiteType.NavigationRail
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = gesturesEnabled,
         drawerContent = {
             ModalNavigationDrawerContent(
                 selectedDestination = selectedDestination,
@@ -187,7 +192,7 @@ fun ReplyNavigationRail(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(id = R.string.edit),
+                    contentDescription = stringResource(id = R.string.compose),
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -277,7 +282,7 @@ fun PermanentNavigationDrawerContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = stringResource(id = R.string.edit),
+                            contentDescription = stringResource(id = R.string.compose),
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
@@ -359,7 +364,7 @@ fun ModalNavigationDrawerContent(
                         IconButton(onClick = onDrawerClicked) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.MenuOpen,
-                                contentDescription = stringResource(id = R.string.navigation_drawer)
+                                contentDescription = stringResource(id = R.string.close_drawer)
                             )
                         }
                     }
@@ -374,7 +379,7 @@ fun ModalNavigationDrawerContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = stringResource(id = R.string.edit),
+                            contentDescription = stringResource(id = R.string.compose),
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
