@@ -103,6 +103,12 @@ fun ReplyNavigationWrapper(
             windowSize.width >= 1200.dp -> NavigationSuiteType.NavigationDrawer
         else -> NavigationSuiteType.NavigationRail
     }
+    val navContentPosition = when (adaptiveInfo.windowSizeClass.windowHeightSizeClass) {
+        WindowHeightSizeClass.COMPACT -> ReplyNavigationContentPosition.TOP
+        WindowHeightSizeClass.MEDIUM,
+        WindowHeightSizeClass.EXPANDED -> ReplyNavigationContentPosition.CENTER
+        else -> ReplyNavigationContentPosition.TOP
+    }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -117,7 +123,7 @@ fun ReplyNavigationWrapper(
         drawerContent = {
             ModalNavigationDrawerContent(
                 selectedDestination = selectedDestination,
-                navigationContentPosition = ReplyNavigationContentPosition.CENTER,
+                navigationContentPosition = navContentPosition,
                 navigateToTopLevelDestination = navigateToTopLevelDestination,
                 onDrawerClicked = {
                     coroutineScope.launch {
@@ -137,7 +143,7 @@ fun ReplyNavigationWrapper(
                     )
                     NavigationSuiteType.NavigationRail -> ReplyNavigationRail(
                         selectedDestination = selectedDestination,
-                        navigationContentPosition = ReplyNavigationContentPosition.CENTER,
+                        navigationContentPosition = navContentPosition,
                         navigateToTopLevelDestination = navigateToTopLevelDestination,
                         onDrawerClicked = {
                             coroutineScope.launch {
@@ -147,7 +153,7 @@ fun ReplyNavigationWrapper(
                     )
                     NavigationSuiteType.NavigationDrawer -> PermanentNavigationDrawerContent(
                         selectedDestination = selectedDestination,
-                        navigationContentPosition = ReplyNavigationContentPosition.CENTER,
+                        navigationContentPosition = navContentPosition,
                         navigateToTopLevelDestination = navigateToTopLevelDestination
                     )
                 }
