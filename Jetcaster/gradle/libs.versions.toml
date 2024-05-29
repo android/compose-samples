@@ -31,7 +31,6 @@ androix-test-uiautomator = "2.3.0"
 coil = "2.6.0"
 # @keep
 compileSdk = "34"
-compose-compiler = "1.5.13"
 coroutines = "1.8.0"
 google-maps = "18.2.0"
 gradle-versions = "0.51.0"
@@ -41,10 +40,9 @@ horologist = "0.6.9"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "1.2.2"
 junit = "4.13.2"
-# @pin Update in conjuction with Compose Compiler
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 kotlinx_immutable = "0.3.5"
-ksp = "1.9.23-1.0.20"
+ksp = "2.0.0-1.0.21"
 maps-compose = "3.1.1"
 material = "1.11.0"
 # @keep
@@ -182,6 +180,7 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
