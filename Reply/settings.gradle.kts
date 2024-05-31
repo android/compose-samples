@@ -33,6 +33,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    versionCatalogs {
+        create("androidx") {
+            from("androidx.gradle:gradle-version-catalog:2024.05.00")
+        }
+    }
 }
 rootProject.name = "Reply"
 include(":app")

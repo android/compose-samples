@@ -100,59 +100,50 @@ composeCompiler {
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(androidx.composeAnimation.animation)
+    implementation(androidx.composeFoundation.foundationLayout)
+    implementation(androidx.composeMaterial.materialIconsExtended)
+    implementation(androidx.composeMaterial3.material3)
+    implementation(androidx.composeMaterial3.material3WindowSizeClass)
+    implementation(androidx.composeRuntime.runtimeLivedata)
+    implementation(androidx.composeUi.uiToolingPreview)
+    debugImplementation(androidx.composeUi.uiTestManifest)
+    debugImplementation(androidx.composeUi.uiTooling)
+    implementation(androidx.appcompat.appcompat)
+    implementation(androidx.activity.activityKtx)
+    implementation(androidx.core.coreKtx)
+    implementation(androidx.activity.activityCompose)
+    implementation(androidx.glance.glance)
+    implementation(androidx.glance.glanceAppwidget)
+    implementation(androidx.glance.glanceMaterial3)
+    implementation(androidx.lifecycle.lifecycleViewmodelKtx)
+    implementation(androidx.lifecycle.lifecycleViewmodelSavedstate)
+    implementation(androidx.lifecycle.lifecycleLivedataKtx)
+    implementation(androidx.lifecycle.lifecycleViewmodelCompose)
+    implementation(androidx.lifecycle.lifecycleRuntimeCompose)
+    implementation(androidx.navigation.navigationCompose)
+    implementation(androidx.window.window)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
-
-    implementation(libs.androidx.compose.animation)
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.materialWindow)
-    implementation(libs.androidx.compose.runtime.livedata)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
     implementation(libs.accompanist.swiperefresh)
     implementation(libs.accompanist.systemuicontroller)
-
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.androidx.glance)
-    implementation(libs.androidx.glance.appwidget)
-    implementation(libs.androidx.glance.material3)
-
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewModelCompose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.window)
-
     implementation(libs.google.android.material)
 
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(androidx.test.core)
+    androidTestImplementation(androidx.test.runner)
+    androidTestImplementation(androidx.testEspresso.espressoCore)
+    androidTestImplementation(androidx.test.rules)
+    androidTestImplementation(androidx.testExt.junit)
+    androidTestImplementation(androidx.composeUi.uiTest)
+    androidTestImplementation(androidx.composeUi.uiTestJunit4)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.junit)
     // Robolectric dependencies
-    testImplementation(libs.androidx.compose.ui.test.junit4)
+    testImplementation(androidx.composeUi.uiTestJunit4)
     testImplementation(libs.robolectric)
 }
 
 tasks.withType<Test>().configureEach {
-    systemProperties.put("robolectric.logging", "stdout")
+    systemProperties["robolectric.logging"] = "stdout"
 } 

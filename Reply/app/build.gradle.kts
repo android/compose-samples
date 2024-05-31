@@ -95,40 +95,32 @@ composeCompiler {
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(androidx.core.coreKtx)
+    implementation(androidx.composeUi.uiToolingPreview)
+    debugImplementation(androidx.composeUi.uiTooling)
+    implementation(androidx.composeMaterial3.material3)
+    implementation(androidx.composeMaterial3.material3WindowSizeClass)
+    implementation(androidx.composeMaterial.materialIconsExtended)
+    implementation(androidx.lifecycle.lifecycleRuntime)
+    implementation(androidx.lifecycle.lifecycleViewmodelCompose)
+    implementation(androidx.lifecycle.lifecycleRuntimeCompose)
+    implementation(androidx.navigation.navigationCompose)
+    implementation(androidx.activity.activityCompose)
+    implementation(androidx.window.window)
 
-    implementation(libs.androidx.core.ktx)
+    implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
-    implementation(libs.androidx.compose.material3)
-    implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
-
-    implementation(libs.androidx.compose.materialWindow)
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.viewModelCompose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.navigation.compose)
-
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.window)
-
     androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(androidx.test.core)
+    androidTestImplementation(androidx.test.runner)
+    androidTestImplementation(androidx.testEspresso.espressoCore)
+    androidTestImplementation(androidx.test.rules)
+    androidTestImplementation(androidx.testExt.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(androidx.composeUi.uiTest)
+    androidTestImplementation(androidx.composeUi.uiTestJunit4)
+
+    debugImplementation(androidx.composeUi.uiTestManifest)
 }

@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.bouncycastle.asn1.x500.style.RFC4519Style.c
+
 /*
  * Copyright 2022 The Android Open Source Project
  *
@@ -32,6 +34,11 @@ dependencyResolutionManagement {
 
         google()
         mavenCentral()
+    }
+    versionCatalogs {
+        create("androidx") {
+            from("androidx.gradle:gradle-version-catalog:2024.05.00")
+        }
     }
 }
 rootProject.name = "JetNews"
