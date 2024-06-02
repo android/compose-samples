@@ -112,6 +112,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.googlefonts)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:3.0-alpha-7")
+
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
@@ -121,4 +123,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation("com.squareup.leakcanary:leakcanary-android-instrumentation:3.0-alpha-7")
 }
