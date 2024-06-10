@@ -88,6 +88,14 @@ class PlayerViewModel @Inject constructor(
     fun onRewindBy() {
         episodePlayer.rewindBy(Duration.ofSeconds(10))
     }
+
+    fun onPlaybackSpeedChange() {
+        if (episodePlayer.playerState.value.playbackSpeed == Duration.ofSeconds(2)) {
+            episodePlayer.decreaseSpeed(speed = Duration.ofMillis(1000))
+        } else {
+            episodePlayer.increaseSpeed()
+        }
+    }
 }
 
 sealed class PlayerScreenUiState {
