@@ -175,7 +175,7 @@ fun EmailDetailAppBar(
 ) {
     TopAppBar(
         modifier = modifier,
-        colors = TopAppBarDefaults.smallTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.inverseOnSurface
         ),
         title = {
