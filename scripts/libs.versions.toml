@@ -14,7 +14,7 @@ androidx-compose-material3-adaptive = "1.0.0-alpha12"
 androidx-constraintlayout = "1.0.1"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.13.0"
-androidx-glance = "1.1.0-beta02"
+androidx-glance = "1.1.0-rc01"
 androidx-lifecycle = "2.7.0"
 androidx-navigation = "2.7.7"
 androidx-palette = "1.0.0"
@@ -22,8 +22,7 @@ androidx-test = "1.5.0"
 androidx-test-espresso = "3.5.1"
 androidx-test-ext-junit = "1.1.5"
 androidx-test-ext-truth = "1.5.0"
-androidx-tv-foundation = "1.0.0-alpha10"
-androidx-tv-material = "1.0.0-beta01"
+androidx-tv = "1.0.0-beta01"
 androidx-window = "1.3.0-beta02"
 androidxHiltNavigationCompose = "1.1.0"
 androix-test-uiautomator = "2.2.0"
@@ -124,8 +123,8 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
-androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
-androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
+androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv" }
+androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv" }
 androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "androidx-wear-compose" }
 androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "androidx-wear-compose" }
 androidx-wear-compose-ui-tooling = { module = "androidx.wear.compose:compose-ui-tooling", version.ref = "androidx-wear-compose" }
@@ -164,9 +163,6 @@ roborazzi-compose = { group = "io.github.takahirom.roborazzi", name = "roborazzi
 roborazzi-rule = { group = "io.github.takahirom.roborazzi", name = "roborazzi-junit-rule", version.ref = "roborazzi" }
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }
-wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx-wear-compose" }
-wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "androidx-wear-compose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
