@@ -86,12 +86,12 @@ dependencies {
     // androidx.compose.material:material. If there are features from that you feel are missing from
     // androidx.wear.compose:compose-material please raise a bug to let us know:
     // https://issuetracker.google.com/issues/new?component=1077552&template=1598429&pli=1
-    implementation libs.wear.compose.material
+    implementation libs.androidx.wear.compose.material
 
     implementation(libs.kotlinx.collections.immutable)
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
-    implementation libs.wear.compose.foundation
+    implementation libs.androidx.wear.compose.foundation
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.compose.material.iconsExtended)
 
@@ -118,7 +118,7 @@ dependencies {
 
     // If you are using Compose Navigation, use the Wear OS version (NOT the
     // androidx.navigation:navigation-compose version), that is, uncomment the line below.
-    implementation libs.wear.compose.navigation
+    implementation libs.androidx.wear.compose.navigation
 
     implementation libs.androidx.compose.ui.test.manifest
 
