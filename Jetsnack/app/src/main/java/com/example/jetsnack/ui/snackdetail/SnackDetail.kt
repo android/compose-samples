@@ -19,6 +19,7 @@
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -177,7 +178,7 @@ fun SnackDetail(
             Header(snack.id, origin = origin)
             Body(related, scroll)
             Title(snack, origin) { scroll.value }
-            Image(snackId, origin, snack.imageUrl) { scroll.value }
+            Image(snackId, origin, snack.imageRes) { scroll.value }
             Up(upPress)
             CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
         }
@@ -441,7 +442,8 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
 private fun Image(
     snackId: Long,
     origin: String,
-    imageUrl: String,
+    @DrawableRes
+    imageRes: Int,
     scrollProvider: () -> Int
 ) {
     val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
@@ -460,7 +462,7 @@ private fun Image(
 
         with(sharedTransitionScope) {
             SnackImage(
-                imageUrl = imageUrl,
+                imageRes = imageRes,
                 contentDescription = null,
                 modifier = Modifier
                     .sharedBounds(

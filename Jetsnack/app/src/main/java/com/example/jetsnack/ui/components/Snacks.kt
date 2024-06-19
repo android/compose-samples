@@ -29,6 +29,7 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -230,7 +231,7 @@ fun SnackItem(
                     .padding(8.dp)
             ) {
                 SnackImage(
-                    imageUrl = snack.imageUrl,
+                    imageRes = snack.imageRes,
                     elevation = 1.dp,
                     contentDescription = null,
                     modifier = Modifier
@@ -381,7 +382,7 @@ private fun HighlightSnackItem(
                     )
 
                     SnackImage(
-                        imageUrl = snack.imageUrl,
+                        imageRes = snack.imageRes,
                         contentDescription = null,
                         modifier = Modifier
                             .sharedBounds(
@@ -466,7 +467,8 @@ fun debugPlaceholder(@DrawableRes debugPreview: Int) =
 
 @Composable
 fun SnackImage(
-    imageUrl: String,
+    @DrawableRes
+    imageRes: Int,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     elevation: Dp = 0.dp
@@ -476,12 +478,11 @@ fun SnackImage(
         shape = CircleShape,
         modifier = modifier
     ) {
+
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
+                .data(imageRes)
                 .crossfade(true)
-                .placeholderMemoryCacheKey(imageUrl)
-                .memoryCacheKey(imageUrl)
                 .build(),
             placeholder = debugPlaceholder(debugPreview = R.drawable.placeholder),
             contentDescription = contentDescription,

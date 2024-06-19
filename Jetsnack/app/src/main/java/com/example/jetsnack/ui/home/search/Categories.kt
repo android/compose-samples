@@ -42,6 +42,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import com.example.jetsnack.R
 import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
 import com.example.jetsnack.ui.components.SnackImage
@@ -121,7 +122,7 @@ private fun SearchCategory(
                     .padding(start = 8.dp)
             )
             SnackImage(
-                imageUrl = category.imageUrl,
+                imageRes = category.imageRes,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
@@ -161,7 +162,7 @@ private fun SearchCategoryPreview() {
         SearchCategory(
             category = SearchCategory(
                 name = "Desserts",
-                imageUrl = ""
+                imageRes = R.drawable.desserts
             ),
             gradient = JetsnackTheme.colors.gradient3_2
         )
