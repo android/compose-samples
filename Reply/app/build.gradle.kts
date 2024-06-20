@@ -17,6 +17,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -86,11 +87,11 @@ android {
     buildFeatures {
         compose = true
     }
+}
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
-
+composeCompiler {
+    // Configure compose compiler options if required
+    enableStrongSkippingMode = true
 }
 
 dependencies {
@@ -106,6 +107,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.adaptive.navigationSuite)
     implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
 
     implementation(libs.androidx.compose.materialWindow)
@@ -128,6 +130,6 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    
+
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

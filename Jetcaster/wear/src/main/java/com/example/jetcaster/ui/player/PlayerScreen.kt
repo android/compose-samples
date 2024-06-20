@@ -60,7 +60,6 @@ import com.google.android.horologist.media.ui.screens.player.PlayerScreen
 fun PlayerScreen(
     volumeViewModel: VolumeViewModel,
     onVolumeClick: () -> Unit,
-    onPlaybackSpeedChangeClick: () -> Unit,
     modifier: Modifier = Modifier,
     playerScreenViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -71,7 +70,6 @@ fun PlayerScreen(
         volumeUiState = volumeUiState,
         onVolumeClick = onVolumeClick,
         onUpdateVolume = { newVolume -> volumeViewModel.setVolume(newVolume) },
-        onPlaybackSpeedChangeClick = onPlaybackSpeedChangeClick,
         modifier = modifier
     )
 }
@@ -82,7 +80,6 @@ private fun PlayerScreen(
     playerScreenViewModel: PlayerViewModel,
     volumeUiState: VolumeUiState,
     onVolumeClick: () -> Unit,
-    onPlaybackSpeedChangeClick: () -> Unit,
     onUpdateVolume: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -115,7 +112,7 @@ private fun PlayerScreen(
                         volumeUiState = volumeUiState,
                         onVolumeClick = onVolumeClick,
                         playerUiState = PlayerUiState(),
-                        onPlaybackSpeedChange = onPlaybackSpeedChangeClick,
+                        onPlaybackSpeedChange = playerScreenViewModel::onPlaybackSpeedChange,
                         enabled = false,
                     )
                 },
@@ -162,7 +159,7 @@ private fun PlayerScreen(
                         volumeUiState = volumeUiState,
                         onVolumeClick = onVolumeClick,
                         playerUiState = state.playerState,
-                        onPlaybackSpeedChange = onPlaybackSpeedChangeClick,
+                        onPlaybackSpeedChange = playerScreenViewModel::onPlaybackSpeedChange,
                         enabled = true,
                     )
                 },
