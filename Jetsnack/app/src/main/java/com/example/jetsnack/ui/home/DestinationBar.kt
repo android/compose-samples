@@ -52,20 +52,22 @@ import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.utils.safeAnimateEnterExit
+import com.example.jetsnack.ui.utils.safeRenderInSharedTransitionScopeOverlay
 import java.lang.IllegalStateException
 
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {
-    val sharedElementScope =
+   /* val sharedElementScope =
         LocalSharedTransitionScope.current ?: throw IllegalStateException("No shared element scope")
     val navAnimatedScope =
-        LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No nav scope")
-    with(sharedElementScope) {
-        with(navAnimatedScope) {
+        LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No nav scope")*/
+ /*   with(sharedElementScope) {
+        with(navAnimatedScope) {*/
             Column(
                 modifier = modifier
-                    .renderInSharedTransitionScopeOverlay()
-                    .animateEnterExit(
+                    .safeRenderInSharedTransitionScopeOverlay()
+                    .safeAnimateEnterExit(
                         enter = slideInVertically(spatialExpressiveSpring()) { -it },
                         exit = slideOutVertically(spatialExpressiveSpring()) { -it }
                     )
@@ -102,8 +104,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                 }
                 JetsnackDivider()
             }
-        }
-    }
+      /*  }
+    }*/
 }
 
 @Preview("default")

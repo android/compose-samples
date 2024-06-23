@@ -55,6 +55,8 @@ import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.utils.safeAnimateEnterExit
+import com.example.jetsnack.ui.utils.safeRenderInSharedTransitionScopeOverlay
 
 @Preview
 @Composable
@@ -62,9 +64,9 @@ fun JetsnackApp() {
     JetsnackTheme {
         val jetsnackNavController = rememberJetsnackNavController()
         SharedTransitionLayout {
-            CompositionLocalProvider(
+            /*CompositionLocalProvider(
                 LocalSharedTransitionScope provides this
-            ) {
+            ) {*/
                 NavHost(
                     navController = jetsnackNavController.navController,
                     startDestination = MainDestinations.HOME_ROUTE
@@ -97,7 +99,7 @@ fun JetsnackApp() {
                         )
                     }
                 }
-            }
+           /* }*/
         }
     }
 }
@@ -110,24 +112,24 @@ fun MainContainer(
     val jetsnackScaffoldState = rememberJetsnackScaffoldState()
     val nestedNavController = rememberJetsnackNavController()
     val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentRoute = navBackStackEntry?.destination?.route/*
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-        ?: throw IllegalStateException("No SharedElementScope found")
+        ?: throw IllegalStateException("No SharedElementScope found")*/
     JetsnackScaffold(
-        bottomBar = {
-            with(animatedVisibilityScope) {
-                with(sharedTransitionScope) {
+        bottomBar = {/*
+            with(animatedVisibilityScope) {*//*
+                with(sharedTransitionScope) {*/
                     JetsnackBottomBar(
                         tabs = HomeSections.entries.toTypedArray(),
                         currentRoute = currentRoute ?: HomeSections.FEED.route,
                         navigateToRoute = nestedNavController::navigateToBottomBarRoute,
                         modifier = Modifier
-                            .renderInSharedTransitionScopeOverlay(
+                            .safeRenderInSharedTransitionScopeOverlay(
                                 zIndexInOverlay = 1f,
                             )
-                            .animateEnterExit(
+                            .safeAnimateEnterExit(
                                 enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
                                     spatialExpressiveSpring()
                                 ) {
@@ -140,8 +142,8 @@ fun MainContainer(
                                 }
                             )
                     )
-                }
-            }
+               /* }
+            }*/
         },
         modifier = modifier,
         snackbarHost = {
