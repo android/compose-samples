@@ -16,6 +16,7 @@
 
 package com.example.reply.ui.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -116,6 +117,12 @@ fun ReplyNavigationWrapper(
     // but always allow closing an open drawer.
     val gesturesEnabled =
         drawerState.isOpen || navLayoutType == NavigationSuiteType.NavigationRail
+
+    BackHandler(enabled = drawerState.isOpen) {
+        coroutineScope.launch {
+            drawerState.close()
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
