@@ -25,9 +25,9 @@
 
 # Rome reflectively loads classes referenced in com/rometools/rome/rome.properties.
 -adaptresourcefilecontents com/rometools/rome/rome.properties
--keep,allowobfuscation class * implements com.rometools.rome.feed.synd.Converter
--keep,allowobfuscation class * implements com.rometools.rome.io.ModuleParser
--keep,allowobfuscation class * implements com.rometools.rome.io.WireFeedParser
+-keep class * implements com.rometools.rome.feed.synd.Converter
+-keep class * implements com.rometools.rome.io.ModuleParser
+-keep class * implements com.rometools.rome.io.WireFeedParser
 
 # Disable warnings for missing classes from OkHttp.
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
