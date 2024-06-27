@@ -84,8 +84,10 @@ import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -124,12 +126,12 @@ import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -157,10 +159,10 @@ private val HomeState.showHomeCategoryTabs: Boolean
 private fun HomeState.showGrid(
     scaffoldValue: ThreePaneScaffoldValue
 ): Boolean = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
-    (
-        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
-            scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
-        )
+        (
+                windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
+                        scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
+                )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
@@ -188,10 +190,12 @@ fun calculateScaffoldDirective(
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             WindowWidthSizeClass.MEDIUM -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             else -> {
                 maxHorizontalPartitions = 2
                 verticalSpacerSize = 24.dp
@@ -299,7 +303,8 @@ private fun HomeScreenReady(
     uiState: HomeScreenUiState.Ready,
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel(),
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator<String>(
         scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
@@ -335,7 +340,8 @@ private fun HomeScreenReady(
             HomeScreen(
                 homeState = homeState,
                 showGrid = showGrid,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                themeChange = themeViewModel::setTheme
             )
         } else {
             SupportingPaneScaffold(
@@ -363,7 +369,8 @@ private fun HomeScreenReady(
                     HomeScreen(
                         homeState = homeState,
                         showGrid = showGrid,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        themeChange = themeViewModel::setTheme
                     )
                 },
                 modifier = Modifier.fillMaxSize()
@@ -377,6 +384,7 @@ private fun HomeScreenReady(
 private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
+    themeChange: () -> Unit = { },
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -433,7 +441,8 @@ private fun HomeScreenBackground(
 private fun HomeScreen(
     homeState: HomeState,
     showGrid: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    themeChange: () -> Unit = { },
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = homeState.featuredPodcasts) {
@@ -451,7 +460,7 @@ private fun HomeScreen(
             topBar = {
                 HomeAppBar(
                     isExpanded = homeState.windowSizeClass.isCompact,
-                    modifier = Modifier.fillMaxWidth(),
+                    themeChange = themeChange
                 )
             },
             snackbarHost = {

@@ -20,12 +20,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.jetcaster.core.data.repository.AppTheme
+import com.example.jetcaster.core.data.repository.ThemeManager
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var themeManager: ThemeManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,8 +42,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val displayFeatures = calculateDisplayFeatures(this)
+            val theme by themeManager.currentTheme.collectAsStateWithLifecycle()
 
-            JetcasterTheme {
+            JetcasterTheme(
+                dynamicColor = theme == AppTheme.DYNAMIC
+            ) {
                 JetcasterApp(
                     displayFeatures
                 )

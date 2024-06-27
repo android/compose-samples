@@ -58,6 +58,7 @@
     <string name="cd_unfollow">Unfollow</string>
     <string name="episode_added_to_your_queue">Episode added to your queue</string>
     <string name="cd_podcast_image">Podcast image</string>
+    <string name="cd_theme">Theme</string>
     <string name="subscribe">Subscribe</string>
     <string name="subscribed">Subscribed</string>
   <string name="see_more">see more</string>
