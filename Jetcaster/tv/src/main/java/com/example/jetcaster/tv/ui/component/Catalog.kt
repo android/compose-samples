@@ -147,7 +147,7 @@ private fun PodcastRow(
     podcastList: PodcastList,
     onPodcastSelected: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
+    contentPadding: PaddingValues = JetcasterAppDefaults.padding.podcastRowContentPadding,
     horizontalArrangement: Arrangement.Horizontal =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
 ) {

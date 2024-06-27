@@ -32,7 +32,7 @@ internal data object JetcasterAppDefaults {
 
 internal data class OverScanMarginSettings(
     val default: OverScanMargin = OverScanMargin(),
-    val catalog: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
+    val catalog: OverScanMargin = OverScanMargin(end = 0.dp),
     val episode: OverScanMargin = OverScanMargin(start = 80.dp, end = 80.dp),
     val drawer: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
     val podcast: OverScanMargin = OverScanMargin(
@@ -74,7 +74,9 @@ internal data class ThumbnailSize(
 
 internal data class PaddingSettings(
     val tab: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
-    val sectionTitle: PaddingValues = PaddingValues(bottom = 16.dp)
+    val sectionTitle: PaddingValues = PaddingValues(bottom = 16.dp),
+    val podcastRowContentPadding: PaddingValues = PaddingValues(horizontal = 5.dp),
+    val episodeRowContentPadding: PaddingValues = PaddingValues(horizontal = 5.dp),
 )
 
 internal data class GapSettings(

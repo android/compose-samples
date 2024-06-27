@@ -153,9 +153,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     playEpisode = {
                         jetcasterAppState.playEpisode()
                     },
-                    modifier = Modifier
-                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
@@ -170,9 +168,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     playEpisode = {
                         jetcasterAppState.playEpisode()
                     },
-                    modifier = Modifier
-                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
