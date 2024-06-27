@@ -86,7 +86,6 @@ import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -128,12 +127,12 @@ import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -161,10 +160,10 @@ private val HomeState.showHomeCategoryTabs: Boolean
 private fun HomeState.showGrid(
     scaffoldValue: ThreePaneScaffoldValue
 ): Boolean = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
-        (
-                windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
-                        scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
-                )
+    (
+        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
+            scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
+        )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
