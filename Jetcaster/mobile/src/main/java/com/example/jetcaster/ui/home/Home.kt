@@ -49,12 +49,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -382,16 +384,15 @@ private fun HomeScreenReady(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeAppBar(
-    isExpanded: Boolean,
     modifier: Modifier = Modifier,
     themeChange: () -> Unit = { },
 ) {
     Row(
-        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
+            .padding(vertical = 8.dp),
     ) {
         SearchBar(
             query = "",
@@ -414,8 +415,20 @@ private fun HomeAppBar(
                     contentDescription = stringResource(R.string.cd_account)
                 )
             },
-            modifier = if (isExpanded) Modifier else Modifier.fillMaxWidth()
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
         ) { }
+
+        IconButton(
+            onClick = themeChange,
+            modifier = Modifier.padding(bottom = 4.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Brightness6,
+                contentDescription = stringResource(R.string.cd_theme),
+            )
+        }
     }
 }
 
@@ -458,10 +471,7 @@ private fun HomeScreen(
     ) {
         Scaffold(
             topBar = {
-                HomeAppBar(
-                    isExpanded = homeState.windowSizeClass.isCompact,
-                    themeChange = themeChange
-                )
+                HomeAppBar(themeChange = themeChange)
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -910,9 +920,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 @Composable
 private fun HomeAppBarPreview() {
     JetcasterTheme {
-        HomeAppBar(
-            isExpanded = false,
-        )
+        HomeAppBar()
     }
 }
 
