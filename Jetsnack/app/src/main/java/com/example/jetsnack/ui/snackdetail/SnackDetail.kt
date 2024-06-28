@@ -104,7 +104,7 @@ fun SnackDetail(
         Header()
         Body(related, scroll)
         Title(snack) { scroll.value }
-        Image(snack.imageUrl) { scroll.value }
+        Image(snack.imageRes) { scroll.value }
         Up(upPress)
         CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
     }
@@ -283,7 +283,7 @@ private fun Title(snack: Snack, scrollProvider: () -> Int) {
 
 @Composable
 private fun Image(
-    imageUrl: String,
+    imageRes: Int,
     scrollProvider: () -> Int
 ) {
     val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
@@ -296,7 +296,7 @@ private fun Image(
         modifier = HzPadding.statusBarsPadding()
     ) {
         SnackImage(
-            imageUrl = imageUrl,
+            imageRes = imageRes,
             contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )

@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -194,7 +195,7 @@ fun SnackItem(
                 .padding(8.dp)
         ) {
             SnackImage(
-                imageUrl = snack.imageUrl,
+                imageRes = snack.imageRes,
                 elevation = 4.dp,
                 contentDescription = null,
                 modifier = Modifier.size(120.dp)
@@ -254,7 +255,7 @@ private fun HighlightSnackItem(
                         )
                 )
                 SnackImage(
-                    imageUrl = snack.imageUrl,
+                    imageRes = snack.imageRes,
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
@@ -283,7 +284,8 @@ private fun HighlightSnackItem(
 
 @Composable
 fun SnackImage(
-    imageUrl: String,
+    @DrawableRes
+    imageRes: Int,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     elevation: Dp = 0.dp
@@ -296,7 +298,7 @@ fun SnackImage(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
+                .data(imageRes)
                 .crossfade(true)
                 .build(),
             contentDescription = contentDescription,
