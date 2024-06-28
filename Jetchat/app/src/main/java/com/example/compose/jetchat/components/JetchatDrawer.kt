@@ -16,6 +16,11 @@
 
 package com.example.compose.jetchat.components
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
+import android.os.Build
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,6 +50,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +58,7 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.widget.WidgetReceiver
 
 @Composable
 fun JetchatDrawerContent(
@@ -61,7 +68,11 @@ fun JetchatDrawerContent(
 ) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
         DrawerHeader()
         DividerItem()
@@ -74,8 +85,13 @@ fun JetchatDrawerContent(
         ProfileItem("Taylor Brooks", colleagueProfile.photo) {
             onProfileClicked(colleagueProfile.userId)
         }
+        val context = LocalContext.current
+        ChatItem("Add Widget to Home Page", false) {
+            addWidgetToHomeScreen(context)
+        }
     }
 }
+
 
 @Composable
 private fun DrawerHeader() {
@@ -91,6 +107,7 @@ private fun DrawerHeader() {
         )
     }
 }
+
 @Composable
 private fun DrawerItemHeader(text: String) {
     Box(
@@ -200,6 +217,7 @@ fun DrawerPreview() {
         }
     }
 }
+
 @Composable
 @Preview
 fun DrawerPreviewDark() {
@@ -209,5 +227,28 @@ fun DrawerPreviewDark() {
                 JetchatDrawerContent({}, {})
             }
         }
+    }
+}
+
+private fun addWidgetToHomeScreen(context: Context) {
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val myProvider = ComponentName(context, WidgetReceiver::class.java)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (appWidgetManager.isRequestPinAppWidgetSupported) {
+            appWidgetManager.requestPinAppWidget(myProvider, null, null)
+        } else {
+            Toast.makeText(
+                context,
+                "Unable to add widget, please add from home screen",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    } else {
+        Toast.makeText(
+            context,
+            "Unable to add widget, please add from home screen",
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

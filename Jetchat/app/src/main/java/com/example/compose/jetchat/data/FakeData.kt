@@ -64,6 +64,58 @@ private val initialMessages = listOf(
         "8:03 PM"
     )
 )
+val unreadMessages = listOf(
+    Message(
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
+        "8:05 PM"
+    ),
+)
 
 val exampleUiState = ConversationUiState(
     initialMessages = initialMessages,
