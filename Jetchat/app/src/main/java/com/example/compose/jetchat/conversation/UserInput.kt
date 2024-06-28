@@ -54,6 +54,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -171,6 +172,13 @@ fun UserInput(
                         resetScroll()
                     }
                     textFieldFocusState = focused
+                },
+                onMessageSent = {
+                    onMessageSent(textState.text)
+                    // Reset text field and close keyboard
+                    textState = TextFieldValue()
+                    // Move scroll to bottom
+                    resetScroll()
                 },
                 focusState = textFieldFocusState
             )
@@ -402,6 +410,7 @@ private fun UserInputText(
     textFieldValue: TextFieldValue,
     keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
+    onMessageSent: (String) -> Unit,
     focusState: Boolean
 ) {
     val swipeOffset = remember { mutableStateOf(0f) }
@@ -430,6 +439,7 @@ private fun UserInputText(
                         onTextFieldFocused,
                         keyboardType,
                         focusState,
+                        onMessageSent,
                         Modifier.semantics {
                             contentDescription = a11ylabel
                             keyboardShownProperty = keyboardShown
@@ -466,6 +476,7 @@ private fun BoxScope.UserInputTextField(
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
+    onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
@@ -485,6 +496,9 @@ private fun BoxScope.UserInputTextField(
             keyboardType = keyboardType,
             imeAction = ImeAction.Send
         ),
+        keyboardActions = KeyboardActions {
+            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
+        },
         maxLines = 1,
         cursorBrush = SolidColor(LocalContentColor.current),
         textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)

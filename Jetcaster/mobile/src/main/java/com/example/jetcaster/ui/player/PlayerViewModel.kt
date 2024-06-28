@@ -23,10 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcaster.core.data.database.model.toPlayerEpisode
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
@@ -98,6 +98,14 @@ class PlayerViewModel @Inject constructor(
 
     fun onRewindBy(duration: Duration) {
         episodePlayer.rewindBy(duration)
+    }
+
+    fun onSeekingStarted() {
+        episodePlayer.onSeekingStarted()
+    }
+
+    fun onSeekingFinished(duration: Duration) {
+        episodePlayer.onSeekingFinished(duration)
     }
 
     fun onAddToQueue() {

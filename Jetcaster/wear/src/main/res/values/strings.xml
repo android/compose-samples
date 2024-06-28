@@ -79,4 +79,5 @@
     <string name="no_episodes_from_queue">There are no episodes from the queue</string>
     <string name="add_to_queue_content_description">Add to queue</string>
     <string name="episode_info_not_available">Episode info not available at the moment</string>
+
 </resources>

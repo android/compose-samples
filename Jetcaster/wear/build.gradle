@@ -19,6 +19,7 @@ plugins {
     alias libs.plugins.roborazzi
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -61,9 +62,6 @@ android {
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
-    }
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -75,13 +73,12 @@ android {
 dependencies {
 
 
-    implementation project(':core:model')
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies
     implementation composeBom
     implementation libs.androidx.activity.compose
-    implementation libs.androidx.splashscreen
+    implementation libs.androidx.core.splashscreen
 
     // Compose for Wear OS Dependencies
     // NOTE: DO NOT INCLUDE a dependency on androidx.compose.material:material.
@@ -89,12 +86,12 @@ dependencies {
     // androidx.compose.material:material. If there are features from that you feel are missing from
     // androidx.wear.compose:compose-material please raise a bug to let us know:
     // https://issuetracker.google.com/issues/new?component=1077552&template=1598429&pli=1
-    implementation libs.wear.compose.material
+    implementation libs.androidx.wear.compose.material
 
     implementation(libs.kotlinx.collections.immutable)
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
-    implementation libs.wear.compose.foundation
+    implementation libs.androidx.wear.compose.foundation
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.compose.material.iconsExtended)
 
@@ -115,26 +112,27 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Preview Tooling
-    implementation libs.compose.ui.tooling.preview
+    implementation libs.androidx.compose.ui.tooling.preview
     implementation(libs.androidx.compose.ui.tooling)
     implementation libs.androidx.wear.compose.ui.tooling
 
     // If you are using Compose Navigation, use the Wear OS version (NOT the
     // androidx.navigation:navigation-compose version), that is, uncomment the line below.
-    implementation libs.wear.compose.navigation
+    implementation libs.androidx.wear.compose.navigation
 
-    implementation libs.androidx.ui.test.manifest
+    implementation libs.androidx.compose.ui.test.manifest
 
     implementation(libs.coil.kt.compose)
 
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
-    implementation projects.core
-    implementation projects.designsystem
-
+    implementation projects.core.data
+    implementation projects.core.designsystem
+    implementation projects.core.domain
+    implementation projects.core.domainTesting
 
     // Testing
-    testImplementation libs.androidx.ui.test.junit4
+    testImplementation libs.androidx.compose.ui.test.junit4
     testImplementation libs.junit
     testImplementation libs.robolectric
     testImplementation libs.roborazzi
@@ -144,12 +142,12 @@ dependencies {
       exclude(group: "com.github.QuickBirdEng.kotlin-snapshot-testing")
     }
 
-    androidTestImplementation libs.test.ext.junit
-    androidTestImplementation libs.test.espresso.core
-    androidTestImplementation libs.compose.ui.test.junit4
+    androidTestImplementation libs.androidx.test.ext.junit
+    androidTestImplementation libs.androidx.test.espresso.core
+    androidTestImplementation libs.androidx.compose.ui.test.junit4
     androidTestImplementation composeBom
 
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation libs.androidx.ui.test.manifest
+    debugImplementation libs.androidx.compose.ui.test.manifest
     debugImplementation composeBom
 }

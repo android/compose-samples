@@ -13,7 +13,8 @@ project from Android Studio following the steps
 
 ## Screenshots
 
-![readme_cover](https://github.com/android/compose-samples/assets/10263978/a58ab950-71aa-48e0-8bc7-85443a1b4f6b)
+<img src="../readme/jetcaster-hero.png"></img>
+
 ## Phone app
 
 ### Features
@@ -71,7 +72,7 @@ The sample implements [Wear UX best practices for media apps][mediappsbestpracti
 - Display scrollbar on scrolling
 - Display the time on top of the screens
 
-The sample is built using the [Media Toolkit][[mediatoolkit]] which is an open source
+The sample is built using the [Media Toolkit][mediatoolkit] which is an open source
 project part of [Horologist][horologist] to ease the development of media apps on Wear OS built on top of Compose for Wear.
 It provides ready to use UI screens, such the [EntityScreen][entityscreen]
 that is used in this sample to implement many screens such as Podcast, LatestEpisodes and Queue. [Horologist][horologist] also provides
@@ -81,7 +82,7 @@ For simplicity, this sample uses a mock Player which is reused across form facto
 if you want to see an advanced Media sample built on Compose that uses Exoplayer and plays media content,
 refer to the [Media Toolkit sample][mediatoolkitsample].
 
-The [official media app guidance for Wear OS][ [wearmediaguidance]]
+The [official media app guidance for Wear OS][wearmediaguidance]
 advices to download content on the watch before listening to preserve power, this feature will be added to this sample in future iterations. You can
 refer to the [Media Toolkit sample][mediatoolkitsample] to learn how to implement the media download feature.
 

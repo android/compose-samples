@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.LibraryInfo
-import com.example.jetcaster.core.model.PlayerEpisode
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.util.fullWidthItem
@@ -40,12 +40,6 @@ fun LazyListScope.libraryItems(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit
 ) {
-    val podcast = library.podcast
-    if (podcast == null || library.episodes.isEmpty()) {
-        // TODO: Empty state
-        return
-    }
-
     item {
         Text(
             text = stringResource(id = R.string.latest_episodes),
@@ -58,12 +52,12 @@ fun LazyListScope.libraryItems(
     }
 
     items(
-        library.episodes,
-        key = { it.uri }
+        library,
+        key = { it.episode.uri }
     ) { item ->
         EpisodeListItem(
-            episode = item,
-            podcast = podcast,
+            episode = item.episode,
+            podcast = item.podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillParentMaxWidth(),
@@ -76,12 +70,6 @@ fun LazyGridScope.libraryItems(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit
 ) {
-    val podcast = library.podcast
-    if (podcast == null || library.episodes.isEmpty()) {
-        // TODO: Empty state
-        return
-    }
-
     fullWidthItem {
         Text(
             text = stringResource(id = R.string.latest_episodes),
@@ -94,12 +82,12 @@ fun LazyGridScope.libraryItems(
     }
 
     items(
-        library.episodes,
-        key = { it.uri }
+        library,
+        key = { it.episode.uri }
     ) { item ->
         EpisodeListItem(
-            episode = item,
-            podcast = podcast,
+            episode = item.episode,
+            podcast = item.podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillMaxWidth()

@@ -20,20 +20,20 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
-import com.example.jetcaster.core.data.database.model.asExternalModel
-import com.example.jetcaster.core.data.domain.FilterableCategoriesUseCase
-import com.example.jetcaster.core.data.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.domain.FilterableCategoriesUseCase
+import com.example.jetcaster.core.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.asExternalModel
+import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.player.EpisodePlayer
-import com.example.jetcaster.core.util.combine
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
@@ -41,9 +41,11 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,6 +72,9 @@ class HomeViewModel @Inject constructor(
     // Holds the view state if the UI is refreshing for new data
     private val refreshing = MutableStateFlow(false)
 
+    private val subscribedPodcasts = podcastStore.followedPodcastsSortedByLastEpisode(limit = 10)
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
+
     val state: StateFlow<HomeScreenUiState>
         get() = _state
 
@@ -77,10 +82,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
-            combine(
+            com.example.jetcaster.core.util.combine(
                 homeCategories,
                 selectedHomeCategory,
-                podcastStore.followedPodcastsSortedByLastEpisode(limit = 10),
+                subscribedPodcasts,
                 refreshing,
                 _selectedCategory.flatMapLatest { selectedCategory ->
                     filterableCategoriesUseCase(selectedCategory)
@@ -88,9 +93,9 @@ class HomeViewModel @Inject constructor(
                 _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
                 },
-                selectedLibraryPodcast.flatMapLatest {
-                    episodeStore.episodesInPodcast(
-                        podcastUri = it?.uri ?: "",
+                subscribedPodcasts.flatMapLatest { podcasts ->
+                    episodeStore.episodesInPodcasts(
+                        podcastUris = podcasts.map { it.podcast.uri },
                         limit = 20
                     )
                 }
@@ -175,8 +180,7 @@ class HomeViewModel @Inject constructor(
 
 private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
     LibraryInfo(
-        podcast = this.firstOrNull()?.podcast?.asExternalModel(),
-        episodes = this.map { it.episode.asExternalModel() }
+        episodes = this.map { it.asPodcastToEpisodeInfo() }
     )
 
 enum class HomeCategory {

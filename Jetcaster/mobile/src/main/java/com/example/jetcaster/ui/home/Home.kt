@@ -94,7 +94,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -103,19 +102,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.jetcaster.R
+import com.example.jetcaster.core.domain.testing.PreviewCategories
+import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
+import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsViewModel
 import com.example.jetcaster.ui.theme.JetcasterTheme
+import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
@@ -906,9 +909,9 @@ private fun HomeAppBarPreview() {
 
 private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
 
-@Preview(device = Devices.PHONE)
+@DevicePreviews
 @Composable
-private fun PreviewHomeContent() {
+private fun PreviewHome() {
     JetcasterTheme {
         val homeState = HomeState(
             windowSizeClass = CompactWindowSizeClass,
@@ -921,7 +924,7 @@ private fun PreviewHomeContent() {
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
+                episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
             onCategorySelected = {},
@@ -936,42 +939,6 @@ private fun PreviewHomeContent() {
         HomeScreen(
             homeState = homeState,
             showGrid = false
-        )
-    }
-}
-
-@Preview(device = Devices.FOLDABLE)
-@Preview(device = Devices.TABLET)
-@Preview(device = Devices.DESKTOP)
-@Composable
-private fun PreviewHomeContentExpanded() {
-    JetcasterTheme {
-        val homeState = HomeState(
-            windowSizeClass = CompactWindowSizeClass,
-            featuredPodcasts = PreviewPodcasts.toPersistentList(),
-            homeCategories = HomeCategory.entries,
-            selectedHomeCategory = HomeCategory.Discover,
-            filterableCategoriesModel = FilterableCategoriesModel(
-                categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
-            ),
-            podcastCategoryFilterResult = PodcastCategoryFilterResult(
-                topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastCategoryEpisodes
-            ),
-            library = LibraryInfo(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
-            navigateToPodcastDetails = {},
-            navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
-            onQueueEpisode = {}
-        )
-        HomeScreen(
-            homeState = homeState,
-            showGrid = true
         )
     }
 }

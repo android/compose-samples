@@ -16,9 +16,13 @@
 
 package com.example.jetcaster.ui.podcast
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.EaseOutExpo
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,20 +60,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetcaster.R
+import com.example.jetcaster.core.domain.testing.PreviewEpisodes
+import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.EpisodeInfo
-import com.example.jetcaster.core.model.PlayerEpisode
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.designsystem.theme.Keyline1
-import com.example.jetcaster.ui.home.PreviewEpisodes
-import com.example.jetcaster.ui.home.PreviewPodcasts
 import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.ui.shared.Loading
+import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.fullWidthItem
 import kotlinx.coroutines.launch
 
@@ -194,44 +202,48 @@ fun PodcastDetailsHeaderItem(
     toggleSubscribe: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    BoxWithConstraints(
         modifier = modifier.padding(Keyline1)
     ) {
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            PodcastImage(
-                modifier = Modifier
-                    .size(148.dp)
-                    .clip(MaterialTheme.shapes.large),
-                podcastImageUrl = podcast.imageUrl,
-                contentDescription = podcast.title
-            )
-            Column(
-                modifier = Modifier.padding(start = 16.dp)
+        val maxImageSize = this.maxWidth / 2
+        val imageSize = min(maxImageSize, 148.dp)
+        Column {
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = podcast.title,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.headlineMedium
+                PodcastImage(
+                    modifier = Modifier
+                        .size(imageSize)
+                        .clip(MaterialTheme.shapes.large),
+                    podcastImageUrl = podcast.imageUrl,
+                    contentDescription = podcast.title
                 )
-                PodcastDetailsHeaderItemButtons(
-                    isSubscribed = podcast.isSubscribed ?: false,
-                    onClick = {
-                        toggleSubscribe(podcast)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column(
+                    modifier = Modifier.padding(start = 16.dp)
+                ) {
+                    Text(
+                        text = podcast.title,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    PodcastDetailsHeaderItemButtons(
+                        isSubscribed = podcast.isSubscribed ?: false,
+                        onClick = {
+                            toggleSubscribe(podcast)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
+            PodcastDetailsDescription(
+                podcast = podcast,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            )
         }
-        PodcastDetailsDescription(
-            podcast = podcast,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        )
     }
 }
 
@@ -242,7 +254,9 @@ fun PodcastDetailsDescription(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var showSeeMore by remember { mutableStateOf(false) }
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier.clickable { isExpanded = !isExpanded }
+    ) {
         Text(
             text = podcast.description,
             style = MaterialTheme.typography.bodyMedium,
@@ -251,6 +265,12 @@ fun PodcastDetailsDescription(
             onTextLayout = { result ->
                 showSeeMore = result.hasVisualOverflow
             },
+            modifier = Modifier.animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseOutExpo
+                )
+            )
         )
         if (showSeeMore) {
             Box(
@@ -261,12 +281,11 @@ fun PodcastDetailsDescription(
                 // TODO: Add gradient effect
                 Text(
                     text = stringResource(id = R.string.see_more),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .clickable {
-                            isExpanded = !isExpanded
-                        }
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
         }
@@ -349,7 +368,7 @@ fun PodcastDetailsHeaderItemPreview() {
     )
 }
 
-@Preview
+@DevicePreviews
 @Composable
 fun PodcastDetailsScreenPreview() {
     PodcastDetailsScreen(
