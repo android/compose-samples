@@ -69,5 +69,6 @@
     <string name="record_message">Record voice message</string>
     <string name="widget_loading_error">Cannot load Widget</string>
     <string name="app_name_unreads">JetChat (Un-Reads)</string>
+    <string name="add_widget_to_home_page">Add Widget to Home Page</string>
 
 </resources>

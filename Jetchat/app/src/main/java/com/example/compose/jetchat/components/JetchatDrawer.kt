@@ -52,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
@@ -85,10 +86,9 @@ fun JetchatDrawerContent(
         ProfileItem("Taylor Brooks", colleagueProfile.photo) {
             onProfileClicked(colleagueProfile.userId)
         }
-        val context = LocalContext.current
-        ChatItem("Add Widget to Home Page", false) {
-            addWidgetToHomeScreen(context)
-        }
+        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+        DrawerItemHeader("Settings")
+        WidgetDiscoverability()
     }
 }
 
@@ -227,6 +227,30 @@ fun DrawerPreviewDark() {
                 JetchatDrawerContent({}, {})
             }
         }
+    }
+}
+
+
+@Composable
+private fun WidgetDiscoverability() {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .clip(CircleShape)
+            .clickable(onClick = {
+                addWidgetToHomeScreen(context)
+            }),
+        verticalAlignment = CenterVertically
+    ) {
+        Text(
+            stringResource(id = R.string.add_widget_to_home_page),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(start = 12.dp)
+        )
     }
 }
 
