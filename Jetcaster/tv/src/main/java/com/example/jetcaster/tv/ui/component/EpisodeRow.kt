@@ -43,7 +43,7 @@ internal fun EpisodeRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
-    contentPadding: PaddingValues = PaddingValues(),
+    contentPadding: PaddingValues = JetcasterAppDefaults.padding.episodeRowContentPadding,
     focusRequester: FocusRequester = remember { FocusRequester() },
     lazyListState: TvLazyListState = remember(playerEpisodeList) { TvLazyListState() }
 ) {
