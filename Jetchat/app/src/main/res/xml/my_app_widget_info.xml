@@ -4,6 +4,6 @@
     android:minWidth="276dp"
     android:minHeight="102dp"
     android:previewImage="@drawable/widget_icon"
-    android:resizeMode="horizontal|vertical"
+    android:resizeMode="none"
     android:targetCellWidth="4"
     android:targetCellHeight="3" />

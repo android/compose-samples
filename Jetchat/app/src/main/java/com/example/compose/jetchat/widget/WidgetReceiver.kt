@@ -6,6 +6,6 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 class WidgetReceiver : GlanceAppWidgetReceiver() {
 
     override val glanceAppWidget: GlanceAppWidget
-        get() = MyAppWidget()
+        get() = JetChatWidget()
 
 }

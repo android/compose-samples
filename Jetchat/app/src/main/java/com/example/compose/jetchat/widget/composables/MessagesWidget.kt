@@ -5,7 +5,6 @@ import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
-import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.components.Scaffold
@@ -22,25 +21,9 @@ import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.conversation.Message
 import com.example.compose.jetchat.data.unreadMessages
-import com.example.compose.jetchat.widget.MyAppWidget.Companion.ICON_SQUARE
 
 @Composable
 fun MessagesWidget() {
-    val size = LocalSize.current
-    if (size.width <= ICON_SQUARE.width) {
-        SmallIcon()
-    } else {
-        LargeMessages()
-    }
-}
-
-@Composable
-fun SmallIcon() {
-//    IconImageProvider(Icon(R.drawable.ic_jetchat))
-}
-
-@Composable
-fun LargeMessages() {
     Scaffold(titleBar = {
         TitleBar(
             startIcon = ImageProvider(R.drawable.ic_jetchat),
