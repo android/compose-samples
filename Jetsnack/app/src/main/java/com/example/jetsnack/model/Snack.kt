@@ -19,7 +19,6 @@ package com.example.jetsnack.model
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import com.example.jetsnack.R
-import kotlin.random.Random
 
 @Immutable
 data class Snack(
