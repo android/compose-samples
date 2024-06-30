@@ -35,6 +35,8 @@ import com.example.jetcaster.core.data.repository.LocalCategoryStore
 import com.example.jetcaster.core.data.repository.LocalEpisodeStore
 import com.example.jetcaster.core.data.repository.LocalPodcastStore
 import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.repository.ThemeManager
+import com.example.jetcaster.core.data.repository.ThemeStore
 import com.rometools.rome.io.SyndFeedInput
 import dagger.Module
 import dagger.Provides
@@ -165,4 +167,8 @@ object DataDiModule {
         categoriesDao = categoriesDao,
         categoryEntryDao = podcastCategoryEntryDao,
     )
+
+    @Provides
+    @Singleton
+    fun provideThemeManager(): ThemeManager = ThemeStore()
 }

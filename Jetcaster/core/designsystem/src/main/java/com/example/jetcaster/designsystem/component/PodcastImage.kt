@@ -28,7 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -44,7 +44,6 @@ fun PodcastImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholderBrush: Brush = thumbnailPlaceholderDefaultBrush(),
 ) {
     if (LocalInspectionMode.current) {
         Box(modifier = modifier.background(MaterialTheme.colorScheme.primary))
@@ -74,18 +73,13 @@ fun PodcastImage(
                 Image(
                     painter = painterResource(id = R.drawable.img_empty),
                     contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                 )
             }
-            else -> {
-                Box(
-                    modifier = Modifier
-                        .background(placeholderBrush)
-                        .fillMaxSize()
-
-                )
-            }
+            else -> { }
         }
 
         Image(

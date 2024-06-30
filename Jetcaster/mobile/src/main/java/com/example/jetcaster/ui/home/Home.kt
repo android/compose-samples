@@ -49,12 +49,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -86,6 +88,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -188,10 +191,12 @@ fun calculateScaffoldDirective(
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             WindowWidthSizeClass.MEDIUM -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             else -> {
                 maxHorizontalPartitions = 2
                 verticalSpacerSize = 24.dp
@@ -299,7 +304,8 @@ private fun HomeScreenReady(
     uiState: HomeScreenUiState.Ready,
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel(),
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator<String>(
         scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
@@ -335,7 +341,8 @@ private fun HomeScreenReady(
             HomeScreen(
                 homeState = homeState,
                 showGrid = showGrid,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                themeChange = themeViewModel::setTheme
             )
         } else {
             SupportingPaneScaffold(
@@ -363,7 +370,8 @@ private fun HomeScreenReady(
                     HomeScreen(
                         homeState = homeState,
                         showGrid = showGrid,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        themeChange = themeViewModel::setTheme
                     )
                 },
                 modifier = Modifier.fillMaxSize()
@@ -375,15 +383,15 @@ private fun HomeScreenReady(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeAppBar(
-    isExpanded: Boolean,
     modifier: Modifier = Modifier,
+    themeChange: () -> Unit = { },
 ) {
     Row(
-        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
+            .padding(vertical = 8.dp),
     ) {
         SearchBar(
             query = "",
@@ -406,8 +414,20 @@ private fun HomeAppBar(
                     contentDescription = stringResource(R.string.cd_account)
                 )
             },
-            modifier = if (isExpanded) Modifier else Modifier.fillMaxWidth()
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
         ) { }
+
+        IconButton(
+            onClick = themeChange,
+            modifier = Modifier.padding(bottom = 4.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Brightness6,
+                contentDescription = stringResource(R.string.cd_theme),
+            )
+        }
     }
 }
 
@@ -433,7 +453,8 @@ private fun HomeScreenBackground(
 private fun HomeScreen(
     homeState: HomeState,
     showGrid: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    themeChange: () -> Unit = { },
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = homeState.featuredPodcasts) {
@@ -449,10 +470,7 @@ private fun HomeScreen(
     ) {
         Scaffold(
             topBar = {
-                HomeAppBar(
-                    isExpanded = homeState.windowSizeClass.isCompact,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                HomeAppBar(themeChange = themeChange)
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -901,9 +919,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 @Composable
 private fun HomeAppBarPreview() {
     JetcasterTheme {
-        HomeAppBar(
-            isExpanded = false,
-        )
+        HomeAppBar()
     }
 }
 
