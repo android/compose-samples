@@ -32,27 +32,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.serialization.Serializable
 
-/**
- * List of screens for [JetcasterApp]
- */
-sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Player : Screen("player/{$ARG_EPISODE_URI}") {
-        fun createRoute(episodeUri: String) = "player/$episodeUri"
-    }
-
-    object PodcastDetails : Screen("podcast/{$ARG_PODCAST_URI}") {
-
-        val PODCAST_URI = "podcastUri"
-        fun createRoute(podcastUri: String) = "podcast/$podcastUri"
-    }
-
-    companion object {
-        val ARG_PODCAST_URI = "podcastUri"
-        val ARG_EPISODE_URI = "episodeUri"
-    }
-}
+@Serializable internal object HomeRoute
+@Serializable data class PlayerRoute(val episodeUri: String)
 
 @Composable
 fun rememberJetcasterAppState(
@@ -77,14 +60,7 @@ class JetcasterAppState(
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
             val encodedUri = Uri.encode(episodeUri)
-            navController.navigate(Screen.Player.createRoute(encodedUri))
-        }
-    }
-
-    fun navigateToPodcastDetails(podcastUri: String, from: NavBackStackEntry) {
-        if (from.lifecycleIsResumed()) {
-            val encodedUri = Uri.encode(podcastUri)
-            navController.navigate(Screen.PodcastDetails.createRoute(encodedUri))
+            navController.navigate(PlayerRoute(encodedUri))
         }
     }
 

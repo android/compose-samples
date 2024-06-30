@@ -23,11 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.toPlayerEpisode
-import com.example.jetcaster.ui.Screen
+import com.example.jetcaster.ui.PlayerRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import javax.inject.Inject
@@ -51,10 +52,8 @@ class PlayerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // episodeUri should always be present in the PlayerViewModel.
-    // If that's not the case, fail crashing the app!
-    private val episodeUri: String =
-        Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
+    private val playerRoute = savedStateHandle.toRoute<PlayerRoute>()
+    private val episodeUri: String = Uri.decode(playerRoute.episodeUri)
 
     var uiState by mutableStateOf(PlayerUiState())
         private set

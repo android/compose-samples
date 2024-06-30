@@ -40,9 +40,9 @@ fun JetcasterApp(
     if (appState.isOnline) {
         NavHost(
             navController = appState.navController,
-            startDestination = Screen.Home.route
+            startDestination = HomeRoute
         ) {
-            composable(Screen.Home.route) { backStackEntry ->
+            composable<HomeRoute> { backStackEntry ->
                 MainScreen(
                     windowSizeClass = adaptiveInfo.windowSizeClass,
                     navigateToPlayer = { episode ->
@@ -50,7 +50,7 @@ fun JetcasterApp(
                     }
                 )
             }
-            composable(Screen.Player.route) {
+            composable<PlayerRoute> {
                 PlayerScreen(
                     windowSizeClass = adaptiveInfo.windowSizeClass,
                     displayFeatures = displayFeatures,
