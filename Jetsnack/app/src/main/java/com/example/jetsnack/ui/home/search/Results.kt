@@ -104,7 +104,7 @@ private fun SearchResult(
             )
         }
         SnackImage(
-            imageUrl = snack.imageUrl,
+            imageRes = snack.imageRes,
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp)

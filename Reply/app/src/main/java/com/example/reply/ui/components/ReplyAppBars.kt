@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DockedSearchBar
@@ -38,6 +37,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -63,8 +63,11 @@ fun ReplyDockedSearchBar(
     modifier: Modifier = Modifier
 ) {
     var query by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
     val searchResults = remember { mutableStateListOf<Email>() }
+    val onExpandedChange: (Boolean) -> Unit = {
+        expanded = it
+    }
 
     LaunchedEffect(query) {
         searchResults.clear()
@@ -85,84 +88,90 @@ fun ReplyDockedSearchBar(
     }
 
     DockedSearchBar(
-        modifier = modifier,
-        query = query,
-        onQueryChange = {
-            query = it
-        },
-        onSearch = { active = false },
-        active = active,
-        onActiveChange = {
-            active = it
-        },
-        placeholder = { Text(text = stringResource(id = R.string.search_emails)) },
-        leadingIcon = {
-            if (active) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.back_button),
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .clickable {
-                            active = false
-                            query = ""
-                        },
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(id = R.string.search),
-                    modifier = Modifier.padding(start = 16.dp),
-                )
-            }
-        },
-        trailingIcon = {
-            ReplyProfileImage(
-                drawableResource = R.drawable.avatar_6,
-                description = stringResource(id = R.string.profile),
-                modifier = Modifier
-                    .padding(12.dp)
-                    .size(32.dp)
-            )
-        },
-    ) {
-        if (searchResults.isNotEmpty()) {
-            LazyColumn(
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = query,
+                onQueryChange = {
+                    query = it
+                },
+                onSearch = { expanded = false },
+                expanded = expanded,
+                onExpandedChange = onExpandedChange,
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                items(items = searchResults, key = { it.id }) { email ->
-                    ListItem(
-                        headlineContent = { Text(email.subject) },
-                        supportingContent = { Text(email.sender.fullName) },
-                        leadingContent = {
-                            ReplyProfileImage(
-                                drawableResource = email.sender.avatar,
-                                description = stringResource(id = R.string.profile),
-                                modifier = Modifier
-                                    .size(32.dp)
-                            )
-                        },
-                        modifier = Modifier.clickable {
-                            onSearchItemSelected.invoke(email)
-                            query = ""
-                            active = false
-                        }
+                placeholder = { Text(text = stringResource(id = R.string.search_emails)) },
+                leadingIcon = {
+                    if (expanded) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button),
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .clickable {
+                                    expanded = false
+                                    query = ""
+                                },
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(id = R.string.search),
+                            modifier = Modifier.padding(start = 16.dp),
+                        )
+                    }
+                },
+                trailingIcon = {
+                    ReplyProfileImage(
+                        drawableResource = R.drawable.avatar_6,
+                        description = stringResource(id = R.string.profile),
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .size(32.dp)
                     )
+                },
+            )
+        },
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        modifier = modifier,
+        content = {
+            if (searchResults.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(items = searchResults, key = { it.id }) { email ->
+                        ListItem(
+                            headlineContent = { Text(email.subject) },
+                            supportingContent = { Text(email.sender.fullName) },
+                            leadingContent = {
+                                ReplyProfileImage(
+                                    drawableResource = email.sender.avatar,
+                                    description = stringResource(id = R.string.profile),
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                onSearchItemSelected.invoke(email)
+                                query = ""
+                                expanded = false
+                            }
+                        )
+                    }
                 }
-            }
-        } else if (query.isNotEmpty()) {
-            Text(
-                text = stringResource(id = R.string.no_item_found),
-                modifier = Modifier.padding(16.dp)
-            )
-        } else
-            Text(
-                text = stringResource(id = R.string.no_search_history),
-                modifier = Modifier.padding(16.dp)
-            )
-    }
+            } else if (query.isNotEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.no_item_found),
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else
+                Text(
+                    text = stringResource(id = R.string.no_search_history),
+                    modifier = Modifier.padding(16.dp)
+                )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -322,7 +322,7 @@ fun CartItem(
         val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         SnackImage(
-            imageUrl = snack.imageUrl,
+            imageRes = snack.imageRes,
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp)
