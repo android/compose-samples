@@ -52,7 +52,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         val imageModifier = Modifier
             .heightIn(min = 180.dp)
             .fillMaxWidth()
-            .clip(shape = MaterialTheme.shapes.medium)
+            .clip(shape = MaterialTheme.shapes.large)
         Image(
             painter = painterResource(post.imageId),
             contentDescription = null, // decorative
