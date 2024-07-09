@@ -40,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
@@ -292,7 +291,6 @@ private fun EpisodeControl(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PlayerControl(
     isPlaying: Boolean,
@@ -436,7 +434,6 @@ private fun NoEpisodeInQueue(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PlayerQueueOverlay(
     playerEpisodeList: EpisodeList,

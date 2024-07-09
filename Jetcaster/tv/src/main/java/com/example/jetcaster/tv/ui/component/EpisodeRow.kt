@@ -18,6 +18,9 @@ package com.example.jetcaster.tv.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,9 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.tv.foundation.lazy.list.TvLazyListState
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.itemsIndexed
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
@@ -45,13 +45,13 @@ internal fun EpisodeRow(
         Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
     contentPadding: PaddingValues = JetcasterAppDefaults.padding.episodeRowContentPadding,
     focusRequester: FocusRequester = remember { FocusRequester() },
-    lazyListState: TvLazyListState = remember(playerEpisodeList) { TvLazyListState() }
+    lazyListState: LazyListState = remember(playerEpisodeList) { LazyListState() }
 ) {
     val firstItem = remember { FocusRequester() }
     var previousEpisodeListHash by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
     val isSameList = previousEpisodeListHash == playerEpisodeList.hashCode()
 
-    TvLazyRow(
+    LazyRow(
         state = lazyListState,
         modifier = Modifier
             .focusRequester(focusRequester)

@@ -16,11 +16,13 @@
 
 package com.example.jetcaster.tv.ui
 
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -33,8 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -69,6 +71,7 @@ private fun GlobalNavigationContainer(
     val (discover, library) = remember { FocusRequester.createRefs() }
     val currentRoute
         by jetcasterAppState.currentRouteFlow.collectAsStateWithLifecycle(initialValue = null)
+    val scrollState = rememberScrollState()
 
     NavigationDrawer(
         drawerContent = {
@@ -76,16 +79,17 @@ private fun GlobalNavigationContainer(
             Column(
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused) {
+                    .focusProperties {
+                        enter = {
                             when (currentRoute) {
                                 Screen.Discover.route -> discover
                                 Screen.Library.route -> library
                                 else -> FocusRequester.Default
-                            }.requestFocus()
+                            }
                         }
                     }
-                    .focusable()
+                    // Making the Column a scrollable container to enable FocusProperties
+                    .scrollable(scrollState, Orientation.Vertical)
             ) {
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Profile.route,
@@ -94,21 +98,34 @@ private fun GlobalNavigationContainer(
                 ) {
                     Column {
                         Text(text = "Name")
-                        Text(text = "Switch Account", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            text = "Switch Account",
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = modifier.weight(1f))
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Search.route,
                     onClick = jetcasterAppState::navigateToSearch,
-                    leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    }
                 ) {
                     Text(text = "Search")
                 }
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Discover.route,
                     onClick = jetcasterAppState::navigateToDiscover,
-                    leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Home,
+                            contentDescription = null
+                        )
+                    },
                     modifier = Modifier.focusRequester(discover)
                 ) {
                     Text(text = "Discover")
@@ -126,7 +143,7 @@ private fun GlobalNavigationContainer(
                 ) {
                     Text(text = "Library")
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = modifier.weight(1f))
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Settings.route,
                     onClick = jetcasterAppState::navigateToSettings,
@@ -137,7 +154,7 @@ private fun GlobalNavigationContainer(
             }
         },
         content = content,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 

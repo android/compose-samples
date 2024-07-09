@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -52,8 +54,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyColumn
-import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -260,7 +260,7 @@ private fun PodcastEpisodeList(
     enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TvLazyColumn(
+    LazyColumn(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         modifier = modifier,
         contentPadding = JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues()
