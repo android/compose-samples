@@ -104,7 +104,7 @@ private fun GlobalNavigationContainer(
                         )
                     }
                 }
-                Spacer(modifier = modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Search.route,
                     onClick = jetcasterAppState::navigateToSearch,
@@ -143,7 +143,7 @@ private fun GlobalNavigationContainer(
                 ) {
                     Text(text = "Library")
                 }
-                Spacer(modifier = modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Settings.route,
                     onClick = jetcasterAppState::navigateToSettings,
