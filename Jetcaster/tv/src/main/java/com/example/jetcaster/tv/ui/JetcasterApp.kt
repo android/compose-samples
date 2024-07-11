@@ -16,13 +16,10 @@
 
 package com.example.jetcaster.tv.ui
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -46,6 +43,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.Text
+import com.example.jetcaster.tv.ui.component.enableFocusProperties
 import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.episode.EpisodeScreen
 import com.example.jetcaster.tv.ui.library.LibraryScreen
@@ -71,7 +69,6 @@ private fun GlobalNavigationContainer(
     val (discover, library) = remember { FocusRequester.createRefs() }
     val currentRoute
         by jetcasterAppState.currentRouteFlow.collectAsStateWithLifecycle(initialValue = null)
-    val scrollState = rememberScrollState()
 
     NavigationDrawer(
         drawerContent = {
@@ -88,8 +85,7 @@ private fun GlobalNavigationContainer(
                             }
                         }
                     }
-                    // Making the Column a scrollable container to enable FocusProperties
-                    .scrollable(scrollState, Orientation.Vertical)
+                    .enableFocusProperties()
             ) {
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Profile.route,
