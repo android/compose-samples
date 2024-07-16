@@ -57,11 +57,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -126,15 +124,16 @@ private fun Header() {
     val brushColors = JetsnackTheme.colors.tornado1
 
     val infiniteTransition = rememberInfiniteTransition(label = "background")
-    val targetOffset = with (LocalDensity.current) {
+    val targetOffset = with(LocalDensity.current) {
         1000.dp.toPx()
     }
     val offset by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = targetOffset,
-        animationSpec = infiniteRepeatable(tween(50000, easing = LinearEasing),
+        animationSpec = infiniteRepeatable(
+            tween(50000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
-            ),
+        ),
         label = "offset"
     )
 
@@ -142,7 +141,7 @@ private fun Header() {
     val brush = Brush.linearGradient(
         colors = brushColors,
         start = Offset(offset, offset),
-        end = Offset( offset + brushSize, offset + brushSize),
+        end = Offset(offset + brushSize, offset + brushSize),
         tileMode = TileMode.Mirror
     )
     Spacer(
