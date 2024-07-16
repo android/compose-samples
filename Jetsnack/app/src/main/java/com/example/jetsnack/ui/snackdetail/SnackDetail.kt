@@ -17,6 +17,12 @@
 package com.example.jetsnack.ui.snackdetail
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,7 +56,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -112,11 +122,40 @@ fun SnackDetail(
 
 @Composable
 private fun Header() {
+    val brushColors = JetsnackTheme.colors.tornado1
+
+    val infiniteTransition = rememberInfiniteTransition(label = "background")
+    val targetOffset = with(LocalDensity.current) {
+        1000.dp.toPx()
+    }
+    val offset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = targetOffset,
+        animationSpec = infiniteRepeatable(
+            tween(50000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "offset"
+    )
+
     Spacer(
         modifier = Modifier
             .height(280.dp)
             .fillMaxWidth()
-            .background(Brush.horizontalGradient(JetsnackTheme.colors.tornado1))
+            .blur(40.dp)
+            .drawWithCache {
+                val brushSize = 400f
+                val brush = Brush.linearGradient(
+                    colors = brushColors,
+                    start = Offset(offset, offset),
+                    end = Offset(offset + brushSize, offset + brushSize),
+                    tileMode = TileMode.Mirror
+                )
+                onDrawBehind {
+                    drawRect(brush)
+                }
+            }
+
     )
 }
 
