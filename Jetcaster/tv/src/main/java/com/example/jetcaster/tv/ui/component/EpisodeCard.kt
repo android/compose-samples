@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Card
+import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.CardScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
@@ -73,6 +75,7 @@ private fun EpisodeThumbnail(
         onClick = onClick,
         interactionSource = interactionSource,
         scale = CardScale.None,
+        shape = CardDefaults.shape(RoundedCornerShape(12.dp)),
         modifier = modifier,
     ) {
         Thumbnail(episode = playerEpisode, size = JetcasterAppDefaults.thumbnailSize.episode)
