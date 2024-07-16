@@ -34,7 +34,7 @@ internal data class OverScanMarginSettings(
     val default: OverScanMargin = OverScanMargin(),
     val catalog: OverScanMargin = OverScanMargin(end = 0.dp),
     val episode: OverScanMargin = OverScanMargin(start = 80.dp, end = 80.dp),
-    val drawer: OverScanMargin = OverScanMargin(start = 0.dp, end = 0.dp),
+    val drawer: OverScanMargin = OverScanMargin(start = 16.dp, end = 16.dp),
     val podcast: OverScanMargin = OverScanMargin(
         top = 40.dp,
         bottom = 40.dp,
