@@ -181,17 +181,20 @@ fun ConversationContent(
             .contentWindowInsets
             .exclude(WindowInsets.navigationBars)
             .exclude(WindowInsets.ime),
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) { paddingValues ->
-        Column(Modifier.fillMaxSize().padding(paddingValues)
-            .background(color = background)
-            .border(width = 2.dp, color = borderStroke)
-            .dragAndDropTarget(shouldStartDragAndDrop = { event ->
-                event
-                    .mimeTypes()
-                    .contains(
-                        ClipDescription.MIMETYPE_TEXT_PLAIN
-                    )
-            }, target = dragAndDropCallback)) {
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) { paddingValues ->
+        Column(
+            Modifier.fillMaxSize().padding(paddingValues)
+                .background(color = background)
+                .border(width = 2.dp, color = borderStroke)
+                .dragAndDropTarget(shouldStartDragAndDrop = { event ->
+                    event
+                        .mimeTypes()
+                        .contains(
+                            ClipDescription.MIMETYPE_TEXT_PLAIN
+                        )
+                }, target = dragAndDropCallback)
+        ) {
             Messages(
                 messages = uiState.messages,
                 navigateToProfile = navigateToProfile,
