@@ -23,7 +23,7 @@ the bottom of the screen.
 - __Home__ [screen][home] where you can explore flights, hotels, and restaurants specifying
 the number of people.
  - Clicking on the number of people refreshes the destinations.
- - Destination's images are retrieved using the [coil-accompanist][coil-accompanist] library.
+ - Destination's images are retrieved using the [Coil][coil] library.
 - __Calendar__ [screen][calendar]. Tapping on __Select Dates__ takes you to a calendar built
 completely from scratch. It makes a heavy usage of Compose's state APIs.
 - Destination's __Details__ [screen][details]. When tapping on a destination, a new screen
@@ -117,5 +117,5 @@ limitations under the License.
 [detailsViewModel]: app/src/main/java/androidx/compose/samples/crane/details/DetailsViewModel.kt
 [homeTest]: app/src/androidTest/java/androidx/compose/samples/crane/home/HomeTest.kt
 [detailsTest]: app/src/androidTest/java/androidx/compose/samples/crane/details/DetailsActivityTest.kt
-[coil-accompanist]: https://google.github.io/accompanist/coil/
+[coil]: https://coil-kt.github.io/coil/
 [hilt]: https://d.android.com/hilt

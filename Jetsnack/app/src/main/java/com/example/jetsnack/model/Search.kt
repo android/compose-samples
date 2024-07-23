@@ -17,6 +17,7 @@
 package com.example.jetsnack.model
 
 import androidx.compose.runtime.Immutable
+import com.example.jetsnack.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -44,7 +45,7 @@ data class SearchCategoryCollection(
 @Immutable
 data class SearchCategory(
     val name: String,
-    val imageUrl: String
+    val imageRes: Int
 )
 
 @Immutable
@@ -65,19 +66,19 @@ private val searchCategoryCollections = listOf(
         categories = listOf(
             SearchCategory(
                 name = "Chips & crackers",
-                imageUrl = "https://source.unsplash.com/UsSdMZ78Q3E"
+                imageRes = R.drawable.chips
             ),
             SearchCategory(
                 name = "Fruit snacks",
-                imageUrl = "https://source.unsplash.com/SfP1PtM9Qa8"
+                imageRes = R.drawable.fruit,
             ),
             SearchCategory(
                 name = "Desserts",
-                imageUrl = "https://source.unsplash.com/_jk8KIyN_uA"
+                imageRes = R.drawable.desserts
             ),
             SearchCategory(
-                name = "Nuts ",
-                imageUrl = "https://source.unsplash.com/UsSdMZ78Q3E"
+                name = "Nuts",
+                imageRes = R.drawable.nuts,
             )
         )
     ),
@@ -87,27 +88,27 @@ private val searchCategoryCollections = listOf(
         categories = listOf(
             SearchCategory(
                 name = "Organic",
-                imageUrl = "https://source.unsplash.com/7meCnGCJ5Ms"
+                imageRes = R.drawable.organic
             ),
             SearchCategory(
                 name = "Gluten Free",
-                imageUrl = "https://source.unsplash.com/m741tj4Cz7M"
+                imageRes = R.drawable.gluten_free
             ),
             SearchCategory(
                 name = "Paleo",
-                imageUrl = "https://source.unsplash.com/dt5-8tThZKg"
+                imageRes = R.drawable.paleo,
             ),
             SearchCategory(
                 name = "Vegan",
-                imageUrl = "https://source.unsplash.com/ReXxkS1m1H0"
+                imageRes = R.drawable.vegan,
             ),
             SearchCategory(
-                name = "Vegitarian",
-                imageUrl = "https://source.unsplash.com/IGfIGP5ONV0"
+                name = "Vegetarian",
+                imageRes = R.drawable.organic,
             ),
             SearchCategory(
                 name = "Whole30",
-                imageUrl = "https://source.unsplash.com/9MzCd76xLGk"
+                imageRes = R.drawable.paleo
             )
         )
     )

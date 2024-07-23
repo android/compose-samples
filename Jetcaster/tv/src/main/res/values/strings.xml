@@ -1,0 +1,60 @@
+<!--
+ Copyright 2024 The Android Open Source Project
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<resources>
+    <string name="app_name">JetCaster</string>
+    <string name="message_not_available_feature">This feature is not available yet.</string>
+    <string name="message_loading">Loading</string>
+    <string name="display_no_subscribed_podcast">Let\'s discover the podcasts!</string>
+    <string name="message_no_subscribed_podcast">You subscribe no podcast yet. Let\'s discover the podcasts and subscribe them!</string>
+    <string name="display_error_state">Something wrong happened</string>
+    <string name="display_nothing_in_queue">No episode in the queue</string>
+    <string name="message_nothing_in_queue">Discover the Podcast you want to listen to</string>
+    <string name="section_podcast">Podcast</string>
+    <string name="section_latest_episodes">Latest Episodes</string>
+    <string name="label_subscribe">Subscribe</string>
+    <string name="label_unsubscribe">Subscribed</string>
+    <string name="label_info">Info</string>
+    <string name="label_play">Play</string>
+    <string name="label_pause">Pause</string>
+    <string name="label_skip">Skip 10 seconds</string>
+    <string name="label_rewind">Rewind 10 seconds</string>
+    <string name="label_next_episode">Play the next episode</string>
+    <string name="label_previous_episode">Play the previous episode</string>
+    <string name="label_listen">Listen</string>
+    <string name="label_podcast">Podcasts</string>
+    <string name="label_episode">Episodes</string>
+    <string name="label_latest_episode">Latest Episodes</string>
+    <string name="label_navigate_to_discover">Discover the podcasts</string>
+    <string name="label_back_to_home">Back to Home</string>
+    <string name="label_search">Search podcasts by keyword</string>
+    <string name="label_add_playlist">Add to playlist</string>
+
+    <string name="updated_longer">Updated a while ago</string>
+    <plurals name="updated_weeks_ago">
+        <item quantity="one">Updated %d week ago</item>
+        <item quantity="other">Updated %d weeks ago</item>
+    </plurals>
+    <plurals name="updated_days_ago">
+        <item quantity="one">Updated yesterday</item>
+        <item quantity="other">Updated %d days ago</item>
+    </plurals>
+    <string name="updated_today">Updated today</string>
+
+    <string name="episode_date_duration">%1$s &#8226; %2$d mins</string>
+    <string name="elapsed_time">%1$s &#8226; %2$s</string>
+    <string name="minutes_seconds">%1$02d:%2$02d</string>
+</resources>

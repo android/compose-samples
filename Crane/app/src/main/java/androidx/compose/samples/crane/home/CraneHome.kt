@@ -232,6 +232,7 @@ private fun SearchContent(
                 )
             )
         },
+        label = "SearchContent"
     ) { targetState ->
         when (targetState) {
             CraneScreen.Fly -> FlySearchContent(

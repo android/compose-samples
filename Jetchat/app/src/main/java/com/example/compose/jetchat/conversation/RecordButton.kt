@@ -36,19 +36,19 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -101,10 +101,16 @@ fun RecordButton(
                 .background(LocalContentColor.current)
         )
         val scope = rememberCoroutineScope()
-        val tooltipState = remember { RichTooltipState() }
-        RichTooltipBox(
-            text = { Text(stringResource(R.string.touch_and_hold_to_record)) },
-            tooltipState = tooltipState
+        val tooltipState = remember { TooltipState() }
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+            tooltip = {
+                RichTooltip {
+                    Text(stringResource(R.string.touch_and_hold_to_record))
+                }
+            },
+            enableUserInput = false,
+            state = tooltipState
         ) {
             Icon(
                 Icons.Default.Mic,
@@ -136,33 +142,45 @@ private fun Modifier.voiceRecordingGesture(
     onCancelRecording: () -> Unit = {},
     swipeToCancelThreshold: Dp = 200.dp,
     verticalThreshold: Dp = 80.dp,
-): Modifier = composed {
-    val density = LocalDensity.current
-    val swipeToCancelThresholdPx = with(density) { swipeToCancelThreshold.toPx() }
-    val verticalThresholdPx = with(density) { verticalThreshold.toPx() }
-    var offsetY = 0f
-    this
-        .pointerInput(Unit) { detectTapGestures { onClick() } }
-        .pointerInput(Unit) {
-            detectDragGesturesAfterLongPress(
-                onDragStart = {
-                    onSwipeProgressChanged(0f)
-                    offsetY = 0f
-                    onStartRecording()
-                },
-                onDragCancel = { onCancelRecording() },
-                onDragEnd = { onFinishRecording() },
-                onDrag = { _, dragAmount ->
+): Modifier = this
+    .pointerInput(Unit) { detectTapGestures { onClick() } }
+    .pointerInput(Unit) {
+        var offsetY = 0f
+        var dragging = false
+        val swipeToCancelThresholdPx = swipeToCancelThreshold.toPx()
+        val verticalThresholdPx = verticalThreshold.toPx()
+
+        detectDragGesturesAfterLongPress(
+            onDragStart = {
+                onSwipeProgressChanged(0f)
+                offsetY = 0f
+                dragging = true
+                onStartRecording()
+            },
+            onDragCancel = {
+                onCancelRecording()
+                dragging = false
+            },
+            onDragEnd = {
+                if (dragging) {
+                    onFinishRecording()
+                }
+                dragging = false
+            },
+            onDrag = { change, dragAmount ->
+                if (dragging) {
                     onSwipeProgressChanged(horizontalSwipeProgress() + dragAmount.x)
                     offsetY += dragAmount.y
                     val offsetX = horizontalSwipeProgress()
-                    if ((offsetX < 0) &&
+                    if (
+                        offsetX < 0 &&
                         abs(offsetX) >= swipeToCancelThresholdPx &&
                         abs(offsetY) <= verticalThresholdPx
                     ) {
                         onCancelRecording()
+                        dragging = false
                     }
                 }
-            )
-        }
-}
+            }
+        )
+    }

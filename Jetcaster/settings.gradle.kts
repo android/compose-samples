@@ -35,5 +35,15 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Jetcaster"
-include(":app")
-
+include(
+    ":mobile",
+    ":core:data",
+    ":core:data-testing",
+    ":core:domain",
+    ":core:domain-testing",
+    ":core:designsystem",
+    ":tv",
+    ":wear",
+    ":glancewidget"
+)
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

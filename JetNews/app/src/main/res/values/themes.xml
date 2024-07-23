@@ -14,14 +14,5 @@
      limitations under the License.
 -->
 <resources>
-
-    <!-- Allows us to override platform level specific attributes in their
-         respective values-vXX folder. -->
-    <style name="Platform.Theme.Jetnews" parent="Theme.Material3.DayNight">
-        <item name="android:statusBarColor">@color/black30</item>
-    </style>
-
-    <!-- The actual theme we use. This varies for light theme (here),
-         and values-night for dark theme. -->
-    <style name="Theme.Jetnews" parent="Platform.Theme.Jetnews" />
+    <style name="Theme.Jetnews" parent="android:Theme.Material.NoActionBar"/>
 </resources>

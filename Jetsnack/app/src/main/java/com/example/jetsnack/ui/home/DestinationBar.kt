@@ -17,8 +17,12 @@
 package com.example.jetsnack.ui.home
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Horizontal
+import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Top
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -41,36 +45,36 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.statusBarsPadding()) {
-        TopAppBar(
-            backgroundColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
-            contentColor = JetsnackTheme.colors.textSecondary,
-            elevation = 0.dp
+    TopAppBar(
+        backgroundColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
+        contentColor = JetsnackTheme.colors.textSecondary,
+        contentPadding = WindowInsets.systemBars.only(Horizontal + Top).asPaddingValues(),
+        elevation = 0.dp,
+        modifier = modifier
+    ) {
+        Text(
+            text = "Delivery to 1600 Amphitheater Way",
+            style = MaterialTheme.typography.subtitle1,
+            color = JetsnackTheme.colors.textSecondary,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+        IconButton(
+            onClick = { /* todo */ },
+            modifier = Modifier.align(Alignment.CenterVertically)
         ) {
-            Text(
-                text = "Delivery to 1600 Amphitheater Way",
-                style = MaterialTheme.typography.subtitle1,
-                color = JetsnackTheme.colors.textSecondary,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
+            Icon(
+                imageVector = Icons.Outlined.ExpandMore,
+                tint = JetsnackTheme.colors.brand,
+                contentDescription = stringResource(R.string.label_select_delivery)
             )
-            IconButton(
-                onClick = { /* todo */ },
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.ExpandMore,
-                    tint = JetsnackTheme.colors.brand,
-                    contentDescription = stringResource(R.string.label_select_delivery)
-                )
-            }
         }
-        JetsnackDivider()
     }
+    JetsnackDivider()
 }
 
 @Preview("default")

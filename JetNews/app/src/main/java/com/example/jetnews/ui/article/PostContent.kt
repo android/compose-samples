@@ -84,11 +84,12 @@ private val defaultSpacerSize = 16.dp
 fun PostContent(
     post: Post,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(defaultSpacerSize),
-        modifier = modifier,
+        contentPadding = contentPadding,
+        modifier = modifier.padding(horizontal = defaultSpacerSize),
         state = state,
     ) {
         postContentItems(post)
@@ -115,7 +116,7 @@ private fun PostHeaderImage(post: Post) {
     val imageModifier = Modifier
         .heightIn(min = 180.dp)
         .fillMaxWidth()
-        .clip(shape = MaterialTheme.shapes.medium)
+        .clip(shape = MaterialTheme.shapes.large)
     Image(
         painter = painterResource(post.imageId),
         contentDescription = null, // decorative

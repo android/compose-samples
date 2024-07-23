@@ -55,7 +55,7 @@ Reply is using brand new Material 3 [colors](app/src/main/java/com/example/reply
 [Material Theme builder](https://material-foundation.github.io/material-theme-builder/#/custom) is used to create material 3 theme and directly export it for Compose.
 
 #### [Dynamic theming/Material You](app/src/main/java/com/example/reply/ui/theme/Theme.kt#100)
-On Android 12+ Reply supports Material You dynamic color, which extracts a custom color scheme from the device wallpaper. For older version of android it falls back to defined light and dark [color schemes](aapp/src/main/java/com/example/reply/ui/theme/Theme.kt#34)
+On Android 12+ Reply supports Material You dynamic color, which extracts a custom color scheme from the device wallpaper. For older version of android it falls back to defined light and dark [color schemes](app/src/main/java/com/example/reply/ui/theme/Theme.kt#L34)
 
 
 <img src="screenshots/dynamic_theming.png">

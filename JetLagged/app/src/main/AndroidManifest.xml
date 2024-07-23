@@ -30,10 +30,10 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
             android:theme="@style/Theme.JetLagged"
             android:exported="true"
-            android:configChanges="screenSize|smallestScreenSize|orientation|screenLayout|uiMode">
+            android:configChanges="screenSize|smallestScreenSize|orientation|screenLayout|uiMode"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

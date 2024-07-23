@@ -17,6 +17,7 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,15 +35,15 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,14 +51,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.jetsnack.R
 import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -67,13 +67,8 @@ import com.example.jetsnack.ui.utils.mirroringIcon
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
-
-// The Cards show a gradient which spans 3 cards and scrolls with parallax.
-private val gradientWidth
-    @Composable
-    get() = with(LocalDensity.current) {
-        (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
-    }
+private val Density.cardWidthWithPaddingPx
+    get() = (HighlightCardWidth + HighlightCardPadding).toPx()
 
 @Composable
 fun SnackCollection(
@@ -106,8 +101,8 @@ fun SnackCollection(
             ) {
                 Icon(
                     imageVector = mirroringIcon(
-                        ltrIcon = Icons.Outlined.ArrowForward,
-                        rtlIcon = Icons.Outlined.ArrowBack
+                        ltrIcon = Icons.AutoMirrored.Outlined.ArrowForward,
+                        rtlIcon = Icons.AutoMirrored.Outlined.ArrowBack
                     ),
                     tint = JetsnackTheme.colors.brand,
                     contentDescription = null
@@ -129,28 +124,33 @@ private fun HighlightedSnacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scroll = rememberScrollState(0)
+    val rowState = rememberLazyListState()
+    val cardWidthWithPaddingPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
+
+    val scrollProvider = {
+        // Simple calculation of scroll distance for homogenous item types with the same width.
+        val offsetFromStart = cardWidthWithPaddingPx * rowState.firstVisibleItemIndex
+        offsetFromStart + rowState.firstVisibleItemScrollOffset
+    }
+
     val gradient = when ((index / 2) % 2) {
         0 -> JetsnackTheme.colors.gradient6_1
         else -> JetsnackTheme.colors.gradient6_2
     }
-    // The Cards show a gradient which spans 3 cards and scrolls with parallax.
-    val gradientWidth = with(LocalDensity.current) {
-        (6 * (HighlightCardWidth + HighlightCardPadding).toPx())
-    }
+
     LazyRow(
+        state = rowState,
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(start = 24.dp, end = 24.dp)
     ) {
         itemsIndexed(snacks) { index, snack ->
             HighlightSnackItem(
-                snack,
-                onSnackClick,
-                index,
-                gradient,
-                gradientWidth,
-                scroll.value
+                snack = snack,
+                onSnackClick = onSnackClick,
+                index = index,
+                gradient = gradient,
+                scrollProvider = scrollProvider
             )
         }
     }
@@ -193,7 +193,7 @@ fun SnackItem(
                 .padding(8.dp)
         ) {
             SnackImage(
-                imageUrl = snack.imageUrl,
+                imageRes = snack.imageRes,
                 elevation = 4.dp,
                 contentDescription = null,
                 modifier = Modifier.size(120.dp)
@@ -214,17 +214,13 @@ private fun HighlightSnackItem(
     onSnackClick: (Long) -> Unit,
     index: Int,
     gradient: List<Color>,
-    gradientWidth: Float,
-    scroll: Int,
+    scrollProvider: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    val left = index * with(LocalDensity.current) {
-        (HighlightCardWidth + HighlightCardPadding).toPx()
-    }
     JetsnackCard(
         modifier = modifier
             .size(
-                width = 170.dp,
+                width = HighlightCardWidth,
                 height = 250.dp
             )
             .padding(bottom = 16.dp)
@@ -239,15 +235,25 @@ private fun HighlightSnackItem(
                     .height(160.dp)
                     .fillMaxWidth()
             ) {
-                val gradientOffset = left - (scroll / 3f)
                 Box(
                     modifier = Modifier
                         .height(100.dp)
                         .fillMaxWidth()
-                        .offsetGradientBackground(gradient, gradientWidth, gradientOffset)
+                        .offsetGradientBackground(
+                            colors = gradient,
+                            width = {
+                                // The Cards show a gradient which spans 6 cards and scrolls with parallax.
+                                6 * cardWidthWithPaddingPx
+                            },
+                            offset = {
+                                val left = index * cardWidthWithPaddingPx
+                                val gradientOffset = left - (scrollProvider() / 3f)
+                                gradientOffset
+                            }
+                        )
                 )
                 SnackImage(
-                    imageUrl = snack.imageUrl,
+                    imageRes = snack.imageRes,
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
@@ -276,7 +282,8 @@ private fun HighlightSnackItem(
 
 @Composable
 fun SnackImage(
-    imageUrl: String,
+    @DrawableRes
+    imageRes: Int,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     elevation: Dp = 0.dp
@@ -289,11 +296,10 @@ fun SnackImage(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
+                .data(imageRes)
                 .crossfade(true)
                 .build(),
             contentDescription = contentDescription,
-            placeholder = painterResource(R.drawable.placeholder),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
         )
@@ -312,8 +318,7 @@ fun SnackCardPreview() {
             onSnackClick = { },
             index = 0,
             gradient = JetsnackTheme.colors.gradient6_1,
-            gradientWidth = gradientWidth,
-            scroll = 0
+            scrollProvider = { 0f }
         )
     }
 }

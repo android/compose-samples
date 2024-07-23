@@ -53,7 +53,7 @@ Jetsnack utilizes custom [`Layout`](https://developer.android.com/reference/kotl
 ## Data
 Domain types are modelled in the [model package](app/src/main/java/com/example/jetsnack/model), each containing static sample data exposed using fake `Repo`s objects.
 
-Imagery is sourced from [Unsplash](https://unsplash.com/) and loaded using [coil-accompanist][coil-accompanist].
+Imagery is sourced from [Unsplash](https://unsplash.com/) and loaded using the [Coil][coil] library.
 
 ## Baseline Profiles
 For [Baseline profiles](https://developer.android.com/topic/performance/baselineprofiles), see the [compose-latest](https://github.com/android/compose-samples/tree/compose-latest/Jetsnack) branch.
@@ -77,4 +77,4 @@ limitations under the License.
 ```
 
 [compose]: https://developer.android.com/jetpack/compose
-[coil-accompanist]: https://google.github.io/accompanist/coil/
+[coil]: https://coil-kt.github.io/coil/

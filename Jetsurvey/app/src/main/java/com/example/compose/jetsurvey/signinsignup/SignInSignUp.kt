@@ -124,7 +124,6 @@ fun SignInSignUpTopAppBar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // OutlinedTextField is experimental in m3
 @Composable
 fun Email(
     emailState: TextFieldState = remember { EmailState() },
@@ -161,12 +160,12 @@ fun Email(
                 onImeAction()
             }
         ),
+        singleLine = true
     )
 
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // OutlinedTextField is experimental in m3
 @Composable
 fun Password(
     label: String,
@@ -232,6 +231,7 @@ fun Password(
                 onImeAction()
             }
         ),
+        singleLine = true
     )
 }
 
