@@ -181,8 +181,8 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
         modifier = modifier
-                .wrapContentWidth()
-                .heightIn(min = 156.dp)
+            .wrapContentWidth()
+            .heightIn(min = 156.dp)
     )
 }
 
@@ -197,8 +197,8 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
         modifier = modifier
-                .wrapContentWidth()
-                .heightIn(min = 156.dp)
+            .wrapContentWidth()
+            .heightIn(min = 156.dp)
     )
 }
 
@@ -209,8 +209,8 @@ fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
     BasicInformationalCard(
         borderColor = LightBlue,
         modifier = Modifier
-                .widthIn(max = 400.dp)
-                .heightIn(min = 200.dp)
+            .widthIn(max = 400.dp)
+            .heightIn(min = 200.dp)
     ) {
         FadingCircleBackground(36.dp, LightBlue.copy(0.25f))
         Column(
