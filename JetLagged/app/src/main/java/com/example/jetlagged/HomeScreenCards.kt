@@ -69,7 +69,6 @@ import com.example.jetlagged.ui.theme.LightBlue
 import com.example.jetlagged.ui.theme.Lilac
 import com.example.jetlagged.ui.theme.MintGreen
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
-import com.example.jetlagged.ui.util.animateBounds
 
 @Composable
 fun BasicInformationalCard(
@@ -181,12 +180,9 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
         firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
-        modifier = modifier.animateBounds(
-            Modifier
+        modifier = modifier
                 .wrapContentWidth()
                 .heightIn(min = 156.dp)
-        )
-
     )
 }
 
@@ -200,11 +196,9 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
         firstLineText = stringResource(R.string.ave_time_sleep_heading),
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
-        modifier = modifier.animateBounds(
-            Modifier
+        modifier = modifier
                 .wrapContentWidth()
                 .heightIn(min = 156.dp)
-        )
     )
 }
 
@@ -214,11 +208,9 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
 fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
     BasicInformationalCard(
         borderColor = LightBlue,
-        modifier = Modifier.animateBounds(
-            Modifier
+        modifier = Modifier
                 .widthIn(max = 400.dp)
                 .heightIn(min = 200.dp)
-        )
     ) {
         FadingCircleBackground(36.dp, LightBlue.copy(0.25f))
         Column(

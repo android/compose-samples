@@ -16,6 +16,7 @@
 
 package com.example.jetlagged.backgrounds
 
+import android.graphics.Color
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -24,7 +25,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
@@ -89,7 +89,6 @@ fun Modifier.yellowBackground(): Modifier =
             }
         }
     }
-}
 
 @Language("AGSL")
 val SHADER = """

@@ -44,7 +44,6 @@ import com.example.jetlagged.HomeScreenCardHeading
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
-import com.example.jetlagged.ui.util.animateBounds
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
@@ -58,7 +57,7 @@ fun JetLaggedSleepGraphCard(
 
     BasicInformationalCard(
         borderColor = Yellow,
-        modifier = Modifier.animateBounds(Modifier.widthIn(max = 600.dp))
+        modifier = Modifier.widthIn(max = 600.dp)
     ) {
         Column {
             HomeScreenCardHeading(text = "Sleep")

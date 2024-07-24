@@ -35,12 +35,10 @@ import androidx.compose.ui.unit.dp
 import com.example.jetlagged.BasicInformationalCard
 import com.example.jetlagged.HomeScreenCardHeading
 import com.example.jetlagged.R
-import com.example.jetlagged.backgrounds.movingWaveLine
 import com.example.jetlagged.data.HeartRateOverallData
 import com.example.jetlagged.ui.theme.Coral
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.TitleStyle
-import com.example.jetlagged.ui.util.animateBounds
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
@@ -48,16 +46,14 @@ import com.example.jetlagged.ui.util.animateBounds
 fun HeartRateCard(heartRateData: HeartRateOverallData = HeartRateOverallData()) {
     BasicInformationalCard(
         borderColor = Coral,
-        modifier = Modifier.animateBounds(
-            Modifier
+        modifier = Modifier
                 .height(260.dp)
                 .widthIn(max = 400.dp, min = 200.dp)
-        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .movingWaveLine(Coral, invert = true, alpha = 0.5f, numberWaves = 4)
+
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.heart_rate_heading))
             Row(

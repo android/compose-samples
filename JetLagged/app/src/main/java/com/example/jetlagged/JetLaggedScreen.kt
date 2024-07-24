@@ -38,15 +38,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.jetlagged.backgrounds.movingWaveLine
+import com.example.jetlagged.backgrounds.yellowBackground
 import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
 import com.example.jetlagged.sleep.JetLaggedHeader
 import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
-import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.util.MultiDevicePreview
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
@@ -62,7 +61,7 @@ fun JetLaggedScreen(
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
-        Column(modifier = Modifier.movingWaveLine(Yellow)) {
+        Column(modifier = Modifier.yellowBackground()) {
             JetLaggedHeader(
                 modifier = Modifier.fillMaxWidth(),
                 onDrawerClicked = onDrawerClicked
@@ -71,37 +70,33 @@ fun JetLaggedScreen(
 
         val uiState =
             viewModel.uiState.collectAsStateWithLifecycle()
-        val timeSleepSummaryCards = remember {
-            movableContentOf {
+
+        FlowRow(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center,
+            maxItemsInEachRow = 3
+        ) {
+            JetLaggedSleepGraphCard(uiState.value.sleepGraphData)
+            if (windowSizeClass == WindowWidthSizeClass.Compact) {
                 AverageTimeInBedCard()
                 AverageTimeAsleepCard()
-            }
-        }
-        LookaheadScope {
-            FlowRow(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.Center,
-                verticalArrangement = Arrangement.Center,
-                maxItemsInEachRow = 3
-            ) {
-                JetLaggedSleepGraphCard(uiState.value.sleepGraphData)
-                if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    timeSleepSummaryCards()
-                } else {
-                    FlowColumn {
-                        timeSleepSummaryCards()
-                    }
+            } else {
+                FlowColumn {
+                    AverageTimeInBedCard()
+                    AverageTimeAsleepCard()
                 }
-                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+            }
+            if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                WellnessCard(uiState.value.wellnessData)
+                HeartRateCard(uiState.value.heartRateData)
+            } else {
+                FlowColumn {
                     WellnessCard(uiState.value.wellnessData)
                     HeartRateCard(uiState.value.heartRateData)
-                } else {
-                    FlowColumn {
-                        WellnessCard(uiState.value.wellnessData)
-                        HeartRateCard(uiState.value.heartRateData)
-                    }
                 }
             }
         }
+
     }
 }
