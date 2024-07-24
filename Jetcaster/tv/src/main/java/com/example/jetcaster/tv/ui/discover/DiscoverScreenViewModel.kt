@@ -75,7 +75,7 @@ class DiscoverScreenViewModel @Inject constructor(
             flowOf(emptyList())
         }
     }.map { list ->
-        PodcastList(list.map { it.asExternalModel() })
+        list.map { it.asExternalModel() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

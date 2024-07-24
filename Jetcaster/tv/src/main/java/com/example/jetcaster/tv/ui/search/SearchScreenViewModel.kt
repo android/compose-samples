@@ -92,7 +92,7 @@ class SearchScreenViewModel @Inject constructor(
             categorySelectionFlow,
             searchResultFlow
         ) { keyword, categorySelection, result ->
-            val podcastList = PodcastList(result.map { it.asExternalModel() })
+            val podcastList = result.map { it.asExternalModel() }
             when {
                 result.isEmpty() -> SearchScreenUiState.Ready(keyword, categorySelection)
                 else -> SearchScreenUiState.HasResult(keyword, categorySelection, podcastList)
