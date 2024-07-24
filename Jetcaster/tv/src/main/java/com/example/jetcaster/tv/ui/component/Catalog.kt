@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -149,9 +148,7 @@ private fun PodcastRow(
     horizontalArrangement: Arrangement.Horizontal =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
 ) {
-    val (focusRequester, firstItem) = remember { FocusRequester.createRefs() }
-    var previousPodcastListHash by remember { mutableIntStateOf(podcastList.hashCode()) }
-    val isSamePodcastList = previousPodcastListHash == podcastList.hashCode()
+    val (focusRequester, firstItem) = remember(podcastList) { FocusRequester.createRefs() }
 
     LazyRow(
         contentPadding = contentPadding,
@@ -160,12 +157,11 @@ private fun PodcastRow(
             .focusRequester(focusRequester)
             .focusProperties {
                 exit = {
-                    previousPodcastListHash = podcastList.hashCode()
                     focusRequester.saveFocusedChild()
                     FocusRequester.Default
                 }
                 enter = {
-                    if (isSamePodcastList && focusRequester.restoreFocusedChild()) {
+                    if (focusRequester.restoreFocusedChild()) {
                         FocusRequester.Cancel
                     } else {
                         firstItem
