@@ -16,28 +16,17 @@
 
 package com.example.jetcaster.tv.ui.component
 
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.platform.LocalFocusManager
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Modifier.enableFocusProperties(
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    focusManager: FocusManager = LocalFocusManager.current
-): Modifier {
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    LaunchedEffect(isFocused) {
-        focusManager.moveFocus(FocusDirection.Enter)
-    }
-    return focusable(true, interactionSource)
-}
+    state: ScrollState = rememberScrollState(),
+    orientation: Orientation = Orientation.Vertical,
+): Modifier =
+    scrollable(state, orientation)
+
