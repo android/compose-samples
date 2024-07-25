@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.jetlagged
+package com.example.jetlagged.sleep
 
 import androidx.compose.ui.graphics.Color
+import com.example.jetlagged.R
 import com.example.jetlagged.ui.theme.Yellow_Awake
 import com.example.jetlagged.ui.theme.Yellow_Deep
 import com.example.jetlagged.ui.theme.Yellow_Light

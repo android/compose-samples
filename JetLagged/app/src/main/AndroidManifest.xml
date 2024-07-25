@@ -23,6 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:resizeableActivity="true"
         android:theme="@style/Theme.JetLagged">
 
         <profileable android:shell="true" tools:targetApi="q" />
@@ -31,6 +32,7 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.JetLagged"
             android:exported="true"
+            android:configChanges="screenSize|smallestScreenSize|orientation|screenLayout|uiMode"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.jetlagged
+package com.example.jetlagged.data
 
+import com.example.jetlagged.sleep.SleepDayData
+import com.example.jetlagged.sleep.SleepGraphData
+import com.example.jetlagged.sleep.SleepPeriod
+import com.example.jetlagged.sleep.SleepType
 import java.time.LocalDateTime
 
 // In the real world, you should get this data from a backend.

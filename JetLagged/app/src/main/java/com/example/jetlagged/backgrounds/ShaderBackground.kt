@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetlagged
+package com.example.jetlagged.backgrounds
 
 import android.graphics.Color
 import android.graphics.RuntimeShader
@@ -59,7 +59,10 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
         shader.setFloatUniform("time", time.floatValue)
+        shader.setFloatUniform("waves", 7f)
+
         drawRect(shaderBrush)
+
         drawContent()
     }
 
@@ -79,10 +82,9 @@ fun Modifier.yellowBackground(): Modifier =
         this.then(YellowBackgroundElement)
     } else {
         drawWithCache {
-
             val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
             onDrawBehind {
-                drawRect(gradientBrush)
+                drawRect(gradientBrush, alpha = 1f)
             }
         }
     }
@@ -91,6 +93,7 @@ fun Modifier.yellowBackground(): Modifier =
 val SHADER = """
     uniform float2 resolution;
     uniform float time;
+    uniform float waves;
     layout(color) uniform half4 color;
     
     float calculateColorMultiplier(float yCoord, float factor) {
@@ -101,7 +104,7 @@ val SHADER = """
         // Config values
         const float speedMultiplier = 1.5;
         const float waveDensity = 1.0;
-        const float loops = 8.0;
+        //const float loops = iWaves;
         const float energy = 0.6;
         
         // Calculated values
@@ -109,9 +112,10 @@ val SHADER = """
         float3 rgbColor = color.rgb;
         float timeOffset = time * speedMultiplier;
         float hAdjustment = uv.x * 4.3;
-        float3 loopColor = vec3(1.0 - rgbColor.r, 1.0 - rgbColor.g, 1.0 - rgbColor.b) / loops;
+        float3 loopColor = vec3(1.0 - rgbColor.r, 1.0 - rgbColor.g, 1.0 - rgbColor.b) / waves;
         
-        for (float i = 1.0; i <= loops; i += 1.0) {
+        for (float i = 1.0; i <= 100; i += 1.0) {
+            if (i > waves) break;
             float loopFactor = i * 0.1;
             float sinInput = (timeOffset + hAdjustment) * energy;
             float curve = sin(sinInput) * (1.0 - loopFactor) * 0.05;
