@@ -206,8 +206,9 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun WellnessCard(
-    modifier : Modifier = Modifier,
-    wellnessData: WellnessData = WellnessData(0, 0, 0)) {
+    modifier: Modifier = Modifier,
+    wellnessData: WellnessData = WellnessData(0, 0, 0)
+) {
     BasicInformationalCard(
         borderColor = LightBlue,
         modifier = modifier

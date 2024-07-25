@@ -85,19 +85,26 @@ fun JetLaggedScreen(
                 }
             }
             if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                WellnessCard(wellnessData = uiState.value.wellnessData,
+                WellnessCard(
+                    wellnessData = uiState.value.wellnessData,
                     modifier = Modifier.widthIn(max = 400.dp)
-                    .heightIn(min = 200.dp))
-                HeartRateCard(modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                    uiState.value.heartRateData)
+                        .heightIn(min = 200.dp)
+                )
+                HeartRateCard(
+                    modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
+                    uiState.value.heartRateData
+                )
             } else {
                 FlowColumn {
-                    WellnessCard(wellnessData = uiState.value.wellnessData,
+                    WellnessCard(
+                        wellnessData = uiState.value.wellnessData,
                         modifier = Modifier.widthIn(max = 400.dp)
-                            .heightIn(min = 200.dp))
+                            .heightIn(min = 200.dp)
+                    )
                     HeartRateCard(
                         modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                        uiState.value.heartRateData)
+                        uiState.value.heartRateData
+                    )
                 }
             }
         }
