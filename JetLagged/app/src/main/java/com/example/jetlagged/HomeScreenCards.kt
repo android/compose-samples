@@ -51,7 +51,6 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -170,7 +169,6 @@ fun TwoLineInfoCard(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
@@ -186,7 +184,6 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Preview(widthDp = 500, name = "larger screen")
 @Composable
@@ -202,7 +199,7 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Preview
 @Composable
 fun WellnessCard(
