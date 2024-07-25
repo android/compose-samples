@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -36,6 +38,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetlagged.backgrounds.yellowBackground
@@ -77,7 +80,7 @@ fun JetLaggedScreen(
             verticalArrangement = Arrangement.Center,
             maxItemsInEachRow = 3
         ) {
-            JetLaggedSleepGraphCard(uiState.value.sleepGraphData)
+            JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
             if (windowSizeClass == WindowWidthSizeClass.Compact) {
                 AverageTimeInBedCard()
                 AverageTimeAsleepCard()
@@ -88,12 +91,19 @@ fun JetLaggedScreen(
                 }
             }
             if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                WellnessCard(uiState.value.wellnessData)
-                HeartRateCard(uiState.value.heartRateData)
+                WellnessCard(wellnessData = uiState.value.wellnessData,
+                    modifier = Modifier.widthIn(max = 400.dp)
+                    .heightIn(min = 200.dp))
+                HeartRateCard(modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
+                    uiState.value.heartRateData)
             } else {
                 FlowColumn {
-                    WellnessCard(uiState.value.wellnessData)
-                    HeartRateCard(uiState.value.heartRateData)
+                    WellnessCard(wellnessData = uiState.value.wellnessData,
+                        modifier = Modifier.widthIn(max = 400.dp)
+                            .heightIn(min = 200.dp))
+                    HeartRateCard(
+                        modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
+                        uiState.value.heartRateData)
                 }
             }
         }

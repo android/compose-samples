@@ -43,12 +43,14 @@ import com.example.jetlagged.ui.theme.TitleStyle
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun HeartRateCard(heartRateData: HeartRateOverallData = HeartRateOverallData()) {
+fun HeartRateCard(
+    modifier: Modifier = Modifier,
+    heartRateData: HeartRateOverallData = HeartRateOverallData()) {
     BasicInformationalCard(
         borderColor = Coral,
-        modifier = Modifier
+        modifier = modifier
                 .height(260.dp)
-                .widthIn(max = 400.dp, min = 200.dp)
+
     ) {
         Column(
             modifier = Modifier

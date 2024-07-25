@@ -51,13 +51,14 @@ import java.util.Locale
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun JetLaggedSleepGraphCard(
-    sleepState: SleepGraphData
+    sleepState: SleepGraphData,
+    modifier: Modifier = Modifier
 ) {
     var selectedTab by remember { mutableStateOf(SleepTab.Week) }
 
     BasicInformationalCard(
         borderColor = Yellow,
-        modifier = Modifier.widthIn(max = 600.dp)
+        modifier = modifier
     ) {
         Column {
             HomeScreenCardHeading(text = "Sleep")

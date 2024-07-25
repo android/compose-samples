@@ -205,10 +205,12 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun WellnessCard(wellnessData: WellnessData = WellnessData(0, 0, 0)) {
+fun WellnessCard(
+    modifier : Modifier = Modifier,
+    wellnessData: WellnessData = WellnessData(0, 0, 0)) {
     BasicInformationalCard(
         borderColor = LightBlue,
-        modifier = Modifier
+        modifier = modifier
                 .widthIn(max = 400.dp)
                 .heightIn(min = 200.dp)
     ) {
