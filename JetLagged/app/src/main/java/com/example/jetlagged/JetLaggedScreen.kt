@@ -46,9 +46,9 @@ import com.example.jetlagged.ui.util.MultiDevicePreview
 @MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
+    modifier: Modifier = Modifier,
     windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
     viewModel: JetLaggedHomeScreenViewModel = viewModel(),
-    modifier: Modifier = Modifier,
     onDrawerClicked: () -> Unit = {}
 ) {
     Column(
