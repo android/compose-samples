@@ -49,8 +49,7 @@ fun HeartRateCard(
     BasicInformationalCard(
         borderColor = Coral,
         modifier = modifier
-                .height(260.dp)
-
+            .height(260.dp)
     ) {
         Column(
             modifier = Modifier
