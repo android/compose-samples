@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            JetcasterTheme {
+            // TV is hardcoded to dark mode to match TV ui
+            JetcasterTheme(isInDarkTheme = true) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     shape = RectangleShape

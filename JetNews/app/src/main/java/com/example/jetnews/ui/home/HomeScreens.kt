@@ -679,7 +679,7 @@ private fun HomeTopAppBar(
                 painter = painterResource(R.drawable.ic_jetnews_wordmark),
                 contentDescription = title,
                 contentScale = ContentScale.Inside,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -687,8 +687,7 @@ private fun HomeTopAppBar(
             IconButton(onClick = openDrawer) {
                 Icon(
                     painter = painterResource(R.drawable.ic_jetnews_logo),
-                    contentDescription = stringResource(R.string.cd_open_navigation_drawer),
-                    tint = MaterialTheme.colorScheme.primary
+                    contentDescription = stringResource(R.string.cd_open_navigation_drawer)
                 )
             }
         },

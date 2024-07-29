@@ -34,6 +34,12 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -70,8 +76,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -193,6 +203,21 @@ private fun Header(snackId: Long, origin: String) {
         ?: throw IllegalArgumentException("No Scope found")
 
     with(sharedTransitionScope) {
+        val brushColors = JetsnackTheme.colors.tornado1
+
+        val infiniteTransition = rememberInfiniteTransition(label = "background")
+        val targetOffset = with(LocalDensity.current) {
+            1000.dp.toPx()
+        }
+        val offset by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = targetOffset,
+            animationSpec = infiniteRepeatable(
+                tween(50000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "offset"
+        )
         Spacer(
             modifier = Modifier
                 .sharedBounds(
@@ -211,7 +236,19 @@ private fun Header(snackId: Long, origin: String) {
                 )
                 .height(280.dp)
                 .fillMaxWidth()
-                .background(Brush.verticalGradient(JetsnackTheme.colors.tornado1))
+                .blur(40.dp)
+                .drawWithCache {
+                    val brushSize = 400f
+                    val brush = Brush.linearGradient(
+                        colors = brushColors,
+                        start = Offset(offset, offset),
+                        end = Offset(offset + brushSize, offset + brushSize),
+                        tileMode = TileMode.Mirror
+                    )
+                    onDrawBehind {
+                        drawRect(brush)
+                    }
+                }
         )
     }
 }

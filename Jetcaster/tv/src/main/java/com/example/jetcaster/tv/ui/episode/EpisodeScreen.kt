@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -52,16 +53,18 @@ fun EpisodeScreen(
 
     val uiState by episodeScreenViewModel.uiStateFlow.collectAsState()
 
+    val screenModifier = modifier.fillMaxSize()
     when (val s = uiState) {
-        EpisodeScreenUiState.Loading -> Loading(modifier = modifier)
-        EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = modifier)
+        EpisodeScreenUiState.Loading -> Loading(modifier = screenModifier)
+        EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = screenModifier)
         is EpisodeScreenUiState.Ready -> EpisodeDetailsWithBackground(
             playerEpisode = s.playerEpisode,
             playEpisode = {
                 episodeScreenViewModel.play(it)
                 playEpisode()
             },
-            addPlayList = episodeScreenViewModel::addPlayList
+            addPlayList = episodeScreenViewModel::addPlayList,
+            modifier = screenModifier
         )
     }
 }

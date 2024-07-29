@@ -41,6 +41,9 @@ val florina = PostAuthor(
 val jose =
     PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
 
+val androidstudioteam =
+    PostAuthor("Android Studio Team", "https://twitter.com/androidstudio")
+
 val publication = Publication(
     "Android Developers",
     "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
@@ -934,6 +937,153 @@ val paragraphsPost5 = listOf(
     )
 )
 
+val paragraphsPost6 = listOf(
+    Paragraph(
+        ParagraphType.Text,
+        "The Android Studio logo redesign caught the attention of the developer community since its sneak peek at the Android Developer Summit. We are thrilled to release the new Android Studio logo with the stable release of Flamingo. Now that the new logo is available to most Android Studio users, we can examine the design changes in greater detail and decode their meaning."
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "This case study offers a comprehensive overview of the design journey, from identifying the initial problem to the final outcome. It explores the critical brand elements that the team needed to consider and the tools used throughout the redesign process. This case study also delves into the various stages of design exploration, highlighting the efforts to create a modern logo while honoring the Android Studio brand's legacy."
+    ),
+    Paragraph(
+        ParagraphType.Header,
+        "Identifying the problem"
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "You told us the Android Studio logo looked a little weird and complicated. It doesn't shrink down well and it's way too similar to the emulator. We heard you!"
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "The Android Studio logo used between 2020 and 2022 was well-suited for print, but it posed challenges when used as an application icon. Its readability suffered when reduced to smaller sizes, and its similarity to the emulator caused confusion."
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "Additionally, the use of color alone to differentiate between Canary and Stable versions made it difficult for users with color vision deficiencies."
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "The redesign aimed to resolve these concerns by creating a logo that was easy to read, visually distinctive, and followed the OS guidelines when necessary, ensuring accessibility. The new design also maintained a connection with the Android logo family while honoring its legacy."
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "In this case study, we will delve into the version history and evolution of the Android Studio logo and how it has changed over the years."
+    ),
+    Paragraph(
+        ParagraphType.Header,
+        "A brief history of the Android Studio logo"
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "2013: The original Android Studio logo was a 3D robot that highlighted the gears and interworking of the bugdroid. At this time, the Android Emulator was the bugdroid.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 5)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "2014: The Android Emulator merged to a flat mark but remained otherwise unchanged.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 5)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "2014-2019: An updated Android Studio logo was introduced featuring an \"A\" compass in front of a green circle.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 10)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "2019: In Canary 3.6, the color palette was updated to match Android 10.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 5)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "2020-2022: With the release of Android Studio 4.1 Canary, the \"A\" compass was reduced to an abstract form placed in front of a blueprint. The Android head was also added, peeking over the top.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 10)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Header,
+        "Understanding the Android brand elements"
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "When redesigning a logo, it's important to consider brand elements that unify products within an ecosystem. For the Android Developer ecosystem, the \"robot head\" is a key brand element, alongside the primaryAndroid green color. The secondary colors blue and navy, and tertiary colors like orange, can also be utilized for support."
+    ),
+    Paragraph(
+        ParagraphType.Header,
+        "Key objectives"
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Iconography: use recognizable and appropriate symbols, such as compass \"A\" for Android Studio or a device for Android Emulator, to convey the purpose and functionality clearly and quickly.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 12)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Enhance recognition and scalability: the Android Studio and Android Emulator should prioritize legibility and scalability, ensuring that they can be easily recognized and understood even at smaller sizes.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 36)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Establish distinction: the Android Studio and Android Emulator need to be easily distinguishable, to avoid confusion.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 22)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Maintain brand consistency: the Android Studio and Android Emulator designs should be consistent with the overall branding and visual identity of the Android family, while still being distinctive.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 27)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Ensure accessibility: the logo should be accessible to all users, including those with visual impairments. This means using clear shapes, colors, and contrast.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 21)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Follow OS guidelines: the updated application icon must align with the Android visual language and conform to the guidelines of macOS, Windows, and Linux operating systems, ensuring consistency and coherence across all platforms.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 21)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Bullet,
+        "Ensure versatility: the Android Studio logo should be versatile enough to work in a variety of sizes and contexts, such as on different devices and platforms.",
+        listOf(
+            Markup(MarkupType.Bold, 0, 20)
+        )
+    ),
+    Paragraph(
+        ParagraphType.Text,
+        "Read More",
+        listOf(
+            Markup(
+                MarkupType.Link,
+                0,
+                9,
+                "https://android-developers.googleblog.com/2023/05/redesigning-android-studio-logo.html"
+            )
+        )
+    )
+)
+
 val post1 = Post(
     id = "dc523f0ed25c",
     title = "A Little Thing about Android Module Paths",
@@ -1014,9 +1164,25 @@ val post5 = Post(
     imageThumbId = R.drawable.post_5_thumb
 )
 
+val post6 = Post(
+    id = "55db18283ac0",
+    title = "Redesigning the Android Studio Logo",
+    subtitle = "A case study offering a comprehensive overview of the design journey of the Android Studio product logo.",
+    url = "https://android-developers.googleblog.com/2023/05/redesigning-android-studio-logo.html",
+    publication = publication,
+    metadata = Metadata(
+        author = androidstudioteam,
+        date = "May 10",
+        readTimeMinutes = 5
+    ),
+    paragraphs = paragraphsPost6,
+    imageId = R.drawable.post_6,
+    imageThumbId = R.drawable.post_6_thumb
+)
+
 val posts: PostsFeed =
     PostsFeed(
-        highlightedPost = post4,
+        highlightedPost = post6,
         recommendedPosts = listOf(post1, post2, post3),
         popularPosts = listOf(
             post5,
@@ -1024,6 +1190,7 @@ val posts: PostsFeed =
             post2.copy(id = "post7")
         ),
         recentPosts = listOf(
+            post6,
             post3.copy(id = "post8"),
             post4.copy(id = "post9"),
             post5.copy(id = "post10")
