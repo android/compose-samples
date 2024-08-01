@@ -28,20 +28,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +61,7 @@ import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterScreen(
     onDismiss: () -> Unit
@@ -77,6 +78,7 @@ fun FilterScreen(
         JetsnackScaffold(
             topBar = {
                 TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = JetsnackTheme.colors.uiBackground),
                     navigationIcon = {
                         IconButton(onClick = onDismiss) {
                             Icon(
@@ -90,7 +92,7 @@ fun FilterScreen(
                             text = stringResource(id = R.string.label_filters),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.h6
+                            style = MaterialTheme.typography.titleLarge
                         )
                     },
                     actions = {
@@ -99,20 +101,20 @@ fun FilterScreen(
                             onClick = { /* TODO: Open search */ },
                             enabled = resetEnabled
                         ) {
-                            val alpha = if (resetEnabled) {
-                                ContentAlpha.high
+                            val fontWeight = if (resetEnabled) {
+                                FontWeight.Bold
                             } else {
-                                ContentAlpha.disabled
+                                FontWeight.Normal
                             }
-                            CompositionLocalProvider(LocalContentAlpha provides alpha) {
-                                Text(
-                                    text = stringResource(id = R.string.reset),
-                                    style = MaterialTheme.typography.body2
-                                )
-                            }
+
+                            Text(
+                                text = stringResource(id = R.string.reset),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = fontWeight,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (!resetEnabled) 0.38f else 1f)
+                            )
                         }
-                    },
-                    backgroundColor = JetsnackTheme.colors.uiBackground
+                    }
                 )
             }
         ) {
@@ -152,6 +154,7 @@ fun FilterScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilterChipSection(title: String, filters: List<Filter>) {
     FilterTitle(text = title)
@@ -206,7 +209,7 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
         FilterTitle(text = stringResource(id = R.string.max_calories))
         Text(
             text = stringResource(id = R.string.per_serving),
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodyMedium,
             color = JetsnackTheme.colors.brand,
             modifier = Modifier.padding(top = 5.dp, start = 10.dp)
         )
@@ -231,7 +234,7 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
 fun FilterTitle(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.titleLarge,
         color = JetsnackTheme.colors.brand,
         modifier = Modifier.padding(bottom = 8.dp)
     )
@@ -253,7 +256,7 @@ fun SortOption(
         }
         Text(
             text = text,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .padding(start = 10.dp)
                 .weight(1f)

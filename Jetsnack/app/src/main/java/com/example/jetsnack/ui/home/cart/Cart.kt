@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -43,14 +45,15 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -162,7 +165,7 @@ private fun CartContent(
             )
             Text(
                 text = stringResource(R.string.cart_order_header, snackCountFormattedString),
-                style = MaterialTheme.typography.h6,
+                style = MaterialTheme.typography.titleLarge,
                 color = JetsnackTheme.colors.brand,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -179,8 +182,8 @@ private fun CartContent(
                     fadeOutSpec = itemAnimationSpecFade,
                     placementSpec = itemPlacementSpec
                 ),
-                background = { offsetX ->
-                    SwipeDismissItemBackground(offsetX)
+                background = {
+                    SwipeDismissItemBackground(0.dp) //todo
                 },
             ) {
                 CartItem(
@@ -283,7 +286,7 @@ private fun SwipeDismissItemBackground(offsetX: Dp) {
                     if (offsetX < -120.dp) {
                         Text(
                             text = stringResource(id = R.string.remove_item),
-                            style = MaterialTheme.typography.subtitle1,
+                            style = MaterialTheme.typography.titleMedium,
                             color = JetsnackTheme.colors.uiBackground,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
@@ -331,7 +334,7 @@ fun CartItem(
         )
         Text(
             text = snack.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textSecondary,
             modifier = Modifier.constrainAs(name) {
                 linkTo(
@@ -360,7 +363,7 @@ fun CartItem(
         }
         Text(
             text = snack.tagline,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
             color = JetsnackTheme.colors.textHelp,
             modifier = Modifier.constrainAs(tag) {
                 linkTo(
@@ -381,7 +384,7 @@ fun CartItem(
         )
         Text(
             text = formatPrice(snack.price),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.constrainAs(price) {
                 linkTo(
@@ -420,7 +423,7 @@ fun SummaryItem(
     Column(modifier) {
         Text(
             text = stringResource(R.string.cart_summary_header),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.brand,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -432,7 +435,7 @@ fun SummaryItem(
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
                 text = stringResource(R.string.cart_subtotal_label),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
@@ -440,14 +443,14 @@ fun SummaryItem(
             )
             Text(
                 text = formatPrice(subtotal),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.alignBy(LastBaseline)
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
                 text = stringResource(R.string.cart_shipping_label),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
@@ -455,7 +458,7 @@ fun SummaryItem(
             )
             Text(
                 text = formatPrice(shippingCosts),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.alignBy(LastBaseline)
             )
         }
@@ -464,7 +467,7 @@ fun SummaryItem(
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
                 text = stringResource(R.string.cart_total_label),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 16.dp)
@@ -473,7 +476,7 @@ fun SummaryItem(
             )
             Text(
                 text = formatPrice(subtotal + shippingCosts),
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.alignBy(LastBaseline)
             )
         }
