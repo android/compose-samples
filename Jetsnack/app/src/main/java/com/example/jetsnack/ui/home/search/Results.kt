@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetsnack.ui.home.search
 
 import android.content.res.Configuration
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -65,7 +68,7 @@ fun SearchResults(
     onSnackClick: (Long, String) -> Unit
 ) {
     Column {
-        FilterBar(filters, onShowFilters = {})
+       // FilterBar(filters, onShowFilters = {})
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
             style = MaterialTheme.typography.titleLarge,

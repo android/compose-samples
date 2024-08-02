@@ -21,6 +21,7 @@
 package com.example.jetsnack.ui
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
@@ -41,10 +42,12 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
+import com.example.jetsnack.ui.home.FilterScreen
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.home.addHomeGraph
@@ -71,11 +74,12 @@ fun JetsnackApp() {
                 ) {
                     composableWithCompositionLocal(
                         route = MainDestinations.HOME_ROUTE
-                    ) {
+                    ) { backStackEntry ->
                         MainContainer(
                             onSnackSelected = jetsnackNavController::navigateToSnackDetail
                         )
                     }
+
                     composableWithCompositionLocal(
                         "${MainDestinations.SNACK_DETAIL_ROUTE}/" +
                             "{${MainDestinations.SNACK_ID_KEY}}" +
@@ -152,14 +156,14 @@ fun MainContainer(
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
-    ) { paddingValues ->
+    ) { _ ->
         NavHost(
             navController = nestedNavController.navController,
             startDestination = HomeSections.FEED.route
         ) {
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
             )
         }
     }

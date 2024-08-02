@@ -29,3 +29,5 @@ enum class SnackSharedElementType {
     Tagline,
     Background
 }
+
+object FilterSharedElementKey

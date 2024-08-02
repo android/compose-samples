@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -48,37 +54,50 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
+import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun FilterBar(
     filters: List<Filter>,
-    onShowFilters: () -> Unit
+    onShowFilters: () -> Unit,
+    filterScreenVisible: Boolean,
+    sharedTransitionScope: SharedTransitionScope
 ) {
+    with(sharedTransitionScope) {
+        LazyRow(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
+            modifier = Modifier.heightIn(min = 56.dp)
+        ) {
+            item {
+                AnimatedVisibility(visible = !filterScreenVisible) {
+                    IconButton(onClick = onShowFilters, modifier = Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(FilterSharedElementKey),
+                            animatedVisibilityScope = this@AnimatedVisibility,
+                            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                        )) {
+                        Icon(
+                            imageVector = Icons.Rounded.FilterList,
+                            tint = JetsnackTheme.colors.brand,
+                            contentDescription = stringResource(R.string.label_filters),
+                            modifier = Modifier.diagonalGradientBorder(
+                                colors = JetsnackTheme.colors.interactiveSecondary,
+                                shape = CircleShape
+                            )
+                        )
+                    }
+                }
 
-    LazyRow(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
-        modifier = Modifier.heightIn(min = 56.dp)
-    ) {
-        item {
-            IconButton(onClick = onShowFilters) {
-                Icon(
-                    imageVector = Icons.Rounded.FilterList,
-                    tint = JetsnackTheme.colors.brand,
-                    contentDescription = stringResource(R.string.label_filters),
-                    modifier = Modifier.diagonalGradientBorder(
-                        colors = JetsnackTheme.colors.interactiveSecondary,
-                        shape = CircleShape
-                    )
-                )
+            }
+            items(filters) { filter ->
+                FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
             }
         }
-        items(filters) { filter ->
-            FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
-        }
     }
+
 }
 
 @Composable

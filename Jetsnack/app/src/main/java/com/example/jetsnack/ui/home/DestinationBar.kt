@@ -22,13 +22,10 @@ import android.content.res.Configuration
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Horizontal
-import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Top
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -40,7 +37,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
@@ -107,7 +102,6 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     colors = TopAppBarDefaults.topAppBarColors().copy(
                         containerColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
                         titleContentColor = JetsnackTheme.colors.textSecondary ),
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars.only(Horizontal))
                 )
                 JetsnackDivider()
             }
