@@ -16,7 +16,9 @@
 
 package com.example.jetcaster.glancewidget
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -42,9 +45,12 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.action.Action
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.components.Scaffold
 import androidx.glance.appwidget.components.SquareIconButton
 import androidx.glance.appwidget.cornerRadius
@@ -70,7 +76,7 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal val TAG = "JetcasterAppWidegt"
+internal const val TAG = "JetcasterAppWidget"
 
 /**
  * Implementation of App Widget functionality.
@@ -81,6 +87,7 @@ class JetcasterAppWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 
 data class JetcasterAppWidgetViewState(
+    val episodeUri: String,
     val episodeTitle: String,
     val podcastTitle: String,
     val isPlaying: Boolean,
@@ -117,6 +124,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
         val testState = JetcasterAppWidgetViewState(
+            episodeUri = "ef3279dd-41a2-493d-8136-04e648a94abe",
             episodeTitle =
             "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
             podcastTitle = "Now in Android",
@@ -130,6 +138,14 @@ class JetcasterAppWidget : GlanceAppWidget() {
             val sizeBucket = calculateSizeBucket()
             val playPauseIcon = if (testState.isPlaying) PlayPauseIcon.Pause else PlayPauseIcon.Play
             val artUri = Uri.parse(testState.albumArtUri)
+            val episodeUri = Uri.encode(testState.episodeUri)
+
+            val intent = Intent().apply {
+                action = Intent.ACTION_VIEW
+                component = ComponentName(context, "com.example.jetcaster.ui.MainActivity")
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                data = "https://jetcaster.google.com/player/$episodeUri".toUri()
+            }
 
             GlanceTheme(
                 colors = ColorProviders(
@@ -141,14 +157,16 @@ class JetcasterAppWidget : GlanceAppWidget() {
                     SizeBucket.Invalid -> WidgetUiInvalidSize()
                     SizeBucket.Narrow -> WidgetUiNarrow(
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
+                        onClick = actionStartActivity(intent)
                     )
 
                     SizeBucket.Normal -> WidgetUiNormal(
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
+                        onClick = actionStartActivity(intent)
                     )
                 }
             }
@@ -162,10 +180,12 @@ private fun WidgetUiNormal(
     subtitle: String,
     imageUri: Uri,
     playPauseIcon: PlayPauseIcon,
+    onClick: Action,
 ) {
     Scaffold(titleBar = {} /* title bar will be optional starting in glance 1.1.0-beta3*/) {
         Row(
-            GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
+            modifier = GlanceModifier.fillMaxSize().clickable(onClick),
+            verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
             AlbumArt(imageUri, GlanceModifier.size(Sizes.imageNormal))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
@@ -178,10 +198,11 @@ private fun WidgetUiNormal(
 private fun WidgetUiNarrow(
     imageUri: Uri,
     playPauseIcon: PlayPauseIcon,
+    onClick: Action,
 ) {
     Scaffold(titleBar = {} /* title bar will be optional in scaffold in glance 1.1.0-beta3*/) {
         Row(
-            modifier = GlanceModifier.fillMaxSize(),
+            modifier = GlanceModifier.fillMaxSize().clickable(onClick),
             verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
             AlbumArt(imageUri, GlanceModifier.size(Sizes.imageCondensed))
