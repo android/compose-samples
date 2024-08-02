@@ -21,3 +21,4 @@ gradle.xml
 # General
 .DS_Store
 .externalNativeBuild
+.kotlin/

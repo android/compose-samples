@@ -128,7 +128,6 @@ private fun PodcastDetailsWithBackground(
             enqueue = enqueue,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
         )
     }
 }
@@ -157,7 +156,12 @@ private fun PodcastDetails(
                 isSubscribed = isSubscribed,
                 subscribe = subscribe,
                 unsubscribe = unsubscribe,
-                modifier = Modifier.weight(0.3f),
+                modifier = Modifier
+                    .weight(0.3f)
+                    .padding(
+                        JetcasterAppDefaults.overScanMargin.podcast.copy(end = 0.dp)
+                            .intoPaddingValues()
+                    ),
             )
         },
         second = {
@@ -258,7 +262,8 @@ private fun PodcastEpisodeList(
 ) {
     TvLazyColumn(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues()
     ) {
         items(episodeList) {
             EpisodeListItem(

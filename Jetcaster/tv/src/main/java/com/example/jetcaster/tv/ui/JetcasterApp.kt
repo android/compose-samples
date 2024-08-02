@@ -153,9 +153,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     playEpisode = {
                         jetcasterAppState.playEpisode()
                     },
-                    modifier = Modifier
-                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
@@ -170,9 +168,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     playEpisode = {
                         jetcasterAppState.playEpisode()
                     },
-                    modifier = Modifier
-                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
@@ -221,6 +217,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         composable(Screen.Profile.route) {
             ProfileScreen(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
             )
         }
@@ -228,6 +225,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
         composable(Screen.Settings.route) {
             SettingsScreen(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
             )
         }
