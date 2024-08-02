@@ -19,61 +19,54 @@ package com.example.jetcaster.tv.ui
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
 
 class JetcasterAppState(
     val navHostController: NavHostController
 ) {
 
-    val currentRouteFlow = navHostController.currentBackStackEntryFlow.map {
-        it.destination.route
-    }
-
-    private fun navigate(screen: Screen) {
-        navHostController.navigate(screen.route)
+    val currentDestinationFlow = navHostController.currentBackStackEntryFlow.map {
+        it.destination
     }
 
     fun navigateToDiscover() {
-        navigate(Screen.Discover)
+        navHostController.navigate(DiscoverRoute)
     }
 
     fun navigateToLibrary() {
-        navigate(Screen.Library)
+        navHostController.navigate(LibraryRoute)
     }
 
     fun navigateToProfile() {
-        navigate(Screen.Profile)
+        navHostController.navigate(ProfileRoute)
     }
 
     fun navigateToSearch() {
-        navigate(Screen.Search)
+        navHostController.navigate(SearchRoute)
     }
 
     fun navigateToSettings() {
-        navigate(Screen.Settings)
+        navHostController.navigate(SettingsRoute)
     }
 
     fun showPodcastDetails(podcastUri: String) {
-        val encodedUrL = Uri.encode(podcastUri)
-        val screen = Screen.Podcast(encodedUrL)
-        navigate(screen)
-    }
-
-    fun showEpisodeDetails(episodeUri: String) {
-        val encodeUrl = Uri.encode(episodeUri)
-        val screen = Screen.Episode(encodeUrl)
-        navigate(screen)
+        val encodedUrl = Uri.encode(podcastUri)
+        navHostController.navigate(PodcastRoute(encodedUrl))
     }
 
     fun showEpisodeDetails(playerEpisode: PlayerEpisode) {
-        showEpisodeDetails(playerEpisode.uri)
+        val encodeUrl = Uri.encode(playerEpisode.uri)
+        navHostController.navigate(EpisodeRoute(encodeUrl))
     }
 
     fun playEpisode() {
-        navigate(Screen.Player)
+        navHostController.navigate(PlayerRoute)
     }
 
     fun backToHome() {
@@ -81,6 +74,10 @@ class JetcasterAppState(
         navigateToDiscover()
     }
 }
+
+// Todo: Null-safe not supported in library, remove when supported in future
+inline fun <reified T : Any> NavDestination?.hasRoute() =
+    this?.hasRoute(T::class) ?: false
 
 @Composable
 fun rememberJetcasterAppState(
@@ -90,51 +87,15 @@ fun rememberJetcasterAppState(
         JetcasterAppState(navHostController)
     }
 
-sealed interface Screen {
-    val route: String
+@Serializable internal object DiscoverRoute
+@Serializable internal object LibraryRoute
+@Serializable internal object SearchRoute
+@Serializable internal object ProfileRoute
+@Serializable internal object SettingsRoute
+@Serializable internal object PlayerRoute
 
-    data object Discover : Screen {
-        override val route = "/discover"
-    }
+const val PODCAST_URI_KEY = "podcastUri"
+@Serializable data class PodcastRoute(val podcastUri: String)
 
-    data object Library : Screen {
-        override val route = "/library"
-    }
-
-    data object Search : Screen {
-        override val route = "/search"
-    }
-
-    data object Profile : Screen {
-        override val route = "/profile"
-    }
-
-    data object Settings : Screen {
-        override val route: String = "settings"
-    }
-
-    data class Podcast(private val podcastUri: String) : Screen {
-        override val route = "$ROOT/$podcastUri"
-
-        companion object : Screen {
-            private const val ROOT = "/podcast"
-            const val PARAMETER_NAME = "podcastUri"
-            override val route = "$ROOT/{$PARAMETER_NAME}"
-        }
-    }
-
-    data class Episode(private val episodeUri: String) : Screen {
-
-        override val route: String = "$ROOT/$episodeUri"
-
-        companion object : Screen {
-            private const val ROOT = "/episode"
-            const val PARAMETER_NAME = "episodeUri"
-            override val route = "$ROOT/{$PARAMETER_NAME}"
-        }
-    }
-
-    data object Player : Screen {
-        override val route = "player"
-    }
-}
+const val EPISODE_URI_KEY = "episodeUri"
+@Serializable data class EpisodeRoute(val episodeUri: String)

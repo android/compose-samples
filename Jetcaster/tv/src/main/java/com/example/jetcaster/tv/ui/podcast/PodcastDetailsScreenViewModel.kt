@@ -16,9 +16,11 @@
 
 package com.example.jetcaster.tv.ui.podcast
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.model.PodcastInfo
@@ -27,14 +29,15 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.tv.model.EpisodeList
-import com.example.jetcaster.tv.ui.Screen
+import com.example.jetcaster.tv.ui.PODCAST_URI_KEY
+import com.example.jetcaster.tv.ui.PodcastRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,43 +50,33 @@ class PodcastDetailsScreenViewModel @Inject constructor(
     private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
-    private val podcastUri = handle.get<String>(Screen.Podcast.PARAMETER_NAME)
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private val podcastFlow =
-        handle.getStateFlow<String?>(Screen.Podcast.PARAMETER_NAME, null).flatMapLatest {
-            if (it != null) {
-                podcastStore.podcastWithUri(it)
-            } else {
-                flowOf(null)
-            }
+        handle.getStateFlow(
+            key = PODCAST_URI_KEY,
+            initialValue = handle.toRoute<PodcastRoute>().podcastUri
+        ).flatMapLatest {
+            podcastStore.podcastWithUri(Uri.decode(it))
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val episodeListFlow = podcastFlow.flatMapLatest {
-        if (it != null) {
+    private val episodeListFlow = podcastFlow
+        .flatMapLatest {
             episodeStore.episodesInPodcast(it.uri)
-        } else {
-            flowOf(emptyList())
+        }.map { list ->
+            EpisodeList(list.map { it.toPlayerEpisode() })
         }
-    }.map { list ->
-        EpisodeList(list.map { it.toPlayerEpisode() })
-    }
 
     private val subscribedPodcastListFlow =
         podcastStore.followedPodcastsSortedByLastEpisode()
 
-    val uiStateFlow = combine(
+    val uiStateFlow: StateFlow<PodcastScreenUiState> = combine(
         podcastFlow,
         episodeListFlow,
         subscribedPodcastListFlow
     ) { podcast, episodeList, subscribedPodcastList ->
-        if (podcast != null) {
-            val isSubscribed = subscribedPodcastList.any { it.podcast.uri == podcastUri }
-            PodcastScreenUiState.Ready(podcast.asExternalModel(), episodeList, isSubscribed)
-        } else {
-            PodcastScreenUiState.Error
-        }
+        val isSubscribed = subscribedPodcastList.any { it.podcast.uri == podcast.uri }
+        PodcastScreenUiState.Ready(podcast.asExternalModel(), episodeList, isSubscribed)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
