@@ -25,6 +25,10 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -46,10 +50,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.grid.TvGridCells
-import androidx.tv.foundation.lazy.grid.TvGridItemSpan
-import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
-import androidx.tv.foundation.lazy.grid.items
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.FilterChip
 import androidx.tv.material3.Icon
@@ -259,14 +259,14 @@ private fun SearchResult(
     header: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TvLazyVerticalGrid(
-        columns = TvGridCells.Fixed(4),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(4),
         horizontalArrangement =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         modifier = modifier,
     ) {
-        item(span = { TvGridItemSpan(maxLineSpan) }) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             header()
         }
         items(podcastList) {

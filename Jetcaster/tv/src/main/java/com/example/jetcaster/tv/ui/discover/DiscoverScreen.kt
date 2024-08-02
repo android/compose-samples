@@ -18,6 +18,8 @@ package com.example.jetcaster.tv.ui.discover
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,8 +31,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyListState
-import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
@@ -94,7 +94,7 @@ private fun CatalogWithCategorySelection(
     onEpisodeSelected: (PlayerEpisode) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier,
-    state: TvLazyListState = rememberTvLazyListState(),
+    state: LazyListState = rememberLazyListState(),
 ) {
     val (focusRequester, selectedTab) = remember {
         FocusRequester.createRefs()

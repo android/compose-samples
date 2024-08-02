@@ -10,6 +10,7 @@ androidx-appcompat = "1.7.0"
 androidx-benchmark = "1.2.4"
 androidx-benchmark-junit4 = "1.2.4"
 androidx-compose-bom = "2024.06.00"
+androidx-compose-foundation = "1.7.0-beta05"
 androidx-compose-material3 = "1.3.0-beta01"
 androidx-compose-material3-adaptive = "1.0.0-beta01"
 androidx-constraintlayout = "1.0.1"
@@ -23,8 +24,7 @@ androidx-test = "1.5.0"
 androidx-test-espresso = "3.5.1"
 androidx-test-ext-junit = "1.1.5"
 androidx-test-ext-truth = "1.5.0"
-androidx-tv-foundation = "1.0.0-alpha10"
-androidx-tv-material = "1.0.0-beta01"
+androidx-tv-material = "1.0.0-rc01"
 androidx-wear-compose = "1.3.1"
 androidx-window = "1.3.0"
 androidxHiltNavigationCompose = "1.2.0"
@@ -124,7 +124,9 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
-androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
+# Tentatively introduced androidx.compose.foundation:foundation:1.7.0-beta04, which is the replacement of tv-foundation.
+# The introduced dependecy will be removed once the version of the Compose Foundation becomes a part of Compose BOM
+androidx-tv-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose-foundation" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }
 androidx-wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx-wear-compose" }
