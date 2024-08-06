@@ -80,11 +80,7 @@ fun FilterBar(
                         .sharedBounds(
                             rememberSharedContentState(FilterSharedElementKey),
                             animatedVisibilityScope = this@AnimatedVisibility,
-                            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-                            boundsTransform = { _, _ ->
-                                tween(3000)
-
-                            }
+                            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
                         )) {
                         Icon(
                             imageVector = Icons.Rounded.FilterList,

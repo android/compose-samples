@@ -68,8 +68,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                 modifier = modifier
                     .renderInSharedTransitionScopeOverlay()
                     .animateEnterExit(
-                        enter = slideInVertically(spatialExpressiveSpring()) { -it },
-                        exit = slideOutVertically(spatialExpressiveSpring()) { -it }
+                        enter = slideInVertically(spatialExpressiveSpring()) { -it * 2 },
+                        exit = slideOutVertically(spatialExpressiveSpring()) { -it * 2 }
                     )
             ) {
                 TopAppBar(
