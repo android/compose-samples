@@ -29,6 +29,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarHost
@@ -163,7 +164,7 @@ fun MainContainer(
         ) {
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding).consumeWindowInsets(padding)
             )
         }
     }
