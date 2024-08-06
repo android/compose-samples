@@ -24,6 +24,9 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -78,6 +81,10 @@ fun FilterBar(
                             rememberSharedContentState(FilterSharedElementKey),
                             animatedVisibilityScope = this@AnimatedVisibility,
                             resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                            boundsTransform = { _, _ ->
+                                tween(3000)
+
+                            }
                         )) {
                         Icon(
                             imageVector = Icons.Rounded.FilterList,

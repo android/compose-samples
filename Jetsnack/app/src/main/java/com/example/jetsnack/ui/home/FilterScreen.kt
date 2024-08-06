@@ -21,6 +21,7 @@ package com.example.jetsnack.ui.home
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,10 +29,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -79,16 +84,22 @@ fun FilterScreen(
     var maxCalories by remember { mutableFloatStateOf(0f) }
     val defaultFilter = SnackRepo.getSortDefault()
 
-    Box(modifier = Modifier.fillMaxSize()
-        .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
-        // capture click
-    }) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            // capture click
+        }) {
         val priceFilters = remember { SnackRepo.getPriceFilters() }
         val categoryFilters = remember { SnackRepo.getCategoryFilters() }
         val lifeStyleFilters = remember { SnackRepo.getLifeStyleFilters() }
-        Spacer(modifier = Modifier.fillMaxSize()
+        Spacer(modifier = Modifier
+            .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.5f))
-            .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
                 onDismiss()
             })
         with(sharedTransitionScope) {
@@ -100,15 +111,20 @@ fun FilterScreen(
                     .sharedBounds(
                         rememberSharedContentState(FilterSharedElementKey),
                         animatedVisibilityScope = animatedVisibilityScope,
-                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                        resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
                         clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
                     )
                     .wrapContentSize()
-                    .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {  }
+                    .heightIn(max = 450.dp)
+                    .verticalScroll(rememberScrollState())
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }) { }
                     .background(JetsnackTheme.colors.uiFloated)
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .skipToLookaheadSize(),
             ) {
-                Row(modifier = Modifier.wrapContentSize()) {
+                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Filled.Close,
@@ -117,7 +133,10 @@ fun FilterScreen(
                     }
                     Text(
                         text = stringResource(id = R.string.label_filters),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(top = 8.dp, end = 48.dp),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -168,6 +187,8 @@ fun FilterScreen(
                     filters = lifeStyleFilters
                 )
             }
+
+
         }
     }
 }
@@ -258,6 +279,7 @@ fun FilterTitle(text: String) {
         modifier = Modifier.padding(bottom = 8.dp)
     )
 }
+
 @Composable
 fun SortOption(
     text: String,
@@ -289,10 +311,11 @@ fun SortOption(
         }
     }
 }
+
 @Preview("filter screen")
 @Composable
 fun FilterScreenPreview() {
     JetsnackTheme {
-      //  FilterScreen(onDismiss = {})
+        //  FilterScreen(onDismiss = {})
     }
 }
