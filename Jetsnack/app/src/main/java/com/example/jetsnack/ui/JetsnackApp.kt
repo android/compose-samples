@@ -156,14 +156,14 @@ fun MainContainer(
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
-    ) { _ ->
+    ) { padding ->
         NavHost(
             navController = nestedNavController.navController,
             startDestination = HomeSections.FEED.route
         ) {
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
-                modifier = Modifier
+                modifier = Modifier.padding(padding)
             )
         }
     }

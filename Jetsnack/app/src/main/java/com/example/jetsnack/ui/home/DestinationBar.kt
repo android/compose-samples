@@ -73,6 +73,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     )
             ) {
                 TopAppBar(
+                    windowInsets = WindowInsets(0, 0, 0, 0),
                     title = {
                         Row {
                             Text(

@@ -138,9 +138,6 @@ private fun SnackCollectionList(
                 index = index
             )
         }
-        item {
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
-        }
     }
 }
 
