@@ -68,7 +68,7 @@ class JetnewsTests {
             label = "Open navigation drawer",
             useUnmergedTree = true
         ).performClick()
-        composeTestRule.onNodeWithText("Interests").performClick()
-        composeTestRule.onNodeWithText("Topics").assertExists()
+        composeTestRule.onNodeWithText("Interests", useUnmergedTree = true).performClick()
+        composeTestRule.onNodeWithText("Topics", useUnmergedTree = true).assertExists()
     }
 }
