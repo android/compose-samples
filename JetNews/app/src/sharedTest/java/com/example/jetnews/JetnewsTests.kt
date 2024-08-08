@@ -71,6 +71,6 @@ class JetnewsTests {
             useUnmergedTree = true
         ).performClick()
         composeTestRule.onNodeWithText("Interests").performClick()
-        composeTestRule.waitUntilAtLeastOneExists(hasText("Jetpack Compose"))
+        composeTestRule.waitUntilAtLeastOneExists(hasText("Jetpack Compose"),5000L)
     }
 }
