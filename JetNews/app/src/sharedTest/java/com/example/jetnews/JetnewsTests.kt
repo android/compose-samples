@@ -16,6 +16,7 @@
 
 package com.example.jetnews
 
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -62,13 +63,14 @@ class JetnewsTests {
         }
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
     fun app_opensInterests() {
         composeTestRule.onNodeWithContentDescription(
             label = "Open navigation drawer",
             useUnmergedTree = true
         ).performClick()
-        composeTestRule.onNodeWithText("Interests", useUnmergedTree = true).performClick()
-        composeTestRule.onNodeWithText("Topics", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("Interests").performClick()
+        composeTestRule.waitUntilAtLeastOneExists(hasText("Topics"))
     }
 }
