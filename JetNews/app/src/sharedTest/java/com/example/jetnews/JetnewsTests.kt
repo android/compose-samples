@@ -69,7 +69,7 @@ class JetnewsTests {
             useUnmergedTree = true
         ).performClick()
         composeTestRule.onNodeWithText("Interests").performClick()
-        // TODO - this fails on CI but not locally.
+        // TODO - this fails on CI but not locally. (https://github.com/android/compose-samples/issues/1442)
         // composeTestRule.waitUntilAtLeastOneExists(hasText("Topics"), 5000L)
     }
 }
