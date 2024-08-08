@@ -62,7 +62,7 @@ import com.example.jetsnack.ui.utils.formatPrice
 fun SearchResults(
     searchResults: List<Snack>,
     filters: List<Filter>,
-    onSnackClick: (Long) -> Unit
+    onSnackClick: (Long, String) -> Unit
 ) {
     Column {
         FilterBar(filters, onShowFilters = {})
@@ -83,14 +83,14 @@ fun SearchResults(
 @Composable
 private fun SearchResult(
     snack: Snack,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     showDivider: Boolean,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onSnackClick(snack.id) }
+            .clickable { onSnackClick(snack.id, "search") }
             .padding(horizontal = 24.dp)
     ) {
         val (divider, image, name, tag, priceSpacer, price, add) = createRefs()
@@ -228,7 +228,7 @@ private fun SearchResultPreview() {
         JetsnackSurface {
             SearchResult(
                 snack = snacks[0],
-                onSnackClick = { },
+                onSnackClick = { _, _ -> },
                 showDivider = false
             )
         }

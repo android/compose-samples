@@ -74,6 +74,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    kotlinOptions { jvmTarget = "17" }
+
     buildFeatures {
         compose = true
     }
@@ -101,6 +103,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
@@ -109,6 +112,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.animation)

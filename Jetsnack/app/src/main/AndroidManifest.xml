@@ -23,7 +23,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Jetsnack">
+        android:theme="@style/Theme.Jetsnack"
+
+        >
 
         <profileable android:shell="true" tools:targetApi="q" />
 

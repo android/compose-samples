@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -47,7 +46,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -67,6 +65,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -78,58 +77,34 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackScaffold
-import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
-import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
 import com.example.jetsnack.ui.home.DestinationBar
-import com.example.jetsnack.ui.home.HomeSections
-import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
+import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
 fun Cart(
-    onSnackClick: (Long) -> Unit,
-    onNavigateToRoute: (String) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
     val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
     val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
-    val jetsnackScaffoldState = rememberJetsnackScaffoldState()
-    JetsnackScaffold(
-        bottomBar = {
-            JetsnackBottomBar(
-                tabs = HomeSections.values(),
-                currentRoute = HomeSections.CART.route,
-                navigateToRoute = onNavigateToRoute
-            )
-        },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = it,
-                modifier = Modifier.systemBarsPadding(),
-                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
-            )
-        },
-        scaffoldState = jetsnackScaffoldState.scaffoldState,
+    Cart(
+        orderLines = orderLines,
+        removeSnack = viewModel::removeSnack,
+        increaseItemCount = viewModel::increaseSnackCount,
+        decreaseItemCount = viewModel::decreaseSnackCount,
+        inspiredByCart = inspiredByCart,
+        onSnackClick = onSnackClick,
         modifier = modifier
-    ) { paddingValues ->
-        Cart(
-            orderLines = orderLines,
-            removeSnack = viewModel::removeSnack,
-            increaseItemCount = viewModel::increaseSnackCount,
-            decreaseItemCount = viewModel::decreaseSnackCount,
-            inspiredByCart = inspiredByCart,
-            onSnackClick = onSnackClick,
-            modifier = Modifier.padding(paddingValues)
-        )
-    }
+    )
 }
 
 @Composable
@@ -139,11 +114,11 @@ fun Cart(
     increaseItemCount: (Long) -> Unit,
     decreaseItemCount: (Long) -> Unit,
     inspiredByCart: SnackCollection,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        Box {
+        Box(modifier = Modifier.fillMaxSize()) {
             CartContent(
                 orderLines = orderLines,
                 removeSnack = removeSnack,
@@ -166,7 +141,7 @@ private fun CartContent(
     increaseItemCount: (Long) -> Unit,
     decreaseItemCount: (Long) -> Unit,
     inspiredByCart: SnackCollection,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val resources = LocalContext.current.resources
@@ -176,8 +151,10 @@ private fun CartContent(
             orderLines.size, orderLines.size
         )
     }
+    val itemAnimationSpecFade = nonSpatialExpressiveSpring<Float>()
+    val itemPlacementSpec = spatialExpressiveSpring<IntOffset>()
     LazyColumn(modifier) {
-        item {
+        item(key = "title") {
             Spacer(
                 Modifier.windowInsetsTopHeight(
                     WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
@@ -195,84 +172,15 @@ private fun CartContent(
                     .wrapContentHeight()
             )
         }
-        items(orderLines) { orderLine ->
+        items(orderLines, key = { it.snack.id }) { orderLine ->
             SwipeDismissItem(
+                modifier = Modifier.animateItem(
+                    fadeInSpec = itemAnimationSpecFade,
+                    fadeOutSpec = itemAnimationSpecFade,
+                    placementSpec = itemPlacementSpec
+                ),
                 background = { offsetX ->
-                    /*Background color changes from light gray to red when the
-                    swipe to delete with exceeds 160.dp*/
-                    val backgroundColor = if (offsetX < -160.dp) {
-                        JetsnackTheme.colors.error
-                    } else {
-                        JetsnackTheme.colors.uiFloated
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .background(backgroundColor),
-                        horizontalAlignment = Alignment.End,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        // Set 4.dp padding only if offset is bigger than 160.dp
-                        val padding: Dp by animateDpAsState(
-                            if (offsetX > -160.dp) 4.dp else 0.dp
-                        )
-                        Box(
-                            Modifier
-                                .width(offsetX * -1)
-                                .padding(padding)
-                        ) {
-                            // Height equals to width removing padding
-                            val height = (offsetX + 8.dp) * -1
-                            Surface(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(height)
-                                    .align(Alignment.Center),
-                                shape = CircleShape,
-                                color = JetsnackTheme.colors.error
-                            ) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    // Icon must be visible while in this width range
-                                    if (offsetX < -40.dp && offsetX > -152.dp) {
-                                        // Icon alpha decreases as it is about to disappear
-                                        val iconAlpha: Float by animateFloatAsState(
-                                            if (offsetX < -120.dp) 0.5f else 1f
-                                        )
-
-                                        Icon(
-                                            imageVector = Icons.Filled.DeleteForever,
-                                            modifier = Modifier
-                                                .size(16.dp)
-                                                .graphicsLayer(alpha = iconAlpha),
-                                            tint = JetsnackTheme.colors.uiBackground,
-                                            contentDescription = null,
-                                        )
-                                    }
-                                    /*Text opacity increases as the text is supposed to appear in
-                                    the screen*/
-                                    val textAlpha by animateFloatAsState(
-                                        if (offsetX > -144.dp) 0.5f else 1f
-                                    )
-                                    if (offsetX < -120.dp) {
-                                        Text(
-                                            text = stringResource(id = R.string.remove_item),
-                                            style = MaterialTheme.typography.subtitle1,
-                                            color = JetsnackTheme.colors.uiBackground,
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier
-                                                .graphicsLayer(
-                                                    alpha = textAlpha
-                                                )
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    SwipeDismissItemBackground(offsetX)
                 },
             ) {
                 CartItem(
@@ -284,14 +192,24 @@ private fun CartContent(
                 )
             }
         }
-        item {
+        item("summary") {
             SummaryItem(
+                modifier = Modifier.animateItem(
+                    fadeInSpec = itemAnimationSpecFade,
+                    fadeOutSpec = itemAnimationSpecFade,
+                    placementSpec = itemPlacementSpec
+                ),
                 subtotal = orderLines.map { it.snack.price * it.count }.sum(),
                 shippingCosts = 369
             )
         }
-        item {
+        item(key = "inspiredByCart") {
             SnackCollection(
+                modifier = Modifier.animateItem(
+                    fadeInSpec = itemAnimationSpecFade,
+                    fadeOutSpec = itemAnimationSpecFade,
+                    placementSpec = itemPlacementSpec
+                ),
                 snackCollection = inspiredByCart,
                 onSnackClick = onSnackClick,
                 highlight = false
@@ -302,19 +220,98 @@ private fun CartContent(
 }
 
 @Composable
+private fun SwipeDismissItemBackground(offsetX: Dp) {
+    /*Background color changes from light gray to red when the
+                    swipe to delete with exceeds 160.dp*/
+    val backgroundColor = if (offsetX < -160.dp) {
+        JetsnackTheme.colors.error
+    } else {
+        JetsnackTheme.colors.uiFloated
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(backgroundColor),
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Set 4.dp padding only if offset is bigger than 160.dp
+        val padding: Dp by animateDpAsState(
+            if (offsetX > -160.dp) 4.dp else 0.dp
+        )
+        Box(
+            Modifier
+                .width(offsetX * -1)
+                .padding(padding)
+        ) {
+            // Height equals to width removing padding
+            val height = (offsetX + 8.dp) * -1
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(height)
+                    .align(Alignment.Center),
+                shape = CircleShape,
+                color = JetsnackTheme.colors.error
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Icon must be visible while in this width range
+                    if (offsetX < -40.dp && offsetX > -152.dp) {
+                        // Icon alpha decreases as it is about to disappear
+                        val iconAlpha: Float by animateFloatAsState(
+                            if (offsetX < -120.dp) 0.5f else 1f
+                        )
+
+                        Icon(
+                            imageVector = Icons.Filled.DeleteForever,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .graphicsLayer(alpha = iconAlpha),
+                            tint = JetsnackTheme.colors.uiBackground,
+                            contentDescription = null,
+                        )
+                    }
+                    /*Text opacity increases as the text is supposed to appear in
+                                    the screen*/
+                    val textAlpha by animateFloatAsState(
+                        if (offsetX > -144.dp) 0.5f else 1f
+                    )
+                    if (offsetX < -120.dp) {
+                        Text(
+                            text = stringResource(id = R.string.remove_item),
+                            style = MaterialTheme.typography.subtitle1,
+                            color = JetsnackTheme.colors.uiBackground,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .graphicsLayer(
+                                    alpha = textAlpha
+                                )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun CartItem(
     orderLine: OrderLine,
     removeSnack: (Long) -> Unit,
     increaseItemCount: (Long) -> Unit,
     decreaseItemCount: (Long) -> Unit,
-    onSnackClick: (Long) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snack = orderLine.snack
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onSnackClick(snack.id) }
+            .clickable { onSnackClick(snack.id, "cart") }
             .background(JetsnackTheme.colors.uiBackground)
             .padding(horizontal = 24.dp)
 
@@ -525,7 +522,7 @@ private fun CartPreview() {
             increaseItemCount = {},
             decreaseItemCount = {},
             inspiredByCart = SnackRepo.getInspiredByCart(),
-            onSnackClick = {}
+            onSnackClick = { _, _ -> }
         )
     }
 }
