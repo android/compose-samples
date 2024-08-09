@@ -73,7 +73,8 @@ fun FilterBar(
             item {
                 AnimatedVisibility(visible = !filterScreenVisible) {
                     IconButton(
-                        onClick = onShowFilters, modifier = Modifier
+                        onClick = onShowFilters,
+                        modifier = Modifier
                             .sharedBounds(
                                 rememberSharedContentState(FilterSharedElementKey),
                                 animatedVisibilityScope = this@AnimatedVisibility,
@@ -91,14 +92,12 @@ fun FilterBar(
                         )
                     }
                 }
-
             }
             items(filters) { filter ->
                 FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
             }
         }
     }
-
 }
 
 @Composable

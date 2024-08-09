@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-        /**
-         * Holds the Swipe to dismiss composable, its animation and the current state
-         */
+/**
+ * Holds the Swipe to dismiss composable, its animation and the current state
+ */
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
     enter: EnterTransition = expandVertically(),
