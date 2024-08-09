@@ -96,7 +96,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
 
                     },
                     colors = TopAppBarDefaults.topAppBarColors().copy(
-                        containerColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
+                        containerColor = JetsnackTheme.colors.uiBackground
+                            .copy(alpha = AlphaNearOpaque),
                         titleContentColor = JetsnackTheme.colors.textSecondary
                     ),
                 )
