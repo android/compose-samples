@@ -183,7 +183,7 @@ private fun CartContent(
                     placementSpec = itemPlacementSpec
                 ),
                 background = {
-                    SwipeDismissItemBackground(0.dp) //todo
+                    SwipeDismissItemBackground(0.dp) // todo
                 },
             ) {
                 CartItem(

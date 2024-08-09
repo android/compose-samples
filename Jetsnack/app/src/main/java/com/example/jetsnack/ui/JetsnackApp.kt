@@ -80,15 +80,15 @@ fun JetsnackApp() {
 
                     composableWithCompositionLocal(
                         "${MainDestinations.SNACK_DETAIL_ROUTE}/" +
-                                "{${MainDestinations.SNACK_ID_KEY}}" +
-                                "?origin={${MainDestinations.ORIGIN}}",
+                            "{${MainDestinations.SNACK_ID_KEY}}" +
+                            "?origin={${MainDestinations.ORIGIN}}",
                         arguments = listOf(
                             navArgument(MainDestinations.SNACK_ID_KEY) {
                                 type = NavType.LongType
                             }
                         ),
 
-                        ) { backStackEntry ->
+                    ) { backStackEntry ->
                         val arguments = requireNotNull(backStackEntry.arguments)
                         val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
                         val origin = arguments.getString(MainDestinations.ORIGIN)

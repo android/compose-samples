@@ -94,25 +94,25 @@ fun NavGraphBuilder.composableWithCompositionLocal(
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
     enterTransition: (
-    @JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? = {
         fadeIn(nonSpatialExpressiveSpring())
     },
     exitTransition: (
-    @JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
     )? = {
         fadeOut(nonSpatialExpressiveSpring())
     },
     popEnterTransition: (
-    @JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? =
         enterTransition,
     popExitTransition: (
-    @JvmSuppressWildcards
-    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+        @JvmSuppressWildcards
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
     )? =
         exitTransition,
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit

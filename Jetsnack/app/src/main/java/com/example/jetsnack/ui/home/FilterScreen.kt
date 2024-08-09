@@ -85,24 +85,30 @@ fun FilterScreen(
     var maxCalories by remember { mutableFloatStateOf(0f) }
     val defaultFilter = SnackRepo.getSortDefault()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            // capture click
-        }) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                // capture click
+            }
+    ) {
         val priceFilters = remember { SnackRepo.getPriceFilters() }
         val categoryFilters = remember { SnackRepo.getCategoryFilters() }
         val lifeStyleFilters = remember { SnackRepo.getLifeStyleFilters() }
-        Spacer(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
-                onDismiss()
-            })
+        Spacer(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onDismiss()
+                }
+        )
         with(sharedTransitionScope) {
             Column(
                 Modifier
@@ -120,7 +126,8 @@ fun FilterScreen(
                     .verticalScroll(rememberScrollState())
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() }) { }
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { }
                     .background(JetsnackTheme.colors.uiFloated)
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .skipToLookaheadSize(),
@@ -189,8 +196,6 @@ fun FilterScreen(
                     filters = lifeStyleFilters
                 )
             }
-
-
         }
     }
 }
