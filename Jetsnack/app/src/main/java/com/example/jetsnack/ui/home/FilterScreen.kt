@@ -324,14 +324,13 @@ fun SortOption(
 fun FilterScreenPreview() {
     JetsnackTheme {
         SharedTransitionLayout {
-            AnimatedVisibility( true) {
+            AnimatedVisibility(true) {
                 FilterScreen(
                     animatedVisibilityScope = this,
                     sharedTransitionScope = this@SharedTransitionLayout,
-                    onDismiss = {})
+                    onDismiss = {}
+                )
             }
-
         }
-
     }
 }
