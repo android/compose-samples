@@ -38,5 +38,6 @@ fun mirroringIcon(ltrIcon: ImageVector, rtlIcon: ImageVector): ImageVector =
  */
 @Composable
 fun mirroringBackIcon() = mirroringIcon(
-    ltrIcon = Icons.AutoMirrored.Outlined.ArrowBack, rtlIcon = Icons.AutoMirrored.Outlined.ArrowForward
+    ltrIcon = Icons.AutoMirrored.Outlined.ArrowBack,
+    rtlIcon = Icons.AutoMirrored.Outlined.ArrowForward
 )
