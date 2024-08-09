@@ -34,11 +34,11 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +53,6 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
-import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -68,7 +67,7 @@ fun SearchResults(
     onSnackClick: (Long, String) -> Unit
 ) {
     Column {
-       // FilterBar(filters, onShowFilters = {})
+        // FilterBar(filters, onShowFilters = {})
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
             style = MaterialTheme.typography.titleLarge,
