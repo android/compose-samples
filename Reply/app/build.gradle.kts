@@ -88,7 +88,9 @@ android {
         compose = true
     }
 }
-
+kotlin {
+    jvmToolchain(17)
+}
 composeCompiler {
     // Configure compose compiler options if required
     enableStrongSkippingMode = true

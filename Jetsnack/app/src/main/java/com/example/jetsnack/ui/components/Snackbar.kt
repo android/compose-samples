@@ -16,19 +16,17 @@
 
 package com.example.jetsnack.ui.components
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarData
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- * An alternative to [androidx.compose.material.Snackbar] utilizing
+ * An alternative to [androidx.compose.material3.Snackbar] utilizing
  * [com.example.jetsnack.ui.theme.JetsnackColors]
  */
 @Composable
@@ -39,17 +37,15 @@ fun JetsnackSnackbar(
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textSecondary,
-    actionColor: Color = JetsnackTheme.colors.brand,
-    elevation: Dp = 6.dp
+    actionColor: Color = JetsnackTheme.colors.brand
 ) {
     Snackbar(
         snackbarData = snackbarData,
         modifier = modifier,
         actionOnNewLine = actionOnNewLine,
         shape = shape,
-        backgroundColor = backgroundColor,
+        containerColor = backgroundColor,
         contentColor = contentColor,
-        actionColor = actionColor,
-        elevation = elevation
+        actionColor = actionColor
     )
 }

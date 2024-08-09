@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -22,14 +22,12 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterExitState
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,13 +49,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -88,7 +85,6 @@ import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.mirroringIcon
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -112,7 +108,7 @@ fun SnackCollection(
         ) {
             Text(
                 text = snackCollection.name,
-                style = MaterialTheme.typography.h6,
+                style = MaterialTheme.typography.titleLarge,
                 color = JetsnackTheme.colors.brand,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -125,10 +121,7 @@ fun SnackCollection(
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
-                    imageVector = mirroringIcon(
-                        ltrIcon = Icons.AutoMirrored.Outlined.ArrowForward,
-                        rtlIcon = Icons.AutoMirrored.Outlined.ArrowBack
-                    ),
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     tint = JetsnackTheme.colors.brand,
                     contentDescription = null
                 )
@@ -250,7 +243,7 @@ fun SnackItem(
                 )
                 Text(
                     text = snack.name,
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.titleMedium,
                     color = JetsnackTheme.colors.textSecondary,
                     modifier = Modifier
                         .padding(top = 8.dp)
@@ -408,7 +401,7 @@ private fun HighlightSnackItem(
                     text = snack.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.titleLarge,
                     color = JetsnackTheme.colors.textSecondary,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
@@ -432,7 +425,7 @@ private fun HighlightSnackItem(
 
                 Text(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = JetsnackTheme.colors.textHelp,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)

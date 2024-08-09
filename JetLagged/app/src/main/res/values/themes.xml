@@ -13,5 +13,5 @@
   the License.
   -->
 <resources>
-    <style name="Theme.JetLagged" parent="Theme.MaterialComponents.DayNight"/>
+    <style name="Theme.JetLagged" parent="android:Theme.Material.Light.NoActionBar"/>
 </resources>

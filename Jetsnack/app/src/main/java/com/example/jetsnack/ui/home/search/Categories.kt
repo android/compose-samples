@@ -30,8 +30,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,7 +71,7 @@ private fun SearchCategoryCollection(
     Column(modifier) {
         Text(
             text = collection.name,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier
                 .heightIn(min = 56.dp)
@@ -115,7 +115,7 @@ private fun SearchCategory(
         content = {
             Text(
                 text = category.name,
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.titleMedium,
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = Modifier
                     .padding(4.dp)

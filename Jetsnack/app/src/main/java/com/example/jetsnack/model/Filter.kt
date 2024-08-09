@@ -32,6 +32,7 @@ class Filter(
 ) {
     val enabled = mutableStateOf(enabled)
 }
+
 val filters = listOf(
     Filter(name = "Organic"),
     Filter(name = "Gluten-free"),

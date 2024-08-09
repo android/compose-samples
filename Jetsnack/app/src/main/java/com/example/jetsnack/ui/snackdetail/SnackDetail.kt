@@ -62,10 +62,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -112,7 +114,6 @@ import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
-import com.example.jetsnack.ui.utils.mirroringBackIcon
 import kotlin.math.max
 import kotlin.math.min
 
@@ -274,7 +275,7 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
                 )
         ) {
             Icon(
-                imageVector = mirroringBackIcon(),
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 tint = JetsnackTheme.colors.iconInteractive,
                 contentDescription = stringResource(R.string.label_back),
             )
@@ -312,7 +313,7 @@ private fun Body(
                         Spacer(Modifier.height(TitleHeight))
                         Text(
                             text = stringResource(R.string.detail_header),
-                            style = MaterialTheme.typography.overline,
+                            style = MaterialTheme.typography.labelSmall,
                             color = JetsnackTheme.colors.textHelp,
                             modifier = HzPadding
                         )
@@ -321,7 +322,7 @@ private fun Body(
                         with(sharedTransitionScope) {
                             Text(
                                 text = stringResource(R.string.detail_placeholder),
-                                style = MaterialTheme.typography.body1,
+                                style = MaterialTheme.typography.bodyLarge,
                                 color = JetsnackTheme.colors.textHelp,
                                 maxLines = if (seeMore) 5 else Int.MAX_VALUE,
                                 overflow = TextOverflow.Ellipsis,
@@ -337,7 +338,7 @@ private fun Body(
 
                         Text(
                             text = textButton,
-                            style = MaterialTheme.typography.button,
+                            style = MaterialTheme.typography.labelLarge,
                             textAlign = TextAlign.Center,
                             color = JetsnackTheme.colors.textLink,
                             modifier = Modifier
@@ -353,14 +354,14 @@ private fun Body(
                         Spacer(Modifier.height(40.dp))
                         Text(
                             text = stringResource(R.string.ingredients),
-                            style = MaterialTheme.typography.overline,
+                            style = MaterialTheme.typography.labelSmall,
                             color = JetsnackTheme.colors.textHelp,
                             modifier = HzPadding
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
                             text = stringResource(R.string.ingredients_list),
-                            style = MaterialTheme.typography.body1,
+                            style = MaterialTheme.typography.bodyLarge,
                             color = JetsnackTheme.colors.textHelp,
                             modifier = HzPadding
                         )
@@ -418,7 +419,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             Text(
                 text = snack.name,
                 fontStyle = FontStyle.Italic,
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.headlineMedium,
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = HzPadding
                     .sharedBounds(
@@ -437,7 +438,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             Text(
                 text = snack.tagline,
                 fontStyle = FontStyle.Italic,
-                style = MaterialTheme.typography.subtitle2,
+                style = MaterialTheme.typography.titleSmall,
                 fontSize = 20.sp,
                 color = JetsnackTheme.colors.textHelp,
                 modifier = HzPadding
@@ -458,7 +459,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             with(animatedVisibilityScope) {
                 Text(
                     text = formatPrice(snack.price),
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.titleLarge,
                     color = JetsnackTheme.colors.textPrimary,
                     modifier = HzPadding
                         .animateEnterExit(

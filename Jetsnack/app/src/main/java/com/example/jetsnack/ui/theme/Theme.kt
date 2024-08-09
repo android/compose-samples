@@ -17,8 +17,8 @@
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -86,7 +86,7 @@ fun JetsnackTheme(
 
     ProvideJetsnackColors(colors) {
         MaterialTheme(
-            colors = debugColors(darkTheme),
+            colorScheme = debugColors(darkTheme),
             typography = Typography,
             shapes = Shapes,
             content = content
@@ -149,23 +149,46 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
 
 /**
  * A Material [Colors] implementation which sets all colors to [debugColor] to discourage usage of
- * [MaterialTheme.colors] in preference to [JetsnackTheme.colors].
+ * [MaterialTheme.colorScheme] in preference to [JetsnackTheme.colors].
  */
 fun debugColors(
     darkTheme: Boolean,
     debugColor: Color = Color.Magenta
-) = Colors(
+) = ColorScheme(
     primary = debugColor,
-    primaryVariant = debugColor,
-    secondary = debugColor,
-    secondaryVariant = debugColor,
-    background = debugColor,
-    surface = debugColor,
-    error = debugColor,
     onPrimary = debugColor,
+    primaryContainer = debugColor,
+    onPrimaryContainer = debugColor,
+    inversePrimary = debugColor,
+    secondary = debugColor,
     onSecondary = debugColor,
+    secondaryContainer = debugColor,
+    onSecondaryContainer = debugColor,
+    tertiary = debugColor,
+    onTertiary = debugColor,
+    tertiaryContainer = debugColor,
+    onTertiaryContainer = debugColor,
+    background = debugColor,
     onBackground = debugColor,
+    surface = debugColor,
     onSurface = debugColor,
+    surfaceVariant = debugColor,
+    onSurfaceVariant = debugColor,
+    surfaceTint = debugColor,
+    inverseSurface = debugColor,
+    inverseOnSurface = debugColor,
+    error = debugColor,
     onError = debugColor,
-    isLight = !darkTheme
+    errorContainer = debugColor,
+    onErrorContainer = debugColor,
+    outline = debugColor,
+    outlineVariant = debugColor,
+    scrim = debugColor,
+    surfaceBright = debugColor,
+    surfaceDim = debugColor,
+    surfaceContainer = debugColor,
+    surfaceContainerHigh = debugColor,
+    surfaceContainerHighest = debugColor,
+    surfaceContainerLow = debugColor,
+    surfaceContainerLowest = debugColor,
 )

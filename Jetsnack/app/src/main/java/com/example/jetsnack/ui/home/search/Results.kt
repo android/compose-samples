@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetsnack.ui.home.search
 
 import android.content.res.Configuration
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,11 +34,11 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +53,6 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
-import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -65,10 +67,10 @@ fun SearchResults(
     onSnackClick: (Long, String) -> Unit
 ) {
     Column {
-        FilterBar(filters, onShowFilters = {})
+        // FilterBar(filters, onShowFilters = {})
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
         )
@@ -120,7 +122,7 @@ private fun SearchResult(
         )
         Text(
             text = snack.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textSecondary,
             modifier = Modifier.constrainAs(name) {
                 linkTo(
@@ -134,7 +136,7 @@ private fun SearchResult(
         )
         Text(
             text = snack.tagline,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
             color = JetsnackTheme.colors.textHelp,
             modifier = Modifier.constrainAs(tag) {
                 linkTo(
@@ -155,7 +157,7 @@ private fun SearchResult(
         )
         Text(
             text = formatPrice(snack.price),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textPrimary,
             modifier = Modifier.constrainAs(price) {
                 linkTo(
@@ -205,14 +207,14 @@ fun NoResults(
         Spacer(Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.search_no_matches_retry),
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
