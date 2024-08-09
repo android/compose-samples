@@ -156,7 +156,8 @@ fun FilterScreen(
                             text = stringResource(id = R.string.reset),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = fontWeight,
-                            color = JetsnackTheme.colors.uiBackground.copy(alpha = if (!resetEnabled) 0.38f else 1f)
+                            color = JetsnackTheme.colors.uiBackground
+                                .copy(alpha = if (!resetEnabled) 0.38f else 1f)
                         )
                     }
                 }
