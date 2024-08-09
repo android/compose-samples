@@ -31,7 +31,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
-
+kotlin {
+    jvmToolchain(17)
+}
 dependencies {
     coreLibraryDesugaring(libs.core.jdk.desugaring)
     implementation(projects.core.data)
