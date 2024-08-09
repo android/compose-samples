@@ -89,7 +89,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                                 Icon(
                                     imageVector = Icons.Outlined.ExpandMore,
                                     tint = JetsnackTheme.colors.brand,
-                                    contentDescription = stringResource(R.string.label_select_delivery)
+                                    contentDescription =
+                                    stringResource(R.string.label_select_delivery)
                                 )
                             }
                         }
