@@ -62,6 +62,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -274,7 +276,7 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
                 )
         ) {
             Icon(
-                imageVector = mirroringBackIcon(),
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 tint = JetsnackTheme.colors.iconInteractive,
                 contentDescription = stringResource(R.string.label_back),
             )

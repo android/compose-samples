@@ -52,7 +52,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -124,10 +123,7 @@ fun SnackCollection(
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
-                    imageVector = mirroringIcon(
-                        ltrIcon = Icons.AutoMirrored.Outlined.ArrowForward,
-                        rtlIcon = Icons.AutoMirrored.Outlined.ArrowBack
-                    ),
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     tint = JetsnackTheme.colors.brand,
                     contentDescription = null
                 )
