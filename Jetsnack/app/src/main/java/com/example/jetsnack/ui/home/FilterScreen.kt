@@ -18,8 +18,10 @@
 
 package com.example.jetsnack.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -316,6 +318,15 @@ fun SortOption(
 @Composable
 fun FilterScreenPreview() {
     JetsnackTheme {
-        //  FilterScreen(onDismiss = {})
+        SharedTransitionLayout {
+            AnimatedVisibility( true) {
+                FilterScreen(
+                    animatedVisibilityScope = this,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    onDismiss = {})
+            }
+
+        }
+
     }
 }
