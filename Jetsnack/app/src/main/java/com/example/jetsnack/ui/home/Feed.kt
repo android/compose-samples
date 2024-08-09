@@ -23,7 +23,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
@@ -31,11 +30,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -84,14 +79,16 @@ private fun Feed(
         }
         SharedTransitionLayout {
             Box {
-                SnackCollectionList(snackCollections,
+                SnackCollectionList(
+                    snackCollections,
                     filters,
                     filtersVisible = filtersVisible,
                     onFiltersSelected = {
                         filtersVisible = true
                     },
                     sharedTransitionScope = this@SharedTransitionLayout,
-                    onSnackClick = onSnackClick)
+                    onSnackClick = onSnackClick
+                )
                 DestinationBar()
                 AnimatedVisibility(filtersVisible, enter = fadeIn(), exit = fadeOut()) {
                     FilterScreen(
@@ -122,10 +119,12 @@ private fun SnackCollectionList(
                     WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
                 )
             )
-            FilterBar(filters,
+            FilterBar(
+                filters,
                 sharedTransitionScope = sharedTransitionScope,
                 filterScreenVisible = filtersVisible,
-                onShowFilters = onFiltersSelected)
+                onShowFilters = onFiltersSelected
+            )
         }
         itemsIndexed(snackCollections) { index, snackCollection ->
             if (index > 0) {

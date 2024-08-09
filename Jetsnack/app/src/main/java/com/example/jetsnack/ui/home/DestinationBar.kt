@@ -25,18 +25,14 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Horizontal
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,7 +49,6 @@ import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import java.lang.IllegalStateException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,7 +97,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     },
                     colors = TopAppBarDefaults.topAppBarColors().copy(
                         containerColor = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
-                        titleContentColor = JetsnackTheme.colors.textSecondary ),
+                        titleContentColor = JetsnackTheme.colors.textSecondary
+                    ),
                 )
                 JetsnackDivider()
             }

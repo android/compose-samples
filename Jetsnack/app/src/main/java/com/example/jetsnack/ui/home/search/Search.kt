@@ -31,13 +31,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -96,11 +96,13 @@ fun Search(
                         state.query = TextFieldValue(suggestion)
                     }
                 )
+
                 SearchDisplay.Results -> SearchResults(
                     state.searchResults,
                     state.filters,
                     onSnackClick
                 )
+
                 SearchDisplay.NoResults -> NoResults(state.query.text)
             }
         }

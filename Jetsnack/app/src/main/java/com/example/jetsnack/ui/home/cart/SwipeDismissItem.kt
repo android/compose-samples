@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-/**
- * Holds the Swipe to dismiss composable, its animation and the current state
- */
+        /**
+         * Holds the Swipe to dismiss composable, its animation and the current state
+         */
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
     enter: EnterTransition = expandVertically(),
@@ -41,21 +41,21 @@ fun SwipeDismissItem(
     // Hold the current state from the Swipe to Dismiss composable
     val dismissState = rememberSwipeToDismissBoxState()
     // Boolean value used for hiding the item if the current state is dismissed
-   // val isDismissed = dismissState.currentValue == SwipeToDismissBoxValue.
+    // val isDismissed = dismissState.currentValue == SwipeToDismissBoxValue.
     // Returns the swiped value in dp
-   // val offset = with(LocalDensity.current) { dismissState.offset.value.toDp() }
+    // val offset = with(LocalDensity.current) { dismissState.offset.value.toDp() }
 
-   /* AnimatedVisibility(
+    /* AnimatedVisibility(
+         modifier = modifier,
+         visible = !isDismissed,
+         enter = enter,
+         exit = exit
+     ) {*/
+    SwipeToDismissBox(
         modifier = modifier,
-        visible = !isDismissed,
-        enter = enter,
-        exit = exit
-    ) {*/
-        SwipeToDismissBox(
-            modifier = modifier,
-            state = dismissState,
-            backgroundContent = { background(/*offset*/) },
-            content = { content(/*isDismissed*/) }
-        )
- /*   }*/
+        state = dismissState,
+        backgroundContent = { background(/*offset*/) },
+        content = { content(/*isDismissed*/) }
+    )
+    /*   }*/
 }
