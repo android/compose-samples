@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.jetsnack.ui.home.cart
 
@@ -25,6 +24,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,17 +38,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -90,6 +88,7 @@ import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
+import kotlin.math.roundToInt
 
 @Composable
 fun Cart(
@@ -182,8 +181,8 @@ private fun CartContent(
                     fadeOutSpec = itemAnimationSpecFade,
                     placementSpec = itemPlacementSpec
                 ),
-                background = {
-                    SwipeDismissItemBackground(0.dp) // todo
+                background = { progress ->
+                    SwipeDismissItemBackground(progress)
                 },
             ) {
                 CartItem(
@@ -202,7 +201,7 @@ private fun CartContent(
                     fadeOutSpec = itemAnimationSpecFade,
                     placementSpec = itemPlacementSpec
                 ),
-                subtotal = orderLines.map { it.snack.price * it.count }.sum(),
+                subtotal = orderLines.sumOf { it.snack.price * it.count },
                 shippingCosts = 369
             )
         }
@@ -223,39 +222,30 @@ private fun CartContent(
 }
 
 @Composable
-private fun SwipeDismissItemBackground(offsetX: Dp) {
-    /*Background color changes from light gray to red when the
-                    swipe to delete with exceeds 160.dp*/
-    val backgroundColor = if (offsetX < -160.dp) {
-        JetsnackTheme.colors.error
-    } else {
-        JetsnackTheme.colors.uiFloated
-    }
+private fun SwipeDismissItemBackground(progress: Float) {
     Column(
         modifier = Modifier
+            .background(JetsnackTheme.colors.uiBackground)
             .fillMaxWidth()
-            .fillMaxHeight()
-            .background(backgroundColor),
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Center
     ) {
-        // Set 4.dp padding only if offset is bigger than 160.dp
+        // Set 4.dp padding only if progress is less than halfway
         val padding: Dp by animateDpAsState(
-            if (offsetX > -160.dp) 4.dp else 0.dp
+            if (progress < 0.5f) 4.dp else 0.dp, label = "padding"
         )
-        Box(
+        BoxWithConstraints(
             Modifier
-                .width(offsetX * -1)
-                .padding(padding)
+                .fillMaxWidth(progress)
         ) {
-            // Height equals to width removing padding
-            val height = (offsetX + 8.dp) * -1
             Surface(
                 modifier = Modifier
+                    .padding(padding)
                     .fillMaxWidth()
-                    .height(height)
+                    .height(maxWidth)
                     .align(Alignment.Center),
-                shape = CircleShape,
+                shape = RoundedCornerShape(percent = ((1 - progress) * 100).roundToInt()),
                 color = JetsnackTheme.colors.error
             ) {
                 Box(
@@ -263,16 +253,16 @@ private fun SwipeDismissItemBackground(offsetX: Dp) {
                     contentAlignment = Alignment.Center
                 ) {
                     // Icon must be visible while in this width range
-                    if (offsetX < -40.dp && offsetX > -152.dp) {
+                    if (progress in 0.125f..0.475f) {
                         // Icon alpha decreases as it is about to disappear
                         val iconAlpha: Float by animateFloatAsState(
-                            if (offsetX < -120.dp) 0.5f else 1f
+                            if (progress > 0.4f) 0.5f else 1f, label = "icon alpha"
                         )
 
                         Icon(
                             imageVector = Icons.Filled.DeleteForever,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(32.dp)
                                 .graphicsLayer(alpha = iconAlpha),
                             tint = JetsnackTheme.colors.uiBackground,
                             contentDescription = null,
@@ -281,9 +271,9 @@ private fun SwipeDismissItemBackground(offsetX: Dp) {
                     /*Text opacity increases as the text is supposed to appear in
                                     the screen*/
                     val textAlpha by animateFloatAsState(
-                        if (offsetX > -144.dp) 0.5f else 1f
+                        if (progress > 0.5f) 1f else 0.5f, label = "text alpha"
                     )
-                    if (offsetX < -120.dp) {
+                    if (progress > 0.5f) {
                         Text(
                             text = stringResource(id = R.string.remove_item),
                             style = MaterialTheme.typography.titleMedium,
